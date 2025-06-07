@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stocks Assist</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Stocks Assist</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return1D">1D Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return5D">5D Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return20D">20D Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return60D">60D Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return120D">120D Returns</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="jumbotron bg-light p-5 rounded mb-4">
+            <h1 class="display-4">Welcome to Stocks Assist</h1>
+            <p class="lead">Your comprehensive stock screening and analysis platform</p>
+            <hr class="my-4">
+            <p>Use the filters below to search for specific stocks, or explore our return analysis tools from the navigation menu above.</p>
+        </div>
+
+        <div class="filter-section">
+            <h4 class="mb-4">Filter Stocks</h4>
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="sector">Sector</label>
+                    <select class="form-select" id="sector">
+                        <option value="">All Sectors</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="industry">Industry</label>
+                    <select class="form-select" id="industry">
+                        <option value="">All Industries</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="minMarketCap">Min Market Cap (in billions)</label>
+                    <input type="number" class="form-control" id="minMarketCap" step="0.1">
+                </div>
+                <div class="col-md-3">
+                    <label for="maxPERatio">Max P/E Ratio</label>
+                    <input type="number" class="form-control" id="maxPERatio" step="0.1">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <button class="btn btn-primary" onclick="applyFilters()">Search Stocks</button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="stocksContainer" class="row">
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <h5>Ready to Search</h5>
+                    <p>Use the filters above and click "Search Stocks" to find stocks matching your criteria.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        // Initialize Select2
+        $(document).ready(function() {
+            $('#sector, #industry').select2();
+            loadSectors();
+            loadIndustries();
+            // Removed automatic loadStocks() call for better performance
+        });
+
+        function loadSectors() {
+            fetch('/api/sectors')
+                .then(response => response.json())
+                .then(sectors => {
+                    const select = $('#sector');
+                    sectors.forEach(sector => {
+                        select.append(new Option(sector, sector));
+                    });
+                })
+                .catch(error => console.error('Error loading sectors:', error));
+        }
+
+        function loadIndustries() {
+            fetch('/api/industries')
+                .then(response => response.json())
+                .then(industries => {
+                    const select = $('#industry');
+                    industries.forEach(industry => {
+                        select.append(new Option(industry, industry));
+                    });
+                })
+                .catch(error => console.error('Error loading industries:', error));
+        }
+
+        function loadStocks() {
+            const sector = $('#sector').val();
+            const industry = $('#industry').val();
+            const minMarketCap = $('#minMarketCap').val();
+            const maxPERatio = $('#maxPERatio').val();
+
+            // Show loading indicator
+            const container = $('#stocksContainer');
+            container.html('<div class="col-12"><div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Loading stocks...</p></div></div>');
+
+            let url = '/api/stocks?';
+            if (sector) url += `sector=${encodeURIComponent(sector)}&`;
+            if (industry) url += `industry=${encodeURIComponent(industry)}&`;
+            if (minMarketCap) url += `min_market_cap=${minMarketCap * 1e9}&`;
+            if (maxPERatio) url += `max_pe_ratio=${maxPERatio}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(stocks => {
+                    container.empty();
+
+                    if (stocks.length === 0) {
+                        container.html('<div class="col-12"><div class="alert alert-warning">No stocks found matching your criteria. Try adjusting your filters.</div></div>');
+                        return;
+                    }
+
+                    stocks.forEach(stock => {
+                        const card = `
+                            <div class="col-md-4 mb-4">
+                                <div class="card stock-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${stock.ticker}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">${stock.company_name || 'N/A'}</h6>
+                                        <p class="card-text">
+                                            <strong>Sector:</strong> ${stock.sector || 'N/A'}<br>
+                                            <strong>Industry:</strong> ${stock.industry || 'N/A'}<br>
+                                            <strong>Price:</strong> $${stock.close_price?.toFixed(2) || 'N/A'}<br>
+                                            <strong>Market Cap:</strong> $${(stock.market_cap / 1e9).toFixed(2)}B<br>
+                                            <strong>P/E Ratio:</strong> ${stock.pe_ratio?.toFixed(2) || 'N/A'}<br>
+                                            <strong>EPS:</strong> ${stock.eps?.toFixed(2) || 'N/A'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        container.append(card);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading stocks:', error);
+                    container.html('<div class="col-12"><div class="alert alert-danger">Error loading stocks. Please try again.</div></div>');
+                });
+        }
+
+        function applyFilters() {
+            loadStocks();
+        }
+
+        function resetFilters() {
+            $('#sector').val('').trigger('change');
+            $('#industry').val('').trigger('change');
+            $('#minMarketCap').val('');
+            $('#maxPERatio').val('');
+            
+            // Reset the container to show the initial message
+            const container = $('#stocksContainer');
+            container.html(`
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <h5>Ready to Search</h5>
+                        <p>Use the filters above and click "Search Stocks" to find stocks matching your criteria.</p>
+                    </div>
+                </div>
+            `);
+        }
+    </script>
+</body>
+</html> 

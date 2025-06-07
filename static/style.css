@@ -1,0 +1,36 @@
+.stock-card {
+    transition: transform 0.2s;
+    margin-bottom: 20px;
+}
+
+.stock-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.filter-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.card-title {
+    color: #007bff;
+}
+
+.card-subtitle {
+    color: #6c757d;
+}
+
+.form-select, .form-control {
+    margin-bottom: 10px;
+}
+
+.btn {
+    margin-right: 10px;
+} 

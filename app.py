@@ -1,0 +1,370 @@
+from flask import Flask, render_template, jsonify, request
+from models import Stock, Price, init_db
+from sqlalchemy import desc, func, and_, text
+from datetime import datetime, timedelta
+import os
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+app = Flask(
+    __name__,
+    static_folder='static',
+    template_folder='templates'
+)
+session = init_db()
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/Return1D')
+def return_1d():
+    return render_template('return_1d.html')
+
+@app.route('/Return5D')
+def return_5d():
+    return render_template('return_5d.html')
+
+@app.route('/Return20D')
+def return_20d():
+    return render_template('return_20d.html')
+
+@app.route('/Return60D')
+def return_60d():
+    return render_template('return_60d.html')
+
+@app.route('/Return120D')
+def return_120d():
+    return render_template('return_120d.html')
+
+def get_momentum_stocks(return_days, above_200m=True):
+    """Helper function to get momentum stocks for different return periods"""
+    try:
+        # Get current date and date ranges
+        today = datetime.now().date()
+        return_period_ago = today - timedelta(days=return_days)
+        ten_days_ago = today - timedelta(days=10)
+        
+        # Get first and last prices for each ticker in a materialized subquery
+        price_changes = session.query(
+            Price.ticker,
+            func.min(Price.date).label('first_date'),
+            func.max(Price.date).label('last_date')
+        ).filter(
+            Price.date >= return_period_ago,
+            Price.date < today
+        ).group_by(Price.ticker).subquery()
+
+        # Join with prices to get actual price values
+        first_price = Price.__table__.alias('first_price')
+        last_price = Price.__table__.alias('last_price')
+        
+        price_data = session.query(
+            price_changes.c.ticker,
+            first_price.c.close_price.label('start_price'),
+            last_price.c.close_price.label('end_price')
+        ).select_from(price_changes).join(
+            first_price,
+            and_(
+                price_changes.c.ticker == first_price.c.ticker,
+                price_changes.c.first_date == first_price.c.date
+            )
+        ).join(
+            last_price,
+            and_(
+                price_changes.c.ticker == last_price.c.ticker,
+                price_changes.c.last_date == last_price.c.date
+            )
+        ).subquery()
+        
+        # Calculate average prices and volumes
+        avg_stats = session.query(
+            Price.ticker,
+            func.avg(Price.close_price).label('avg_10day_price'),
+            func.avg(Price.volume * Price.close_price).label('avg_dollar_volume')
+        ).filter(
+            Price.date >= ten_days_ago,
+            Price.date < today
+        ).group_by(Price.ticker).subquery()
+        
+        # Get latest prices
+        latest_prices = session.query(
+            Price.ticker,
+            Price.close_price.label('current_price')
+        ).distinct(Price.ticker).order_by(
+            Price.ticker,
+            Price.date.desc()
+        ).subquery()
+        
+        # Combine all the data
+        query = session.query(
+            Stock.ticker,
+            Stock.company_name,
+            Stock.sector,
+            Stock.industry,
+            Stock.market_cap,
+            latest_prices.c.current_price,
+            avg_stats.c.avg_10day_price,
+            avg_stats.c.avg_dollar_volume,
+            ((latest_prices.c.current_price - price_data.c.start_price) / 
+             price_data.c.start_price * 100).label('price_change_pct')
+        ).join(
+            latest_prices,
+            Stock.ticker == latest_prices.c.ticker
+        ).join(
+            avg_stats,
+            Stock.ticker == avg_stats.c.ticker
+        ).join(
+            price_data,
+            Stock.ticker == price_data.c.ticker
+        )
+        
+        # Apply market cap filter
+        if above_200m:
+            query = query.filter(Stock.market_cap >= 200000000)  # Market cap >= $200M
+        else:
+            query = query.filter(Stock.market_cap < 200000000)   # Market cap < $200M
+            
+        # Apply other filters
+        query = query.filter(
+            avg_stats.c.avg_10day_price >= 5,  # 10-day average price > $5
+            avg_stats.c.avg_dollar_volume >= 10000000,  # Average daily dollar volume > $10M
+            ((latest_prices.c.current_price - price_data.c.start_price) / 
+             price_data.c.start_price * 100) >= 5  # price change > 5%
+        ).order_by(desc('price_change_pct'))
+        
+        momentum_stocks = query.all()
+        
+        result = []
+        for stock in momentum_stocks:
+            # Format market cap
+            market_cap = stock.market_cap
+            if market_cap >= 1000000000:  # >= 1B
+                market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
+                # Remove trailing .0
+                if market_cap_formatted.endswith('.0B'):
+                    market_cap_formatted = market_cap_formatted[:-3] + 'B'
+            else:  # < 1B, show in millions
+                market_cap_formatted = f"{market_cap / 1000000:.0f}M"
+            
+            result.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': market_cap_formatted,
+                'current_price': f"${stock.current_price:.2f}",
+                'avg_10day_price': f"${stock.avg_10day_price:.2f}",
+                'avg_dollar_volume': f"${stock.avg_dollar_volume:,.0f}",
+                'price_change_pct': f"{stock.price_change_pct:.1f}%"
+            })
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error in get_momentum_stocks: {str(e)}")
+        raise e
+
+# 1D Return APIs
+@app.route('/api/Return1D-Above200M')
+def get_return_1d_above_200m():
+    try:
+        result = get_momentum_stocks(1, above_200m=True)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_1d_above_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/Return1D-Below200M')
+def get_return_1d_below_200m():
+    try:
+        result = get_momentum_stocks(1, above_200m=False)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_1d_below_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# 5D Return APIs
+@app.route('/api/Return5D-Above200M')
+def get_return_5d_above_200m():
+    try:
+        result = get_momentum_stocks(5, above_200m=True)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_5d_above_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/Return5D-Below200M')
+def get_return_5d_below_200m():
+    try:
+        result = get_momentum_stocks(5, above_200m=False)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_5d_below_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# 60D Return APIs
+@app.route('/api/Return60D-Above200M')
+def get_return_60d_above_200m():
+    try:
+        result = get_momentum_stocks(60, above_200m=True)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_60d_above_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/Return60D-Below200M')
+def get_return_60d_below_200m():
+    try:
+        result = get_momentum_stocks(60, above_200m=False)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_60d_below_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# 120D Return APIs
+@app.route('/api/Return120D-Above200M')
+def get_return_120d_above_200m():
+    try:
+        result = get_momentum_stocks(120, above_200m=True)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_120d_above_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/Return120D-Below200M')
+def get_return_120d_below_200m():
+    try:
+        result = get_momentum_stocks(120, above_200m=False)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_120d_below_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/stocks')
+def get_stocks():
+    sector = request.args.get('sector')
+    industry = request.args.get('industry')
+    min_market_cap = request.args.get('min_market_cap', type=float)
+    max_pe_ratio = request.args.get('max_pe_ratio', type=float)
+    
+    # Get the latest price data for each stock
+    latest_prices = session.query(
+        Price.ticker,
+        func.max(Price.date).label('max_date')
+    ).group_by(Price.ticker).subquery()
+    
+    # Join Stock with the latest Price data
+    query = session.query(
+        Stock,
+        Price
+    ).join(
+        latest_prices,
+        Stock.ticker == latest_prices.c.ticker
+    ).join(
+        Price,
+        (Price.ticker == latest_prices.c.ticker) & 
+        (Price.date == latest_prices.c.max_date)
+    )
+    
+    if sector:
+        query = query.filter(Stock.sector == sector)
+    if industry:
+        query = query.filter(Stock.industry == industry)
+    if min_market_cap:
+        query = query.filter(Stock.market_cap >= min_market_cap)
+    if max_pe_ratio:
+        query = query.filter(Stock.pe_ratio <= max_pe_ratio)
+    
+    results = query.all()
+    
+    result = []
+    for stock, price in results:
+        result.append({
+            'ticker': stock.ticker,
+            'company_name': stock.company_name,
+            'sector': stock.sector,
+            'industry': stock.industry,
+            'close_price': price.close_price,
+            'volume': price.volume,
+            'market_cap': stock.market_cap,
+            'date': price.date.strftime('%Y-%m-%d') if price.date else None
+        })
+    return jsonify(result)
+
+@app.route('/api/sectors')
+def get_sectors():
+    sectors = session.query(Stock.sector).distinct().all()
+    return jsonify([sector[0] for sector in sectors if sector[0]])
+
+@app.route('/api/industries')
+def get_industries():
+    industries = session.query(Stock.industry).distinct().all()
+    return jsonify([industry[0] for industry in industries if industry[0]])
+
+@app.route('/api/stock/<ticker>')
+def get_stock_details(ticker):
+    # Get stock details
+    db_stock = session.query(Stock).filter_by(ticker=ticker).first()
+    if not db_stock:
+        return jsonify({'error': 'Stock not found'}), 404
+    
+    # Get latest price data
+    latest_price = session.query(Price).filter_by(ticker=ticker).order_by(Price.date.desc()).first()
+    
+    return jsonify({
+        'ticker': db_stock.ticker,
+        'company_name': db_stock.company_name,
+        'sector': db_stock.sector,
+        'industry': db_stock.industry,
+        'open_price': latest_price.open_price if latest_price else None,
+        'high_price': latest_price.high_price if latest_price else None,
+        'low_price': latest_price.low_price if latest_price else None,
+        'close_price': latest_price.close_price if latest_price else None,
+        'volume': latest_price.volume if latest_price else None,
+        'market_cap': db_stock.market_cap,
+        'shares_outstanding': db_stock.shares_outstanding,
+        'date': latest_price.date.strftime('%Y-%m-%d') if latest_price and latest_price.date else None
+    })
+
+@app.route('/api/stock/<ticker>/prices')
+def get_stock_prices(ticker):
+    # Get historical price data
+    prices = session.query(Price).filter_by(ticker=ticker).order_by(Price.date.desc()).all()
+    
+    if not prices:
+        return jsonify({'error': 'No price data found'}), 404
+    
+    return jsonify([{
+        'date': price.date.strftime('%Y-%m-%d'),
+        'open_price': price.open_price,
+        'high_price': price.high_price,
+        'low_price': price.low_price,
+        'close_price': price.close_price,
+        'volume': price.volume
+    } for price in prices])
+
+# 20D Return APIs
+@app.route('/api/Return20D-Above200M')
+def get_return_20d_above_200m():
+    try:
+        result = get_momentum_stocks(20, above_200m=True)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_20d_above_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/Return20D-Below200M')
+def get_return_20d_below_200m():
+    try:
+        result = get_momentum_stocks(20, above_200m=False)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_return_20d_below_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=5000) 

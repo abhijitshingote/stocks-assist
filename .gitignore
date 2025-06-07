@@ -1,0 +1,76 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Environment Variables (since it will be on a public repo)
+.env
+*.env
+!.env.example
+
+# Docker
+.docker
+
+# Database
+*.db
+*.sqlite3
+database/data/
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+data/
+logs/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Backup files
+*.bak
+*.gho
+*.ori
+*.orig
+*.tmp
+
+# Large data files
+*.csv
+*.json
+*.xlsx 
