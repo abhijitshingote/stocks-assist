@@ -1,5 +1,6 @@
 # Stocks Assist
 
+
 A stock market data visualization and analysis application that fetches and stores stock data from Polygon.io.
 
 ## Setup
@@ -57,3 +58,14 @@ The data fetcher runs daily and collects the following information for each stoc
 - Shares Outstanding
 - EPS (if available)
 - P/E Ratio (if available) 
+
+
+Things to do
+--  Other screens gaps and vol multipliers (above and below 200M)
+-- A Daily Refresh Process
+-- Call LLM Search to see the latest outlook - websearch (Need to research pricing and quality of best available LLM with web search tool)
+-- fix industry sector
+-- Speed up the initialize DB process
+-- Refactor
+-- Document for portability
+-- Deploy

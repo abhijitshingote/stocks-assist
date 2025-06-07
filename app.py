@@ -40,6 +40,11 @@ def return_60d():
 def return_120d():
     return render_template('return_120d.html')
 
+@app.route('/ticker/<ticker>')
+def ticker_detail(ticker):
+    """Ticker detail page with company info and candlestick chart"""
+    return render_template('ticker_detail.html', ticker=ticker.upper())
+
 @app.route('/api/latest_date')
 def get_latest_date():
     """Get the latest date for which we have price data"""

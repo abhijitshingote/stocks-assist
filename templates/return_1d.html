@@ -167,7 +167,7 @@
             
             tableBody.innerHTML = stocks.map(stock => `
                 <tr>
-                    <td><strong>${stock.ticker}</strong></td>
+                    <td><strong><a href="/ticker/${stock.ticker}" style="color: #007bff; text-decoration: none;">${stock.ticker}</a></strong></td>
                     <td>${stock.company_name || 'N/A'}</td>
                     <td>${stock.sector || 'N/A'}</td>
                     <td>${stock.market_cap}</td>
