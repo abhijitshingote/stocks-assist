@@ -63,6 +63,9 @@
             <div class="col-12">
                 <h1 class="mb-4">1-Day Return Analysis</h1>
                 <p class="lead">Stocks with 1-day returns above 5%</p>
+                <div id="dateContainer" class="alert alert-info">
+                    <strong>Latest Price as of:</strong> <span id="latestDate">Loading...</span>
+                </div>
             </div>
         </div>
 
@@ -176,9 +179,22 @@
 
         // Load data when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            loadLatestDate();
             loadStocksAbove();
             loadStocksBelow();
         });
+
+        function loadLatestDate() {
+            fetch('/api/latest_date')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('latestDate').textContent = data.latest_date || 'N/A';
+                })
+                .catch(error => {
+                    console.error('Error loading latest date:', error);
+                    document.getElementById('latestDate').textContent = 'Error loading date';
+                });
+        }
     </script>
 </body>
 </html> 

@@ -40,64 +40,62 @@ def return_60d():
 def return_120d():
     return render_template('return_120d.html')
 
+@app.route('/api/latest_date')
+def get_latest_date():
+    """Get the latest date for which we have price data"""
+    try:
+        latest_date = session.query(func.max(Price.date)).scalar()
+        return jsonify({
+            'latest_date': latest_date.strftime('%Y-%m-%d') if latest_date else None
+        })
+    except Exception as e:
+        logger.error(f"Error getting latest date: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 def get_momentum_stocks(return_days, above_200m=True):
     """Helper function to get momentum stocks for different return periods"""
     try:
-        # Get current date and date ranges
-        today = datetime.now().date()
-        return_period_ago = today - timedelta(days=return_days)
-        ten_days_ago = today - timedelta(days=10)
+        # Get the latest date for which we have price data
+        latest_date = session.query(func.max(Price.date)).scalar()
+        if not latest_date:
+            return []
         
-        # Get first and last prices for each ticker in a materialized subquery
-        price_changes = session.query(
+        # Calculate the start date for the return period
+        start_date = latest_date - timedelta(days=return_days)
+        ten_days_ago = latest_date - timedelta(days=10)
+        
+        logger.info(f"Calculating {return_days}D returns from {start_date} to {latest_date}")
+        
+        # Get stocks with data for both start and end dates
+        start_prices = session.query(
             Price.ticker,
-            func.min(Price.date).label('first_date'),
-            func.max(Price.date).label('last_date')
+            Price.close_price.label('start_price'),
+            Price.date.label('start_date')
         ).filter(
-            Price.date >= return_period_ago,
-            Price.date < today
-        ).group_by(Price.ticker).subquery()
-
-        # Join with prices to get actual price values
-        first_price = Price.__table__.alias('first_price')
-        last_price = Price.__table__.alias('last_price')
+            Price.date >= start_date,
+            Price.date <= latest_date
+        ).order_by(
+            Price.ticker,
+            Price.date.asc()
+        ).distinct(Price.ticker).subquery()
         
-        price_data = session.query(
-            price_changes.c.ticker,
-            first_price.c.close_price.label('start_price'),
-            last_price.c.close_price.label('end_price')
-        ).select_from(price_changes).join(
-            first_price,
-            and_(
-                price_changes.c.ticker == first_price.c.ticker,
-                price_changes.c.first_date == first_price.c.date
-            )
-        ).join(
-            last_price,
-            and_(
-                price_changes.c.ticker == last_price.c.ticker,
-                price_changes.c.last_date == last_price.c.date
-            )
+        end_prices = session.query(
+            Price.ticker,
+            Price.close_price.label('end_price'),
+            Price.date.label('end_date')
+        ).filter(
+            Price.date == latest_date
         ).subquery()
         
-        # Calculate average prices and volumes
+        # Calculate average prices and volumes over the last 10 days
         avg_stats = session.query(
             Price.ticker,
             func.avg(Price.close_price).label('avg_10day_price'),
             func.avg(Price.volume * Price.close_price).label('avg_dollar_volume')
         ).filter(
             Price.date >= ten_days_ago,
-            Price.date < today
+            Price.date <= latest_date
         ).group_by(Price.ticker).subquery()
-        
-        # Get latest prices
-        latest_prices = session.query(
-            Price.ticker,
-            Price.close_price.label('current_price')
-        ).distinct(Price.ticker).order_by(
-            Price.ticker,
-            Price.date.desc()
-        ).subquery()
         
         # Combine all the data
         query = session.query(
@@ -106,20 +104,20 @@ def get_momentum_stocks(return_days, above_200m=True):
             Stock.sector,
             Stock.industry,
             Stock.market_cap,
-            latest_prices.c.current_price,
+            end_prices.c.end_price.label('current_price'),
             avg_stats.c.avg_10day_price,
             avg_stats.c.avg_dollar_volume,
-            ((latest_prices.c.current_price - price_data.c.start_price) / 
-             price_data.c.start_price * 100).label('price_change_pct')
+            ((end_prices.c.end_price - start_prices.c.start_price) / 
+             start_prices.c.start_price * 100).label('price_change_pct')
         ).join(
-            latest_prices,
-            Stock.ticker == latest_prices.c.ticker
+            start_prices,
+            Stock.ticker == start_prices.c.ticker
+        ).join(
+            end_prices,
+            Stock.ticker == end_prices.c.ticker
         ).join(
             avg_stats,
             Stock.ticker == avg_stats.c.ticker
-        ).join(
-            price_data,
-            Stock.ticker == price_data.c.ticker
         )
         
         # Apply market cap filter
@@ -132,8 +130,8 @@ def get_momentum_stocks(return_days, above_200m=True):
         query = query.filter(
             avg_stats.c.avg_10day_price >= 5,  # 10-day average price > $5
             avg_stats.c.avg_dollar_volume >= 10000000,  # Average daily dollar volume > $10M
-            ((latest_prices.c.current_price - price_data.c.start_price) / 
-             price_data.c.start_price * 100) >= 5  # price change > 5%
+            ((end_prices.c.end_price - start_prices.c.start_price) / 
+             start_prices.c.start_price * 100) >= 5  # price change > 5%
         ).order_by(desc('price_change_pct'))
         
         momentum_stocks = query.all()
@@ -159,7 +157,8 @@ def get_momentum_stocks(return_days, above_200m=True):
                 'current_price': f"${stock.current_price:.2f}",
                 'avg_10day_price': f"${stock.avg_10day_price:.2f}",
                 'avg_dollar_volume': f"${stock.avg_dollar_volume:,.0f}",
-                'price_change_pct': f"{stock.price_change_pct:.1f}%"
+                'price_change_pct': f"{stock.price_change_pct:.1f}%",
+                'latest_date': latest_date.strftime('%Y-%m-%d')
             })
         
         return result
@@ -368,6 +367,14 @@ def get_return_20d_below_200m():
 
 @app.route('/api/market_cap_distribution')
 def get_market_cap_distribution():
+    # Get total count of all stocks
+    total_stocks = session.query(func.count(Stock.ticker)).scalar()
+    
+    # Get count of stocks with missing market cap
+    missing_market_cap = session.query(func.count(Stock.ticker)).filter(
+        (Stock.market_cap.is_(None)) | (Stock.market_cap == 0)
+    ).scalar()
+    
     # Define market cap ranges (in billions or millions)
     market_cap_ranges = [
         (0, 0.05),     # 0-50M
@@ -389,13 +396,19 @@ def get_market_cap_distribution():
         min_market_cap = min_cap * 1e9
         max_market_cap = max_cap * 1e9 if max_cap != float('inf') else float('inf')
         
-        # Count stocks in this range
+        # Count stocks in this range (excluding NULL and 0 values)
         if max_cap == float('inf'):
-            count = session.query(func.count(Stock.ticker)).filter(Stock.market_cap >= min_market_cap).scalar()
+            count = session.query(func.count(Stock.ticker)).filter(
+                Stock.market_cap >= min_market_cap,
+                Stock.market_cap.isnot(None),
+                Stock.market_cap > 0
+            ).scalar()
         else:
             count = session.query(func.count(Stock.ticker)).filter(
                 Stock.market_cap >= min_market_cap, 
-                Stock.market_cap < max_market_cap
+                Stock.market_cap < max_market_cap,
+                Stock.market_cap.isnot(None),
+                Stock.market_cap > 0
             ).scalar()
         
         # Format range label
@@ -416,6 +429,14 @@ def get_market_cap_distribution():
             'sort_value': max_cap  # Add sort value for proper ordering
         })
     
+    # Add missing market cap entry if there are any
+    if missing_market_cap > 0:
+        distribution.append({
+            'range': 'Market Cap N/A',
+            'count': missing_market_cap,
+            'sort_value': -1  # Sort this at the bottom
+        })
+    
     # Sort distribution by market cap value (highest to lowest)
     distribution.sort(key=lambda x: x['sort_value'], reverse=True)
     
@@ -423,7 +444,16 @@ def get_market_cap_distribution():
     for item in distribution:
         del item['sort_value']
     
-    return jsonify(distribution)
+    # Add total at the beginning
+    final_distribution = [
+        {
+            'range': 'TOTAL',
+            'count': total_stocks
+        }
+    ]
+    final_distribution.extend(distribution)
+    
+    return jsonify(final_distribution)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000) 
