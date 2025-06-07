@@ -366,5 +366,64 @@ def get_return_20d_below_200m():
         logger.error(f"Error in get_return_20d_below_200m: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/market_cap_distribution')
+def get_market_cap_distribution():
+    # Define market cap ranges (in billions or millions)
+    market_cap_ranges = [
+        (0, 0.05),     # 0-50M
+        (0.05, 0.1),   # 50M-100M
+        (0.1, 0.2),    # 100M-200M
+        (0.2, 0.5),    # 200M-500M
+        (0.5, 2),      # 500M-2B
+        (2, 10),       # 2B-10B
+        (10, 50),      # 10B-50B
+        (50, 100),     # 50B-100B
+        (100, 500),    # 100B-500B
+        (500, float('inf'))  # 500B+
+    ]
+    
+    # Prepare the distribution query
+    distribution = []
+    for min_cap, max_cap in market_cap_ranges:
+        # Convert to actual market cap value
+        min_market_cap = min_cap * 1e9
+        max_market_cap = max_cap * 1e9 if max_cap != float('inf') else float('inf')
+        
+        # Count stocks in this range
+        if max_cap == float('inf'):
+            count = session.query(func.count(Stock.ticker)).filter(Stock.market_cap >= min_market_cap).scalar()
+        else:
+            count = session.query(func.count(Stock.ticker)).filter(
+                Stock.market_cap >= min_market_cap, 
+                Stock.market_cap < max_market_cap
+            ).scalar()
+        
+        # Format range label
+        if max_cap < 1:  # Use M for millions
+            if max_cap == float('inf'):
+                range_label = f'${min_cap * 1000}M+'
+            else:
+                range_label = f'${min_cap * 1000}M-{max_cap * 1000}M'
+        else:  # Use B for billions
+            if max_cap == float('inf'):
+                range_label = f'${min_cap}B+'
+            else:
+                range_label = f'${min_cap}B-{max_cap}B'
+        
+        distribution.append({
+            'range': range_label,
+            'count': count,
+            'sort_value': max_cap  # Add sort value for proper ordering
+        })
+    
+    # Sort distribution by market cap value (highest to lowest)
+    distribution.sort(key=lambda x: x['sort_value'], reverse=True)
+    
+    # Remove sort_value from final output
+    for item in distribution:
+        del item['sort_value']
+    
+    return jsonify(distribution)
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000) 
