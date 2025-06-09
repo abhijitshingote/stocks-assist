@@ -62,7 +62,8 @@ def initialize_database(reset=False):
                 close_price FLOAT,
                 volume FLOAT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                CONSTRAINT _ticker_date_uc UNIQUE (ticker, date)
             )
         """))
         

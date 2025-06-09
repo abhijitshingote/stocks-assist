@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, Integer, String, Float, Date, DateTime, create_engine, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Date, DateTime, create_engine, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -37,6 +37,9 @@ class Price(Base):
     volume = Column(Float)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    
+    # Add unique constraint for ticker + date combination to enable upserts
+    __table_args__ = (UniqueConstraint('ticker', 'date', name='_ticker_date_uc'),)
 
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
