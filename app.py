@@ -40,6 +40,14 @@ def return_60d():
 def return_120d():
     return render_template('return_120d.html')
 
+@app.route('/Gapper')
+def gapper():
+    return render_template('gapper.html')
+
+@app.route('/Volume')
+def volume():
+    return render_template('volume.html')
+
 @app.route('/ticker/<ticker>')
 def ticker_detail(ticker):
     """Ticker detail page with company info and candlestick chart"""
@@ -65,24 +73,31 @@ def get_momentum_stocks(return_days, above_200m=True):
         if not latest_date:
             return []
         
-        # Calculate the start date for the return period
-        start_date = latest_date - timedelta(days=return_days)
-        ten_days_ago = latest_date - timedelta(days=10)
+        # Get the actual trading dates for the return period (not calendar days)
+        trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(return_days + 1).all()
+        if len(trading_dates) < return_days + 1:
+            logger.warning(f"Only {len(trading_dates)} trading dates available, need at least {return_days + 1}")
+            return []
         
-        logger.info(f"Calculating {return_days}D returns from {start_date} to {latest_date}")
+        start_date = trading_dates[-1][0]  # The (return_days)th trading day back
         
-        # Get stocks with data for both start and end dates
+        # Get the last 10 actual trading dates for average calculations
+        last_10_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
+        if len(last_10_trading_dates) < 10:
+            ten_days_ago = last_10_trading_dates[-1][0]
+        else:
+            ten_days_ago = last_10_trading_dates[-1][0]  # 10th trading day back
+        
+        logger.info(f"Calculating {return_days}D returns from {start_date} to {latest_date} (actual trading days)")
+        
+        # Get start prices (prices from the start_date)
         start_prices = session.query(
             Price.ticker,
             Price.close_price.label('start_price'),
             Price.date.label('start_date')
         ).filter(
-            Price.date >= start_date,
-            Price.date <= latest_date
-        ).order_by(
-            Price.ticker,
-            Price.date.asc()
-        ).distinct(Price.ticker).subquery()
+            Price.date == start_date
+        ).subquery()
         
         end_prices = session.query(
             Price.ticker,
@@ -92,7 +107,7 @@ def get_momentum_stocks(return_days, above_200m=True):
             Price.date == latest_date
         ).subquery()
         
-        # Calculate average prices and volumes over the last 10 days
+        # Calculate average prices and volumes over the last 10 trading days
         avg_stats = session.query(
             Price.ticker,
             func.avg(Price.close_price).label('avg_10day_price'),
@@ -133,7 +148,7 @@ def get_momentum_stocks(return_days, above_200m=True):
             
         # Apply other filters
         query = query.filter(
-            avg_stats.c.avg_10day_price >= 5,  # 10-day average price > $5
+            avg_stats.c.avg_10day_price >= 5,  # 10 trading day average price > $5
             avg_stats.c.avg_dollar_volume >= 10000000,  # Average daily dollar volume > $10M
             ((end_prices.c.end_price - start_prices.c.start_price) / 
              start_prices.c.start_price * 100) >= 5  # price change > 5%
@@ -246,6 +261,330 @@ def get_return_120d_below_200m():
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_120d_below_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+def get_gapper_stocks(above_200m=True):
+    """Helper function to get gapper stocks based on specific criteria"""
+    try:
+        # Get the latest date for which we have price data
+        latest_date = session.query(func.max(Price.date)).scalar()
+        if not latest_date:
+            return []
+        
+        # Get the last 5 actual trading dates (not calendar days)
+        last_5_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(5).all()
+        if len(last_5_trading_dates) < 5:
+            logger.warning(f"Only {len(last_5_trading_dates)} trading dates available, need at least 5")
+            return []
+        
+        earliest_date_5d = last_5_trading_dates[-1][0]  # 5th trading day back
+        
+        # Get the last 50 actual trading dates for volume calculation
+        last_50_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(50).all()
+        if len(last_50_trading_dates) < 50:
+            # Use whatever dates we have if less than 50
+            earliest_date_50d = last_50_trading_dates[-1][0]
+        else:
+            earliest_date_50d = last_50_trading_dates[-1][0]  # 50th trading day back
+        
+        logger.info(f"Calculating gapper stocks for last 5 trading days: {earliest_date_5d} to {latest_date}")
+        
+        # Get the current price (latest date)
+        current_prices = session.query(
+            Price.ticker,
+            Price.close_price.label('current_price'),
+            Price.volume.label('current_volume')
+        ).filter(
+            Price.date == latest_date
+        ).subquery()
+        
+        # Get 50-day average volume for each stock using actual trading dates
+        avg_volume_50d = session.query(
+            Price.ticker,
+            func.avg(Price.volume).label('avg_volume_50d')
+        ).filter(
+            Price.date >= earliest_date_50d,
+            Price.date <= latest_date
+        ).group_by(Price.ticker).subquery()
+        
+        # Get daily price data for the last 5 trading days with previous day's close
+        price_analysis = session.query(
+            Price.ticker,
+            Price.date,
+            Price.open_price,
+            Price.high_price,
+            Price.low_price,
+            Price.close_price,
+            Price.volume,
+            func.lag(Price.close_price, 1).over(
+                partition_by=Price.ticker,
+                order_by=Price.date
+            ).label('prev_close')
+        ).filter(
+            Price.date >= earliest_date_5d,
+            Price.date <= latest_date
+        ).subquery()
+        
+        # Find stocks that meet gapper criteria in the last 5 trading days
+        gapper_criteria = session.query(
+            price_analysis.c.ticker,
+            func.bool_or(
+                # Low was more than 5% above previous day's close
+                (price_analysis.c.low_price > price_analysis.c.prev_close * 1.05) |
+                # OR closing price was 15% higher than previous day's close
+                (price_analysis.c.close_price > price_analysis.c.prev_close * 1.15)
+            ).label('is_gapper'),
+            func.max(Price.volume).label('max_volume_5d')
+        ).select_from(
+            price_analysis.join(
+                Price,
+                (price_analysis.c.ticker == Price.ticker) &
+                (price_analysis.c.date == Price.date)
+            )
+        ).filter(
+            price_analysis.c.prev_close.isnot(None)  # Ensure we have previous day data
+        ).group_by(price_analysis.c.ticker).subquery()
+        
+        # Main query combining all criteria
+        query = session.query(
+            Stock.ticker,
+            Stock.company_name,
+            Stock.sector,
+            Stock.industry,
+            Stock.market_cap,
+            current_prices.c.current_price,
+            avg_volume_50d.c.avg_volume_50d,
+            gapper_criteria.c.max_volume_5d
+        ).join(
+            current_prices,
+            Stock.ticker == current_prices.c.ticker
+        ).join(
+            avg_volume_50d,
+            Stock.ticker == avg_volume_50d.c.ticker
+        ).join(
+            gapper_criteria,
+            Stock.ticker == gapper_criteria.c.ticker
+        ).filter(
+            # Current price > $3
+            current_prices.c.current_price > 3,
+            # Average volume over past 50 days > 500,000
+            avg_volume_50d.c.avg_volume_50d > 500000,
+            # At least one day in past 5 trading days had volume > 4,000,000
+            gapper_criteria.c.max_volume_5d > 4000000,
+            # Must meet gapper criteria
+            gapper_criteria.c.is_gapper == True
+        )
+        
+        # Apply market cap filter
+        if above_200m:
+            query = query.filter(Stock.market_cap >= 200000000)  # Market cap >= $200M
+        else:
+            query = query.filter(Stock.market_cap < 200000000)   # Market cap < $200M
+            
+        # Order by market cap descending
+        query = query.order_by(desc(Stock.market_cap))
+        
+        gapper_stocks = query.all()
+        
+        result = []
+        for stock in gapper_stocks:
+            # Format market cap
+            market_cap = stock.market_cap
+            if market_cap >= 1000000000:  # >= 1B
+                market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
+                # Remove trailing .0
+                if market_cap_formatted.endswith('.0B'):
+                    market_cap_formatted = market_cap_formatted[:-3] + 'B'
+            else:  # < 1B, show in millions
+                market_cap_formatted = f"{market_cap / 1000000:.0f}M"
+            
+            result.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': market_cap_formatted,
+                'current_price': f"${stock.current_price:.2f}",
+                'avg_volume_50d': f"{stock.avg_volume_50d:,.0f}",
+                'max_volume_5d': f"{stock.max_volume_5d:,.0f}",
+                'latest_date': latest_date.strftime('%Y-%m-%d')
+            })
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error in get_gapper_stocks: {str(e)}")
+        raise e
+
+# Gapper Screen APIs
+@app.route('/api/Gapper-Above200M')
+def get_gapper_above_200m():
+    try:
+        result = get_gapper_stocks(above_200m=True)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_gapper_above_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/Gapper-Below200M')
+def get_gapper_below_200m():
+    try:
+        result = get_gapper_stocks(above_200m=False)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_gapper_below_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+def get_volume_spike_stocks(above_200m=True):
+    """Helper function to get volume spike stocks based on specific criteria"""
+    try:
+        # Get the latest date (today) and yesterday
+        latest_date = session.query(func.max(Price.date)).scalar()
+        if not latest_date:
+            return []
+        
+        # Get the last 2 trading dates to get today and yesterday
+        last_2_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
+        if len(last_2_trading_dates) < 2:
+            logger.warning(f"Need at least 2 trading dates, only {len(last_2_trading_dates)} available")
+            return []
+        
+        today = last_2_trading_dates[0][0]
+        yesterday = last_2_trading_dates[1][0]
+        
+        # Get the 5 trading days before yesterday (excluding yesterday)
+        # We need 7 dates total: today, yesterday, + 5 days before yesterday
+        last_7_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(7).all()
+        if len(last_7_trading_dates) < 7:
+            logger.warning(f"Need at least 7 trading dates, only {len(last_7_trading_dates)} available")
+            return []
+        
+        # The 5 days before yesterday (excluding today and yesterday)
+        five_days_before_yesterday = [date[0] for date in last_7_trading_dates[2:]]  # Skip today and yesterday
+        
+        logger.info(f"Volume screening: today={today}, yesterday={yesterday}, 5 days before: {five_days_before_yesterday}")
+        
+        # Get today's closing prices
+        today_prices = session.query(
+            Price.ticker,
+            Price.close_price.label('today_close')
+        ).filter(
+            Price.date == today
+        ).subquery()
+        
+        # Get yesterday's data (volume and close)
+        yesterday_data = session.query(
+            Price.ticker,
+            Price.volume.label('yesterday_volume'),
+            Price.close_price.label('yesterday_close')
+        ).filter(
+            Price.date == yesterday
+        ).subquery()
+        
+        # Calculate average volume for the 5 days before yesterday (excluding yesterday)
+        avg_volume_5d = session.query(
+            Price.ticker,
+            func.avg(Price.volume).label('avg_volume_5d')
+        ).filter(
+            Price.date.in_(five_days_before_yesterday)
+        ).group_by(Price.ticker).subquery()
+        
+        # Main query combining all criteria
+        query = session.query(
+            Stock.ticker,
+            Stock.company_name,
+            Stock.sector,
+            Stock.industry,
+            Stock.market_cap,
+            today_prices.c.today_close,
+            yesterday_data.c.yesterday_close,
+            yesterday_data.c.yesterday_volume,
+            avg_volume_5d.c.avg_volume_5d,
+            ((today_prices.c.today_close - yesterday_data.c.yesterday_close) / 
+             yesterday_data.c.yesterday_close * 100).label('price_change_pct')
+        ).join(
+            today_prices,
+            Stock.ticker == today_prices.c.ticker
+        ).join(
+            yesterday_data,
+            Stock.ticker == yesterday_data.c.ticker
+        ).join(
+            avg_volume_5d,
+            Stock.ticker == avg_volume_5d.c.ticker
+        ).filter(
+            # Yesterday's volume > 5x average of previous 5 days
+            yesterday_data.c.yesterday_volume > avg_volume_5d.c.avg_volume_5d * 5,
+            # Today's close > 3% higher than yesterday's close
+            today_prices.c.today_close > yesterday_data.c.yesterday_close * 1.03,
+            # 5-day average volume > 50,000
+            avg_volume_5d.c.avg_volume_5d > 50000
+        )
+        
+        # Apply market cap filter
+        if above_200m:
+            query = query.filter(Stock.market_cap >= 200000000)  # Market cap >= $200M
+        else:
+            query = query.filter(Stock.market_cap < 200000000)   # Market cap < $200M
+            
+        # Order by price change percentage descending
+        query = query.order_by(desc('price_change_pct'))
+        
+        volume_stocks = query.all()
+        
+        result = []
+        for stock in volume_stocks:
+            # Format market cap
+            market_cap = stock.market_cap
+            if market_cap >= 1000000000:  # >= 1B
+                market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
+                # Remove trailing .0
+                if market_cap_formatted.endswith('.0B'):
+                    market_cap_formatted = market_cap_formatted[:-3] + 'B'
+            else:  # < 1B, show in millions
+                market_cap_formatted = f"{market_cap / 1000000:.0f}M"
+            
+            # Calculate volume multiplier
+            volume_multiplier = stock.yesterday_volume / stock.avg_volume_5d if stock.avg_volume_5d > 0 else 0
+            
+            result.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': market_cap_formatted,
+                'today_close': f"${stock.today_close:.2f}",
+                'yesterday_close': f"${stock.yesterday_close:.2f}",
+                'price_change_pct': f"{stock.price_change_pct:.1f}%",
+                'yesterday_volume': f"{stock.yesterday_volume:,.0f}",
+                'avg_volume_5d': f"{stock.avg_volume_5d:,.0f}",
+                'volume_multiplier': f"{volume_multiplier:.1f}x",
+                'today_date': today.strftime('%Y-%m-%d'),
+                'yesterday_date': yesterday.strftime('%Y-%m-%d')
+            })
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error in get_volume_spike_stocks: {str(e)}")
+        raise e
+
+# Volume Screen APIs
+@app.route('/api/Volume-Above200M')
+def get_volume_above_200m():
+    try:
+        result = get_volume_spike_stocks(above_200m=True)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_volume_above_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/Volume-Below200M')
+def get_volume_below_200m():
+    try:
+        result = get_volume_spike_stocks(above_200m=False)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_volume_below_200m: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/stocks')
