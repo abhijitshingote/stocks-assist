@@ -48,6 +48,10 @@ def gapper():
 def volume():
     return render_template('volume.html')
 
+@app.route('/AllReturns')
+def all_returns():
+    return render_template('all_returns.html')
+
 @app.route('/ticker/<ticker>')
 def ticker_detail(ticker):
     """Ticker detail page with company info and candlestick chart"""
@@ -585,6 +589,142 @@ def get_volume_below_200m():
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_volume_below_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+def get_all_returns_data(above_200m=True, weights=None):
+    """Helper function to get all return periods data in one consolidated view"""
+    try:
+        # Default weights
+        if weights is None:
+            weights = {
+                '1d': 3.0,
+                '5d': 2.5,
+                '20d': 2.0,
+                '60d': 1.0,
+                '120d': 1.0
+            }
+        
+        # Get data for all return periods
+        returns_1d = get_momentum_stocks(1, above_200m=above_200m)
+        returns_5d = get_momentum_stocks(5, above_200m=above_200m)
+        returns_20d = get_momentum_stocks(20, above_200m=above_200m)
+        returns_60d = get_momentum_stocks(60, above_200m=above_200m)
+        returns_120d = get_momentum_stocks(120, above_200m=above_200m)
+        
+        # Create dictionaries for quick lookup by ticker
+        returns_data = {}
+        
+        # Process each return period
+        for period_data, period_name in [
+            (returns_1d, '1d'),
+            (returns_5d, '5d'),
+            (returns_20d, '20d'),
+            (returns_60d, '60d'),
+            (returns_120d, '120d')
+        ]:
+            for stock in period_data:
+                ticker = stock['ticker']
+                if ticker not in returns_data:
+                    # Initialize stock data with basic info
+                    returns_data[ticker] = {
+                        'ticker': stock['ticker'],
+                        'company_name': stock['company_name'],
+                        'sector': stock['sector'],
+                        'industry': stock['industry'],
+                        'market_cap': stock['market_cap'],
+                        'current_price': stock['current_price'],
+                        'latest_date': stock['latest_date'],
+                        'return_periods': [],
+                        'priority_score': 0.0,
+                        'returns_1d': None,
+                        'returns_5d': None,
+                        'returns_20d': None,
+                        'returns_60d': None,
+                        'returns_120d': None
+                    }
+                
+                # Add the return percentage for this period and track which periods it appears in
+                returns_data[ticker][f'returns_{period_name}'] = stock['price_change_pct']
+                if period_name not in returns_data[ticker]['return_periods']:
+                    returns_data[ticker]['return_periods'].append(period_name)
+        
+        # Calculate priority scores by multiplying weights by actual return values
+        for ticker, stock_data in returns_data.items():
+            priority_score = 0.0
+            
+            for period_name in ['1d', '5d', '20d', '60d', '120d']:
+                return_value_str = stock_data.get(f'returns_{period_name}')
+                if return_value_str is not None:
+                    try:
+                        # Extract numeric value from return string (e.g., "5.2%" -> 5.2)
+                        return_value = float(return_value_str.replace('%', ''))
+                        weight = weights.get(period_name, 0)
+                        priority_score += weight * return_value
+                    except (ValueError, AttributeError):
+                        # If return value can't be parsed, treat as 0
+                        pass
+            
+            stock_data['priority_score'] = round(priority_score, 2)
+        
+        # Convert to list and sort by priority score (descending), then by market cap
+        result = list(returns_data.values())
+        
+        # Sort by priority score first (descending), then by market cap (descending)
+        def extract_market_cap_value(market_cap_str):
+            if not market_cap_str or market_cap_str == 'N/A':
+                return 0
+            try:
+                if market_cap_str.endswith('B'):
+                    return float(market_cap_str[:-1]) * 1000000000
+                elif market_cap_str.endswith('M'):
+                    return float(market_cap_str[:-1]) * 1000000
+                else:
+                    return 0
+            except:
+                return 0
+        
+        result.sort(key=lambda x: (x['priority_score'], extract_market_cap_value(x['market_cap'])), reverse=True)
+        
+        logger.info(f"Consolidated returns data: {len(result)} stocks with various return periods, sorted by weighted priority")
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error in get_all_returns_data: {str(e)}")
+        raise e
+
+# Consolidated Returns APIs
+@app.route('/api/AllReturns-Above200M')
+def get_all_returns_above_200m():
+    try:
+        # Get weights from query parameters
+        weights = {}
+        weights['1d'] = float(request.args.get('weight_1d', 3.0))
+        weights['5d'] = float(request.args.get('weight_5d', 2.5))
+        weights['20d'] = float(request.args.get('weight_20d', 2.0))
+        weights['60d'] = float(request.args.get('weight_60d', 1.0))
+        weights['120d'] = float(request.args.get('weight_120d', 1.0))
+        
+        result = get_all_returns_data(above_200m=True, weights=weights)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_all_returns_above_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/AllReturns-Below200M')
+def get_all_returns_below_200m():
+    try:
+        # Get weights from query parameters
+        weights = {}
+        weights['1d'] = float(request.args.get('weight_1d', 3.0))
+        weights['5d'] = float(request.args.get('weight_5d', 2.5))
+        weights['20d'] = float(request.args.get('weight_20d', 2.0))
+        weights['60d'] = float(request.args.get('weight_60d', 1.0))
+        weights['120d'] = float(request.args.get('weight_120d', 1.0))
+        
+        result = get_all_returns_data(above_200m=False, weights=weights)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_all_returns_below_200m: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/stocks')

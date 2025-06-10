@@ -61,11 +61,15 @@ The data fetcher runs daily and collects the following information for each stoc
 
 
 Things to do
---  Other screens gaps and vol multipliers (above and below 200M)
--- A Daily Refresh Process
+## Done--  Other screens gaps and vol multipliers (above and below 200M)
+## Done-- A Daily Refresh Process
 -- Call LLM Search to see the latest outlook - websearch (Need to research pricing and quality of best available LLM with web search tool)
+-- explore a single page that encapsulates all scans
 -- fix industry sector
+-- switch to fmp so float is available
 -- Speed up the initialize DB process
 -- Refactor
 -- Document for portability
 -- Deploy
+-- IPO screen
+-- QA logic of the screens
