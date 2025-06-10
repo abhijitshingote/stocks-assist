@@ -14,68 +14,60 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
         }
         
-        .ticker-header {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
+        /* Compact ticker symbol and company name */
         .ticker-symbol {
-            font-size: 3rem;
+            font-size: 1.25rem;
             font-weight: bold;
             color: #198754;
+            margin-bottom: 2px;
         }
         
         .company-name {
-            font-size: 1.5rem;
+            font-size: 0.8rem;
             color: #6c757d;
-            margin-bottom: 15px;
+            margin-bottom: 0;
         }
         
-        .info-card {
-            background: #ffffff;
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
+        /* Compact stock details info styling */
+        .compact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
         }
         
-        .info-card:hover {
-            border-color: #198754;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
         }
         
         .info-label {
             color: #6c757d;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             font-weight: 500;
         }
         
         .info-value {
             color: #212529;
-            font-size: 1.1rem;
+            font-size: 0.75rem;
             font-weight: 600;
-        }
-        
-        .price-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            text-align: right;
         }
         
         .current-price {
-            font-size: 2rem;
+            font-size: 0.9rem;
             font-weight: bold;
             color: #198754;
         }
         
         .price-change {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
         }
         
@@ -232,44 +224,74 @@
     </nav>
 
     <div class="container mt-4">
-        <!-- Ticker Header Section -->
-        <div class="ticker-header">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <div class="ticker-symbol" id="tickerSymbol">{{ ticker }}</div>
-                    <div class="company-name" id="companyName">Loading...</div>
-                    <div class="price-info">
-                        <div class="current-price" id="currentPrice">$--</div>
-                        <div class="price-change" id="priceChange">--</div>
+        <!-- Compact Header -->
+        <div class="mb-2">
+            <h4 class="ticker-symbol" id="tickerSymbol">{{ ticker }}</h4>
+            <small class="company-name" id="companyName">Loading...</small>
+        </div>
+
+        <!-- Compact Side-by-side Cards -->
+        <div class="row g-2">
+            <!-- Stock Details Card -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-2 fs-6">Details</h6>
+                        <div class="compact-info">
+                            <div class="info-item">
+                                <span class="info-label">Price</span>
+                                <span class="info-value current-price" id="currentPrice">$--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Market Cap</span>
+                                <span class="info-value" id="marketCap">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Volume</span>
+                                <span class="info-value" id="volume">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Sector</span>
+                                <span class="info-value" id="sector">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Industry</span>
+                                <span class="info-value" id="industry">--</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="info-card">
-                                <div class="info-label">Market Cap</div>
-                                <div class="info-value" id="marketCap">--</div>
-                            </div>
+            </div>
+
+            <!-- Comments Card -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-2 fs-6">Comments</h6>
+                        
+                        <!-- Add Comment Form -->
+                        <div class="mb-2">
+                            <textarea class="form-control form-control-sm" id="commentText" rows="1" placeholder="Add comment..."></textarea>
+                            <button type="button" class="btn btn-success btn-sm mt-1" onclick="addComment()">Add</button>
+                            <div id="commentError" class="text-danger small mt-1" style="display: none;"></div>
                         </div>
-                        <div class="col-6">
-                            <div class="info-card">
-                                <div class="info-label">Volume</div>
-                                <div class="info-value" id="volume">--</div>
-                            </div>
+                        
+                        <!-- Pending AI Comments Review Section -->
+                        <div id="pendingAIContainer" style="display: none;">
+                            <small class="text-warning">⚠️ Pending Review</small>
+                            <div id="pendingAIList"></div>
+                            <hr class="my-1">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="info-card">
-                                <div class="info-label">Sector</div>
-                                <div class="info-value" id="sector">--</div>
+                        
+                        <!-- Comments List -->
+                        <div id="commentsContainer">
+                            <div id="loadingComments" class="text-center py-1">
+                                <div class="spinner-border spinner-border-sm text-success" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="info-card">
-                                <div class="info-label">Industry</div>
-                                <div class="info-value" id="industry">--</div>
-                            </div>
+                            <div id="commentsError" class="error-message small" style="display: none;"></div>
+                            <div id="commentsList"></div>
                         </div>
                     </div>
                 </div>
@@ -299,6 +321,8 @@
             <div id="errorMessageYearly" class="error-message" style="display: none;"></div>
             <div id="chartYearly"></div>
         </div>
+
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -557,10 +581,112 @@
             }
         }
         
+        // Comments functions
+        function loadComments() {
+            fetch(`/api/comments/${ticker}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loadingComments').style.display = 'none';
+                    
+                    if (data.error) {
+                        document.getElementById('commentsError').style.display = 'block';
+                        document.getElementById('commentsError').textContent = data.error;
+                        return;
+                    }
+                    
+                    displayComments(data);
+                })
+                .catch(error => {
+                    console.error('Error loading comments:', error);
+                    document.getElementById('loadingComments').style.display = 'none';
+                    document.getElementById('commentsError').style.display = 'block';
+                    document.getElementById('commentsError').textContent = 'Error loading comments';
+                });
+        }
+        
+        function displayComments(comments) {
+            const commentsList = document.getElementById('commentsList');
+            
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<div class="text-muted text-center py-1">No comments yet. Be the first to add one!</div>';
+                return;
+            }
+            
+            commentsList.innerHTML = comments.map(comment => `
+                <div class="card mb-1">
+                    <div class="card-body p-2">
+                        <p class="card-text mb-0 small">${escapeHtml(comment.comment_text)} <span class="text-muted">— ${comment.formatted_date}</span></p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function addComment() {
+            const commentText = document.getElementById('commentText').value.trim();
+            const errorDiv = document.getElementById('commentError');
+            
+            // Clear any previous errors
+            errorDiv.style.display = 'none';
+            
+            if (!commentText) {
+                errorDiv.textContent = 'Please enter a comment';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Disable button during submission
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Adding...';
+            
+            fetch(`/api/comments/${ticker}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    comment_text: commentText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    errorDiv.textContent = data.error;
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                
+                // Clear the text area and reload comments
+                document.getElementById('commentText').value = '';
+                loadComments();
+            })
+            .catch(error => {
+                console.error('Error adding comment:', error);
+                errorDiv.textContent = 'Error adding comment';
+                errorDiv.style.display = 'block';
+            })
+            .finally(() => {
+                // Re-enable button
+                button.disabled = false;
+                button.textContent = 'Add Comment';
+            });
+        }
+        
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;")
+                .replace(/\n/g, "<br>");
+        }
+
         // Load data when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadTickerDetails();
             loadCharts();
+            loadComments();
         });
     </script>
 </body>

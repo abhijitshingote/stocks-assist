@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from models import Stock, Price, init_db
+from models import Stock, Price, Comment, init_db
 from sqlalchemy import desc, func, and_, text
 from datetime import datetime, timedelta
 import os
@@ -56,6 +56,221 @@ def all_returns():
 def ticker_detail(ticker):
     """Ticker detail page with company info and candlestick chart"""
     return render_template('ticker_detail.html', ticker=ticker.upper())
+
+# Comments API endpoints
+@app.route('/api/comments/<ticker>')
+def get_comments(ticker):
+    """Get all active comments (user + approved AI) for a specific ticker"""
+    try:
+        ticker = ticker.upper()
+        
+        # Get user comments and approved AI comments
+        comments = session.query(Comment).filter(
+            Comment.ticker == ticker,
+            ((Comment.comment_type == 'user') & (Comment.status == 'active')) |
+            ((Comment.comment_type == 'ai') & (Comment.status == 'approved'))
+        ).order_by(desc(Comment.created_at)).all()
+        
+        comments_data = []
+        for comment in comments:
+            comments_data.append({
+                'id': comment.id,
+                'ticker': comment.ticker,
+                'comment_text': comment.comment_text,
+                'comment_type': comment.comment_type,
+                'status': comment.status,
+                'ai_source': comment.ai_source,
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'formatted_date': comment.created_at.strftime('%B %d, %Y at %I:%M %p')
+            })
+        
+        return jsonify(comments_data)
+        
+    except Exception as e:
+        logger.error(f"Error getting comments for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/comments/<ticker>', methods=['POST'])
+def add_comment(ticker):
+    """Add a new user comment for a specific ticker"""
+    try:
+        ticker = ticker.upper()
+        data = request.get_json()
+        
+        if not data or 'comment_text' not in data:
+            return jsonify({'error': 'Comment text is required'}), 400
+        
+        comment_text = data['comment_text'].strip()
+        if not comment_text:
+            return jsonify({'error': 'Comment text cannot be empty'}), 400
+        
+        # Verify ticker exists
+        stock = session.query(Stock).filter(Stock.ticker == ticker).first()
+        if not stock:
+            return jsonify({'error': 'Ticker not found'}), 404
+        
+        # Create new user comment
+        new_comment = Comment(
+            ticker=ticker,
+            comment_text=comment_text,
+            comment_type='user',
+            status='active'
+        )
+        
+        session.add(new_comment)
+        session.commit()
+        
+        # Return the created comment
+        comment_data = {
+            'id': new_comment.id,
+            'ticker': new_comment.ticker,
+            'comment_text': new_comment.comment_text,
+            'comment_type': new_comment.comment_type,
+            'status': new_comment.status,
+            'ai_source': new_comment.ai_source,
+            'created_at': new_comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'formatted_date': new_comment.created_at.strftime('%B %d, %Y at %I:%M %p')
+        }
+        
+        return jsonify(comment_data), 201
+        
+    except Exception as e:
+        logger.error(f"Error adding comment for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/ai-comments/<ticker>')
+def get_pending_ai_comments(ticker):
+    """Get pending AI comments for review"""
+    try:
+        ticker = ticker.upper()
+        
+        comments = session.query(Comment).filter(
+            Comment.ticker == ticker,
+            Comment.comment_type == 'ai',
+            Comment.status == 'pending'
+        ).order_by(desc(Comment.created_at)).all()
+        
+        comments_data = []
+        for comment in comments:
+            comments_data.append({
+                'id': comment.id,
+                'ticker': comment.ticker,
+                'comment_text': comment.comment_text,
+                'comment_type': comment.comment_type,
+                'status': comment.status,
+                'ai_source': comment.ai_source,
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'formatted_date': comment.created_at.strftime('%B %d, %Y at %I:%M %p')
+            })
+        
+        return jsonify(comments_data)
+        
+    except Exception as e:
+        logger.error(f"Error getting pending AI comments for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/ai-comments/<ticker>', methods=['POST'])
+def add_ai_comment(ticker):
+    """Add a new AI comment (pending review)"""
+    try:
+        ticker = ticker.upper()
+        data = request.get_json()
+        
+        if not data or 'comment_text' not in data:
+            return jsonify({'error': 'Comment text is required'}), 400
+        
+        comment_text = data['comment_text'].strip()
+        if not comment_text:
+            return jsonify({'error': 'Comment text cannot be empty'}), 400
+        
+        ai_source = data.get('ai_source', 'unknown')
+        
+        # Verify ticker exists
+        stock = session.query(Stock).filter(Stock.ticker == ticker).first()
+        if not stock:
+            return jsonify({'error': 'Ticker not found'}), 404
+        
+        # Create new AI comment (pending review)
+        new_comment = Comment(
+            ticker=ticker,
+            comment_text=comment_text,
+            comment_type='ai',
+            status='pending',
+            ai_source=ai_source
+        )
+        
+        session.add(new_comment)
+        session.commit()
+        
+        # Return the created comment
+        comment_data = {
+            'id': new_comment.id,
+            'ticker': new_comment.ticker,
+            'comment_text': new_comment.comment_text,
+            'comment_type': new_comment.comment_type,
+            'status': new_comment.status,
+            'ai_source': new_comment.ai_source,
+            'created_at': new_comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'formatted_date': new_comment.created_at.strftime('%B %d, %Y at %I:%M %p')
+        }
+        
+        return jsonify(comment_data), 201
+        
+    except Exception as e:
+        logger.error(f"Error adding AI comment for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/ai-comments/<int:comment_id>/review', methods=['POST'])
+def review_ai_comment(comment_id):
+    """Approve or reject an AI comment"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'action' not in data:
+            return jsonify({'error': 'Action is required (approve or reject)'}), 400
+        
+        action = data['action'].lower()
+        if action not in ['approve', 'reject']:
+            return jsonify({'error': 'Action must be approve or reject'}), 400
+        
+        reviewed_by = data.get('reviewed_by', 'user')
+        
+        # Find the comment
+        comment = session.query(Comment).filter(
+            Comment.id == comment_id,
+            Comment.comment_type == 'ai',
+            Comment.status == 'pending'
+        ).first()
+        
+        if not comment:
+            return jsonify({'error': 'Pending AI comment not found'}), 404
+        
+        # Update comment status
+        comment.status = 'approved' if action == 'approve' else 'rejected'
+        comment.reviewed_by = reviewed_by
+        comment.reviewed_at = datetime.now()
+        
+        session.commit()
+        
+        # Return updated comment
+        comment_data = {
+            'id': comment.id,
+            'ticker': comment.ticker,
+            'comment_text': comment.comment_text,
+            'comment_type': comment.comment_type,
+            'status': comment.status,
+            'ai_source': comment.ai_source,
+            'reviewed_by': comment.reviewed_by,
+            'reviewed_at': comment.reviewed_at.strftime('%Y-%m-%d %H:%M:%S') if comment.reviewed_at else None,
+            'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'formatted_date': comment.created_at.strftime('%B %d, %Y at %I:%M %p')
+        }
+        
+        return jsonify(comment_data)
+        
+    except Exception as e:
+        logger.error(f"Error reviewing AI comment {comment_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/latest_date')
 def get_latest_date():

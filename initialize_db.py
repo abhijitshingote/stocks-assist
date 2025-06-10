@@ -26,6 +26,7 @@ def initialize_database(reset=False):
         if reset:
             print("Resetting database - dropping existing tables...")
             # Drop all tables if they exist (including both old and new table names)
+            connection.execute(text("DROP TABLE IF EXISTS comment CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stocks CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS ticker CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS price CASCADE;"))
@@ -67,6 +68,23 @@ def initialize_database(reset=False):
             )
         """))
         
+        # Create comment table
+        connection.execute(text(f"""
+            {table_creation_clause} comment (
+                id SERIAL PRIMARY KEY,
+                ticker VARCHAR(10) NOT NULL,
+                comment_text TEXT NOT NULL,
+                comment_type VARCHAR(20) NOT NULL DEFAULT 'user',
+                status VARCHAR(20) NOT NULL DEFAULT 'active',
+                ai_source VARCHAR(50),
+                reviewed_by VARCHAR(100),
+                reviewed_at TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ticker) REFERENCES ticker(ticker) ON DELETE CASCADE
+            )
+        """))
+        
         # Create indexes for better query performance
         index_creation_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
         connection.execute(text(f"""
@@ -76,19 +94,25 @@ def initialize_database(reset=False):
             {index_creation_clause} idx_ticker_market_cap ON ticker(market_cap);
             {index_creation_clause} idx_price_ticker ON price(ticker);
             {index_creation_clause} idx_price_date ON price(date);
+            {index_creation_clause} idx_comment_ticker ON comment(ticker);
+            {index_creation_clause} idx_comment_created_at ON comment(created_at);
+            {index_creation_clause} idx_comment_type ON comment(comment_type);
+            {index_creation_clause} idx_comment_status ON comment(status);
         """))
         
         connection.commit()
         
         if reset:
             print("Database reset completed successfully!")
-            print("- Old 'stocks' table dropped")
+            print("- All existing tables dropped")
             print("- New 'ticker' table created (company info only)")
             print("- Price table recreated (daily price data)")
+            print("- Comment table created (user/AI comments with review workflow)")
         else:
             print("Database initialization completed successfully!")
             print("- 'ticker' table ready (company info only)")
             print("- 'price' table ready (daily price data)")
+            print("- 'comment' table ready (user/AI comments with review workflow)")
 
 if __name__ == "__main__":
     # Check for reset flag

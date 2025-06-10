@@ -1,7 +1,7 @@
 import os
-from sqlalchemy import Column, Integer, String, Float, Date, DateTime, create_engine, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, create_engine, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
 
 Base = declarative_base()
@@ -40,6 +40,23 @@ class Price(Base):
     
     # Add unique constraint for ticker + date combination to enable upserts
     __table_args__ = (UniqueConstraint('ticker', 'date', name='_ticker_date_uc'),)
+
+class Comment(Base):
+    __tablename__ = 'comment'
+    
+    id = Column(Integer, primary_key=True)
+    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
+    comment_text = Column(Text, nullable=False)
+    comment_type = Column(String, nullable=False, default='user')  # 'user' or 'ai'
+    status = Column(String, nullable=False, default='active')  # 'active', 'pending', 'approved', 'rejected'
+    ai_source = Column(String)  # which AI model/service generated this (for AI comments)
+    reviewed_by = Column(String)  # who reviewed this AI comment (optional)
+    reviewed_at = Column(DateTime)  # when was this reviewed
+    created_at = Column(DateTime, default=datetime.now, nullable=False)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    
+    def __repr__(self):
+        return f"<Comment(ticker='{self.ticker}', type='{self.comment_type}', status='{self.status}', created_at='{self.created_at}')>"
 
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
