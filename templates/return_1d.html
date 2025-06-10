@@ -34,7 +34,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
@@ -63,6 +63,9 @@
                         <a class="nav-link" href="/AllReturns">All Returns</a>
                     </li>
                 </ul>
+                <span class="navbar-text">
+                    <small>lastTrade: <span id="navbarLatestDate">Loading...</span></small>
+                </span>
             </div>
         </div>
     </nav>
@@ -72,9 +75,6 @@
             <div class="col-12">
                 <h1 class="mb-4">1-Day Return Analysis</h1>
                 <p class="lead">Stocks with 1 trading day returns above 5%</p>
-                <div id="dateContainer" class="alert alert-info">
-                    <strong>Latest Price as of:</strong> <span id="latestDate">Loading...</span>
-                </div>
             </div>
         </div>
 
@@ -139,6 +139,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='navbar-date.js') }}"></script>
     <script>
         function loadStocksAbove() {
             fetch('/api/Return1D-Above200M')
@@ -188,22 +189,9 @@
 
         // Load data when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            loadLatestDate();
             loadStocksAbove();
             loadStocksBelow();
         });
-
-        function loadLatestDate() {
-            fetch('/api/latest_date')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('latestDate').textContent = data.latest_date || 'N/A';
-                })
-                .catch(error => {
-                    console.error('Error loading latest date:', error);
-                    document.getElementById('latestDate').textContent = 'Error loading date';
-                });
-        }
     </script>
 </body>
 </html> 

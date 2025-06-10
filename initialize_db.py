@@ -62,6 +62,7 @@ def initialize_database(reset=False):
                 low_price FLOAT,
                 close_price FLOAT,
                 volume FLOAT,
+                last_traded_timestamp TIMESTAMP WITH TIME ZONE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT _ticker_date_uc UNIQUE (ticker, date)
@@ -94,6 +95,7 @@ def initialize_database(reset=False):
             {index_creation_clause} idx_ticker_market_cap ON ticker(market_cap);
             {index_creation_clause} idx_price_ticker ON price(ticker);
             {index_creation_clause} idx_price_date ON price(date);
+            {index_creation_clause} idx_price_last_traded_timestamp ON price(last_traded_timestamp);
             {index_creation_clause} idx_comment_ticker ON comment(ticker);
             {index_creation_clause} idx_comment_created_at ON comment(created_at);
             {index_creation_clause} idx_comment_type ON comment(comment_type);

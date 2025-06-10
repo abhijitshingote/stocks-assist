@@ -4,6 +4,7 @@ from sqlalchemy import desc, func, and_, text
 from datetime import datetime, timedelta
 import os
 import logging
+import pytz
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -15,6 +16,11 @@ app = Flask(
     template_folder='templates'
 )
 session = init_db()
+
+def get_eastern_datetime():
+    """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
+    eastern = pytz.timezone('US/Eastern')
+    return datetime.now(eastern)
 
 @app.route('/')
 def index():
@@ -248,7 +254,7 @@ def review_ai_comment(comment_id):
         # Update comment status
         comment.status = 'approved' if action == 'approve' else 'rejected'
         comment.reviewed_by = reviewed_by
-        comment.reviewed_at = datetime.now()
+        comment.reviewed_at = get_eastern_datetime()
         
         session.commit()
         
@@ -274,11 +280,38 @@ def review_ai_comment(comment_id):
 
 @app.route('/api/latest_date')
 def get_latest_date():
-    """Get the latest date for which we have price data"""
+    """Get the latest date and time for which we have price data"""
     try:
+        # Get the latest date first
         latest_date = session.query(func.max(Price.date)).scalar()
+        if not latest_date:
+            return jsonify({'latest_date': None})
+        
+        # Get the latest timestamp for that date
+        latest_timestamp = session.query(func.max(Price.last_traded_timestamp)).filter(
+            Price.date == latest_date
+        ).scalar()
+        
+        # Format the response in compact 12-hour Eastern Time format
+        if latest_timestamp:
+            # If we have a last traded timestamp, format it in 12-hour format
+            # Convert to Eastern Time if it's not already
+            if latest_timestamp.tzinfo is None:
+                # If no timezone info, assume UTC and convert to Eastern
+                eastern = pytz.timezone('US/Eastern')
+                latest_timestamp = pytz.UTC.localize(latest_timestamp).astimezone(eastern)
+            elif latest_timestamp.tzinfo != pytz.timezone('US/Eastern'):
+                # Convert to Eastern Time
+                eastern = pytz.timezone('US/Eastern')
+                latest_timestamp = latest_timestamp.astimezone(eastern)
+            
+            formatted_datetime = latest_timestamp.strftime('%y/%m/%d %I:%M %p EST')
+        else:
+            # Fallback to just the date if no timestamp available
+            formatted_datetime = latest_date.strftime('%y/%m/%d')
+        
         return jsonify({
-            'latest_date': latest_date.strftime('%Y-%m-%d') if latest_date else None
+            'latest_date': formatted_datetime
         })
     except Exception as e:
         logger.error(f"Error getting latest date: {str(e)}")
@@ -369,6 +402,8 @@ def get_momentum_stocks(return_days, above_200m=True):
         query = query.filter(
             avg_stats.c.avg_10day_price >= 5,  # 10 trading day average price > $5
             avg_stats.c.avg_dollar_volume >= 10000000,  # Average daily dollar volume > $10M
+            start_prices.c.start_price > 0,  # Ensure start price is not 0 or null to prevent division by zero
+            start_prices.c.start_price.isnot(None),  # Ensure start price is not null
             ((end_prices.c.end_price - start_prices.c.start_price) / 
              start_prices.c.start_price * 100) >= 5  # price change > 5%
         ).order_by(desc('price_change_pct'))
@@ -1013,6 +1048,11 @@ def get_stock_details(ticker):
     # Get latest price data
     latest_price = session.query(Price).filter_by(ticker=ticker).order_by(Price.date.desc()).first()
     
+    # Format last traded timestamp
+    last_traded_formatted = None
+    if latest_price and latest_price.last_traded_timestamp:
+        last_traded_formatted = latest_price.last_traded_timestamp.strftime('%Y-%m-%d %H:%M:%S %Z')
+    
     return jsonify({
         'ticker': db_stock.ticker,
         'company_name': db_stock.company_name,
@@ -1023,6 +1063,7 @@ def get_stock_details(ticker):
         'low_price': latest_price.low_price if latest_price else None,
         'close_price': latest_price.close_price if latest_price else None,
         'volume': latest_price.volume if latest_price else None,
+        'last_traded_timestamp': last_traded_formatted,
         'market_cap': db_stock.market_cap,
         'shares_outstanding': db_stock.shares_outstanding,
         'date': latest_price.date.strftime('%Y-%m-%d') if latest_price and latest_price.date else None
@@ -1042,7 +1083,8 @@ def get_stock_prices(ticker):
         'high_price': price.high_price,
         'low_price': price.low_price,
         'close_price': price.close_price,
-        'volume': price.volume
+        'volume': price.volume,
+        'last_traded_timestamp': price.last_traded_timestamp.strftime('%Y-%m-%d %H:%M:%S %Z') if price.last_traded_timestamp else None
     } for price in prices])
 
 # 20D Return APIs

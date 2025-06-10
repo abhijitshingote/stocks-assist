@@ -3,8 +3,14 @@ from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, cre
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
+import pytz
 
 Base = declarative_base()
+
+def get_eastern_datetime():
+    """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
+    eastern = pytz.timezone('US/Eastern')
+    return datetime.now(eastern)
 
 class Stock(Base):
     __tablename__ = 'ticker'
@@ -19,8 +25,8 @@ class Stock(Base):
     shares_outstanding = Column(Integer)
     eps = Column(Float)
     pe_ratio = Column(Float)
-    created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    created_at = Column(DateTime, default=get_eastern_datetime)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
 
     def __repr__(self):
         return f"<Stock(ticker='{self.ticker}', company_name='{self.company_name}', sector='{self.sector}', industry='{self.industry}')>"
@@ -35,8 +41,9 @@ class Price(Base):
     low_price = Column(Float)
     close_price = Column(Float)
     volume = Column(Float)
-    created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    last_traded_timestamp = Column(DateTime)  # When the last trade occurred for this price
+    created_at = Column(DateTime, default=get_eastern_datetime)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
     
     # Add unique constraint for ticker + date combination to enable upserts
     __table_args__ = (UniqueConstraint('ticker', 'date', name='_ticker_date_uc'),)
@@ -52,8 +59,8 @@ class Comment(Base):
     ai_source = Column(String)  # which AI model/service generated this (for AI comments)
     reviewed_by = Column(String)  # who reviewed this AI comment (optional)
     reviewed_at = Column(DateTime)  # when was this reviewed
-    created_at = Column(DateTime, default=datetime.now, nullable=False)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
     
     def __repr__(self):
         return f"<Comment(ticker='{self.ticker}', type='{self.comment_type}', status='{self.status}', created_at='{self.created_at}')>"

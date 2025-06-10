@@ -16,6 +16,7 @@ from models import Base, Stock, Price
 from dotenv import load_dotenv
 import requests
 import time
+import pytz
 
 # Configure logging
 logging.basicConfig(
@@ -37,6 +38,17 @@ if not POLYGON_API_KEY:
     raise ValueError("POLYGON_API_KEY not found in environment variables")
 
 client = RESTClient(POLYGON_API_KEY)
+
+def get_eastern_date():
+    """Get current date in Eastern Time (handles EST/EDT automatically)"""
+    eastern = pytz.timezone('US/Eastern')
+    eastern_now = datetime.now(eastern)
+    return eastern_now.date()
+
+def get_eastern_datetime():
+    """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
+    eastern = pytz.timezone('US/Eastern')
+    return datetime.now(eastern)
 
 def init_db():
     """Initialize database connection"""
@@ -135,9 +147,9 @@ def fetch_specific_tickers_snapshot(tickers, batch_size=100):
 def process_v2_snapshot_data(snapshots, existing_tickers):
     """
     Process v2 snapshot data and prepare for database insertion
-    v2 format: {'ticker': 'AAPL', 'day': {'o': 150, 'h': 155, 'l': 149, 'c': 154, 'v': 1000000}}
+    v2 format: {'ticker': 'AAPL', 'day': {'o': 150, 'h': 155, 'l': 149, 'c': 154, 'v': 1000000}, 'lastTrade': {'t': timestamp}}
     """
-    today = date.today()
+    today = get_eastern_date()
     price_records = []
     processed_count = 0
     
@@ -156,6 +168,28 @@ def process_v2_snapshot_data(snapshots, existing_tickers):
             if not day_data:
                 continue
             
+            # Extract timestamp - use updated field since lastTrade is not available
+            last_trade_timestamp = None
+            
+            # Try lastTrade first (if available in some responses)
+            last_trade = snapshot.get('lastTrade') or snapshot.get('last_trade')
+            if last_trade and 't' in last_trade:
+                timestamp_ns = last_trade['t']
+            else:
+                # Use the updated field as timestamp source
+                timestamp_ns = snapshot.get('updated')
+            
+            if timestamp_ns:
+                try:
+                    # Convert nanosecond timestamp to seconds and then to datetime
+                    timestamp_seconds = timestamp_ns / 1_000_000_000  # Convert nanoseconds to seconds
+                    # Convert UTC timestamp to Eastern Time
+                    utc_dt = datetime.fromtimestamp(timestamp_seconds, tz=pytz.UTC)
+                    eastern = pytz.timezone('US/Eastern')
+                    last_trade_timestamp = utc_dt.astimezone(eastern)
+                except (ValueError, TypeError, OSError) as e:
+                    logger.warning(f"Could not parse timestamp {timestamp_ns} for {ticker}: {e}")
+            
             # Create price record
             price_record = {
                 'ticker': ticker,
@@ -165,8 +199,9 @@ def process_v2_snapshot_data(snapshots, existing_tickers):
                 'low_price': day_data.get('l'),
                 'close_price': day_data.get('c'),
                 'volume': day_data.get('v'),
-                'created_at': datetime.now(),
-                'updated_at': datetime.now()
+                'last_traded_timestamp': last_trade_timestamp,
+                'created_at': get_eastern_datetime(),
+                'updated_at': get_eastern_datetime()
             }
             
             # Only add if we have at least a close price
@@ -184,9 +219,9 @@ def process_v2_snapshot_data(snapshots, existing_tickers):
 def process_v3_snapshot_data(snapshots, existing_tickers):
     """
     Process v3 snapshot data and prepare for database insertion
-    v3 format: {'ticker': 'AAPL', 'value': 154, 'session': {'change': 2, 'change_percent': 1.3, ...}}
+    v3 format: {'ticker': 'AAPL', 'value': 154, 'session': {'change': 2, 'change_percent': 1.3, ...}, 'last_trade': {'participant_timestamp': timestamp}}
     """
-    today = date.today()
+    today = get_eastern_date()
     price_records = []
     processed_count = 0
     
@@ -206,6 +241,34 @@ def process_v3_snapshot_data(snapshots, existing_tickers):
             if not session_data:
                 continue
             
+            # Extract timestamp from v3 response
+            last_trade_timestamp = None
+            timestamp_ns = None
+            
+            # Try last_trade timestamp fields first
+            last_trade = snapshot.get('last_trade')
+            if last_trade:
+                timestamp_ns = (last_trade.get('participant_timestamp') or 
+                              last_trade.get('sip_timestamp') or 
+                              last_trade.get('timeframe'))
+            
+            # If no last_trade timestamp, try other fields that might have timing info
+            if not timestamp_ns:
+                # Look for other timestamp fields in v3 response
+                last_minute = snapshot.get('last_minute', {})
+                timestamp_ns = last_minute.get('t') or snapshot.get('updated')
+            
+            if timestamp_ns:
+                try:
+                    # Convert nanosecond timestamp to seconds and then to datetime
+                    timestamp_seconds = timestamp_ns / 1_000_000_000  # Convert nanoseconds to seconds
+                    # Convert UTC timestamp to Eastern Time
+                    utc_dt = datetime.fromtimestamp(timestamp_seconds, tz=pytz.UTC)
+                    eastern = pytz.timezone('US/Eastern')
+                    last_trade_timestamp = utc_dt.astimezone(eastern)
+                except (ValueError, TypeError, OSError) as e:
+                    logger.warning(f"Could not parse timestamp {timestamp_ns} for {ticker}: {e}")
+            
             # For v3, we need to use different field names
             price_record = {
                 'ticker': ticker,
@@ -215,8 +278,9 @@ def process_v3_snapshot_data(snapshots, existing_tickers):
                 'low_price': session_data.get('low'),
                 'close_price': session_data.get('close') or snapshot.get('value'),  # value is current price
                 'volume': session_data.get('volume'),
-                'created_at': datetime.now(),
-                'updated_at': datetime.now()
+                'last_traded_timestamp': last_trade_timestamp,
+                'created_at': get_eastern_datetime(),
+                'updated_at': get_eastern_datetime()
             }
             
             # Only add if we have at least a close price
@@ -255,6 +319,7 @@ def bulk_upsert_prices(session, engine, price_records):
                 low_price=stmt.excluded.low_price,
                 close_price=stmt.excluded.close_price,
                 volume=stmt.excluded.volume,
+                last_traded_timestamp=stmt.excluded.last_traded_timestamp,
                 updated_at=stmt.excluded.updated_at
             )
         )
@@ -305,7 +370,7 @@ def main():
         # Step 3: Bulk upsert the price data
         if price_records:
             upserted_count = bulk_upsert_prices(session, engine, price_records)
-            logger.info(f"Daily price update completed. Updated {upserted_count} records for {date.today()}")
+            logger.info(f"Daily price update completed. Updated {upserted_count} records for {get_eastern_date()}")
         else:
             logger.warning("No price records to update")
         

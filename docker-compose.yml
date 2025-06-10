@@ -7,8 +7,11 @@ services:
       POSTGRES_DB: stocks_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      TZ: America/New_York
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "5432:5432"
     healthcheck:
@@ -23,6 +26,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/stocks_db
       - POLYGON_API_KEY=${POLYGON_API_KEY}
+      - TZ=America/New_York
     ports:
       - "5002:5000"
     depends_on:
@@ -31,6 +35,8 @@ services:
     volumes:
       - .:/app
       - /app/venv
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
 volumes:
   postgres_data: 
