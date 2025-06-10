@@ -847,11 +847,11 @@ def get_all_returns_data(above_200m=True, weights=None):
         # Default weights
         if weights is None:
             weights = {
-                '1d': 3.0,
-                '5d': 2.5,
-                '20d': 2.0,
-                '60d': 1.0,
-                '120d': 1.0
+                '1d': 30,
+                '5d': 10,
+                '20d': 2,
+                '60d': 0.00001,
+                '120d': 0.0000001
             }
         
         # Get data for all return periods
@@ -948,11 +948,11 @@ def get_all_returns_above_200m():
     try:
         # Get weights from query parameters
         weights = {}
-        weights['1d'] = float(request.args.get('weight_1d', 3.0))
-        weights['5d'] = float(request.args.get('weight_5d', 2.5))
-        weights['20d'] = float(request.args.get('weight_20d', 2.0))
-        weights['60d'] = float(request.args.get('weight_60d', 1.0))
-        weights['120d'] = float(request.args.get('weight_120d', 1.0))
+        weights['1d'] = float(request.args.get('weight_1d', 30))
+        weights['5d'] = float(request.args.get('weight_5d', 10))
+        weights['20d'] = float(request.args.get('weight_20d', 2))
+        weights['60d'] = float(request.args.get('weight_60d', 0.00001))
+        weights['120d'] = float(request.args.get('weight_120d', 0.0000001))
         
         result = get_all_returns_data(above_200m=True, weights=weights)
         return jsonify(result)
@@ -965,11 +965,11 @@ def get_all_returns_below_200m():
     try:
         # Get weights from query parameters
         weights = {}
-        weights['1d'] = float(request.args.get('weight_1d', 3.0))
-        weights['5d'] = float(request.args.get('weight_5d', 2.5))
-        weights['20d'] = float(request.args.get('weight_20d', 2.0))
-        weights['60d'] = float(request.args.get('weight_60d', 1.0))
-        weights['120d'] = float(request.args.get('weight_120d', 1.0))
+        weights['1d'] = float(request.args.get('weight_1d', 30))
+        weights['5d'] = float(request.args.get('weight_5d', 10))
+        weights['20d'] = float(request.args.get('weight_20d', 2))
+        weights['60d'] = float(request.args.get('weight_60d', 0.00001))
+        weights['120d'] = float(request.args.get('weight_120d', 0.0000001))
         
         result = get_all_returns_data(above_200m=False, weights=weights)
         return jsonify(result)
