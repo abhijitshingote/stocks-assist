@@ -149,7 +149,6 @@ def process_v2_snapshot_data(snapshots, existing_tickers):
     Process v2 snapshot data and prepare for database insertion
     v2 format: {'ticker': 'AAPL', 'day': {'o': 150, 'h': 155, 'l': 149, 'c': 154, 'v': 1000000}, 'lastTrade': {'t': timestamp}}
     """
-    today = get_eastern_date()
     price_records = []
     processed_count = 0
     
@@ -168,32 +167,46 @@ def process_v2_snapshot_data(snapshots, existing_tickers):
             if not day_data:
                 continue
             
-            # Extract timestamp - use updated field since lastTrade is not available
+            # Extract the actual trading date from the API response
+            trading_date = None
             last_trade_timestamp = None
             
-            # Try lastTrade first (if available in some responses)
-            last_trade = snapshot.get('lastTrade') or snapshot.get('last_trade')
-            if last_trade and 't' in last_trade:
-                timestamp_ns = last_trade['t']
-            else:
-                # Use the updated field as timestamp source
-                timestamp_ns = snapshot.get('updated')
-            
+            # Prefer updated field first (nanosecond timestamp)
+            timestamp_ns = snapshot.get('updated')
             if timestamp_ns:
                 try:
                     # Convert nanosecond timestamp to seconds and then to datetime
-                    timestamp_seconds = timestamp_ns / 1_000_000_000  # Convert nanoseconds to seconds
-                    # Convert UTC timestamp to Eastern Time
+                    timestamp_seconds = timestamp_ns / 1_000_000_000
                     utc_dt = datetime.fromtimestamp(timestamp_seconds, tz=pytz.UTC)
                     eastern = pytz.timezone('US/Eastern')
-                    last_trade_timestamp = utc_dt.astimezone(eastern)
+                    eastern_dt = utc_dt.astimezone(eastern)
+                    trading_date = eastern_dt.date()
+                    last_trade_timestamp = eastern_dt
                 except (ValueError, TypeError, OSError) as e:
-                    logger.warning(f"Could not parse timestamp {timestamp_ns} for {ticker}: {e}")
+                    logger.warning(f"Could not parse updated timestamp {timestamp_ns} for {ticker}: {e}")
+            
+            # Fallback to min.t if updated is not available
+            if not trading_date:
+                min_data = snapshot.get('min', {})
+                if 't' in min_data:
+                    try:
+                        timestamp_ms = min_data['t']
+                        dt = datetime.fromtimestamp(timestamp_ms / 1000, tz=pytz.UTC)
+                        eastern_dt = dt.astimezone(pytz.timezone('US/Eastern'))
+                        trading_date = eastern_dt.date()
+                        last_trade_timestamp = eastern_dt
+                    except (ValueError, TypeError, OSError) as e:
+                        logger.warning(f"Could not parse min timestamp {timestamp_ms} for {ticker}: {e}")
+            
+            # If we still don't have a trading date, fall back to today (should rarely happen)
+            if not trading_date:
+                trading_date = get_eastern_date()
+                logger.warning(f"No timestamp data found for {ticker}, using current date: {trading_date}")
             
             # Create price record
             price_record = {
                 'ticker': ticker,
-                'date': today,
+                'date': trading_date,  # Use actual trading date from API
                 'open_price': day_data.get('o'),
                 'high_price': day_data.get('h'),
                 'low_price': day_data.get('l'),
@@ -221,7 +234,6 @@ def process_v3_snapshot_data(snapshots, existing_tickers):
     Process v3 snapshot data and prepare for database insertion
     v3 format: {'ticker': 'AAPL', 'value': 154, 'session': {'change': 2, 'change_percent': 1.3, ...}, 'last_trade': {'participant_timestamp': timestamp}}
     """
-    today = get_eastern_date()
     price_records = []
     processed_count = 0
     
@@ -241,38 +253,63 @@ def process_v3_snapshot_data(snapshots, existing_tickers):
             if not session_data:
                 continue
             
-            # Extract timestamp from v3 response
+            # Extract the actual trading date from the v3 API response
+            trading_date = None
             last_trade_timestamp = None
-            timestamp_ns = None
             
-            # Try last_trade timestamp fields first
-            last_trade = snapshot.get('last_trade')
-            if last_trade:
-                timestamp_ns = (last_trade.get('participant_timestamp') or 
-                              last_trade.get('sip_timestamp') or 
-                              last_trade.get('timeframe'))
-            
-            # If no last_trade timestamp, try other fields that might have timing info
-            if not timestamp_ns:
-                # Look for other timestamp fields in v3 response
-                last_minute = snapshot.get('last_minute', {})
-                timestamp_ns = last_minute.get('t') or snapshot.get('updated')
-            
+            # Prefer updated field first (nanosecond timestamp)
+            timestamp_ns = snapshot.get('updated')
             if timestamp_ns:
                 try:
-                    # Convert nanosecond timestamp to seconds and then to datetime
-                    timestamp_seconds = timestamp_ns / 1_000_000_000  # Convert nanoseconds to seconds
-                    # Convert UTC timestamp to Eastern Time
+                    timestamp_seconds = timestamp_ns / 1_000_000_000
                     utc_dt = datetime.fromtimestamp(timestamp_seconds, tz=pytz.UTC)
                     eastern = pytz.timezone('US/Eastern')
-                    last_trade_timestamp = utc_dt.astimezone(eastern)
+                    eastern_dt = utc_dt.astimezone(eastern)
+                    trading_date = eastern_dt.date()
+                    last_trade_timestamp = eastern_dt
                 except (ValueError, TypeError, OSError) as e:
-                    logger.warning(f"Could not parse timestamp {timestamp_ns} for {ticker}: {e}")
+                    logger.warning(f"Could not parse updated timestamp {timestamp_ns} for {ticker}: {e}")
+            
+            # Fallback to last_minute.t timestamp
+            if not trading_date:
+                last_minute = snapshot.get('last_minute', {})
+                if 't' in last_minute:
+                    try:
+                        timestamp_ms = last_minute['t']
+                        dt = datetime.fromtimestamp(timestamp_ms / 1000, tz=pytz.UTC)
+                        eastern_dt = dt.astimezone(pytz.timezone('US/Eastern'))
+                        trading_date = eastern_dt.date()
+                        last_trade_timestamp = eastern_dt
+                    except (ValueError, TypeError, OSError) as e:
+                        logger.warning(f"Could not parse last_minute timestamp {timestamp_ms} for {ticker}: {e}")
+            
+            # Fallback to last_trade timestamp fields
+            if not trading_date:
+                last_trade = snapshot.get('last_trade')
+                if last_trade:
+                    timestamp_ns = (last_trade.get('participant_timestamp') or 
+                                  last_trade.get('sip_timestamp') or 
+                                  last_trade.get('timeframe'))
+                    if timestamp_ns:
+                        try:
+                            timestamp_seconds = timestamp_ns / 1_000_000_000
+                            utc_dt = datetime.fromtimestamp(timestamp_seconds, tz=pytz.UTC)
+                            eastern = pytz.timezone('US/Eastern')
+                            eastern_dt = utc_dt.astimezone(eastern)
+                            trading_date = eastern_dt.date()
+                            last_trade_timestamp = eastern_dt
+                        except (ValueError, TypeError, OSError) as e:
+                            logger.warning(f"Could not parse last_trade timestamp {timestamp_ns} for {ticker}: {e}")
+            
+            # Final fallback to current date
+            if not trading_date:
+                trading_date = get_eastern_date()
+                logger.warning(f"No timestamp data found for {ticker}, using current date: {trading_date}")
             
             # For v3, we need to use different field names
             price_record = {
                 'ticker': ticker,
-                'date': today,
+                'date': trading_date,  # Use actual trading date from API
                 'open_price': session_data.get('open'),
                 'high_price': session_data.get('high'),
                 'low_price': session_data.get('low'),
