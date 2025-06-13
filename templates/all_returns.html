@@ -92,15 +92,15 @@
                 <div class="row">
                     <div class="col-md-2">
                         <label for="weight1d" class="form-label">1-Day Return</label>
-                        <input type="number" class="form-control" id="weight1d" value="3" step="0.1" min="0">
+                        <input type="number" class="form-control" id="weight1d" value="30" step="0.1" min="0">
                     </div>
                     <div class="col-md-2">
                         <label for="weight5d" class="form-label">5-Day Return</label>
-                        <input type="number" class="form-control" id="weight5d" value="2.5" step="0.1" min="0">
+                        <input type="number" class="form-control" id="weight5d" value="20" step="0.1" min="0">
                     </div>
                     <div class="col-md-2">
                         <label for="weight20d" class="form-label">20-Day Return</label>
-                        <input type="number" class="form-control" id="weight20d" value="2" step="0.1" min="0">
+                        <input type="number" class="form-control" id="weight20d" value="10" step="0.1" min="0">
                     </div>
                     <div class="col-md-2">
                         <label for="weight60d" class="form-label">60-Day Return</label>
@@ -357,9 +357,9 @@
         }
 
         function resetWeights() {
-            document.getElementById('weight1d').value = '3';
-            document.getElementById('weight5d').value = '2.5';
-            document.getElementById('weight20d').value = '2';
+            document.getElementById('weight1d').value = '30';
+            document.getElementById('weight5d').value = '20';
+            document.getElementById('weight20d').value = '10';
             document.getElementById('weight60d').value = '1';
             document.getElementById('weight120d').value = '1';
             applyWeights();

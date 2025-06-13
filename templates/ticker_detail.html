@@ -215,6 +215,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/Volume">Volume Screen</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/AllReturns">All Returns</a>
+                    </li>
                 </ul>
                 <span class="navbar-text me-3">
                     <small>lastTrade: <span id="navbarLatestDate">Loading...</span></small>
@@ -227,16 +230,17 @@
     </nav>
 
     <div class="container mt-4">
-        <!-- Compact Header -->
-        <div class="mb-2">
-            <h4 class="ticker-symbol" id="tickerSymbol">{{ ticker }}</h4>
-            <small class="company-name" id="companyName">Loading...</small>
-        </div>
+        <!-- Top Section -->
+        <div class="row mb-4">
+            <!-- Left Section - Ticker Info (25%) -->
+            <div class="col-md-3">
+                <!-- Compact Header -->
+                <div class="mb-2">
+                    <h4 class="ticker-symbol" id="tickerSymbol">{{ ticker }}</h4>
+                    <small class="company-name" id="companyName">Loading...</small>
+                </div>
 
-        <!-- Compact Side-by-side Cards -->
-        <div class="row g-2">
-            <!-- Stock Details Card -->
-            <div class="col-md-6">
+                <!-- Stock Details Card -->
                 <div class="card">
                     <div class="card-body p-2">
                         <h6 class="card-title mb-2 fs-6">Details</h6>
@@ -266,24 +270,18 @@
                 </div>
             </div>
 
-            <!-- Comments Card -->
-            <div class="col-md-6">
-                <div class="card">
+            <!-- Right Section - Comments (75%) -->
+            <div class="col-md-9">
+                <!-- User Comments Card -->
+                <div class="card mb-4">
                     <div class="card-body p-2">
-                        <h6 class="card-title mb-2 fs-6">Comments</h6>
+                        <h6 class="card-title mb-2 fs-6">User Comments</h6>
                         
                         <!-- Add Comment Form -->
                         <div class="mb-2">
                             <textarea class="form-control form-control-sm" id="commentText" rows="1" placeholder="Add comment..."></textarea>
                             <button type="button" class="btn btn-success btn-sm mt-1" onclick="addComment()">Add</button>
                             <div id="commentError" class="text-danger small mt-1" style="display: none;"></div>
-                        </div>
-                        
-                        <!-- Pending AI Comments Review Section -->
-                        <div id="pendingAIContainer" style="display: none;">
-                            <small class="text-warning">⚠️ Pending Review</small>
-                            <div id="pendingAIList"></div>
-                            <hr class="my-1">
                         </div>
                         
                         <!-- Comments List -->
@@ -298,34 +296,67 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- 3-Month Chart Section -->
-        <div class="chart-container">
-            <div class="chart-title" id="chart3MonthTitle">{{ ticker }} - 3 Month Price Chart</div>
-            <div id="loadingChart3Month" class="loading-spinner">
-                <div class="spinner-border text-success" role="status">
-                    <span class="visually-hidden">Loading 3-month chart...</span>
+                <!-- AI Comments Card -->
+                <div class="card">
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-2 fs-6">AI Analysis</h6>
+                        
+                        <!-- Fetch AI Comments Button -->
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="fetchAIComments()">Fetch AI Comments</button>
+                        </div>
+                        
+                        <!-- AI Comments Input -->
+                        <div id="aiCommentInput" class="mb-3" style="display: none;">
+                            <textarea class="form-control form-control-sm" id="aiCommentText" rows="20" readonly></textarea>
+                            <button type="button" class="btn btn-success btn-sm mt-2" onclick="saveAIComment()">Save AI Comment</button>
+                        </div>
+                        
+                        <!-- Pending AI Comments Review Section -->
+                        <div id="pendingAIContainer" style="display: none;">
+                            <small class="text-warning">⚠️ Pending Review</small>
+                            <div id="pendingAIList"></div>
+                            <hr class="my-1">
+                        </div>
+                        
+                        <!-- AI Comments List -->
+                        <div id="aiCommentsContainer">
+                            <div id="aiCommentsList"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="errorMessage3Month" class="error-message" style="display: none;"></div>
-            <div id="chart3Month"></div>
         </div>
 
-        <!-- Yearly Chart Section -->
-        <div class="chart-container">
-            <div class="chart-title" id="chartYearlyTitle">{{ ticker }} - Yearly Price Chart</div>
-            <div id="loadingChartYearly" class="loading-spinner">
-                <div class="spinner-border text-success" role="status">
-                    <span class="visually-hidden">Loading yearly chart...</span>
+        <!-- Bottom Section - Charts (Full Width) -->
+        <div class="row">
+            <div class="col-12">
+                <!-- 3-Month Chart Section -->
+                <div class="chart-container">
+                    <div class="chart-title" id="chart3MonthTitle">{{ ticker }} - 3 Month Price Chart</div>
+                    <div id="loadingChart3Month" class="loading-spinner">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading 3-month chart...</span>
+                        </div>
+                    </div>
+                    <div id="errorMessage3Month" class="error-message" style="display: none;"></div>
+                    <div id="chart3Month"></div>
+                </div>
+
+                <!-- Yearly Chart Section -->
+                <div class="chart-container">
+                    <div class="chart-title" id="chartYearlyTitle">{{ ticker }} - Yearly Price Chart</div>
+                    <div id="loadingChartYearly" class="loading-spinner">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading yearly chart...</span>
+                        </div>
+                    </div>
+                    <div id="errorMessageYearly" class="error-message" style="display: none;"></div>
+                    <div id="chartYearly"></div>
                 </div>
             </div>
-            <div id="errorMessageYearly" class="error-message" style="display: none;"></div>
-            <div id="chartYearly"></div>
         </div>
-
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -610,19 +641,123 @@
         
         function displayComments(comments) {
             const commentsList = document.getElementById('commentsList');
+            const aiCommentsList = document.getElementById('aiCommentsList');
             
-            if (comments.length === 0) {
+            // Separate user and AI comments
+            const userComments = comments.filter(c => c.comment_type === 'user');
+            const aiComments = comments.filter(c => c.comment_type === 'ai' && c.status === 'approved');
+            
+            // Display user comments
+            if (userComments.length === 0) {
                 commentsList.innerHTML = '<div class="text-muted text-center py-1">No comments yet. Be the first to add one!</div>';
+            } else {
+                commentsList.innerHTML = userComments.map(comment => `
+                    <div class="card mb-1" id="comment-${comment.id}">
+                        <div class="card-body p-2">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <p class="card-text mb-0 small flex-grow-1">${escapeHtml(comment.comment_text)} <span class="text-muted">— ${comment.formatted_date}</span></p>
+                                <div class="btn-group btn-group-sm ms-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="editComment(${comment.id})">Edit</button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Display AI comments
+            if (aiComments.length === 0) {
+                aiCommentsList.innerHTML = '<div class="text-muted text-center py-1">No AI analysis available yet.</div>';
+            } else {
+                aiCommentsList.innerHTML = aiComments.map(comment => `
+                    <div class="card mb-1" id="comment-${comment.id}">
+                        <div class="card-body p-2">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <p class="card-text mb-0 small flex-grow-1">${escapeHtml(comment.comment_text)} <span class="text-muted">— ${comment.formatted_date}</span></p>
+                                <div class="btn-group btn-group-sm ms-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="editComment(${comment.id})">Edit</button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function editComment(commentId) {
+            const commentElement = document.getElementById(`comment-${commentId}`);
+            const currentText = commentElement.querySelector('.card-text').textContent.split('—')[0].trim();
+            
+            // Create edit form
+            const editForm = `
+                <div class="card-body p-2">
+                    <textarea class="form-control form-control-sm mb-2">${currentText}</textarea>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-success btn-sm" onclick="saveEdit(${commentId})">Save</button>
+                        <button class="btn btn-secondary btn-sm" onclick="cancelEdit(${commentId})">Cancel</button>
+                    </div>
+                </div>
+            `;
+            
+            commentElement.innerHTML = editForm;
+        }
+
+        function saveEdit(commentId) {
+            const commentElement = document.getElementById(`comment-${commentId}`);
+            const newText = commentElement.querySelector('textarea').value.trim();
+            
+            if (!newText) {
+                alert('Comment cannot be empty');
                 return;
             }
             
-            commentsList.innerHTML = comments.map(comment => `
-                <div class="card mb-1">
-                    <div class="card-body p-2">
-                        <p class="card-text mb-0 small">${escapeHtml(comment.comment_text)} <span class="text-muted">— ${comment.formatted_date}</span></p>
-                    </div>
-                </div>
-            `).join('');
+            fetch(`/api/comments/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    comment_text: newText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                loadComments(); // Reload all comments
+            })
+            .catch(error => {
+                console.error('Error saving edit:', error);
+                alert('Error saving edit: ' + error.message);
+            });
+        }
+
+        function cancelEdit(commentId) {
+            loadComments(); // Reload all comments to restore original state
+        }
+
+        function deleteComment(commentId) {
+            if (!confirm('Are you sure you want to delete this comment?')) {
+                return;
+            }
+            
+            fetch(`/api/comments/${commentId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                loadComments(); // Reload all comments
+            })
+            .catch(error => {
+                console.error('Error deleting comment:', error);
+                alert('Error deleting comment: ' + error.message);
+            });
         }
         
         function addComment() {
@@ -684,6 +819,86 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;")
                 .replace(/\n/g, "<br>");
+        }
+
+        // Add these functions before the DOMContentLoaded event listener
+        function fetchAIComments() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Fetching...';
+            
+            fetch('/api/perplexity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ticker: ticker
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Show the input area with the AI response
+                document.getElementById('aiCommentInput').style.display = 'block';
+                document.getElementById('aiCommentText').value = data.response;
+            })
+            .catch(error => {
+                console.error('Error fetching AI comments:', error);
+                alert('Error fetching AI comments: ' + error.message);
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Fetch AI Comments';
+            });
+        }
+        
+        function saveAIComment() {
+            const commentText = document.getElementById('aiCommentText').value.trim();
+            
+            if (!commentText) {
+                alert('No AI comment to save');
+                return;
+            }
+            
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Saving...';
+            
+            fetch(`/api/ai-comments/${ticker}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    comment_text: commentText,
+                    ai_source: 'perplexity'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Clear and hide the input area
+                document.getElementById('aiCommentText').value = '';
+                document.getElementById('aiCommentInput').style.display = 'none';
+                
+                // Reload comments to show the new AI comment
+                loadComments();
+            })
+            .catch(error => {
+                console.error('Error saving AI comment:', error);
+                alert('Error saving AI comment: ' + error.message);
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Save AI Comment';
+            });
         }
 
         // Load data when page loads

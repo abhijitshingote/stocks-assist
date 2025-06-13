@@ -5,6 +5,11 @@ from datetime import datetime, timedelta
 import os
 import logging
 import pytz
+import requests
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -16,6 +21,15 @@ app = Flask(
     template_folder='templates'
 )
 session = init_db()
+
+# Global default weights for All Returns
+DEFAULT_PRIORITY_WEIGHTS = {
+    '1d': 30,
+    '5d': 20,
+    '20d': 10,
+    '60d': 1,
+    '120d': 1
+}
 
 def get_eastern_datetime():
     """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
@@ -201,7 +215,7 @@ def add_ai_comment(ticker):
             ticker=ticker,
             comment_text=comment_text,
             comment_type='ai',
-            status='pending',
+            status='approved',
             ai_source=ai_source
         )
         
@@ -846,13 +860,7 @@ def get_all_returns_data(above_200m=True, weights=None):
     try:
         # Default weights
         if weights is None:
-            weights = {
-                '1d': 30,
-                '5d': 10,
-                '20d': 2,
-                '60d': 0.00001,
-                '120d': 0.0000001
-            }
+            weights = DEFAULT_PRIORITY_WEIGHTS.copy()
         
         # Get data for all return periods
         returns_1d = get_momentum_stocks(1, above_200m=above_200m)
@@ -948,11 +956,11 @@ def get_all_returns_above_200m():
     try:
         # Get weights from query parameters
         weights = {}
-        weights['1d'] = float(request.args.get('weight_1d', 30))
-        weights['5d'] = float(request.args.get('weight_5d', 10))
-        weights['20d'] = float(request.args.get('weight_20d', 2))
-        weights['60d'] = float(request.args.get('weight_60d', 0.00001))
-        weights['120d'] = float(request.args.get('weight_120d', 0.0000001))
+        weights['1d'] = float(request.args.get('weight_1d', DEFAULT_PRIORITY_WEIGHTS['1d']))
+        weights['5d'] = float(request.args.get('weight_5d', DEFAULT_PRIORITY_WEIGHTS['5d']))
+        weights['20d'] = float(request.args.get('weight_20d', DEFAULT_PRIORITY_WEIGHTS['20d']))
+        weights['60d'] = float(request.args.get('weight_60d', DEFAULT_PRIORITY_WEIGHTS['60d']))
+        weights['120d'] = float(request.args.get('weight_120d', DEFAULT_PRIORITY_WEIGHTS['120d']))
         
         result = get_all_returns_data(above_200m=True, weights=weights)
         return jsonify(result)
@@ -965,11 +973,11 @@ def get_all_returns_below_200m():
     try:
         # Get weights from query parameters
         weights = {}
-        weights['1d'] = float(request.args.get('weight_1d', 30))
-        weights['5d'] = float(request.args.get('weight_5d', 10))
-        weights['20d'] = float(request.args.get('weight_20d', 2))
-        weights['60d'] = float(request.args.get('weight_60d', 0.00001))
-        weights['120d'] = float(request.args.get('weight_120d', 0.0000001))
+        weights['1d'] = float(request.args.get('weight_1d', DEFAULT_PRIORITY_WEIGHTS['1d']))
+        weights['5d'] = float(request.args.get('weight_5d', DEFAULT_PRIORITY_WEIGHTS['5d']))
+        weights['20d'] = float(request.args.get('weight_20d', DEFAULT_PRIORITY_WEIGHTS['20d']))
+        weights['60d'] = float(request.args.get('weight_60d', DEFAULT_PRIORITY_WEIGHTS['60d']))
+        weights['120d'] = float(request.args.get('weight_120d', DEFAULT_PRIORITY_WEIGHTS['120d']))
         
         result = get_all_returns_data(above_200m=False, weights=weights)
         return jsonify(result)
@@ -1195,6 +1203,115 @@ def get_market_cap_distribution():
     final_distribution.extend(distribution)
     
     return jsonify(final_distribution)
+
+@app.route('/api/perplexity', methods=['POST'])
+def get_perplexity_analysis():
+    """Get AI analysis from Perplexity API"""
+    try:
+        data = request.get_json()
+        if not data or 'ticker' not in data:
+            return jsonify({'error': 'Ticker is required'}), 400
+        
+        ticker = data['ticker']
+        prompt = f"Why was {ticker} up today or why has {ticker} been up in the last few weeks. Provide a descending chronological timeline of news events that have occurred. Do NOT provide reasoning that is related to stock momentum or technical analysis."
+        
+        api_key = os.getenv("PERPLEXITY_API_KEY")
+        if not api_key:
+            return jsonify({'error': 'PERPLEXITY_API_KEY not found in environment variables'}), 500
+        
+        url = "https://api.perplexity.ai/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        data = {
+            "model": "sonar",
+            "messages": [{"role": "user", "content": prompt}],
+            "stream": False
+        }
+        
+        # Log the request data for debugging
+        logger.info(f"Making request to Perplexity API with data: {data}")
+        
+        response = requests.post(url, headers=headers, json=data)
+        
+        # Log the response for debugging
+        if not response.ok:
+            logger.error(f"Perplexity API error response: {response.text}")
+            logger.error(f"Request data was: {data}")
+            logger.error(f"Headers were: {headers}")
+        
+        response.raise_for_status()
+        result = response.json()
+        
+        return jsonify({
+            'response': result["choices"][0]["message"]["content"]
+        })
+        
+    except requests.exceptions.RequestException as e:
+        error_msg = f"Error calling Perplexity API: {str(e)}"
+        if hasattr(e, 'response') and e.response is not None:
+            error_msg += f"\nAPI Response: {e.response.text}"
+        logger.error(error_msg)
+        return jsonify({'error': error_msg}), 500
+    except Exception as e:
+        logger.error(f"Error in get_perplexity_analysis: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/comments/<int:comment_id>', methods=['DELETE'])
+def delete_comment(comment_id):
+    """Delete a comment"""
+    try:
+        comment = session.query(Comment).filter(Comment.id == comment_id).first()
+        if not comment:
+            return jsonify({'error': 'Comment not found'}), 404
+        
+        session.delete(comment)
+        session.commit()
+        return jsonify({'message': 'Comment deleted successfully'})
+        
+    except Exception as e:
+        logger.error(f"Error deleting comment {comment_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/comments/<int:comment_id>', methods=['PUT'])
+def edit_comment(comment_id):
+    """Edit a comment"""
+    try:
+        data = request.get_json()
+        if not data or 'comment_text' not in data:
+            return jsonify({'error': 'Comment text is required'}), 400
+        
+        comment_text = data['comment_text'].strip()
+        if not comment_text:
+            return jsonify({'error': 'Comment text cannot be empty'}), 400
+        
+        comment = session.query(Comment).filter(Comment.id == comment_id).first()
+        if not comment:
+            return jsonify({'error': 'Comment not found'}), 404
+        
+        comment.comment_text = comment_text
+        comment.updated_at = get_eastern_datetime()
+        session.commit()
+        
+        # Return updated comment
+        comment_data = {
+            'id': comment.id,
+            'ticker': comment.ticker,
+            'comment_text': comment.comment_text,
+            'comment_type': comment.comment_type,
+            'status': comment.status,
+            'ai_source': comment.ai_source,
+            'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'formatted_date': comment.created_at.strftime('%B %d, %Y at %I:%M %p')
+        }
+        
+        return jsonify(comment_data)
+        
+    except Exception as e:
+        logger.error(f"Error editing comment {comment_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000) 
