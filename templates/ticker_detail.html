@@ -218,6 +218,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/AllReturns">All Returns</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/AbiShortList">Abi ShortList</a>
+                    </li>
                 </ul>
                 <span class="navbar-text me-3">
                     <small>lastTrade: <span id="navbarLatestDate">Loading...</span></small>
@@ -268,6 +271,13 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Shortlist Button -->
+                <div class="mt-3">
+                    <button type="button" class="btn btn-outline-success btn-sm w-100" id="shortlistBtn" onclick="toggleShortlist()">
+                        <span id="shortlistIcon">+</span> <span id="shortlistText">Add to ShortList</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Right Section - Comments (75%) -->
@@ -309,7 +319,7 @@
                         
                         <!-- AI Comments Input -->
                         <div id="aiCommentInput" class="mb-3" style="display: none;">
-                            <textarea class="form-control form-control-sm" id="aiCommentText" rows="20" readonly></textarea>
+                            <div id="aiCommentDisplay" class="form-control" style="min-height: 400px; max-height: 600px; overflow-y: auto; background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 0.375rem; padding: 0.375rem 0.75rem; white-space: pre-wrap;"></div>
                             <button type="button" class="btn btn-success btn-sm mt-2" onclick="saveAIComment()">Save AI Comment</button>
                         </div>
                         
@@ -436,14 +446,21 @@
             const height = 500; // Price section is exactly 500px tall
 
             // Process the data
-            const data = priceData.map(d => ({
-                date: new Date(d.date),
-                open: +d.open_price,
-                high: +d.high_price,
-                low: +d.low_price,
-                close: +d.close_price,
-                volume: +d.volume
-            })).filter(d => 
+            const data = priceData.map(d => {
+                // Parse date as local date to avoid timezone shift
+                // Split the date string and create date in local timezone
+                const dateParts = d.date.split('-');
+                const localDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+                
+                return {
+                    date: localDate,
+                    open: +d.open_price,
+                    high: +d.high_price,
+                    low: +d.low_price,
+                    close: +d.close_price,
+                    volume: +d.volume
+                };
+            }).filter(d => 
                 !isNaN(d.date.getTime()) && 
                 !isNaN(d.open) && 
                 !isNaN(d.high) && 
@@ -674,7 +691,7 @@
                     <div class="card mb-1" id="comment-${comment.id}">
                         <div class="card-body p-2">
                             <div class="d-flex justify-content-between align-items-start">
-                                <p class="card-text mb-0 small flex-grow-1">${escapeHtml(comment.comment_text)} <span class="text-muted">— ${comment.formatted_date}</span></p>
+                                <div class="card-text mb-0 small flex-grow-1" style="white-space: pre-wrap;">${renderAICommentContent(comment.comment_text)} <span class="text-muted">— ${comment.formatted_date}</span></div>
                                 <div class="btn-group btn-group-sm ms-2">
                                     <button class="btn btn-outline-primary btn-sm" onclick="editComment(${comment.id})">Edit</button>
                                     <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">Delete</button>
@@ -684,6 +701,14 @@
                     </div>
                 `).join('');
             }
+        }
+        
+        function renderAICommentContent(content) {
+            // Convert markdown-style formatting to HTML and preserve hyperlinks
+            return content
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold
+                .replace(/\n/g, '<br>');  // Line breaks
+            // Note: Hyperlinks are already in HTML format from the backend processing
         }
         
         function editComment(commentId) {
@@ -844,7 +869,19 @@
                 
                 // Show the input area with the AI response
                 document.getElementById('aiCommentInput').style.display = 'block';
-                document.getElementById('aiCommentText').value = data.response;
+                
+                // Get the display div and set the HTML content
+                const aiCommentDisplay = document.getElementById('aiCommentDisplay');
+                
+                // Convert markdown-style formatting to HTML
+                let htmlContent = data.response
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold
+                    .replace(/\n/g, '<br>');  // Line breaks
+                
+                aiCommentDisplay.innerHTML = htmlContent;
+                
+                // Store the original content for saving
+                window.aiCommentContent = data.response;
             })
             .catch(error => {
                 console.error('Error fetching AI comments:', error);
@@ -857,7 +894,8 @@
         }
         
         function saveAIComment() {
-            const commentText = document.getElementById('aiCommentText').value.trim();
+            // Use the stored content instead of trying to get it from a textarea
+            const commentText = window.aiCommentContent;
             
             if (!commentText) {
                 alert('No AI comment to save');
@@ -885,8 +923,12 @@
                 }
                 
                 // Clear and hide the input area
-                document.getElementById('aiCommentText').value = '';
+                const aiCommentDisplay = document.getElementById('aiCommentDisplay');
+                if (aiCommentDisplay) {
+                    aiCommentDisplay.innerHTML = '';
+                }
                 document.getElementById('aiCommentInput').style.display = 'none';
+                window.aiCommentContent = null;
                 
                 // Reload comments to show the new AI comment
                 loadComments();
@@ -901,11 +943,108 @@
             });
         }
 
+        // Shortlist functionality
+        function checkShortlistStatus() {
+            fetch(`/api/shortlist/${ticker}/check`)
+                .then(response => response.json())
+                .then(data => {
+                    const btn = document.getElementById('shortlistBtn');
+                    const icon = document.getElementById('shortlistIcon');
+                    const text = document.getElementById('shortlistText');
+                    
+                    if (data.in_shortlist) {
+                        btn.className = 'btn btn-success btn-sm w-100';
+                        icon.textContent = '✓';
+                        text.textContent = 'In ShortList';
+                    } else {
+                        btn.className = 'btn btn-outline-success btn-sm w-100';
+                        icon.textContent = '+';
+                        text.textContent = 'Add to ShortList';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking shortlist status:', error);
+                });
+        }
+        
+        function toggleShortlist() {
+            const btn = document.getElementById('shortlistBtn');
+            const icon = document.getElementById('shortlistIcon');
+            const text = document.getElementById('shortlistText');
+            
+            // Check current status
+            const isInShortlist = btn.className.includes('btn-success');
+            
+            if (isInShortlist) {
+                // Remove from shortlist
+                fetch(`/api/shortlist/${ticker}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error removing from shortlist: ' + data.error);
+                        return;
+                    }
+                    
+                    btn.className = 'btn btn-outline-success btn-sm w-100';
+                    icon.textContent = '+';
+                    text.textContent = 'Add to ShortList';
+                    
+                    // Show success message briefly
+                    const originalText = text.textContent;
+                    text.textContent = 'Removed!';
+                    setTimeout(() => {
+                        text.textContent = originalText;
+                    }, 1500);
+                })
+                .catch(error => {
+                    alert('Error removing from shortlist: ' + error.message);
+                });
+            } else {
+                // Add to shortlist
+                const notes = prompt('Optional notes for this stock (leave blank if none):') || '';
+                
+                fetch('/api/shortlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tickers: [ticker],
+                        notes: notes
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error adding to shortlist: ' + data.error);
+                        return;
+                    }
+                    
+                    btn.className = 'btn btn-success btn-sm w-100';
+                    icon.textContent = '✓';
+                    text.textContent = 'In ShortList';
+                    
+                    // Show success message briefly
+                    const originalText = text.textContent;
+                    text.textContent = 'Added!';
+                    setTimeout(() => {
+                        text.textContent = originalText;
+                    }, 1500);
+                })
+                .catch(error => {
+                    alert('Error adding to shortlist: ' + error.message);
+                });
+            }
+        }
+
         // Load data when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadTickerDetails();
             loadCharts();
             loadComments();
+            checkShortlistStatus();
         });
     </script>
 </body>

@@ -249,6 +249,10 @@ def process_bulk_data(session, tickers, company_details, aggregates):
             session.rollback()
 
 def seed_database():
+    # Record start time
+    start_time = time.time()
+    print("Starting database seeding process...")
+    
     database_url = os.getenv('DATABASE_URL')
     if not database_url:
         raise ValueError("DATABASE_URL environment variable is not set")
@@ -300,9 +304,19 @@ def seed_database():
         
         logger.info("Database seeding completed successfully")
         
+        # Calculate and print total time taken
+        end_time = time.time()
+        total_minutes = (end_time - start_time) / 60
+        print(f"Time taken to complete - {total_minutes:.2f} minutes")
+        
     except Exception as e:
         logger.error(f"Error during database seeding: {str(e)}")
         session.rollback()
+        
+        # Calculate and print time taken even if there was an error
+        end_time = time.time()
+        total_minutes = (end_time - start_time) / 60
+        print(f"Process failed after {total_minutes:.2f} minutes")
     finally:
         session.close()
 

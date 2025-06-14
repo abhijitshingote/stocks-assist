@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abi ShortList - Stocks Assist</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .shortlist-table {
+            font-size: 0.85rem;
+        }
+        .shortlist-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            white-space: nowrap;
+        }
+        .shortlist-table td {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+        .ticker-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .ticker-link:hover {
+            text-decoration: underline;
+        }
+        .remove-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        .notes-cell {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Stocks Assist</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return1D">1D Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return5D">5D Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return20D">20D Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return60D">60D Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Return120D">120D Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Gapper">Gapper Screen</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Volume">Volume Screen</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/AllReturns">All Returns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/AbiShortList">Abi ShortList</a>
+                    </li>
+                </ul>
+                <span class="navbar-text">
+                    <small>lastTrade: <span id="navbarLatestDate">Loading...</span></small>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Abi ShortList</h2>
+                    <div>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="refreshShortlist()">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </button>
+                        <button class="btn btn-danger btn-sm ms-2" onclick="clearAllShortlist()" id="clearAllBtn" style="display: none;">
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading shortlist...</span>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <h4>No stocks in your shortlist yet</h4>
+                    <p>Visit the screening pages (1D Returns, Volume, Gapper, etc.) to add stocks to your shortlist.</p>
+                </div>
+
+                <!-- Shortlist Table -->
+                <div id="shortlistTableContainer" style="display: none;">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover shortlist-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Company</th>
+                                    <th>Sector</th>
+                                    <th>Industry</th>
+                                    <th>Market Cap</th>
+                                    <th>Current Price</th>
+                                    <th>1D Return</th>
+                                    <th>5D Return</th>
+                                    <th>20D Return</th>
+                                    <th>60D Return</th>
+                                    <th>120D Return</th>
+                                    <th>Weighted Score</th>
+                                    <th>Shortlisted Date</th>
+                                    <th>Notes</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shortlistTableBody">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='navbar-date.js') }}"></script>
+    <script>
+        // Load shortlist data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadShortlist();
+        });
+
+        function loadShortlist() {
+            console.log('Loading shortlist...');
+            showLoading();
+            
+            fetch('/api/shortlist')
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Shortlist data:', data);
+                    hideLoading();
+                    
+                    if (data.error) {
+                        showError(data.error);
+                        return;
+                    }
+                    
+                    if (data.length === 0) {
+                        showEmptyState();
+                        return;
+                    }
+                    
+                    displayShortlist(data);
+                })
+                .catch(error => {
+                    console.error('Error loading shortlist:', error);
+                    hideLoading();
+                    showError('Error loading shortlist: ' + error.message);
+                });
+        }
+
+        function displayShortlist(data) {
+            const tbody = document.getElementById('shortlistTableBody');
+            tbody.innerHTML = '';
+            
+            data.forEach(stock => {
+                const row = document.createElement('tr');
+                
+                // Format returns with color coding
+                const return1d = parseFloat(stock.return_1d?.replace('%', '') || 0);
+                const return5d = parseFloat(stock.return_5d?.replace('%', '') || 0);
+                const return20d = parseFloat(stock.return_20d?.replace('%', '') || 0);
+                const return60d = parseFloat(stock.return_60d?.replace('%', '') || 0);
+                const return120d = parseFloat(stock.return_120d?.replace('%', '') || 0);
+                const weightedScore = parseFloat(stock.weighted_score || 0);
+                
+                row.innerHTML = `
+                    <td><a href="/ticker/${stock.ticker}" class="ticker-link">${stock.ticker}</a></td>
+                    <td>${stock.company_name || 'N/A'}</td>
+                    <td>${stock.sector || 'N/A'}</td>
+                    <td>${stock.industry || 'N/A'}</td>
+                    <td>${stock.market_cap || 'N/A'}</td>
+                    <td>${stock.current_price || 'N/A'}</td>
+                    <td class="${return1d >= 0 ? 'positive' : 'negative'}">${stock.return_1d || 'N/A'}</td>
+                    <td class="${return5d >= 0 ? 'positive' : 'negative'}">${stock.return_5d || 'N/A'}</td>
+                    <td class="${return20d >= 0 ? 'positive' : 'negative'}">${stock.return_20d || 'N/A'}</td>
+                    <td class="${return60d >= 0 ? 'positive' : 'negative'}">${stock.return_60d || 'N/A'}</td>
+                    <td class="${return120d >= 0 ? 'positive' : 'negative'}">${stock.return_120d || 'N/A'}</td>
+                    <td class="${weightedScore >= 0 ? 'positive' : 'negative'}">${stock.weighted_score || 'N/A'}</td>
+                    <td>${stock.shortlisted_date || 'N/A'}</td>
+                    <td class="notes-cell" title="${stock.notes || ''}">${stock.notes || ''}</td>
+                    <td>
+                        <button class="btn btn-outline-danger remove-btn" onclick="removeFromShortlist('${stock.ticker}')">
+                            Remove
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById('shortlistTableContainer').style.display = 'block';
+            document.getElementById('clearAllBtn').style.display = 'inline-block';
+        }
+
+        function removeFromShortlist(ticker) {
+            if (!confirm(`Are you sure you want to remove ${ticker} from your shortlist?`)) {
+                return;
+            }
+            
+            fetch(`/api/shortlist/${ticker}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error removing stock: ' + data.error);
+                    return;
+                }
+                
+                // Reload the shortlist
+                loadShortlist();
+            })
+            .catch(error => {
+                alert('Error removing stock: ' + error.message);
+            });
+        }
+
+        function clearAllShortlist() {
+            if (!confirm('Are you sure you want to clear your entire shortlist? This action cannot be undone.')) {
+                return;
+            }
+            
+            // Get all tickers currently in the shortlist
+            const rows = document.querySelectorAll('#shortlistTableBody tr');
+            const tickers = Array.from(rows).map(row => {
+                const tickerLink = row.querySelector('.ticker-link');
+                return tickerLink ? tickerLink.textContent : null;
+            }).filter(ticker => ticker);
+            
+            if (tickers.length === 0) {
+                return;
+            }
+            
+            // Remove each ticker
+            Promise.all(tickers.map(ticker => 
+                fetch(`/api/shortlist/${ticker}`, { method: 'DELETE' })
+            ))
+            .then(() => {
+                loadShortlist();
+            })
+            .catch(error => {
+                alert('Error clearing shortlist: ' + error.message);
+            });
+        }
+
+        function refreshShortlist() {
+            loadShortlist();
+        }
+
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('shortlistTableContainer').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('shortlistTableContainer').style.display = 'none';
+        }
+
+        function showEmptyState() {
+            document.getElementById('emptyState').style.display = 'block';
+            document.getElementById('shortlistTableContainer').style.display = 'none';
+            document.getElementById('clearAllBtn').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

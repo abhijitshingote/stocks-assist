@@ -22,7 +22,6 @@ services:
 
   web:
     build: .
-    command: python app.py
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/stocks_db
       - POLYGON_API_KEY=${POLYGON_API_KEY}

@@ -65,6 +65,22 @@ class Comment(Base):
     def __repr__(self):
         return f"<Comment(ticker='{self.ticker}', type='{self.comment_type}', status='{self.status}', created_at='{self.created_at}')>"
 
+class ShortList(Base):
+    __tablename__ = 'shortlist'
+    
+    id = Column(Integer, primary_key=True)
+    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
+    shortlisted_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    notes = Column(Text)  # Optional notes about why this stock was shortlisted
+    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+    
+    # Ensure each ticker can only be shortlisted once
+    __table_args__ = (UniqueConstraint('ticker', name='_ticker_shortlist_uc'),)
+    
+    def __repr__(self):
+        return f"<ShortList(ticker='{self.ticker}', shortlisted_at='{self.shortlisted_at}')>"
+
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
     engine = create_engine(database_url)

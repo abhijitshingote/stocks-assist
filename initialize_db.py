@@ -26,6 +26,7 @@ def initialize_database(reset=False):
         if reset:
             print("Resetting database - dropping existing tables...")
             # Drop all tables if they exist (including both old and new table names)
+            connection.execute(text("DROP TABLE IF EXISTS shortlist CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS comment CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stocks CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS ticker CASCADE;"))
@@ -86,6 +87,20 @@ def initialize_database(reset=False):
             )
         """))
         
+        # Create shortlist table
+        connection.execute(text(f"""
+            {table_creation_clause} shortlist (
+                id SERIAL PRIMARY KEY,
+                ticker VARCHAR(10) NOT NULL,
+                shortlisted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                notes TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ticker) REFERENCES ticker(ticker) ON DELETE CASCADE,
+                CONSTRAINT _ticker_shortlist_uc UNIQUE (ticker)
+            )
+        """))
+        
         # Create indexes for better query performance
         index_creation_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
         connection.execute(text(f"""
@@ -100,6 +115,8 @@ def initialize_database(reset=False):
             {index_creation_clause} idx_comment_created_at ON comment(created_at);
             {index_creation_clause} idx_comment_type ON comment(comment_type);
             {index_creation_clause} idx_comment_status ON comment(status);
+            {index_creation_clause} idx_shortlist_ticker ON shortlist(ticker);
+            {index_creation_clause} idx_shortlist_shortlisted_at ON shortlist(shortlisted_at);
         """))
         
         connection.commit()
@@ -110,11 +127,13 @@ def initialize_database(reset=False):
             print("- New 'ticker' table created (company info only)")
             print("- Price table recreated (daily price data)")
             print("- Comment table created (user/AI comments with review workflow)")
+            print("- Shortlist table created (Abi's stock shortlist)")
         else:
             print("Database initialization completed successfully!")
             print("- 'ticker' table ready (company info only)")
             print("- 'price' table ready (daily price data)")
             print("- 'comment' table ready (user/AI comments with review workflow)")
+            print("- 'shortlist' table ready (Abi's stock shortlist)")
 
 if __name__ == "__main__":
     # Check for reset flag

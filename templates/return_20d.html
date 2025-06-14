@@ -61,6 +61,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/AllReturns">All Returns</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/AbiShortList">Abi ShortList</a>
+                    </li>
                 </ul>
                 <span class="navbar-text">
                     <small>lastTrade: <span id="navbarLatestDate">Loading...</span></small>
@@ -73,9 +76,35 @@
         <h1>Return 20D Stocks</h1>
         <p class="text-muted">Stocks with 20-day returns above 5%, 10-day average price above $5, and average daily dollar volume above $10M</p>
         
+        <!-- Bulk Selection Controls -->
+        <div class="card mb-4" id="bulkSelectionCard" style="display: none;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span id="selectedCount">0</span> stocks selected
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-success btn-sm" onclick="addSelectedToShortlist()">
+                            Add Selected to ShortList
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm ms-2" onclick="clearSelection()">
+                            Clear Selection
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Above 200M Section -->
         <div class="mb-5">
-            <h2 class="text-primary">Above $200M Market Cap</h2>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="text-primary mb-0">Above $200M Market Cap</h2>
+                <div>
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="selectAllAbove()">
+                        Select All Above 200M
+                    </button>
+                </div>
+            </div>
             <p class="text-muted">Stocks with market cap above $200 million</p>
             
             <div id="loading-above" class="loading">
@@ -92,6 +121,9 @@
                     <table class="table table-striped table-hover">
                         <thead class="table-dark sticky-top">
                             <tr>
+                                <th style="width: 40px;">
+                                    <input type="checkbox" class="form-check-input" id="selectAllAboveCheckbox" onchange="toggleSelectAllAbove()">
+                                </th>
                                 <th>Ticker</th>
                                 <th>Company</th>
                                 <th>Sector</th>
@@ -114,7 +146,14 @@
 
         <!-- Below 200M Section -->
         <div class="mb-5">
-            <h2 class="text-success">Below $200M Market Cap</h2>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="text-success mb-0">Below $200M Market Cap</h2>
+                <div>
+                    <button type="button" class="btn btn-outline-success btn-sm" onclick="selectAllBelow()">
+                        Select All Below 200M
+                    </button>
+                </div>
+            </div>
             <p class="text-muted">Stocks with market cap below $200 million</p>
             
             <div id="loading-below" class="loading">
@@ -131,6 +170,9 @@
                 <table class="table table-striped table-hover">
                     <thead class="table-dark sticky-top">
                         <tr>
+                            <th style="width: 40px;">
+                                <input type="checkbox" class="form-check-input" id="selectAllBelowCheckbox" onchange="toggleSelectAllBelow()">
+                            </th>
                             <th>Ticker</th>
                             <th>Company</th>
                             <th>Sector</th>
@@ -233,13 +275,16 @@
             tbody.innerHTML = '';
             
             if (stocks.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="text-center">No stocks found matching the criteria</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center">No stocks found matching the criteria</td></tr>';
                 return;
             }
             
             stocks.forEach(stock => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
+                    <td>
+                        <input type="checkbox" class="form-check-input stock-checkbox" value="${stock.ticker}" onchange="updateSelectionCount()">
+                    </td>
                     <td><strong><a href="/ticker/${stock.ticker}" style="color: #007bff; text-decoration: none;">${stock.ticker}</a></strong></td>
                     <td>${stock.company_name}</td>
                     <td>${stock.sector || 'N/A'}</td>
@@ -251,6 +296,131 @@
                     <td><span class="badge bg-success">${stock.price_change_pct}</span></td>
                 `;
                 tbody.appendChild(row);
+            });
+        }
+
+        // Bulk selection functions
+        function updateSelectionCount() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox:checked');
+            const count = checkboxes.length;
+            document.getElementById('selectedCount').textContent = count;
+            
+            const bulkCard = document.getElementById('bulkSelectionCard');
+            if (count > 0) {
+                bulkCard.style.display = 'block';
+            } else {
+                bulkCard.style.display = 'none';
+            }
+            
+            // Update select all checkboxes
+            updateSelectAllCheckboxes();
+        }
+
+        function updateSelectAllCheckboxes() {
+            const aboveCheckboxes = document.querySelectorAll('#stockTableBodyAbove .stock-checkbox');
+            const belowCheckboxes = document.querySelectorAll('#stockTableBodyBelow .stock-checkbox');
+            
+            const aboveChecked = document.querySelectorAll('#stockTableBodyAbove .stock-checkbox:checked');
+            const belowChecked = document.querySelectorAll('#stockTableBodyBelow .stock-checkbox:checked');
+            
+            const selectAllAbove = document.getElementById('selectAllAboveCheckbox');
+            const selectAllBelow = document.getElementById('selectAllBelowCheckbox');
+            
+            if (selectAllAbove) {
+                selectAllAbove.checked = aboveCheckboxes.length > 0 && aboveChecked.length === aboveCheckboxes.length;
+                selectAllAbove.indeterminate = aboveChecked.length > 0 && aboveChecked.length < aboveCheckboxes.length;
+            }
+            
+            if (selectAllBelow) {
+                selectAllBelow.checked = belowCheckboxes.length > 0 && belowChecked.length === belowCheckboxes.length;
+                selectAllBelow.indeterminate = belowChecked.length > 0 && belowChecked.length < belowCheckboxes.length;
+            }
+        }
+
+        function toggleSelectAllAbove() {
+            const selectAllCheckbox = document.getElementById('selectAllAboveCheckbox');
+            const checkboxes = document.querySelectorAll('#stockTableBodyAbove .stock-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            updateSelectionCount();
+        }
+
+        function toggleSelectAllBelow() {
+            const selectAllCheckbox = document.getElementById('selectAllBelowCheckbox');
+            const checkboxes = document.querySelectorAll('#stockTableBodyBelow .stock-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            updateSelectionCount();
+        }
+
+        function selectAllAbove() {
+            const checkboxes = document.querySelectorAll('#stockTableBodyAbove .stock-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            updateSelectionCount();
+        }
+
+        function selectAllBelow() {
+            const checkboxes = document.querySelectorAll('#stockTableBodyBelow .stock-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            updateSelectionCount();
+        }
+
+        function clearSelection() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateSelectionCount();
+        }
+
+        function addSelectedToShortlist() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox:checked');
+            const tickers = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (tickers.length === 0) {
+                alert('Please select at least one stock to add to your shortlist.');
+                return;
+            }
+            
+            const notes = prompt('Optional notes for these stocks (leave blank if none):') || '';
+            
+            fetch('/api/shortlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tickers: tickers,
+                    notes: notes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error adding to shortlist: ' + data.error);
+                    return;
+                }
+                
+                let message = data.message;
+                if (data.errors && data.errors.length > 0) {
+                    message += '\n\nErrors:\n' + data.errors.join('\n');
+                }
+                
+                alert(message);
+                clearSelection();
+            })
+            .catch(error => {
+                alert('Error adding to shortlist: ' + error.message);
             });
         }
     </script>

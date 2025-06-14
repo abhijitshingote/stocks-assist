@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from models import Stock, Price, Comment, init_db
+from models import Stock, Price, Comment, ShortList, init_db
 from sqlalchemy import desc, func, and_, text
 from datetime import datetime, timedelta
 import os
@@ -71,6 +71,10 @@ def volume():
 @app.route('/AllReturns')
 def all_returns():
     return render_template('all_returns.html')
+
+@app.route('/AbiShortList')
+def abi_shortlist():
+    return render_template('abi_shortlist.html')
 
 @app.route('/ticker/<ticker>')
 def ticker_detail(ticker):
@@ -308,18 +312,17 @@ def get_latest_date():
         
         # Format the response in compact 12-hour Eastern Time format
         if latest_timestamp:
-            # If we have a last traded timestamp, format it in 12-hour format
-            # Convert to Eastern Time if it's not already
-            if latest_timestamp.tzinfo is None:
-                # If no timezone info, assume UTC and convert to Eastern
-                eastern = pytz.timezone('US/Eastern')
-                latest_timestamp = pytz.UTC.localize(latest_timestamp).astimezone(eastern)
-            elif latest_timestamp.tzinfo != pytz.timezone('US/Eastern'):
-                # Convert to Eastern Time
-                eastern = pytz.timezone('US/Eastern')
-                latest_timestamp = latest_timestamp.astimezone(eastern)
+            # Always ensure we're in Eastern Time for display
+            eastern = pytz.timezone('US/Eastern')
             
-            formatted_datetime = latest_timestamp.strftime('%y/%m/%d %I:%M %p EST')
+            if latest_timestamp.tzinfo is None:
+                # If no timezone info, assume it's already in Eastern Time (as stored in our DB)
+                eastern_timestamp = eastern.localize(latest_timestamp)
+            else:
+                # Convert to Eastern Time regardless of current timezone
+                eastern_timestamp = latest_timestamp.astimezone(eastern)
+            
+            formatted_datetime = eastern_timestamp.strftime('%y/%m/%d %I:%M %p EST')
         else:
             # Fallback to just the date if no timestamp available
             formatted_datetime = latest_date.strftime('%y/%m/%d')
@@ -1225,28 +1228,38 @@ def get_perplexity_analysis():
             "Content-Type": "application/json"
         }
         
-        data = {
+        request_data = {
             "model": "sonar",
             "messages": [{"role": "user", "content": prompt}],
             "stream": False
         }
         
         # Log the request data for debugging
-        logger.info(f"Making request to Perplexity API with data: {data}")
+        logger.info(f"Making request to Perplexity API with data: {request_data}")
         
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json=request_data)
         
         # Log the response for debugging
         if not response.ok:
             logger.error(f"Perplexity API error response: {response.text}")
-            logger.error(f"Request data was: {data}")
+            logger.error(f"Request data was: {request_data}")
             logger.error(f"Headers were: {headers}")
         
         response.raise_for_status()
         result = response.json()
         
+        # Extract the main content
+        content = result["choices"][0]["message"]["content"]
+        
+        # Extract citations if they exist
+        citations = result.get("citations", [])
+        
+        # Process content to add hyperlinks to citations
+        processed_content = process_citations_in_content(content, citations)
+        
         return jsonify({
-            'response': result["choices"][0]["message"]["content"]
+            'response': processed_content,
+            'citations': citations
         })
         
     except requests.exceptions.RequestException as e:
@@ -1258,6 +1271,40 @@ def get_perplexity_analysis():
     except Exception as e:
         logger.error(f"Error in get_perplexity_analysis: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+def process_citations_in_content(content, citations):
+    """Process content to convert citation numbers to hyperlinks"""
+    import re
+    
+    if not citations:
+        return content
+    
+    # Create a mapping of citation numbers to URLs
+    citation_map = {}
+    for i, citation_url in enumerate(citations, 1):
+        citation_map[str(i)] = citation_url
+    
+    # Pattern to match citation numbers like [1], [2], etc.
+    citation_pattern = r'\[(\d+)\]'
+    
+    def replace_citation(match):
+        citation_num = match.group(1)
+        if citation_num in citation_map:
+            url = citation_map[citation_num]
+            # Create a hyperlink with the citation number
+            return f'<a href="{url}" target="_blank" rel="noopener noreferrer">[{citation_num}]</a>'
+        return match.group(0)  # Return original if no matching citation
+    
+    # Replace citation numbers with hyperlinks
+    processed_content = re.sub(citation_pattern, replace_citation, content)
+    
+    # Add a references section at the end if citations exist
+    if citations:
+        processed_content += "\n\n**References:**\n"
+        for i, citation_url in enumerate(citations, 1):
+            processed_content += f"{i}. <a href=\"{citation_url}\" target=\"_blank\" rel=\"noopener noreferrer\">{citation_url}</a>\n"
+    
+    return processed_content
 
 @app.route('/api/comments/<int:comment_id>', methods=['DELETE'])
 def delete_comment(comment_id):
@@ -1311,6 +1358,287 @@ def edit_comment(comment_id):
         
     except Exception as e:
         logger.error(f"Error editing comment {comment_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# Helper function for shortlist data
+def get_all_returns_data_for_tickers(tickers, above_200m=None):
+    """Get all returns data for specific tickers (used by shortlist)"""
+    try:
+        # Get the latest date for which we have price data
+        latest_date = session.query(func.max(Price.date)).scalar()
+        if not latest_date:
+            return []
+
+        # Get the actual trading dates for different return periods
+        trading_dates_1d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
+        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+
+        if len(trading_dates_1d) < 2:
+            return []
+
+        start_date_1d = trading_dates_1d[-1][0] if len(trading_dates_1d) >= 2 else latest_date
+        start_date_5d = trading_dates_5d[-1][0] if len(trading_dates_5d) >= 6 else latest_date
+        start_date_20d = trading_dates_20d[-1][0] if len(trading_dates_20d) >= 21 else latest_date
+        start_date_60d = trading_dates_60d[-1][0] if len(trading_dates_60d) >= 61 else latest_date
+        start_date_120d = trading_dates_120d[-1][0] if len(trading_dates_120d) >= 121 else latest_date
+
+        # Get the last 10 actual trading dates for average calculations
+        last_10_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
+        ten_days_ago = last_10_trading_dates[-1][0] if len(last_10_trading_dates) >= 10 else latest_date
+
+        # Build the query for the specific tickers
+        query = session.query(
+            Stock.ticker,
+            Stock.company_name,
+            Stock.sector,
+            Stock.industry,
+            Stock.market_cap,
+            func.avg(Price.close_price).label('avg_10day_price'),
+            func.avg(Price.volume * Price.close_price).label('avg_dollar_volume')
+        ).join(
+            Price, Stock.ticker == Price.ticker
+        ).filter(
+            Stock.ticker.in_(tickers),
+            Price.date >= ten_days_ago,
+            Price.date <= latest_date
+        ).group_by(
+            Stock.ticker, Stock.company_name, Stock.sector, 
+            Stock.industry, Stock.market_cap
+        )
+
+        stocks_data = query.all()
+        
+        result = []
+        for stock in stocks_data:
+            # Get prices for different periods
+            prices = session.query(Price.close_price, Price.date).filter(
+                Price.ticker == stock.ticker,
+                Price.date.in_([latest_date, start_date_1d, start_date_5d, start_date_20d, start_date_60d, start_date_120d])
+            ).all()
+            
+            price_dict = {price.date: price.close_price for price in prices}
+            
+            current_price = price_dict.get(latest_date, 0)
+            price_1d = price_dict.get(start_date_1d, current_price)
+            price_5d = price_dict.get(start_date_5d, current_price)
+            price_20d = price_dict.get(start_date_20d, current_price)
+            price_60d = price_dict.get(start_date_60d, current_price)
+            price_120d = price_dict.get(start_date_120d, current_price)
+
+            # Calculate returns
+            return_1d = ((current_price - price_1d) / price_1d * 100) if price_1d > 0 else 0
+            return_5d = ((current_price - price_5d) / price_5d * 100) if price_5d > 0 else 0
+            return_20d = ((current_price - price_20d) / price_20d * 100) if price_20d > 0 else 0
+            return_60d = ((current_price - price_60d) / price_60d * 100) if price_60d > 0 else 0
+            return_120d = ((current_price - price_120d) / price_120d * 100) if price_120d > 0 else 0
+
+            # Calculate weighted score using the same weights as AllReturns
+            weighted_score = (
+                return_1d * DEFAULT_PRIORITY_WEIGHTS['1d'] +
+                return_5d * DEFAULT_PRIORITY_WEIGHTS['5d'] +
+                return_20d * DEFAULT_PRIORITY_WEIGHTS['20d'] +
+                return_60d * DEFAULT_PRIORITY_WEIGHTS['60d'] +
+                return_120d * DEFAULT_PRIORITY_WEIGHTS['120d']
+            )
+
+            result.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'return_1d': f"{return_1d:.1f}%",
+                'return_5d': f"{return_5d:.1f}%",
+                'return_20d': f"{return_20d:.1f}%",
+                'return_60d': f"{return_60d:.1f}%",
+                'return_120d': f"{return_120d:.1f}%",
+                'weighted_score': f"{weighted_score:.1f}",
+                'avg_10day_price': f"${stock.avg_10day_price:.2f}",
+                'avg_dollar_volume': f"${stock.avg_dollar_volume:,.0f}",
+                'latest_date': latest_date.strftime('%Y-%m-%d')
+            })
+
+        return result
+
+    except Exception as e:
+        logger.error(f"Error in get_all_returns_data_for_tickers: {str(e)}")
+        return []
+
+# Shortlist API endpoints
+@app.route('/api/shortlist', methods=['GET'])
+def get_shortlist():
+    """Get all shortlisted stocks with their data"""
+    try:
+        # Get shortlisted tickers with their shortlist info
+        shortlisted_stocks = session.query(
+            ShortList.ticker,
+            ShortList.shortlisted_at,
+            ShortList.notes,
+            Stock.company_name,
+            Stock.sector,
+            Stock.industry,
+            Stock.market_cap
+        ).join(
+            Stock, ShortList.ticker == Stock.ticker
+        ).order_by(desc(ShortList.shortlisted_at)).all()
+        
+        if not shortlisted_stocks:
+            return jsonify([])
+        
+        # Get the latest date for price data
+        latest_date = session.query(func.max(Price.date)).scalar()
+        if not latest_date:
+            return jsonify([])
+        
+        # Get current prices for shortlisted stocks
+        tickers = [stock.ticker for stock in shortlisted_stocks]
+        current_prices = session.query(
+            Price.ticker,
+            Price.close_price
+        ).filter(
+            Price.ticker.in_(tickers),
+            Price.date == latest_date
+        ).all()
+        
+        price_dict = {price.ticker: price.close_price for price in current_prices}
+        
+        # Get all returns data for shortlisted stocks
+        shortlist_data = get_all_returns_data_for_tickers(tickers)
+        shortlist_dict = {item['ticker']: item for item in shortlist_data}
+        
+        result = []
+        for stock in shortlisted_stocks:
+            # Get the returns data for this ticker
+            returns_data = shortlist_dict.get(stock.ticker, {})
+            
+            # Format market cap
+            market_cap = stock.market_cap
+            if market_cap and market_cap >= 1000000000:  # >= 1B
+                market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
+                if market_cap_formatted.endswith('.0B'):
+                    market_cap_formatted = market_cap_formatted[:-3] + 'B'
+            elif market_cap and market_cap >= 1000000:  # >= 1M
+                market_cap_formatted = f"{market_cap / 1000000:.0f}M"
+            else:
+                market_cap_formatted = "N/A"
+            
+            result.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': market_cap_formatted,
+                'current_price': f"${price_dict.get(stock.ticker, 0):.2f}" if stock.ticker in price_dict else "N/A",
+                'shortlisted_at': stock.shortlisted_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'shortlisted_date': stock.shortlisted_at.strftime('%Y-%m-%d'),
+                'notes': stock.notes or '',
+                # Include all returns data
+                **returns_data
+            })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error getting shortlist: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/shortlist', methods=['POST'])
+def add_to_shortlist():
+    """Add tickers to shortlist"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'tickers' not in data:
+            return jsonify({'error': 'Tickers list is required'}), 400
+        
+        tickers = data['tickers']
+        if not isinstance(tickers, list) or not tickers:
+            return jsonify({'error': 'Tickers must be a non-empty list'}), 400
+        
+        notes = data.get('notes', '')
+        
+        added_count = 0
+        skipped_count = 0
+        errors = []
+        
+        for ticker in tickers:
+            try:
+                ticker = ticker.upper().strip()
+                
+                # Verify ticker exists in our database
+                stock = session.query(Stock).filter(Stock.ticker == ticker).first()
+                if not stock:
+                    errors.append(f"Ticker {ticker} not found in database")
+                    continue
+                
+                # Check if already shortlisted
+                existing = session.query(ShortList).filter(ShortList.ticker == ticker).first()
+                if existing:
+                    skipped_count += 1
+                    continue
+                
+                # Add to shortlist
+                shortlist_entry = ShortList(
+                    ticker=ticker,
+                    notes=notes
+                )
+                
+                session.add(shortlist_entry)
+                added_count += 1
+                
+            except Exception as e:
+                errors.append(f"Error adding {ticker}: {str(e)}")
+        
+        session.commit()
+        
+        return jsonify({
+            'added_count': added_count,
+            'skipped_count': skipped_count,
+            'errors': errors,
+            'message': f"Added {added_count} stocks to shortlist, skipped {skipped_count} already shortlisted"
+        })
+        
+    except Exception as e:
+        logger.error(f"Error adding to shortlist: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/shortlist/<ticker>', methods=['DELETE'])
+def remove_from_shortlist(ticker):
+    """Remove a ticker from shortlist"""
+    try:
+        ticker = ticker.upper()
+        
+        shortlist_entry = session.query(ShortList).filter(ShortList.ticker == ticker).first()
+        if not shortlist_entry:
+            return jsonify({'error': 'Ticker not found in shortlist'}), 404
+        
+        session.delete(shortlist_entry)
+        session.commit()
+        
+        return jsonify({'message': f'{ticker} removed from shortlist'})
+        
+    except Exception as e:
+        logger.error(f"Error removing {ticker} from shortlist: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/shortlist/<ticker>/check', methods=['GET'])
+def check_shortlist_status(ticker):
+    """Check if a ticker is in the shortlist"""
+    try:
+        ticker = ticker.upper()
+        
+        shortlist_entry = session.query(ShortList).filter(ShortList.ticker == ticker).first()
+        
+        return jsonify({
+            'ticker': ticker,
+            'is_shortlisted': shortlist_entry is not None,
+            'shortlisted_at': shortlist_entry.shortlisted_at.strftime('%Y-%m-%d %H:%M:%S') if shortlist_entry else None
+        })
+        
+    except Exception as e:
+        logger.error(f"Error checking shortlist status for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
