@@ -20,4 +20,13 @@ function loadNavbarLatestDate() {
 // Auto-load when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     loadNavbarLatestDate();
+});
+
+// Also try to load when the window is fully loaded (fallback)
+window.addEventListener('load', function() {
+    // Only load if the element still shows "Loading..."
+    const navbarDateElement = document.getElementById('navbarLatestDate');
+    if (navbarDateElement && navbarDateElement.textContent === 'Loading...') {
+        loadNavbarLatestDate();
+    }
 }); 

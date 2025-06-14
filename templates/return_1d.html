@@ -1,3 +1,25 @@
+{% extends "screener_base.html" %}
+
+{% block title %}1-Day Returns - Stock Screener{% endblock %}
+
+{% block page_title %}1-Day Returns{% endblock %}
+{% block page_description %}Top performing stocks based on 1-day price returns{% endblock %}
+
+{% set active_page = 'return_1d' %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+    // Configure this page
+    pageConfig = {
+        type: 'returns',
+        returnDays: '1-Day',
+        apiAbove: '/api/Return1D-Above200M',
+        apiBelow: '/api/Return1D-Below200M'
+    };
+</script>
+{% endblock %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
