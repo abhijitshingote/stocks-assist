@@ -69,6 +69,7 @@
         <!-- Stock Filter Section -->
         <div class="filter-section">
             <h4 class="mb-4">Filter Stocks</h4>
+            <!-- Row 1 -->
             <div class="row">
                 <div class="col-md-3">
                     <label for="sector">Sector</label>
@@ -83,14 +84,49 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="minMarketCap">Min Market Cap (in billions)</label>
-                    <input type="number" class="form-control" id="minMarketCap" step="0.1">
+                    <label for="exchange">Exchange</label>
+                    <select class="form-select" id="exchange">
+                        <option value="">All Exchanges</option>
+                    </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="maxPERatio">Max P/E Ratio</label>
-                    <input type="number" class="form-control" id="maxPERatio" step="0.1">
+                    <!-- Empty for now -->
                 </div>
             </div>
+            <!-- Row 2 - Market Cap -->
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <label for="minMarketCap">Min Market Cap (billions)</label>
+                    <input type="number" class="form-control" id="minMarketCap" step="0.1" placeholder="e.g., 1.0">
+                </div>
+                <div class="col-md-3">
+                    <label for="maxMarketCap">Max Market Cap (billions)</label>
+                    <input type="number" class="form-control" id="maxMarketCap" step="0.1" placeholder="e.g., 100.0">
+                </div>
+                <div class="col-md-3">
+                    <label for="minBeta">Min Beta</label>
+                    <input type="number" class="form-control" id="minBeta" step="0.1" placeholder="e.g., 0.5">
+                </div>
+                <div class="col-md-3">
+                    <label for="maxBeta">Max Beta</label>
+                    <input type="number" class="form-control" id="maxBeta" step="0.1" placeholder="e.g., 2.0">
+                </div>
+            </div>
+            <!-- Row 3 - IPO Date -->
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <label for="minIpoDate">IPO Date After</label>
+                    <input type="date" class="form-control" id="minIpoDate">
+                </div>
+                <div class="col-md-3">
+                    <label for="maxIpoDate">IPO Date Before</label>
+                    <input type="date" class="form-control" id="maxIpoDate">
+                </div>
+                <div class="col-md-6">
+                    <!-- Empty columns for alignment -->
+                </div>
+            </div>
+            <!-- Buttons -->
             <div class="row mt-3">
                 <div class="col-12">
                     <button class="btn btn-primary" onclick="applyFilters()">Search Stocks</button>
@@ -139,9 +175,10 @@
     <script>
         // Initialize Select2 and load data
         $(document).ready(function() {
-            $('#sector, #industry').select2();
+            $('#sector, #industry, #exchange').select2();
             loadSectors();
             loadIndustries();
+            loadExchanges();
             loadMarketCapDistribution();
         });
 
@@ -169,11 +206,28 @@
                 .catch(error => console.error('Error loading industries:', error));
         }
 
+        function loadExchanges() {
+            fetch('/api/exchanges')
+                .then(response => response.json())
+                .then(exchanges => {
+                    const select = $('#exchange');
+                    exchanges.forEach(exchange => {
+                        select.append(new Option(exchange, exchange));
+                    });
+                })
+                .catch(error => console.error('Error loading exchanges:', error));
+        }
+
         function loadStocks() {
             const sector = $('#sector').val();
             const industry = $('#industry').val();
+            const exchange = $('#exchange').val();
             const minMarketCap = $('#minMarketCap').val();
-            const maxPERatio = $('#maxPERatio').val();
+            const maxMarketCap = $('#maxMarketCap').val();
+            const minBeta = $('#minBeta').val();
+            const maxBeta = $('#maxBeta').val();
+            const minIpoDate = $('#minIpoDate').val();
+            const maxIpoDate = $('#maxIpoDate').val();
 
             // Show loading indicator
             const container = $('#stocksContainer');
@@ -182,8 +236,13 @@
             let url = '/api/stocks?';
             if (sector) url += `sector=${encodeURIComponent(sector)}&`;
             if (industry) url += `industry=${encodeURIComponent(industry)}&`;
+            if (exchange) url += `exchange=${encodeURIComponent(exchange)}&`;
             if (minMarketCap) url += `min_market_cap=${minMarketCap * 1e9}&`;
-            if (maxPERatio) url += `max_pe_ratio=${maxPERatio}`;
+            if (maxMarketCap) url += `max_market_cap=${maxMarketCap * 1e9}&`;
+            if (minBeta) url += `min_beta=${minBeta}&`;
+            if (maxBeta) url += `max_beta=${maxBeta}&`;
+            if (minIpoDate) url += `min_ipo_date=${minIpoDate}&`;
+            if (maxIpoDate) url += `max_ipo_date=${maxIpoDate}&`;
 
             fetch(url)
                 .then(response => response.json())
@@ -195,25 +254,53 @@
                         return;
                     }
 
-                    stocks.forEach(stock => {
-                        const card = `
-                            <div class="col-md-4 mb-4">
-                                <div class="card stock-card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${stock.ticker}</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">${stock.company_name || 'N/A'}</h6>
-                                        <p class="card-text">
-                                            <strong>Sector:</strong> ${stock.sector || 'N/A'}<br>
-                                            <strong>Industry:</strong> ${stock.industry || 'N/A'}<br>
-                                            <strong>Market Cap:</strong> ${formatMarketCap(stock.market_cap)}<br>
-                                            <strong>Current Price:</strong> ${formatPrice(stock.close_price)}
-                                        </p>
-                                        <a href="/ticker/${stock.ticker}" class="btn btn-primary btn-sm">View Details</a>
-                                    </div>
-                                </div>
+                    // Create table
+                    const table = `
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover table-sm">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Ticker</th>
+                                            <th>Company</th>
+                                            <th>Sector</th>
+                                            <th>Industry</th>
+                                            <th>Exchange</th>
+                                            <th>Market Cap</th>
+                                            <th>Beta</th>
+                                            <th>IPO Date</th>
+                                            <th>Price</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="stocksTableBody">
+                                    </tbody>
+                                </table>
                             </div>
+                            <div class="mt-2">
+                                <small class="text-muted">Found ${stocks.length} stocks matching your criteria</small>
+                            </div>
+                        </div>
+                    `;
+                    container.html(table);
+
+                    const tbody = $('#stocksTableBody');
+                    stocks.forEach(stock => {
+                        const row = `
+                            <tr>
+                                <td><strong><a href="/ticker/${stock.ticker}" class="text-decoration-none">${stock.ticker}</a></strong></td>
+                                <td class="text-truncate" style="max-width: 200px;" title="${stock.company_name || 'N/A'}">${stock.company_name || 'N/A'}</td>
+                                <td>${stock.sector || 'N/A'}</td>
+                                <td class="text-truncate" style="max-width: 150px;" title="${stock.industry || 'N/A'}">${stock.industry || 'N/A'}</td>
+                                <td>${stock.exchange || 'N/A'}</td>
+                                <td>${formatMarketCap(stock.market_cap)}</td>
+                                <td>${stock.beta ? stock.beta.toFixed(2) : 'N/A'}</td>
+                                <td>${stock.ipo_date || 'N/A'}</td>
+                                <td>${formatPrice(stock.close_price)}</td>
+                                <td><a href="/ticker/${stock.ticker}" class="btn btn-primary btn-sm">View</a></td>
+                            </tr>
                         `;
-                        container.append(card);
+                        tbody.append(row);
                     });
                 })
                 .catch(error => {
@@ -256,8 +343,13 @@
         function resetFilters() {
             $('#sector').val('').trigger('change');
             $('#industry').val('').trigger('change');
+            $('#exchange').val('').trigger('change');
             $('#minMarketCap').val('');
-            $('#maxPERatio').val('');
+            $('#maxMarketCap').val('');
+            $('#minBeta').val('');
+            $('#maxBeta').val('');
+            $('#minIpoDate').val('');
+            $('#maxIpoDate').val('');
             
             // Clear results
             $('#stocksContainer').empty();

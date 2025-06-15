@@ -77,7 +77,7 @@ def load_stocks_from_csv(session, csv_file='stock_list.csv'):
         logger.error(f"CSV file {csv_file} not found")
         return 0
     
-    logger.info(f"Loading stocks from {csv_file}...")
+    logger.info(f"Loading stocks from {csv_file} into ticker table...")
     
     stocks_loaded = 0
     stocks_updated = 0

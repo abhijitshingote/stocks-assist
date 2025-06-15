@@ -993,7 +993,12 @@ def get_stocks():
     sector = request.args.get('sector')
     industry = request.args.get('industry')
     min_market_cap = request.args.get('min_market_cap', type=float)
-    max_pe_ratio = request.args.get('max_pe_ratio', type=float)
+    max_market_cap = request.args.get('max_market_cap', type=float)
+    min_beta = request.args.get('min_beta', type=float)
+    max_beta = request.args.get('max_beta', type=float)
+    exchange = request.args.get('exchange')
+    min_ipo_date = request.args.get('min_ipo_date')
+    max_ipo_date = request.args.get('max_ipo_date')
     
     # Get the latest price data for each stock
     latest_prices = session.query(
@@ -1020,8 +1025,18 @@ def get_stocks():
         query = query.filter(Stock.industry == industry)
     if min_market_cap:
         query = query.filter(Stock.market_cap >= min_market_cap)
-    if max_pe_ratio:
-        query = query.filter(Stock.pe_ratio <= max_pe_ratio)
+    if max_market_cap:
+        query = query.filter(Stock.market_cap <= max_market_cap)
+    if min_beta:
+        query = query.filter(Stock.beta >= min_beta)
+    if max_beta:
+        query = query.filter(Stock.beta <= max_beta)
+    if exchange:
+        query = query.filter(Stock.exchange == exchange)
+    if min_ipo_date:
+        query = query.filter(Stock.ipo_date >= min_ipo_date)
+    if max_ipo_date:
+        query = query.filter(Stock.ipo_date <= max_ipo_date)
     
     results = query.all()
     
@@ -1035,6 +1050,9 @@ def get_stocks():
             'close_price': price.close_price,
             'volume': price.volume,
             'market_cap': stock.market_cap,
+            'beta': stock.beta,
+            'exchange': stock.exchange,
+            'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
             'date': price.date.strftime('%Y-%m-%d') if price.date else None
         })
     return jsonify(result)
@@ -1048,6 +1066,11 @@ def get_sectors():
 def get_industries():
     industries = session.query(Stock.industry).distinct().all()
     return jsonify([industry[0] for industry in industries if industry[0]])
+
+@app.route('/api/exchanges')
+def get_exchanges():
+    exchanges = session.query(Stock.exchange).distinct().all()
+    return jsonify([exchange[0] for exchange in exchanges if exchange[0]])
 
 @app.route('/api/stock/<ticker>')
 def get_stock_details(ticker):
@@ -1076,7 +1099,6 @@ def get_stock_details(ticker):
         'volume': latest_price.volume if latest_price else None,
         'last_traded_timestamp': last_traded_formatted,
         'market_cap': db_stock.market_cap,
-        'shares_outstanding': db_stock.shares_outstanding,
         'date': latest_price.date.strftime('%Y-%m-%d') if latest_price and latest_price.date else None
     })
 
