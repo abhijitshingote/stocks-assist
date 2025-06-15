@@ -1,13 +1,13 @@
 from polygon import RESTClient
 from datetime import datetime, timedelta
 import os
+import csv
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, tuple_
 from sqlalchemy.orm import sessionmaker
 from models import Stock, Price
 import logging
 import time
-from sic_mapper import get_industry_sector
 import urllib.parse
 import pytz
 
@@ -17,10 +17,26 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
+# FMP sector/industry data cache
+FMP_DATA = {}
+
 def get_eastern_datetime():
     """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
     eastern = pytz.timezone('US/Eastern')
     return datetime.now(eastern)
+
+def get_industry_sector_from_fmp(ticker, csv_file='stock_list.csv'):
+    """Load CSV and return sector/industry for ticker"""
+    global FMP_DATA
+    
+    # Load CSV once
+    if not FMP_DATA and os.path.exists(csv_file):
+        with open(csv_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            FMP_DATA = {row['symbol'].upper(): (row.get('sector'), row.get('industry')) 
+                       for row in reader if row.get('symbol')}
+    
+    return FMP_DATA.get(ticker.upper(), (None, None))
 
 def get_polygon_client():
     api_key = os.getenv('POLYGON_API_KEY')
@@ -125,9 +141,8 @@ def process_bulk_data(session, tickers, company_details, aggregates):
     stock_updates = []
     for ticker, details in company_details.items():
         try:
-            # Get industry and sector
-            sic_code = getattr(details, 'sic_code', None)
-            sector, industry = get_industry_sector(sic_code)
+            # Get industry and sector from FMP data (replaces SIC mapping)
+            sector, industry = get_industry_sector_from_fmp(ticker)
             
             # Prepare stock data for bulk upsert
             stock_data = {
