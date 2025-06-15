@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, create_engine, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, Boolean, create_engine, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -16,15 +16,42 @@ class Stock(Base):
     __tablename__ = 'ticker'
 
     id = Column(Integer, primary_key=True)
-    ticker = Column(String, unique=True, nullable=False)
-    company_name = Column(String)
-    sector = Column(String)
-    subsector = Column(String)
+    ticker = Column(String, unique=True, nullable=False)  # Primary identifier
+    price = Column(Float)
+    beta = Column(Float)
+    vol_avg = Column(Integer)  # volAvg
+    market_cap = Column(Float)  # mktCap
+    last_div = Column(Float)  # lastDiv
+    range = Column(String)
+    changes = Column(Float)
+    company_name = Column(String)  # companyName
+    currency = Column(String)
+    cik = Column(String)
+    isin = Column(String)
+    cusip = Column(String)
+    exchange = Column(String)
+    exchange_short_name = Column(String)  # exchangeShortName
     industry = Column(String)
-    market_cap = Column(Float)
-    shares_outstanding = Column(Integer)
-    eps = Column(Float)
-    pe_ratio = Column(Float)
+    website = Column(String)
+    description = Column(Text)
+    ceo = Column(String)
+    sector = Column(String)
+    country = Column(String)
+    full_time_employees = Column(Integer)  # fullTimeEmployees
+    phone = Column(String)
+    address = Column(String)
+    city = Column(String)
+    state = Column(String)
+    zip = Column(String)
+    dcf_diff = Column(Float)  # dcfDiff
+    dcf = Column(Float)
+    image = Column(String)
+    ipo_date = Column(Date)  # ipoDate
+    default_image = Column(Boolean)  # defaultImage
+    is_etf = Column(Boolean)  # isEtf
+    is_actively_trading = Column(Boolean)  # isActivelyTrading
+    is_adr = Column(Boolean)  # isAdr
+    is_fund = Column(Boolean)  # isFund
     created_at = Column(DateTime, default=get_eastern_datetime)
     updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
 

@@ -13,6 +13,7 @@ if not API_KEY:
     raise ValueError("FMP_API_KEY not found in environment variables. Please add it to your .env file.")
 
 OUTPUT_FILE = 'stock_list.csv'
+TEMP_FILE = 'stock_list_temp.csv'
 BASE_URL = 'https://financialmodelingprep.com/api/v3'
 
 def get_all_symbols():
@@ -28,11 +29,9 @@ def get_all_symbols():
             return data
         except Exception as e:
             print(f"Error parsing symbols JSON: {e}")
-            print(f"Raw response: {response.text}")
             return []
     else:
         print(f"Failed to fetch symbols: {response.status_code}")
-        print(f"Error response: {response.text}")
         return []
 
 def get_company_profiles_batch(symbols):
@@ -93,17 +92,16 @@ def main():
     # Fetch detailed profiles for filtered stocks using batch requests
     print(f"\nFetching detailed profiles for {len(filtered_symbols)} stocks using batch requests...")
     
-    BATCH_SIZE = batch_size  # Use the batch size from command line argument
     csv_writer = None
     csv_file = None
     profiles_written = 0
     
     try:
         # Process symbols in batches
-        for i in range(0, len(filtered_symbols), BATCH_SIZE):
-            batch = filtered_symbols[i:i+BATCH_SIZE]
-            batch_num = (i // BATCH_SIZE) + 1
-            total_batches = (len(filtered_symbols) + BATCH_SIZE - 1) // BATCH_SIZE
+        for i in range(0, len(filtered_symbols), batch_size):
+            batch = filtered_symbols[i:i+batch_size]
+            batch_num = (i // batch_size) + 1
+            total_batches = (len(filtered_symbols) + batch_size - 1) // batch_size
             
             print(f"\nProcessing batch {batch_num}/{total_batches}: {batch}")
             
@@ -113,7 +111,7 @@ def main():
                 if profile and profile.get('isActivelyTrading') == True:
                     # Initialize CSV writer with headers on first successful profile
                     if csv_writer is None:
-                        csv_file = open(OUTPUT_FILE, 'w', newline='', encoding='utf-8')
+                        csv_file = open(TEMP_FILE, 'w', newline='', encoding='utf-8')
                         fieldnames = profile.keys()
                         csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                         csv_writer.writeheader()
@@ -126,7 +124,7 @@ def main():
                     print(f"✓ {symbol} written to CSV (Total: {profiles_written})")
             
             # Add delay between batches to respect API limits
-            if i + BATCH_SIZE < len(filtered_symbols):  # Don't sleep after last batch
+            if i + batch_size < len(filtered_symbols):  # Don't sleep after last batch
                 print(f"Waiting 1.2 seconds before next batch...")
                 time.sleep(1.2)
     
@@ -135,7 +133,14 @@ def main():
         if csv_file:
             csv_file.close()
     
-    print(f"✅ Done. {profiles_written} detailed profiles saved to {OUTPUT_FILE}")
+    # Replace main file only if temp file has data
+    if profiles_written > 0:
+        os.rename(TEMP_FILE, OUTPUT_FILE)
+        print(f"✅ Updated: {profiles_written} profiles saved to {OUTPUT_FILE}")
+    else:
+        if os.path.exists(TEMP_FILE):
+            os.remove(TEMP_FILE)
+        print(f"❌ Not updated: No valid data found")
 
 if __name__ == '__main__':
     main()

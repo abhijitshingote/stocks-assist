@@ -1,14 +1,14 @@
 from polygon import RESTClient
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import os
 import csv
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, tuple_
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.dialects.postgresql import insert
 from models import Stock, Price
 import logging
 import time
-import urllib.parse
 import pytz
 
 # Configure logging
@@ -17,26 +17,10 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-# FMP sector/industry data cache
-FMP_DATA = {}
-
 def get_eastern_datetime():
     """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
     eastern = pytz.timezone('US/Eastern')
     return datetime.now(eastern)
-
-def get_industry_sector_from_fmp(ticker, csv_file='stock_list.csv'):
-    """Load CSV and return sector/industry for ticker"""
-    global FMP_DATA
-    
-    # Load CSV once
-    if not FMP_DATA and os.path.exists(csv_file):
-        with open(csv_file, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            FMP_DATA = {row['symbol'].upper(): (row.get('sector'), row.get('industry')) 
-                       for row in reader if row.get('symbol')}
-    
-    return FMP_DATA.get(ticker.upper(), (None, None))
 
 def get_polygon_client():
     api_key = os.getenv('POLYGON_API_KEY')
@@ -44,80 +28,170 @@ def get_polygon_client():
         raise ValueError("POLYGON_API_KEY environment variable is not set")
     return RESTClient(api_key)
 
-def get_bulk_tickers(client, batch_size=1000):
-    """Get tickers in bulk using the reference/tickers endpoint"""
-    all_tickers = []
-    next_page_token = None
+def upsert_stock_batch(session, stock_batch):
+    """Upsert a batch of stocks using PostgreSQL ON CONFLICT"""
+    if not stock_batch:
+        return 0, 0
     
-    while True:
-        try:
-            # Get tickers in bulk
-            tickers = client.list_tickers(
-                market="stocks",
-                active=True,
-                limit=batch_size
+    try:
+        # Deduplicate within batch (keep last occurrence of each ticker)
+        ticker_map = {}
+        for stock in stock_batch:
+            ticker_map[stock['ticker']] = stock
+        deduplicated_batch = list(ticker_map.values())
+        
+        # Count existing records before upsert
+        tickers = [stock['ticker'] for stock in deduplicated_batch]
+        existing_count = session.query(Stock).filter(Stock.ticker.in_(tickers)).count()
+        
+        # Use PostgreSQL's INSERT ... ON CONFLICT for true upsert
+        for stock_data in deduplicated_batch:
+            stmt = insert(Stock).values(**stock_data)
+            
+            # Define which columns to update on conflict
+            update_dict = {key: stmt.excluded[key] for key in stock_data.keys() if key != 'ticker'}
+            
+            stmt = stmt.on_conflict_do_update(
+                index_elements=['ticker'],
+                set_=update_dict
             )
             
-            if not tickers:
-                break
-                
-            all_tickers.extend(tickers)
-            
-            # Check if there are more pages
-            if not hasattr(tickers, 'next_page_token'):
-                break
-                
-            # Get next page using the next_url
-            next_url = tickers.next_url
-            if not next_url:
-                break
-                
-            # Extract the page token from the next_url
-            parsed_url = urllib.parse.urlparse(next_url)
-            query_params = urllib.parse.parse_qs(parsed_url.query)
-            next_page_token = query_params.get('page_token', [None])[0]
-            
-            if not next_page_token:
-                break
-                
-            time.sleep(0.2)  # Rate limiting
-            
-        except Exception as e:
-            logger.error(f"Error fetching tickers: {str(e)}")
-            break
-    
-    return all_tickers
-
-def get_bulk_snapshots(client, tickers):
-    """Get company details for multiple tickers"""
-    company_details = {}
-    try:
-        # Get company details for each ticker with faster rate limiting
-        for ticker in tickers:
-            try:
-                # Get company details
-                details = client.get_ticker_details(ticker.ticker)
-                if details:
-                    company_details[ticker.ticker] = details
-                time.sleep(0.1)  # Reduced rate limiting from 0.2 to 0.1
-            except Exception as e:
-                logger.error(f"Error fetching details for {ticker.ticker}: {str(e)}")
-                continue
-        return company_details
+            session.execute(stmt)
+        
+        session.commit()
+        
+        # Calculate new vs updated counts
+        new_count = len(deduplicated_batch) - existing_count
+        updated_count = existing_count
+        
+        return max(0, new_count), updated_count
+        
     except Exception as e:
-        logger.error(f"Error in bulk company details: {str(e)}")
-        return None
+        logger.error(f"Error in upsert batch: {str(e)}")
+        session.rollback()
+        return 0, 0
 
-def get_bulk_aggregates(client, tickers, start_date, end_date):
-    """Get daily aggregates for multiple tickers"""
+def load_stocks_from_csv(session, csv_file='stock_list.csv'):
+    """Load all stock data from FMP CSV into ticker table"""
+    if not os.path.exists(csv_file):
+        logger.error(f"CSV file {csv_file} not found")
+        return 0
+    
+    logger.info(f"Loading stocks from {csv_file}...")
+    
+    stocks_loaded = 0
+    stocks_updated = 0
+    batch_size = 1000
+    stock_batch = []
+    
+    with open(csv_file, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        
+        for row in reader:
+            try:
+                # Parse date fields
+                ipo_date = None
+                if row.get('ipoDate'):
+                    try:
+                        ipo_date = datetime.strptime(row['ipoDate'], '%Y-%m-%d').date()
+                    except:
+                        pass
+                
+                # Parse boolean fields
+                def parse_bool(value):
+                    if isinstance(value, str):
+                        return value.lower() in ('true', '1', 'yes')
+                    return bool(value) if value is not None else False
+                
+                # Parse numeric fields
+                def parse_float(value):
+                    try:
+                        return float(value) if value and value != '' else None
+                    except:
+                        return None
+                
+                def parse_int(value):
+                    try:
+                        return int(float(value)) if value and value != '' else None
+                    except:
+                        return None
+                
+                stock_data = {
+                    'ticker': row.get('symbol', '').strip().upper(),
+                    'price': parse_float(row.get('price')),
+                    'beta': parse_float(row.get('beta')),
+                    'vol_avg': parse_int(row.get('volAvg')),
+                    'market_cap': parse_float(row.get('mktCap')),
+                    'last_div': parse_float(row.get('lastDiv')),
+                    'range': row.get('range', '').strip() or None,
+                    'changes': parse_float(row.get('changes')),
+                    'company_name': row.get('companyName', '').strip() or None,
+                    'currency': row.get('currency', '').strip() or None,
+                    'cik': row.get('cik', '').strip() or None,
+                    'isin': row.get('isin', '').strip() or None,
+                    'cusip': row.get('cusip', '').strip() or None,
+                    'exchange': row.get('exchange', '').strip() or None,
+                    'exchange_short_name': row.get('exchangeShortName', '').strip() or None,
+                    'industry': row.get('industry', '').strip() or None,
+                    'website': row.get('website', '').strip() or None,
+                    'description': row.get('description', '').strip() or None,
+                    'ceo': row.get('ceo', '').strip() or None,
+                    'sector': row.get('sector', '').strip() or None,
+                    'country': row.get('country', '').strip() or None,
+                    'full_time_employees': parse_int(row.get('fullTimeEmployees')),
+                    'phone': row.get('phone', '').strip() or None,
+                    'address': row.get('address', '').strip() or None,
+                    'city': row.get('city', '').strip() or None,
+                    'state': row.get('state', '').strip() or None,
+                    'zip': row.get('zip', '').strip() or None,
+                    'dcf_diff': parse_float(row.get('dcfDiff')),
+                    'dcf': parse_float(row.get('dcf')),
+                    'image': row.get('image', '').strip() or None,
+                    'ipo_date': ipo_date,
+                    'default_image': parse_bool(row.get('defaultImage')),
+                    'is_etf': parse_bool(row.get('isEtf')),
+                    'is_actively_trading': parse_bool(row.get('isActivelyTrading')),
+                    'is_adr': parse_bool(row.get('isAdr')),
+                    'is_fund': parse_bool(row.get('isFund')),
+                    'created_at': get_eastern_datetime(),
+                    'updated_at': get_eastern_datetime()
+                }
+                
+                if stock_data['ticker']:  # Only add if ticker exists
+                    stock_batch.append(stock_data)
+                    stocks_loaded += 1
+                
+                # Process batch when full
+                if len(stock_batch) >= batch_size:
+                    new_count, update_count = upsert_stock_batch(session, stock_batch)
+                    stocks_loaded += new_count
+                    stocks_updated += update_count
+                    logger.info(f"Processed batch: {new_count} new, {update_count} updated (Total: {stocks_loaded} new, {stocks_updated} updated)")
+                    stock_batch = []
+                    
+            except Exception as e:
+                logger.error(f"Error processing row {row.get('symbol', 'Unknown')}: {str(e)}")
+                continue
+    
+    # Process remaining stocks
+    if stock_batch:
+        new_count, update_count = upsert_stock_batch(session, stock_batch)
+        stocks_loaded += new_count
+        stocks_updated += update_count
+        logger.info(f"Processed final batch: {new_count} new, {update_count} updated")
+    
+    logger.info(f"Successfully processed {stocks_loaded} new stocks and {stocks_updated} updated stocks from CSV")
+    return stocks_loaded + stocks_updated
+
+def get_bulk_aggregates(client, symbols, start_date, end_date):
+    """Get daily aggregates for multiple symbols"""
     all_aggregates = {}
     
-    # Process tickers individually with faster rate limiting
-    for ticker in tickers:
+    for symbol in symbols:
         try:
-            # Get daily aggregates for the ticker
+            # Get daily aggregates for the symbol
             aggs = client.get_aggs(
-                ticker.ticker,
+                symbol,
                 multiplier=1,
                 timespan="day",
                 from_=start_date,
@@ -125,85 +199,27 @@ def get_bulk_aggregates(client, tickers, start_date, end_date):
             )
             
             if aggs:
-                all_aggregates[ticker.ticker] = aggs
+                all_aggregates[symbol] = aggs
             
-            time.sleep(0.1)  # Reduced rate limiting from 0.2 to 0.1
+            time.sleep(0.1)  # Rate limiting
             
         except Exception as e:
-            logger.error(f"Error fetching aggregates for {ticker.ticker}: {str(e)}")
+            logger.error(f"Error fetching aggregates for {symbol}: {str(e)}")
             continue
     
     return all_aggregates
 
-def process_bulk_data(session, tickers, company_details, aggregates):
-    """Process bulk data and create/update records"""
-    # Process company details in bulk
-    stock_updates = []
-    for ticker, details in company_details.items():
-        try:
-            # Get industry and sector from FMP data (replaces SIC mapping)
-            sector, industry = get_industry_sector_from_fmp(ticker)
-            
-            # Prepare stock data for bulk upsert
-            stock_data = {
-                'ticker': ticker,
-                'company_name': getattr(details, 'name', None),
-                'sector': sector,
-                'industry': industry,
-                'subsector': getattr(details, 'subsector', None),
-                'market_cap': getattr(details, 'market_cap', None),
-                'shares_outstanding': getattr(details, 'share_class_shares_outstanding', None),
-                'eps': getattr(details, 'weighted_shares_outstanding', None),
-                'pe_ratio': getattr(details, 'pe_ratio', None),
-                'updated_at': get_eastern_datetime()
-            }
-            stock_updates.append(stock_data)
-            
-        except Exception as e:
-            logger.error(f"Error preparing company details for {ticker}: {str(e)}")
-            continue
-    
-    # Bulk upsert stock data
-    if stock_updates:
-        try:
-            # Check if we need to use merge (for existing records) or bulk insert (for new records)
-            existing_tickers = set()
-            if stock_updates:
-                # Get existing ticker symbols to determine which need merging vs inserting
-                ticker_symbols = [stock['ticker'] for stock in stock_updates]
-                existing_records = session.query(Stock.ticker).filter(Stock.ticker.in_(ticker_symbols)).all()
-                existing_tickers = {row[0] for row in existing_records}
-            
-            # Separate new records from updates
-            new_records = [stock for stock in stock_updates if stock['ticker'] not in existing_tickers]
-            update_records = [stock for stock in stock_updates if stock['ticker'] in existing_tickers]
-            
-            # Bulk insert new records
-            if new_records:
-                session.bulk_insert_mappings(Stock, new_records)
-                logger.info(f"Bulk inserted {len(new_records)} new company records")
-            
-            # Merge existing records
-            if update_records:
-                for stock_data in update_records:
-                    session.merge(Stock(**stock_data))
-                logger.info(f"Updated {len(update_records)} existing company records")
-            
-            session.commit()
-        except Exception as e:
-            logger.error(f"Error in bulk stock update: {str(e)}")
-            session.rollback()
-    
-    # Process aggregates for price data in bulk
+def process_price_data(session, aggregates):
+    """Process price data and bulk insert"""
     price_updates = []
-    for ticker, aggs in aggregates.items():
+    
+    for symbol, aggs in aggregates.items():
         try:
-            # Prepare price data for bulk upsert
             for agg in aggs:
                 price_date = datetime.fromtimestamp(agg.timestamp / 1000).date()
                 
                 price_data = {
-                    'ticker': ticker,
+                    'ticker': symbol,  # Using ticker field as requested
                     'date': price_date,
                     'open_price': agg.open,
                     'high_price': agg.high,
@@ -213,18 +229,17 @@ def process_bulk_data(session, tickers, company_details, aggregates):
                     'updated_at': get_eastern_datetime()
                 }
                 price_updates.append(price_data)
-            
+                
         except Exception as e:
-            logger.error(f"Error preparing aggregates for {ticker}: {str(e)}")
+            logger.error(f"Error preparing aggregates for {symbol}: {str(e)}")
             continue
     
-    # Process price data in smaller chunks to avoid PostgreSQL stack depth limits
+    # Process price data in chunks
     if price_updates:
         try:
             logger.info(f"Processing {len(price_updates)} price records in chunks...")
             
-            # Process price data in chunks to avoid database stack overflow
-            chunk_size = 5000  # Process 5000 price records at a time
+            chunk_size = 5000
             for i in range(0, len(price_updates), chunk_size):
                 chunk = price_updates[i:i + chunk_size]
                 logger.info(f"Processing price chunk {i//chunk_size + 1} of {(len(price_updates) + chunk_size - 1)//chunk_size} ({len(chunk)} records)")
@@ -236,7 +251,7 @@ def process_bulk_data(session, tickers, company_details, aggregates):
                 ).all() if price_keys else []
                 existing_prices = {(row[0], row[1]) for row in existing_records}
                 
-                # Separate new records from updates for this chunk
+                # Separate new records from updates
                 new_prices = [price for price in chunk 
                              if (price['ticker'], price['date']) not in existing_prices]
                 update_prices = [price for price in chunk 
@@ -247,16 +262,12 @@ def process_bulk_data(session, tickers, company_details, aggregates):
                     session.bulk_insert_mappings(Price, new_prices)
                     logger.info(f"  - Inserted {len(new_prices)} new price records")
                 
-                # Merge existing price records in smaller sub-chunks
+                # Update existing price records
                 if update_prices:
-                    for j, price_data in enumerate(update_prices):
+                    for price_data in update_prices:
                         session.merge(Price(**price_data))
-                        # Commit every 1000 updates to avoid memory issues
-                        if (j + 1) % 1000 == 0:
-                            session.commit()
                     logger.info(f"  - Updated {len(update_prices)} existing price records")
                 
-                # Commit this chunk
                 session.commit()
                 
         except Exception as e:
@@ -264,9 +275,9 @@ def process_bulk_data(session, tickers, company_details, aggregates):
             session.rollback()
 
 def seed_database():
-    # Record start time
+    """Main seeding function"""
     start_time = time.time()
-    print("Starting database seeding process...")
+    print("Starting new CSV-based database seeding process...")
     
     database_url = os.getenv('DATABASE_URL')
     if not database_url:
@@ -276,64 +287,56 @@ def seed_database():
     session = Session()
     
     try:
-        client = get_polygon_client()
-        
-        # Get all tickers
-        logger.info("Fetching tickers...")
-        tickers = get_bulk_tickers(client)
-        if not tickers:
-            logger.error("No tickers found")
+        # Step 1: Load all stocks from CSV
+        stocks_loaded = load_stocks_from_csv(session)
+        if stocks_loaded == 0:
+            logger.error("No stocks loaded from CSV. Exiting.")
             return
         
-        # Process tickers in batches optimized for API limits and database performance
-        batch_size = 150  # Balanced batch size - not too large to avoid DB issues
-        for i in range(0, len(tickers), batch_size):
-            batch = tickers[i:i + batch_size]
-            logger.info(f"Processing batch {i//batch_size + 1} of {(len(tickers) + batch_size - 1)//batch_size} ({len(batch)} tickers)")
+        # Step 2: Get all tickers for price data
+        all_stocks = session.query(Stock.ticker).all()
+        symbols = [stock[0] for stock in all_stocks]
+        logger.info(f"Found {len(symbols)} stocks for price data")
+        
+        if not symbols:
+            logger.warning("No actively trading US stocks found")
+            return
+        
+        # Step 3: Fetch price data from Polygon
+        client = get_polygon_client()
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=365)  # 1 year of data
+        
+        logger.info(f"Fetching price data from {start_date.date()} to {end_date.date()}")
+        
+        # Process symbols in batches
+        batch_size = 150
+        for i in range(0, len(symbols), batch_size):
+            batch = symbols[i:i + batch_size]
+            logger.info(f"Processing price batch {i//batch_size + 1} of {(len(symbols) + batch_size - 1)//batch_size} ({len(batch)} symbols)")
             
-            # Get date range for historical data
-            end_date = datetime.now()
-            start_date = end_date - timedelta(days=365)
-            
-            # Get company details
-            company_details = get_bulk_snapshots(client, batch)
-            if not company_details:
-                logger.warning(f"No company details found for batch {i//batch_size + 1}")
-                continue
-            
-            # Get bulk aggregates
+            # Get price data for this batch
             aggregates = get_bulk_aggregates(client, batch, start_date, end_date)
-            if not aggregates:
-                logger.warning(f"No aggregates found for batch {i//batch_size + 1}")
-                continue
+            if aggregates:
+                process_price_data(session, aggregates)
             
-            # Process the bulk data
-            process_bulk_data(session, batch, company_details, aggregates)
-            
-            # Clear variables to free memory
-            del company_details
+            # Clear memory
             del aggregates
-            
-            # Reduced sleep time between batches
-            time.sleep(0.5)  # Reduced from 1 second to 0.5 seconds
         
-        logger.info("Database seeding completed successfully")
+        # Final statistics
+        total_stocks = session.query(Stock).count()
+        total_prices = session.query(Price).count()
         
-        # Calculate and print total time taken
-        end_time = time.time()
-        total_minutes = (end_time - start_time) / 60
-        print(f"Time taken to complete - {total_minutes:.2f} minutes")
+        elapsed_time = time.time() - start_time
+        logger.info(f"✅ Seeding completed in {elapsed_time:.2f} seconds")
+        logger.info(f"📊 Final counts: {total_stocks:,} stocks, {total_prices:,} price records")
         
     except Exception as e:
-        logger.error(f"Error during database seeding: {str(e)}")
+        logger.error(f"Error in seeding process: {str(e)}")
         session.rollback()
-        
-        # Calculate and print time taken even if there was an error
-        end_time = time.time()
-        total_minutes = (end_time - start_time) / 60
-        print(f"Process failed after {total_minutes:.2f} minutes")
+        raise
     finally:
         session.close()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     seed_database() 

@@ -33,20 +33,47 @@ def initialize_database(reset=False):
             connection.execute(text("DROP TABLE IF EXISTS price CASCADE;"))
             print("Old tables dropped.")
         
-        # Create ticker table (renamed from stocks, only company info)
+        # Create ticker table with comprehensive FMP fields
         table_creation_clause = "CREATE TABLE" if reset else "CREATE TABLE IF NOT EXISTS"
         connection.execute(text(f"""
             {table_creation_clause} ticker (
                 id SERIAL PRIMARY KEY,
                 ticker VARCHAR(10) UNIQUE NOT NULL,
-                company_name VARCHAR(255),
-                sector VARCHAR(100),
-                subsector VARCHAR(100),
-                industry VARCHAR(100),
+                price FLOAT,
+                beta FLOAT,
+                vol_avg INTEGER,
                 market_cap FLOAT,
-                shares_outstanding INTEGER,
-                eps FLOAT,
-                pe_ratio FLOAT,
+                last_div FLOAT,
+                range VARCHAR(50),
+                changes FLOAT,
+                company_name VARCHAR(255),
+                currency VARCHAR(10),
+                cik VARCHAR(20),
+                isin VARCHAR(20),
+                cusip VARCHAR(20),
+                exchange VARCHAR(100),
+                exchange_short_name VARCHAR(20),
+                industry VARCHAR(100),
+                website VARCHAR(255),
+                description TEXT,
+                ceo VARCHAR(100),
+                sector VARCHAR(100),
+                country VARCHAR(10),
+                full_time_employees INTEGER,
+                phone VARCHAR(50),
+                address VARCHAR(255),
+                city VARCHAR(100),
+                state VARCHAR(10),
+                zip VARCHAR(20),
+                dcf_diff FLOAT,
+                dcf FLOAT,
+                image VARCHAR(255),
+                ipo_date DATE,
+                default_image BOOLEAN,
+                is_etf BOOLEAN,
+                is_actively_trading BOOLEAN,
+                is_adr BOOLEAN,
+                is_fund BOOLEAN,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
@@ -108,6 +135,9 @@ def initialize_database(reset=False):
             {index_creation_clause} idx_ticker_sector ON ticker(sector);
             {index_creation_clause} idx_ticker_industry ON ticker(industry);
             {index_creation_clause} idx_ticker_market_cap ON ticker(market_cap);
+            {index_creation_clause} idx_ticker_exchange_short_name ON ticker(exchange_short_name);
+            {index_creation_clause} idx_ticker_is_actively_trading ON ticker(is_actively_trading);
+            {index_creation_clause} idx_ticker_price ON ticker(price);
             {index_creation_clause} idx_price_ticker ON price(ticker);
             {index_creation_clause} idx_price_date ON price(date);
             {index_creation_clause} idx_price_last_traded_timestamp ON price(last_traded_timestamp);
@@ -124,13 +154,13 @@ def initialize_database(reset=False):
         if reset:
             print("Database reset completed successfully!")
             print("- All existing tables dropped")
-            print("- New 'ticker' table created (company info only)")
+            print("- New 'ticker' table created (comprehensive FMP company data)")
             print("- Price table recreated (daily price data)")
             print("- Comment table created (user/AI comments with review workflow)")
             print("- Shortlist table created (Abi's stock shortlist)")
         else:
             print("Database initialization completed successfully!")
-            print("- 'ticker' table ready (company info only)")
+            print("- 'ticker' table ready (comprehensive FMP company data)")
             print("- 'price' table ready (daily price data)")
             print("- 'comment' table ready (user/AI comments with review workflow)")
             print("- 'shortlist' table ready (Abi's stock shortlist)")

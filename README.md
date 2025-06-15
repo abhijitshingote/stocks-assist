@@ -74,5 +74,17 @@ Things to do
 -- IPO screen
 -- QA logic of the screens
 ## Done --Make the citations clickable on AI comments
--- abi shortlist
--- add all other columns from from stock_list. And only use is trading flag . Maybe this should be first step when sedding db only for these symbols
+## Done -- abi shortlist
+## Done -- update daily_price_update to account new db structure if needed
+--add stock_list.csv to for daily cadence only if it contains data
+## Done -- initial sedding db  needs to upsert ticker table unless --reset flag is supplied which will drop and recreate tables
+
+
+First run
+
+1.docker-compose build --no-cache
+2. docker-compose up
+3.docker-compose execweb bash
+4. python build_stock_list.py
+4.python initialize_db.py --reset
+5. python initial_seeding_db.py.py 
