@@ -75,28 +75,20 @@ def main():
         print("Failed to load symbols.")
         return
 
-    # Filter for US exchanges, stocks only, and price > $1
+    # Filter for US exchanges and stocks only
     us_exchanges = {"NASDAQ", "NYSE", "AMEX"}
     filtered_symbols = []
     
     for stock in all_symbols:
         exchange = stock.get("exchangeShortName")
         stock_type = stock.get("type")
-        price = stock.get("price")
         
-        # Check if price is valid and greater than $1
-        try:
-            price_value = float(price) if price is not None else 0
-        except (ValueError, TypeError):
-            price_value = 0
-        
-        if exchange in us_exchanges and stock_type == "stock" and price_value > 1.0:
+        if exchange in us_exchanges and stock_type == "stock":
             filtered_symbols.append(stock.get("symbol"))
     
     print(f"Filtered {len(filtered_symbols)} stocks from {len(all_symbols)} total symbols")
     print(f"Exchanges: {us_exchanges}")
     print(f"Type: stock")
-    print(f"Price: > $1.00")
 
     # Fetch detailed profiles for filtered stocks using batch requests
     print(f"\nFetching detailed profiles for {len(filtered_symbols)} stocks using batch requests...")
@@ -118,7 +110,7 @@ def main():
             profiles = get_company_profiles_batch(batch)
             
             for profile in profiles:
-                if profile:
+                if profile and profile.get('isActivelyTrading') == True:
                     # Initialize CSV writer with headers on first successful profile
                     if csv_writer is None:
                         csv_file = open(OUTPUT_FILE, 'w', newline='', encoding='utf-8')

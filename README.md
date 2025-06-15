@@ -75,4 +75,4 @@ Things to do
 -- QA logic of the screens
 ## Done --Make the citations clickable on AI comments
 -- abi shortlist
--- add ipo date from stock_list
+-- add all other columns from from stock_list. And only use is trading flag . Maybe this should be first step when sedding db only for these symbols
