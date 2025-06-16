@@ -221,6 +221,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/AbiShortList">Abi ShortList</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/AbiBlackList">Abi BlackList</a>
+                    </li>
                 </ul>
                 <span class="navbar-text me-3">
                     <small>lastTrade: <span id="navbarLatestDate">Loading...</span></small>
@@ -276,6 +279,13 @@
                 <div class="mt-3">
                     <button type="button" class="btn btn-outline-success btn-sm w-100" id="shortlistBtn" onclick="toggleShortlist()">
                         <span id="shortlistIcon">+</span> <span id="shortlistText">Add to ShortList</span>
+                    </button>
+                </div>
+                
+                <!-- Blacklist Button -->
+                <div class="mt-2">
+                    <button type="button" class="btn btn-outline-danger btn-sm w-100" id="blacklistBtn" onclick="toggleBlacklist()">
+                        <span id="blacklistIcon">⚫</span> <span id="blacklistText">Add to BlackList</span>
                     </button>
                 </div>
             </div>
@@ -1039,12 +1049,109 @@
             }
         }
 
+        // Blacklist functionality
+        function checkBlacklistStatus() {
+            fetch(`/api/blacklist/${ticker}/check`)
+                .then(response => response.json())
+                .then(data => {
+                    const btn = document.getElementById('blacklistBtn');
+                    const icon = document.getElementById('blacklistIcon');
+                    const text = document.getElementById('blacklistText');
+                    
+                    if (data.is_blacklisted) {
+                        btn.className = 'btn btn-danger btn-sm w-100';
+                        icon.textContent = '⚫';
+                        text.textContent = 'In BlackList';
+                    } else {
+                        btn.className = 'btn btn-outline-danger btn-sm w-100';
+                        icon.textContent = '⚫';
+                        text.textContent = 'Add to BlackList';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking blacklist status:', error);
+                });
+        }
+        
+        function toggleBlacklist() {
+            const btn = document.getElementById('blacklistBtn');
+            const icon = document.getElementById('blacklistIcon');
+            const text = document.getElementById('blacklistText');
+            
+            // Check current status
+            const isInBlacklist = btn.className.includes('btn-danger') && !btn.className.includes('btn-outline-danger');
+            
+            if (isInBlacklist) {
+                // Remove from blacklist
+                fetch(`/api/blacklist/${ticker}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error removing from blacklist: ' + data.error);
+                        return;
+                    }
+                    
+                    btn.className = 'btn btn-outline-danger btn-sm w-100';
+                    icon.textContent = '⚫';
+                    text.textContent = 'Add to BlackList';
+                    
+                    // Show success message briefly
+                    const originalText = text.textContent;
+                    text.textContent = 'Removed!';
+                    setTimeout(() => {
+                        text.textContent = originalText;
+                    }, 1500);
+                })
+                .catch(error => {
+                    alert('Error removing from blacklist: ' + error.message);
+                });
+            } else {
+                // Add to blacklist
+                const notes = prompt('Optional notes for why this stock is blacklisted (leave blank if none):') || '';
+                
+                fetch('/api/blacklist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tickers: [ticker],
+                        notes: notes
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error adding to blacklist: ' + data.error);
+                        return;
+                    }
+                    
+                    btn.className = 'btn btn-danger btn-sm w-100';
+                    icon.textContent = '⚫';
+                    text.textContent = 'In BlackList';
+                    
+                    // Show success message briefly
+                    const originalText = text.textContent;
+                    text.textContent = 'Added!';
+                    setTimeout(() => {
+                        text.textContent = originalText;
+                    }, 1500);
+                })
+                .catch(error => {
+                    alert('Error adding to blacklist: ' + error.message);
+                });
+            }
+        }
+
         // Load data when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadTickerDetails();
             loadCharts();
             loadComments();
             checkShortlistStatus();
+            checkBlacklistStatus();
         });
     </script>
 </body>

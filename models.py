@@ -108,6 +108,22 @@ class ShortList(Base):
     def __repr__(self):
         return f"<ShortList(ticker='{self.ticker}', shortlisted_at='{self.shortlisted_at}')>"
 
+class BlackList(Base):
+    __tablename__ = 'blacklist'
+    
+    id = Column(Integer, primary_key=True)
+    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
+    blacklisted_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    notes = Column(Text)  # Optional notes about why this stock was blacklisted
+    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+    
+    # Ensure each ticker can only be blacklisted once
+    __table_args__ = (UniqueConstraint('ticker', name='_ticker_blacklist_uc'),)
+    
+    def __repr__(self):
+        return f"<BlackList(ticker='{self.ticker}', blacklisted_at='{self.blacklisted_at}')>"
+
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
     engine = create_engine(database_url)

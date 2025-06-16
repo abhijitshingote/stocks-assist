@@ -328,7 +328,7 @@ def seed_database():
         total_prices = session.query(Price).count()
         
         elapsed_time = time.time() - start_time
-        logger.info(f"✅ Seeding completed in {elapsed_time:.2f} seconds")
+        logger.info(f"✅ Seeding completed in {int(elapsed_time // 3600)}h {int((elapsed_time % 3600) // 60)}m")
         logger.info(f"📊 Final counts: {total_stocks:,} stocks, {total_prices:,} price records")
         
     except Exception as e:

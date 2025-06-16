@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from models import Stock, Price, Comment, ShortList, init_db
+from models import Stock, Price, Comment, ShortList, BlackList, init_db
 from sqlalchemy import desc, func, and_, text
 from datetime import datetime, timedelta
 import os
@@ -75,6 +75,10 @@ def all_returns():
 @app.route('/AbiShortList')
 def abi_shortlist():
     return render_template('abi_shortlist.html')
+
+@app.route('/AbiBlackList')
+def abi_blacklist():
+    return render_template('abi_blacklist.html')
 
 @app.route('/ticker/<ticker>')
 def ticker_detail(ticker):
@@ -386,6 +390,10 @@ def get_momentum_stocks(return_days, above_200m=True):
             Price.date <= latest_date
         ).group_by(Price.ticker).subquery()
         
+        # Get blacklisted tickers
+        blacklisted_tickers = session.query(BlackList.ticker).all()
+        blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
+        
         # Combine all the data
         query = session.query(
             Stock.ticker,
@@ -408,6 +416,10 @@ def get_momentum_stocks(return_days, above_200m=True):
             avg_stats,
             Stock.ticker == avg_stats.c.ticker
         )
+        
+        # Exclude blacklisted stocks
+        if blacklisted_ticker_list:
+            query = query.filter(~Stock.ticker.in_(blacklisted_ticker_list))
         
         # Apply market cap filter
         if above_200m:
@@ -616,6 +628,10 @@ def get_gapper_stocks(above_200m=True):
             price_analysis.c.prev_close.isnot(None)  # Ensure we have previous day data
         ).group_by(price_analysis.c.ticker).subquery()
         
+        # Get blacklisted tickers
+        blacklisted_tickers = session.query(BlackList.ticker).all()
+        blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
+        
         # Main query combining all criteria
         query = session.query(
             Stock.ticker,
@@ -645,6 +661,10 @@ def get_gapper_stocks(above_200m=True):
             # Must meet gapper criteria
             gapper_criteria.c.is_gapper == True
         )
+        
+        # Exclude blacklisted stocks
+        if blacklisted_ticker_list:
+            query = query.filter(~Stock.ticker.in_(blacklisted_ticker_list))
         
         # Apply market cap filter
         if above_200m:
@@ -760,6 +780,10 @@ def get_volume_spike_stocks(above_200m=True):
             Price.date.in_(five_days_before_yesterday)
         ).group_by(Price.ticker).subquery()
         
+        # Get blacklisted tickers
+        blacklisted_tickers = session.query(BlackList.ticker).all()
+        blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
+        
         # Main query combining all criteria
         query = session.query(
             Stock.ticker,
@@ -790,6 +814,10 @@ def get_volume_spike_stocks(above_200m=True):
             # 5-day average volume > 50,000
             avg_volume_5d.c.avg_volume_5d > 50000
         )
+        
+        # Exclude blacklisted stocks
+        if blacklisted_ticker_list:
+            query = query.filter(~Stock.ticker.in_(blacklisted_ticker_list))
         
         # Apply market cap filter
         if above_200m:
@@ -1006,6 +1034,10 @@ def get_stocks():
         func.max(Price.date).label('max_date')
     ).group_by(Price.ticker).subquery()
     
+    # Get blacklisted tickers
+    blacklisted_tickers = session.query(BlackList.ticker).all()
+    blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
+    
     # Join Stock with the latest Price data
     query = session.query(
         Stock,
@@ -1018,6 +1050,10 @@ def get_stocks():
         (Price.ticker == latest_prices.c.ticker) & 
         (Price.date == latest_prices.c.max_date)
     )
+    
+    # Exclude blacklisted stocks
+    if blacklisted_ticker_list:
+        query = query.filter(~Stock.ticker.in_(blacklisted_ticker_list))
     
     if sector:
         query = query.filter(Stock.sector == sector)
@@ -1661,6 +1697,181 @@ def check_shortlist_status(ticker):
         
     except Exception as e:
         logger.error(f"Error checking shortlist status for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# Blacklist API endpoints
+@app.route('/api/blacklist', methods=['GET'])
+def get_blacklist():
+    """Get all blacklisted stocks with their data"""
+    try:
+        # Get blacklisted tickers with their blacklist info
+        blacklisted_stocks = session.query(
+            BlackList.ticker,
+            BlackList.blacklisted_at,
+            BlackList.notes,
+            Stock.company_name,
+            Stock.sector,
+            Stock.industry,
+            Stock.market_cap
+        ).join(
+            Stock, BlackList.ticker == Stock.ticker
+        ).order_by(desc(BlackList.blacklisted_at)).all()
+        
+        if not blacklisted_stocks:
+            return jsonify([])
+        
+        # Get the latest date for price data
+        latest_date = session.query(func.max(Price.date)).scalar()
+        if not latest_date:
+            return jsonify([])
+        
+        # Get current prices for blacklisted stocks
+        tickers = [stock.ticker for stock in blacklisted_stocks]
+        current_prices = session.query(
+            Price.ticker,
+            Price.close_price
+        ).filter(
+            Price.ticker.in_(tickers),
+            Price.date == latest_date
+        ).all()
+        
+        price_dict = {price.ticker: price.close_price for price in current_prices}
+        
+        # Get all returns data for blacklisted stocks
+        blacklist_data = get_all_returns_data_for_tickers(tickers)
+        blacklist_dict = {item['ticker']: item for item in blacklist_data}
+        
+        result = []
+        for stock in blacklisted_stocks:
+            # Get the returns data for this ticker
+            returns_data = blacklist_dict.get(stock.ticker, {})
+            
+            # Format market cap
+            market_cap = stock.market_cap
+            if market_cap and market_cap >= 1000000000:  # >= 1B
+                market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
+                if market_cap_formatted.endswith('.0B'):
+                    market_cap_formatted = market_cap_formatted[:-3] + 'B'
+            elif market_cap and market_cap >= 1000000:  # >= 1M
+                market_cap_formatted = f"{market_cap / 1000000:.0f}M"
+            else:
+                market_cap_formatted = "N/A"
+            
+            result.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': market_cap_formatted,
+                'current_price': f"${price_dict.get(stock.ticker, 0):.2f}" if stock.ticker in price_dict else "N/A",
+                'blacklisted_at': stock.blacklisted_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'blacklisted_date': stock.blacklisted_at.strftime('%Y-%m-%d'),
+                'notes': stock.notes or '',
+                # Include all returns data
+                **returns_data
+            })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error getting blacklist: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/blacklist', methods=['POST'])
+def add_to_blacklist():
+    """Add tickers to blacklist"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'tickers' not in data:
+            return jsonify({'error': 'Tickers list is required'}), 400
+        
+        tickers = data['tickers']
+        if not isinstance(tickers, list) or not tickers:
+            return jsonify({'error': 'Tickers must be a non-empty list'}), 400
+        
+        notes = data.get('notes', '')
+        
+        added_count = 0
+        skipped_count = 0
+        errors = []
+        
+        for ticker in tickers:
+            try:
+                ticker = ticker.upper().strip()
+                
+                # Verify ticker exists in our database
+                stock = session.query(Stock).filter(Stock.ticker == ticker).first()
+                if not stock:
+                    errors.append(f"Ticker {ticker} not found in database")
+                    continue
+                
+                # Check if already blacklisted
+                existing = session.query(BlackList).filter(BlackList.ticker == ticker).first()
+                if existing:
+                    skipped_count += 1
+                    continue
+                
+                # Add to blacklist
+                blacklist_entry = BlackList(
+                    ticker=ticker,
+                    notes=notes
+                )
+                
+                session.add(blacklist_entry)
+                added_count += 1
+                
+            except Exception as e:
+                errors.append(f"Error adding {ticker}: {str(e)}")
+        
+        session.commit()
+        
+        return jsonify({
+            'added_count': added_count,
+            'skipped_count': skipped_count,
+            'errors': errors,
+            'message': f"Added {added_count} stocks to blacklist, skipped {skipped_count} already blacklisted"
+        })
+        
+    except Exception as e:
+        logger.error(f"Error adding to blacklist: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/blacklist/<ticker>', methods=['DELETE'])
+def remove_from_blacklist(ticker):
+    """Remove a ticker from blacklist"""
+    try:
+        ticker = ticker.upper()
+        
+        blacklist_entry = session.query(BlackList).filter(BlackList.ticker == ticker).first()
+        if not blacklist_entry:
+            return jsonify({'error': 'Ticker not found in blacklist'}), 404
+        
+        session.delete(blacklist_entry)
+        session.commit()
+        
+        return jsonify({'message': f'{ticker} removed from blacklist'})
+        
+    except Exception as e:
+        logger.error(f"Error removing {ticker} from blacklist: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/blacklist/<ticker>/check', methods=['GET'])
+def check_blacklist_status(ticker):
+    """Check if a ticker is in the blacklist"""
+    try:
+        ticker = ticker.upper()
+        
+        blacklist_entry = session.query(BlackList).filter(BlackList.ticker == ticker).first()
+        
+        return jsonify({
+            'ticker': ticker,
+            'is_blacklisted': blacklist_entry is not None,
+            'blacklisted_at': blacklist_entry.blacklisted_at.strftime('%Y-%m-%d %H:%M:%S') if blacklist_entry else None
+        })
+        
+    except Exception as e:
+        logger.error(f"Error checking blacklist status for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":

@@ -89,9 +89,12 @@
                     <li class="nav-item">
                         <a class="nav-link {% if active_page == 'all_returns' %}active{% endif %}" href="/AllReturns">All Returns</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'shortlist' %}active{% endif %}" href="/AbiShortList">Abi ShortList</a>
-                    </li>
+                                            <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'shortlist' %}active{% endif %}" href="/AbiShortList">Abi ShortList</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'blacklist' %}active{% endif %}" href="/AbiBlackList">Abi BlackList</a>
+                        </li>
                 </ul>
                 <span class="navbar-text" id="market-status">
                     <small>lastTrade: <span id="navbarLatestDate">Loading...</span></small>
@@ -122,6 +125,9 @@
                     <div>
                         <button type="button" class="btn btn-success btn-sm" onclick="addSelectedToShortlist()">
                             Add Selected to ShortList
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm ms-2" onclick="addSelectedToBlacklist()">
+                            Add Selected to BlackList
                         </button>
                         <button type="button" class="btn btn-outline-secondary btn-sm ms-2" onclick="clearSelection()">
                             Clear Selection
@@ -404,6 +410,47 @@
             })
             .catch(error => {
                 alert('Error adding to shortlist: ' + error.message);
+            });
+        }
+
+        function addSelectedToBlacklist() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox:checked');
+            const tickers = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (tickers.length === 0) {
+                alert('Please select at least one stock to add to your blacklist.');
+                return;
+            }
+            
+            const notes = prompt('Optional notes for these stocks (leave blank if none):') || '';
+            
+            fetch('/api/blacklist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tickers: tickers,
+                    notes: notes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error adding to blacklist: ' + data.error);
+                    return;
+                }
+                
+                let message = data.message;
+                if (data.errors && data.errors.length > 0) {
+                    message += '\n\nErrors:\n' + data.errors.join('\n');
+                }
+                
+                alert(message);
+                clearSelection();
+            })
+            .catch(error => {
+                alert('Error adding to blacklist: ' + error.message);
             });
         }
     </script>
