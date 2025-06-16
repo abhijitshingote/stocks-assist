@@ -169,10 +169,4 @@ if __name__ == "__main__":
     # Check for reset flag
     reset_mode = "--reset" in sys.argv
     
-    if reset_mode:
-        confirm = input("Are you sure you want to reset the database? This will drop all existing data. (y/N): ")
-        if confirm.lower() != 'y':
-            print("Database reset cancelled.")
-            sys.exit(0)
-    
     initialize_database(reset=reset_mode) 
