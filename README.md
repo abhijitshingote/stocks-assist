@@ -78,7 +78,10 @@ Things to do
 ## Done -- update daily_price_update to account new db structure if needed
 ## Done--add stock_list.csv to for daily cadence only if it contains data
 ## Done -- initial sedding db  needs to upsert ticker table unless --reset flag is supplied which will drop and recreate tables
--- Blacklist page
+## Done-- Blacklist page
+-- Inconsistent NavBar
+-- OTC stocks are excluded
+
 
 
 First run
@@ -90,3 +93,13 @@ First run
 4.python initialize_db.py --reset
 5. python initial_seeding_db.py.py 
 6. python daily_price_update.py
+
+docker-compose down -v && \
+docker-compose build --no-cache && \
+docker-compose up -d && \
+docker-compose exec web bash -c "\
+  python initialize_db.py --reset && \
+  python initial_seeding_db.py && \
+  python daily_price_update.py"
+
+investopedia.com

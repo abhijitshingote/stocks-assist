@@ -554,8 +554,8 @@ def get_gapper_stocks(above_200m=True):
         if not latest_date:
             return []
         
-        # Get the last 5 actual trading dates (not calendar days)
-        last_5_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(5).all()
+        # Get the last 6 actual trading dates (not calendar days)
+        last_5_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
         if len(last_5_trading_dates) < 5:
             logger.warning(f"Only {len(last_5_trading_dates)} trading dates available, need at least 5")
             return []
