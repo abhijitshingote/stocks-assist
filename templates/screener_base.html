@@ -185,8 +185,8 @@
             return;
         }
         
-        stocks.forEach(stock => {
-            tbody.innerHTML += generateTableRow(stock, columns);
+        stocks.forEach((stock, index) => {
+            tbody.innerHTML += generateTableRow(stock, columns, index + 1);
         });
     }
 </script>

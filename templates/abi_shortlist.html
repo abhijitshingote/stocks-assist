@@ -92,6 +92,7 @@
         <table class="table table-striped table-hover shortlist-table">
             <thead>
                 <tr>
+                    <th style="width: 50px;">S/N</th>
                     <th>Ticker</th>
                     <th>Company</th>
                     <th>Sector</th>
@@ -194,9 +195,10 @@
         document.getElementById('emptyState').style.display = 'none';
         document.getElementById('clearAllBtn').style.display = 'inline-block';
         
-        stocks.forEach(stock => {
+        stocks.forEach((stock, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
+                <td class="text-center">${index + 1}</td>
                 <td>
                     <a href="/ticker/${stock.ticker}" class="ticker-link">
                         ${stock.ticker}

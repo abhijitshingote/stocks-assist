@@ -151,6 +151,7 @@
         const COLUMN_CONFIGS = {
             returns: {
                 columns: [
+                    { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
@@ -165,6 +166,7 @@
             },
             all_returns: {
                 columns: [
+                    { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
@@ -183,6 +185,7 @@
             },
             gapper: {
                 columns: [
+                    { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
@@ -196,6 +199,7 @@
             },
             volume: {
                 columns: [
+                    { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
@@ -219,6 +223,8 @@
                     headerHtml += `<th style="width: ${col.width};">
                         <input type="checkbox" class="form-check-input" id="selectAllAboveCheckbox" onchange="toggleSelectAllAbove()">
                     </th>`;
+                } else if (col.type === 'serial') {
+                    headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
                 } else {
                     headerHtml += `<th>${col.label}</th>`;
                 }
@@ -234,6 +240,8 @@
                     headerHtml += `<th style="width: ${col.width};">
                         <input type="checkbox" class="form-check-input" id="selectAllBelowCheckbox" onchange="toggleSelectAllBelow()">
                     </th>`;
+                } else if (col.type === 'serial') {
+                    headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
                 } else {
                     headerHtml += `<th>${col.label}</th>`;
                 }
@@ -242,10 +250,13 @@
             return headerHtml;
         }
 
-        function generateTableRow(stock, columns) {
+        function generateTableRow(stock, columns, serialNumber) {
             let rowHtml = '';
             columns.forEach(col => {
                 switch (col.type) {
+                    case 'serial':
+                        rowHtml += `<td class="text-center">${serialNumber}</td>`;
+                        break;
                     case 'checkbox':
                         rowHtml += `<td>
                             <input type="checkbox" class="form-check-input stock-checkbox" value="${stock.ticker}" onchange="updateSelectionCount()">
