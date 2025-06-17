@@ -375,20 +375,74 @@ def get_momentum_stocks(return_days, above_200m=True):
         end_prices = session.query(
             Price.ticker,
             Price.close_price.label('end_price'),
+            Price.volume.label('current_volume'),
             Price.date.label('end_date')
         ).filter(
             Price.date == latest_date
+        ).subquery()
+        
+        # Get previous day's close price for daily price change calculation
+        prev_day_prices = session.query(
+            Price.ticker,
+            Price.close_price.label('prev_close')
+        ).filter(
+            Price.date == latest_date - timedelta(days=1)
         ).subquery()
         
         # Calculate average prices and volumes over the last 10 trading days
         avg_stats = session.query(
             Price.ticker,
             func.avg(Price.close_price).label('avg_10day_price'),
-            func.avg(Price.volume * Price.close_price).label('avg_dollar_volume')
+            func.avg(Price.volume * Price.close_price).label('avg_dollar_volume'),
+            func.avg(Price.volume).label('avg_volume')
         ).filter(
             Price.date >= ten_days_ago,
             Price.date <= latest_date
         ).group_by(Price.ticker).subquery()
+        
+        # Get 52-week high and low for each stock (240 trading days)
+        week_52_stats = session.query(
+            Price.ticker,
+            func.max(Price.high_price).label('week_52_high'),
+            func.min(Price.low_price).label('week_52_low')
+        ).filter(
+            Price.date >= latest_date - timedelta(days=240)
+        ).group_by(Price.ticker).subquery()
+        
+        # Get prices for different return period calculations
+        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+        
+        # Get historical prices for multiple return calculations
+        prices_5d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_5d')
+        ).filter(
+            Price.date == trading_dates_5d[-1][0] if len(trading_dates_5d) > 5 else latest_date
+        ).subquery()
+        
+        prices_20d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_20d')
+        ).filter(
+            Price.date == trading_dates_20d[-1][0] if len(trading_dates_20d) > 20 else latest_date
+        ).subquery()
+        
+        prices_60d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_60d')
+        ).filter(
+            Price.date == trading_dates_60d[-1][0] if len(trading_dates_60d) > 60 else latest_date
+        ).subquery()
+        
+        prices_120d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_120d')
+        ).filter(
+            Price.date == trading_dates_120d[-1][0] if len(trading_dates_120d) > 120 else latest_date
+        ).subquery()
         
         # Get blacklisted tickers
         blacklisted_tickers = session.query(BlackList.ticker).all()
@@ -400,21 +454,48 @@ def get_momentum_stocks(return_days, above_200m=True):
             Stock.company_name,
             Stock.sector,
             Stock.industry,
+            Stock.country,
             Stock.market_cap,
             end_prices.c.end_price.label('current_price'),
+            end_prices.c.current_volume,
             avg_stats.c.avg_10day_price,
             avg_stats.c.avg_dollar_volume,
-            ((end_prices.c.end_price - start_prices.c.start_price) / 
-             start_prices.c.start_price * 100).label('price_change_pct')
+            avg_stats.c.avg_volume,
+            week_52_stats.c.week_52_high,
+            week_52_stats.c.week_52_low,
+            prices_5d.c.price_5d,
+            prices_20d.c.price_20d,
+            prices_60d.c.price_60d,
+            prices_120d.c.price_120d,
+            ((end_prices.c.end_price - prev_day_prices.c.prev_close) / 
+             prev_day_prices.c.prev_close * 100).label('price_change_pct')
         ).join(
             start_prices,
             Stock.ticker == start_prices.c.ticker
         ).join(
             end_prices,
             Stock.ticker == end_prices.c.ticker
+        ).outerjoin(
+            prev_day_prices,
+            Stock.ticker == prev_day_prices.c.ticker
         ).join(
             avg_stats,
             Stock.ticker == avg_stats.c.ticker
+        ).outerjoin(
+            week_52_stats,
+            Stock.ticker == week_52_stats.c.ticker
+        ).outerjoin(
+            prices_5d,
+            Stock.ticker == prices_5d.c.ticker
+        ).outerjoin(
+            prices_20d,
+            Stock.ticker == prices_20d.c.ticker
+        ).outerjoin(
+            prices_60d,
+            Stock.ticker == prices_60d.c.ticker
+        ).outerjoin(
+            prices_120d,
+            Stock.ticker == prices_120d.c.ticker
         )
         
         # Exclude blacklisted stocks
@@ -451,18 +532,83 @@ def get_momentum_stocks(return_days, above_200m=True):
             else:  # < 1B, show in millions
                 market_cap_formatted = f"{market_cap / 1000000:.0f}M"
             
+            # Format volume
+            current_volume = stock.current_volume or 0
+            if current_volume >= 1000000:  # >= 1M
+                volume_formatted = f"{current_volume / 1000000:.1f}M"
+            elif current_volume >= 1000:  # >= 1K
+                volume_formatted = f"{current_volume / 1000:.1f}K"
+            else:
+                volume_formatted = str(current_volume)
+            
+            # Calculate volume change multiplier
+            volume_change = "N/A"
+            if stock.avg_volume and stock.avg_volume > 0 and current_volume:
+                volume_multiplier = current_volume / stock.avg_volume
+                volume_change = f"{volume_multiplier:.1f}x"
+            
+            # Format 52-week range
+            week_52_range = "N/A"
+            if stock.week_52_low and stock.week_52_high:
+                week_52_range = f"${stock.week_52_low:.2f} - ${stock.week_52_high:.2f}"
+            
+            # Calculate multiple return periods
+            return_5d = None
+            if stock.price_5d and stock.current_price:
+                return_5d = f"{((stock.current_price - stock.price_5d) / stock.price_5d * 100):.1f}%"
+            
+            return_20d = None
+            if stock.price_20d and stock.current_price:
+                return_20d = f"{((stock.current_price - stock.price_20d) / stock.price_20d * 100):.1f}%"
+            
+            return_60d = None
+            if stock.price_60d and stock.current_price:
+                return_60d = f"{((stock.current_price - stock.price_60d) / stock.price_60d * 100):.1f}%"
+            
+            return_120d = None
+            if stock.price_120d and stock.current_price:
+                return_120d = f"{((stock.current_price - stock.price_120d) / stock.price_120d * 100):.1f}%"
+            
             result.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
                 'sector': stock.sector,
                 'industry': stock.industry,
+                'country': stock.country or 'N/A',
                 'market_cap': market_cap_formatted,
                 'current_price': f"${stock.current_price:.2f}",
+                'price_change_pct': f"{stock.price_change_pct:.1f}%",
+                'current_price_with_change': f"${stock.current_price:.2f} ({stock.price_change_pct:.1f}%)",
+                'week_52_range': week_52_range,
+                'volume': volume_formatted,
+                'volume_change': volume_change,
+                'return_5d': return_5d,
+                'return_20d': return_20d,
+                'return_60d': return_60d,
+                'return_120d': return_120d,
                 'avg_10day_price': f"${stock.avg_10day_price:.2f}",
                 'avg_dollar_volume': f"${stock.avg_dollar_volume:,.0f}",
-                'price_change_pct': f"{stock.price_change_pct:.1f}%",
                 'latest_date': latest_date.strftime('%Y-%m-%d')
             })
+        
+        # ---------------------------------------------
+        # Dynamic sorting based on the requested period
+        # ---------------------------------------------
+        if return_days == 1:
+            # Sort by daily price change percentage
+            result.sort(key=lambda x: float(x['price_change_pct'].replace('%', '')), reverse=True)
+        elif return_days in [5, 20, 60, 120]:
+            sort_field = f'return_{return_days}d'
+            def sort_key(item):
+                val = item.get(sort_field)
+                if val is None:
+                    return -999.0  # push None values to bottom
+                try:
+                    return float(val.replace('%', ''))
+                except Exception:
+                    return -999.0
+            result.sort(key=sort_key, reverse=True)
+        # For any other period (shouldn't happen), leave as-is
         
         return result
         
@@ -572,6 +718,12 @@ def get_gapper_stocks(above_200m=True):
         
         logger.info(f"Calculating gapper stocks for last 5 trading days: {earliest_date_5d} to {latest_date}")
         
+        # Get prices for different return period calculations
+        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+        
         # Get the current price (latest date)
         current_prices = session.query(
             Price.ticker,
@@ -589,6 +741,44 @@ def get_gapper_stocks(above_200m=True):
             Price.date >= earliest_date_50d,
             Price.date <= latest_date
         ).group_by(Price.ticker).subquery()
+        
+        # Get 52-week high and low for each stock (240 trading days)
+        week_52_stats = session.query(
+            Price.ticker,
+            func.max(Price.high_price).label('week_52_high'),
+            func.min(Price.low_price).label('week_52_low')
+        ).filter(
+            Price.date >= latest_date - timedelta(days=240)
+        ).group_by(Price.ticker).subquery()
+        
+        # Get historical prices for multiple return calculations
+        prices_5d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_5d')
+        ).filter(
+            Price.date == trading_dates_5d[-1][0] if len(trading_dates_5d) > 5 else latest_date
+        ).subquery()
+        
+        prices_20d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_20d')
+        ).filter(
+            Price.date == trading_dates_20d[-1][0] if len(trading_dates_20d) > 20 else latest_date
+        ).subquery()
+        
+        prices_60d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_60d')
+        ).filter(
+            Price.date == trading_dates_60d[-1][0] if len(trading_dates_60d) > 60 else latest_date
+        ).subquery()
+        
+        prices_120d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_120d')
+        ).filter(
+            Price.date == trading_dates_120d[-1][0] if len(trading_dates_120d) > 120 else latest_date
+        ).subquery()
         
         # Get daily price data for the last 5 trading days with previous day's close
         price_analysis = session.query(
@@ -632,16 +822,35 @@ def get_gapper_stocks(above_200m=True):
         blacklisted_tickers = session.query(BlackList.ticker).all()
         blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
         
+        # Get previous day price for change calculation
+        previous_price = session.query(
+            Price.ticker,
+            Price.close_price.label('prev_price')
+        ).filter(
+            Price.date == last_5_trading_dates[1][0]  # Yesterday
+        ).subquery()
+        
         # Main query combining all criteria
         query = session.query(
             Stock.ticker,
             Stock.company_name,
             Stock.sector,
             Stock.industry,
+            Stock.country,
             Stock.market_cap,
             current_prices.c.current_price,
+            current_prices.c.current_volume,
             avg_volume_50d.c.avg_volume_50d,
-            gapper_criteria.c.max_volume_5d
+            gapper_criteria.c.max_volume_5d,
+            week_52_stats.c.week_52_high,
+            week_52_stats.c.week_52_low,
+            prices_5d.c.price_5d,
+            prices_20d.c.price_20d,
+            prices_60d.c.price_60d,
+            prices_120d.c.price_120d,
+            previous_price.c.prev_price,
+            ((current_prices.c.current_price - previous_price.c.prev_price) / 
+             previous_price.c.prev_price * 100).label('price_change_pct')
         ).join(
             current_prices,
             Stock.ticker == current_prices.c.ticker
@@ -651,6 +860,24 @@ def get_gapper_stocks(above_200m=True):
         ).join(
             gapper_criteria,
             Stock.ticker == gapper_criteria.c.ticker
+        ).outerjoin(
+            week_52_stats,
+            Stock.ticker == week_52_stats.c.ticker
+        ).outerjoin(
+            prices_5d,
+            Stock.ticker == prices_5d.c.ticker
+        ).outerjoin(
+            prices_20d,
+            Stock.ticker == prices_20d.c.ticker
+        ).outerjoin(
+            prices_60d,
+            Stock.ticker == prices_60d.c.ticker
+        ).outerjoin(
+            prices_120d,
+            Stock.ticker == prices_120d.c.ticker
+        ).outerjoin(
+            previous_price,
+            Stock.ticker == previous_price.c.ticker
         ).filter(
             # Current price > $3
             current_prices.c.current_price > 3,
@@ -689,13 +916,60 @@ def get_gapper_stocks(above_200m=True):
             else:  # < 1B, show in millions
                 market_cap_formatted = f"{market_cap / 1000000:.0f}M"
             
+            # Format volume
+            current_volume = stock.current_volume or 0
+            if current_volume >= 1000000:  # >= 1M
+                volume_formatted = f"{current_volume / 1000000:.1f}M"
+            elif current_volume >= 1000:  # >= 1K
+                volume_formatted = f"{current_volume / 1000:.1f}K"
+            else:
+                volume_formatted = str(current_volume)
+            
+            # Calculate volume change multiplier
+            volume_change = "N/A"
+            if stock.avg_volume_50d and stock.avg_volume_50d > 0 and current_volume:
+                volume_multiplier = current_volume / stock.avg_volume_50d
+                volume_change = f"{volume_multiplier:.1f}x"
+            
+            # Format 52-week range
+            week_52_range = "N/A"
+            if stock.week_52_low and stock.week_52_high:
+                week_52_range = f"${stock.week_52_low:.2f} - ${stock.week_52_high:.2f}"
+            
+            # Calculate multiple return periods
+            return_5d = None
+            if stock.price_5d and stock.current_price:
+                return_5d = f"{((stock.current_price - stock.price_5d) / stock.price_5d * 100):.1f}%"
+            
+            return_20d = None
+            if stock.price_20d and stock.current_price:
+                return_20d = f"{((stock.current_price - stock.price_20d) / stock.price_20d * 100):.1f}%"
+            
+            return_60d = None
+            if stock.price_60d and stock.current_price:
+                return_60d = f"{((stock.current_price - stock.price_60d) / stock.price_60d * 100):.1f}%"
+            
+            return_120d = None
+            if stock.price_120d and stock.current_price:
+                return_120d = f"{((stock.current_price - stock.price_120d) / stock.price_120d * 100):.1f}%"
+            
             result.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
                 'sector': stock.sector,
                 'industry': stock.industry,
+                'country': stock.country or 'N/A',
                 'market_cap': market_cap_formatted,
                 'current_price': f"${stock.current_price:.2f}",
+                'price_change_pct': f"{stock.price_change_pct:.1f}%" if stock.price_change_pct else "N/A",
+                'current_price_with_change': f"${stock.current_price:.2f} ({stock.price_change_pct:.1f}%)" if stock.price_change_pct else f"${stock.current_price:.2f}",
+                'week_52_range': week_52_range,
+                'volume': volume_formatted,
+                'volume_change': volume_change,
+                'return_5d': return_5d,
+                'return_20d': return_20d,
+                'return_60d': return_60d,
+                'return_120d': return_120d,
                 'avg_volume_50d': f"{stock.avg_volume_50d:,.0f}",
                 'max_volume_5d': f"{stock.max_volume_5d:,.0f}",
                 'latest_date': latest_date.strftime('%Y-%m-%d')
@@ -764,13 +1038,13 @@ def get_volume_spike_stocks(above_200m=True):
         # Get yesterday's data (volume and close)
         yesterday_data = session.query(
             Price.ticker,
-            Price.volume.label('yesterday_volume'),
-            Price.close_price.label('yesterday_close')
+            Price.close_price.label('yesterday_close'),
+            Price.volume.label('yesterday_volume')
         ).filter(
             Price.date == yesterday
         ).subquery()
         
-        # Calculate average volume for the 5 days before today (including yesterday)
+        # Get average volume over the past 5 days (excluding today)
         avg_volume_5d = session.query(
             Price.ticker,
             func.avg(Price.volume).label('avg_volume_5d')
@@ -782,18 +1056,68 @@ def get_volume_spike_stocks(above_200m=True):
         blacklisted_tickers = session.query(BlackList.ticker).all()
         blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
         
+        # Get 52-week high and low for each stock (240 trading days)
+        week_52_stats = session.query(
+            Price.ticker,
+            func.max(Price.high_price).label('week_52_high'),
+            func.min(Price.low_price).label('week_52_low')
+        ).filter(
+            Price.date >= latest_date - timedelta(days=240)
+        ).group_by(Price.ticker).subquery()
+        
+        # Get historical prices for multiple return calculations
+        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+        
+        prices_5d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_5d')
+        ).filter(
+            Price.date == trading_dates_5d[-1][0] if len(trading_dates_5d) > 5 else latest_date
+        ).subquery()
+        
+        prices_20d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_20d')
+        ).filter(
+            Price.date == trading_dates_20d[-1][0] if len(trading_dates_20d) > 20 else latest_date
+        ).subquery()
+        
+        prices_60d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_60d')
+        ).filter(
+            Price.date == trading_dates_60d[-1][0] if len(trading_dates_60d) > 60 else latest_date
+        ).subquery()
+        
+        prices_120d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_120d')
+        ).filter(
+            Price.date == trading_dates_120d[-1][0] if len(trading_dates_120d) > 120 else latest_date
+        ).subquery()
+        
         # Main query combining all criteria
         query = session.query(
             Stock.ticker,
             Stock.company_name,
             Stock.sector,
             Stock.industry,
+            Stock.country,
             Stock.market_cap,
-            today_data.c.today_close,
-            today_data.c.today_volume,
+            today_data.c.today_close.label('current_price'),
+            today_data.c.today_volume.label('current_volume'),
             yesterday_data.c.yesterday_close,
             yesterday_data.c.yesterday_volume,
             avg_volume_5d.c.avg_volume_5d,
+            week_52_stats.c.week_52_high,
+            week_52_stats.c.week_52_low,
+            prices_5d.c.price_5d,
+            prices_20d.c.price_20d,
+            prices_60d.c.price_60d,
+            prices_120d.c.price_120d,
             ((today_data.c.today_close - yesterday_data.c.yesterday_close) / 
              yesterday_data.c.yesterday_close * 100).label('price_change_pct')
         ).join(
@@ -805,6 +1129,21 @@ def get_volume_spike_stocks(above_200m=True):
         ).join(
             avg_volume_5d,
             Stock.ticker == avg_volume_5d.c.ticker
+        ).outerjoin(
+            week_52_stats,
+            Stock.ticker == week_52_stats.c.ticker
+        ).outerjoin(
+            prices_5d,
+            Stock.ticker == prices_5d.c.ticker
+        ).outerjoin(
+            prices_20d,
+            Stock.ticker == prices_20d.c.ticker
+        ).outerjoin(
+            prices_60d,
+            Stock.ticker == prices_60d.c.ticker
+        ).outerjoin(
+            prices_120d,
+            Stock.ticker == prices_120d.c.ticker
         ).filter(
             # Today's volume > 5x average of previous 5 days
             today_data.c.today_volume > avg_volume_5d.c.avg_volume_5d * 5,
@@ -841,23 +1180,65 @@ def get_volume_spike_stocks(above_200m=True):
             else:  # < 1B, show in millions
                 market_cap_formatted = f"{market_cap / 1000000:.0f}M"
             
-            # Calculate volume multiplier using today's volume
-            volume_multiplier = stock.today_volume / stock.avg_volume_5d if stock.avg_volume_5d > 0 else 0
+            # Format volume
+            current_volume = stock.current_volume or 0
+            if current_volume >= 1000000:  # >= 1M
+                volume_formatted = f"{current_volume / 1000000:.1f}M"
+            elif current_volume >= 1000:  # >= 1K
+                volume_formatted = f"{current_volume / 1000:.1f}K"
+            else:
+                volume_formatted = str(current_volume)
+            
+            # Calculate volume change multiplier
+            volume_change = "N/A"
+            if stock.avg_volume_5d and stock.avg_volume_5d > 0 and current_volume:
+                volume_multiplier = current_volume / stock.avg_volume_5d
+                volume_change = f"{volume_multiplier:.1f}x"
+            
+            # Format 52-week range
+            week_52_range = "N/A"
+            if stock.week_52_low and stock.week_52_high:
+                week_52_range = f"${stock.week_52_low:.2f} - ${stock.week_52_high:.2f}"
+            
+            # Calculate multiple return periods
+            return_5d = None
+            if stock.price_5d and stock.current_price:
+                return_5d = f"{((stock.current_price - stock.price_5d) / stock.price_5d * 100):.1f}%"
+            
+            return_20d = None
+            if stock.price_20d and stock.current_price:
+                return_20d = f"{((stock.current_price - stock.price_20d) / stock.price_20d * 100):.1f}%"
+            
+            return_60d = None
+            if stock.price_60d and stock.current_price:
+                return_60d = f"{((stock.current_price - stock.price_60d) / stock.price_60d * 100):.1f}%"
+            
+            return_120d = None
+            if stock.price_120d and stock.current_price:
+                return_120d = f"{((stock.current_price - stock.price_120d) / stock.price_120d * 100):.1f}%"
             
             result.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
                 'sector': stock.sector,
                 'industry': stock.industry,
+                'country': stock.country or 'N/A',
                 'market_cap': market_cap_formatted,
-                'today_close': f"${stock.today_close:.2f}",
-                'yesterday_close': f"${stock.yesterday_close:.2f}",
+                'current_price': f"${stock.current_price:.2f}",
                 'price_change_pct': f"{stock.price_change_pct:.1f}%",
+                'week_52_range': week_52_range,
+                'volume': volume_formatted,
+                'volume_change': volume_change,
+                'return_5d': return_5d,
+                'return_20d': return_20d,
+                'return_60d': return_60d,
+                'return_120d': return_120d,
+                'yesterday_close': f"${stock.yesterday_close:.2f}",
                 'yesterday_volume': f"{stock.yesterday_volume:,.0f}",
                 'avg_volume_5d': f"{stock.avg_volume_5d:,.0f}",
-                'volume_multiplier': f"{volume_multiplier:.1f}x",
                 'today_date': today.strftime('%Y-%m-%d'),
-                'yesterday_date': yesterday.strftime('%Y-%m-%d')
+                'yesterday_date': yesterday.strftime('%Y-%m-%d'),
+                'latest_date': latest_date.strftime('%Y-%m-%d')
             })
         
         return result
@@ -1493,7 +1874,7 @@ def edit_comment(comment_id):
 
 # Helper function for shortlist data
 def get_all_returns_data_for_tickers(tickers, above_200m=None):
-    """Get all returns data for specific tickers (used by shortlist)"""
+    """Get all returns data for specific tickers (used by shortlist and blacklist)"""
     try:
         # Get the latest date for which we have price data
         latest_date = session.query(func.max(Price.date)).scalar()
@@ -1520,39 +1901,59 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
         last_10_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
         ten_days_ago = last_10_trading_dates[-1][0] if len(last_10_trading_dates) >= 10 else latest_date
 
-        # Build the query for the specific tickers
-        query = session.query(
-            Stock.ticker,
-            Stock.company_name,
-            Stock.sector,
-            Stock.industry,
-            Stock.market_cap,
-            func.avg(Price.close_price).label('avg_10day_price'),
-            func.avg(Price.volume * Price.close_price).label('avg_dollar_volume')
-        ).join(
-            Price, Stock.ticker == Price.ticker
-        ).filter(
-            Stock.ticker.in_(tickers),
-            Price.date >= ten_days_ago,
-            Price.date <= latest_date
-        ).group_by(
-            Stock.ticker, Stock.company_name, Stock.sector, 
-            Stock.industry, Stock.market_cap
-        )
-
-        stocks_data = query.all()
-        
         result = []
-        for stock in stocks_data:
+        for ticker in tickers:
+            # Get stock basic info
+            stock = session.query(Stock).filter(Stock.ticker == ticker).first()
+            if not stock:
+                continue
+
+            # Get current price and volume
+            current_data = session.query(
+                Price.close_price,
+                Price.volume
+            ).filter(
+                Price.ticker == ticker,
+                Price.date == latest_date
+            ).first()
+
+            if not current_data:
+                continue
+
+            current_price = current_data.close_price
+            current_volume = current_data.volume
+
+            # Get average volume (last 10 trading days)
+            avg_volume_data = session.query(
+                func.avg(Price.volume).label('avg_volume')
+            ).filter(
+                Price.ticker == ticker,
+                Price.date >= ten_days_ago,
+                Price.date <= latest_date
+            ).first()
+
+            avg_volume = avg_volume_data.avg_volume if avg_volume_data else 0
+
+            # Get 52-week high and low
+            week_52_data = session.query(
+                func.max(Price.high_price).label('week_52_high'),
+                func.min(Price.low_price).label('week_52_low')
+            ).filter(
+                Price.ticker == ticker,
+                Price.date >= latest_date - timedelta(days=240)  # Approximately 52 weeks of trading days
+            ).first()
+
+            week_52_high = week_52_data.week_52_high if week_52_data else None
+            week_52_low = week_52_data.week_52_low if week_52_data else None
+
             # Get prices for different periods
             prices = session.query(Price.close_price, Price.date).filter(
-                Price.ticker == stock.ticker,
+                Price.ticker == ticker,
                 Price.date.in_([latest_date, start_date_1d, start_date_5d, start_date_20d, start_date_60d, start_date_120d])
             ).all()
             
             price_dict = {price.date: price.close_price for price in prices}
             
-            current_price = price_dict.get(latest_date, 0)
             price_1d = price_dict.get(start_date_1d, current_price)
             price_5d = price_dict.get(start_date_5d, current_price)
             price_20d = price_dict.get(start_date_20d, current_price)
@@ -1566,28 +1967,55 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
             return_60d = ((current_price - price_60d) / price_60d * 100) if price_60d > 0 else 0
             return_120d = ((current_price - price_120d) / price_120d * 100) if price_120d > 0 else 0
 
-            # Calculate weighted score using the same weights as AllReturns
-            weighted_score = (
-                return_1d * DEFAULT_PRIORITY_WEIGHTS['1d'] +
-                return_5d * DEFAULT_PRIORITY_WEIGHTS['5d'] +
-                return_20d * DEFAULT_PRIORITY_WEIGHTS['20d'] +
-                return_60d * DEFAULT_PRIORITY_WEIGHTS['60d'] +
-                return_120d * DEFAULT_PRIORITY_WEIGHTS['120d']
-            )
+            # Format market cap
+            market_cap = stock.market_cap
+            if market_cap >= 1000000000:  # >= 1B
+                market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
+                if market_cap_formatted.endswith('.0B'):
+                    market_cap_formatted = market_cap_formatted[:-3] + 'B'
+            else:  # < 1B, show in millions
+                market_cap_formatted = f"{market_cap / 1000000:.0f}M"
+
+            # Format volume
+            if current_volume >= 1000000:  # >= 1M
+                volume_formatted = f"{current_volume / 1000000:.1f}M"
+            elif current_volume >= 1000:  # >= 1K
+                volume_formatted = f"{current_volume / 1000:.1f}K"
+            else:
+                volume_formatted = str(current_volume)
+
+            # Calculate volume change multiplier
+            volume_change = "N/A"
+            if avg_volume and avg_volume > 0 and current_volume:
+                volume_multiplier = current_volume / avg_volume
+                volume_change = f"{volume_multiplier:.1f}x"
+
+            # Format 52-week range
+            range_52w = "N/A"
+            if week_52_low and week_52_high:
+                range_52w = f"${week_52_low:.2f} - ${week_52_high:.2f}"
+
+            # Format price change percentage for current price display
+            price_change_pct = f"{return_1d:.1f}%"
 
             result.append({
-                'ticker': stock.ticker,
+                'ticker': ticker,
                 'company_name': stock.company_name,
                 'sector': stock.sector,
                 'industry': stock.industry,
+                'country': stock.country or 'N/A',
+                'market_cap': market_cap_formatted,
+                'current_price': f"${current_price:.2f}",
+                'price_change_pct': price_change_pct,
+                'current_price_with_change': f"${current_price:.2f} ({price_change_pct})",
+                'range_52w': range_52w,
+                'volume': volume_formatted,
+                'vol_change': volume_change,
                 'return_1d': f"{return_1d:.1f}%",
                 'return_5d': f"{return_5d:.1f}%",
                 'return_20d': f"{return_20d:.1f}%",
                 'return_60d': f"{return_60d:.1f}%",
                 'return_120d': f"{return_120d:.1f}%",
-                'weighted_score': f"{weighted_score:.1f}",
-                'avg_10day_price': f"${stock.avg_10day_price:.2f}",
-                'avg_dollar_volume': f"${stock.avg_dollar_volume:,.0f}",
                 'latest_date': latest_date.strftime('%Y-%m-%d')
             })
 
@@ -1610,6 +2038,7 @@ def get_shortlist():
             Stock.company_name,
             Stock.sector,
             Stock.industry,
+            Stock.country,
             Stock.market_cap
         ).join(
             Stock, ShortList.ticker == Stock.ticker
@@ -1660,6 +2089,7 @@ def get_shortlist():
                 'company_name': stock.company_name,
                 'sector': stock.sector,
                 'industry': stock.industry,
+                'country': stock.country or 'N/A',
                 'market_cap': market_cap_formatted,
                 'current_price': f"${price_dict.get(stock.ticker, 0):.2f}" if stock.ticker in price_dict else "N/A",
                 'shortlisted_at': stock.shortlisted_at.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1785,6 +2215,7 @@ def get_blacklist():
             Stock.company_name,
             Stock.sector,
             Stock.industry,
+            Stock.country,
             Stock.market_cap
         ).join(
             Stock, BlackList.ticker == Stock.ticker
@@ -1835,6 +2266,7 @@ def get_blacklist():
                 'company_name': stock.company_name,
                 'sector': stock.sector,
                 'industry': stock.industry,
+                'country': stock.country or 'N/A',
                 'market_cap': market_cap_formatted,
                 'current_price': f"${price_dict.get(stock.ticker, 0):.2f}" if stock.ticker in price_dict else "N/A",
                 'blacklisted_at': stock.blacklisted_at.strftime('%Y-%m-%d %H:%M:%S'),

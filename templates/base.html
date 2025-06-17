@@ -147,6 +147,19 @@
     
     <!-- Common JavaScript Configuration -->
     <script>
+        // Determine which return column (if any) should be highlighted based on URL – needs to be defined early so helper functions can use it.
+        const pathname = window.location.pathname;
+        let highlightedReturnKey = null;
+        if (pathname.includes('Return5D')) {
+            highlightedReturnKey = 'return_5d';
+        } else if (pathname.includes('Return20D')) {
+            highlightedReturnKey = 'return_20d';
+        } else if (pathname.includes('Return60D')) {
+            highlightedReturnKey = 'return_60d';
+        } else if (pathname.includes('Return120D')) {
+            highlightedReturnKey = 'return_120d';
+        }
+
         // Column configurations for different page types
         const COLUMN_CONFIGS = {
             returns: {
@@ -155,13 +168,18 @@
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
                     { key: 'industry', label: 'Industry', type: 'text' },
-                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
-                    { key: 'current_price', label: 'Current Price', type: 'text' },
-                    { key: 'avg_10day_price', label: '10-Day Avg Price', type: 'text' },
-                    { key: 'avg_dollar_volume', label: 'Avg Dollar Volume', type: 'text' },
-                    { key: 'price_change_pct', label: '', type: 'badge' } // Label will be set dynamically
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' }
                 ]
             },
             all_returns: {
@@ -170,17 +188,18 @@
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
                     { key: 'industry', label: 'Industry', type: 'text' },
-                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
-                    { key: 'current_price', label: 'Current Price', type: 'text' },
-                    { key: 'return_periods', label: 'Return Periods', type: 'badge_blue' },
-                    { key: 'priority_score', label: 'Priority Score', type: 'badge_warning' },
-                    { key: 'returns_1d', label: '1D Return', type: 'return_badge' },
-                    { key: 'returns_5d', label: '5D Return', type: 'return_badge' },
-                    { key: 'returns_20d', label: '20D Return', type: 'return_badge' },
-                    { key: 'returns_60d', label: '60D Return', type: 'return_badge' },
-                    { key: 'returns_120d', label: '120D Return', type: 'return_badge' }
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' }
                 ]
             },
             gapper: {
@@ -189,12 +208,18 @@
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
                     { key: 'industry', label: 'Industry', type: 'text' },
-                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
-                    { key: 'current_price', label: 'Current Price', type: 'text' },
-                    { key: 'avg_volume_50d', label: '50-Day Avg Volume', type: 'text' },
-                    { key: 'max_volume_5d', label: 'Max Volume (5D)', type: 'text' }
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' }
                 ]
             },
             volume: {
@@ -203,14 +228,18 @@
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
                     { key: 'industry', label: 'Industry', type: 'text' },
-                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
-                    { key: 'today_close', label: "Today's Close", type: 'text' },
-                    { key: 'price_change_pct', label: 'Price Change', type: 'badge' },
-                    { key: 'yesterday_volume', label: 'Yesterday Volume', type: 'text' },
-                    { key: 'avg_volume_5d', label: '5D Avg Volume', type: 'text' },
-                    { key: 'volume_multiplier', label: 'Volume Multiple', type: 'badge_warning' }
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' }
                 ]
             }
         };
@@ -273,10 +302,31 @@
                         rowHtml += `<td>${stock[col.key] || 'N/A'}</td>`;
                         break;
                     case 'badge':
-                        rowHtml += `<td><span class="badge bg-success">${stock[col.key]}</span></td>`;
+                        const badgeValue = stock[col.key];
+                        if (badgeValue && typeof badgeValue === 'string' && badgeValue.includes('%')) {
+                            const isPositive = !badgeValue.includes('-');
+                            const badgeClass = isPositive ? 'bg-success' : 'bg-danger';
+                            rowHtml += `<td><span class="badge ${badgeClass}">${badgeValue}</span></td>`;
+                        } else {
+                            rowHtml += `<td><span class="badge bg-secondary">${badgeValue || 'N/A'}</span></td>`;
+                        }
+                        break;
+                    case 'badge_info':
+                        rowHtml += `<td>${stock[col.key] || 'N/A'}</td>`;
                         break;
                     case 'badge_warning':
-                        rowHtml += `<td><span class="badge bg-warning text-dark">${stock[col.key]}</span></td>`;
+                        rowHtml += `<td><span class="badge bg-warning text-dark">${stock[col.key] || 'N/A'}</span></td>`;
+                        break;
+                    case 'price_with_change':
+                        const currentPrice = stock.current_price || 'N/A';
+                        const changePercent = stock.price_change_pct || '';
+                        if (currentPrice !== 'N/A' && changePercent) {
+                            const isPositive = !changePercent.includes('-');
+                            const badgeClass = isPositive ? 'bg-success' : 'bg-danger';
+                            rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span> <span class="badge ${badgeClass} ms-1">${changePercent}</span></td>`;
+                        } else {
+                            rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span></td>`;
+                        }
                         break;
                     case 'badge_blue':
                         const periods = stock[col.key];
@@ -288,12 +338,22 @@
                         }
                         break;
                     case 'return_badge':
-                        const value = stock[col.key];
-                        if (value === null || value === undefined || value === '') {
+                        const returnValue = stock[col.key];
+                        if (returnValue === null || returnValue === undefined || returnValue === '') {
                             rowHtml += `<td><span class="text-muted">--</span></td>`;
                         } else {
-                            rowHtml += `<td><span class="badge bg-success">${value}</span></td>`;
+                            const isPositiveReturn = typeof returnValue === 'string' && !returnValue.includes('-');
+                            const colorClass = isPositiveReturn ? 'text-success' : 'text-danger';
+                            const badgeColor = isPositiveReturn ? 'bg-success' : 'bg-danger';
+                            if (col.key === highlightedReturnKey) {
+                                rowHtml += `<td><span class="badge ${badgeColor}">${returnValue}</span></td>`;
+                            } else {
+                                rowHtml += `<td><span class="${colorClass}">${returnValue}</span></td>`;
+                            }
                         }
+                        break;
+                    default:
+                        rowHtml += `<td>${stock[col.key] || 'N/A'}</td>`;
                         break;
                 }
             });

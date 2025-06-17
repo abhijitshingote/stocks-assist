@@ -108,16 +108,18 @@
                     <th style="width: 50px;">S/N</th>
                     <th>Ticker</th>
                     <th>Company</th>
+                    <th>Market Cap</th>
+                    <th>Country</th>
                     <th>Sector</th>
                     <th>Industry</th>
-                    <th>Market Cap</th>
                     <th>Current Price</th>
-                    <th>1D Return</th>
+                    <th>52Wk Range</th>
+                    <th>Volume</th>
+                    <th>Vol Change</th>
                     <th>5D Return</th>
                     <th>20D Return</th>
                     <th>60D Return</th>
                     <th>120D Return</th>
-                    <th>Weighted Score</th>
                     <th>Blacklisted Date</th>
                     <th>Notes</th>
                     <th>Action</th>
@@ -218,20 +220,22 @@
                     </a>
                 </td>
                 <td>${stock.company_name || 'N/A'}</td>
+                <td>${stock.market_cap || 'N/A'}</td>
+                <td>${stock.country || 'N/A'}</td>
                 <td>${stock.sector || 'N/A'}</td>
                 <td>${stock.industry || 'N/A'}</td>
-                <td>${stock.market_cap || 'N/A'}</td>
-                <td>${stock.current_price || 'N/A'}</td>
-                <td class="${getReturnClass(stock.return_1d)}">${stock.return_1d || 'N/A'}</td>
+                <td>${formatPriceWithChange(stock)}</td>
+                <td>${stock.range_52w || 'N/A'}</td>
+                <td>${stock.volume || 'N/A'}</td>
+                <td><span class=\"badge bg-warning text-dark\">${stock.vol_change || 'N/A'}</span></td>
                 <td class="${getReturnClass(stock.return_5d)}">${stock.return_5d || 'N/A'}</td>
                 <td class="${getReturnClass(stock.return_20d)}">${stock.return_20d || 'N/A'}</td>
                 <td class="${getReturnClass(stock.return_60d)}">${stock.return_60d || 'N/A'}</td>
                 <td class="${getReturnClass(stock.return_120d)}">${stock.return_120d || 'N/A'}</td>
-                <td><span class="badge bg-secondary">${stock.weighted_score || 'N/A'}</span></td>
-                <td>${formatDate(stock.blacklisted_at)}</td>
+                <td>${stock.blacklisted_date || 'N/A'}</td>
                 <td class="notes-cell" title="${stock.notes || ''}">${stock.notes || ''}</td>
                 <td>
-                    <button class="btn btn-success btn-sm remove-btn" onclick="removeFromBlacklist('${stock.ticker}')">
+                    <button class="btn btn-warning btn-sm remove-btn" onclick="removeFromBlacklist('${stock.ticker}')">
                         Remove
                     </button>
                 </td>
@@ -243,7 +247,18 @@
     function getReturnClass(returnValue) {
         if (!returnValue) return '';
         const numValue = parseFloat(returnValue.replace('%', ''));
-        return numValue >= 0 ? 'positive' : 'negative';
+        return numValue >= 0 ? 'text-success' : 'text-danger';
+    }
+
+    function formatPriceWithChange(stock) {
+        const price = stock.current_price || 'N/A';
+        const change = stock.price_change_pct || '';
+        if (price === 'N/A') return price;
+        const priceSpan = `<span class=\"fw-bold text-success\">${price}</span>`;
+        if (!change) return priceSpan;
+        const isPositive = !change.includes('-');
+        const badgeClass = isPositive ? 'bg-success' : 'bg-danger';
+        return `${priceSpan} <span class=\"badge ${badgeClass} ms-1\">${change}</span>`;
     }
 
     function formatDate(dateString) {
