@@ -1114,8 +1114,66 @@ def get_stock_details(ticker):
     if not db_stock:
         return jsonify({'error': 'Stock not found'}), 404
     
-    # Get latest price data
+    # Get latest price data (today)
     latest_price = session.query(Price).filter_by(ticker=ticker).order_by(Price.date.desc()).first()
+    
+    # Get previous day's price data for change calculation
+    previous_price = session.query(Price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(1).first()
+    
+    # Calculate price change
+    price_change = None
+    price_change_pct = None
+    if latest_price and previous_price and latest_price.close_price and previous_price.close_price:
+        price_change = latest_price.close_price - previous_price.close_price
+        price_change_pct = (price_change / previous_price.close_price) * 100
+    
+    # Get 240-day high and low (52-week equivalent)
+    week_52_high = None
+    week_52_low = None
+    if latest_price:
+        # Get prices from last 240 trading days
+        prices_240d = session.query(Price.high_price, Price.low_price).filter_by(ticker=ticker).order_by(Price.date.desc()).limit(240).all()
+        if prices_240d:
+            highs = [p.high_price for p in prices_240d if p.high_price is not None]
+            lows = [p.low_price for p in prices_240d if p.low_price is not None]
+            if highs:
+                week_52_high = max(highs)
+            if lows:
+                week_52_low = min(lows)
+    
+    # Calculate returns for 5, 20, and 60 days
+    return_5d = None
+    return_20d = None
+    return_60d = None
+    
+    if latest_price and latest_price.close_price:
+        # Get price 5 days ago
+        price_5d = session.query(Price.close_price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(5).first()
+        if price_5d and price_5d.close_price:
+            return_5d = ((latest_price.close_price - price_5d.close_price) / price_5d.close_price) * 100
+        
+        # Get price 20 days ago
+        price_20d = session.query(Price.close_price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(20).first()
+        if price_20d and price_20d.close_price:
+            return_20d = ((latest_price.close_price - price_20d.close_price) / price_20d.close_price) * 100
+        
+        # Get price 60 days ago
+        price_60d = session.query(Price.close_price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(60).first()
+        if price_60d and price_60d.close_price:
+            return_60d = ((latest_price.close_price - price_60d.close_price) / price_60d.close_price) * 100
+    
+    # Calculate average volume (excluding today)
+    avg_volume = None
+    volume_change_multiplier = None
+    if latest_price:
+        # Get last 21 trading days (excluding today) for average volume
+        volumes = session.query(Price.volume).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(1).limit(20).all()
+        if volumes:
+            valid_volumes = [v.volume for v in volumes if v.volume is not None]
+            if valid_volumes:
+                avg_volume = sum(valid_volumes) / len(valid_volumes)
+                if latest_price.volume and avg_volume > 0:
+                    volume_change_multiplier = latest_price.volume / avg_volume
     
     # Format last traded timestamp
     last_traded_formatted = None
@@ -1127,11 +1185,27 @@ def get_stock_details(ticker):
         'company_name': db_stock.company_name,
         'sector': db_stock.sector,
         'industry': db_stock.industry,
+        'country': db_stock.country,
+        'description': db_stock.description,
         'open_price': latest_price.open_price if latest_price else None,
         'high_price': latest_price.high_price if latest_price else None,
         'low_price': latest_price.low_price if latest_price else None,
         'close_price': latest_price.close_price if latest_price else None,
         'volume': latest_price.volume if latest_price else None,
+        'price_change': price_change,
+        'price_change_pct': price_change_pct,
+        'week_52_high': week_52_high,
+        'week_52_low': week_52_low,
+        'return_5d': return_5d,
+        'return_20d': return_20d,
+        'return_60d': return_60d,
+        'avg_volume': avg_volume,
+        'volume_change_multiplier': volume_change_multiplier,
+        'shares_outstanding': db_stock.full_time_employees,  # Placeholder - need to add these fields to Stock model
+        'shares_float': None,  # Placeholder - need to add to Stock model
+        'short_float': None,  # Placeholder - need to add to Stock model
+        'short_ratio': None,  # Placeholder - need to add to Stock model
+        'short_interest': None,  # Placeholder - need to add to Stock model
         'last_traded_timestamp': last_traded_formatted,
         'market_cap': db_stock.market_cap,
         'date': latest_price.date.strftime('%Y-%m-%d') if latest_price and latest_price.date else None

@@ -236,72 +236,123 @@
     </nav>
 
     <div class="container mt-4">
-        <!-- Top Section -->
-        <div class="row mb-4">
-            <!-- Left Section - Ticker Info (25%) -->
-            <div class="col-md-3">
-                <!-- Compact Header -->
-                <div class="mb-2">
-                    <h4 class="ticker-symbol" id="tickerSymbol">{{ ticker }}</h4>
-                    <small class="company-name" id="companyName">Loading...</small>
-                </div>
-
-                <!-- Stock Details Card -->
+        <!-- Stock Information Table -->
+        <div class="row mb-2">
+            <div class="col-12">
                 <div class="card">
-                    <div class="card-body p-2">
-                        <h6 class="card-title mb-2 fs-6">Details</h6>
-                        <div class="compact-info">
-                            <div class="info-item">
-                                <span class="info-label">Price</span>
-                                <span class="info-value current-price" id="currentPrice">$--</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Market Cap</span>
-                                <span class="info-value" id="marketCap">--</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Volume</span>
-                                <span class="info-value" id="volume">--</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Sector</span>
-                                <span class="info-value" id="sector">--</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Industry</span>
-                                <span class="info-value" id="industry">--</span>
-                            </div>
-                        </div>
+                    <div class="card-body p-1">
+                        <table class="table table-sm table-bordered mb-0" style="font-size: 0.85rem; line-height: 1.1;">
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold text-muted" style="width: 10%; padding: 0.1rem 0.2rem;">Symbol</td>
+                                    <td style="width: 8%; padding: 0.1rem 0.2rem;">
+                                        <span class="fw-bold text-success">{{ ticker }}</span>
+                                    </td>
+                                    <td class="fw-bold text-muted" style="width: 10%; padding: 0.1rem 0.2rem;">Company</td>
+                                    <td style="width: 22%; padding: 0.1rem 0.2rem;" id="companyName">Loading...</td>
+                                    <td class="fw-bold text-muted" style="width: 10%; padding: 0.1rem 0.2rem;">Price</td>
+                                    <td style="width: 18%; padding: 0.1rem 0.2rem;">
+                                        <span class="fw-bold text-success" id="currentPrice">$--</span>
+                                        <span class="ms-1" id="priceChange">--</span>
+                                    </td>
+                                    <td class="fw-bold text-muted" style="width: 10%; padding: 0.1rem 0.2rem;">52Wk Range</td>
+                                    <td style="width: 12%; padding: 0.1rem 0.2rem;" id="week52Range">--</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Sector</td>
+                                    <td style="padding: 0.1rem 0.2rem;">
+                                        <span class="fw-bold text-primary" id="sector">--</span>
+                                    </td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Industry</td>
+                                    <td style="padding: 0.1rem 0.2rem;" id="industry">--</td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Country</td>
+                                    <td style="padding: 0.1rem 0.2rem;">
+                                        <span class="badge bg-info" id="country">--</span>
+                                    </td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Market Cap</td>
+                                    <td style="padding: 0.1rem 0.2rem;">
+                                        <span class="badge bg-warning text-dark" id="marketCap">--</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Volume</td>
+                                    <td style="padding: 0.1rem 0.2rem;" id="volume">--</td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Avg Volume</td>
+                                    <td style="padding: 0.1rem 0.2rem;" id="avgVolume">--</td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Vol Change</td>
+                                    <td style="padding: 0.1rem 0.2rem;">
+                                        <span class="badge" id="volumeChange">--</span>
+                                    </td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Shares Out</td>
+                                    <td style="padding: 0.1rem 0.2rem;" id="sharesOutstanding">--</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">5D Return</td>
+                                    <td style="padding: 0.1rem 0.2rem;">
+                                        <span class="badge" id="return5d">--</span>
+                                    </td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">20D Return</td>
+                                    <td style="padding: 0.1rem 0.2rem;">
+                                        <span class="badge" id="return20d">--</span>
+                                    </td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">60D Return</td>
+                                    <td style="padding: 0.1rem 0.2rem;">
+                                        <span class="badge" id="return60d">--</span>
+                                    </td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Shares Float</td>
+                                    <td style="padding: 0.1rem 0.2rem;" id="sharesFloat">--</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Short Float</td>
+                                    <td style="padding: 0.1rem 0.2rem;" id="shortFloat">--</td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Short Ratio</td>
+                                    <td style="padding: 0.1rem 0.2rem;" id="shortRatio">--</td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Short Interest</td>
+                                    <td style="padding: 0.1rem 0.2rem;" id="shortInterest">--</td>
+                                    <td class="fw-bold text-muted" style="padding: 0.1rem 0.2rem;">Actions</td>
+                                    <td style="padding: 0.1rem 0.2rem;">
+                                        <div class="d-flex gap-1">
+                                            <button type="button" class="btn btn-success btn-sm flex-fill" id="shortlistBtn" onclick="toggleShortlist()" style="padding: 0.15rem 0.25rem; font-size: 0.7rem;">
+                                                <span id="shortlistIcon">+</span> <span id="shortlistText">ShortList</span>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm flex-fill" id="blacklistBtn" onclick="toggleBlacklist()" style="padding: 0.15rem 0.25rem; font-size: 0.7rem;">
+                                                <span id="blacklistIcon">⚫</span> <span id="blacklistText">BlackList</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                
-                <!-- Shortlist Button -->
-                <div class="mt-3">
-                    <button type="button" class="btn btn-outline-success btn-sm w-100" id="shortlistBtn" onclick="toggleShortlist()">
-                        <span id="shortlistIcon">+</span> <span id="shortlistText">Add to ShortList</span>
-                    </button>
-                </div>
-                
-                <!-- Blacklist Button -->
-                <div class="mt-2">
-                    <button type="button" class="btn btn-outline-danger btn-sm w-100" id="blacklistBtn" onclick="toggleBlacklist()">
-                        <span id="blacklistIcon">⚫</span> <span id="blacklistText">Add to BlackList</span>
-                    </button>
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="row mb-2">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-1">
+                        <h6 class="card-title mb-1" style="font-size: 0.8rem;">Description</h6>
+                        <p class="mb-0 text-muted" style="font-size: 0.75rem;" id="description">Loading...</p>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Right Section - Comments (75%) -->
-            <div class="col-md-9">
+        <!-- Comments Section -->
+        <div class="row mb-2">
+            <div class="col-12">
                 <!-- User Comments Card -->
-                <div class="card mb-4">
-                    <div class="card-body p-2">
-                        <h6 class="card-title mb-2 fs-6">User Comments</h6>
+                <div class="card mb-2">
+                    <div class="card-body p-1">
+                        <h6 class="card-title mb-1" style="font-size: 0.8rem;">User Comments</h6>
                         
                         <!-- Add Comment Form -->
                         <div class="mb-2">
-                            <textarea class="form-control form-control-sm" id="commentText" rows="1" placeholder="Add comment..."></textarea>
-                            <button type="button" class="btn btn-success btn-sm mt-1" onclick="addComment()">Add</button>
-                            <div id="commentError" class="text-danger small mt-1" style="display: none;"></div>
+                            <textarea class="form-control form-control-sm" id="commentText" rows="2" placeholder="Add your comment..." style="font-size: 0.75rem;"></textarea>
+                            <button type="button" class="btn btn-success btn-sm mt-1" onclick="addComment()" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;">Add Comment</button>
+                            <div id="commentError" class="text-danger mt-1" style="display: none; font-size: 0.7rem;"></div>
                         </div>
                         
                         <!-- Comments List -->
@@ -311,7 +362,7 @@
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
                             </div>
-                            <div id="commentsError" class="error-message small" style="display: none;"></div>
+                            <div id="commentsError" class="error-message" style="display: none; font-size: 0.75rem;"></div>
                             <div id="commentsList"></div>
                         </div>
                     </div>
@@ -319,23 +370,23 @@
 
                 <!-- AI Comments Card -->
                 <div class="card">
-                    <div class="card-body p-2">
-                        <h6 class="card-title mb-2 fs-6">AI Analysis</h6>
+                    <div class="card-body p-1">
+                        <h6 class="card-title mb-1" style="font-size: 0.8rem;">AI Analysis</h6>
                         
                         <!-- Fetch AI Comments Button -->
-                        <div class="mb-3">
-                            <button type="button" class="btn btn-primary btn-sm" onclick="fetchAIComments()">Fetch AI Comments</button>
+                        <div class="mb-2">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="fetchAIComments()" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;">Fetch AI Analysis</button>
                         </div>
                         
                         <!-- AI Comments Input -->
-                        <div id="aiCommentInput" class="mb-3" style="display: none;">
-                            <div id="aiCommentDisplay" class="form-control" style="min-height: 400px; max-height: 600px; overflow-y: auto; background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 0.375rem; padding: 0.375rem 0.75rem; white-space: pre-wrap;"></div>
-                            <button type="button" class="btn btn-success btn-sm mt-2" onclick="saveAIComment()">Save AI Comment</button>
+                        <div id="aiCommentInput" class="mb-2" style="display: none;">
+                            <div id="aiCommentDisplay" class="form-control" style="min-height: 300px; max-height: 400px; overflow-y: auto; background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 0.375rem; padding: 0.5rem; white-space: pre-wrap; font-size: 0.75rem;"></div>
+                            <button type="button" class="btn btn-success btn-sm mt-1" onclick="saveAIComment()" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;">Save AI Analysis</button>
                         </div>
                         
                         <!-- Pending AI Comments Review Section -->
                         <div id="pendingAIContainer" style="display: none;">
-                            <small class="text-warning">⚠️ Pending Review</small>
+                            <small class="text-warning" style="font-size: 0.7rem;">⚠️ Pending Review</small>
                             <div id="pendingAIList"></div>
                             <hr class="my-1">
                         </div>
@@ -400,6 +451,97 @@
                     document.getElementById('volume').textContent = formatVolume(data.volume);
                     document.getElementById('sector').textContent = data.sector || 'N/A';
                     document.getElementById('industry').textContent = data.industry || 'N/A';
+                    document.getElementById('country').textContent = data.country || 'N/A';
+                    document.getElementById('description').textContent = data.description || 'No description available.';
+                    
+                    // Format price change
+                    const priceChangeElement = document.getElementById('priceChange');
+                    if (data.price_change !== null && data.price_change_pct !== null) {
+                        const changeText = `${data.price_change >= 0 ? '+' : ''}$${data.price_change.toFixed(2)} (${data.price_change_pct >= 0 ? '+' : ''}${data.price_change_pct.toFixed(2)}%)`;
+                        priceChangeElement.textContent = changeText;
+                        priceChangeElement.className = data.price_change >= 0 ? 'ms-1 text-success fw-bold' : 'ms-1 text-danger fw-bold';
+                    } else {
+                        priceChangeElement.textContent = '--';
+                        priceChangeElement.className = 'ms-1 text-muted';
+                    }
+                    
+                    // 52-week range (combined)
+                    const week52RangeElement = document.getElementById('week52Range');
+                    if (data.week_52_low && data.week_52_high) {
+                        week52RangeElement.textContent = `$${data.week_52_low.toFixed(2)} - $${data.week_52_high.toFixed(2)}`;
+                    } else {
+                        week52RangeElement.textContent = '--';
+                    }
+                    
+                    // Average volume and volume change with badge styling
+                    document.getElementById('avgVolume').textContent = formatVolume(data.avg_volume);
+                    const volumeChangeElement = document.getElementById('volumeChange');
+                    if (data.volume_change_multiplier) {
+                        volumeChangeElement.textContent = `${data.volume_change_multiplier.toFixed(1)}x`;
+                        volumeChangeElement.className = 'badge bg-warning text-dark';
+                    } else {
+                        volumeChangeElement.textContent = '--';
+                        volumeChangeElement.className = 'badge bg-warning text-dark';
+                    }
+                    
+                    // Returns with badge color coding
+                    const return5dElement = document.getElementById('return5d');
+                    if (data.return_5d !== null) {
+                        return5dElement.textContent = `${data.return_5d >= 0 ? '+' : ''}${data.return_5d.toFixed(1)}%`;
+                        if (data.return_5d >= 5) {
+                            return5dElement.className = 'badge bg-success';
+                        } else if (data.return_5d >= 0) {
+                            return5dElement.className = 'badge bg-success bg-opacity-50';
+                        } else if (data.return_5d >= -5) {
+                            return5dElement.className = 'badge bg-danger bg-opacity-50';
+                        } else {
+                            return5dElement.className = 'badge bg-danger';
+                        }
+                    } else {
+                        return5dElement.textContent = '--';
+                        return5dElement.className = 'badge bg-secondary';
+                    }
+                    
+                    const return20dElement = document.getElementById('return20d');
+                    if (data.return_20d !== null) {
+                        return20dElement.textContent = `${data.return_20d >= 0 ? '+' : ''}${data.return_20d.toFixed(1)}%`;
+                        if (data.return_20d >= 10) {
+                            return20dElement.className = 'badge bg-success';
+                        } else if (data.return_20d >= 0) {
+                            return20dElement.className = 'badge bg-success bg-opacity-50';
+                        } else if (data.return_20d >= -10) {
+                            return20dElement.className = 'badge bg-danger bg-opacity-50';
+                        } else {
+                            return20dElement.className = 'badge bg-danger';
+                        }
+                    } else {
+                        return20dElement.textContent = '--';
+                        return20dElement.className = 'badge bg-secondary';
+                    }
+                    
+                    const return60dElement = document.getElementById('return60d');
+                    if (data.return_60d !== null) {
+                        return60dElement.textContent = `${data.return_60d >= 0 ? '+' : ''}${data.return_60d.toFixed(1)}%`;
+                        if (data.return_60d >= 20) {
+                            return60dElement.className = 'badge bg-success';
+                        } else if (data.return_60d >= 0) {
+                            return60dElement.className = 'badge bg-success bg-opacity-50';
+                        } else if (data.return_60d >= -20) {
+                            return60dElement.className = 'badge bg-danger bg-opacity-50';
+                        } else {
+                            return60dElement.className = 'badge bg-danger';
+                        }
+                    } else {
+                        return60dElement.textContent = '--';
+                        return60dElement.className = 'badge bg-secondary';
+                    }
+                    
+                    // Shares and short interest data (placeholders for now)
+                    document.getElementById('sharesOutstanding').textContent = data.shares_outstanding ? formatLargeNumber(data.shares_outstanding) : '--';
+                    document.getElementById('sharesFloat').textContent = data.shares_float ? formatLargeNumber(data.shares_float) : '--';
+                    document.getElementById('shortFloat').textContent = data.short_float ? `${data.short_float.toFixed(1)}%` : '--';
+                    document.getElementById('shortRatio').textContent = data.short_ratio ? data.short_ratio.toFixed(1) : '--';
+                    document.getElementById('shortInterest').textContent = data.short_interest ? `${data.short_interest.toFixed(1)}%` : '--';
                 })
                 .catch(error => {
                     console.error('Error loading ticker details:', error);
@@ -643,6 +785,19 @@
             }
         }
         
+        function formatLargeNumber(number) {
+            if (!number) return 'N/A';
+            if (number >= 1000000000) {
+                return `${(number / 1000000000).toFixed(1)}B`;
+            } else if (number >= 1000000) {
+                return `${(number / 1000000).toFixed(1)}M`;
+            } else if (number >= 1000) {
+                return `${(number / 1000).toFixed(0)}K`;
+            } else {
+                return number.toLocaleString();
+            }
+        }
+        
         // Comments functions
         function loadComments() {
             fetch(`/api/comments/${ticker}`)
@@ -675,9 +830,7 @@
             const aiComments = comments.filter(c => c.comment_type === 'ai' && c.status === 'approved');
             
             // Display user comments
-            if (userComments.length === 0) {
-                commentsList.innerHTML = '<div class="text-muted text-center py-1">No comments yet. Be the first to add one!</div>';
-            } else {
+
                 commentsList.innerHTML = userComments.map(comment => `
                     <div class="card mb-1" id="comment-${comment.id}">
                         <div class="card-body p-2">
@@ -691,7 +844,7 @@
                         </div>
                     </div>
                 `).join('');
-            }
+            
             
             // Display AI comments
             if (aiComments.length === 0) {
