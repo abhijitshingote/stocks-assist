@@ -743,22 +743,20 @@ def get_volume_spike_stocks(above_200m=True):
         today = last_2_trading_dates[0][0]
         yesterday = last_2_trading_dates[1][0]
         
-        # Get the 5 trading days before yesterday (excluding yesterday)
-        # We need 7 dates total: today, yesterday, + 5 days before yesterday
-        last_7_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(7).all()
-        if len(last_7_trading_dates) < 7:
-            logger.warning(f"Need at least 7 trading dates, only {len(last_7_trading_dates)} available")
+        # Get the last 6 trading days total to get 5 days before today
+        last_6_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        if len(last_6_trading_dates) < 6:
+            logger.warning(f"Need at least 6 trading dates, only {len(last_6_trading_dates)} available")
             return []
         
-        # The 5 days before yesterday (excluding today and yesterday)
-        five_days_before_yesterday = [date[0] for date in last_7_trading_dates[2:]]  # Skip today and yesterday
+        # The 5 days before today (skip just today, include yesterday)
+        five_days_before_today = [date[0] for date in last_6_trading_dates[1:]]  # Skip today only
         
-        logger.info(f"Volume screening: today={today}, yesterday={yesterday}, 5 days before: {five_days_before_yesterday}")
-        
-        # Get today's closing prices
-        today_prices = session.query(
+        # Get today's closing prices and volume
+        today_data = session.query(
             Price.ticker,
-            Price.close_price.label('today_close')
+            Price.close_price.label('today_close'),
+            Price.volume.label('today_volume')
         ).filter(
             Price.date == today
         ).subquery()
@@ -772,12 +770,12 @@ def get_volume_spike_stocks(above_200m=True):
             Price.date == yesterday
         ).subquery()
         
-        # Calculate average volume for the 5 days before yesterday (excluding yesterday)
+        # Calculate average volume for the 5 days before today (including yesterday)
         avg_volume_5d = session.query(
             Price.ticker,
             func.avg(Price.volume).label('avg_volume_5d')
         ).filter(
-            Price.date.in_(five_days_before_yesterday)
+            Price.date.in_(five_days_before_today)
         ).group_by(Price.ticker).subquery()
         
         # Get blacklisted tickers
@@ -791,15 +789,16 @@ def get_volume_spike_stocks(above_200m=True):
             Stock.sector,
             Stock.industry,
             Stock.market_cap,
-            today_prices.c.today_close,
+            today_data.c.today_close,
+            today_data.c.today_volume,
             yesterday_data.c.yesterday_close,
             yesterday_data.c.yesterday_volume,
             avg_volume_5d.c.avg_volume_5d,
-            ((today_prices.c.today_close - yesterday_data.c.yesterday_close) / 
+            ((today_data.c.today_close - yesterday_data.c.yesterday_close) / 
              yesterday_data.c.yesterday_close * 100).label('price_change_pct')
         ).join(
-            today_prices,
-            Stock.ticker == today_prices.c.ticker
+            today_data,
+            Stock.ticker == today_data.c.ticker
         ).join(
             yesterday_data,
             Stock.ticker == yesterday_data.c.ticker
@@ -807,10 +806,10 @@ def get_volume_spike_stocks(above_200m=True):
             avg_volume_5d,
             Stock.ticker == avg_volume_5d.c.ticker
         ).filter(
-            # Yesterday's volume > 5x average of previous 5 days
-            yesterday_data.c.yesterday_volume > avg_volume_5d.c.avg_volume_5d * 5,
+            # Today's volume > 5x average of previous 5 days
+            today_data.c.today_volume > avg_volume_5d.c.avg_volume_5d * 5,
             # Today's close > 3% higher than yesterday's close
-            today_prices.c.today_close > yesterday_data.c.yesterday_close * 1.03,
+            today_data.c.today_close > yesterday_data.c.yesterday_close * 1.03,
             # 5-day average volume > 50,000
             avg_volume_5d.c.avg_volume_5d > 50000
         )
@@ -821,9 +820,9 @@ def get_volume_spike_stocks(above_200m=True):
         
         # Apply market cap filter
         if above_200m:
-            query = query.filter(Stock.market_cap >= 200000000)  # Market cap >= $200M
+            query = query.filter(Stock.market_cap >= 200000000)
         else:
-            query = query.filter(Stock.market_cap < 200000000)   # Market cap < $200M
+            query = query.filter(Stock.market_cap < 200000000)
             
         # Order by price change percentage descending
         query = query.order_by(desc('price_change_pct'))
@@ -842,8 +841,8 @@ def get_volume_spike_stocks(above_200m=True):
             else:  # < 1B, show in millions
                 market_cap_formatted = f"{market_cap / 1000000:.0f}M"
             
-            # Calculate volume multiplier
-            volume_multiplier = stock.yesterday_volume / stock.avg_volume_5d if stock.avg_volume_5d > 0 else 0
+            # Calculate volume multiplier using today's volume
+            volume_multiplier = stock.today_volume / stock.avg_volume_5d if stock.avg_volume_5d > 0 else 0
             
             result.append({
                 'ticker': stock.ticker,
