@@ -475,7 +475,8 @@ def get_momentum_stocks(return_days, above_200m=True):
             prices_60d.c.price_60d,
             prices_120d.c.price_120d,
             ((end_prices.c.end_price - prev_day_prices.c.prev_close) / 
-             prev_day_prices.c.prev_close * 100).label('price_change_pct')
+             prev_day_prices.c.prev_close * 100).label('price_change_pct'),
+            (end_prices.c.end_price - prev_day_prices.c.prev_close).label('price_change')
         ).join(
             start_prices,
             Stock.ticker == start_prices.c.ticker
@@ -566,9 +567,12 @@ def get_momentum_stocks(return_days, above_200m=True):
             price_change_pct_str = (
                 f"{price_change_pct_val:.1f}%" if isinstance(price_change_pct_val, (int, float)) else "N/A"
             )
+            price_change_val = stock.price_change
+            price_change_dollar_str = f"${price_change_val:+.2f}" if isinstance(price_change_val, (int, float)) else ""
+            
             current_price_with_change = (
-                f"{current_price_str} ({price_change_pct_str})"
-                if price_change_pct_val is not None and current_price_val is not None
+                f"{current_price_str} {price_change_dollar_str} ({price_change_pct_str})"
+                if price_change_pct_val is not None and current_price_val is not None and price_change_val is not None
                 else current_price_str
             )
 
@@ -598,6 +602,7 @@ def get_momentum_stocks(return_days, above_200m=True):
                 'market_cap': market_cap_formatted,
                 'current_price': current_price_str,
                 'price_change_pct': price_change_pct_str,
+                'price_change': price_change_dollar_str,
                 'current_price_with_change': current_price_with_change,
                 'week_52_range': week_52_range,
                 'volume': volume_formatted,
@@ -870,7 +875,8 @@ def get_gapper_stocks(above_200m=True):
             prices_120d.c.price_120d,
             previous_price.c.prev_price,
             ((current_prices.c.current_price - previous_price.c.prev_price) / 
-             previous_price.c.prev_price * 100).label('price_change_pct')
+             previous_price.c.prev_price * 100).label('price_change_pct'),
+            (current_prices.c.current_price - previous_price.c.prev_price).label('price_change')
         ).join(
             current_prices,
             Stock.ticker == current_prices.c.ticker
@@ -1139,7 +1145,8 @@ def get_volume_spike_stocks(above_200m=True):
             prices_60d.c.price_60d,
             prices_120d.c.price_120d,
             ((today_data.c.today_close - yesterday_data.c.yesterday_close) / 
-             yesterday_data.c.yesterday_close * 100).label('price_change_pct')
+             yesterday_data.c.yesterday_close * 100).label('price_change_pct'),
+            (today_data.c.today_close - yesterday_data.c.yesterday_close).label('price_change')
         ).join(
             today_data,
             Stock.ticker == today_data.c.ticker

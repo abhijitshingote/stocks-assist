@@ -328,10 +328,12 @@
                     case 'price_with_change':
                         const currentPrice = stock.current_price || 'N/A';
                         const changePercent = stock.price_change_pct || '';
-                        if (currentPrice !== 'N/A' && changePercent) {
-                            const isPositive = !changePercent.includes('-');
+                        const changeAmount = stock.price_change || '';
+                        if (currentPrice !== 'N/A' && changePercent && changeAmount) {
+                            const isPositive = !changeAmount.includes('-');
+                            const changeClass = isPositive ? 'text-success' : 'text-danger';
                             const badgeClass = isPositive ? 'bg-success' : 'bg-danger';
-                            rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span> <span class="badge ${badgeClass} ms-1">${changePercent}</span></td>`;
+                            rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span> <span class="ms-1 fw-bold ${changeClass}">${changeAmount}</span> <span class="badge ${badgeClass} ms-1">${changePercent}</span></td>`;
                         } else {
                             rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span></td>`;
                         }
