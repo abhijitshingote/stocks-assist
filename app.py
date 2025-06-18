@@ -1267,99 +1267,105 @@ def get_volume_below_200m():
         return jsonify({'error': str(e)}), 500
 
 def get_all_returns_data(above_200m=True, weights=None):
-    """Helper function to get all return periods data in one consolidated view"""
+    """Consolidated All-Returns screener (re-implemented).
+
+    1. Collect **unique** tickers that appear in *any* of the momentum
+       screens (1D, 5D, 20D, 60D, 120D) for the chosen market-cap bucket.
+    2. Fetch full return/price metadata for those tickers via
+       ``get_all_returns_data_for_tickers`` – this helper already formats
+       most of the display fields we need.
+    3. Attach a ``return_periods`` list (the periods contributing to each
+       selection) and compute a weighted ``priority_score`` based on the
+       provided ``weights`` dict (defaults in ``DEFAULT_PRIORITY_WEIGHTS``).
+    4. Return the list sorted by ``priority_score`` and then by
+       market-cap.
+    """
     try:
-        # Default weights
+        # ------------------------------------------------------------------
+        # 0. Default weights
+        # ------------------------------------------------------------------
         if weights is None:
             weights = DEFAULT_PRIORITY_WEIGHTS.copy()
-        
-        # Get data for all return periods
-        returns_1d = get_momentum_stocks(1, above_200m=above_200m)
-        returns_5d = get_momentum_stocks(5, above_200m=above_200m)
-        returns_20d = get_momentum_stocks(20, above_200m=above_200m)
-        returns_60d = get_momentum_stocks(60, above_200m=above_200m)
-        returns_120d = get_momentum_stocks(120, above_200m=above_200m)
-        
-        # Create dictionaries for quick lookup by ticker
-        returns_data = {}
-        
-        # Process each return period
-        for period_data, period_name in [
-            (returns_1d, '1d'),
-            (returns_5d, '5d'),
-            (returns_20d, '20d'),
-            (returns_60d, '60d'),
-            (returns_120d, '120d')
-        ]:
-            for stock in period_data:
-                ticker = stock['ticker']
-                if ticker not in returns_data:
-                    # Initialize stock data with basic info
-                    returns_data[ticker] = {
-                        'ticker': stock['ticker'],
-                        'company_name': stock['company_name'],
-                        'sector': stock['sector'],
-                        'industry': stock['industry'],
-                        'market_cap': stock['market_cap'],
-                        'current_price': stock['current_price'],
-                        'latest_date': stock['latest_date'],
-                        'return_periods': [],
-                        'priority_score': 0.0,
-                        'returns_1d': None,
-                        'returns_5d': None,
-                        'returns_20d': None,
-                        'returns_60d': None,
-                        'returns_120d': None
-                    }
-                
-                # Add the return percentage for this period and track which periods it appears in
-                returns_data[ticker][f'returns_{period_name}'] = stock['price_change_pct']
-                if period_name not in returns_data[ticker]['return_periods']:
-                    returns_data[ticker]['return_periods'].append(period_name)
-        
-        # Calculate priority scores by multiplying weights by actual return values
-        for ticker, stock_data in returns_data.items():
+
+        periods = [1, 5, 20, 60, 120]
+        period_keys = {1: '1d', 5: '5d', 20: '20d', 60: '60d', 120: '120d'}
+
+        # ------------------------------------------------------------------
+        # 1. Collect unique tickers + map which periods they satisfied
+        # ------------------------------------------------------------------
+        unique_tickers: set[str] = set()
+        ticker_to_periods: dict[str, set[str]] = {}
+
+        for days in periods:
+            stocks = get_momentum_stocks(days, above_200m=above_200m)
+            period_name = period_keys[days]
+            for stock in stocks:
+                tkr = stock["ticker"]
+                unique_tickers.add(tkr)
+                ticker_to_periods.setdefault(tkr, set()).add(period_name)
+
+        # Nothing found – early exit
+        if not unique_tickers:
+            logger.info("No tickers found for consolidated all-returns screen.")
+            return []
+
+        # ------------------------------------------------------------------
+        # 2. Pull full data rows for these tickers
+        # ------------------------------------------------------------------
+        all_data = get_all_returns_data_for_tickers(unique_tickers)
+
+        # ------------------------------------------------------------------
+        # 3. Post-process each row – rename fields, periods, priority score
+        # ------------------------------------------------------------------
+        for row in all_data:
+            tkr = row["ticker"]
+
+            # a) Normalise field names expected by the front-end
+            row["week_52_range"] = row.pop("range_52w", row.get("week_52_range", "N/A"))
+            row["volume_change"] = row.pop("vol_change", row.get("volume_change", "N/A"))
+
+            # b) Add contributing periods (sorted by our canonical order)
+            contrib_periods = sorted(ticker_to_periods.get(tkr, []), key=lambda p: periods.index(int(p.replace('d',''))))
+            row["return_periods"] = contrib_periods
+
+            # c) Compute weighted priority score
             priority_score = 0.0
-            
-            for period_name in ['1d', '5d', '20d', '60d', '120d']:
-                return_value_str = stock_data.get(f'returns_{period_name}')
-                if return_value_str is not None:
+            for p in ["1d", "5d", "20d", "60d", "120d"]:
+                ret_str = row.get(f"return_{p}")
+                if ret_str:
                     try:
-                        # Extract numeric value from return string (e.g., "5.2%" -> 5.2)
-                        return_value = float(return_value_str.replace('%', ''))
-                        weight = weights.get(period_name, 0)
-                        priority_score += weight * return_value
-                    except (ValueError, AttributeError):
-                        # If return value can't be parsed, treat as 0
+                        val = float(ret_str.replace("%", ""))
+                        # Treat negative returns as 0 when computing priority
+                        if val < 0:
+                            val = 0.0
+                        priority_score += val * weights.get(p, 0)
+                    except ValueError:
                         pass
-            
-            stock_data['priority_score'] = round(priority_score, 2)
-        
-        # Convert to list and sort by priority score (descending), then by market cap
-        result = list(returns_data.values())
-        
-        # Sort by priority score first (descending), then by market cap (descending)
-        def extract_market_cap_value(market_cap_str):
-            if not market_cap_str or market_cap_str == 'N/A':
+            row["priority_score"] = round(priority_score, 2)
+
+        # ------------------------------------------------------------------
+        # 4. Sort – priority_score desc, then market-cap desc
+        # ------------------------------------------------------------------
+        def extract_market_cap_value(market_cap_str: str):
+            if not market_cap_str or market_cap_str == "N/A":
                 return 0
             try:
-                if market_cap_str.endswith('B'):
-                    return float(market_cap_str[:-1]) * 1000000000
-                elif market_cap_str.endswith('M'):
-                    return float(market_cap_str[:-1]) * 1000000
-                else:
-                    return 0
-            except:
-                return 0
-        
-        result.sort(key=lambda x: (x['priority_score'], extract_market_cap_value(x['market_cap'])), reverse=True)
-        
-        logger.info(f"Consolidated returns data: {len(result)} stocks with various return periods, sorted by weighted priority")
-        return result
-        
+                if market_cap_str.endswith("B"):
+                    return float(market_cap_str[:-1]) * 1_000_000_000
+                if market_cap_str.endswith("M"):
+                    return float(market_cap_str[:-1]) * 1_000_000
+            except Exception:
+                pass
+            return 0
+
+        all_data.sort(key=lambda x: (x["priority_score"], extract_market_cap_value(x["market_cap"])), reverse=True)
+
+        logger.info("Built consolidated all-returns dataset (%d tickers, %s bucket).", len(all_data), "above" if above_200m else "below")
+        return all_data
+
     except Exception as e:
-        logger.error(f"Error in get_all_returns_data: {str(e)}")
-        raise e
+        logger.error("Error in get_all_returns_data (new): %s", e)
+        raise
 
 # Consolidated Returns APIs
 @app.route('/api/AllReturns-Above200M')
@@ -2378,6 +2384,55 @@ def check_blacklist_status(ticker):
     except Exception as e:
         logger.error(f"Error checking blacklist status for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+# === New Helper =============================================================
+# The function below uses the existing get_momentum_stocks helper that powers the
+# individual return pages (1 D, 5 D, 20 D, 60 D, 120 D).  For each return period
+# it collects the tickers that satisfy the momentum criteria, groups them by
+# market-cap bucket (≥ $200 M and < $200 M), then logs the count of **unique**
+# tickers in each bucket.
+# ---------------------------------------------------------------------------
+
+def log_all_returns_unique_counts():
+    """Log how many unique tickers appear in *any* of the momentum screens.
+
+    The logic mirrors what the individual Return pages use (via
+    ``get_momentum_stocks``).  For every return horizon in ``periods`` the
+    function gathers the qualifying tickers for both market-cap buckets,
+    deduplicates them, and finally prints the counts to the application log.
+    """
+    try:
+        periods = [1, 5, 20, 60, 120]
+
+        # Containers for unique tickers
+        above_200m_tickers: set[str] = set()
+        below_200m_tickers: set[str] = set()
+
+        # Collect tickers for each period
+        for days in periods:
+            logger.debug(f"Gathering {days}-day momentum tickers (≥$200 M cap)")
+            above_200m_tickers.update(
+                stock["ticker"] for stock in get_momentum_stocks(days, above_200m=True)
+            )
+
+            logger.debug(f"Gathering {days}-day momentum tickers (<$200 M cap)")
+            below_200m_tickers.update(
+                stock["ticker"] for stock in get_momentum_stocks(days, above_200m=False)
+            )
+
+        # Log the results
+        logger.info("Unique tickers with market-cap ≥ $200 M: %d", len(above_200m_tickers))
+        logger.info("Unique tickers with market-cap  < $200 M: %d", len(below_200m_tickers))
+
+        # Function returns the raw sets in case the caller needs them later
+        return {
+            "above_200m": above_200m_tickers,
+            "below_200m": below_200m_tickers,
+        }
+
+    except Exception as exc:
+        logger.error("Error computing all-returns unique counts: %s", exc)
+        raise
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000) 
