@@ -1734,7 +1734,23 @@ def get_perplexity_analysis():
             return jsonify({'error': 'Ticker is required'}), 400
         
         ticker = data['ticker']
-        prompt = f"Why was {ticker} up today or why has {ticker} been up in the last few weeks. Provide a descending chronological timeline of news events that have occurred. Do NOT provide reasoning that is related to stock momentum or technical analysis."
+        
+        # Attempt to retrieve company name for context
+        company_name = None
+        try:
+            stock_obj = session.query(Stock.company_name).filter(Stock.ticker == ticker).first()
+            if stock_obj:
+                company_name = stock_obj.company_name
+        except Exception as _e:
+            logger.warning("Could not fetch company name for %s: %s", ticker, _e)
+
+        entity = f"{ticker} ({company_name})" if company_name else ticker
+
+        prompt = (
+            f"Why was {entity} up today or why has {entity} been up in the last few weeks. "
+            "Provide a descending chronological timeline of news events that have occurred. "
+            "Do NOT provide reasoning that is related to stock momentum or technical analysis."
+        )
         
         api_key = os.getenv("PERPLEXITY_API_KEY")
         if not api_key:
@@ -2385,54 +2401,7 @@ def check_blacklist_status(ticker):
         logger.error(f"Error checking blacklist status for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-# === New Helper =============================================================
-# The function below uses the existing get_momentum_stocks helper that powers the
-# individual return pages (1 D, 5 D, 20 D, 60 D, 120 D).  For each return period
-# it collects the tickers that satisfy the momentum criteria, groups them by
-# market-cap bucket (≥ $200 M and < $200 M), then logs the count of **unique**
-# tickers in each bucket.
-# ---------------------------------------------------------------------------
 
-def log_all_returns_unique_counts():
-    """Log how many unique tickers appear in *any* of the momentum screens.
-
-    The logic mirrors what the individual Return pages use (via
-    ``get_momentum_stocks``).  For every return horizon in ``periods`` the
-    function gathers the qualifying tickers for both market-cap buckets,
-    deduplicates them, and finally prints the counts to the application log.
-    """
-    try:
-        periods = [1, 5, 20, 60, 120]
-
-        # Containers for unique tickers
-        above_200m_tickers: set[str] = set()
-        below_200m_tickers: set[str] = set()
-
-        # Collect tickers for each period
-        for days in periods:
-            logger.debug(f"Gathering {days}-day momentum tickers (≥$200 M cap)")
-            above_200m_tickers.update(
-                stock["ticker"] for stock in get_momentum_stocks(days, above_200m=True)
-            )
-
-            logger.debug(f"Gathering {days}-day momentum tickers (<$200 M cap)")
-            below_200m_tickers.update(
-                stock["ticker"] for stock in get_momentum_stocks(days, above_200m=False)
-            )
-
-        # Log the results
-        logger.info("Unique tickers with market-cap ≥ $200 M: %d", len(above_200m_tickers))
-        logger.info("Unique tickers with market-cap  < $200 M: %d", len(below_200m_tickers))
-
-        # Function returns the raw sets in case the caller needs them later
-        return {
-            "above_200m": above_200m_tickers,
-            "below_200m": below_200m_tickers,
-        }
-
-    except Exception as exc:
-        logger.error("Error computing all-returns unique counts: %s", exc)
-        raise
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000) 
