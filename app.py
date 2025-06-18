@@ -559,6 +559,19 @@ def get_momentum_stocks(return_days, above_200m=True):
             if stock.week_52_low and stock.week_52_high:
                 week_52_range = f"${stock.week_52_low:.2f} - ${stock.week_52_high:.2f}"
             
+            # Format current price and change
+            current_price_val = stock.current_price
+            current_price_str = f"${current_price_val:.2f}" if isinstance(current_price_val, (int, float)) else "N/A"
+            price_change_pct_val = stock.price_change_pct
+            price_change_pct_str = (
+                f"{price_change_pct_val:.1f}%" if isinstance(price_change_pct_val, (int, float)) else "N/A"
+            )
+            current_price_with_change = (
+                f"{current_price_str} ({price_change_pct_str})"
+                if price_change_pct_val is not None and current_price_val is not None
+                else current_price_str
+            )
+
             # Calculate multiple return periods
             return_5d = None
             if stock.price_5d and stock.current_price:
@@ -583,9 +596,9 @@ def get_momentum_stocks(return_days, above_200m=True):
                 'industry': stock.industry,
                 'country': stock.country or 'N/A',
                 'market_cap': market_cap_formatted,
-                'current_price': f"${stock.current_price:.2f}",
-                'price_change_pct': f"{stock.price_change_pct:.1f}%",
-                'current_price_with_change': f"${stock.current_price:.2f} ({stock.price_change_pct:.1f}%)",
+                'current_price': current_price_str,
+                'price_change_pct': price_change_pct_str,
+                'current_price_with_change': current_price_with_change,
                 'week_52_range': week_52_range,
                 'volume': volume_formatted,
                 'volume_change': volume_change,
