@@ -7,6 +7,8 @@ import logging
 import pytz
 import requests
 from dotenv import load_dotenv
+import json
+from pathlib import Path
 
 # Load environment variables
 load_dotenv()
@@ -30,6 +32,11 @@ DEFAULT_PRIORITY_WEIGHTS = {
     '60d': 1,
     '120d': 1
 }
+
+BACKUP_DIR = Path(os.getenv("USER_DATA_DIR", "user_data"))
+BACKUP_DIR.mkdir(exist_ok=True)
+SHORTLIST_BACKUP_FILE = BACKUP_DIR / "shortlist_backup.json"
+BLACKLIST_BACKUP_FILE = BACKUP_DIR / "blacklist_backup.json"
 
 def get_eastern_datetime():
     """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
@@ -2175,6 +2182,7 @@ def add_to_shortlist():
                 errors.append(f"Error adding {ticker}: {str(e)}")
         
         session.commit()
+        export_user_lists()
         
         return jsonify({
             'added_count': added_count,
@@ -2199,6 +2207,7 @@ def remove_from_shortlist(ticker):
         
         session.delete(shortlist_entry)
         session.commit()
+        export_user_lists()
         
         return jsonify({'message': f'{ticker} removed from shortlist'})
         
@@ -2352,6 +2361,7 @@ def add_to_blacklist():
                 errors.append(f"Error adding {ticker}: {str(e)}")
         
         session.commit()
+        export_user_lists()
         
         return jsonify({
             'added_count': added_count,
@@ -2376,6 +2386,7 @@ def remove_from_blacklist(ticker):
         
         session.delete(blacklist_entry)
         session.commit()
+        export_user_lists()
         
         return jsonify({'message': f'{ticker} removed from blacklist'})
         
@@ -2400,6 +2411,21 @@ def check_blacklist_status(ticker):
     except Exception as e:
         logger.error(f"Error checking blacklist status for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+def export_user_lists():
+    """Write current shortlist & blacklist tables to JSON files (idempotent)."""
+    try:
+        # Shortlist
+        short_rows = session.query(ShortList.ticker, ShortList.notes).all()
+        with SHORTLIST_BACKUP_FILE.open("w", encoding="utf-8") as f:
+            json.dump([{"ticker": t, "notes": n} for t, n in short_rows], f)
+
+        # Blacklist
+        black_rows = session.query(BlackList.ticker, BlackList.notes).all()
+        with BLACKLIST_BACKUP_FILE.open("w", encoding="utf-8") as f:
+            json.dump([{"ticker": t, "notes": n} for t, n in black_rows], f)
+    except Exception as e:
+        logger.error("Failed to export user lists: %s", e)
 
 
 

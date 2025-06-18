@@ -6,10 +6,12 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, tuple_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
-from models import Stock, Price
+from models import Stock, Price, ShortList, BlackList
 import logging
 import time
 import pytz
+import json
+from pathlib import Path
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -274,6 +276,41 @@ def process_price_data(session, aggregates):
             logger.error(f"Error in price update: {str(e)}")
             session.rollback()
 
+def restore_user_lists(session, symbols_set, backup_dir='user_data'):
+    """Restore shortlist and blacklist data from JSON backups after reset."""
+    backup_path = Path(backup_dir)
+    restored_shortlist = restored_blacklist = 0
+
+    shortlist_file = backup_path / 'shortlist_backup.json'
+    if shortlist_file.exists():
+        try:
+            data = json.loads(shortlist_file.read_text())
+            for item in data:
+                if item['ticker'] in symbols_set:
+                    session.merge(ShortList(ticker=item['ticker'], notes=item.get('notes')))
+                    restored_shortlist += 1
+            session.commit()
+            shortlist_file.unlink()  # remove after restore
+            logger.info(f"Restored {restored_shortlist} shortlist tickers from backup")
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Error restoring shortlist backup: {e}")
+
+    blacklist_file = backup_path / 'blacklist_backup.json'
+    if blacklist_file.exists():
+        try:
+            data = json.loads(blacklist_file.read_text())
+            for item in data:
+                if item['ticker'] in symbols_set:
+                    session.merge(BlackList(ticker=item['ticker'], notes=item.get('notes')))
+                    restored_blacklist += 1
+            session.commit()
+            blacklist_file.unlink()
+            logger.info(f"Restored {restored_blacklist} blacklist tickers from backup")
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Error restoring blacklist backup: {e}")
+
 def seed_database():
     """Main seeding function"""
     start_time = time.time()
@@ -302,6 +339,8 @@ def seed_database():
             logger.warning("No actively trading US stocks found")
             return
         
+        symbols_set = set(symbols)
+
         # Step 3: Fetch price data from Polygon
         client = get_polygon_client()
         end_date = datetime.now()
@@ -327,6 +366,9 @@ def seed_database():
         total_stocks = session.query(Stock).count()
         total_prices = session.query(Price).count()
         
+        # Restore user lists now that ticker table is populated
+        restore_user_lists(session, symbols_set)
+
         elapsed_time = time.time() - start_time
         logger.info(f"✅ Seeding completed in {int(elapsed_time // 3600)}h {int((elapsed_time % 3600) // 60)}m")
         logger.info(f"📊 Final counts: {total_stocks:,} stocks, {total_prices:,} price records")
