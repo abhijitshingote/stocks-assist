@@ -37,6 +37,7 @@ BACKUP_DIR = Path(os.getenv("USER_DATA_DIR", "user_data"))
 BACKUP_DIR.mkdir(exist_ok=True)
 SHORTLIST_BACKUP_FILE = BACKUP_DIR / "shortlist_backup.json"
 BLACKLIST_BACKUP_FILE = BACKUP_DIR / "blacklist_backup.json"
+COMMENTS_BACKUP_FILE = BACKUP_DIR / "comments_backup.json"  # NEW constant for comments backup
 
 def get_eastern_datetime():
     """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
@@ -154,6 +155,7 @@ def add_comment(ticker):
         
         session.add(new_comment)
         session.commit()
+        export_user_lists()  # persist changes including comments
         
         # Return the created comment
         comment_data = {
@@ -236,6 +238,7 @@ def add_ai_comment(ticker):
         
         session.add(new_comment)
         session.commit()
+        export_user_lists()  # persist changes including comments
         
         # Return the created comment
         comment_data = {
@@ -286,6 +289,7 @@ def review_ai_comment(comment_id):
         comment.reviewed_at = get_eastern_datetime()
         
         session.commit()
+        export_user_lists()  # persist changes including comments
         
         # Return updated comment
         comment_data = {
@@ -1877,6 +1881,8 @@ def delete_comment(comment_id):
         
         session.delete(comment)
         session.commit()
+        export_user_lists()  # persist changes including comments
+        
         return jsonify({'message': 'Comment deleted successfully'})
         
     except Exception as e:
@@ -1902,6 +1908,7 @@ def edit_comment(comment_id):
         comment.comment_text = comment_text
         comment.updated_at = get_eastern_datetime()
         session.commit()
+        export_user_lists()  # persist changes including comments
         
         # Return updated comment
         comment_data = {
@@ -2202,7 +2209,7 @@ def add_to_shortlist():
                 errors.append(f"Error adding {ticker}: {str(e)}")
         
         session.commit()
-        export_user_lists()
+        export_user_lists()  # persist changes including comments
         
         return jsonify({
             'added_count': added_count,
@@ -2227,7 +2234,7 @@ def remove_from_shortlist(ticker):
         
         session.delete(shortlist_entry)
         session.commit()
-        export_user_lists()
+        export_user_lists()  # persist changes including comments
         
         return jsonify({'message': f'{ticker} removed from shortlist'})
         
@@ -2381,7 +2388,7 @@ def add_to_blacklist():
                 errors.append(f"Error adding {ticker}: {str(e)}")
         
         session.commit()
-        export_user_lists()
+        export_user_lists()  # persist changes including comments
         
         return jsonify({
             'added_count': added_count,
@@ -2406,7 +2413,7 @@ def remove_from_blacklist(ticker):
         
         session.delete(blacklist_entry)
         session.commit()
-        export_user_lists()
+        export_user_lists()  # persist changes including comments
         
         return jsonify({'message': f'{ticker} removed from blacklist'})
         
@@ -2433,17 +2440,35 @@ def check_blacklist_status(ticker):
         return jsonify({'error': str(e)}), 500
 
 def export_user_lists():
-    """Write current shortlist & blacklist tables to JSON files (idempotent)."""
+    """Write current shortlist, blacklist, and comments tables to JSON files (idempotent)."""  # Updated docstring
     try:
         # Shortlist
         short_rows = session.query(ShortList.ticker, ShortList.notes).all()
         with SHORTLIST_BACKUP_FILE.open("w", encoding="utf-8") as f:
-            json.dump([{"ticker": t, "notes": n} for t, n in short_rows], f)
+            json.dump([{"ticker": t, "notes": n} for t, n in short_rows], f, indent=2)
 
         # Blacklist
         black_rows = session.query(BlackList.ticker, BlackList.notes).all()
         with BLACKLIST_BACKUP_FILE.open("w", encoding="utf-8") as f:
-            json.dump([{"ticker": t, "notes": n} for t, n in black_rows], f)
+            json.dump([{"ticker": t, "notes": n} for t, n in black_rows], f, indent=2)
+
+        # Comments – dump all comment records (excluding DB id)
+        comments_rows = session.query(Comment).all()
+        comments_payload = []
+        for c in comments_rows:
+            comments_payload.append({
+                "ticker": c.ticker,
+                "comment_text": c.comment_text,
+                "comment_type": c.comment_type,
+                "status": c.status,
+                "ai_source": c.ai_source,
+                "reviewed_by": c.reviewed_by,
+                "reviewed_at": c.reviewed_at.isoformat() if c.reviewed_at else None,
+                "created_at": c.created_at.isoformat() if c.created_at else None,
+                "updated_at": c.updated_at.isoformat() if c.updated_at else None
+            })
+        with COMMENTS_BACKUP_FILE.open("w", encoding="utf-8") as f:
+            json.dump(comments_payload, f, indent=2)
     except Exception as e:
         logger.error("Failed to export user lists: %s", e)
 

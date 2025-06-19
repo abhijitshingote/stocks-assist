@@ -175,19 +175,6 @@
             });
     }
 
-    function displayStocks(stocks, tableBodyId) {
-        const tbody = document.getElementById(tableBodyId);
-        const columns = COLUMN_CONFIGS[pageConfig.type].columns;
-        tbody.innerHTML = '';
-        
-        if (stocks.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="${columns.length}" class="text-center">No stocks found matching the criteria</td></tr>`;
-            return;
-        }
-        
-        stocks.forEach((stock, index) => {
-            tbody.innerHTML += generateTableRow(stock, columns, index + 1);
-        });
-    }
+    // displayStocks function is now defined in base.html with sorting support
 </script>
 {% endblock %} 

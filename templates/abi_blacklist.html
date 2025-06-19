@@ -106,22 +106,54 @@
             <thead>
                 <tr>
                     <th style="width: 50px;">S/N</th>
-                    <th>Ticker</th>
-                    <th>Company</th>
-                    <th>Market Cap</th>
-                    <th>Country</th>
-                    <th>Sector</th>
-                    <th>Industry</th>
-                    <th>Current Price</th>
-                    <th>52Wk Range</th>
-                    <th>Volume</th>
-                    <th>Vol Change</th>
-                    <th>5D Return</th>
-                    <th>20D Return</th>
-                    <th>60D Return</th>
-                    <th>120D Return</th>
-                    <th>Blacklisted Date</th>
-                    <th>Notes</th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('ticker')" style="cursor: pointer;">
+                        Ticker <i class="fas fa-sort text-muted" id="sort-icon-ticker"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('company_name')" style="cursor: pointer;">
+                        Company <i class="fas fa-sort text-muted" id="sort-icon-company_name"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('market_cap')" style="cursor: pointer;">
+                        Market Cap <i class="fas fa-sort text-muted" id="sort-icon-market_cap"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('country')" style="cursor: pointer;">
+                        Country <i class="fas fa-sort text-muted" id="sort-icon-country"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('sector')" style="cursor: pointer;">
+                        Sector <i class="fas fa-sort text-muted" id="sort-icon-sector"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('industry')" style="cursor: pointer;">
+                        Industry <i class="fas fa-sort text-muted" id="sort-icon-industry"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('current_price')" style="cursor: pointer;">
+                        Current Price <i class="fas fa-sort text-muted" id="sort-icon-current_price"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('range_52w')" style="cursor: pointer;">
+                        52Wk Range <i class="fas fa-sort text-muted" id="sort-icon-range_52w"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('volume')" style="cursor: pointer;">
+                        Volume <i class="fas fa-sort text-muted" id="sort-icon-volume"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('vol_change')" style="cursor: pointer;">
+                        Vol Change <i class="fas fa-sort text-muted" id="sort-icon-vol_change"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('return_5d')" style="cursor: pointer;">
+                        5D Return <i class="fas fa-sort text-muted" id="sort-icon-return_5d"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('return_20d')" style="cursor: pointer;">
+                        20D Return <i class="fas fa-sort text-muted" id="sort-icon-return_20d"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('return_60d')" style="cursor: pointer;">
+                        60D Return <i class="fas fa-sort text-muted" id="sort-icon-return_60d"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('return_120d')" style="cursor: pointer;">
+                        120D Return <i class="fas fa-sort text-muted" id="sort-icon-return_120d"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('blacklisted_date')" style="cursor: pointer;">
+                        Blacklisted Date <i class="fas fa-sort text-muted" id="sort-icon-blacklisted_date"></i>
+                    </th>
+                    <th class="sortable-header" onclick="sortBlacklistTable('notes')" style="cursor: pointer;">
+                        Notes <i class="fas fa-sort text-muted" id="sort-icon-notes"></i>
+                    </th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -136,6 +168,10 @@
 {% block extra_js %}
 {{ super() }}
 <script>
+    // Variables for sorting functionality
+    let blacklistData = [];
+    let blacklistSortState = { column: null, direction: 'asc' };
+
     // Load blacklist data on page load
     document.addEventListener('DOMContentLoaded', function() {
         loadBlacklist();
@@ -201,14 +237,88 @@
         document.getElementById('clearAllBtn').style.display = 'none';
     }
 
-    function displayBlacklist(stocks) {
+    function sortBlacklistTable(column) {
+        // Toggle direction if same column, otherwise default to ascending
+        if (blacklistSortState.column === column) {
+            blacklistSortState.direction = blacklistSortState.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            blacklistSortState.direction = 'asc';
+        }
+        blacklistSortState.column = column;
+        
+        // Update sort icons
+        updateBlacklistSortIcons(column, blacklistSortState.direction);
+        
+        // Sort the data
+        const sortedData = sortBlacklistData(blacklistData, column, blacklistSortState.direction);
+        
+        // Re-render the table
+        renderBlacklistTable(sortedData);
+    }
+    
+    function updateBlacklistSortIcons(activeColumn, direction) {
+        // Reset all icons
+        const allIcons = document.querySelectorAll('[id^="sort-icon-"]');
+        allIcons.forEach(icon => {
+            icon.className = 'fas fa-sort text-muted';
+        });
+        
+        // Set active icon
+        const activeIcon = document.getElementById(`sort-icon-${activeColumn}`);
+        if (activeIcon) {
+            activeIcon.className = direction === 'asc' ? 'fas fa-sort-up text-primary' : 'fas fa-sort-down text-primary';
+        }
+    }
+    
+    function sortBlacklistData(data, column, direction) {
+        return [...data].sort((a, b) => {
+            let aVal = a[column];
+            let bVal = b[column];
+            
+            // Handle null/undefined values
+            if (aVal == null && bVal == null) return 0;
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+            
+            // Handle different data types
+            if (typeof aVal === 'string' && typeof bVal === 'string') {
+                // Check if it's a percentage or currency value
+                if (aVal.includes('%') || aVal.includes('$') || (aVal.includes('-') && aVal.match(/[\d.]/))) {
+                    aVal = parseFloat(aVal.replace(/[%$,]/g, '')) || 0;
+                    bVal = parseFloat(bVal.replace(/[%$,]/g, '')) || 0;
+                } else {
+                    // String comparison
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+            }
+            
+            // Handle dates
+            if (column === 'blacklisted_date') {
+                aVal = new Date(aVal || 0);
+                bVal = new Date(bVal || 0);
+            }
+            
+            // Numeric comparison
+            if (typeof aVal === 'number' && typeof bVal === 'number') {
+                return direction === 'asc' ? aVal - bVal : bVal - aVal;
+            }
+            
+            // Date comparison
+            if (aVal instanceof Date && bVal instanceof Date) {
+                return direction === 'asc' ? aVal - bVal : bVal - aVal;
+            }
+            
+            // String comparison
+            if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }
+    
+    function renderBlacklistTable(stocks) {
         const tbody = document.getElementById('blacklistTableBody');
         tbody.innerHTML = '';
-        
-        document.getElementById('blacklistTableContainer').style.display = 'block';
-        document.getElementById('errorMessage').style.display = 'none';
-        document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('clearAllBtn').style.display = 'inline-block';
         
         stocks.forEach((stock, index) => {
             const row = document.createElement('tr');
@@ -227,7 +337,7 @@
                 <td>${formatPriceWithChange(stock)}</td>
                 <td>${stock.range_52w || 'N/A'}</td>
                 <td>${stock.volume || 'N/A'}</td>
-                <td><span class=\"badge bg-warning text-dark\">${stock.vol_change || 'N/A'}</span></td>
+                <td><span class="badge bg-warning text-dark">${stock.vol_change || 'N/A'}</span></td>
                 <td class="${getReturnClass(stock.return_5d)}">${stock.return_5d || 'N/A'}</td>
                 <td class="${getReturnClass(stock.return_20d)}">${stock.return_20d || 'N/A'}</td>
                 <td class="${getReturnClass(stock.return_60d)}">${stock.return_60d || 'N/A'}</td>
@@ -242,6 +352,18 @@
             `;
             tbody.appendChild(row);
         });
+    }
+
+    function displayBlacklist(stocks) {
+        // Store data for sorting
+        blacklistData = stocks;
+        
+        document.getElementById('blacklistTableContainer').style.display = 'block';
+        document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('clearAllBtn').style.display = 'inline-block';
+        
+        renderBlacklistTable(stocks);
     }
 
     function getReturnClass(returnValue) {

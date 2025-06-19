@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, tuple_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
-from models import Stock, Price, ShortList, BlackList
+from models import Stock, Price, ShortList, BlackList, Comment
 import logging
 import time
 import pytz
@@ -277,10 +277,12 @@ def process_price_data(session, aggregates):
             session.rollback()
 
 def restore_user_lists(session, symbols_set, backup_dir='user_data'):
-    """Restore shortlist and blacklist data from JSON backups after reset."""
+    """Restore shortlist, blacklist, and comments data from JSON backups after reset."""
     backup_path = Path(backup_dir)
-    restored_shortlist = restored_blacklist = 0
 
+    restored_shortlist = restored_blacklist = restored_comments = 0
+
+    # --- Shortlist ---
     shortlist_file = backup_path / 'shortlist_backup.json'
     if shortlist_file.exists():
         try:
@@ -296,6 +298,7 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
             session.rollback()
             logger.error(f"Error restoring shortlist backup: {e}")
 
+    # --- Blacklist ---
     blacklist_file = backup_path / 'blacklist_backup.json'
     if blacklist_file.exists():
         try:
@@ -310,6 +313,42 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
         except Exception as e:
             session.rollback()
             logger.error(f"Error restoring blacklist backup: {e}")
+
+    # --- Comments ---
+    comments_file = backup_path / 'comments_backup.json'
+    if comments_file.exists():
+        try:
+            data = json.loads(comments_file.read_text())
+            for item in data:
+                if item['ticker'] not in symbols_set:
+                    continue  # skip if ticker not present in seeded data
+
+                # Prepare datetime parsing helper
+                def parse_ts(ts):
+                    from datetime import datetime  # local import to avoid top clutter
+                    return datetime.fromisoformat(ts) if ts else None
+
+                comment_obj = Comment(
+                    ticker=item['ticker'],
+                    comment_text=item['comment_text'],
+                    comment_type=item.get('comment_type', 'user'),
+                    status=item.get('status', 'active'),
+                    ai_source=item.get('ai_source'),
+                    reviewed_by=item.get('reviewed_by'),
+                    reviewed_at=parse_ts(item.get('reviewed_at')),
+                    created_at=parse_ts(item.get('created_at')),
+                    updated_at=parse_ts(item.get('updated_at'))
+                )
+
+                # Use merge for upsert-like behaviour to avoid duplicates
+                session.add(comment_obj)
+                restored_comments += 1
+            session.commit()
+            comments_file.unlink()
+            logger.info(f"Restored {restored_comments} comments from backup")
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Error restoring comments backup: {e}")
 
 def seed_database():
     """Main seeding function"""
