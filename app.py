@@ -1760,28 +1760,33 @@ def get_market_cap_distribution():
 def get_perplexity_analysis():
     """Get AI analysis from Perplexity API"""
     try:
-        data = request.get_json()
-        if not data or 'ticker' not in data:
-            return jsonify({'error': 'Ticker is required'}), 400
-        
-        ticker = data['ticker']
-        
-        # Attempt to retrieve company name for context
-        company_name = None
-        try:
-            stock_obj = session.query(Stock.company_name).filter(Stock.ticker == ticker).first()
-            if stock_obj:
-                company_name = stock_obj.company_name
-        except Exception as _e:
-            logger.warning("Could not fetch company name for %s: %s", ticker, _e)
+        data = request.get_json() or {}
 
-        entity = f"{ticker} ({company_name})" if company_name else ticker
+        # If a free-form prompt is supplied, use it directly; otherwise fall back to ticker-based default prompt
+        prompt = data.get('prompt')
 
-        prompt = (
-            f"Why was {entity} up today or why has {entity} been up in the last few weeks. "
-            "Provide a descending chronological timeline of news events that have occurred. "
-            "Do NOT provide reasoning that is related to stock momentum or technical analysis."
-        )
+        if not prompt:
+            # Legacy flow – expect 'ticker' and craft a news-timeline question
+            ticker = data.get('ticker')
+            if not ticker:
+                return jsonify({'error': 'Either "prompt" or "ticker" is required'}), 400
+
+            # Attempt to retrieve company name for context
+            company_name = None
+            try:
+                stock_obj = session.query(Stock.company_name).filter(Stock.ticker == ticker).first()
+                if stock_obj:
+                    company_name = stock_obj.company_name
+            except Exception as _e:
+                logger.warning("Could not fetch company name for %s: %s", ticker, _e)
+
+            entity = f"{ticker} ({company_name})" if company_name else ticker
+
+            prompt = (
+                f"Why was {entity} up today or why has {entity} been up in the last few weeks. "
+                "Provide a descending chronological timeline of news events that have occurred. "
+                "Do NOT provide reasoning that is related to stock momentum or technical analysis."
+            )
         
         api_key = os.getenv("PERPLEXITY_API_KEY")
         if not api_key:

@@ -23,19 +23,17 @@ Things to do
 ## Done-- Blacklist page
 ## Done-- Inconsistent NavBar
 ## Done-- Need a way to persist shortlist, blacklist data during db drops
--- Chat button on navbar
+## Done-- Chat button on navbar
 -- Need to fix fetch AI comments prompt -investopedia.com--
 -- Should we add volume filter to returns page to screen out noise
--- make tables sortable
+-- fix sortable
 
 
 First run
-docker-compose down -v && \
-docker-compose build --no-cache && \
-docker-compose up -d && \
-docker-compose exec web bash -c "\
-  python initialize_db.py --reset && \
-  python initial_seeding_db.py && \
-  python daily_price_update.py"
+
+docker-compose build --no-cache 
+
+docker-compose down -v && docker-compose up -d && docker-compose exec web bash 
+python initialize_db.py --reset && python initial_seeding_db.py && python daily_price_update.py
 
 

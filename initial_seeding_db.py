@@ -292,7 +292,7 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
                     session.merge(ShortList(ticker=item['ticker'], notes=item.get('notes')))
                     restored_shortlist += 1
             session.commit()
-            shortlist_file.unlink()  # remove after restore
+            # Keep backup file; exporting will overwrite with up-to-date data
             logger.info(f"Restored {restored_shortlist} shortlist tickers from backup")
         except Exception as e:
             session.rollback()
@@ -308,7 +308,7 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
                     session.merge(BlackList(ticker=item['ticker'], notes=item.get('notes')))
                     restored_blacklist += 1
             session.commit()
-            blacklist_file.unlink()
+            # Keep backup file; exporting will overwrite with up-to-date data
             logger.info(f"Restored {restored_blacklist} blacklist tickers from backup")
         except Exception as e:
             session.rollback()
@@ -344,7 +344,7 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
                 session.add(comment_obj)
                 restored_comments += 1
             session.commit()
-            comments_file.unlink()
+            # Keep backup file; exporting will overwrite with up-to-date data
             logger.info(f"Restored {restored_comments} comments from backup")
         except Exception as e:
             session.rollback()

@@ -172,7 +172,7 @@ def initialize_database(reset=False):
             print("Database reset completed successfully!")
             print("- All existing tables dropped")
             print("- New 'ticker' table created (comprehensive FMP company data)")
-            print("- Price table recreated (daily price data)")
+            print("- Price table created")
             print("- Comment table created (user/AI comments with review workflow)")
             print("- Shortlist table created (Abi's stock shortlist)")
             print("- Blacklist table created (Abi's stock blacklist)")
