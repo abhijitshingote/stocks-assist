@@ -361,13 +361,21 @@
 
     function formatPriceWithChange(stock) {
         const price = stock.current_price || 'N/A';
-        const change = stock.price_change_pct || '';
+        const changeAmt = stock.price_change || '';
+        const changePct = stock.price_change_pct || '';
         if (price === 'N/A') return price;
-        const priceSpan = `<span class=\"fw-bold text-success\">${price}</span>`;
-        if (!change) return priceSpan;
-        const isPositive = !change.includes('-');
+        let html = `<span class=\"fw-bold text-success\">${price}</span>`;
+        if (!changeAmt && !changePct) return html;
+        const isPositive = !((changeAmt || changePct).includes('-'));
+        const changeClass = isPositive ? 'text-success' : 'text-danger';
         const badgeClass = isPositive ? 'bg-success' : 'bg-danger';
-        return `${priceSpan} <span class=\"badge ${badgeClass} ms-1\">${change}</span>`;
+        if (changeAmt) {
+            html += ` <span class=\"ms-1 fw-bold ${changeClass}\">${changeAmt}</span>`;
+        }
+        if (changePct) {
+            html += ` <span class=\"badge ${badgeClass} ms-1\">${changePct}</span>`;
+        }
+        return html;
     }
 
     function formatDate(dateString) {

@@ -983,6 +983,10 @@ def get_gapper_stocks(above_200m=True):
             if stock.price_120d and stock.current_price:
                 return_120d = f"{((stock.current_price - stock.price_120d) / stock.price_120d * 100):.1f}%"
             
+            # NEW: Dollar change from yesterday
+            price_change_val = stock.price_change
+            price_change_dollar_str = f"${price_change_val:+.2f}" if price_change_val is not None else ""
+            
             result.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
@@ -991,8 +995,9 @@ def get_gapper_stocks(above_200m=True):
                 'country': stock.country or 'N/A',
                 'market_cap': market_cap_formatted,
                 'current_price': f"${stock.current_price:.2f}",
-                'price_change_pct': f"{stock.price_change_pct:.1f}%" if stock.price_change_pct else "N/A",
-                'current_price_with_change': f"${stock.current_price:.2f} ({stock.price_change_pct:.1f}%)" if stock.price_change_pct else f"${stock.current_price:.2f}",
+                'price_change_pct': f"{stock.price_change_pct:.1f}%",
+                'price_change': price_change_dollar_str,
+                'current_price_with_change': f"${stock.current_price:.2f} {price_change_dollar_str} ({stock.price_change_pct:.1f}%)" if price_change_dollar_str else f"${stock.current_price:.2f}",
                 'week_52_range': week_52_range,
                 'volume': volume_formatted,
                 'volume_change': volume_change,
@@ -1257,6 +1262,8 @@ def get_volume_spike_stocks(above_200m=True):
                 'market_cap': market_cap_formatted,
                 'current_price': f"${stock.current_price:.2f}",
                 'price_change_pct': f"{stock.price_change_pct:.1f}%",
+                'price_change': f"${stock.price_change:+.2f}",
+                'current_price_with_change': f"${stock.current_price:.2f} ({stock.price_change_pct:.1f}%)",
                 'week_52_range': week_52_range,
                 'volume': volume_formatted,
                 'volume_change': volume_change,
@@ -2058,6 +2065,9 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
 
             # Format price change percentage for current price display
             price_change_pct = f"{return_1d:.1f}%"
+            # NEW: price change amount (+/-$)
+            price_change_val = current_price - price_1d
+            price_change_dollar_str = f"${price_change_val:+.2f}"
 
             result.append({
                 'ticker': ticker,
@@ -2068,7 +2078,8 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
                 'market_cap': market_cap_formatted,
                 'current_price': f"${current_price:.2f}",
                 'price_change_pct': price_change_pct,
-                'current_price_with_change': f"${current_price:.2f} ({price_change_pct})",
+                'price_change': price_change_dollar_str,
+                'current_price_with_change': f"${current_price:.2f} {price_change_dollar_str} ({price_change_pct})",
                 'range_52w': range_52w,
                 'volume': volume_formatted,
                 'vol_change': volume_change,
