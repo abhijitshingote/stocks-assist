@@ -99,6 +99,9 @@
                     <th class="sortable-header" onclick="sortShortlistTable('company_name')" style="cursor: pointer;">
                         Company <i class="fas fa-sort text-muted" id="sort-icon-company_name"></i>
                     </th>
+                    <th class="sortable-header" onclick="sortShortlistTable('notes')" style="cursor: pointer;">
+                        Notes <i class="fas fa-sort text-muted" id="sort-icon-notes"></i>
+                    </th>
                     <th class="sortable-header" onclick="sortShortlistTable('market_cap')" style="cursor: pointer;">
                         Market Cap <i class="fas fa-sort text-muted" id="sort-icon-market_cap"></i>
                     </th>
@@ -137,9 +140,6 @@
                     </th>
                     <th class="sortable-header" onclick="sortShortlistTable('shortlisted_date')" style="cursor: pointer;">
                         Shortlisted Date <i class="fas fa-sort text-muted" id="sort-icon-shortlisted_date"></i>
-                    </th>
-                    <th class="sortable-header" onclick="sortShortlistTable('notes')" style="cursor: pointer;">
-                        Notes <i class="fas fa-sort text-muted" id="sort-icon-notes"></i>
                     </th>
                     <th>Action</th>
                 </tr>
@@ -317,6 +317,7 @@
                     </a>
                 </td>
                 <td>${stock.company_name || 'N/A'}</td>
+                <td class="notes-cell" title="${stock.notes || ''}">${stock.notes || ''}</td>
                 <td>${stock.market_cap || 'N/A'}</td>
                 <td>${stock.country || 'N/A'}</td>
                 <td>${stock.sector || 'N/A'}</td>
@@ -330,7 +331,6 @@
                 <td class="${getReturnClass(stock.return_60d)}">${stock.return_60d || 'N/A'}</td>
                 <td class="${getReturnClass(stock.return_120d)}">${stock.return_120d || 'N/A'}</td>
                 <td>${stock.shortlisted_date || 'N/A'}</td>
-                <td class="notes-cell" title="${stock.notes || ''}">${stock.notes || ''}</td>
                 <td>
                     <button class="btn btn-danger btn-sm remove-btn" onclick="removeFromShortlist('${stock.ticker}')">
                         Remove

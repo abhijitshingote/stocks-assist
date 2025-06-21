@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from models import Stock, Price, Comment, ShortList, BlackList, init_db
+from models import Stock, Price, Comment, ShortList, BlackList, Reviewed, init_db
 from sqlalchemy import desc, func, and_, text
 from datetime import datetime, timedelta
 import os
@@ -38,6 +38,7 @@ BACKUP_DIR.mkdir(exist_ok=True)
 SHORTLIST_BACKUP_FILE = BACKUP_DIR / "shortlist_backup.json"
 BLACKLIST_BACKUP_FILE = BACKUP_DIR / "blacklist_backup.json"
 COMMENTS_BACKUP_FILE = BACKUP_DIR / "comments_backup.json"  # NEW constant for comments backup
+REVIEWED_BACKUP_FILE = BACKUP_DIR / "reviewed_backup.json"
 
 def get_eastern_datetime():
     """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
@@ -392,12 +393,15 @@ def get_momentum_stocks(return_days, above_200m=True):
             Price.date == latest_date
         ).subquery()
         
-        # Get previous day's close price for daily price change calculation
+        # Determine the immediate previous trading date (not calendar day)
+        prev_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
+        prev_date = prev_trading_dates[1][0] if len(prev_trading_dates) > 1 else latest_date
+
         prev_day_prices = session.query(
             Price.ticker,
             Price.close_price.label('prev_close')
         ).filter(
-            Price.date == latest_date - timedelta(days=1)
+            Price.date == prev_date
         ).subquery()
         
         # Calculate average prices and volumes over the last 10 trading days
@@ -458,6 +462,9 @@ def get_momentum_stocks(return_days, above_200m=True):
         # Get blacklisted tickers
         blacklisted_tickers = session.query(BlackList.ticker).all()
         blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
+        
+        # Get reviewed tickers
+        reviewed_ticker_set = {t[0] for t in session.query(Reviewed.ticker).all()}
         
         # Combine all the data
         query = session.query(
@@ -617,15 +624,24 @@ def get_momentum_stocks(return_days, above_200m=True):
                 'return_120d': return_120d,
                 'avg_10day_price': f"${stock.avg_10day_price:.2f}",
                 'avg_dollar_volume': f"${stock.avg_dollar_volume:,.0f}",
-                'latest_date': latest_date.strftime('%Y-%m-%d')
+                'latest_date': latest_date.strftime('%Y-%m-%d'),
+                'is_reviewed': stock.ticker in reviewed_ticker_set
             })
         
         # ---------------------------------------------
         # Dynamic sorting based on the requested period
         # ---------------------------------------------
         if return_days == 1:
-            # Sort by daily price change percentage
-            result.sort(key=lambda x: float(x['price_change_pct'].replace('%', '')), reverse=True)
+            # Sort by daily price change percentage (handle missing values)
+            def sort_key_1d(item):
+                val = item.get('price_change_pct')
+                if not val or val == 'N/A':
+                    return -999.0  # send to bottom
+                try:
+                    return float(val.replace('%', ''))
+                except ValueError:
+                    return -999.0
+            result.sort(key=sort_key_1d, reverse=True)
         elif return_days in [5, 20, 60, 120]:
             sort_field = f'return_{return_days}d'
             def sort_key(item):
@@ -639,6 +655,10 @@ def get_momentum_stocks(return_days, above_200m=True):
             result.sort(key=sort_key, reverse=True)
         # For any other period (shouldn't happen), leave as-is
         
+        if result:
+            note_map = {t: n for t, n in session.query(ShortList.ticker, ShortList.notes).filter(ShortList.ticker.in_([r['ticker'] for r in result])).all()}
+            for row in result:
+                row['shortlist_notes'] = note_map.get(row['ticker'], '')
         return result
         
     except Exception as e:
@@ -934,6 +954,9 @@ def get_gapper_stocks(above_200m=True):
         
         gapper_stocks = query.all()
         
+        # Cache reviewed tickers for icon display
+        reviewed_ticker_set = {t[0] for t in session.query(Reviewed.ticker).all()}
+        
         result = []
         for stock in gapper_stocks:
             # Format market cap
@@ -1007,7 +1030,8 @@ def get_gapper_stocks(above_200m=True):
                 'return_120d': return_120d,
                 'avg_volume_50d': f"{stock.avg_volume_50d:,.0f}",
                 'max_volume_5d': f"{stock.max_volume_5d:,.0f}",
-                'latest_date': latest_date.strftime('%Y-%m-%d')
+                'latest_date': latest_date.strftime('%Y-%m-%d'),
+                'is_reviewed': stock.ticker in reviewed_ticker_set
             })
         
         return result
@@ -2485,8 +2509,91 @@ def export_user_lists():
             })
         with COMMENTS_BACKUP_FILE.open("w", encoding="utf-8") as f:
             json.dump(comments_payload, f, indent=2)
+
+        # Reviewed – dump reviewed tickers
+        reviewed_rows = session.query(Reviewed.ticker, Reviewed.reviewed_at).all()
+        with REVIEWED_BACKUP_FILE.open("w", encoding="utf-8") as f:
+            json.dump([
+                {
+                    "ticker": t,
+                    "reviewed_at": ra.isoformat() if ra else None
+                } for t, ra in reviewed_rows
+            ], f, indent=2)
     except Exception as e:
         logger.error("Failed to export user lists: %s", e)
+
+@app.route('/api/reviewed', methods=['GET'])
+def get_reviewed():
+    """Get all reviewed tickers"""
+    try:
+        reviewed = session.query(Reviewed).order_by(desc(Reviewed.reviewed_at)).all()
+        return jsonify([
+            {
+                'ticker': r.ticker,
+                'reviewed_at': r.reviewed_at.strftime('%Y-%m-%d %H:%M:%S')
+            } for r in reviewed
+        ])
+    except Exception as e:
+        logger.error(f"Error getting reviewed list: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/reviewed', methods=['POST'])
+def add_to_reviewed():
+    """Mark a ticker as reviewed"""
+    try:
+        data = request.get_json()
+        if not data or 'ticker' not in data:
+            return jsonify({'error': 'Ticker is required'}), 400
+        ticker = data['ticker'].upper().strip()
+
+        # Ensure ticker exists
+        stock = session.query(Stock).filter(Stock.ticker == ticker).first()
+        if not stock:
+            return jsonify({'error': 'Ticker not found'}), 404
+
+        # Check if already reviewed
+        existing = session.query(Reviewed).filter(Reviewed.ticker == ticker).first()
+        if existing:
+            return jsonify({'message': f'{ticker} already marked as reviewed'}), 200
+
+        session.add(Reviewed(ticker=ticker))
+        session.commit()
+        export_user_lists()
+        return jsonify({'message': f'{ticker} marked as reviewed'})
+    except Exception as e:
+        logger.error(f"Error adding {ticker} to reviewed: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/reviewed/<ticker>', methods=['DELETE'])
+def remove_from_reviewed(ticker):
+    """Unmark a ticker as reviewed"""
+    try:
+        ticker = ticker.upper()
+        reviewed_entry = session.query(Reviewed).filter(Reviewed.ticker == ticker).first()
+        if not reviewed_entry:
+            return jsonify({'error': 'Ticker not found in reviewed list'}), 404
+        session.delete(reviewed_entry)
+        session.commit()
+        export_user_lists()
+        return jsonify({'message': f'{ticker} unmarked as reviewed'})
+    except Exception as e:
+        logger.error(f"Error removing {ticker} from reviewed: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/reviewed/<ticker>/check', methods=['GET'])
+def check_reviewed_status(ticker):
+    """Check if a ticker is reviewed"""
+    try:
+        ticker = ticker.upper()
+        reviewed_entry = session.query(Reviewed).filter(Reviewed.ticker == ticker).first()
+        return jsonify({
+            'ticker': ticker,
+            'is_reviewed': reviewed_entry is not None,
+            'reviewed_at': reviewed_entry.reviewed_at.strftime('%Y-%m-%d %H:%M:%S') if reviewed_entry else None
+        })
+    except Exception as e:
+        logger.error(f"Error checking reviewed status for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 
 

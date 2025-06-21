@@ -124,6 +124,20 @@ class BlackList(Base):
     def __repr__(self):
         return f"<BlackList(ticker='{self.ticker}', blacklisted_at='{self.blacklisted_at}')>"
 
+class Reviewed(Base):
+    __tablename__ = 'reviewed'
+
+    id = Column(Integer, primary_key=True)
+    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
+    reviewed_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+
+    __table_args__ = (UniqueConstraint('ticker', name='_ticker_reviewed_uc'),)
+
+    def __repr__(self):
+        return f"<Reviewed(ticker='{self.ticker}', reviewed_at='{self.reviewed_at}')>"
+
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
     engine = create_engine(database_url)

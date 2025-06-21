@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, tuple_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
-from models import Stock, Price, ShortList, BlackList, Comment
+from models import Stock, Price, ShortList, BlackList, Comment, Reviewed
 import logging
 import time
 import pytz
@@ -280,7 +280,7 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
     """Restore shortlist, blacklist, and comments data from JSON backups after reset."""
     backup_path = Path(backup_dir)
 
-    restored_shortlist = restored_blacklist = restored_comments = 0
+    restored_shortlist = restored_blacklist = restored_comments = restored_reviewed = 0
 
     # --- Shortlist ---
     shortlist_file = backup_path / 'shortlist_backup.json'
@@ -349,6 +349,22 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
         except Exception as e:
             session.rollback()
             logger.error(f"Error restoring comments backup: {e}")
+
+    # --- Reviewed ---
+    reviewed_file = backup_path / 'reviewed_backup.json'
+    if reviewed_file.exists():
+        try:
+            data = json.loads(reviewed_file.read_text())
+            for item in data:
+                ticker = item['ticker'] if isinstance(item, dict) else item
+                if ticker in symbols_set:
+                    session.merge(Reviewed(ticker=ticker))
+                    restored_reviewed += 1
+            session.commit()
+            logger.info(f"Restored {restored_reviewed} reviewed tickers from backup")
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Error restoring reviewed backup: {e}")
 
 def seed_database():
     """Main seeding function"""

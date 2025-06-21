@@ -202,8 +202,10 @@
                 columns: [
                     { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
+                    { key: 'review_toggle', label: '', width: '35px', type: 'review_toggle' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'shortlist_notes', label: 'Shortlist Notes', type: 'text' },
                     { key: 'market_cap', label: 'Market Cap', type: 'text' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
@@ -224,8 +226,10 @@
                 columns: [
                     { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
+                    { key: 'review_toggle', label: '', width: '35px', type: 'review_toggle' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'shortlist_notes', label: 'Shortlist Notes', type: 'text' },
                     { key: 'market_cap', label: 'Market Cap', type: 'text' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
@@ -246,8 +250,10 @@
                 columns: [
                     { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
+                    { key: 'review_toggle', label: '', width: '35px', type: 'review_toggle' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'shortlist_notes', label: 'Shortlist Notes', type: 'text' },
                     { key: 'market_cap', label: 'Market Cap', type: 'text' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
@@ -268,8 +274,10 @@
                 columns: [
                     { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
                     { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
+                    { key: 'review_toggle', label: '', width: '35px', type: 'review_toggle' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'shortlist_notes', label: 'Shortlist Notes', type: 'text' },
                     { key: 'market_cap', label: 'Market Cap', type: 'text' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
@@ -298,6 +306,8 @@
                     </th>`;
                 } else if (col.type === 'serial') {
                     headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
+                } else if (col.type === 'review_toggle') {
+                    headerHtml += `<th style="width: ${col.width};"></th>`;
                 } else {
                     headerHtml += `<th class="sortable-header" onclick="sortTable('above', '${col.key}')" style="cursor: pointer;">
                         ${col.label} <i class="fas fa-sort text-muted" id="sort-icon-above-${col.key}"></i>
@@ -317,6 +327,8 @@
                     </th>`;
                 } else if (col.type === 'serial') {
                     headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
+                } else if (col.type === 'review_toggle') {
+                    headerHtml += `<th style="width: ${col.width};"></th>`;
                 } else {
                     headerHtml += `<th class="sortable-header" onclick="sortTable('below', '${col.key}')" style="cursor: pointer;">
                         ${col.label} <i class="fas fa-sort text-muted" id="sort-icon-below-${col.key}"></i>
@@ -338,6 +350,10 @@
                         rowHtml += `<td>
                             <input type="checkbox" class="form-check-input stock-checkbox" value="${stock.ticker}" onchange="updateSelectionCount()">
                         </td>`;
+                        break;
+                    case 'review_toggle':
+                        const reviewed = stock.is_reviewed;
+                        rowHtml += `<td><i class="${reviewed ? 'fas fa-check-circle text-success' : 'far fa-circle text-muted'} review-toggle-icon" data-ticker="${stock.ticker}" onclick="toggleReviewed(event)"></i></td>`;
                         break;
                     case 'ticker':
                         rowHtml += `<td>
@@ -677,6 +693,42 @@
             .catch(error => {
                 alert('Error adding to blacklist: ' + error.message);
             });
+        }
+
+        function toggleReviewed(event) {
+            const icon = event.currentTarget;
+            const ticker = icon.getAttribute('data-ticker');
+            const isReviewed = icon.classList.contains('fa-check-circle');
+            if (isReviewed) {
+                // Unmark
+                fetch(`/api/reviewed/${ticker}`, { method: 'DELETE' })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert('Error: ' + data.error);
+                            return;
+                        }
+                        icon.classList.remove('fas', 'fa-check-circle', 'text-success');
+                        icon.classList.add('far', 'fa-circle', 'text-muted');
+                    })
+                    .catch(e => alert('Error: ' + e.message));
+            } else {
+                fetch('/api/reviewed', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ticker: ticker })
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert('Error: ' + data.error);
+                            return;
+                        }
+                        icon.classList.remove('far', 'fa-circle', 'text-muted');
+                        icon.classList.add('fas', 'fa-check-circle', 'text-success');
+                    })
+                    .catch(e => alert('Error: ' + e.message));
+            }
         }
     </script>
     
