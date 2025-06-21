@@ -9,6 +9,7 @@ import requests
 from dotenv import load_dotenv
 import json
 from pathlib import Path
+from bs4 import BeautifulSoup
 
 # Load environment variables
 load_dotenv()
@@ -2593,6 +2594,53 @@ def check_reviewed_status(ticker):
         })
     except Exception as e:
         logger.error(f"Error checking reviewed status for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/finviz-news/<ticker>')
+def get_finviz_news(ticker):
+    """Scrape Finviz #news-table for the given ticker and return latest headlines."""
+    try:
+        ticker = ticker.upper()
+        url = f"https://finviz.com/quote.ashx?t={ticker}&p=d"
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        resp = requests.get(url, headers=headers, timeout=10)
+        resp.raise_for_status()
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        news_table = soup.find(id="news-table")
+        if not news_table:
+            return jsonify([])
+
+        articles = []
+        last_date = None
+        for row in news_table.find_all("tr"):
+            cols = row.find_all("td")
+            if len(cols) < 2:
+                continue
+            datetime_text = cols[0].get_text(strip=True)
+            # Handle rows where only time is given – reuse last_date
+            if " " in datetime_text:
+                # both date and time present
+                last_date, time_text = datetime_text.split(" ")
+            else:
+                time_text = datetime_text
+            date_str = last_date or datetime.now().strftime("%Y-%m-%d")
+            headline_link = cols[1].find("a", href=True)
+            if not headline_link:
+                continue
+            headline = headline_link.get_text(strip=True)
+            link = headline_link["href"]
+            if link.startswith('/'):
+                link = 'https://finviz.com' + link
+            articles.append({
+                "date": date_str,
+                "time": time_text,
+                "headline": headline,
+                "url": link
+            })
+        return jsonify(articles)
+    except Exception as e:
+        logger.error(f"Error scraping Finviz news for {ticker}: {e}")
         return jsonify({'error': str(e)}), 500
 
 

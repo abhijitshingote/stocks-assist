@@ -315,6 +315,26 @@
             </div>
         </div>
 
+        <!-- News Section -->
+        <div class="row mb-2">
+            <div class="col-12">
+                <div class="card border-0">
+                    <div class="card-body p-1">
+                        <h6 class="card-title mb-1 fs-6">Latest News</h6>
+                        <div id="newsLoading" class="text-center py-1">
+                            <div class="spinner-border spinner-border-sm text-success" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div id="newsError" class="text-danger fs-6" style="display:none;"></div>
+                        <table class="table table-sm mb-0" id="newsTable" style="display:none;">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Bottom Section - Charts (Full Width) -->
         <div class="row">
             <div class="col-12">
@@ -1221,7 +1241,38 @@
             loadComments();
             checkShortlistStatus();
             checkBlacklistStatus();
+            fetchNews();
         });
+
+        function fetchNews() {
+            fetch(`/api/finviz-news/${ticker}`)
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('newsLoading').style.display = 'none';
+                    if (data.error) {
+                        document.getElementById('newsError').textContent = data.error;
+                        document.getElementById('newsError').style.display = 'block';
+                        return;
+                    }
+                    if (!data.length) {
+                        document.getElementById('newsError').textContent = 'No news found';
+                        document.getElementById('newsError').style.display = 'block';
+                        return;
+                    }
+                    const tbody = document.querySelector('#newsTable tbody');
+                    data.slice(0, 15).forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td style="white-space:nowrap;">${item.date} ${item.time}</td><td><a href="${item.url}" target="_blank">${item.headline}</a></td>`;
+                        tbody.appendChild(tr);
+                    });
+                    document.getElementById('newsTable').style.display = 'table';
+                })
+                .catch(err => {
+                    document.getElementById('newsLoading').style.display = 'none';
+                    document.getElementById('newsError').textContent = err.message;
+                    document.getElementById('newsError').style.display = 'block';
+                });
+        }
     </script>
     <!-- Chat script and modal -->
     <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
