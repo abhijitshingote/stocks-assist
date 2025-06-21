@@ -138,6 +138,26 @@ class Reviewed(Base):
     def __repr__(self):
         return f"<Reviewed(ticker='{self.ticker}', reviewed_at='{self.reviewed_at}')>"
 
+class Flags(Base):
+    __tablename__ = 'flags'
+    ticker = Column(String, primary_key=True)
+    is_reviewed = Column(Boolean, default=False, nullable=False)
+    is_shortlisted = Column(Boolean, default=False, nullable=False)
+    is_blacklisted = Column(Boolean, default=False, nullable=False)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime, nullable=False)
+
+    def __repr__(self):
+        return f"<Flags(ticker='{self.ticker}', reviewed={self.is_reviewed}, shortlisted={self.is_shortlisted}, blacklisted={self.is_blacklisted})>"
+
+class ConciseNote(Base):
+    __tablename__ = 'concise_notes'
+    ticker = Column(String, primary_key=True)
+    note = Column(String, nullable=False)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime, nullable=False)
+
+    def __repr__(self):
+        return f"<ConciseNote(ticker='{self.ticker}', note='{self.note[:20]}...')>"
+
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
     engine = create_engine(database_url)

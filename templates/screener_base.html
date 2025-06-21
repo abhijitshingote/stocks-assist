@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+            <div>
+                <button type="button" class="btn btn-success btn-sm me-2" id="commitFlagsBtn" onclick="commitFlags()" style="display: none;">
+                    <i class="fas fa-save"></i> Commit Flags (0)
+                </button>
+
+            </div>
+
 <!-- Above 200M Section -->
 <div class="mb-5">
     <div class="d-flex justify-content-between align-items-center mb-3">

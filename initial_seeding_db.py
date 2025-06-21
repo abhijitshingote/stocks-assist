@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, tuple_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
-from models import Stock, Price, ShortList, BlackList, Comment, Reviewed
+from models import Stock, Price, Comment, Flags, ConciseNote
 import logging
 import time
 import pytz
@@ -277,42 +277,10 @@ def process_price_data(session, aggregates):
             session.rollback()
 
 def restore_user_lists(session, symbols_set, backup_dir='user_data'):
-    """Restore shortlist, blacklist, and comments data from JSON backups after reset."""
+    """Restore comments, flags, and concise notes from JSON backups after reset."""
     backup_path = Path(backup_dir)
 
-    restored_shortlist = restored_blacklist = restored_comments = restored_reviewed = 0
-
-    # --- Shortlist ---
-    shortlist_file = backup_path / 'shortlist_backup.json'
-    if shortlist_file.exists():
-        try:
-            data = json.loads(shortlist_file.read_text())
-            for item in data:
-                if item['ticker'] in symbols_set:
-                    session.merge(ShortList(ticker=item['ticker'], notes=item.get('notes')))
-                    restored_shortlist += 1
-            session.commit()
-            # Keep backup file; exporting will overwrite with up-to-date data
-            logger.info(f"Restored {restored_shortlist} shortlist tickers from backup")
-        except Exception as e:
-            session.rollback()
-            logger.error(f"Error restoring shortlist backup: {e}")
-
-    # --- Blacklist ---
-    blacklist_file = backup_path / 'blacklist_backup.json'
-    if blacklist_file.exists():
-        try:
-            data = json.loads(blacklist_file.read_text())
-            for item in data:
-                if item['ticker'] in symbols_set:
-                    session.merge(BlackList(ticker=item['ticker'], notes=item.get('notes')))
-                    restored_blacklist += 1
-            session.commit()
-            # Keep backup file; exporting will overwrite with up-to-date data
-            logger.info(f"Restored {restored_blacklist} blacklist tickers from backup")
-        except Exception as e:
-            session.rollback()
-            logger.error(f"Error restoring blacklist backup: {e}")
+    restored_comments = restored_flags = restored_notes = 0
 
     # --- Comments ---
     comments_file = backup_path / 'comments_backup.json'
@@ -350,21 +318,43 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
             session.rollback()
             logger.error(f"Error restoring comments backup: {e}")
 
-    # --- Reviewed ---
-    reviewed_file = backup_path / 'reviewed_backup.json'
-    if reviewed_file.exists():
+    # --- Flags ---
+    flags_file = backup_path / 'flags_backup.json'
+    if flags_file.exists():
         try:
-            data = json.loads(reviewed_file.read_text())
+            data = json.loads(flags_file.read_text())
             for item in data:
-                ticker = item['ticker'] if isinstance(item, dict) else item
-                if ticker in symbols_set:
-                    session.merge(Reviewed(ticker=ticker))
-                    restored_reviewed += 1
+                if item['ticker'] in symbols_set:
+                    session.merge(Flags(
+                        ticker=item['ticker'],
+                        is_reviewed=item.get('is_reviewed', False),
+                        is_shortlisted=item.get('is_shortlisted', False),
+                        is_blacklisted=item.get('is_blacklisted', False)
+                    ))
+                    restored_flags += 1
             session.commit()
-            logger.info(f"Restored {restored_reviewed} reviewed tickers from backup")
+            logger.info(f"Restored {restored_flags} flag rows from backup")
         except Exception as e:
             session.rollback()
-            logger.error(f"Error restoring reviewed backup: {e}")
+            logger.error(f"Error restoring flags backup: {e}")
+
+    # --- Concise Notes ---
+    concise_notes_file = backup_path / 'concise_notes_backup.json'
+    if concise_notes_file.exists():
+        try:
+            data = json.loads(concise_notes_file.read_text())
+            for item in data:
+                if item['ticker'] in symbols_set:
+                    session.merge(ConciseNote(
+                        ticker=item['ticker'],
+                        note=item.get('note', '')
+                    ))
+                    restored_notes += 1
+            session.commit()
+            logger.info(f"Restored {restored_notes} concise notes from backup")
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Error restoring concise notes backup: {e}")
 
 def seed_database():
     """Main seeding function"""

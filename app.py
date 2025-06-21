@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from models import Stock, Price, Comment, ShortList, BlackList, Reviewed, init_db
+from models import Stock, Price, Comment, Flags, ConciseNote, init_db
 from sqlalchemy import desc, func, and_, text
 from datetime import datetime, timedelta
 import os
@@ -39,10 +39,7 @@ RETURN_THRESHOLDS = {1: 5, 5: 10, 20: 15, 60: 20, 120: 30}
 
 BACKUP_DIR = Path(os.getenv("USER_DATA_DIR", "user_data"))
 BACKUP_DIR.mkdir(exist_ok=True)
-SHORTLIST_BACKUP_FILE = BACKUP_DIR / "shortlist_backup.json"
-BLACKLIST_BACKUP_FILE = BACKUP_DIR / "blacklist_backup.json"
 COMMENTS_BACKUP_FILE = BACKUP_DIR / "comments_backup.json"  # NEW constant for comments backup
-REVIEWED_BACKUP_FILE = BACKUP_DIR / "reviewed_backup.json"
 
 def get_eastern_datetime():
     """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
@@ -468,11 +465,13 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         ).subquery()
         
         # Get blacklisted tickers
-        blacklisted_tickers = session.query(BlackList.ticker).all()
-        blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
+        blacklisted_ticker_list = get_blacklisted_ticker_list()
         
         # Get reviewed tickers
-        reviewed_ticker_set = {t[0] for t in session.query(Reviewed.ticker).all()}
+        reviewed_ticker_set = get_reviewed_ticker_set()
+        
+        # Get shortlisted tickers
+        shortlisted_ticker_set = get_shortlisted_ticker_set()
         
         # Combine all the data
         query = session.query(
@@ -633,7 +632,9 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
                 'avg_10day_price': f"${stock.avg_10day_price:.2f}",
                 'avg_dollar_volume': f"${stock.avg_dollar_volume:,.0f}",
                 'latest_date': latest_date.strftime('%Y-%m-%d'),
-                'is_reviewed': stock.ticker in reviewed_ticker_set
+                'is_reviewed': stock.ticker in reviewed_ticker_set,
+                'is_shortlisted': stock.ticker in shortlisted_ticker_set,
+                'is_blacklisted': False
             })
         
         # ---------------------------------------------
@@ -664,9 +665,9 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         # For any other period (shouldn't happen), leave as-is
         
         if result:
-            note_map = {t: n for t, n in session.query(ShortList.ticker, ShortList.notes).filter(ShortList.ticker.in_([r['ticker'] for r in result])).all()}
+            note_map = {t: n for t, n in session.query(ConciseNote.ticker, ConciseNote.note).filter(ConciseNote.ticker.in_([r['ticker'] for r in result])).all()}
             for row in result:
-                row['shortlist_notes'] = note_map.get(row['ticker'], '')
+                row['concise_notes'] = note_map.get(row['ticker'], '')
         return result
         
     except Exception as e:
@@ -876,8 +877,7 @@ def get_gapper_stocks(above_200m=True):
         ).group_by(price_analysis.c.ticker).subquery()
         
         # Get blacklisted tickers
-        blacklisted_tickers = session.query(BlackList.ticker).all()
-        blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
+        blacklisted_ticker_list = get_blacklisted_ticker_list()
         
         # Get previous day price for change calculation
         previous_price = session.query(
@@ -963,7 +963,8 @@ def get_gapper_stocks(above_200m=True):
         gapper_stocks = query.all()
         
         # Cache reviewed tickers for icon display
-        reviewed_ticker_set = {t[0] for t in session.query(Reviewed.ticker).all()}
+        reviewed_ticker_set = get_reviewed_ticker_set()
+        shortlisted_ticker_set = get_shortlisted_ticker_set()
         
         result = []
         for stock in gapper_stocks:
@@ -1039,7 +1040,9 @@ def get_gapper_stocks(above_200m=True):
                 'avg_volume_50d': f"{stock.avg_volume_50d:,.0f}",
                 'max_volume_5d': f"{stock.max_volume_5d:,.0f}",
                 'latest_date': latest_date.strftime('%Y-%m-%d'),
-                'is_reviewed': stock.ticker in reviewed_ticker_set
+                'is_reviewed': stock.ticker in reviewed_ticker_set,
+                'is_shortlisted': stock.ticker in shortlisted_ticker_set,
+                'is_blacklisted': False
             })
         
         return result
@@ -1120,8 +1123,7 @@ def get_volume_spike_stocks(above_200m=True):
         ).group_by(Price.ticker).subquery()
         
         # Get blacklisted tickers
-        blacklisted_tickers = session.query(BlackList.ticker).all()
-        blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
+        blacklisted_ticker_list = get_blacklisted_ticker_list()
         
         # Get 52-week high and low for each stock (240 trading days)
         week_52_stats = session.query(
@@ -1236,8 +1238,9 @@ def get_volume_spike_stocks(above_200m=True):
         
         volume_stocks = query.all()
         
-        # Get reviewed tickers set for flagging
-        reviewed_ticker_set = {t[0] for t in session.query(Reviewed.ticker).all()}
+        # Get reviewed & shortlisted tickers set for flagging
+        reviewed_ticker_set    = get_reviewed_ticker_set()
+        shortlisted_ticker_set = get_shortlisted_ticker_set()
         
         result = []
         for stock in volume_stocks:
@@ -1312,7 +1315,9 @@ def get_volume_spike_stocks(above_200m=True):
                 'today_date': today.strftime('%Y-%m-%d'),
                 'yesterday_date': yesterday.strftime('%Y-%m-%d'),
                 'latest_date': latest_date.strftime('%Y-%m-%d'),
-                'is_reviewed': stock.ticker in reviewed_ticker_set
+                'is_reviewed': stock.ticker in reviewed_ticker_set,
+                'is_shortlisted': stock.ticker in shortlisted_ticker_set,
+                'is_blacklisted': False
             })
         
         return result
@@ -1418,12 +1423,20 @@ def get_all_returns_data(above_200m=True, weights=None):
             row["priority_score"] = round(priority_score, 2)
 
         # ------------------------------------------------------------------
+        # Inject concise notes
+        note_map_all = {t: n for t, n in session.query(ConciseNote.ticker, ConciseNote.note).filter(ConciseNote.ticker.in_([row['ticker'] for row in all_data])).all()}
+        for row in all_data:
+            row['concise_notes'] = note_map_all.get(row['ticker'], '')
+
         # 4. Sort – priority_score desc, then market-cap desc
         # ------------------------------------------------------------------
-        # Inject reviewed flag
-        reviewed_ticker_set = {t[0] for t in session.query(Reviewed.ticker).all()}
+        # Inject reviewed & shortlisted flags
+        reviewed_ticker_set    = get_reviewed_ticker_set()
+        shortlisted_ticker_set = get_shortlisted_ticker_set()
         for row in all_data:
-            row['is_reviewed'] = row['ticker'] in reviewed_ticker_set
+            row['is_reviewed']   = row['ticker'] in reviewed_ticker_set
+            row['is_shortlisted'] = row['ticker'] in shortlisted_ticker_set
+            row['is_blacklisted'] = False
 
         def extract_market_cap_value(market_cap_str: str):
             if not market_cap_str or market_cap_str == "N/A":
@@ -1500,8 +1513,7 @@ def get_stocks():
     ).group_by(Price.ticker).subquery()
     
     # Get blacklisted tickers
-    blacklisted_tickers = session.query(BlackList.ticker).all()
-    blacklisted_ticker_list = [ticker[0] for ticker in blacklisted_tickers]
+    blacklisted_ticker_list = get_blacklisted_ticker_list()
     
     # Join Stock with the latest Price data
     query = session.query(
@@ -2106,7 +2118,7 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
 
             # Format price change percentage for current price display
             price_change_pct = f"{return_1d:.1f}%"
-            # NEW: price change amount (+/-$)
+            # NEW: price change amount (+/-)
             price_change_val = current_price - price_1d
             price_change_dollar_str = f"${price_change_val:+.2f}"
 
@@ -2138,377 +2150,10 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
         logger.error(f"Error in get_all_returns_data_for_tickers: {str(e)}")
         return []
 
-# Shortlist API endpoints
-@app.route('/api/shortlist', methods=['GET'])
-def get_shortlist():
-    """Get all shortlisted stocks with their data"""
-    try:
-        # Get shortlisted tickers with their shortlist info
-        shortlisted_stocks = session.query(
-            ShortList.ticker,
-            ShortList.shortlisted_at,
-            ShortList.notes,
-            Stock.company_name,
-            Stock.sector,
-            Stock.industry,
-            Stock.country,
-            Stock.market_cap
-        ).join(
-            Stock, ShortList.ticker == Stock.ticker
-        ).order_by(desc(ShortList.shortlisted_at)).all()
-        
-        if not shortlisted_stocks:
-            return jsonify([])
-        
-        # Get the latest date for price data
-        latest_date = session.query(func.max(Price.date)).scalar()
-        if not latest_date:
-            return jsonify([])
-        
-        # Get current prices for shortlisted stocks
-        tickers = [stock.ticker for stock in shortlisted_stocks]
-        current_prices = session.query(
-            Price.ticker,
-            Price.close_price
-        ).filter(
-            Price.ticker.in_(tickers),
-            Price.date == latest_date
-        ).all()
-        
-        price_dict = {price.ticker: price.close_price for price in current_prices}
-        
-        # Get all returns data for shortlisted stocks
-        shortlist_data = get_all_returns_data_for_tickers(tickers)
-        shortlist_dict = {item['ticker']: item for item in shortlist_data}
-        
-        result = []
-        for stock in shortlisted_stocks:
-            # Get the returns data for this ticker
-            returns_data = shortlist_dict.get(stock.ticker, {})
-            
-            # Format market cap
-            market_cap = stock.market_cap
-            if market_cap and market_cap >= 1000000000:  # >= 1B
-                market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
-                if market_cap_formatted.endswith('.0B'):
-                    market_cap_formatted = market_cap_formatted[:-3] + 'B'
-            elif market_cap and market_cap >= 1000000:  # >= 1M
-                market_cap_formatted = f"{market_cap / 1000000:.0f}M"
-            else:
-                market_cap_formatted = "N/A"
-            
-            result.append({
-                'ticker': stock.ticker,
-                'company_name': stock.company_name,
-                'sector': stock.sector,
-                'industry': stock.industry,
-                'country': stock.country or 'N/A',
-                'market_cap': market_cap_formatted,
-                'current_price': f"${price_dict.get(stock.ticker, 0):.2f}" if stock.ticker in price_dict else "N/A",
-                'shortlisted_at': stock.shortlisted_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'shortlisted_date': stock.shortlisted_at.strftime('%Y-%m-%d'),
-                'notes': stock.notes or '',
-                # Include all returns data
-                **returns_data
-            })
-        
-        return jsonify(result)
-        
-    except Exception as e:
-        logger.error(f"Error getting shortlist: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/shortlist', methods=['POST'])
-def add_to_shortlist():
-    """Add tickers to shortlist"""
-    try:
-        data = request.get_json()
-        
-        if not data or 'tickers' not in data:
-            return jsonify({'error': 'Tickers list is required'}), 400
-        
-        tickers = data['tickers']
-        if not isinstance(tickers, list) or not tickers:
-            return jsonify({'error': 'Tickers must be a non-empty list'}), 400
-        
-        notes = data.get('notes', '')
-        
-        added_count = 0
-        skipped_count = 0
-        errors = []
-        
-        for ticker in tickers:
-            try:
-                ticker = ticker.upper().strip()
-                
-                # Verify ticker exists in our database
-                stock = session.query(Stock).filter(Stock.ticker == ticker).first()
-                if not stock:
-                    errors.append(f"Ticker {ticker} not found in database")
-                    continue
-                
-                # Check if already shortlisted
-                existing = session.query(ShortList).filter(ShortList.ticker == ticker).first()
-                if existing:
-                    skipped_count += 1
-                    continue
-                
-                # Add to shortlist
-                shortlist_entry = ShortList(
-                    ticker=ticker,
-                    notes=notes
-                )
-                
-                session.add(shortlist_entry)
-                added_count += 1
-                
-            except Exception as e:
-                errors.append(f"Error adding {ticker}: {str(e)}")
-        
-        session.commit()
-        export_user_lists()  # persist changes including comments
-        
-        return jsonify({
-            'added_count': added_count,
-            'skipped_count': skipped_count,
-            'errors': errors,
-            'message': f"Added {added_count} stocks to shortlist, skipped {skipped_count} already shortlisted"
-        })
-        
-    except Exception as e:
-        logger.error(f"Error adding to shortlist: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/shortlist/<ticker>', methods=['DELETE'])
-def remove_from_shortlist(ticker):
-    """Remove a ticker from shortlist"""
-    try:
-        ticker = ticker.upper()
-        
-        shortlist_entry = session.query(ShortList).filter(ShortList.ticker == ticker).first()
-        if not shortlist_entry:
-            return jsonify({'error': 'Ticker not found in shortlist'}), 404
-        
-        session.delete(shortlist_entry)
-        session.commit()
-        export_user_lists()  # persist changes including comments
-        
-        return jsonify({'message': f'{ticker} removed from shortlist'})
-        
-    except Exception as e:
-        logger.error(f"Error removing {ticker} from shortlist: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/shortlist/<ticker>/check', methods=['GET'])
-def check_shortlist_status(ticker):
-    """Check if a ticker is in the shortlist"""
-    try:
-        ticker = ticker.upper()
-        
-        shortlist_entry = session.query(ShortList).filter(ShortList.ticker == ticker).first()
-        
-        return jsonify({
-            'ticker': ticker,
-            'is_shortlisted': shortlist_entry is not None,
-            'shortlisted_at': shortlist_entry.shortlisted_at.strftime('%Y-%m-%d %H:%M:%S') if shortlist_entry else None
-        })
-        
-    except Exception as e:
-        logger.error(f"Error checking shortlist status for {ticker}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-# Blacklist API endpoints
-@app.route('/api/blacklist', methods=['GET'])
-def get_blacklist():
-    """Get all blacklisted stocks with their data"""
-    try:
-        # Get blacklisted tickers with their blacklist info
-        blacklisted_stocks = session.query(
-            BlackList.ticker,
-            BlackList.blacklisted_at,
-            BlackList.notes,
-            Stock.company_name,
-            Stock.sector,
-            Stock.industry,
-            Stock.country,
-            Stock.market_cap
-        ).join(
-            Stock, BlackList.ticker == Stock.ticker
-        ).order_by(desc(BlackList.blacklisted_at)).all()
-        
-        if not blacklisted_stocks:
-            return jsonify([])
-        
-        # Get the latest date for price data
-        latest_date = session.query(func.max(Price.date)).scalar()
-        if not latest_date:
-            return jsonify([])
-        
-        # Get current prices for blacklisted stocks
-        tickers = [stock.ticker for stock in blacklisted_stocks]
-        current_prices = session.query(
-            Price.ticker,
-            Price.close_price
-        ).filter(
-            Price.ticker.in_(tickers),
-            Price.date == latest_date
-        ).all()
-        
-        price_dict = {price.ticker: price.close_price for price in current_prices}
-        
-        # Get all returns data for blacklisted stocks
-        blacklist_data = get_all_returns_data_for_tickers(tickers)
-        blacklist_dict = {item['ticker']: item for item in blacklist_data}
-        
-        result = []
-        for stock in blacklisted_stocks:
-            # Get the returns data for this ticker
-            returns_data = blacklist_dict.get(stock.ticker, {})
-            
-            # Format market cap
-            market_cap = stock.market_cap
-            if market_cap and market_cap >= 1000000000:  # >= 1B
-                market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
-                if market_cap_formatted.endswith('.0B'):
-                    market_cap_formatted = market_cap_formatted[:-3] + 'B'
-            elif market_cap and market_cap >= 1000000:  # >= 1M
-                market_cap_formatted = f"{market_cap / 1000000:.0f}M"
-            else:
-                market_cap_formatted = "N/A"
-            
-            result.append({
-                'ticker': stock.ticker,
-                'company_name': stock.company_name,
-                'sector': stock.sector,
-                'industry': stock.industry,
-                'country': stock.country or 'N/A',
-                'market_cap': market_cap_formatted,
-                'current_price': f"${price_dict.get(stock.ticker, 0):.2f}" if stock.ticker in price_dict else "N/A",
-                'blacklisted_at': stock.blacklisted_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'blacklisted_date': stock.blacklisted_at.strftime('%Y-%m-%d'),
-                'notes': stock.notes or '',
-                # Include all returns data
-                **returns_data
-            })
-        
-        return jsonify(result)
-        
-    except Exception as e:
-        logger.error(f"Error getting blacklist: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/blacklist', methods=['POST'])
-def add_to_blacklist():
-    """Add tickers to blacklist"""
-    try:
-        data = request.get_json()
-        
-        if not data or 'tickers' not in data:
-            return jsonify({'error': 'Tickers list is required'}), 400
-        
-        tickers = data['tickers']
-        if not isinstance(tickers, list) or not tickers:
-            return jsonify({'error': 'Tickers must be a non-empty list'}), 400
-        
-        notes = data.get('notes', '')
-        
-        added_count = 0
-        skipped_count = 0
-        errors = []
-        
-        for ticker in tickers:
-            try:
-                ticker = ticker.upper().strip()
-                
-                # Verify ticker exists in our database
-                stock = session.query(Stock).filter(Stock.ticker == ticker).first()
-                if not stock:
-                    errors.append(f"Ticker {ticker} not found in database")
-                    continue
-                
-                # Check if already blacklisted
-                existing = session.query(BlackList).filter(BlackList.ticker == ticker).first()
-                if existing:
-                    skipped_count += 1
-                    continue
-                
-                # Add to blacklist
-                blacklist_entry = BlackList(
-                    ticker=ticker,
-                    notes=notes
-                )
-                
-                session.add(blacklist_entry)
-                added_count += 1
-                
-            except Exception as e:
-                errors.append(f"Error adding {ticker}: {str(e)}")
-        
-        session.commit()
-        export_user_lists()  # persist changes including comments
-        
-        return jsonify({
-            'added_count': added_count,
-            'skipped_count': skipped_count,
-            'errors': errors,
-            'message': f"Added {added_count} stocks to blacklist, skipped {skipped_count} already blacklisted"
-        })
-        
-    except Exception as e:
-        logger.error(f"Error adding to blacklist: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/blacklist/<ticker>', methods=['DELETE'])
-def remove_from_blacklist(ticker):
-    """Remove a ticker from blacklist"""
-    try:
-        ticker = ticker.upper()
-        
-        blacklist_entry = session.query(BlackList).filter(BlackList.ticker == ticker).first()
-        if not blacklist_entry:
-            return jsonify({'error': 'Ticker not found in blacklist'}), 404
-        
-        session.delete(blacklist_entry)
-        session.commit()
-        export_user_lists()  # persist changes including comments
-        
-        return jsonify({'message': f'{ticker} removed from blacklist'})
-        
-    except Exception as e:
-        logger.error(f"Error removing {ticker} from blacklist: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/blacklist/<ticker>/check', methods=['GET'])
-def check_blacklist_status(ticker):
-    """Check if a ticker is in the blacklist"""
-    try:
-        ticker = ticker.upper()
-        
-        blacklist_entry = session.query(BlackList).filter(BlackList.ticker == ticker).first()
-        
-        return jsonify({
-            'ticker': ticker,
-            'is_blacklisted': blacklist_entry is not None,
-            'blacklisted_at': blacklist_entry.blacklisted_at.strftime('%Y-%m-%d %H:%M:%S') if blacklist_entry else None
-        })
-        
-    except Exception as e:
-        logger.error(f"Error checking blacklist status for {ticker}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
 
 def export_user_lists():
-    """Write current shortlist, blacklist, and comments tables to JSON files (idempotent)."""  # Updated docstring
+    """Persist user-generated tables (comments, flags, concise notes) to JSON so they survive a DB wipe."""
     try:
-        # Shortlist
-        short_rows = session.query(ShortList.ticker, ShortList.notes).all()
-        with SHORTLIST_BACKUP_FILE.open("w", encoding="utf-8") as f:
-            json.dump([{"ticker": t, "notes": n} for t, n in short_rows], f, indent=2)
-
-        # Blacklist
-        black_rows = session.query(BlackList.ticker, BlackList.notes).all()
-        with BLACKLIST_BACKUP_FILE.open("w", encoding="utf-8") as f:
-            json.dump([{"ticker": t, "notes": n} for t, n in black_rows], f, indent=2)
-
         # Comments – dump all comment records (excluding DB id)
         comments_rows = session.query(Comment).all()
         comments_payload = []
@@ -2527,90 +2172,28 @@ def export_user_lists():
         with COMMENTS_BACKUP_FILE.open("w", encoding="utf-8") as f:
             json.dump(comments_payload, f, indent=2)
 
-        # Reviewed – dump reviewed tickers
-        reviewed_rows = session.query(Reviewed.ticker, Reviewed.reviewed_at).all()
-        with REVIEWED_BACKUP_FILE.open("w", encoding="utf-8") as f:
-            json.dump([
-                {
-                    "ticker": t,
-                    "reviewed_at": ra.isoformat() if ra else None
-                } for t, ra in reviewed_rows
-            ], f, indent=2)
+        # Flags – dump reviewed/shortlisted/blacklisted flags
+        flags_rows = session.query(Flags).all()
+        flags_payload = []
+        for f in flags_rows:
+            flags_payload.append({
+                'ticker': f.ticker,
+                'is_reviewed': f.is_reviewed,
+                'is_shortlisted': f.is_shortlisted,
+                'is_blacklisted': f.is_blacklisted,
+                'updated_at': f.updated_at.isoformat() if f.updated_at else None
+            })
+        with (BACKUP_DIR / 'flags_backup.json').open('w', encoding='utf-8') as f:
+            json.dump(flags_payload, f, indent=2)
+
+        # Concise Notes backup
+        notes_rows = session.query(ConciseNote).all()
+        notes_payload = [{'ticker': n.ticker, 'note': n.note, 'updated_at': n.updated_at.isoformat() if n.updated_at else None} for n in notes_rows]
+        with (BACKUP_DIR / 'concise_notes_backup.json').open('w', encoding='utf-8') as f:
+            json.dump(notes_payload, f, indent=2)
     except Exception as e:
         logger.error("Failed to export user lists: %s", e)
 
-@app.route('/api/reviewed', methods=['GET'])
-def get_reviewed():
-    """Get all reviewed tickers"""
-    try:
-        reviewed = session.query(Reviewed).order_by(desc(Reviewed.reviewed_at)).all()
-        return jsonify([
-            {
-                'ticker': r.ticker,
-                'reviewed_at': r.reviewed_at.strftime('%Y-%m-%d %H:%M:%S')
-            } for r in reviewed
-        ])
-    except Exception as e:
-        logger.error(f"Error getting reviewed list: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/reviewed', methods=['POST'])
-def add_to_reviewed():
-    """Mark a ticker as reviewed"""
-    try:
-        data = request.get_json()
-        if not data or 'ticker' not in data:
-            return jsonify({'error': 'Ticker is required'}), 400
-        ticker = data['ticker'].upper().strip()
-
-        # Ensure ticker exists
-        stock = session.query(Stock).filter(Stock.ticker == ticker).first()
-        if not stock:
-            return jsonify({'error': 'Ticker not found'}), 404
-
-        # Check if already reviewed
-        existing = session.query(Reviewed).filter(Reviewed.ticker == ticker).first()
-        if existing:
-            return jsonify({'message': f'{ticker} already marked as reviewed'}), 200
-
-        session.add(Reviewed(ticker=ticker))
-        session.commit()
-        export_user_lists()
-        return jsonify({'message': f'{ticker} marked as reviewed'})
-    except Exception as e:
-        logger.error(f"Error adding {ticker} to reviewed: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/reviewed/<ticker>', methods=['DELETE'])
-def remove_from_reviewed(ticker):
-    """Unmark a ticker as reviewed"""
-    try:
-        ticker = ticker.upper()
-        reviewed_entry = session.query(Reviewed).filter(Reviewed.ticker == ticker).first()
-        if not reviewed_entry:
-            return jsonify({'error': 'Ticker not found in reviewed list'}), 404
-        session.delete(reviewed_entry)
-        session.commit()
-        export_user_lists()
-        return jsonify({'message': f'{ticker} unmarked as reviewed'})
-    except Exception as e:
-        logger.error(f"Error removing {ticker} from reviewed: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/reviewed/<ticker>/check', methods=['GET'])
-def check_reviewed_status(ticker):
-    """Check if a ticker is reviewed"""
-    try:
-        ticker = ticker.upper()
-        reviewed_entry = session.query(Reviewed).filter(Reviewed.ticker == ticker).first()
-        return jsonify({
-            'ticker': ticker,
-            'is_reviewed': reviewed_entry is not None,
-            'reviewed_at': reviewed_entry.reviewed_at.strftime('%Y-%m-%d %H:%M:%S') if reviewed_entry else None
-        })
-    except Exception as e:
-        logger.error(f"Error checking reviewed status for {ticker}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/finviz-news/<ticker>')
 def get_finviz_news(ticker):
@@ -2659,7 +2242,176 @@ def get_finviz_news(ticker):
         logger.error(f"Error scraping Finviz news for {ticker}: {e}")
         return jsonify({'error': str(e)}), 500
 
+# ------------------------------------------------------------------
+# Flags API
+# ------------------------------------------------------------------
 
+@app.route('/api/flags/<ticker>', methods=['GET'])
+def get_flags(ticker):
+    """Return flag booleans for a single ticker."""
+    try:
+        flags = session.query(Flags).filter(Flags.ticker == ticker.upper()).first()
+        if not flags:
+            return jsonify({'ticker': ticker.upper(), 'is_reviewed': False, 'is_shortlisted': False, 'is_blacklisted': False})
+        return jsonify({
+            'ticker': flags.ticker,
+            'is_reviewed': bool(flags.is_reviewed),
+            'is_shortlisted': bool(flags.is_shortlisted),
+            'is_blacklisted': bool(flags.is_blacklisted)
+        })
+    except Exception as e:
+        logger.error(f"Error getting flags for {ticker}: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/flags', methods=['POST'])
+def update_flags():
+    """Bulk update flags.
+    Expected JSON: { "tickers": ["AAPL", "MSFT"], "flag": "reviewed|shortlisted|blacklisted", "value": true }
+    """
+    try:
+        data = request.get_json(force=True)
+        tickers = [t.upper() for t in data.get('tickers', [])]
+        flag = data.get('flag')  # reviewed | shortlisted | blacklisted
+        value = bool(data.get('value', True))
+        if not tickers or flag not in {'reviewed', 'shortlisted', 'blacklisted'}:
+            return jsonify({'error': 'Invalid payload'}), 400
+
+        attr_map = {
+            'reviewed': 'is_reviewed',
+            'shortlisted': 'is_shortlisted',
+            'blacklisted': 'is_blacklisted'
+        }
+        attr_name = attr_map[flag]
+        updated = 0
+        for ticker in tickers:
+            flag_row = session.query(Flags).filter(Flags.ticker == ticker).first()
+            if not flag_row:
+                flag_row = Flags(ticker=ticker)
+                session.add(flag_row)
+            setattr(flag_row, attr_name, value)
+            updated += 1
+        session.commit()
+        export_user_lists()
+        return jsonify({'message': f'Updated {updated} tickers'}), 200
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error updating flags: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/flags/batch', methods=['POST'])
+def update_flags_batch():
+    """Batch update flags from multiple changes.
+    Expected JSON: { "changes": [{"ticker": "AAPL", "flag": "reviewed", "value": true}, ...] }
+    """
+    try:
+        data = request.get_json(force=True)
+        changes = data.get('changes', [])
+        
+        if not changes:
+            return jsonify({'error': 'No changes provided'}), 400
+
+        attr_map = {
+            'reviewed': 'is_reviewed',
+            'shortlisted': 'is_shortlisted',
+            'blacklisted': 'is_blacklisted'
+        }
+        
+        success_count = 0
+        errors = []
+        
+        for change in changes:
+            try:
+                ticker = change.get('ticker', '').upper()
+                flag = change.get('flag')
+                value = bool(change.get('value', True))
+                
+                if not ticker or flag not in attr_map:
+                    errors.append(f"Invalid change: {change}")
+                    continue
+                
+                attr_name = attr_map[flag]
+                flag_row = session.query(Flags).filter(Flags.ticker == ticker).first()
+                if not flag_row:
+                    flag_row = Flags(ticker=ticker)
+                    session.add(flag_row)
+                
+                setattr(flag_row, attr_name, value)
+                success_count += 1
+                
+            except Exception as e:
+                errors.append(f"Error updating {change.get('ticker', 'unknown')}: {str(e)}")
+        
+        if success_count > 0:
+            session.commit()
+            export_user_lists()
+        
+        response_data = {
+            'success_count': success_count,
+            'message': f'Successfully updated {success_count} flag changes'
+        }
+        
+        if errors:
+            response_data['errors'] = errors
+        
+        return jsonify(response_data), 200
+        
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error in batch flag update: {e}")
+        return jsonify({'error': str(e)}), 500
+
+# ------------------------------------------------------------------
+# Helper functions using Flags (single source of truth)
+# ------------------------------------------------------------------
+
+def get_reviewed_ticker_set():
+    """Return a set of tickers flagged as reviewed."""
+    return {t[0] for t in session.query(Flags.ticker).filter(Flags.is_reviewed == True).all()}
+
+
+def get_blacklisted_ticker_list():
+    """Return list of tickers flagged as blacklisted."""
+    return [t[0] for t in session.query(Flags.ticker).filter(Flags.is_blacklisted == True).all()]
+
+def get_shortlisted_ticker_set():
+    """Return a set of tickers flagged as shortlisted."""
+    return {t[0] for t in session.query(Flags.ticker).filter(Flags.is_shortlisted == True).all()}
+
+@app.get('/api/shortlist')
+def api_shortlist():
+    flags = session.query(Flags).filter(Flags.is_shortlisted).all()
+    return build_flag_payload(flags)
+
+@app.get('/api/blacklist')
+def api_blacklist():
+    flags = session.query(Flags).filter(Flags.is_blacklisted).all()
+    return build_flag_payload(flags)
+
+def build_flag_payload(flag_rows):
+    tickers = [f.ticker for f in flag_rows]
+    note_map = {n.ticker: n.note for n in session.query(ConciseNote)
+                                       .filter(ConciseNote.ticker.in_(tickers))}
+    stocks  = {s.ticker: s for s in session.query(Stock)
+                                   .filter(Stock.ticker.in_(tickers))}
+    returns = {r['ticker']: r for r in get_all_returns_data_for_tickers(tickers)}
+    out = []
+    for f in flag_rows:
+        s = stocks.get(f.ticker)
+        r = returns.get(f.ticker, {})
+        if not s:
+            continue
+        out.append({
+            'ticker': s.ticker,
+            'company_name': s.company_name,
+            'market_cap': s.market_cap,
+            'country':   s.country,
+            'sector':    s.sector,
+            'industry':  s.industry,
+            'concise_notes': note_map.get(s.ticker, ''),
+            'flagged_date':  f.updated_at.strftime('%Y-%m-%d'),
+            **r
+        })
+    return jsonify(out)
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000) 

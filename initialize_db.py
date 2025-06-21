@@ -26,10 +26,10 @@ def initialize_database(reset=False):
         if reset:
             print("Resetting database - dropping existing tables...")
             # Drop all tables if they exist (including both old and new table names)
-            connection.execute(text("DROP TABLE IF EXISTS shortlist CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS blacklist CASCADE;"))
+
+            connection.execute(text("DROP TABLE IF EXISTS concise_notes CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS flags CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS comment CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS stocks CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS ticker CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS price CASCADE;"))
             print("Old tables dropped.")
@@ -115,31 +115,23 @@ def initialize_database(reset=False):
             )
         """))
         
-        # Create shortlist table
+        # Create flags table (reviewed/shortlisted/blacklisted booleans)
         connection.execute(text(f"""
-            {table_creation_clause} shortlist (
-                id SERIAL PRIMARY KEY,
-                ticker VARCHAR(10) NOT NULL,
-                shortlisted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                notes TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (ticker) REFERENCES ticker(ticker) ON DELETE CASCADE,
-                CONSTRAINT _ticker_shortlist_uc UNIQUE (ticker)
+            {table_creation_clause} flags (
+                ticker VARCHAR(10) PRIMARY KEY,
+                is_reviewed BOOLEAN NOT NULL DEFAULT FALSE,
+                is_shortlisted BOOLEAN NOT NULL DEFAULT FALSE,
+                is_blacklisted BOOLEAN NOT NULL DEFAULT FALSE,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
             )
         """))
-        
-        # Create blacklist table (new)
+
+        # Concise notes table
         connection.execute(text(f"""
-            {table_creation_clause} blacklist (
-                id SERIAL PRIMARY KEY,
-                ticker VARCHAR(10) NOT NULL,
-                blacklisted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                notes TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (ticker) REFERENCES ticker(ticker) ON DELETE CASCADE,
-                CONSTRAINT _ticker_blacklist_uc UNIQUE (ticker)
+            {table_creation_clause} concise_notes (
+                ticker VARCHAR(10) PRIMARY KEY,
+                note TEXT NOT NULL,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
             )
         """))
         
@@ -160,10 +152,10 @@ def initialize_database(reset=False):
             {index_creation_clause} idx_comment_created_at ON comment(created_at);
             {index_creation_clause} idx_comment_type ON comment(comment_type);
             {index_creation_clause} idx_comment_status ON comment(status);
-            {index_creation_clause} idx_shortlist_ticker ON shortlist(ticker);
-            {index_creation_clause} idx_shortlist_shortlisted_at ON shortlist(shortlisted_at);
-            {index_creation_clause} idx_blacklist_ticker ON blacklist(ticker);
-            {index_creation_clause} idx_blacklist_blacklisted_at ON blacklist(blacklisted_at);
+            {index_creation_clause} idx_flags_reviewed ON flags(is_reviewed);
+            {index_creation_clause} idx_flags_shortlisted ON flags(is_shortlisted);
+            {index_creation_clause} idx_flags_blacklisted ON flags(is_blacklisted);
+            {index_creation_clause} idx_notes_ticker ON concise_notes(ticker);
         """))
         
         connection.commit()
@@ -174,15 +166,15 @@ def initialize_database(reset=False):
             print("- New 'ticker' table created (comprehensive FMP company data)")
             print("- Price table created")
             print("- Comment table created (user/AI comments with review workflow)")
-            print("- Shortlist table created (Abi's stock shortlist)")
-            print("- Blacklist table created (Abi's stock blacklist)")
+            print("- Flags table created (reviewed/shortlisted/blacklisted booleans)")
+            print("- Concise notes table created")
         else:
             print("Database initialization completed successfully!")
             print("- 'ticker' table ready (comprehensive FMP company data)")
             print("- 'price' table ready (daily price data)")
             print("- 'comment' table ready (user/AI comments with review workflow)")
-            print("- 'shortlist' table ready (Abi's stock shortlist)")
-            print("- 'blacklist' table ready (Abi's stock blacklist)")
+            print("- 'flags' table ready (reviewed/shortlisted/blacklisted booleans)")
+            print("- 'concise notes' table ready")
 
 if __name__ == "__main__":
     # Check for reset flag

@@ -200,12 +200,13 @@
         const COLUMN_CONFIGS = {
             returns: {
                 columns: [
-                    { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
-                    { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
-                    { key: 'review_toggle', label: '', width: '35px', type: 'review_toggle' },
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
-                    { key: 'shortlist_notes', label: 'Shortlist Notes', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
                     { key: 'market_cap', label: 'Market Cap', type: 'text' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
@@ -224,12 +225,13 @@
             },
             all_returns: {
                 columns: [
-                    { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
-                    { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
-                    { key: 'review_toggle', label: '', width: '35px', type: 'review_toggle' },
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
-                    { key: 'shortlist_notes', label: 'Shortlist Notes', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
                     { key: 'market_cap', label: 'Market Cap', type: 'text' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
@@ -248,12 +250,13 @@
             },
             gapper: {
                 columns: [
-                    { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
-                    { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
-                    { key: 'review_toggle', label: '', width: '35px', type: 'review_toggle' },
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
-                    { key: 'shortlist_notes', label: 'Shortlist Notes', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
                     { key: 'market_cap', label: 'Market Cap', type: 'text' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
@@ -272,12 +275,13 @@
             },
             volume: {
                 columns: [
-                    { key: 'serial', label: 'S/N', width: '50px', type: 'serial' },
-                    { key: 'checkbox', label: '', width: '40px', type: 'checkbox' },
-                    { key: 'review_toggle', label: '', width: '35px', type: 'review_toggle' },
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
-                    { key: 'shortlist_notes', label: 'Shortlist Notes', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
                     { key: 'market_cap', label: 'Market Cap', type: 'text' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
@@ -300,7 +304,9 @@
         function generateTableHeader(columns) {
             let headerHtml = '<tr>';
             columns.forEach(col => {
-                if (col.type === 'checkbox') {
+                if (col.type === 'flag_checkbox') {
+                    headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
+                } else if (col.type === 'checkbox') {
                     headerHtml += `<th style="width: ${col.width};">
                         <input type="checkbox" class="form-check-input" id="selectAllAboveCheckbox" onchange="toggleSelectAllAbove()">
                     </th>`;
@@ -321,7 +327,9 @@
         function generateTableHeaderBelow(columns) {
             let headerHtml = '<tr>';
             columns.forEach(col => {
-                if (col.type === 'checkbox') {
+                if (col.type === 'flag_checkbox') {
+                    headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
+                } else if (col.type === 'checkbox') {
                     headerHtml += `<th style="width: ${col.width};">
                         <input type="checkbox" class="form-check-input" id="selectAllBelowCheckbox" onchange="toggleSelectAllBelow()">
                     </th>`;
@@ -344,16 +352,18 @@
             columns.forEach(col => {
                 switch (col.type) {
                     case 'serial':
-                        rowHtml += `<td class="text-center">${serialNumber}</td>`;
+                        rowHtml += `<td class="text-center  text-muted">${serialNumber}</td>`;
+                        break;
+                    case 'flag_checkbox':
+                        const checked = stock[col.key];
+                        const flagName = col.key === 'is_reviewed' ? 'reviewed' : (col.key === 'is_shortlisted' ? 'shortlisted' : 'blacklisted');
+                        rowHtml += `<td><input type="checkbox" class="form-check-input flag-checkbox" data-ticker="${stock.ticker}" data-flag="${flagName}" ${checked ? 'checked' : ''} onchange="toggleFlag(event)"></td>`;
                         break;
                     case 'checkbox':
-                        rowHtml += `<td>
-                            <input type="checkbox" class="form-check-input stock-checkbox" value="${stock.ticker}" onchange="updateSelectionCount()">
-                        </td>`;
+                        // legacy bulk-select checkbox – removed
                         break;
                     case 'review_toggle':
-                        const reviewed = stock.is_reviewed;
-                        rowHtml += `<td><i class="${reviewed ? 'fas fa-check-circle text-success' : 'far fa-circle text-muted'} review-toggle-icon" data-ticker="${stock.ticker}" onclick="toggleReviewed(event)"></i></td>`;
+                        // legacy review icon – removed
                         break;
                     case 'ticker':
                         rowHtml += `<td>
@@ -695,40 +705,123 @@
             });
         }
 
-        function toggleReviewed(event) {
-            const icon = event.currentTarget;
-            const ticker = icon.getAttribute('data-ticker');
-            const isReviewed = icon.classList.contains('fa-check-circle');
-            if (isReviewed) {
-                // Unmark
-                fetch(`/api/reviewed/${ticker}`, { method: 'DELETE' })
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert('Error: ' + data.error);
-                            return;
-                        }
-                        icon.classList.remove('fas', 'fa-check-circle', 'text-success');
-                        icon.classList.add('far', 'fa-circle', 'text-muted');
-                    })
-                    .catch(e => alert('Error: ' + e.message));
-            } else {
-                fetch('/api/reviewed', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ticker: ticker })
-                })
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert('Error: ' + data.error);
-                            return;
-                        }
-                        icon.classList.remove('far', 'fa-circle', 'text-muted');
-                        icon.classList.add('fas', 'fa-check-circle', 'text-success');
-                    })
-                    .catch(e => alert('Error: ' + e.message));
+        // Track pending flag changes
+        let pendingFlagChanges = new Map();
+
+        function toggleFlag(event) {
+            const checkbox = event.currentTarget;
+            const ticker = checkbox.getAttribute('data-ticker');
+            const flag = checkbox.getAttribute('data-flag'); // reviewed | shortlisted | blacklisted
+            const value = checkbox.checked;
+
+            // Store the change locally instead of immediately saving
+            const key = `${ticker}_${flag}`;
+            pendingFlagChanges.set(key, {
+                ticker: ticker,
+                flag: flag,
+                value: value
+            });
+
+            // Update the UI to show pending changes
+            updatePendingChangesUI();
+        }
+
+        function updatePendingChangesUI() {
+            const count = pendingFlagChanges.size;
+            const commitBtn = document.getElementById('commitFlagsBtn');
+            const pendingIndicator = document.getElementById('pendingChangesIndicator');
+            
+            if (commitBtn) {
+                if (count > 0) {
+                    commitBtn.style.display = 'inline-block';
+                    commitBtn.textContent = `Commit Flags (${count})`;
+                    commitBtn.disabled = false;
+                } else {
+                    commitBtn.style.display = 'none';
+                }
             }
+            
+            if (pendingIndicator) {
+                if (count > 0) {
+                    pendingIndicator.style.display = 'inline-block';
+                    pendingIndicator.textContent = `${count} pending changes`;
+                } else {
+                    pendingIndicator.style.display = 'none';
+                }
+            }
+        }
+
+        function commitFlags() {
+            if (pendingFlagChanges.size === 0) {
+                alert('No pending changes to commit.');
+                return;
+            }
+
+            const commitBtn = document.getElementById('commitFlagsBtn');
+            const originalText = commitBtn.textContent;
+            commitBtn.textContent = 'Committing...';
+            commitBtn.disabled = true;
+
+            // Convert Map to array of changes
+            const changes = Array.from(pendingFlagChanges.values());
+
+            fetch('/api/flags/batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    changes: changes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error committing flags: ' + data.error);
+                    commitBtn.textContent = originalText;
+                    commitBtn.disabled = false;
+                    return;
+                }
+                
+                // Clear pending changes on success
+                pendingFlagChanges.clear();
+                updatePendingChangesUI();
+                
+                // Show success message
+                const successCount = data.success_count || changes.length;
+                alert(`Successfully committed ${successCount} flag changes!`);
+                
+                if (data.errors && data.errors.length > 0) {
+                    console.warn('Some errors occurred:', data.errors);
+                }
+            })
+            .catch(err => {
+                alert('Error committing flags: ' + err.message);
+                commitBtn.textContent = originalText;
+                commitBtn.disabled = false;
+            });
+        }
+
+        function discardPendingFlags() {
+            if (pendingFlagChanges.size === 0) {
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to discard ${pendingFlagChanges.size} pending flag changes?`)) {
+                return;
+            }
+
+            // Revert all checkboxes to their original state
+            pendingFlagChanges.forEach((change, key) => {
+                const checkbox = document.querySelector(`[data-ticker="${change.ticker}"][data-flag="${change.flag}"]`);
+                if (checkbox) {
+                    checkbox.checked = !change.value; // Revert to original state
+                }
+            });
+
+            // Clear pending changes
+            pendingFlagChanges.clear();
+            updatePendingChangesUI();
         }
     </script>
     
