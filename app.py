@@ -34,6 +34,9 @@ DEFAULT_PRIORITY_WEIGHTS = {
     '120d': 1
 }
 
+# Minimum % move thresholds per period – easy to tweak
+RETURN_THRESHOLDS = {1: 5, 5: 10, 20: 15, 60: 20, 120: 30}
+
 BACKUP_DIR = Path(os.getenv("USER_DATA_DIR", "user_data"))
 BACKUP_DIR.mkdir(exist_ok=True)
 SHORTLIST_BACKUP_FILE = BACKUP_DIR / "shortlist_backup.json"
@@ -351,9 +354,13 @@ def get_latest_date():
         logger.error(f"Error getting latest date: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-def get_momentum_stocks(return_days, above_200m=True):
+def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
     """Helper function to get momentum stocks for different return periods"""
     try:
+        # Determine threshold
+        if min_return_pct is None:
+            min_return_pct = RETURN_THRESHOLDS.get(return_days, 5)
+
         # Get the latest date for which we have price data
         latest_date = session.query(func.max(Price.date)).scalar()
         if not latest_date:
@@ -535,7 +542,7 @@ def get_momentum_stocks(return_days, above_200m=True):
             start_prices.c.start_price > 0,  # Ensure start price is not 0 or null to prevent division by zero
             start_prices.c.start_price.isnot(None),  # Ensure start price is not null
             ((end_prices.c.end_price - start_prices.c.start_price) / 
-             start_prices.c.start_price * 100) >= 5  # price change > 5%
+             start_prices.c.start_price * 100) >= min_return_pct  # dynamic threshold
         ).order_by(desc('price_change_pct'))
         
         momentum_stocks = query.all()
@@ -670,7 +677,7 @@ def get_momentum_stocks(return_days, above_200m=True):
 @app.route('/api/Return1D-Above200M')
 def get_return_1d_above_200m():
     try:
-        result = get_momentum_stocks(1, above_200m=True)
+        result = get_momentum_stocks(1, above_200m=True, min_return_pct=RETURN_THRESHOLDS[1])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_1d_above_200m: {str(e)}")
@@ -679,7 +686,7 @@ def get_return_1d_above_200m():
 @app.route('/api/Return1D-Below200M')
 def get_return_1d_below_200m():
     try:
-        result = get_momentum_stocks(1, above_200m=False)
+        result = get_momentum_stocks(1, above_200m=False, min_return_pct=RETURN_THRESHOLDS[1])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_1d_below_200m: {str(e)}")
@@ -689,7 +696,7 @@ def get_return_1d_below_200m():
 @app.route('/api/Return5D-Above200M')
 def get_return_5d_above_200m():
     try:
-        result = get_momentum_stocks(5, above_200m=True)
+        result = get_momentum_stocks(5, above_200m=True, min_return_pct=RETURN_THRESHOLDS[5])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_5d_above_200m: {str(e)}")
@@ -698,7 +705,7 @@ def get_return_5d_above_200m():
 @app.route('/api/Return5D-Below200M')
 def get_return_5d_below_200m():
     try:
-        result = get_momentum_stocks(5, above_200m=False)
+        result = get_momentum_stocks(5, above_200m=False, min_return_pct=RETURN_THRESHOLDS[5])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_5d_below_200m: {str(e)}")
@@ -708,7 +715,7 @@ def get_return_5d_below_200m():
 @app.route('/api/Return60D-Above200M')
 def get_return_60d_above_200m():
     try:
-        result = get_momentum_stocks(60, above_200m=True)
+        result = get_momentum_stocks(60, above_200m=True, min_return_pct=RETURN_THRESHOLDS[60])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_60d_above_200m: {str(e)}")
@@ -717,7 +724,7 @@ def get_return_60d_above_200m():
 @app.route('/api/Return60D-Below200M')
 def get_return_60d_below_200m():
     try:
-        result = get_momentum_stocks(60, above_200m=False)
+        result = get_momentum_stocks(60, above_200m=False, min_return_pct=RETURN_THRESHOLDS[60])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_60d_below_200m: {str(e)}")
@@ -727,7 +734,7 @@ def get_return_60d_below_200m():
 @app.route('/api/Return120D-Above200M')
 def get_return_120d_above_200m():
     try:
-        result = get_momentum_stocks(120, above_200m=True)
+        result = get_momentum_stocks(120, above_200m=True, min_return_pct=RETURN_THRESHOLDS[120])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_120d_above_200m: {str(e)}")
@@ -736,7 +743,7 @@ def get_return_120d_above_200m():
 @app.route('/api/Return120D-Below200M')
 def get_return_120d_below_200m():
     try:
-        result = get_momentum_stocks(120, above_200m=False)
+        result = get_momentum_stocks(120, above_200m=False, min_return_pct=RETURN_THRESHOLDS[120])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_120d_below_200m: {str(e)}")
@@ -1229,6 +1236,9 @@ def get_volume_spike_stocks(above_200m=True):
         
         volume_stocks = query.all()
         
+        # Get reviewed tickers set for flagging
+        reviewed_ticker_set = {t[0] for t in session.query(Reviewed.ticker).all()}
+        
         result = []
         for stock in volume_stocks:
             # Format market cap
@@ -1301,7 +1311,8 @@ def get_volume_spike_stocks(above_200m=True):
                 'avg_volume_5d': f"{stock.avg_volume_5d:,.0f}",
                 'today_date': today.strftime('%Y-%m-%d'),
                 'yesterday_date': yesterday.strftime('%Y-%m-%d'),
-                'latest_date': latest_date.strftime('%Y-%m-%d')
+                'latest_date': latest_date.strftime('%Y-%m-%d'),
+                'is_reviewed': stock.ticker in reviewed_ticker_set
             })
         
         return result
@@ -1360,7 +1371,7 @@ def get_all_returns_data(above_200m=True, weights=None):
         ticker_to_periods: dict[str, set[str]] = {}
 
         for days in periods:
-            stocks = get_momentum_stocks(days, above_200m=above_200m)
+            stocks = get_momentum_stocks(days, above_200m=above_200m, min_return_pct=RETURN_THRESHOLDS[days])
             period_name = period_keys[days]
             for stock in stocks:
                 tkr = stock["ticker"]
@@ -1409,6 +1420,11 @@ def get_all_returns_data(above_200m=True, weights=None):
         # ------------------------------------------------------------------
         # 4. Sort – priority_score desc, then market-cap desc
         # ------------------------------------------------------------------
+        # Inject reviewed flag
+        reviewed_ticker_set = {t[0] for t in session.query(Reviewed.ticker).all()}
+        for row in all_data:
+            row['is_reviewed'] = row['ticker'] in reviewed_ticker_set
+
         def extract_market_cap_value(market_cap_str: str):
             if not market_cap_str or market_cap_str == "N/A":
                 return 0
@@ -1683,7 +1699,7 @@ def get_stock_prices(ticker):
 @app.route('/api/Return20D-Above200M')
 def get_return_20d_above_200m():
     try:
-        result = get_momentum_stocks(20, above_200m=True)
+        result = get_momentum_stocks(20, above_200m=True, min_return_pct=RETURN_THRESHOLDS[20])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_20d_above_200m: {str(e)}")
@@ -1692,7 +1708,7 @@ def get_return_20d_above_200m():
 @app.route('/api/Return20D-Below200M')
 def get_return_20d_below_200m():
     try:
-        result = get_momentum_stocks(20, above_200m=False)
+        result = get_momentum_stocks(20, above_200m=False, min_return_pct=RETURN_THRESHOLDS[20])
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_return_20d_below_200m: {str(e)}")

@@ -113,6 +113,8 @@
                 
                 displayStocks(data, 'stockTableBodyAbove');
                 results.style.display = 'block';
+                countAboveVal = data.length;
+                updateSubtitles();
             })
             .catch(err => {
                 loading.style.display = 'none';
@@ -161,6 +163,8 @@
                 
                 displayStocks(data, 'stockTableBodyBelow');
                 results.style.display = 'block';
+                countBelowVal = data.length;
+                updateSubtitles();
             })
             .catch(err => {
                 loading.style.display = 'none';
