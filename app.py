@@ -2400,15 +2400,25 @@ def build_flag_payload(flag_rows):
         r = returns.get(f.ticker, {})
         if not s:
             continue
+        
+        # Format market cap properly
+        market_cap = s.market_cap
+        if market_cap >= 1000000000:  # >= 1B
+            market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
+            if market_cap_formatted.endswith('.0B'):
+                market_cap_formatted = market_cap_formatted[:-3] + 'B'
+        else:  # < 1B, show in millions
+            market_cap_formatted = f"{market_cap / 1000000:.0f}M"
+        
         out.append({
             'ticker': s.ticker,
             'company_name': s.company_name,
-            'market_cap': s.market_cap,
+            'market_cap': market_cap_formatted,
             'country':   s.country,
             'sector':    s.sector,
             'industry':  s.industry,
             'concise_notes': note_map.get(s.ticker, ''),
-            'flagged_date':  f.updated_at.strftime('%Y-%m-%d'),
+            'flagged_date':  f.updated_at.strftime('%Y-%m-%d') if f.updated_at else 'N/A',
             **r
         })
     return jsonify(out)
