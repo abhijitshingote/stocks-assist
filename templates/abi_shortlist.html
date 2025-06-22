@@ -61,12 +61,7 @@
         <!-- Page title and description are handled by base template -->
     </div>
     <div>
-        <button class="btn btn-outline-secondary btn-sm" onclick="refreshShortlist()">
-            <i class="bi bi-arrow-clockwise"></i> Refresh
-        </button>
-        <button class="btn btn-danger btn-sm ms-2" onclick="clearAllShortlist()" id="clearAllBtn" style="display: none;">
-            Clear All
-        </button>
+        <!-- Buttons removed as requested -->
     </div>
 </div>
 
@@ -348,7 +343,6 @@
         document.getElementById('shortlistTableContainer').style.display = 'block';
         document.getElementById('errorMessage').style.display = 'none';
         document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('clearAllBtn').style.display = 'inline-block';
         
         renderShortlistTable(stocks);
     }
@@ -389,8 +383,15 @@
             return;
         }
         
-        fetch(`/api/shortlist/${ticker}`, {
-            method: 'DELETE'
+        // Use flags API to set shortlisted flag to false
+        fetch('/api/flags/batch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                changes: [{ ticker: ticker, flag: 'shortlisted', value: false }]
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -399,7 +400,7 @@
                 return;
             }
             
-            alert(data.message);
+            alert(`${ticker} removed from shortlist successfully!`);
             loadShortlist(); // Reload the list
         })
         .catch(error => {
@@ -407,59 +408,6 @@
         });
     }
 
-    function clearAllShortlist() {
-        if (!confirm('Are you sure you want to clear your entire shortlist? This action cannot be undone.')) {
-            return;
-        }
-        
-        // Get all tickers currently in the shortlist
-        const rows = document.querySelectorAll('#shortlistTableBody tr');
-        const tickers = Array.from(rows).map(row => {
-            const tickerLink = row.querySelector('.ticker-link');
-            return tickerLink ? tickerLink.textContent.trim() : null;
-        }).filter(ticker => ticker);
-        
-        if (tickers.length === 0) {
-            alert('No stocks to remove from shortlist');
-            return;
-        }
-        
-        // Remove each ticker individually (sequentially to avoid session conflicts)
-        let removedCount = 0;
-        let errors = [];
-        
-        async function removeTickersSequentially() {
-            for (const ticker of tickers) {
-                try {
-                    const response = await fetch(`/api/shortlist/${ticker}`, {
-                        method: 'DELETE'
-                    });
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        errors.push(`${ticker}: ${data.error}`);
-                    } else {
-                        removedCount++;
-                    }
-                } catch (error) {
-                    errors.push(`${ticker}: ${error.message}`);
-                }
-            }
-            
-            // Show results
-            if (errors.length > 0) {
-                alert(`Cleared ${removedCount} stocks. Errors: ${errors.join(', ')}`);
-            } else {
-                alert(`Successfully cleared all ${removedCount} stocks from shortlist`);
-            }
-            loadShortlist(); // Reload the list
-        }
-        
-        removeTickersSequentially();
-    }
-
-    function refreshShortlist() {
-        loadShortlist();
-    }
+    // Removed clearAllShortlist and refreshShortlist functions as requested
 </script>
 {% endblock %}

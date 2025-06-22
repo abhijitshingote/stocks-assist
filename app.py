@@ -2413,5 +2413,63 @@ def build_flag_payload(flag_rows):
         })
     return jsonify(out)
 
+# Concise Notes API endpoints
+@app.route('/api/concise-notes/<ticker>')
+def get_concise_note(ticker):
+    """Get concise note for a specific ticker"""
+    try:
+        ticker = ticker.upper()
+        
+        note = session.query(ConciseNote).filter(ConciseNote.ticker == ticker).first()
+        
+        return jsonify({
+            'ticker': ticker,
+            'note': note.note if note else '',
+            'updated_at': note.updated_at.strftime('%Y-%m-%d %H:%M:%S') if note and note.updated_at else None
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting concise note for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/concise-notes/<ticker>', methods=['PUT'])
+def update_concise_note(ticker):
+    """Update concise note for a specific ticker"""
+    try:
+        ticker = ticker.upper()
+        data = request.get_json()
+        
+        if not data or 'note' not in data:
+            return jsonify({'error': 'Note text is required'}), 400
+        
+        note_text = data['note'].strip()
+        
+        # Verify ticker exists
+        stock = session.query(Stock).filter(Stock.ticker == ticker).first()
+        if not stock:
+            return jsonify({'error': 'Ticker not found'}), 404
+        
+        # Get or create concise note
+        concise_note = session.query(ConciseNote).filter(ConciseNote.ticker == ticker).first()
+        if not concise_note:
+            concise_note = ConciseNote(ticker=ticker)
+            session.add(concise_note)
+        
+        concise_note.note = note_text
+        concise_note.updated_at = get_eastern_datetime()
+        
+        session.commit()
+        export_user_lists()  # persist changes
+        
+        return jsonify({
+            'ticker': ticker,
+            'note': concise_note.note,
+            'updated_at': concise_note.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+        })
+        
+    except Exception as e:
+        logger.error(f"Error updating concise note for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000) 

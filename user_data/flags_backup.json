@@ -1,0 +1,772 @@
+[
+  {
+    "ticker": "CRCL",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.093996"
+  },
+  {
+    "ticker": "GOGO",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.096822"
+  },
+  {
+    "ticker": "RYDE",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.099715"
+  },
+  {
+    "ticker": "ORCL",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.103389"
+  },
+  {
+    "ticker": "COIN",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.107019"
+  },
+  {
+    "ticker": "SATS",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.109641"
+  },
+  {
+    "ticker": "USAR",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.112962"
+  },
+  {
+    "ticker": "RH",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.115810"
+  },
+  {
+    "ticker": "KWM",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.118133"
+  },
+  {
+    "ticker": "UMAC",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.120386"
+  },
+  {
+    "ticker": "SRM",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.124230"
+  },
+  {
+    "ticker": "TSSI",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.127683"
+  },
+  {
+    "ticker": "MP",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.130734"
+  },
+  {
+    "ticker": "SMLR",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.138658"
+  },
+  {
+    "ticker": "ZETA",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.142075"
+  },
+  {
+    "ticker": "AEVA",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.145558"
+  },
+  {
+    "ticker": "RGC",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.148512"
+  },
+  {
+    "ticker": "PTHL",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.151574"
+  },
+  {
+    "ticker": "URGN",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.154760"
+  },
+  {
+    "ticker": "SSII",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.158724"
+  },
+  {
+    "ticker": "INVZW",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.162062"
+  },
+  {
+    "ticker": "VENU",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.164978"
+  },
+  {
+    "ticker": "SRRK",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.168346"
+  },
+  {
+    "ticker": "MMYT",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.170991"
+  },
+  {
+    "ticker": "KFY",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.173411"
+  },
+  {
+    "ticker": "GRAL",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.177275"
+  },
+  {
+    "ticker": "TIXT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.180322"
+  },
+  {
+    "ticker": "CTLP",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.183390"
+  },
+  {
+    "ticker": "CVAC",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.186626"
+  },
+  {
+    "ticker": "NTLA",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.189730"
+  },
+  {
+    "ticker": "BASE",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.193328"
+  },
+  {
+    "ticker": "GMS",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.199036"
+  },
+  {
+    "ticker": "RGLS",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-06-21T19:58:55.202139"
+  },
+  {
+    "ticker": "LZMH",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.205800"
+  },
+  {
+    "ticker": "HUYA",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.212443"
+  },
+  {
+    "ticker": "NWGL",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.215471"
+  },
+  {
+    "ticker": "KWE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.218714"
+  },
+  {
+    "ticker": "PTLE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.222557"
+  },
+  {
+    "ticker": "APVO",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.225948"
+  },
+  {
+    "ticker": "MRIN",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.229088"
+  },
+  {
+    "ticker": "LSE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.232657"
+  },
+  {
+    "ticker": "RELI",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.234770"
+  },
+  {
+    "ticker": "BDRX",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.236613"
+  },
+  {
+    "ticker": "DOMH",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.238267"
+  },
+  {
+    "ticker": "PRE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.240171"
+  },
+  {
+    "ticker": "PHGE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.242015"
+  },
+  {
+    "ticker": "MNDR",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.243739"
+  },
+  {
+    "ticker": "FLYE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.245566"
+  },
+  {
+    "ticker": "ZDAI",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.249039"
+  },
+  {
+    "ticker": "STSS",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.251948"
+  },
+  {
+    "ticker": "MAIA",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.253898"
+  },
+  {
+    "ticker": "BLNE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.256517"
+  },
+  {
+    "ticker": "AQB",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.258851"
+  },
+  {
+    "ticker": "MRVL",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.262057"
+  },
+  {
+    "ticker": "ROKU",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.263705"
+  },
+  {
+    "ticker": "CELH",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.266418"
+  },
+  {
+    "ticker": "AAOI",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.270392"
+  },
+  {
+    "ticker": "OSCR",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.273897"
+  },
+  {
+    "ticker": "QUBT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.276481"
+  },
+  {
+    "ticker": "RUN",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.278058"
+  },
+  {
+    "ticker": "PCT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.279444"
+  },
+  {
+    "ticker": "TMC",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.281267"
+  },
+  {
+    "ticker": "SBET",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.284435"
+  },
+  {
+    "ticker": "BLMN",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.286762"
+  },
+  {
+    "ticker": "AIRO",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.289559"
+  },
+  {
+    "ticker": "QSG",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.291472"
+  },
+  {
+    "ticker": "FLNC",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.293372"
+  },
+  {
+    "ticker": "SAGE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.294723"
+  },
+  {
+    "ticker": "VERV",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.296386"
+  },
+  {
+    "ticker": "APPS",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.297896"
+  },
+  {
+    "ticker": "FTRE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.299356"
+  },
+  {
+    "ticker": "AMPX",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.302187"
+  },
+  {
+    "ticker": "GPRE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.304907"
+  },
+  {
+    "ticker": "GALT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.306630"
+  },
+  {
+    "ticker": "GNW",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.308178"
+  },
+  {
+    "ticker": "UAA",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.309518"
+  },
+  {
+    "ticker": "LIMN",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.310914"
+  },
+  {
+    "ticker": "UA",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.312278"
+  },
+  {
+    "ticker": "SGMT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.313654"
+  },
+  {
+    "ticker": "GRRR",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.315062"
+  },
+  {
+    "ticker": "RKLB",
+    "is_reviewed": false,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.317044"
+  },
+  {
+    "ticker": "NEON",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T19:58:55.320077"
+  },
+  {
+    "ticker": "GXO",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:16:41.403345"
+  },
+  {
+    "ticker": "PHH",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:17:58.194720"
+  },
+  {
+    "ticker": "BKSY",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:19:44.910687"
+  },
+  {
+    "ticker": "ARQQ",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:20:56.070862"
+  },
+  {
+    "ticker": "LMND",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:22:13.246416"
+  },
+  {
+    "ticker": "CRWV",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:24:37.443972"
+  },
+  {
+    "ticker": "BLDR",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:26:51.757667"
+  },
+  {
+    "ticker": "ASTS",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:36:35.433921"
+  },
+  {
+    "ticker": "SYM",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:37:46.395954"
+  },
+  {
+    "ticker": "HNGE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:39:50.003785"
+  },
+  {
+    "ticker": "LEU",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:40:49.733619"
+  },
+  {
+    "ticker": "RDDT",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:42:01.697501"
+  },
+  {
+    "ticker": "CRK",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:42:20.803878"
+  },
+  {
+    "ticker": "QXO",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-21T20:43:13.572446"
+  },
+  {
+    "ticker": "DAR",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:25:31.037139"
+  },
+  {
+    "ticker": "TDUP",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:26:08.540130"
+  },
+  {
+    "ticker": "PARR",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:26:55.668677"
+  },
+  {
+    "ticker": "OST",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:27:40.614632"
+  },
+  {
+    "ticker": "LFMD",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:28:59.422151"
+  },
+  {
+    "ticker": "INOD",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:31:06.817433"
+  },
+  {
+    "ticker": "PSIX",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:33:25.029701"
+  },
+  {
+    "ticker": "NNE",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:34:49.615742"
+  },
+  {
+    "ticker": "NN",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:34:55.240625"
+  },
+  {
+    "ticker": "HIMS",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:35:35.424469"
+  },
+  {
+    "ticker": "NXTT",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:37:57.396699"
+  },
+  {
+    "ticker": "NNNN",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:39:16.303181"
+  },
+  {
+    "ticker": "GRRRW",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:39:54.546479"
+  },
+  {
+    "ticker": "SLSN",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-06-22T13:41:07.551544"
+  }
+]

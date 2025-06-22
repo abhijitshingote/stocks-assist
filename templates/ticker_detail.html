@@ -219,15 +219,30 @@
                                     <td style="padding: 0.1rem 0.2rem;" id="shortRatio">--</td>
                                     <td class="bg-light text-muted fw-semibold" style="padding: 0.1rem 0.2rem;">Short Interest</td>
                                     <td style="padding: 0.1rem 0.2rem;" id="shortInterest">--</td>
-                                    <td class="bg-light text-muted fw-semibold" style="padding: 0.1rem 0.2rem;">Actions</td>
+                                    <td class="bg-light text-muted fw-semibold" style="padding: 0.1rem 0.2rem;">Flags</td>
                                     <td style="padding: 0.1rem 0.2rem;">
-                                        <div class="d-flex gap-1">
-                                            <button type="button" class="btn btn-success btn-sm flex-fill" id="shortlistBtn" onclick="toggleShortlist()" style="padding: 0.15rem 0.25rem; font-size: 0.7rem;">
-                                                <span id="shortlistIcon">+</span> <span id="shortlistText">ShortList</span>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm flex-fill" id="blacklistBtn" onclick="toggleBlacklist()" style="padding: 0.15rem 0.25rem; font-size: 0.7rem;">
-                                                <span id="blacklistIcon">⚫</span> <span id="blacklistText">BlackList</span>
-                                            </button>
+                                        <div class="d-flex flex-column gap-1">
+                                            <div class="d-flex gap-2 align-items-center" style="font-size: 0.75rem;">
+                                                <label class="form-check-label d-flex align-items-center gap-1 mb-0">
+                                                    <input type="checkbox" class="form-check-input" id="reviewedCheck" style="margin: 0;">
+                                                    <span>Reviewed</span>
+                                                </label>
+                                                <label class="form-check-label d-flex align-items-center gap-1 mb-0">
+                                                    <input type="checkbox" class="form-check-input" id="shortlistCheck" style="margin: 0;">
+                                                    <span>Shortlist</span>
+                                                </label>
+                                                <label class="form-check-label d-flex align-items-center gap-1 mb-0">
+                                                    <input type="checkbox" class="form-check-input" id="blacklistCheck" style="margin: 0;">
+                                                    <span>Blacklist</span>
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-primary btn-sm" onclick="saveFlags()" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;">
+                                                    Save Flags
+                                                </button>
+                                            </div>
+                                            <div id="flagsError" class="text-danger" style="display: none; font-size: 0.7rem;"></div>
+                                            <div id="flagsSuccess" class="text-success" style="display: none; font-size: 0.7rem;"></div>
                                         </div>
                                     </td>
                                 </tr>
@@ -237,6 +252,26 @@
                             <a href="https://seekingalpha.com/symbol/{{ ticker }}/analysis" target="_blank" class="btn btn-outline-secondary btn-sm">
                                 View analysis on Seeking Alpha ↗
                             </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Concise Notes Section -->
+        <div class="row mb-2">
+            <div class="col-12">
+                <div class="card border-0">
+                    <div class="card-body p-1">
+                        <h6 class="card-title mb-1 fs-6">Concise Notes</h6>
+                        <div class="mb-2">
+                            <textarea class="form-control form-control-sm fs-6" id="conciseNoteText" rows="3" placeholder="Add your concise notes about this stock..."></textarea>
+                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                <button type="button" class="btn btn-success btn-sm fs-6" onclick="saveConciseNote()">Save Notes</button>
+                                <small class="text-muted" id="noteLastUpdated"></small>
+                            </div>
+                            <div id="noteError" class="text-danger mt-1 fs-6" style="display: none;"></div>
+                            <div id="noteSuccess" class="text-success mt-1 fs-6" style="display: none;"></div>
                         </div>
                     </div>
                 </div>
@@ -1042,196 +1077,149 @@
             });
         }
 
-        // Shortlist functionality
-        function checkShortlistStatus() {
-            fetch(`/api/shortlist/${ticker}/check`)
+        // Flags functionality
+        function loadFlags() {
+            fetch(`/api/flags/${ticker}`)
                 .then(response => response.json())
                 .then(data => {
-                    const btn = document.getElementById('shortlistBtn');
-                    const icon = document.getElementById('shortlistIcon');
-                    const text = document.getElementById('shortlistText');
-                    
-                    if (data.in_shortlist) {
-                        btn.className = 'btn btn-success btn-sm w-100';
-                        icon.textContent = '✓';
-                        text.textContent = 'In ShortList';
-                    } else {
-                        btn.className = 'btn btn-outline-success btn-sm w-100';
-                        icon.textContent = '+';
-                        text.textContent = 'Add to ShortList';
+                    if (data.error) {
+                        console.error('Error loading flags:', data.error);
+                        return;
                     }
+                    
+                    // Set checkbox states
+                    document.getElementById('reviewedCheck').checked = data.is_reviewed || false;
+                    document.getElementById('shortlistCheck').checked = data.is_shortlisted || false;
+                    document.getElementById('blacklistCheck').checked = data.is_blacklisted || false;
                 })
                 .catch(error => {
-                    console.error('Error checking shortlist status:', error);
+                    console.error('Error loading flags:', error);
                 });
         }
         
-        function toggleShortlist() {
-            const btn = document.getElementById('shortlistBtn');
-            const icon = document.getElementById('shortlistIcon');
-            const text = document.getElementById('shortlistText');
+        function saveFlags() {
+            const reviewedCheck = document.getElementById('reviewedCheck').checked;
+            const shortlistCheck = document.getElementById('shortlistCheck').checked;  
+            const blacklistCheck = document.getElementById('blacklistCheck').checked;
+            const errorDiv = document.getElementById('flagsError');
+            const successDiv = document.getElementById('flagsSuccess');
             
-            // Check current status
-            const isInShortlist = btn.className.includes('btn-success');
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
             
-            if (isInShortlist) {
-                // Remove from shortlist
-                fetch(`/api/shortlist/${ticker}`, {
-                    method: 'DELETE'
+            // Prepare batch changes
+            const changes = [];
+            
+            // Add changes for each flag
+            changes.push({ ticker: ticker, flag: 'reviewed', value: reviewedCheck });
+            changes.push({ ticker: ticker, flag: 'shortlisted', value: shortlistCheck });
+            changes.push({ ticker: ticker, flag: 'blacklisted', value: blacklistCheck });
+            
+            fetch('/api/flags/batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    changes: changes
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert('Error removing from shortlist: ' + data.error);
-                        return;
-                    }
-                    
-                    btn.className = 'btn btn-outline-success btn-sm w-100';
-                    icon.textContent = '+';
-                    text.textContent = 'Add to ShortList';
-                    
-                    // Show success message briefly
-                    const originalText = text.textContent;
-                    text.textContent = 'Removed!';
-                    setTimeout(() => {
-                        text.textContent = originalText;
-                    }, 1500);
-                })
-                .catch(error => {
-                    alert('Error removing from shortlist: ' + error.message);
-                });
-            } else {
-                // Add to shortlist
-                const notes = prompt('Optional notes for this stock (leave blank if none):') || '';
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    errorDiv.textContent = data.error;
+                    errorDiv.style.display = 'block';
+                    return;
+                }
                 
-                fetch('/api/shortlist', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        tickers: [ticker],
-                        notes: notes
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert('Error adding to shortlist: ' + data.error);
-                        return;
-                    }
-                    
-                    btn.className = 'btn btn-success btn-sm w-100';
-                    icon.textContent = '✓';
-                    text.textContent = 'In ShortList';
-                    
-                    // Show success message briefly
-                    const originalText = text.textContent;
-                    text.textContent = 'Added!';
-                    setTimeout(() => {
-                        text.textContent = originalText;
-                    }, 1500);
-                })
-                .catch(error => {
-                    alert('Error adding to shortlist: ' + error.message);
-                });
-            }
+                // Show success message
+                successDiv.textContent = `Flags saved successfully! (${data.success_count} changes)`;
+                successDiv.style.display = 'block';
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    successDiv.style.display = 'none';
+                }, 3000);
+                
+                // Log any errors if present
+                if (data.errors && data.errors.length > 0) {
+                    console.warn('Some flag updates had errors:', data.errors);
+                }
+            })
+            .catch(error => {
+                errorDiv.textContent = 'Error saving flags: ' + error.message;
+                errorDiv.style.display = 'block';
+            });
         }
 
-        // Blacklist functionality
-        function checkBlacklistStatus() {
-            fetch(`/api/blacklist/${ticker}/check`)
+        // Concise Notes functionality
+        function loadConciseNote() {
+            fetch(`/api/concise-notes/${ticker}`)
                 .then(response => response.json())
                 .then(data => {
-                    const btn = document.getElementById('blacklistBtn');
-                    const icon = document.getElementById('blacklistIcon');
-                    const text = document.getElementById('blacklistText');
+                    if (data.error) {
+                        console.error('Error loading concise note:', data.error);
+                        return;
+                    }
                     
-                    if (data.is_blacklisted) {
-                        btn.className = 'btn btn-danger btn-sm w-100';
-                        icon.textContent = '⚫';
-                        text.textContent = 'In BlackList';
+                    document.getElementById('conciseNoteText').value = data.note || '';
+                    
+                    if (data.updated_at) {
+                        document.getElementById('noteLastUpdated').textContent = `Last updated: ${new Date(data.updated_at).toLocaleString()}`;
                     } else {
-                        btn.className = 'btn btn-outline-danger btn-sm w-100';
-                        icon.textContent = '⚫';
-                        text.textContent = 'Add to BlackList';
+                        document.getElementById('noteLastUpdated').textContent = '';
                     }
                 })
                 .catch(error => {
-                    console.error('Error checking blacklist status:', error);
+                    console.error('Error loading concise note:', error);
                 });
         }
         
-        function toggleBlacklist() {
-            const btn = document.getElementById('blacklistBtn');
-            const icon = document.getElementById('blacklistIcon');
-            const text = document.getElementById('blacklistText');
+        function saveConciseNote() {
+            const noteText = document.getElementById('conciseNoteText').value.trim();
+            const errorDiv = document.getElementById('noteError');
+            const successDiv = document.getElementById('noteSuccess');
             
-            // Check current status
-            const isInBlacklist = btn.className.includes('btn-danger') && !btn.className.includes('btn-outline-danger');
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
             
-            if (isInBlacklist) {
-                // Remove from blacklist
-                fetch(`/api/blacklist/${ticker}`, {
-                    method: 'DELETE'
+            fetch(`/api/concise-notes/${ticker}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    note: noteText
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert('Error removing from blacklist: ' + data.error);
-                        return;
-                    }
-                    
-                    btn.className = 'btn btn-outline-danger btn-sm w-100';
-                    icon.textContent = '⚫';
-                    text.textContent = 'Add to BlackList';
-                    
-                    // Show success message briefly
-                    const originalText = text.textContent;
-                    text.textContent = 'Removed!';
-                    setTimeout(() => {
-                        text.textContent = originalText;
-                    }, 1500);
-                })
-                .catch(error => {
-                    alert('Error removing from blacklist: ' + error.message);
-                });
-            } else {
-                // Add to blacklist
-                const notes = prompt('Optional notes for why this stock is blacklisted (leave blank if none):') || '';
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    errorDiv.textContent = data.error;
+                    errorDiv.style.display = 'block';
+                    return;
+                }
                 
-                fetch('/api/blacklist', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        tickers: [ticker],
-                        notes: notes
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert('Error adding to blacklist: ' + data.error);
-                        return;
-                    }
-                    
-                    btn.className = 'btn btn-danger btn-sm w-100';
-                    icon.textContent = '⚫';
-                    text.textContent = 'In BlackList';
-                    
-                    // Show success message briefly
-                    const originalText = text.textContent;
-                    text.textContent = 'Added!';
-                    setTimeout(() => {
-                        text.textContent = originalText;
-                    }, 1500);
-                })
-                .catch(error => {
-                    alert('Error adding to blacklist: ' + error.message);
-                });
-            }
+                // Show success message
+                successDiv.textContent = 'Notes saved successfully!';
+                successDiv.style.display = 'block';
+                
+                // Update last updated timestamp
+                if (data.updated_at) {
+                    document.getElementById('noteLastUpdated').textContent = `Last updated: ${new Date(data.updated_at).toLocaleString()}`;
+                }
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    successDiv.style.display = 'none';
+                }, 3000);
+            })
+            .catch(error => {
+                errorDiv.textContent = 'Error saving notes: ' + error.message;
+                errorDiv.style.display = 'block';
+            });
         }
 
         // Load data when page loads
@@ -1239,8 +1227,8 @@
             loadTickerDetails();
             loadCharts();
             loadComments();
-            checkShortlistStatus();
-            checkBlacklistStatus();
+            loadConciseNote();
+            loadFlags();
             fetchNews();
         });
 

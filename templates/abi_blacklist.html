@@ -73,12 +73,7 @@
         <!-- Page title and description are handled by base template -->
     </div>
     <div>
-        <button class="btn btn-outline-secondary btn-sm" onclick="refreshBlacklist()">
-            <i class="bi bi-arrow-clockwise"></i> Refresh
-        </button>
-        <button class="btn btn-warning btn-sm ms-2" onclick="clearAllBlacklist()" id="clearAllBtn" style="display: none;">
-            Clear All
-        </button>
+        <!-- Buttons removed as requested -->
     </div>
 </div>
 
@@ -361,7 +356,6 @@
         document.getElementById('blacklistTableContainer').style.display = 'block';
         document.getElementById('errorMessage').style.display = 'none';
         document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('clearAllBtn').style.display = 'inline-block';
         
         renderBlacklistTable(stocks);
     }
@@ -402,8 +396,15 @@
             return;
         }
         
-        fetch(`/api/blacklist/${ticker}`, {
-            method: 'DELETE'
+        // Use flags API to set blacklisted flag to false
+        fetch('/api/flags/batch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                changes: [{ ticker: ticker, flag: 'blacklisted', value: false }]
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -412,7 +413,7 @@
                 return;
             }
             
-            alert(data.message);
+            alert(`${ticker} removed from blacklist successfully!`);
             loadBlacklist(); // Reload the list
         })
         .catch(error => {
@@ -420,59 +421,6 @@
         });
     }
 
-    function clearAllBlacklist() {
-        if (!confirm('Are you sure you want to clear your entire blacklist? This action cannot be undone.')) {
-            return;
-        }
-        
-        // Get all tickers currently in the blacklist
-        const rows = document.querySelectorAll('#blacklistTableBody tr');
-        const tickers = Array.from(rows).map(row => {
-            const tickerLink = row.querySelector('.ticker-link');
-            return tickerLink ? tickerLink.textContent.trim() : null;
-        }).filter(ticker => ticker);
-        
-        if (tickers.length === 0) {
-            alert('No stocks to remove from blacklist');
-            return;
-        }
-        
-        // Remove each ticker individually (sequentially to avoid session conflicts)
-        let removedCount = 0;
-        let errors = [];
-        
-        async function removeTickersSequentially() {
-            for (const ticker of tickers) {
-                try {
-                    const response = await fetch(`/api/blacklist/${ticker}`, {
-                        method: 'DELETE'
-                    });
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        errors.push(`${ticker}: ${data.error}`);
-                    } else {
-                        removedCount++;
-                    }
-                } catch (error) {
-                    errors.push(`${ticker}: ${error.message}`);
-                }
-            }
-            
-            // Show results
-            if (errors.length > 0) {
-                alert(`Cleared ${removedCount} stocks. Errors: ${errors.join(', ')}`);
-            } else {
-                alert(`Successfully cleared all ${removedCount} stocks from blacklist`);
-            }
-            loadBlacklist(); // Reload the list
-        }
-        
-        removeTickersSequentially();
-    }
-
-    function refreshBlacklist() {
-        loadBlacklist();
-    }
+    // Removed clearAllBlacklist and refreshBlacklist functions as requested
 </script>
 {% endblock %} 

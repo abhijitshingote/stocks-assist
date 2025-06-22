@@ -71,8 +71,8 @@ build/
 *.tmp
 
 # Large data files
-*.csv
-*.json
-*.xlsx 
+
+
+ 
 
 postgres_data
