@@ -256,6 +256,15 @@
             let aVal = a[column];
             let bVal = b[column];
             
+            // Special handling: for Current Price column, sort by percentage change instead of price
+            if (column === 'current_price_with_change') {
+                const pctA = a.price_change_pct || '';
+                const pctB = b.price_change_pct || '';
+                // Parse percentage strings like "+1.2%" or "-0.5%"
+                aVal = parseFloat(pctA.replace('%', '')) || 0;
+                bVal = parseFloat(pctB.replace('%', '')) || 0;
+            }
+            
             // Handle null/undefined values
             if (aVal == null && bVal == null) return 0;
             if (aVal == null) return 1;
@@ -316,7 +325,7 @@
                 <td><span class="badge bg-info">${stock.country || 'N/A'}</span></td>
                 <td>${stock.sector || 'N/A'}</td>
                 <td>${stock.industry || 'N/A'}</td>
-                <td>${stock.current_price_with_change || formatPriceWithChange(stock)}</td>
+                <td>${formatPriceWithChange(stock)}</td>
                 <td>${stock.week_52_range || stock.range_52w || 'N/A'}</td>
                 <td>${stock.volume || 'N/A'}</td>
                 <td><span class="badge bg-warning text-dark">${stock.volume_change || stock.vol_change || 'N/A'}</span></td>
