@@ -214,6 +214,7 @@
                     { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
                     { key: 'week_52_range', label: '52Wk Range', type: 'text' },
                     { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
                     { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
                     { key: 'return_5d', label: '5D Return', type: 'return_badge' },
                     { key: 'return_20d', label: '20D Return', type: 'return_badge' },
@@ -239,6 +240,7 @@
                     { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
                     { key: 'week_52_range', label: '52Wk Range', type: 'text' },
                     { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
                     { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
                     { key: 'priority_score', label: 'Priority', type: 'text' },
                     { key: 'return_periods', label: 'Contrib', type: 'badge_blue' },
@@ -264,6 +266,7 @@
                     { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
                     { key: 'week_52_range', label: '52Wk Range', type: 'text' },
                     { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
                     { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
                     { key: 'return_5d', label: '5D Return', type: 'return_badge' },
                     { key: 'return_20d', label: '20D Return', type: 'return_badge' },
@@ -289,6 +292,7 @@
                     { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
                     { key: 'week_52_range', label: '52Wk Range', type: 'text' },
                     { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
                     { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
                     { key: 'return_5d', label: '5D Return', type: 'return_badge' },
                     { key: 'return_20d', label: '20D Return', type: 'return_badge' },
@@ -488,8 +492,8 @@
             if (typeof value !== 'string') {
                 return Number(value) || 0;
             }
-            // Remove commas and whitespace, then work in upper-case for easy suffix check
-            const clean = value.replace(/[,]/g, '').trim().toUpperCase();
+            // Remove commas, dollar signs, and whitespace, then work in upper-case for easy suffix check
+            const clean = value.replace(/[,$]/g, '').trim().toUpperCase();
             const num = parseFloat(clean) || 0;
             if (clean.endsWith('T')) {
                 return num * 1e12;  // trillions -> dollars
@@ -523,6 +527,18 @@
                 
                 // Custom handling for Market Cap column that may contain M/B suffixes
                 if (column === 'market_cap') {
+                    aVal = parseMarketCap(aVal);
+                    bVal = parseMarketCap(bVal);
+                }
+                
+                // Custom handling for Volume column that may contain K/M suffixes
+                if (column === 'volume') {
+                    aVal = parseMarketCap(aVal);
+                    bVal = parseMarketCap(bVal);
+                }
+                
+                // Custom handling for Dollar Volume column that may contain K/M/B suffixes
+                if (column === 'dollar_volume') {
                     aVal = parseMarketCap(aVal);
                     bVal = parseMarketCap(bVal);
                 }

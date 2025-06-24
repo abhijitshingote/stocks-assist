@@ -567,6 +567,29 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
             else:
                 volume_formatted = str(current_volume)
             
+            # Calculate and format dollar volume
+            dollar_volume = 0
+            dollar_volume_formatted = "N/A"
+            if stock.current_price and isinstance(stock.current_price, (int, float)) and current_volume:
+                dollar_volume = stock.current_price * current_volume
+                if dollar_volume >= 1000000000:  # >= 1B
+                    dollar_volume_formatted = f"${dollar_volume / 1000000000:.1f}B"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0B'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'B'
+                elif dollar_volume >= 1000000:  # >= 1M
+                    dollar_volume_formatted = f"${dollar_volume / 1000000:.1f}M"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0M'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'M'
+                elif dollar_volume >= 1000:  # >= 1K
+                    dollar_volume_formatted = f"${dollar_volume / 1000:.1f}K"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0K'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'K'
+                else:
+                    dollar_volume_formatted = f"${dollar_volume:.0f}"
+            
             # Calculate volume change multiplier
             volume_change = "N/A"
             if stock.avg_volume and stock.avg_volume > 0 and current_volume:
@@ -625,6 +648,7 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
                 'week_52_range': week_52_range,
                 'volume': volume_formatted,
                 'volume_change': volume_change,
+                'dollar_volume': dollar_volume_formatted,
                 'return_5d': return_5d,
                 'return_20d': return_20d,
                 'return_60d': return_60d,
@@ -987,6 +1011,29 @@ def get_gapper_stocks(above_200m=True):
             else:
                 volume_formatted = str(current_volume)
             
+            # Calculate and format dollar volume
+            dollar_volume = 0
+            dollar_volume_formatted = "N/A"
+            if stock.current_price and isinstance(stock.current_price, (int, float)) and current_volume:
+                dollar_volume = stock.current_price * current_volume
+                if dollar_volume >= 1000000000:  # >= 1B
+                    dollar_volume_formatted = f"${dollar_volume / 1000000000:.1f}B"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0B'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'B'
+                elif dollar_volume >= 1000000:  # >= 1M
+                    dollar_volume_formatted = f"${dollar_volume / 1000000:.1f}M"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0M'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'M'
+                elif dollar_volume >= 1000:  # >= 1K
+                    dollar_volume_formatted = f"${dollar_volume / 1000:.1f}K"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0K'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'K'
+                else:
+                    dollar_volume_formatted = f"${dollar_volume:.0f}"
+            
             # Calculate volume change multiplier
             volume_change = "N/A"
             if stock.avg_volume_50d and stock.avg_volume_50d > 0 and current_volume:
@@ -1032,6 +1079,7 @@ def get_gapper_stocks(above_200m=True):
                 'current_price_with_change': f"${stock.current_price:.2f} {price_change_dollar_str} ({stock.price_change_pct:.1f}%)" if price_change_dollar_str else f"${stock.current_price:.2f}",
                 'week_52_range': week_52_range,
                 'volume': volume_formatted,
+                'dollar_volume': dollar_volume_formatted,
                 'volume_change': volume_change,
                 'return_5d': return_5d,
                 'return_20d': return_20d,
@@ -1263,6 +1311,29 @@ def get_volume_spike_stocks(above_200m=True):
             else:
                 volume_formatted = str(current_volume)
             
+            # Calculate and format dollar volume
+            dollar_volume = 0
+            dollar_volume_formatted = "N/A"
+            if stock.current_price and isinstance(stock.current_price, (int, float)) and current_volume:
+                dollar_volume = stock.current_price * current_volume
+                if dollar_volume >= 1000000000:  # >= 1B
+                    dollar_volume_formatted = f"${dollar_volume / 1000000000:.1f}B"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0B'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'B'
+                elif dollar_volume >= 1000000:  # >= 1M
+                    dollar_volume_formatted = f"${dollar_volume / 1000000:.1f}M"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0M'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'M'
+                elif dollar_volume >= 1000:  # >= 1K
+                    dollar_volume_formatted = f"${dollar_volume / 1000:.1f}K"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0K'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'K'
+                else:
+                    dollar_volume_formatted = f"${dollar_volume:.0f}"
+            
             # Calculate volume change multiplier
             volume_change = "N/A"
             if stock.avg_volume_5d and stock.avg_volume_5d > 0 and current_volume:
@@ -1304,6 +1375,7 @@ def get_volume_spike_stocks(above_200m=True):
                 'current_price_with_change': f"${stock.current_price:.2f} ({stock.price_change_pct:.1f}%)",
                 'week_52_range': week_52_range,
                 'volume': volume_formatted,
+                'dollar_volume': dollar_volume_formatted,
                 'volume_change': volume_change,
                 'return_5d': return_5d,
                 'return_20d': return_20d,
@@ -2105,6 +2177,29 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
             else:
                 volume_formatted = str(current_volume)
 
+            # Calculate and format dollar volume
+            dollar_volume = 0
+            dollar_volume_formatted = "N/A"
+            if current_price and isinstance(current_price, (int, float)) and current_volume:
+                dollar_volume = current_price * current_volume
+                if dollar_volume >= 1000000000:  # >= 1B
+                    dollar_volume_formatted = f"${dollar_volume / 1000000000:.1f}B"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0B'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'B'
+                elif dollar_volume >= 1000000:  # >= 1M
+                    dollar_volume_formatted = f"${dollar_volume / 1000000:.1f}M"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0M'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'M'
+                elif dollar_volume >= 1000:  # >= 1K
+                    dollar_volume_formatted = f"${dollar_volume / 1000:.1f}K"
+                    # Remove trailing .0
+                    if dollar_volume_formatted.endswith('.0K'):
+                        dollar_volume_formatted = dollar_volume_formatted[:-3] + 'K'
+                else:
+                    dollar_volume_formatted = f"${dollar_volume:.0f}"
+
             # Calculate volume change multiplier
             volume_change = "N/A"
             if avg_volume and avg_volume > 0 and current_volume:
@@ -2135,6 +2230,7 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
                 'current_price_with_change': f"${current_price:.2f} {price_change_dollar_str} ({price_change_pct})",
                 'range_52w': range_52w,
                 'volume': volume_formatted,
+                'dollar_volume': dollar_volume_formatted,
                 'vol_change': volume_change,
                 'return_1d': f"{return_1d:.1f}%",
                 'return_5d': f"{return_5d:.1f}%",
