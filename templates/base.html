@@ -487,6 +487,14 @@
                 let aVal = a[column];
                 let bVal = b[column];
                 
+                // Special case: sort "Current Price" column by percentage change, not the absolute price
+                if (column === 'current_price_with_change') {
+                    const pctA = a.price_change_pct || '';
+                    const pctB = b.price_change_pct || '';
+                    aVal = parseFloat(pctA.replace('%', '')) || 0;
+                    bVal = parseFloat(pctB.replace('%', '')) || 0;
+                }
+                
                 // Handle null/undefined values
                 if (aVal == null && bVal == null) return 0;
                 if (aVal == null) return 1;
