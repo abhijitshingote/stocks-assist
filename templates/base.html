@@ -482,6 +482,27 @@
             }
         }
         
+        // Helper to convert market cap strings like "12.3B" or "456M" into a pure numeric value (in dollars) for accurate sorting
+        function parseMarketCap(value) {
+            if (value == null) return 0; // treat null/undefined as 0 so they fall to the end
+            if (typeof value !== 'string') {
+                return Number(value) || 0;
+            }
+            // Remove commas and whitespace, then work in upper-case for easy suffix check
+            const clean = value.replace(/[,]/g, '').trim().toUpperCase();
+            const num = parseFloat(clean) || 0;
+            if (clean.endsWith('T')) {
+                return num * 1e12;  // trillions -> dollars
+            }
+            if (clean.endsWith('B')) {
+                return num * 1e9;  // billions -> dollars
+            }
+            if (clean.endsWith('M')) {
+                return num * 1e6;  // millions -> dollars
+            }
+            return num; // assume already absolute
+        }
+        
         function sortStockData(data, column, direction) {
             return [...data].sort((a, b) => {
                 let aVal = a[column];
@@ -499,6 +520,12 @@
                 if (aVal == null && bVal == null) return 0;
                 if (aVal == null) return 1;
                 if (bVal == null) return -1;
+                
+                // Custom handling for Market Cap column that may contain M/B suffixes
+                if (column === 'market_cap') {
+                    aVal = parseMarketCap(aVal);
+                    bVal = parseMarketCap(bVal);
+                }
                 
                 // Handle different data types
                 if (typeof aVal === 'string' && typeof bVal === 'string') {
