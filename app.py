@@ -990,6 +990,10 @@ def get_gapper_stocks(above_200m=True):
         reviewed_ticker_set = get_reviewed_ticker_set()
         shortlisted_ticker_set = get_shortlisted_ticker_set()
         
+        # Get concise notes for all tickers
+        ticker_list = [stock.ticker for stock in gapper_stocks]
+        note_map = {t: n for t, n in session.query(ConciseNote.ticker, ConciseNote.note).filter(ConciseNote.ticker.in_(ticker_list)).all()}
+        
         result = []
         for stock in gapper_stocks:
             # Format market cap
@@ -1088,6 +1092,7 @@ def get_gapper_stocks(above_200m=True):
                 'avg_volume_50d': f"{stock.avg_volume_50d:,.0f}",
                 'max_volume_5d': f"{stock.max_volume_5d:,.0f}",
                 'latest_date': latest_date.strftime('%Y-%m-%d'),
+                'concise_notes': note_map.get(stock.ticker, ''),
                 'is_reviewed': stock.ticker in reviewed_ticker_set,
                 'is_shortlisted': stock.ticker in shortlisted_ticker_set,
                 'is_blacklisted': False
@@ -1290,6 +1295,10 @@ def get_volume_spike_stocks(above_200m=True):
         reviewed_ticker_set    = get_reviewed_ticker_set()
         shortlisted_ticker_set = get_shortlisted_ticker_set()
         
+        # Get concise notes for all tickers
+        ticker_list = [stock.ticker for stock in volume_stocks]
+        note_map = {t: n for t, n in session.query(ConciseNote.ticker, ConciseNote.note).filter(ConciseNote.ticker.in_(ticker_list)).all()}
+        
         result = []
         for stock in volume_stocks:
             # Format market cap
@@ -1387,6 +1396,7 @@ def get_volume_spike_stocks(above_200m=True):
                 'today_date': today.strftime('%Y-%m-%d'),
                 'yesterday_date': yesterday.strftime('%Y-%m-%d'),
                 'latest_date': latest_date.strftime('%Y-%m-%d'),
+                'concise_notes': note_map.get(stock.ticker, ''),
                 'is_reviewed': stock.ticker in reviewed_ticker_set,
                 'is_shortlisted': stock.ticker in shortlisted_ticker_set,
                 'is_blacklisted': False

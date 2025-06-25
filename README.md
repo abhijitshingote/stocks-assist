@@ -27,6 +27,7 @@ Things to do
 -- Need to fix fetch AI comments prompt -investopedia.com--
 -- Should we add volume filter to returns page to screen out noise
 -- fix sortable
+-- Add SPX and NASDAQ performance on every page
 
 
 First run
