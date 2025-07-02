@@ -6,7 +6,7 @@ mkdir -p /var/log
 # Create a proper crontab file for root user (no environment variables in the crontab file)
 cat > /tmp/root-crontab << EOF
 # Run daily_price_update.py every 30 minutes on weekdays from 9:00 AM to 3:59 PM EST
-*/30 9-20 * * 1-5 cd /app && DATABASE_URL=postgresql://postgres:postgres@db:5432/stocks_db POLYGON_API_KEY=${POLYGON_API_KEY} FMP_API_KEY=${FMP_API_KEY} /usr/local/bin/python daily_price_update.py >> /var/log/cron.log 2>&1
+* 9-20 * * 1-5 cd /app && DATABASE_URL=postgresql://postgres:postgres@db:5432/stocks_db POLYGON_API_KEY=${POLYGON_API_KEY} FMP_API_KEY=${FMP_API_KEY} /usr/local/bin/python daily_price_update.py >> /var/log/cron.log 2>&1
 
 # Run build_stock_list_fmp.py at 8:00 PM EST on weekdays
 0 20 * * 1-5 cd /app && DATABASE_URL=postgresql://postgres:postgres@db:5432/stocks_db POLYGON_API_KEY=${POLYGON_API_KEY} FMP_API_KEY=${FMP_API_KEY} /usr/local/bin/python build_stock_list_fmp.py >> /var/log/cron.log 2>&1
