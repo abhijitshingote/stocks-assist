@@ -90,6 +90,10 @@ def abi_shortlist():
 def abi_blacklist():
     return render_template('abi_blacklist.html')
 
+@app.route('/SeaChange')
+def sea_change():
+    return render_template('sea_change.html')
+
 @app.route('/ticker/<ticker>')
 def ticker_detail(ticker):
     """Ticker detail page with company info and candlestick chart"""
@@ -1408,6 +1412,430 @@ def get_volume_spike_stocks(above_200m=True):
         logger.error(f"Error in get_volume_spike_stocks: {str(e)}")
         raise e
 
+def get_sea_change_stocks(above_200m=True):
+    """Helper function to get sea change stocks based on specific criteria over the last 120 days"""
+    try:
+        # Get the latest date for which we have price data
+        latest_date = session.query(func.max(Price.date)).scalar()
+        if not latest_date:
+            return []
+        
+        # Get the last 120 actual trading dates
+        last_120_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(120).all()
+        if len(last_120_trading_dates) < 120:
+            logger.warning(f"Only {len(last_120_trading_dates)} trading dates available for sea change analysis")
+            # Use whatever dates we have
+            earliest_date = last_120_trading_dates[-1][0]
+        else:
+            earliest_date = last_120_trading_dates[-1][0]  # 120th trading day back
+        
+        logger.info(f"Analyzing sea change stocks from {earliest_date} to {latest_date}")
+        
+        # Get all price data for the analysis period with previous day's close
+        price_analysis = session.query(
+            Price.ticker,
+            Price.date,
+            Price.open_price,
+            Price.high_price,
+            Price.low_price,
+            Price.close_price,
+            Price.volume,
+            func.lag(Price.close_price, 1).over(
+                partition_by=Price.ticker,
+                order_by=Price.date
+            ).label('prev_close')
+        ).filter(
+            Price.date >= earliest_date,
+            Price.date <= latest_date
+        ).subquery()
+        
+        # Calculate 20-day average volume using a simpler approach
+        # For each stock-date combination, get the average volume of the previous 20 days
+        # We'll do this by joining the price data with itself
+        
+        # First, let's simplify and just find days that meet the basic criteria
+        # and then check volume condition separately
+        basic_criteria_days = session.query(
+            price_analysis.c.ticker,
+            price_analysis.c.date,
+            price_analysis.c.close_price,
+            price_analysis.c.volume,
+            price_analysis.c.low_price,
+            price_analysis.c.prev_close,
+            (price_analysis.c.close_price * price_analysis.c.volume).label('dollar_volume')
+        ).select_from(price_analysis).filter(
+            # Dollar Volume > $200M
+            (price_analysis.c.close_price * price_analysis.c.volume) > 200000000,
+            # Low > 5% above previous day's close OR close > 15% above previous day's close
+            (
+                (price_analysis.c.low_price > price_analysis.c.prev_close * 1.05) |
+                (price_analysis.c.close_price > price_analysis.c.prev_close * 1.15)
+            ),
+            # Ensure we have previous day data
+            price_analysis.c.prev_close.isnot(None)
+        ).subquery()
+        
+        # Now for each qualifying day, calculate 20-day average volume and check if volume > 3x average
+        sea_change_days = []
+        
+        # Convert subquery to executable query
+        basic_criteria_query = session.query(
+            basic_criteria_days.c.ticker,
+            basic_criteria_days.c.date,
+            basic_criteria_days.c.close_price,
+            basic_criteria_days.c.volume,
+            basic_criteria_days.c.low_price,
+            basic_criteria_days.c.prev_close,
+            basic_criteria_days.c.dollar_volume
+        ).select_from(basic_criteria_days)
+        
+        for day in basic_criteria_query.all():
+            ticker, date, close_price, volume, low_price, prev_close, dollar_volume = day
+            
+            # Calculate 20-day average volume for this specific ticker and date
+            # Get the 20 trading days before this date
+            prior_dates = session.query(Price.date).filter(
+                Price.ticker == ticker,
+                Price.date < date
+            ).order_by(Price.date.desc()).limit(20).all()
+            
+            if len(prior_dates) < 20:
+                continue  # Need at least 20 days of data
+            
+            prior_dates_list = [d[0] for d in prior_dates]
+            
+            # Calculate average volume for these 20 days
+            avg_volume_result = session.query(
+                func.avg(Price.volume).label('avg_volume_20d')
+            ).filter(
+                Price.ticker == ticker,
+                Price.date.in_(prior_dates_list)
+            ).first()
+            
+            if not avg_volume_result or not avg_volume_result.avg_volume_20d:
+                continue
+                
+            avg_volume_20d = avg_volume_result.avg_volume_20d
+            
+            # Check if current volume > 3x 20-day average
+            if volume > avg_volume_20d * 3:
+                sea_change_days.append({
+                    'ticker': ticker,
+                    'date': date,
+                    'close_price': close_price,
+                    'volume': volume,
+                    'prev_close': prev_close,
+                    'dollar_volume': dollar_volume,
+                    'avg_volume_20d': avg_volume_20d
+                })
+        
+        logger.info(f"Found {len(sea_change_days)} sea change events across all stocks")
+        
+        # Group sea change days by ticker
+        ticker_sea_change_data = {}
+        for row in sea_change_days:
+            ticker = row['ticker']
+            if ticker not in ticker_sea_change_data:
+                ticker_sea_change_data[ticker] = {
+                    'dates': [],
+                    'dollar_volumes': [],
+                    'latest_price': row['close_price'],
+                    'latest_volume': row['volume']
+                }
+            
+            # Format dollar volume
+            dollar_vol = row['dollar_volume']
+            if dollar_vol >= 1000000000:  # >= 1B
+                dollar_vol_formatted = f"${dollar_vol / 1000000000:.1f}B"
+                if dollar_vol_formatted.endswith('.0B'):
+                    dollar_vol_formatted = dollar_vol_formatted[:-3] + 'B'
+            else:  # < 1B, show in millions
+                dollar_vol_formatted = f"${dollar_vol / 1000000:.0f}M"
+            
+            ticker_sea_change_data[ticker]['dates'].append(row['date'].strftime('%m/%d'))
+            ticker_sea_change_data[ticker]['dollar_volumes'].append(dollar_vol_formatted)
+        
+        # Get blacklisted tickers
+        blacklisted_ticker_list = get_blacklisted_ticker_list()
+        
+        # Get current price data for all qualifying tickers
+        current_prices = session.query(
+            Price.ticker,
+            Price.close_price.label('current_price'),
+            Price.volume.label('current_volume')
+        ).filter(
+            Price.date == latest_date,
+            Price.ticker.in_(list(ticker_sea_change_data.keys()))
+        ).subquery()
+        
+        # Get previous day price for change calculation
+        prev_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
+        prev_date = prev_trading_dates[1][0] if len(prev_trading_dates) > 1 else latest_date
+        
+        previous_prices = session.query(
+            Price.ticker,
+            Price.close_price.label('prev_price')
+        ).filter(
+            Price.date == prev_date,
+            Price.ticker.in_(list(ticker_sea_change_data.keys()))
+        ).subquery()
+        
+        # Get 52-week high and low for each stock
+        week_52_stats = session.query(
+            Price.ticker,
+            func.max(Price.high_price).label('week_52_high'),
+            func.min(Price.low_price).label('week_52_low')
+        ).filter(
+            Price.date >= latest_date - timedelta(days=240),
+            Price.ticker.in_(list(ticker_sea_change_data.keys()))
+        ).group_by(Price.ticker).subquery()
+        
+        # Get historical prices for multiple return calculations
+        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+        
+        prices_5d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_5d')
+        ).filter(
+            Price.date == trading_dates_5d[-1][0] if len(trading_dates_5d) > 5 else latest_date,
+            Price.ticker.in_(list(ticker_sea_change_data.keys()))
+        ).subquery()
+        
+        prices_20d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_20d')
+        ).filter(
+            Price.date == trading_dates_20d[-1][0] if len(trading_dates_20d) > 20 else latest_date,
+            Price.ticker.in_(list(ticker_sea_change_data.keys()))
+        ).subquery()
+        
+        prices_60d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_60d')
+        ).filter(
+            Price.date == trading_dates_60d[-1][0] if len(trading_dates_60d) > 60 else latest_date,
+            Price.ticker.in_(list(ticker_sea_change_data.keys()))
+        ).subquery()
+        
+        prices_120d = session.query(
+            Price.ticker,
+            Price.close_price.label('price_120d')
+        ).filter(
+            Price.date == trading_dates_120d[-1][0] if len(trading_dates_120d) > 120 else latest_date,
+            Price.ticker.in_(list(ticker_sea_change_data.keys()))
+        ).subquery()
+        
+        # Get average volume for the last 10 trading days
+        last_10_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
+        ten_days_ago = last_10_trading_dates[-1][0] if len(last_10_trading_dates) >= 10 else latest_date
+        
+        avg_volume_10d = session.query(
+            Price.ticker,
+            func.avg(Price.volume).label('avg_volume_10d')
+        ).filter(
+            Price.date >= ten_days_ago,
+            Price.date <= latest_date,
+            Price.ticker.in_(list(ticker_sea_change_data.keys()))
+        ).group_by(Price.ticker).subquery()
+        
+        # Main query to get all stock data
+        query = session.query(
+            Stock.ticker,
+            Stock.company_name,
+            Stock.sector,
+            Stock.industry,
+            Stock.country,
+            Stock.market_cap,
+            current_prices.c.current_price,
+            current_prices.c.current_volume,
+            previous_prices.c.prev_price,
+            avg_volume_10d.c.avg_volume_10d,
+            week_52_stats.c.week_52_high,
+            week_52_stats.c.week_52_low,
+            prices_5d.c.price_5d,
+            prices_20d.c.price_20d,
+            prices_60d.c.price_60d,
+            prices_120d.c.price_120d,
+            ((current_prices.c.current_price - previous_prices.c.prev_price) / 
+             previous_prices.c.prev_price * 100).label('price_change_pct'),
+            (current_prices.c.current_price - previous_prices.c.prev_price).label('price_change')
+        ).join(
+            current_prices,
+            Stock.ticker == current_prices.c.ticker
+        ).outerjoin(
+            previous_prices,
+            Stock.ticker == previous_prices.c.ticker
+        ).outerjoin(
+            avg_volume_10d,
+            Stock.ticker == avg_volume_10d.c.ticker
+        ).outerjoin(
+            week_52_stats,
+            Stock.ticker == week_52_stats.c.ticker
+        ).outerjoin(
+            prices_5d,
+            Stock.ticker == prices_5d.c.ticker
+        ).outerjoin(
+            prices_20d,
+            Stock.ticker == prices_20d.c.ticker
+        ).outerjoin(
+            prices_60d,
+            Stock.ticker == prices_60d.c.ticker
+        ).outerjoin(
+            prices_120d,
+            Stock.ticker == prices_120d.c.ticker
+        ).filter(
+            Stock.ticker.in_(list(ticker_sea_change_data.keys()))
+        )
+        
+        # Exclude blacklisted stocks
+        if blacklisted_ticker_list:
+            query = query.filter(~Stock.ticker.in_(blacklisted_ticker_list))
+        
+        # Apply market cap filter
+        if above_200m:
+            query = query.filter(Stock.market_cap >= 200000000)
+        else:
+            query = query.filter(Stock.market_cap < 200000000)
+            
+        # Order by market cap descending
+        query = query.order_by(desc(Stock.market_cap))
+        
+        sea_change_stocks = query.all()
+        
+        # Get reviewed & shortlisted tickers set for flagging
+        reviewed_ticker_set = get_reviewed_ticker_set()
+        shortlisted_ticker_set = get_shortlisted_ticker_set()
+        
+        # Get concise notes for all tickers
+        ticker_list = [stock.ticker for stock in sea_change_stocks]
+        note_map = {t: n for t, n in session.query(ConciseNote.ticker, ConciseNote.note).filter(ConciseNote.ticker.in_(ticker_list)).all()}
+        
+        result = []
+        for stock in sea_change_stocks:
+            # Get sea change data for this ticker
+            sea_change_info = ticker_sea_change_data.get(stock.ticker, {})
+            
+            # Format sea change dates and dollar volumes
+            sea_change_dates = sea_change_info.get('dates', [])
+            sea_change_dollar_vols = sea_change_info.get('dollar_volumes', [])
+            
+            # Combine dates and dollar volumes for display
+            sea_change_events = []
+            for date, dollar_vol in zip(sea_change_dates, sea_change_dollar_vols):
+                sea_change_events.append(f"{date}: {dollar_vol}")
+            
+            sea_change_display = " | ".join(sea_change_events[:5])  # Limit to first 5 events
+            if len(sea_change_events) > 5:
+                sea_change_display += f" ... (+{len(sea_change_events) - 5} more)"
+            
+            # Format market cap
+            market_cap = stock.market_cap
+            if market_cap >= 1000000000:  # >= 1B
+                market_cap_formatted = f"{market_cap / 1000000000:.1f}B"
+                if market_cap_formatted.endswith('.0B'):
+                    market_cap_formatted = market_cap_formatted[:-3] + 'B'
+            else:  # < 1B, show in millions
+                market_cap_formatted = f"{market_cap / 1000000:.0f}M"
+            
+            # Format volume
+            current_volume = stock.current_volume or 0
+            if current_volume >= 1000000:  # >= 1M
+                volume_formatted = f"{current_volume / 1000000:.1f}M"
+            elif current_volume >= 1000:  # >= 1K
+                volume_formatted = f"{current_volume / 1000:.1f}K"
+            else:
+                volume_formatted = str(current_volume)
+            
+            # Calculate and format current dollar volume
+            current_dollar_volume = 0
+            current_dollar_volume_formatted = "N/A"
+            if stock.current_price and isinstance(stock.current_price, (int, float)) and current_volume:
+                current_dollar_volume = stock.current_price * current_volume
+                if current_dollar_volume >= 1000000000:  # >= 1B
+                    current_dollar_volume_formatted = f"${current_dollar_volume / 1000000000:.1f}B"
+                    if current_dollar_volume_formatted.endswith('.0B'):
+                        current_dollar_volume_formatted = current_dollar_volume_formatted[:-3] + 'B'
+                elif current_dollar_volume >= 1000000:  # >= 1M
+                    current_dollar_volume_formatted = f"${current_dollar_volume / 1000000:.1f}M"
+                    if current_dollar_volume_formatted.endswith('.0M'):
+                        current_dollar_volume_formatted = current_dollar_volume_formatted[:-3] + 'M'
+                elif current_dollar_volume >= 1000:  # >= 1K
+                    current_dollar_volume_formatted = f"${current_dollar_volume / 1000:.1f}K"
+                    if current_dollar_volume_formatted.endswith('.0K'):
+                        current_dollar_volume_formatted = current_dollar_volume_formatted[:-3] + 'K'
+                else:
+                    current_dollar_volume_formatted = f"${current_dollar_volume:.0f}"
+            
+            # Calculate volume change multiplier
+            volume_change = "N/A"
+            if stock.avg_volume_10d and stock.avg_volume_10d > 0 and current_volume:
+                volume_multiplier = current_volume / stock.avg_volume_10d
+                volume_change = f"{volume_multiplier:.1f}x"
+            
+            # Format 52-week range
+            week_52_range = "N/A"
+            if stock.week_52_low and stock.week_52_high:
+                week_52_range = f"${stock.week_52_low:.2f} - ${stock.week_52_high:.2f}"
+            
+            # Calculate multiple return periods
+            return_5d = None
+            if stock.price_5d and stock.current_price:
+                return_5d = f"{((stock.current_price - stock.price_5d) / stock.price_5d * 100):.1f}%"
+            
+            return_20d = None
+            if stock.price_20d and stock.current_price:
+                return_20d = f"{((stock.current_price - stock.price_20d) / stock.price_20d * 100):.1f}%"
+            
+            return_60d = None
+            if stock.price_60d and stock.current_price:
+                return_60d = f"{((stock.current_price - stock.price_60d) / stock.price_60d * 100):.1f}%"
+            
+            return_120d = None
+            if stock.price_120d and stock.current_price:
+                return_120d = f"{((stock.current_price - stock.price_120d) / stock.price_120d * 100):.1f}%"
+            
+            # Format price change
+            price_change_val = stock.price_change
+            price_change_dollar_str = f"${price_change_val:+.2f}" if price_change_val is not None else ""
+            
+            result.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'country': stock.country or 'N/A',
+                'market_cap': market_cap_formatted,
+                'current_price': f"${stock.current_price:.2f}",
+                'price_change_pct': f"{stock.price_change_pct:.1f}%",
+                'price_change': price_change_dollar_str,
+                'current_price_with_change': f"${stock.current_price:.2f} {price_change_dollar_str} ({stock.price_change_pct:.1f}%)" if price_change_dollar_str else f"${stock.current_price:.2f}",
+                'week_52_range': week_52_range,
+                'volume': volume_formatted,
+                'dollar_volume': current_dollar_volume_formatted,
+                'volume_change': volume_change,
+                'return_5d': return_5d,
+                'return_20d': return_20d,
+                'return_60d': return_60d,
+                'return_120d': return_120d,
+                'sea_change_events': sea_change_display,
+                'sea_change_count': len(sea_change_events),
+                'latest_date': latest_date.strftime('%Y-%m-%d'),
+                'analysis_period': f"{earliest_date.strftime('%Y-%m-%d')} to {latest_date.strftime('%Y-%m-%d')}",
+                'concise_notes': note_map.get(stock.ticker, ''),
+                'is_reviewed': stock.ticker in reviewed_ticker_set,
+                'is_shortlisted': stock.ticker in shortlisted_ticker_set,
+                'is_blacklisted': False
+            })
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error in get_sea_change_stocks: {str(e)}")
+        raise e
+
 # Volume Screen APIs
 @app.route('/api/Volume-Above200M')
 def get_volume_above_200m():
@@ -1425,6 +1853,25 @@ def get_volume_below_200m():
         return jsonify(result)
     except Exception as e:
         logger.error(f"Error in get_volume_below_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# SeaChange Screen APIs
+@app.route('/api/SeaChange-Above200M')
+def get_sea_change_above_200m():
+    try:
+        result = get_sea_change_stocks(above_200m=True)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_sea_change_above_200m: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/SeaChange-Below200M')
+def get_sea_change_below_200m():
+    try:
+        result = get_sea_change_stocks(above_200m=False)
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error in get_sea_change_below_200m: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 def get_all_returns_data(above_200m=True, weights=None):

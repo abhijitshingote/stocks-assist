@@ -64,6 +64,141 @@
             line-height: 1.5;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
+
+        /* Enhanced Comment Styling */
+        .user-comment {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: none;
+            border-left: 4px solid #198754;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        .user-comment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .ai-comment {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            border: none;
+            border-left: 4px solid #0d6efd;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        .ai-comment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .comment-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #198754, #20c997);
+        }
+
+        .ai-avatar {
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+        }
+
+        .comment-content {
+            line-height: 1.6;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+
+        .ai-comment .comment-content {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .comment-date {
+            font-size: 0.75rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .comment-actions {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .user-comment:hover .comment-actions,
+        .ai-comment:hover .comment-actions {
+            opacity: 1;
+        }
+
+        .comment-actions .btn {
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            margin-left: 4px;
+        }
+
+        .ai-source-badge {
+            background: linear-gradient(135deg, #6610f2, #e83e8c);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .no-comments-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #dee2e6;
+        }
+
+        /* AI content specific styling */
+        .ai-comment .comment-content h1,
+        .ai-comment .comment-content h2,
+        .ai-comment .comment-content h3,
+        .ai-comment .comment-content h4 {
+            color: #0d6efd;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        .ai-comment .comment-content strong {
+            color: #0d6efd;
+        }
     </style>
     <style>
         /* Remove table outer border while keeping inner borders */
@@ -801,34 +936,55 @@
             const aiComments = comments.filter(c => c.comment_type === 'ai' && c.status === 'approved');
             
             // Display user comments
-
+            if (userComments.length === 0) {
+                commentsList.innerHTML = '<div class="no-comments-message">No user comments yet. Be the first to share your thoughts!</div>';
+            } else {
                 commentsList.innerHTML = userComments.map(comment => `
-                    <div class="card mb-1" id="comment-${comment.id}">
-                        <div class="card-body p-2">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <p class="card-text mb-0 small flex-grow-1">${escapeHtml(comment.comment_text)} <span class="text-muted">— ${comment.formatted_date}</span></p>
-                                <div class="btn-group btn-group-sm ms-2">
-                                    <button class="btn btn-outline-primary btn-sm" onclick="editComment(${comment.id})">Edit</button>
-                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">Delete</button>
+                    <div class="user-comment" id="comment-${comment.id}">
+                        <div class="card-body p-3">
+                            <div class="comment-header">
+                                <div class="comment-avatar user-avatar">👤</div>
+                                <span>You</span>
+                            </div>
+                            <div class="comment-content">${escapeHtml(comment.comment_text)}</div>
+                            <div class="comment-meta">
+                                <div class="comment-date">${comment.formatted_date}</div>
+                                <div class="comment-actions">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="editComment(${comment.id})">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `).join('');
-            
+            }
             
             // Display AI comments
             if (aiComments.length === 0) {
-                aiCommentsList.innerHTML = '<div class="text-muted text-center py-1">No AI analysis available yet.</div>';
+                aiCommentsList.innerHTML = '<div class="no-comments-message">No AI analysis available yet. Click "Fetch AI Analysis" to generate insights!</div>';
             } else {
                 aiCommentsList.innerHTML = aiComments.map(comment => `
-                    <div class="card mb-1" id="comment-${comment.id}">
-                        <div class="card-body p-2">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="card-text mb-0 small flex-grow-1" style="white-space: pre-wrap;">${renderAICommentContent(comment.comment_text)} <span class="text-muted">— ${comment.formatted_date}</span></div>
-                                <div class="btn-group btn-group-sm ms-2">
-                                    <button class="btn btn-outline-primary btn-sm" onclick="editComment(${comment.id})">Edit</button>
-                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">Delete</button>
+                    <div class="ai-comment" id="comment-${comment.id}">
+                        <div class="card-body p-3">
+                            <div class="comment-header">
+                                <div class="comment-avatar ai-avatar">🤖</div>
+                                <span>AI Assistant</span>
+                                <span class="ai-source-badge">${comment.ai_source || 'AI'}</span>
+                            </div>
+                            <div class="comment-content">${renderAICommentContent(comment.comment_text)}</div>
+                            <div class="comment-meta">
+                                <div class="comment-date">${comment.formatted_date}</div>
+                                <div class="comment-actions">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="editComment(${comment.id})">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -847,15 +1003,23 @@
         
         function editComment(commentId) {
             const commentElement = document.getElementById(`comment-${commentId}`);
-            const currentText = commentElement.querySelector('.card-text').textContent.split('—')[0].trim();
+            const currentText = commentElement.querySelector('.comment-content').textContent.trim();
             
-            // Create edit form
+            // Create edit form with prettier styling
             const editForm = `
-                <div class="card-body p-2">
-                    <textarea class="form-control form-control-sm mb-2">${currentText}</textarea>
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-success btn-sm" onclick="saveEdit(${commentId})">Save</button>
-                        <button class="btn btn-secondary btn-sm" onclick="cancelEdit(${commentId})">Cancel</button>
+                <div class="card-body p-3">
+                    <div class="comment-header">
+                        <div class="comment-avatar user-avatar">✏️</div>
+                        <span>Editing...</span>
+                    </div>
+                    <textarea class="form-control mb-3" rows="4" style="font-size: 0.9rem;">${currentText}</textarea>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success btn-sm" onclick="saveEdit(${commentId})">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="cancelEdit(${commentId})">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
                     </div>
                 </div>
             `;

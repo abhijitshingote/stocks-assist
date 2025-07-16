@@ -11,6 +11,13 @@ env/
 .env/
 ENV/
 
+# UV (Universal Virtualenv)
+.python-version
+uv.lock
+.uv-cache/
+.uv/
+uv-requirements.txt
+
 # Environment Variables (since it will be on a public repo)
 .env
 *.env

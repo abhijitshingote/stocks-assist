@@ -1,0 +1,104 @@
+{% extends "screener_base.html" %}
+
+{% block title %}SeaChange Screener - Stock Screener{% endblock %}
+
+{% block page_title %}SeaChange Screener{% endblock %}
+{% block page_description %}<span id="pageDescription">Loading...</span>{% endblock %}
+
+{% set active_page = 'sea_change' %}
+
+{% block content %}
+{{ super() }}
+
+<!-- Ticker Summary Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list"></i> Screened Tickers Summary
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Above $200M Market Cap</h6>
+                        <div class="border rounded p-3 bg-light" style="font-family: monospace; font-size: 0.9em; max-height: 200px; overflow-y: auto;">
+                            <span id="tickersAbove200M" class="text-muted">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-success">Below $200M Market Cap</h6>
+                        <div class="border rounded p-3 bg-light" style="font-family: monospace; font-size: 0.9em; max-height: 200px; overflow-y: auto;">
+                            <span id="tickersBelow200M" class="text-muted">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+    // Configure this page
+    pageConfig = {
+        type: 'sea_change',
+        apiAbove: '/api/SeaChange-Above200M',
+        apiBelow: '/api/SeaChange-Below200M'
+    };
+    
+    // Store ticker data for display
+    let tickersAbove = [];
+    let tickersBelow = [];
+    
+    // Override the original loadStocksAbove to capture tickers
+    const originalLoadStocksAbove = loadStocksAbove;
+    loadStocksAbove = function() {
+        originalLoadStocksAbove();
+        
+        // Also fetch data to extract tickers
+        fetch(pageConfig.apiAbove)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.error) {
+                    tickersAbove = data.map(stock => stock.ticker).sort();
+                    updateTickerDisplay();
+                }
+            })
+            .catch(err => console.error('Error fetching tickers above:', err));
+    };
+    
+    // Override the original loadStocksBelow to capture tickers
+    const originalLoadStocksBelow = loadStocksBelow;
+    loadStocksBelow = function() {
+        originalLoadStocksBelow();
+        
+        // Also fetch data to extract tickers
+        fetch(pageConfig.apiBelow)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.error) {
+                    tickersBelow = data.map(stock => stock.ticker).sort();
+                    updateTickerDisplay();
+                }
+            })
+            .catch(err => console.error('Error fetching tickers below:', err));
+    };
+    
+    function updateTickerDisplay() {
+        const aboveElement = document.getElementById('tickersAbove200M');
+        const belowElement = document.getElementById('tickersBelow200M');
+        
+        if (aboveElement) {
+            aboveElement.textContent = tickersAbove.length > 0 ? tickersAbove.join(', ') : 'No tickers found';
+        }
+        
+        if (belowElement) {
+            belowElement.textContent = tickersBelow.length > 0 ? tickersBelow.join(', ') : 'No tickers found';
+        }
+    }
+</script>
+{% endblock %} 

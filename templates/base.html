@@ -98,6 +98,9 @@
                         <a class="nav-link {% if active_page == 'volume' %}active{% endif %}" href="/Volume">Volume</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'sea_change' %}active{% endif %}" href="/SeaChange">SeaChange</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {% if active_page == 'all_returns' %}active{% endif %}" href="/AllReturns">All Returns</a>
                     </li>
                                             <li class="nav-item">
@@ -300,6 +303,31 @@
                     { key: 'return_120d', label: '120D Return', type: 'return_badge' },
                     // { key: 'priority_score', label: 'Priority', type: 'text' },
                     // { key: 'return_periods', label: 'Contrib', type: 'badge_blue' }
+                ]
+            },
+            sea_change: {
+                columns: [
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'ticker', label: 'Ticker', type: 'ticker' },
+                    { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
+                    { key: 'sector', label: 'Sector', type: 'text' },
+                    { key: 'industry', label: 'Industry', type: 'text' },
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'sea_change_events', label: 'SeaChange Events', type: 'text' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' }
                 ]
             }
         };

@@ -630,13 +630,6 @@
     "updated_at": "2025-06-21T20:36:35.433921"
   },
   {
-    "ticker": "SYM",
-    "is_reviewed": true,
-    "is_shortlisted": true,
-    "is_blacklisted": false,
-    "updated_at": "2025-06-21T20:37:46.395954"
-  },
-  {
     "ticker": "HNGE",
     "is_reviewed": true,
     "is_shortlisted": false,
@@ -712,13 +705,6 @@
     "is_shortlisted": false,
     "is_blacklisted": false,
     "updated_at": "2025-06-22T13:31:06.817433"
-  },
-  {
-    "ticker": "PSIX",
-    "is_reviewed": true,
-    "is_shortlisted": false,
-    "is_blacklisted": false,
-    "updated_at": "2025-06-22T13:33:25.029701"
   },
   {
     "ticker": "NNE",
@@ -908,5 +894,460 @@
     "is_shortlisted": true,
     "is_blacklisted": false,
     "updated_at": "2025-06-26T15:56:01.489238"
+  },
+  {
+    "ticker": "OLO",
+    "is_reviewed": false,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-07-05T14:13:03.479976"
+  },
+  {
+    "ticker": "SEDG",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T12:04:57.092859"
+  },
+  {
+    "ticker": "TRIP",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T12:29:34.625704"
+  },
+  {
+    "ticker": "BBAI",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T12:29:34.634340"
+  },
+  {
+    "ticker": "DFDV",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T12:37:20.940501"
+  },
+  {
+    "ticker": "SYM",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T15:20:51.827519"
+  },
+  {
+    "ticker": "DQ",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T15:46:08.105124"
+  },
+  {
+    "ticker": "KULR",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T15:50:16.950205"
+  },
+  {
+    "ticker": "IREN",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T15:53:21.728536"
+  },
+  {
+    "ticker": "PSIX",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T15:57:24.758941"
+  },
+  {
+    "ticker": "VNET",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-06T23:37:20.156957"
+  },
+  {
+    "ticker": "WNS",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-07-07T10:59:57.331963"
+  },
+  {
+    "ticker": "HPE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.263411"
+  },
+  {
+    "ticker": "DG",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.290826"
+  },
+  {
+    "ticker": "BNTX",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.294279"
+  },
+  {
+    "ticker": "NUE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.297186"
+  },
+  {
+    "ticker": "FERG",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.300737"
+  },
+  {
+    "ticker": "NKE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.302758"
+  },
+  {
+    "ticker": "PROK",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.304390"
+  },
+  {
+    "ticker": "SAFX",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.305980"
+  },
+  {
+    "ticker": "BTBT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.307990"
+  },
+  {
+    "ticker": "RCAT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.309670"
+  },
+  {
+    "ticker": "COGT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.311526"
+  },
+  {
+    "ticker": "VRNT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.313266"
+  },
+  {
+    "ticker": "KLG",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.315754"
+  },
+  {
+    "ticker": "LEVI",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.317869"
+  },
+  {
+    "ticker": "VRNA",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.319580"
+  },
+  {
+    "ticker": "DAL",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.321708"
+  },
+  {
+    "ticker": "DDOG",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T14:57:06.323802"
+  },
+  {
+    "ticker": "GWRE",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T15:56:40.808669"
+  },
+  {
+    "ticker": "MDB",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T15:57:50.785003"
+  },
+  {
+    "ticker": "CRDO",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:02:56.269939"
+  },
+  {
+    "ticker": "CASY",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:03:31.238652"
+  },
+  {
+    "ticker": "SAIL",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:06:28.046843"
+  },
+  {
+    "ticker": "NBIS",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:06:28.049477"
+  },
+  {
+    "ticker": "AVAV",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:06:28.052613"
+  },
+  {
+    "ticker": "EDU",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:06:28.055329"
+  },
+  {
+    "ticker": "BPMC",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:06:28.057718"
+  },
+  {
+    "ticker": "AQN",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:08:31.118120"
+  },
+  {
+    "ticker": "KYMR",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:08:31.123099"
+  },
+  {
+    "ticker": "BUR",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:08:31.126395"
+  },
+  {
+    "ticker": "QS",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:08:31.129396"
+  },
+  {
+    "ticker": "BB",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:08:31.130960"
+  },
+  {
+    "ticker": "PL",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:11:32.139346"
+  },
+  {
+    "ticker": "VERA",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:11:32.143777"
+  },
+  {
+    "ticker": "STR",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:11:32.146744"
+  },
+  {
+    "ticker": "PHAT",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:11:32.148938"
+  },
+  {
+    "ticker": "NTES",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:31:52.522910"
+  },
+  {
+    "ticker": "CDTX",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.134088"
+  },
+  {
+    "ticker": "DIS",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.139175"
+  },
+  {
+    "ticker": "INTU",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.145538"
+  },
+  {
+    "ticker": "SNOW",
+    "is_reviewed": true,
+    "is_shortlisted": true,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.152134"
+  },
+  {
+    "ticker": "VEEV",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.155997"
+  },
+  {
+    "ticker": "TTD",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.159662"
+  },
+  {
+    "ticker": "BBD",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.167355"
+  },
+  {
+    "ticker": "NRG",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.170977"
+  },
+  {
+    "ticker": "TOST",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.174481"
+  },
+  {
+    "ticker": "DUOL",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.178494"
+  },
+  {
+    "ticker": "PODD",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.181664"
+  },
+  {
+    "ticker": "ULTA",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.185177"
+  },
+  {
+    "ticker": "AS",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.188104"
+  },
+  {
+    "ticker": "FSLR",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.191074"
+  },
+  {
+    "ticker": "XPEV",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.194677"
+  },
+  {
+    "ticker": "ONON",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": false,
+    "updated_at": "2025-07-13T16:39:23.197188"
+  },
+  {
+    "ticker": "VBTX",
+    "is_reviewed": true,
+    "is_shortlisted": false,
+    "is_blacklisted": true,
+    "updated_at": "2025-07-14T16:12:40.184985"
   }
 ]

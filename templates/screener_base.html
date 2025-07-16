@@ -107,6 +107,8 @@
         let text = '';
         if (pageConfig.type === 'returns' && thresholdStr) {
             text += `Threshold applied - ${thresholdStr}. `;
+        } else if (pageConfig.type === 'sea_change') {
+            text += `SeaChange Criteria: Dollar Volume >$200M, Volume >3x 20D avg, Low >5% above prev close OR Close >15% above prev close (Last 120 days). `;
         }
         text += `Count Above 200M: ${aboveStr}  Below 200M: ${belowStr}`;
 
