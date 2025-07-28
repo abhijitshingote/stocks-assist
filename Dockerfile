@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     cron \
     tzdata \
+    wget \
+    gnupg \
     && rm -rf /var/lib/apt/lists/*
 
 # Set timezone to Eastern Time
@@ -17,6 +19,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Install Playwright browsers and system dependencies
+RUN playwright install chromium
+RUN playwright install-deps
 
 # Copy application code
 COPY . .

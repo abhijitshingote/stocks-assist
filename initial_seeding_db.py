@@ -1,6 +1,8 @@
 from polygon import RESTClient
 from datetime import datetime, timedelta, date
 import os
+import sys
+import argparse
 import csv
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, tuple_
@@ -401,7 +403,7 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
             session.rollback()
             logger.error(f"Error restoring earnings backup: {e}")
 
-def seed_database():
+def seed_database(limit=None):
     """Main seeding function"""
     start_time = time.time()
     print("Starting new CSV-based database seeding process...")
@@ -423,7 +425,13 @@ def seed_database():
         # Step 2: Get all tickers for price data
         all_stocks = session.query(Stock.ticker).all()
         symbols = [stock[0] for stock in all_stocks]
-        logger.info(f"Found {len(symbols)} stocks for price data")
+        
+        # Apply limit if specified
+        if limit:
+            symbols = symbols[:limit]
+            logger.info(f"Limited to {len(symbols)} stocks for price data (--limit {limit})")
+        else:
+            logger.info(f"Found {len(symbols)} stocks for price data")
         
         if not symbols:
             logger.warning("No actively trading US stocks found")
@@ -471,4 +479,8 @@ def seed_database():
         session.close()
 
 if __name__ == '__main__':
-    seed_database() 
+    parser = argparse.ArgumentParser(description='Seed database with stock and price data')
+    parser.add_argument('--limit', type=int, help='Limit number of stocks to process for price data')
+    args = parser.parse_args()
+    
+    seed_database(limit=args.limit) 
