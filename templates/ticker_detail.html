@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Use v4.x where addCandlestickSeries API is available -->
+    <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
     <style>
         /* Chart container and headings */
         .chart-container {
@@ -45,6 +47,36 @@
             fill: rgba(220, 53, 69, 0.3);
             stroke: rgba(220, 53, 69, 0.5);
         }
+
+        /* Earnings legend */
+        .earnings-legend {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .earnings-legend h6 {
+            margin: 0 0 8px 0;
+            color: #198754;
+            font-weight: 600;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+        .legend-marker {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .legend-marker.confirmed { background-color: #000000; }
+        .legend-marker.estimated { background-color: #000000; }
 
         /* Axis + grid */
         .axis line, .axis path { stroke: #6c757d; }
@@ -256,6 +288,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/Volume">Volume Screen</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/SeaChange">SeaChange</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/AllReturns">All Returns</a>
@@ -508,21 +543,29 @@
         <!-- Bottom Section - Charts (Full Width) -->
         <div class="row">
             <div class="col-12">
-                <!-- 3-Month Chart Section -->
-                <div class="chart-container">
-                    <div class="chart-title" id="chart3MonthTitle">{{ ticker }} - 3 Month Price Chart</div>
-                    <div id="loadingChart3Month" class="loading-spinner">
-                        <div class="spinner-border text-success" role="status">
-                            <span class="visually-hidden">Loading 3-month chart...</span>
-                        </div>
-                    </div>
-                    <div id="errorMessage3Month" class="error-message" style="display: none;"></div>
-                    <div id="chart3Month"></div>
-                </div>
-
                 <!-- Yearly Chart Section -->
                 <div class="chart-container">
-                    <div class="chart-title" id="chartYearlyTitle">{{ ticker }} - Yearly Price Chart</div>
+                    <div class="chart-title" id="chartYearlyTitle">{{ ticker }} - Yearly Chart</div>
+                    <div style="text-align: center; font-size: 0.8rem; color: #6c757d; margin-bottom: 10px;">
+                        Hold Ctrl+scroll to zoom • Hold Ctrl+drag to pan • Double-click to reset zoom
+                    </div>
+                    
+                    <!-- Earnings Legend -->
+                    <div class="earnings-legend" id="earningsLegend" style="display: none;">
+                        <h6>Earnings Announcements</h6>
+                        <div class="legend-item">
+                            <div class="legend-marker confirmed"></div>
+                            <span>Confirmed earnings dates</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-marker estimated"></div>
+                            <span>Estimated earnings dates</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #6c757d; margin-top: 4px;">
+                            Hover over markers for details • Hold Ctrl+scroll to zoom • Hold Ctrl+drag to pan
+                        </div>
+                    </div>
+                    
                     <div id="loadingChartYearly" class="loading-spinner">
                         <div class="spinner-border text-success" role="status">
                             <span class="visually-hidden">Loading yearly chart...</span>
@@ -657,216 +700,382 @@
         
         // Load and create both charts
         function loadCharts() {
-            fetch(`/api/stock/${ticker}/prices`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        throw new Error(data.error);
+            // Fetch both price data and earnings data in parallel
+            Promise.all([
+                fetch(`/api/stock/${ticker}/prices`).then(response => response.json()),
+                fetchEarningsData(ticker)
+            ])
+                .then(([priceData, earningsData]) => {
+                    if (priceData.error) {
+                        throw new Error(priceData.error);
+                    }
+                    
+                    // Store earnings data globally so chart creation can access it
+                    window.earningsData = earningsData;
+                    
+                    // Show/hide earnings legend based on data availability
+                    const earningsLegend = document.getElementById('earningsLegend');
+                    if (earningsData && earningsData.length > 0) {
+                        earningsLegend.style.display = 'block';
+                    } else {
+                        earningsLegend.style.display = 'none';
                     }
                     
                     // Hide loading indicators
-                    document.getElementById('loadingChart3Month').style.display = 'none';
                     document.getElementById('loadingChartYearly').style.display = 'none';
                     
-                    // Create both charts
-                    create3MonthChart(data);
-                    createYearlyChart(data);
+                    // Create charts
+                    createYearlyChart(priceData);
                 })
                 .catch(error => {
                     console.error('Error loading chart data:', error);
-                    document.getElementById('loadingChart3Month').style.display = 'none';
                     document.getElementById('loadingChartYearly').style.display = 'none';
-                    document.getElementById('errorMessage3Month').style.display = 'block';
-                    document.getElementById('errorMessage3Month').textContent = `Error loading charts: ${error.message}`;
                     document.getElementById('errorMessageYearly').style.display = 'block';
                     document.getElementById('errorMessageYearly').textContent = `Error loading charts: ${error.message}`;
                 });
         }
         
         function create3MonthChart(priceData) {
-            // Filter data for last 3 months
-            const now = new Date();
-            const threeMonthsAgo = new Date(now.getTime() - (90 * 24 * 60 * 60 * 1000));
-            const filteredData = priceData.filter(d => new Date(d.date) >= threeMonthsAgo);
-            
-            createChart(filteredData, 'chart3Month', 'chart3MonthTitle', '3-Month');
+            // 3-month chart removed - only using yearly chart
+            return;
         }
 
         function createYearlyChart(priceData) {
-            createChart(priceData, 'chartYearly', 'chartYearlyTitle', 'Yearly');
+            createPolishedChart(priceData, 'chartYearly', 'chartYearlyTitle', 'Yearly');
         }
 
-        function createChart(priceData, containerId, titleId, chartType) {
-            // Configuration
-            const margin = {top: 20, right: 90, bottom: 100, left: 20};
-            const volumeHeight = 80;
-            const width = Math.min(1140, window.innerWidth - 100) - margin.left - margin.right;
-            const height = 500; // Price section is exactly 500px tall
+        // New polished chart using Lightweight Charts
+        function createPolishedChart(priceData, containerId, titleId, chartType) {
+            const container = document.getElementById(containerId);
+            // Clear any previous chart content
+            container.innerHTML = '';
 
-            // Process the data
-            const data = priceData.map(d => {
-                // Parse date as local date to avoid timezone shift
-                // Split the date string and create date in local timezone
-                const dateParts = d.date.split('-');
-                const localDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
-                
-                return {
-                    date: localDate,
+            // Build data, ensure required fields are present & numeric, convert time to UTC timestamp (seconds)
+            const processed = priceData
+                .filter(d => d.date && d.open_price != null && d.high_price != null && d.low_price != null && d.close_price != null)
+                .map(d => ({
+                    time: Math.floor(new Date(d.date + 'T00:00:00Z').getTime() / 1000), // UTCTimestamp expected by library
                     open: +d.open_price,
                     high: +d.high_price,
                     low: +d.low_price,
                     close: +d.close_price,
-                    volume: +d.volume
-                };
-            }).filter(d => 
-                !isNaN(d.date.getTime()) && 
-                !isNaN(d.open) && 
-                !isNaN(d.high) && 
-                !isNaN(d.low) && 
-                !isNaN(d.close) &&
-                !isNaN(d.volume)
-            ).sort((a, b) => a.date - b.date);
+                    volume: d.volume != null ? +d.volume : undefined
+                }))
+                .filter(d => [d.open, d.high, d.low, d.close].every(v => !isNaN(v)))
+                .sort((a,b) => a.time - b.time);
 
-            if (data.length === 0) {
-                document.getElementById(containerId.replace('chart', 'errorMessage')).style.display = 'block';
-                document.getElementById(containerId.replace('chart', 'errorMessage')).textContent = 'No valid price data available';
+            if (processed.length === 0) {
+                const err = document.getElementById(containerId.replace('chart', 'errorMessage'));
+                if (err) {
+                    err.style.display = 'block';
+                    err.textContent = 'No valid price data available';
+                }
                 return;
             }
 
-            // Create SVG
-            const svg = d3.select(`#${containerId}`)
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + volumeHeight + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
+            // Create chart
+            const chart = LightweightCharts.createChart(container, {
+                width: container.clientWidth || 800,
+                height: 1000,
+                layout: {
+                    background: { color: '#ffffff' },
+                    textColor: '#6c757d',
+                    fontSize: 12
+                },
+                grid: {
+                    vertLines: { color: '#edeff1' },
+                    horLines: { color: '#edeff1' }
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal
+                },
+                rightPriceScale: { borderColor: '#dee2e6' },
+                timeScale: { 
+                    borderColor: '#dee2e6',
+                    // Disable default wheel scrolling but allow other interactions
+                    handleScroll: {
+                        mouseWheel: false,
+                        pressedMouseMove: true,  // Allow Ctrl+drag panning
+                        horzTouchDrag: true,
+                        vertTouchDrag: false
+                    },
+                    handleScale: {
+                        mouseWheel: false,  // We'll handle this manually
+                        pinch: true,
+                        axisPressedMouseMove: {
+                            time: true,  // Allow axis dragging
+                            price: false
+                        },
+                        axisDoubleClickReset: true
+                    }
+                },
+                // Global chart interaction settings
+                handleScroll: {
+                    mouseWheel: false,  // We'll handle this manually
+                    pressedMouseMove: true,  // Allow drag panning with qualifier
+                    horzTouchDrag: true,
+                    vertTouchDrag: false
+                },
+                handleScale: {
+                    mouseWheel: false,  // We'll handle this manually
+                    pinch: true,
+                    axisPressedMouseMove: {
+                        time: false,  // Prevent accidental scaling
+                        price: false
+                    }
+                }
+            });
 
-            // Create tooltip
-            const tooltip = d3.select("body").append("div")
-                .attr("class", "tooltip")
-                .style("opacity", 0);
+            // Add custom event handling for Ctrl+wheel zooming and Ctrl+drag panning
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartRange = null;
 
-            // Format functions
-            const formatPrice = d3.format("$,.2f");
-            const formatVolume = d3.format(",.0f");
-            const formatDate = d3.timeFormat("%B %d, %Y");
-            const formatAxisDate = d3.timeFormat("%Y/%m/%d");
-
-            // Set scales
-            const x = d3.scaleBand()
-                .domain(data.map(d => d.date))
-                .range([0, width - 10])
-                .padding(0.2);
-
-            const y = d3.scaleLinear()
-                .domain([
-                    d3.min(data, d => d.low) * 0.995,
-                    d3.max(data, d => d.high) * 1.005
-                ])
-                .range([height, 0]);
-
-            const yVolume = d3.scaleLinear()
-                .domain([0, d3.max(data, d => d.volume)])
-                .range([height + volumeHeight, height]);
-
-            // Add axes
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", `translate(0,${height + volumeHeight})`)
-                .call(d3.axisBottom(x)
-                    .tickFormat(d => formatAxisDate(d))
-                    .tickValues(x.domain().filter((d, i) => i % Math.max(1, Math.floor(data.length / 10)) === 0)));
-
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", `translate(${width},0)`)
-                .call(d3.axisRight(y)
-                    .tickFormat(d => formatPrice(d)));
-
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", `translate(${width},0)`)
-                .call(d3.axisRight(yVolume)
-                    .tickFormat(d => formatVolume(d/1000000) + "M")
-                    .ticks(3));
-
-            // Add grid
-            svg.append("g")
-                .attr("class", "grid")
-                .attr("transform", `translate(${width},0)`)
-                .call(d3.axisRight(y)
-                    .tickSize(-width)
-                    .tickFormat(""));
-
-            // Add volume bars
-            svg.selectAll("rect.volume-bar")
-                .data(data)
-                .enter()
-                .append("rect")
-                .attr("class", d => `volume-bar ${d.close >= d.open ? "up" : "down"}`)
-                .attr("x", d => x(d.date))
-                .attr("y", d => yVolume(d.volume))
-                .attr("width", x.bandwidth())
-                .attr("height", d => yVolume(0) - yVolume(d.volume));
-
-            // Add candlesticks
-            svg.selectAll("g.candlestick")
-                .data(data)
-                .enter()
-                .append("g")
-                .attr("class", "candlestick")
-                .each(function(d) {
-                    const g = d3.select(this);
-                    const isUp = d.close >= d.open;
-                    const className = isUp ? "up" : "down";
+            // Handle Ctrl+scroll for zooming
+            container.addEventListener('wheel', (event) => {
+                if (event.ctrlKey) {
+                    // Allow chart zooming when Ctrl is held
+                    event.preventDefault();
                     
-                    // Draw the wick
-                    g.append("line")
-                        .attr("class", `wick ${className}`)
-                        .attr("x1", x(d.date) + x.bandwidth()/2)
-                        .attr("x2", x(d.date) + x.bandwidth()/2)
-                        .attr("y1", y(d.high))
-                        .attr("y2", y(d.low));
-                    
-                    // Draw the body
-                    g.append("rect")
-                        .attr("class", `candlestick ${className}`)
-                        .attr("x", x(d.date))
-                        .attr("y", y(Math.max(d.open, d.close)))
-                        .attr("width", x.bandwidth())
-                        .attr("height", Math.max(1, Math.abs(y(d.open) - y(d.close))));
-                })
-                .on("mouseover", function(event, d) {
-                    const pctChange = ((d.close - d.open) / d.open * 100).toFixed(2);
-                    const sign = pctChange >= 0 ? "+" : "";
-                    
-                    tooltip.transition()
-                        .duration(100)
-                        .style("opacity", .9);
-                    tooltip.html(
-                        `<strong>${formatDate(d.date)}</strong><br/>` +
-                        `Open: ${formatPrice(d.open)}<br/>` +
-                        `High: ${formatPrice(d.high)}<br/>` +
-                        `Low: ${formatPrice(d.low)}<br/>` +
-                        `Close: ${formatPrice(d.close)}<br/>` +
-                        `Volume: ${formatVolume(d.volume)}<br/>` +
-                        `Change: ${sign}${pctChange}%`
-                    )
-                    .style("left", (event.pageX + 10) + "px")
-                    .style("top", (event.pageY - 28) + "px");
-                })
-                .on("mouseout", function(d) {
-                    tooltip.transition()
-                        .duration(200)
-                        .style("opacity", 0);
-                });
+                    // Manually handle the zoom
+                    const timeScale = chart.timeScale();
+                    const logicalRange = timeScale.getVisibleLogicalRange();
+                    if (logicalRange) {
+                        const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9;
+                        const center = (logicalRange.from + logicalRange.to) / 2;
+                        const newRange = (logicalRange.to - logicalRange.from) * zoomFactor;
+                        
+                        timeScale.setVisibleLogicalRange({
+                            from: center - newRange / 2,
+                            to: center + newRange / 2
+                        });
+                    }
+                }
+                // If Ctrl is not held, let the event bubble up for normal page scrolling
+            }, { passive: false });
 
-            // Update chart title with date range
-            if (data.length > 0) {
-                const startDate = d3.timeFormat("%b %d, %Y")(data[0].date);
-                const endDate = d3.timeFormat("%b %d, %Y")(data[data.length - 1].date);
-                document.getElementById(titleId).textContent = `${ticker} ${chartType} Price Chart (${startDate} - ${endDate})`;
+            // Handle Ctrl+drag for panning
+            container.addEventListener('mousedown', (event) => {
+                if (event.ctrlKey) {
+                    event.preventDefault();
+                    isDragging = true;
+                    dragStartX = event.clientX;
+                    
+                    const timeScale = chart.timeScale();
+                    dragStartRange = timeScale.getVisibleLogicalRange();
+                    
+                    container.style.cursor = 'grabbing';
+                }
+            });
+
+            container.addEventListener('mousemove', (event) => {
+                if (isDragging && event.ctrlKey && dragStartRange) {
+                    event.preventDefault();
+                    
+                    const deltaX = event.clientX - dragStartX;
+                    const containerWidth = container.clientWidth;
+                    const rangeWidth = dragStartRange.to - dragStartRange.from;
+                    
+                    // Calculate how much to pan based on mouse movement
+                    const panAmount = (deltaX / containerWidth) * rangeWidth;
+                    
+                    const timeScale = chart.timeScale();
+                    timeScale.setVisibleLogicalRange({
+                        from: dragStartRange.from - panAmount,
+                        to: dragStartRange.to - panAmount
+                    });
+                }
+            });
+
+            container.addEventListener('mouseup', (event) => {
+                if (isDragging) {
+                    isDragging = false;
+                    dragStartRange = null;
+                    container.style.cursor = 'default';
+                }
+            });
+
+            container.addEventListener('mouseleave', (event) => {
+                if (isDragging) {
+                    isDragging = false;
+                    dragStartRange = null;
+                    container.style.cursor = 'default';
+                }
+            });
+
+            // Show grabbing cursor when Ctrl is held over the chart
+            container.addEventListener('mouseenter', (event) => {
+                if (event.ctrlKey && !isDragging) {
+                    container.style.cursor = 'grab';
+                }
+            });
+
+            container.addEventListener('mouseleave', (event) => {
+                if (!isDragging) {
+                    container.style.cursor = 'default';
+                }
+            });
+
+            // Update cursor based on Ctrl key state
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Control' && container.matches(':hover') && !isDragging) {
+                    container.style.cursor = 'grab';
+                }
+            });
+
+            document.addEventListener('keyup', (event) => {
+                if (event.key === 'Control' && !isDragging) {
+                    container.style.cursor = 'default';
+                }
+            });
+
+            // Add double-click to reset zoom
+            container.addEventListener('dblclick', (event) => {
+                event.preventDefault();
+                chart.timeScale().fitContent();
+            });
+
+            // --- Prepare datasets ---
+            const candlesTmp = processed.filter(b => {
+                if (!Number.isFinite(b.time) || !Number.isFinite(b.open) || !Number.isFinite(b.high) || !Number.isFinite(b.low) || !Number.isFinite(b.close)) {
+                    return false;
+                }
+                // Basic sanity: all prices positive and high >= max(open,close) >= min(open,close) >= low
+                if (b.open <= 0 || b.high <= 0 || b.low <= 0 || b.close <= 0) {
+                    return false;
+                }
+                const top = Math.max(b.open, b.close);
+                const bottom = Math.min(b.open, b.close);
+                return b.high >= top && b.low <= bottom;
+            });
+            const volumesTmp = processed.filter(b => Number.isFinite(b.time) && b.volume != null && Number.isFinite(b.volume) && b.volume > 0);
+
+            // Deduplicate by timestamp (Lightweight Charts expects unique times)
+            const dedup = (arr) => {
+                const seen = new Set();
+                const out = [];
+                for (const bar of arr) {
+                    if (!seen.has(bar.time)) {
+                        seen.add(bar.time);
+                        out.push(bar);
+                    }
+                }
+                return out;
+            };
+
+            const candles = dedup(candlesTmp);
+            const volumes = dedup(volumesTmp);
+
+            // Add candlestick series (uses main price scale with top 75% of chart)
+            const candleSeries = chart.addCandlestickSeries({
+                upColor: '#198754',
+                downColor: '#dc3545',
+                borderUpColor: '#198754',
+                borderDownColor: '#dc3545',
+                wickUpColor: '#198754',
+                wickDownColor: '#dc3545',
+                priceScaleId: 'right'
+            });
+
+            candleSeries.setData(candles.map(d => ({
+                time: d.time,
+                open: d.open,
+                high: d.high,
+                low: d.low,
+                close: d.close
+            })));
+
+            // Configure main price scale to use top 75% of chart
+            chart.priceScale('right').applyOptions({
+                scaleMargins: { top: 0.05, bottom: 0.2 }
+            });
+
+            // Add volume series with separate scale in bottom 25% of chart
+            const volumeSeries = chart.addHistogramSeries({
+                priceFormat: { type: 'volume' },
+                priceScaleId: 'volume'
+            });
+
+            volumeSeries.setData(volumes.map(d => ({
+                time: d.time,
+                value: d.volume,
+                color: d.close >= d.open ? 'rgba(25,135,84,0.6)' : 'rgba(220,53,69,0.6)'
+            })));
+
+            // Configure volume price scale to use bottom 15% of chart and be invisible
+            chart.priceScale('volume').applyOptions({
+                scaleMargins: { top: 0.85, bottom: 0.05 },
+                visible: false
+            });
+
+            // Add earnings markers if available
+            if (window.earningsData && window.earningsData.length > 0) {
+                addEarningsMarkers(chart, candleSeries, window.earningsData, processed[0].time, processed[processed.length - 1].time);
             }
+
+            chart.timeScale().fitContent();
+
+            // Update title with date range
+            const startDate = processed[0].time;
+            const endDate = processed[processed.length - 1].time;
+            document.getElementById(titleId).textContent = `${ticker} ${chartType} Chart`;
+        }
+
+        function addEarningsMarkers(chart, candleSeries, earningsData, startTime, endTime) {
+            const markers = [];
+            
+            earningsData.forEach(earning => {
+                const earningDate = new Date(earning.earnings_date + 'T00:00:00Z');
+                const earningTime = Math.floor(earningDate.getTime() / 1000);
+                
+                // Only add markers for dates that fall within the chart's time range
+                if (earningTime >= startTime && earningTime <= endTime) {
+                    // Create more informative marker text
+                    let markerText = 'E';
+                    if (earning.quarter) {
+                        markerText += ` ${earning.quarter}`;
+                    }
+                    if (earning.estimated_eps) {
+                        markerText += ` ($${earning.estimated_eps})`;
+                    }
+                    
+                    const marker = {
+                        time: earningTime,
+                        position: 'aboveBar',
+                                                    color: '#000000',
+                        shape: 'circle',
+                        text: markerText,
+                        size: 1.8
+                    };
+                    markers.push(marker);
+                }
+            });
+            
+            if (markers.length > 0) {
+                candleSeries.setMarkers(markers);
+            }
+        }
+
+        function fetchEarningsData(ticker) {
+            return fetch(`/api/stock/${ticker}/earnings`)
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            console.log(`No earnings data found for ${ticker}`);
+                            return [];
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(`Loaded ${data.length} earnings entries for ${ticker}`);
+                    return data;
+                })
+                .catch(error => {
+                    console.error('Error fetching earnings data:', error);
+                    return [];
+                });
         }
         
         function formatMarketCap(marketCap) {

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, tuple_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
-from models import Stock, Price, Comment, Flags, ConciseNote
+from models import Stock, Price, Comment, Flags, ConciseNote, Earnings
 import logging
 import time
 import pytz
@@ -355,6 +355,51 @@ def restore_user_lists(session, symbols_set, backup_dir='user_data'):
         except Exception as e:
             session.rollback()
             logger.error(f"Error restoring concise notes backup: {e}")
+
+    # --- Earnings ---
+    restored_earnings = 0
+    earnings_file = backup_path / 'earnings_backup.json'
+    if earnings_file.exists():
+        try:
+            data = json.loads(earnings_file.read_text())
+            for item in data:
+                if item['ticker'] not in symbols_set:
+                    continue  # skip if ticker not present in seeded data
+
+                # Parse datetime and date fields
+                def parse_ts(ts):
+                    return datetime.fromisoformat(ts) if ts else None
+
+                def parse_date(date_str):
+                    return datetime.fromisoformat(date_str).date() if date_str else None
+
+                earnings_obj = Earnings(
+                    ticker=item['ticker'],
+                    earnings_date=parse_date(item.get('earnings_date')),
+                    announcement_type=item.get('announcement_type', 'earnings'),
+                    is_confirmed=item.get('is_confirmed', False),
+                    quarter=item.get('quarter'),
+                    fiscal_year=item.get('fiscal_year'),
+                    announcement_time=item.get('announcement_time'),
+                    estimated_eps=item.get('estimated_eps'),
+                    actual_eps=item.get('actual_eps'),
+                    revenue_estimate=item.get('revenue_estimate'),
+                    actual_revenue=item.get('actual_revenue'),
+                    source=item.get('source'),
+                    notes=item.get('notes'),
+                    created_at=parse_ts(item.get('created_at')),
+                    updated_at=parse_ts(item.get('updated_at'))
+                )
+
+                # Use merge for upsert-like behavior to avoid duplicates
+                session.merge(earnings_obj)
+                restored_earnings += 1
+                
+            session.commit()
+            logger.info(f"Restored {restored_earnings} earnings records from backup")
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Error restoring earnings backup: {e}")
 
 def seed_database():
     """Main seeding function"""

@@ -460,6 +460,15 @@
                             }
                         }
                         break;
+                    case 'sea_change_events':
+                        let eventsStr = stock[col.key] || 'N/A';
+                        if (eventsStr !== 'N/A') {
+                            // If dates are in MM/DD format, append current year for display
+                            const currentYear = new Date().getFullYear();
+                            eventsStr = eventsStr.replace(/(\d{2}\/\d{2})(?=:\s)/g, `$1/${currentYear}`);
+                        }
+                        rowHtml += `<td>${eventsStr}</td>`;
+                        break;
                     default:
                         rowHtml += `<td>${stock[col.key] || 'N/A'}</td>`;
                         break;
@@ -534,7 +543,41 @@
             }
             return num; // assume already absolute
         }
-        
+
+        // Extract the most recent date (YYYY-MM-DD) from a SeaChange events string.
+        // Returns a numeric timestamp (milliseconds) so it can be compared numerically.
+        function extractLatestDate(eventsStr) {
+            if (!eventsStr || typeof eventsStr !== 'string') return 0;
+            const yearNow = new Date().getFullYear();
+            const dateRegexHyphen = /(\d{4}-\d{2}-\d{2})/g;         // e.g. 2024-06-12
+            const dateRegexSlash  = /(\d{2})\/(\d{2})(?:\/(\d{2,4}))?/g; // e.g. 06/12 or 06/12/24 or 06/12/2024
+
+            let timestamps = [];
+
+            // Collect YYYY-MM-DD matches first
+            for (const m of eventsStr.matchAll(dateRegexHyphen)) {
+                const ts = Date.parse(m[1]);
+                if (!isNaN(ts)) timestamps.push(ts);
+            }
+
+            // Collect MM/DD[/YY] matches
+            for (const m of eventsStr.matchAll(dateRegexSlash)) {
+                const month = m[1];
+                const day = m[2];
+                let year = m[3];
+                if (!year) {
+                    year = yearNow; // assume current year if absent
+                } else if (year.length === 2) {
+                    year = parseInt(year) + 2000; // convert YY to YYYY
+                }
+                const ts = Date.parse(`${year}-${month}-${day}`);
+                if (!isNaN(ts)) timestamps.push(ts);
+            }
+
+            if (timestamps.length === 0) return 0;
+            return Math.max(...timestamps);
+        }
+ 
         function sortStockData(data, column, direction) {
             return [...data].sort((a, b) => {
                 let aVal = a[column];
@@ -569,6 +612,12 @@
                 if (column === 'dollar_volume') {
                     aVal = parseMarketCap(aVal);
                     bVal = parseMarketCap(bVal);
+                }
+
+                // Custom handling for SeaChange events column – sort by latest date found
+                if (column === 'sea_change_events') {
+                    aVal = extractLatestDate(aVal);
+                    bVal = extractLatestDate(bVal);
                 }
                 
                 // Handle different data types

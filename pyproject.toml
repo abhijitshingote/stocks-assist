@@ -3,17 +3,16 @@ name = "stocks-assist"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
-    "beautifulsoup4==4.12.3",
-    "dash==2.15.0",
-    "flask==3.0.2",
-    "pandas==2.2.1",
-    "plotly==5.19.0",
-    "polygon-api-client==1.12.3",
-    "psycopg2-binary==2.9.9",
-    "python-dotenv==1.0.1",
-    "pytz==2024.1",
-    "requests==2.31.0",
-    "sqlalchemy==2.0.27",
+    "beautifulsoup4>=4.13.4",
+    "playwright>=1.54.0",
+    "polygon-api-client>=1.15.3",
+    "psycopg2-binary>=2.9.10",
+    "python-dotenv>=1.1.1",
+    "pytz>=2025.2",
+    "requests>=2.32.4",
+    "selenium>=4.34.2",
+    "sqlalchemy>=2.0.41",
+    "yfinance==0.2.18",
 ]

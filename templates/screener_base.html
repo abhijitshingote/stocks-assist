@@ -175,6 +175,10 @@
                     return;
                 }
                 
+                // For SeaChange page, sort by latest event date before display
+                if (pageConfig.type === 'sea_change') {
+                    data = sortStockData(data, 'sea_change_events', 'desc');
+                }
                 displayStocks(data, 'stockTableBodyAbove');
                 results.style.display = 'block';
                 countAboveVal = data.length;
@@ -212,6 +216,10 @@
                     return;
                 }
                 
+                // For SeaChange page, sort by latest event date before display
+                if (pageConfig.type === 'sea_change') {
+                    data = sortStockData(data, 'sea_change_events', 'desc');
+                }
                 displayStocks(data, 'stockTableBodyBelow');
                 results.style.display = 'block';
                 countBelowVal = data.length;

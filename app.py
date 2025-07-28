@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from models import Stock, Price, Comment, Flags, ConciseNote, init_db
+from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, init_db
 from sqlalchemy import desc, func, and_, text
 from datetime import datetime, timedelta
 import os
@@ -36,6 +36,33 @@ DEFAULT_PRIORITY_WEIGHTS = {
 
 # Minimum % move thresholds per period – easy to tweak
 RETURN_THRESHOLDS = {1: 5, 5: 10, 20: 15, 60: 20, 120: 30}
+
+# ------------------------------------------------------------------
+# Global sector / industry exclusions for all scanner pages
+# ------------------------------------------------------------------
+# Modify these sets to exclude entire sectors or industries from every
+# screener endpoint. For example we start by excluding the
+# Biotechnology industry.
+GLOBAL_EXCLUDE = {
+    'sector': set(),               # e.g. {'Healthcare'}
+    'industry': {'Biotechnology'}  # e.g. {'Biotechnology', 'Shell Companies'}
+}
+
+def apply_global_exclude_filters(query):
+    """Apply the GLOBAL_EXCLUDE filters to a SQLAlchemy query.
+
+    The passed ``query`` *must* already include ``Stock`` in its FROM / JOIN
+    clause. We then filter out any rows whose ``sector`` or ``industry``
+    values match the configured sets above.
+    """
+    sectors    = GLOBAL_EXCLUDE.get('sector', set())
+    industries = GLOBAL_EXCLUDE.get('industry', set())
+
+    if sectors:
+        query = query.filter(~Stock.sector.in_(list(sectors)))
+    if industries:
+        query = query.filter(~Stock.industry.in_(list(industries)))
+    return query
 
 BACKUP_DIR = Path(os.getenv("USER_DATA_DIR", "user_data"))
 BACKUP_DIR.mkdir(exist_ok=True)
@@ -532,6 +559,9 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         if blacklisted_ticker_list:
             query = query.filter(~Stock.ticker.in_(blacklisted_ticker_list))
         
+        # Apply global sector/industry exclusions
+        query = apply_global_exclude_filters(query)
+        
         # Apply market cap filter
         if above_200m:
             query = query.filter(Stock.market_cap >= 200000000)  # Market cap >= $200M
@@ -979,6 +1009,9 @@ def get_gapper_stocks(above_200m=True):
         if blacklisted_ticker_list:
             query = query.filter(~Stock.ticker.in_(blacklisted_ticker_list))
         
+        # Apply global sector/industry exclusions
+        query = apply_global_exclude_filters(query)
+        
         # Apply market cap filter
         if above_200m:
             query = query.filter(Stock.market_cap >= 200000000)  # Market cap >= $200M
@@ -1284,6 +1317,9 @@ def get_volume_spike_stocks(above_200m=True):
         if blacklisted_ticker_list:
             query = query.filter(~Stock.ticker.in_(blacklisted_ticker_list))
         
+        # Apply global sector/industry exclusions
+        query = apply_global_exclude_filters(query)
+        
         # Apply market cap filter
         if above_200m:
             query = query.filter(Stock.market_cap >= 200000000)
@@ -1396,7 +1432,7 @@ def get_volume_spike_stocks(above_200m=True):
                 'return_120d': return_120d,
                 'yesterday_close': f"${stock.yesterday_close:.2f}",
                 'yesterday_volume': f"{stock.yesterday_volume:,.0f}",
-                'avg_volume_5d': f"{stock.avg_volume_5d:,.0f}",
+                'avg_volume_5d': f"{stock.avg_volume_50d:,.0f}",
                 'today_date': today.strftime('%Y-%m-%d'),
                 'yesterday_date': yesterday.strftime('%Y-%m-%d'),
                 'latest_date': latest_date.strftime('%Y-%m-%d'),
@@ -1552,7 +1588,7 @@ def get_sea_change_stocks(above_200m=True):
             else:  # < 1B, show in millions
                 dollar_vol_formatted = f"${dollar_vol / 1000000:.0f}M"
             
-            ticker_sea_change_data[ticker]['dates'].append(row['date'].strftime('%m/%d'))
+            ticker_sea_change_data[ticker]['dates'].append(row['date'].strftime('%m/%d/%Y'))
             ticker_sea_change_data[ticker]['dollar_volumes'].append(dollar_vol_formatted)
         
         # Get blacklisted tickers
@@ -1693,6 +1729,9 @@ def get_sea_change_stocks(above_200m=True):
         # Exclude blacklisted stocks
         if blacklisted_ticker_list:
             query = query.filter(~Stock.ticker.in_(blacklisted_ticker_list))
+        
+        # Apply global sector/industry exclusions
+        query = apply_global_exclude_filters(query)
         
         # Apply market cap filter
         if above_200m:
@@ -2236,6 +2275,41 @@ def get_stock_prices(ticker):
         'last_traded_timestamp': price.last_traded_timestamp.strftime('%Y-%m-%d %H:%M:%S %Z') if price.last_traded_timestamp else None
     } for price in prices])
 
+@app.route('/api/stock/<ticker>/earnings')
+def get_stock_earnings(ticker):
+    """Get earnings data for a specific ticker"""
+    try:
+        ticker = ticker.upper()
+        
+        # Get earnings data for the ticker, ordered by date descending (most recent first)
+        earnings = session.query(Earnings).filter_by(ticker=ticker).order_by(Earnings.earnings_date.desc()).all()
+        
+        if not earnings:
+            return jsonify({'error': 'No earnings data found'}), 404
+        
+        return jsonify([{
+            'id': earning.id,
+            'ticker': earning.ticker,
+            'earnings_date': earning.earnings_date.strftime('%Y-%m-%d'),
+            'announcement_type': earning.announcement_type,
+            'estimated_eps': earning.estimated_eps,
+            'actual_eps': earning.actual_eps,
+            'revenue_estimate': earning.revenue_estimate,
+            'actual_revenue': earning.actual_revenue,
+            'is_confirmed': earning.is_confirmed,
+            'quarter': earning.quarter,
+            'fiscal_year': earning.fiscal_year,
+            'announcement_time': earning.announcement_time,
+            'source': earning.source,
+            'notes': earning.notes,
+            'created_at': earning.created_at.strftime('%Y-%m-%d %H:%M:%S %Z') if earning.created_at else None,
+            'updated_at': earning.updated_at.strftime('%Y-%m-%d %H:%M:%S %Z') if earning.updated_at else None
+        } for earning in earnings])
+        
+    except Exception as e:
+        logger.error(f"Error fetching earnings for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 # 20D Return APIs
 @app.route('/api/Return20D-Above200M')
 def get_return_20d_above_200m():
@@ -2744,6 +2818,9 @@ def export_user_lists():
         notes_payload = [{'ticker': n.ticker, 'note': n.note, 'updated_at': n.updated_at.isoformat() if n.updated_at else None} for n in notes_rows]
         with (BACKUP_DIR / 'concise_notes_backup.json').open('w', encoding='utf-8') as f:
             json.dump(notes_payload, f, indent=2)
+        
+        logger.info(f"✅ Exported {len(comments_payload)} comments, {len(flags_payload)} flags, and {len(notes_payload)} notes to backup files")
+        
     except Exception as e:
         logger.error("Failed to export user lists: %s", e)
 

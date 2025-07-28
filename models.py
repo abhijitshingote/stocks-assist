@@ -158,6 +158,32 @@ class ConciseNote(Base):
     def __repr__(self):
         return f"<ConciseNote(ticker='{self.ticker}', note='{self.note[:20]}...')>"
 
+class Earnings(Base):
+    __tablename__ = 'earnings'
+    
+    id = Column(Integer, primary_key=True)
+    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
+    earnings_date = Column(Date, nullable=False)
+    announcement_type = Column(String, nullable=False, default='earnings')  # 'earnings', 'pre-announcement', 'guidance'  
+    estimated_eps = Column(Float)  # Analyst consensus estimate
+    actual_eps = Column(Float)     # Actual reported EPS (null until announced)
+    revenue_estimate = Column(Float)  # Revenue estimate in millions
+    actual_revenue = Column(Float)    # Actual revenue in millions (null until announced)
+    is_confirmed = Column(Boolean, default=False, nullable=False)  # Whether date is confirmed vs estimated
+    quarter = Column(String)  # e.g., 'Q1 2024', 'Q4 2023'
+    fiscal_year = Column(Integer)  # Fiscal year
+    announcement_time = Column(String)  # 'BMO' (before market open), 'AMC' (after market close), 'DMT' (during market hours)
+    source = Column(String)  # Source of the earnings date info (e.g., 'Perplexity', 'SEC', 'Company PR')
+    notes = Column(Text)  # Additional notes about the earnings
+    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+    
+    # Ensure uniqueness of ticker + earnings_date + announcement_type
+    __table_args__ = (UniqueConstraint('ticker', 'earnings_date', 'announcement_type', name='_ticker_date_type_uc'),)
+    
+    def __repr__(self):
+        return f"<Earnings(ticker='{self.ticker}', date='{self.earnings_date}', type='{self.announcement_type}', quarter='{self.quarter}')>"
+
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
     engine = create_engine(database_url)
