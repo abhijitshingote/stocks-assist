@@ -1015,6 +1015,112 @@
 
             chart.timeScale().fitContent();
 
+            // Add custom tooltip for hover information
+            const tooltip = document.createElement('div');
+            tooltip.style.position = 'absolute';
+            tooltip.style.padding = '12px';
+            tooltip.style.background = 'rgba(255, 255, 255, 0.95)';
+            tooltip.style.color = '#212529';
+            tooltip.style.border = '1px solid #198754';
+            tooltip.style.borderRadius = '8px';
+            tooltip.style.pointerEvents = 'none';
+            tooltip.style.fontSize = '13px';
+            tooltip.style.lineHeight = '1.5';
+            tooltip.style.boxShadow = '0 0 15px rgba(0,0,0,0.1)';
+            tooltip.style.display = 'none';
+            tooltip.style.zIndex = '10000';
+            tooltip.style.minWidth = '200px';
+            tooltip.style.maxWidth = '250px';
+            tooltip.style.whiteSpace = 'nowrap';
+            
+            container.style.position = 'relative'; // Ensure container is positioned
+            container.appendChild(tooltip);
+
+            // Subscribe to crosshair move to show tooltip
+            chart.subscribeCrosshairMove(param => {
+                // Hide tooltip if no valid crosshair position
+                if (param.point === undefined || !param.time) {
+                    tooltip.style.display = 'none';
+                    return;
+                }
+
+                // Get price data at the crosshair position
+                const priceData = param.seriesData.get(candleSeries);
+                const volumeData = param.seriesData.get(volumeSeries);
+                
+                // Show tooltip even if only price data is available
+                if (!priceData) {
+                    tooltip.style.display = 'none';
+                    return;
+                }
+
+                // Format the date
+                const date = new Date(param.time * 1000);
+                const dateStr = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                // Format price values with safety checks
+                const open = (priceData.open !== undefined) ? priceData.open.toFixed(2) : 'N/A';
+                const high = (priceData.high !== undefined) ? priceData.high.toFixed(2) : 'N/A';
+                const low = (priceData.low !== undefined) ? priceData.low.toFixed(2) : 'N/A';
+                const close = (priceData.close !== undefined) ? priceData.close.toFixed(2) : 'N/A';
+                
+                // Calculate price change
+                let change = 'N/A';
+                let changePercent = 'N/A';
+                if (priceData.close !== undefined && priceData.open !== undefined) {
+                    change = (priceData.close - priceData.open).toFixed(2);
+                    changePercent = (((priceData.close - priceData.open) / priceData.open) * 100).toFixed(2);
+                }
+                
+                // Format volume
+                const volume = (volumeData && volumeData.value !== undefined) ? 
+                    volumeData.value.toLocaleString() : 'N/A';
+
+                // Build tooltip content
+                const changeColor = (change !== 'N/A' && parseFloat(change) >= 0) ? '#198754' : '#dc3545';
+                tooltip.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 8px; color: #198754;">${dateStr}</div>
+                    <div><strong>Open:</strong> $${open}</div>
+                    <div><strong>High:</strong> $${high}</div>
+                    <div><strong>Low:</strong> $${low}</div>
+                    <div><strong>Close:</strong> $${close}</div>
+                    <div style="color: ${changeColor};"><strong>Change:</strong> $${change} (${changePercent}%)</div>
+                    <div><strong>Volume:</strong> ${volume}</div>
+                `;
+
+                // Position tooltip relative to chart container
+                const tooltipWidth = 200;
+                const tooltipHeight = 160;
+                
+                let left = param.point.x + 15;
+                let top = param.point.y - 10;
+                
+                // Keep tooltip within container bounds
+                const containerWidth = container.clientWidth;
+                const containerHeight = container.clientHeight;
+                
+                if (left + tooltipWidth > containerWidth) {
+                    left = param.point.x - tooltipWidth - 15;
+                }
+                if (top + tooltipHeight > containerHeight) {
+                    top = param.point.y - tooltipHeight + 10;
+                }
+                if (top < 0) {
+                    top = 10;
+                }
+                if (left < 0) {
+                    left = 10;
+                }
+
+                tooltip.style.left = `${left}px`;
+                tooltip.style.top = `${top}px`;
+                tooltip.style.display = 'block';
+            });
+
             // Update title with date range
             const startDate = processed[0].time;
             const endDate = processed[processed.length - 1].time;

@@ -1432,7 +1432,7 @@ def get_volume_spike_stocks(above_200m=True):
                 'return_120d': return_120d,
                 'yesterday_close': f"${stock.yesterday_close:.2f}",
                 'yesterday_volume': f"{stock.yesterday_volume:,.0f}",
-                'avg_volume_5d': f"{stock.avg_volume_50d:,.0f}",
+                'avg_volume_5d': f"{stock.avg_volume_5d:,.0f}",
                 'today_date': today.strftime('%Y-%m-%d'),
                 'yesterday_date': yesterday.strftime('%Y-%m-%d'),
                 'latest_date': latest_date.strftime('%Y-%m-%d'),
