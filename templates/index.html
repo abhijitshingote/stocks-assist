@@ -276,7 +276,7 @@
             if (minIpoDate) url += `min_ipo_date=${minIpoDate}&`;
             if (maxIpoDate) url += `max_ipo_date=${maxIpoDate}&`;
 
-            fetch(url)
+            fetch(appendRewindDate(url))
                 .then(response => response.json())
                 .then(stocks => {
                     container.empty();

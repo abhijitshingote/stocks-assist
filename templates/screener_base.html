@@ -159,7 +159,7 @@
         error.style.display = 'none';
         results.style.display = 'none';
         
-        fetch(pageConfig.apiAbove)
+        fetch(appendRewindDate(pageConfig.apiAbove))
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -200,7 +200,7 @@
         error.style.display = 'none';
         results.style.display = 'none';
         
-        fetch(pageConfig.apiBelow)
+        fetch(appendRewindDate(pageConfig.apiBelow))
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

@@ -73,6 +73,46 @@ def get_eastern_datetime():
     eastern = pytz.timezone('US/Eastern')
     return datetime.now(eastern)
 
+def get_rewind_date():
+    """Get the rewind date from request parameters, if set.
+    
+    Returns:
+        datetime.date or None: The rewind date if specified in the request, None otherwise
+    """
+    rewind_date_str = request.args.get('rewind_date')
+    if rewind_date_str:
+        try:
+            return datetime.strptime(rewind_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            logger.warning(f"Invalid rewind_date format: {rewind_date_str}")
+    return None
+
+def get_filtered_price_query():
+    """Get a Price query filtered by the rewind date if specified.
+    
+    If rewind_date is provided in request parameters, only returns price data
+    up to that date. Otherwise returns all price data.
+    
+    Returns:
+        SQLAlchemy Query: Base Price query with optional date filtering
+    """
+    base_query = session.query(Price)
+    rewind_date = get_rewind_date()
+    
+    if rewind_date:
+        base_query = base_query.filter(Price.date <= rewind_date)
+    
+    return base_query
+
+def get_latest_price_date():
+    """Get the latest available price date, respecting rewind functionality.
+    
+    Returns:
+        datetime.date or None: The latest date for which we have price data,
+                              limited by rewind_date if specified
+    """
+    return get_filtered_price_query().with_entities(func.max(Price.date)).scalar()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -348,13 +388,13 @@ def review_ai_comment(comment_id):
 def get_latest_date():
     """Get the latest date and time for which we have price data"""
     try:
-        # Get the latest date first
-        latest_date = session.query(func.max(Price.date)).scalar()
+        # Get the latest date first (respecting rewind functionality)
+        latest_date = get_latest_price_date()
         if not latest_date:
             return jsonify({'latest_date': None})
         
         # Get the latest timestamp for that date
-        latest_timestamp = session.query(func.max(Price.last_traded_timestamp)).filter(
+        latest_timestamp = get_filtered_price_query().with_entities(func.max(Price.last_traded_timestamp)).filter(
             Price.date == latest_date
         ).scalar()
         
@@ -389,13 +429,13 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         if min_return_pct is None:
             min_return_pct = RETURN_THRESHOLDS.get(return_days, 5)
 
-        # Get the latest date for which we have price data
-        latest_date = session.query(func.max(Price.date)).scalar()
+        # Get the latest date for which we have price data (respecting rewind functionality)
+        latest_date = get_latest_price_date()
         if not latest_date:
             return []
         
         # Get the actual trading dates for the return period (not calendar days)
-        trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(return_days + 1).all()
+        trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(return_days + 1).all()
         if len(trading_dates) < return_days + 1:
             logger.warning(f"Only {len(trading_dates)} trading dates available, need at least {return_days + 1}")
             return []
@@ -403,7 +443,7 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         start_date = trading_dates[-1][0]  # The (return_days)th trading day back
         
         # Get the last 10 actual trading dates for average calculations
-        last_10_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
+        last_10_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
         if len(last_10_trading_dates) < 10:
             ten_days_ago = last_10_trading_dates[-1][0]
         else:
@@ -412,7 +452,7 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         logger.info(f"Calculating {return_days}D returns from {start_date} to {latest_date} (actual trading days)")
         
         # Get start prices (prices from the start_date)
-        start_prices = session.query(
+        start_prices = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('start_price'),
             Price.date.label('start_date')
@@ -420,7 +460,7 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
             Price.date == start_date
         ).subquery()
         
-        end_prices = session.query(
+        end_prices = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('end_price'),
             Price.volume.label('current_volume'),
@@ -430,10 +470,10 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         ).subquery()
         
         # Determine the immediate previous trading date (not calendar day)
-        prev_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
+        prev_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
         prev_date = prev_trading_dates[1][0] if len(prev_trading_dates) > 1 else latest_date
 
-        prev_day_prices = session.query(
+        prev_day_prices = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('prev_close')
         ).filter(
@@ -441,7 +481,7 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         ).subquery()
         
         # Calculate average prices and volumes over the last 10 trading days
-        avg_stats = session.query(
+        avg_stats = get_filtered_price_query().with_entities(
             Price.ticker,
             func.avg(Price.close_price).label('avg_10day_price'),
             func.avg(Price.volume * Price.close_price).label('avg_dollar_volume'),
@@ -452,7 +492,7 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         ).group_by(Price.ticker).subquery()
         
         # Get 52-week high and low for each stock (240 trading days)
-        week_52_stats = session.query(
+        week_52_stats = get_filtered_price_query().with_entities(
             Price.ticker,
             func.max(Price.high_price).label('week_52_high'),
             func.min(Price.low_price).label('week_52_low')
@@ -461,34 +501,34 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         ).group_by(Price.ticker).subquery()
         
         # Get prices for different return period calculations
-        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
-        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
-        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
-        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+        trading_dates_5d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
         
         # Get historical prices for multiple return calculations
-        prices_5d = session.query(
+        prices_5d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_5d')
         ).filter(
             Price.date == trading_dates_5d[-1][0] if len(trading_dates_5d) > 5 else latest_date
         ).subquery()
         
-        prices_20d = session.query(
+        prices_20d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_20d')
         ).filter(
             Price.date == trading_dates_20d[-1][0] if len(trading_dates_20d) > 20 else latest_date
         ).subquery()
         
-        prices_60d = session.query(
+        prices_60d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_60d')
         ).filter(
             Price.date == trading_dates_60d[-1][0] if len(trading_dates_60d) > 60 else latest_date
         ).subquery()
         
-        prices_120d = session.query(
+        prices_120d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_120d')
         ).filter(
@@ -812,12 +852,12 @@ def get_gapper_stocks(above_200m=True):
     """Helper function to get gapper stocks based on specific criteria"""
     try:
         # Get the latest date for which we have price data
-        latest_date = session.query(func.max(Price.date)).scalar()
+        latest_date = get_latest_price_date()
         if not latest_date:
             return []
         
         # Get the last 6 actual trading dates (not calendar days)
-        last_5_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        last_5_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
         if len(last_5_trading_dates) < 5:
             logger.warning(f"Only {len(last_5_trading_dates)} trading dates available, need at least 5")
             return []
@@ -825,7 +865,7 @@ def get_gapper_stocks(above_200m=True):
         earliest_date_5d = last_5_trading_dates[-1][0]  # 5th trading day back
         
         # Get the last 50 actual trading dates for volume calculation
-        last_50_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(50).all()
+        last_50_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(50).all()
         if len(last_50_trading_dates) < 50:
             # Use whatever dates we have if less than 50
             earliest_date_50d = last_50_trading_dates[-1][0]
@@ -835,10 +875,10 @@ def get_gapper_stocks(above_200m=True):
         logger.info(f"Calculating gapper stocks for last 5 trading days: {earliest_date_5d} to {latest_date}")
         
         # Get prices for different return period calculations
-        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
-        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
-        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
-        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+        trading_dates_5d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
         
         # Get the current price (latest date)
         current_prices = session.query(
@@ -868,28 +908,28 @@ def get_gapper_stocks(above_200m=True):
         ).group_by(Price.ticker).subquery()
         
         # Get historical prices for multiple return calculations
-        prices_5d = session.query(
+        prices_5d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_5d')
         ).filter(
             Price.date == trading_dates_5d[-1][0] if len(trading_dates_5d) > 5 else latest_date
         ).subquery()
         
-        prices_20d = session.query(
+        prices_20d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_20d')
         ).filter(
             Price.date == trading_dates_20d[-1][0] if len(trading_dates_20d) > 20 else latest_date
         ).subquery()
         
-        prices_60d = session.query(
+        prices_60d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_60d')
         ).filter(
             Price.date == trading_dates_60d[-1][0] if len(trading_dates_60d) > 60 else latest_date
         ).subquery()
         
-        prices_120d = session.query(
+        prices_120d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_120d')
         ).filter(
@@ -1164,12 +1204,12 @@ def get_volume_spike_stocks(above_200m=True):
     """Helper function to get volume spike stocks based on specific criteria"""
     try:
         # Get the latest date (today) and yesterday
-        latest_date = session.query(func.max(Price.date)).scalar()
+        latest_date = get_latest_price_date()
         if not latest_date:
             return []
         
         # Get the last 2 trading dates to get today and yesterday
-        last_2_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
+        last_2_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
         if len(last_2_trading_dates) < 2:
             logger.warning(f"Need at least 2 trading dates, only {len(last_2_trading_dates)} available")
             return []
@@ -1178,7 +1218,7 @@ def get_volume_spike_stocks(above_200m=True):
         yesterday = last_2_trading_dates[1][0]
         
         # Get the last 6 trading days total to get 5 days before today
-        last_6_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        last_6_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
         if len(last_6_trading_dates) < 6:
             logger.warning(f"Need at least 6 trading dates, only {len(last_6_trading_dates)} available")
             return []
@@ -1225,33 +1265,33 @@ def get_volume_spike_stocks(above_200m=True):
         ).group_by(Price.ticker).subquery()
         
         # Get historical prices for multiple return calculations
-        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
-        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
-        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
-        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+        trading_dates_5d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
         
-        prices_5d = session.query(
+        prices_5d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_5d')
         ).filter(
             Price.date == trading_dates_5d[-1][0] if len(trading_dates_5d) > 5 else latest_date
         ).subquery()
         
-        prices_20d = session.query(
+        prices_20d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_20d')
         ).filter(
             Price.date == trading_dates_20d[-1][0] if len(trading_dates_20d) > 20 else latest_date
         ).subquery()
         
-        prices_60d = session.query(
+        prices_60d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_60d')
         ).filter(
             Price.date == trading_dates_60d[-1][0] if len(trading_dates_60d) > 60 else latest_date
         ).subquery()
         
-        prices_120d = session.query(
+        prices_120d = get_filtered_price_query().with_entities(
             Price.ticker,
             Price.close_price.label('price_120d')
         ).filter(
@@ -1452,12 +1492,12 @@ def get_sea_change_stocks(above_200m=True):
     """Helper function to get sea change stocks based on specific criteria over the last 120 days"""
     try:
         # Get the latest date for which we have price data
-        latest_date = session.query(func.max(Price.date)).scalar()
+        latest_date = get_latest_price_date()
         if not latest_date:
             return []
         
         # Get the last 120 actual trading dates
-        last_120_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(120).all()
+        last_120_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(120).all()
         if len(last_120_trading_dates) < 120:
             logger.warning(f"Only {len(last_120_trading_dates)} trading dates available for sea change analysis")
             # Use whatever dates we have
@@ -1530,7 +1570,7 @@ def get_sea_change_stocks(above_200m=True):
             
             # Calculate 20-day average volume for this specific ticker and date
             # Get the 20 trading days before this date
-            prior_dates = session.query(Price.date).filter(
+            prior_dates = get_filtered_price_query().with_entities(Price.date).filter(
                 Price.ticker == ticker,
                 Price.date < date
             ).order_by(Price.date.desc()).limit(20).all()
@@ -1605,7 +1645,7 @@ def get_sea_change_stocks(above_200m=True):
         ).subquery()
         
         # Get previous day price for change calculation
-        prev_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
+        prev_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
         prev_date = prev_trading_dates[1][0] if len(prev_trading_dates) > 1 else latest_date
         
         previous_prices = session.query(
@@ -1627,10 +1667,10 @@ def get_sea_change_stocks(above_200m=True):
         ).group_by(Price.ticker).subquery()
         
         # Get historical prices for multiple return calculations
-        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
-        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
-        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
-        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+        trading_dates_5d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
         
         prices_5d = session.query(
             Price.ticker,
@@ -1665,7 +1705,7 @@ def get_sea_change_stocks(above_200m=True):
         ).subquery()
         
         # Get average volume for the last 10 trading days
-        last_10_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
+        last_10_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
         ten_days_ago = last_10_trading_dates[-1][0] if len(last_10_trading_dates) >= 10 else latest_date
         
         avg_volume_10d = session.query(
@@ -2161,10 +2201,10 @@ def get_stock_details(ticker):
         return jsonify({'error': 'Stock not found'}), 404
     
     # Get latest price data (today)
-    latest_price = session.query(Price).filter_by(ticker=ticker).order_by(Price.date.desc()).first()
+    latest_price = get_filtered_price_query().filter_by(ticker=ticker).order_by(Price.date.desc()).first()
     
     # Get previous day's price data for change calculation
-    previous_price = session.query(Price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(1).first()
+    previous_price = get_filtered_price_query().filter_by(ticker=ticker).order_by(Price.date.desc()).offset(1).first()
     
     # Calculate price change
     price_change = None
@@ -2178,7 +2218,7 @@ def get_stock_details(ticker):
     week_52_low = None
     if latest_price:
         # Get prices from last 240 trading days
-        prices_240d = session.query(Price.high_price, Price.low_price).filter_by(ticker=ticker).order_by(Price.date.desc()).limit(240).all()
+        prices_240d = get_filtered_price_query().with_entities(Price.high_price, Price.low_price).filter_by(ticker=ticker).order_by(Price.date.desc()).limit(240).all()
         if prices_240d:
             highs = [p.high_price for p in prices_240d if p.high_price is not None]
             lows = [p.low_price for p in prices_240d if p.low_price is not None]
@@ -2194,17 +2234,17 @@ def get_stock_details(ticker):
     
     if latest_price and latest_price.close_price:
         # Get price 5 days ago
-        price_5d = session.query(Price.close_price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(5).first()
+        price_5d = get_filtered_price_query().with_entities(Price.close_price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(5).first()
         if price_5d and price_5d.close_price:
             return_5d = ((latest_price.close_price - price_5d.close_price) / price_5d.close_price) * 100
         
         # Get price 20 days ago
-        price_20d = session.query(Price.close_price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(20).first()
+        price_20d = get_filtered_price_query().with_entities(Price.close_price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(20).first()
         if price_20d and price_20d.close_price:
             return_20d = ((latest_price.close_price - price_20d.close_price) / price_20d.close_price) * 100
         
         # Get price 60 days ago
-        price_60d = session.query(Price.close_price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(60).first()
+        price_60d = get_filtered_price_query().with_entities(Price.close_price).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(60).first()
         if price_60d and price_60d.close_price:
             return_60d = ((latest_price.close_price - price_60d.close_price) / price_60d.close_price) * 100
     
@@ -2213,7 +2253,7 @@ def get_stock_details(ticker):
     volume_change_multiplier = None
     if latest_price:
         # Get last 21 trading days (excluding today) for average volume
-        volumes = session.query(Price.volume).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(1).limit(20).all()
+        volumes = get_filtered_price_query().with_entities(Price.volume).filter_by(ticker=ticker).order_by(Price.date.desc()).offset(1).limit(20).all()
         if volumes:
             valid_volumes = [v.volume for v in volumes if v.volume is not None]
             if valid_volumes:
@@ -2260,7 +2300,7 @@ def get_stock_details(ticker):
 @app.route('/api/stock/<ticker>/prices')
 def get_stock_prices(ticker):
     # Get historical price data
-    prices = session.query(Price).filter_by(ticker=ticker).order_by(Price.date.desc()).all()
+    prices = get_filtered_price_query().filter_by(ticker=ticker).order_by(Price.date.desc()).all()
     
     if not prices:
         return jsonify({'error': 'No price data found'}), 404
@@ -2601,16 +2641,16 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
     """Get all returns data for specific tickers (used by shortlist and blacklist)"""
     try:
         # Get the latest date for which we have price data
-        latest_date = session.query(func.max(Price.date)).scalar()
+        latest_date = get_latest_price_date()
         if not latest_date:
             return []
 
         # Get the actual trading dates for different return periods
-        trading_dates_1d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
-        trading_dates_5d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
-        trading_dates_20d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
-        trading_dates_60d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
-        trading_dates_120d = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
+        trading_dates_1d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(2).all()
+        trading_dates_5d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(6).all()
+        trading_dates_20d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(21).all()
+        trading_dates_60d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(61).all()
+        trading_dates_120d = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(121).all()
 
         if len(trading_dates_1d) < 2:
             return []
@@ -2622,7 +2662,7 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
         start_date_120d = trading_dates_120d[-1][0] if len(trading_dates_120d) >= 121 else latest_date
 
         # Get the last 10 actual trading dates for average calculations
-        last_10_trading_dates = session.query(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
+        last_10_trading_dates = get_filtered_price_query().with_entities(Price.date).distinct().order_by(Price.date.desc()).limit(10).all()
         ten_days_ago = last_10_trading_dates[-1][0] if len(last_10_trading_dates) >= 10 else latest_date
 
         result = []
@@ -2671,7 +2711,7 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
             week_52_low = week_52_data.week_52_low if week_52_data else None
 
             # Get prices for different periods
-            prices = session.query(Price.close_price, Price.date).filter(
+            prices = get_filtered_price_query().with_entities(Price.close_price, Price.date).filter(
                 Price.ticker == ticker,
                 Price.date.in_([latest_date, start_date_1d, start_date_5d, start_date_20d, start_date_60d, start_date_120d])
             ).all()

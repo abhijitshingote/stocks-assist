@@ -95,7 +95,7 @@
         const params = new URLSearchParams(weights);
         const url = `${pageConfig.apiAbove}?${params.toString()}`;
         
-        fetch(url)
+        fetch(appendRewindDate(url))
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -145,7 +145,7 @@
         const params = new URLSearchParams(weights);
         const url = `${pageConfig.apiBelow}?${params.toString()}`;
         
-        fetch(url)
+        fetch(appendRewindDate(url))
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

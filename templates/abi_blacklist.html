@@ -178,7 +178,7 @@
         console.log('Loading blacklist...');
         showLoading();
         
-        fetch('/api/blacklist')
+        fetch(appendRewindDate('/api/blacklist'))
             .then(response => {
                 console.log('Response status:', response.status);
                 if (!response.ok) {

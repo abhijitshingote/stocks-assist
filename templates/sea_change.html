@@ -60,7 +60,7 @@
         originalLoadStocksAbove();
         
         // Also fetch data to extract tickers
-        fetch(pageConfig.apiAbove)
+                    fetch(appendRewindDate(pageConfig.apiAbove))
             .then(response => response.json())
             .then(data => {
                 if (!data.error) {
@@ -77,7 +77,7 @@
         originalLoadStocksBelow();
         
         // Also fetch data to extract tickers
-        fetch(pageConfig.apiBelow)
+                    fetch(appendRewindDate(pageConfig.apiBelow))
             .then(response => response.json())
             .then(data => {
                 if (!data.error) {

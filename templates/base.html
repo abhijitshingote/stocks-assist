@@ -110,6 +110,17 @@
                             <a class="nav-link {% if active_page == 'blacklist' %}active{% endif %}" href="/AbiBlackList">Abi BlackList</a>
                         </li>
                 </ul>
+                <!-- Rewind Date Selector -->
+                <div class="navbar-text me-3">
+                    <small>
+                        <label for="rewindDate" class="form-label text-white-50 me-1">Rewind to:</label>
+                        <input type="date" id="rewindDate" class="form-control form-control-sm d-inline-block" style="width: auto;" title="View data as of this date">
+                        <button id="clearRewind" class="btn btn-outline-secondary btn-sm ms-1" title="Clear rewind and view latest data">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </small>
+                </div>
+
                 <!-- Chatbot trigger -->
                 <button class="btn btn-outline-info me-2" type="button" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chatbot">
                     <i class="fas fa-comments"></i>
@@ -182,10 +193,71 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='navbar-date.js') }}"></script>
+    
+    <!-- Rewind functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rewindInput = document.getElementById('rewindDate');
+            const clearRewindBtn = document.getElementById('clearRewind');
+            
+            // Get current rewind date from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentRewindDate = urlParams.get('rewind_date');
+            if (currentRewindDate) {
+                rewindInput.value = currentRewindDate;
+            }
+            
+            // Handle rewind date change
+            rewindInput.addEventListener('change', function() {
+                const selectedDate = this.value;
+                if (selectedDate) {
+                    // Add rewind_date parameter to current URL and reload
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('rewind_date', selectedDate);
+                    window.location.href = newUrl.toString();
+                }
+            });
+            
+            // Handle clear rewind button
+            clearRewindBtn.addEventListener('click', function() {
+                // Remove rewind_date parameter from URL and reload
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.delete('rewind_date');
+                window.location.href = newUrl.toString();
+            });
+            
+            // Update navbar latest date text when in rewind mode
+            if (currentRewindDate) {
+                const navbarLatestDate = document.getElementById('navbarLatestDate');
+                if (navbarLatestDate) {
+                    const originalText = navbarLatestDate.textContent;
+                    navbarLatestDate.innerHTML = `${originalText} <span class="badge bg-warning text-dark ms-1">Rewound to ${currentRewindDate}</span>`;
+                }
+            }
+        });
+    </script>
     <script src="{{ url_for('static', filename='chat.js') }}"></script>
     
     <!-- Common JavaScript Configuration -->
     <script>
+        // Helper function to get current rewind_date parameter
+        function getRewindDate() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('rewind_date');
+        }
+        
+        // Helper function to append rewind_date to API URLs
+        function appendRewindDate(apiUrl) {
+            const rewindDate = getRewindDate();
+            if (!rewindDate) {
+                return apiUrl;
+            }
+            
+            const url = new URL(apiUrl, window.location.origin);
+            url.searchParams.set('rewind_date', rewindDate);
+            return url.toString();
+        }
+        
         // Determine which return column (if any) should be highlighted based on URL – needs to be defined early so helper functions can use it.
         const pathname = window.location.pathname;
         let highlightedReturnKey = null;

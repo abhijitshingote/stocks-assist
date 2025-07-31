@@ -302,6 +302,17 @@
                         <a class="nav-link" href="/AbiBlackList">Abi BlackList</a>
                     </li>
                 </ul>
+                <!-- Rewind Date Selector -->
+                <div class="navbar-text me-3">
+                    <small>
+                        <label for="rewindDate" class="form-label text-white-50 me-1">Rewind to:</label>
+                        <input type="date" id="rewindDate" class="form-control form-control-sm d-inline-block" style="width: auto;" title="View data as of this date">
+                        <button id="clearRewind" class="btn btn-outline-secondary btn-sm ms-1" title="Clear rewind and view latest data">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </small>
+                </div>
+
                 <!-- Chat trigger -->
                 <button class="btn btn-outline-info me-2" type="button" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chatbot">
                     <i class="fas fa-comments"></i>
@@ -585,9 +596,66 @@
     <script>
         const ticker = '{{ ticker }}';
         
+        // Helper functions for rewind functionality
+        function getRewindDate() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('rewind_date');
+        }
+        
+        function appendRewindDate(apiUrl) {
+            const rewindDate = getRewindDate();
+            if (!rewindDate) {
+                return apiUrl;
+            }
+            
+            const url = new URL(apiUrl, window.location.origin);
+            url.searchParams.set('rewind_date', rewindDate);
+            return url.toString();
+        }
+        
+        // Rewind functionality
+        function initializeRewindControls() {
+            const rewindInput = document.getElementById('rewindDate');
+            const clearRewindBtn = document.getElementById('clearRewind');
+            
+            // Get current rewind date from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentRewindDate = urlParams.get('rewind_date');
+            if (currentRewindDate) {
+                rewindInput.value = currentRewindDate;
+            }
+            
+            // Handle rewind date change
+            rewindInput.addEventListener('change', function() {
+                const selectedDate = this.value;
+                if (selectedDate) {
+                    // Add rewind_date parameter to current URL and reload
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('rewind_date', selectedDate);
+                    window.location.href = newUrl.toString();
+                }
+            });
+            
+            // Handle clear rewind button
+            clearRewindBtn.addEventListener('click', function() {
+                // Remove rewind_date parameter from URL and reload
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.delete('rewind_date');
+                window.location.href = newUrl.toString();
+            });
+            
+            // Update navbar latest date text when in rewind mode
+            if (currentRewindDate) {
+                const navbarLatestDate = document.getElementById('navbarLatestDate');
+                if (navbarLatestDate) {
+                    navbarLatestDate.innerHTML = `<span class="badge bg-warning text-dark ms-1">Rewound to ${currentRewindDate}</span>`;
+                }
+            }
+        }
+        
         // Load ticker details
         function loadTickerDetails() {
-            fetch(`/api/stock/${ticker}`)
+            fetch(appendRewindDate(`/api/stock/${ticker}`))
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -702,7 +770,7 @@
         function loadCharts() {
             // Fetch both price data and earnings data in parallel
             Promise.all([
-                fetch(`/api/stock/${ticker}/prices`).then(response => response.json()),
+                fetch(appendRewindDate(`/api/stock/${ticker}/prices`)).then(response => response.json()),
                 fetchEarningsData(ticker)
             ])
                 .then(([priceData, earningsData]) => {
@@ -1163,7 +1231,7 @@
         }
 
         function fetchEarningsData(ticker) {
-            return fetch(`/api/stock/${ticker}/earnings`)
+            return fetch(appendRewindDate(`/api/stock/${ticker}/earnings`))
                 .then(response => {
                     if (!response.ok) {
                         if (response.status === 404) {
@@ -1558,7 +1626,7 @@
 
         // Flags functionality
         function loadFlags() {
-            fetch(`/api/flags/${ticker}`)
+            fetch(appendRewindDate(`/api/flags/${ticker}`))
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -1634,7 +1702,7 @@
 
         // Concise Notes functionality
         function loadConciseNote() {
-            fetch(`/api/concise-notes/${ticker}`)
+            fetch(appendRewindDate(`/api/concise-notes/${ticker}`))
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -1703,6 +1771,7 @@
 
         // Load data when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            initializeRewindControls();
             loadTickerDetails();
             loadCharts();
             loadComments();
