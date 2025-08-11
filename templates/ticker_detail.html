@@ -847,7 +847,7 @@
                 height: 1000,
                 layout: {
                     background: { color: '#ffffff' },
-                    textColor: '#6c757d',
+                    textColor: '#495057',
                     fontSize: 12
                 },
                 grid: {
@@ -860,6 +860,25 @@
                 rightPriceScale: { borderColor: '#dee2e6' },
                 timeScale: { 
                     borderColor: '#dee2e6',
+                    visible: true,
+                    borderVisible: true,
+                    // Tactful date labels on the x-axis
+                    tickMarkFormatter: (time, tickMarkType) => {
+                        // time is UTCTimestamp (seconds) in our data
+                        const d = new Date(time * 1000);
+                        // Format in UTC to prevent local timezone shifts
+                        const fmt = (options) => new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', ...options }).format(d);
+                        // Show fewer details for larger intervals to reduce clutter
+                        switch (tickMarkType) {
+                            case LightweightCharts.TickMarkType.Year:
+                                return fmt({ year: 'numeric' });
+                            case LightweightCharts.TickMarkType.Month:
+                                return fmt({ month: 'short' });
+                            case LightweightCharts.TickMarkType.DayOfMonth:
+                            default:
+                                return fmt({ month: 'short', day: '2-digit' });
+                        }
+                    },
                     // Disable default wheel scrolling but allow other interactions
                     handleScroll: {
                         mouseWheel: false,
@@ -1122,12 +1141,13 @@
                     return;
                 }
 
-                // Format the date
+                // Format the date in UTC to avoid timezone shifting the trading day
                 const date = new Date(param.time * 1000);
                 const dateStr = date.toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
-                    day: 'numeric'
+                    day: 'numeric',
+                    timeZone: 'UTC'
                 });
 
                 // Format price values with safety checks
