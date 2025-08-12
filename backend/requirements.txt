@@ -1,0 +1,10 @@
+flask==3.0.2
+flask-cors==4.0.0
+flask-jwt-extended==4.6.0
+python-dotenv==1.0.1
+SQLAlchemy==2.0.27
+psycopg2-binary==2.9.9
+pydantic==2.7.1
+pytest==8.2.0
+gunicorn==21.2.0
+pytz==2024.1
