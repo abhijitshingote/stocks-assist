@@ -64,7 +64,9 @@
             .then(response => response.json())
             .then(data => {
                 if (!data.error) {
-                    tickersAbove = data.map(stock => stock.ticker).sort();
+                    // Sort by seachange event date descending (same as main table)
+                    data = sortStockData(data, 'sea_change_events', 'desc');
+                    tickersAbove = data.map(stock => stock.ticker);
                     updateTickerDisplay();
                 }
             })
@@ -81,7 +83,9 @@
             .then(response => response.json())
             .then(data => {
                 if (!data.error) {
-                    tickersBelow = data.map(stock => stock.ticker).sort();
+                    // Sort by seachange event date descending (same as main table)
+                    data = sortStockData(data, 'sea_change_events', 'desc');
+                    tickersBelow = data.map(stock => stock.ticker);
                     updateTickerDisplay();
                 }
             })

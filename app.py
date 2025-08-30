@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, render_template_string
 from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, init_db
 from sqlalchemy import desc, func, and_, text
 from datetime import datetime, timedelta
@@ -3150,6 +3150,11 @@ def update_concise_note(ticker):
     except Exception as e:
         logger.error(f"Error updating concise note for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/stock-research')
+def stock_research():
+    """Display stock research results from HTML template"""
+    return render_template('stock_research_results.html')
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000) 
