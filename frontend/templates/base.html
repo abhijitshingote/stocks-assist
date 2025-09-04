@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Stocks-Assist{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+            padding: 20px;
+        }
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #007bff, #28a745);
+            margin: 3rem 0;
+        }
+        .navbar-nav .nav-link.active {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 0.25rem;
+        }
+        .card {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .badge {
+            font-size: 0.8rem;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .select-all-btn {
+            margin-bottom: 1rem;
+        }
+        .sortable-header {
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+        .sortable-header:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        .sortable-header i {
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+        /* Additional CSS can be added here by child templates */
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Stocks-Assist</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'home' %}active{% endif %}" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'return_1d' %}active{% endif %}" href="/Return1D">1 Day</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'return_5d' %}active{% endif %}" href="/Return5D">5 Days</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'return_20d' %}active{% endif %}" href="/Return20D">20 Days</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'return_60d' %}active{% endif %}" href="/Return60D">60 Days</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'return_120d' %}active{% endif %}" href="/Return120D">120 Days</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'gapper' %}active{% endif %}" href="/Gapper">Gappers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'volume' %}active{% endif %}" href="/Volume">Volume</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'sea_change' %}active{% endif %}" href="/SeaChange">SeaChange</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'all_returns' %}active{% endif %}" href="/AllReturns">All Returns</a>
+                    </li>
+                                            <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'shortlist' %}active{% endif %}" href="/AbiShortList">Abi ShortList</a>
+                        </li>
+                                            <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'blacklist' %}active{% endif %}" href="/AbiBlackList">Abi BlackList</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'rsi' %}active{% endif %}" href="/RSI">RSI Analysis</a>
+                    </li>
+                </ul>
+                <!-- Rewind Date Selector -->
+                <div class="navbar-text me-3">
+                    <small>
+                        <label for="rewindDate" class="form-label text-white-50 me-1">Rewind to:</label>
+                        <input type="date" id="rewindDate" class="form-control form-control-sm d-inline-block" style="width: auto;" title="View data as of this date">
+                        <button id="clearRewind" class="btn btn-outline-secondary btn-sm ms-1" title="Clear rewind and view latest data">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </small>
+                </div>
+
+                <!-- Chatbot trigger -->
+                <button class="btn btn-outline-info me-2" type="button" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chatbot">
+                    <i class="fas fa-comments"></i>
+                </button>
+
+                <span class="navbar-text" id="market-status">
+                    <small>lastTrade: <span id="navbarLatestDate">Loading...</span></small>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mb-4">{% block page_title %}Stock Screener{% endblock %}</h1>
+                <p class="text-center text-muted">{% block page_description %}Stock screening and analysis tool{% endblock %}</p>
+            </div>
+        </div>
+
+
+
+        <!-- Bulk Selection Controls -->
+        <div class="card mb-4" id="bulkSelectionCard" style="display: none;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span id="selectedCount">0</span> stocks selected
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-success btn-sm" onclick="addSelectedToShortlist()">
+                            Add Selected to ShortList
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm ms-2" onclick="addSelectedToBlacklist()">
+                            Add Selected to BlackList
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm ms-2" onclick="clearSelection()">
+                            Clear Selection
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Chatbot Modal -->
+    <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chatModalLabel">Stocks-Assist Chatbot</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="max-height:500px; overflow-y:auto;" id="chatMessages">
+                    <!-- Chat messages will be appended here -->
+                </div>
+                <div class="modal-footer d-flex">
+                    <input type="text" class="form-control" id="chatInput" placeholder="Ask me anything..." autocomplete="off" />
+                    <button class="btn btn-primary ms-2" id="sendChatBtn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='navbar-date.js') }}"></script>
+    
+    <!-- Rewind functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rewindInput = document.getElementById('rewindDate');
+            const clearRewindBtn = document.getElementById('clearRewind');
+            
+            // Get current rewind date from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentRewindDate = urlParams.get('rewind_date');
+            if (currentRewindDate) {
+                rewindInput.value = currentRewindDate;
+            }
+            
+            // Handle rewind date change
+            rewindInput.addEventListener('change', function() {
+                const selectedDate = this.value;
+                if (selectedDate) {
+                    // Add rewind_date parameter to current URL and reload
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('rewind_date', selectedDate);
+                    window.location.href = newUrl.toString();
+                }
+            });
+            
+            // Handle clear rewind button
+            clearRewindBtn.addEventListener('click', function() {
+                // Remove rewind_date parameter from URL and reload
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.delete('rewind_date');
+                window.location.href = newUrl.toString();
+            });
+            
+            // Update navbar latest date text when in rewind mode
+            if (currentRewindDate) {
+                const navbarLatestDate = document.getElementById('navbarLatestDate');
+                if (navbarLatestDate) {
+                    const originalText = navbarLatestDate.textContent;
+                    navbarLatestDate.innerHTML = `${originalText} <span class="badge bg-warning text-dark ms-1">Rewound to ${currentRewindDate}</span>`;
+                }
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
+    
+    <!-- Common JavaScript Configuration -->
+    <script>
+        // Helper function to get current rewind_date parameter
+        function getRewindDate() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('rewind_date');
+        }
+        
+        // Helper function to append rewind_date to API URLs
+        function appendRewindDate(apiUrl) {
+            const rewindDate = getRewindDate();
+            if (!rewindDate) {
+                return apiUrl;
+            }
+            
+            const url = new URL(apiUrl, window.location.origin);
+            url.searchParams.set('rewind_date', rewindDate);
+            return url.toString();
+        }
+        
+        // Determine which return column (if any) should be highlighted based on URL – needs to be defined early so helper functions can use it.
+        const pathname = window.location.pathname;
+        let highlightedReturnKey = null;
+        if (pathname.includes('Return5D')) {
+            highlightedReturnKey = 'return_5d';
+        } else if (pathname.includes('Return20D')) {
+            highlightedReturnKey = 'return_20d';
+        } else if (pathname.includes('Return60D')) {
+            highlightedReturnKey = 'return_60d';
+        } else if (pathname.includes('Return120D')) {
+            highlightedReturnKey = 'return_120d';
+        }
+
+        // Column configurations for different page types
+        const COLUMN_CONFIGS = {
+            returns: {
+                columns: [
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'ticker', label: 'Ticker', type: 'ticker' },
+                    { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
+                    { key: 'sector', label: 'Sector', type: 'text' },
+                    { key: 'industry', label: 'Industry', type: 'text' },
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' },
+                    // { key: 'priority_score', label: 'Priority', type: 'text' },  // removed: only for all_returns
+                    // { key: 'return_periods', label: 'Contrib', type: 'badge_blue' }
+                ]
+            },
+            all_returns: {
+                columns: [
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'ticker', label: 'Ticker', type: 'ticker' },
+                    { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
+                    { key: 'sector', label: 'Sector', type: 'text' },
+                    { key: 'industry', label: 'Industry', type: 'text' },
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'priority_score', label: 'Priority', type: 'text' },
+                    { key: 'return_periods', label: 'Contrib', type: 'badge_blue' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' }
+                ]
+            },
+            gapper: {
+                columns: [
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'ticker', label: 'Ticker', type: 'ticker' },
+                    { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
+                    { key: 'sector', label: 'Sector', type: 'text' },
+                    { key: 'industry', label: 'Industry', type: 'text' },
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' },
+                    // { key: 'priority_score', label: 'Priority', type: 'text' },
+                    // { key: 'return_periods', label: 'Contrib', type: 'badge_blue' }
+                ]
+            },
+            volume: {
+                columns: [
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'ticker', label: 'Ticker', type: 'ticker' },
+                    { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
+                    { key: 'sector', label: 'Sector', type: 'text' },
+                    { key: 'industry', label: 'Industry', type: 'text' },
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' },
+                    // { key: 'priority_score', label: 'Priority', type: 'text' },
+                    // { key: 'return_periods', label: 'Contrib', type: 'badge_blue' }
+                ]
+            },
+            sea_change: {
+                columns: [
+                    { key: 'serial_number', label: '', width: '50px', type: 'serial' },
+                    { key: 'is_reviewed', label: 'Reviewed', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_shortlisted', label: 'Shortlist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'is_blacklisted', label: 'Blacklist', width: '70px', type: 'flag_checkbox' },
+                    { key: 'ticker', label: 'Ticker', type: 'ticker' },
+                    { key: 'company_name', label: 'Company', type: 'text' },
+                    { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'country', label: 'Country', type: 'badge_info' },
+                    { key: 'sector', label: 'Sector', type: 'text' },
+                    { key: 'industry', label: 'Industry', type: 'text' },
+                    { key: 'current_price_with_change', label: 'Current Price', type: 'price_with_change' },
+                    { key: 'week_52_range', label: '52Wk Range', type: 'text' },
+                    { key: 'volume', label: 'Volume', type: 'text' },
+                    { key: 'dollar_volume', label: 'Dollar Volume', type: 'text' },
+                    { key: 'volume_change', label: 'Vol Change', type: 'badge_warning' },
+                    { key: 'sea_change_events', label: 'SeaChange Events', type: 'text' },
+                    { key: 'return_5d', label: '5D Return', type: 'return_badge' },
+                    { key: 'return_20d', label: '20D Return', type: 'return_badge' },
+                    { key: 'return_60d', label: '60D Return', type: 'return_badge' },
+                    { key: 'return_120d', label: '120D Return', type: 'return_badge' }
+                ]
+            }
+        };
+
+        // Common table generation functions
+        function generateTableHeader(columns) {
+            let headerHtml = '<tr>';
+            columns.forEach(col => {
+                if (col.type === 'flag_checkbox') {
+                    headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
+                } else if (col.type === 'checkbox') {
+                    headerHtml += `<th style="width: ${col.width};">
+                        <input type="checkbox" class="form-check-input" id="selectAllAboveCheckbox" onchange="toggleSelectAllAbove()">
+                    </th>`;
+                } else if (col.type === 'serial') {
+                    headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
+                } else if (col.type === 'review_toggle') {
+                    headerHtml += `<th style="width: ${col.width};"></th>`;
+                } else {
+                    headerHtml += `<th class="sortable-header" onclick="sortTable('above', '${col.key}')" style="cursor: pointer;">
+                        ${col.label} <i class="fas fa-sort text-muted" id="sort-icon-above-${col.key}"></i>
+                    </th>`;
+                }
+            });
+            headerHtml += '</tr>';
+            return headerHtml;
+        }
+
+        function generateTableHeaderBelow(columns) {
+            let headerHtml = '<tr>';
+            columns.forEach(col => {
+                if (col.type === 'flag_checkbox') {
+                    headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
+                } else if (col.type === 'checkbox') {
+                    headerHtml += `<th style="width: ${col.width};">
+                        <input type="checkbox" class="form-check-input" id="selectAllBelowCheckbox" onchange="toggleSelectAllBelow()">
+                    </th>`;
+                } else if (col.type === 'serial') {
+                    headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
+                } else if (col.type === 'review_toggle') {
+                    headerHtml += `<th style="width: ${col.width};"></th>`;
+                } else {
+                    headerHtml += `<th class="sortable-header" onclick="sortTable('below', '${col.key}')" style="cursor: pointer;">
+                        ${col.label} <i class="fas fa-sort text-muted" id="sort-icon-below-${col.key}"></i>
+                    </th>`;
+                }
+            });
+            headerHtml += '</tr>';
+            return headerHtml;
+        }
+
+        function generateTableRow(stock, columns, serialNumber) {
+            let rowHtml = '';
+            columns.forEach(col => {
+                switch (col.type) {
+                    case 'serial':
+                        rowHtml += `<td class="text-center  text-muted">${serialNumber}</td>`;
+                        break;
+                    case 'flag_checkbox':
+                        const checked = stock[col.key];
+                        const flagName = col.key === 'is_reviewed' ? 'reviewed' : (col.key === 'is_shortlisted' ? 'shortlisted' : 'blacklisted');
+                        rowHtml += `<td><input type="checkbox" class="form-check-input flag-checkbox" data-ticker="${stock.ticker}" data-flag="${flagName}" ${checked ? 'checked' : ''} onchange="toggleFlag(event)"></td>`;
+                        break;
+                    case 'checkbox':
+                        // legacy bulk-select checkbox – removed
+                        break;
+                    case 'review_toggle':
+                        // legacy review icon – removed
+                        break;
+                    case 'ticker':
+                        rowHtml += `<td>
+                            <a href="/ticker/${stock.ticker}" class="text-decoration-none fw-bold">
+                                ${stock.ticker}
+                            </a>
+                        </td>`;
+                        break;
+                    case 'text':
+                        rowHtml += `<td>${stock[col.key] || 'N/A'}</td>`;
+                        break;
+                    case 'badge':
+                        const badgeValue = stock[col.key];
+                        if (badgeValue && typeof badgeValue === 'string' && badgeValue.includes('%')) {
+                            const isPositive = !badgeValue.includes('-');
+                            const badgeClass = isPositive ? 'bg-success' : 'bg-danger';
+                            rowHtml += `<td><span class="badge ${badgeClass}">${badgeValue}</span></td>`;
+                        } else {
+                            rowHtml += `<td><span class="badge bg-secondary">${badgeValue || 'N/A'}</span></td>`;
+                        }
+                        break;
+                    case 'badge_info':
+                        rowHtml += `<td>${stock[col.key] || 'N/A'}</td>`;
+                        break;
+                    case 'badge_warning':
+                        rowHtml += `<td><span class="badge bg-warning text-dark">${stock[col.key] || 'N/A'}</span></td>`;
+                        break;
+                    case 'price_with_change':
+                        const currentPrice = stock.current_price || 'N/A';
+                        const changePercent = stock.price_change_pct || '';
+                        const changeAmount = stock.price_change || '';
+                        if (currentPrice !== 'N/A' && changePercent && changeAmount) {
+                            const isPositive = !changeAmount.includes('-');
+                            const changeClass = isPositive ? 'text-success' : 'text-danger';
+                            const badgeClass = isPositive ? 'bg-success' : 'bg-danger';
+                            rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span> <span class="ms-1 fw-bold ${changeClass}">${changeAmount}</span> <span class="badge ${badgeClass} ms-1">${changePercent}</span></td>`;
+                        } else {
+                            rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span></td>`;
+                        }
+                        break;
+                    case 'badge_blue':
+                        const periods = stock[col.key];
+                        if (Array.isArray(periods) && periods.length > 0) {
+                            const periodBadges = periods.map(period => `<span class="badge bg-primary me-1">${period}</span>`).join('');
+                            rowHtml += `<td>${periodBadges}</td>`;
+                        } else {
+                            rowHtml += `<td><span class="badge bg-primary">${periods || 'N/A'}</span></td>`;
+                        }
+                        break;
+                    case 'return_badge':
+                        const returnValue = stock[col.key];
+                        if (returnValue === null || returnValue === undefined || returnValue === '') {
+                            rowHtml += `<td><span class="text-muted">--</span></td>`;
+                        } else {
+                            const isPositiveReturn = typeof returnValue === 'string' && !returnValue.includes('-');
+                            const colorClass = isPositiveReturn ? 'text-success' : 'text-danger';
+                            const badgeColor = isPositiveReturn ? 'bg-success' : 'bg-danger';
+                            if (col.key === highlightedReturnKey) {
+                                rowHtml += `<td><span class="badge ${badgeColor}">${returnValue}</span></td>`;
+                            } else {
+                                rowHtml += `<td><span class="${colorClass}">${returnValue}</span></td>`;
+                            }
+                        }
+                        break;
+                    case 'sea_change_events':
+                        let eventsStr = stock[col.key] || 'N/A';
+                        if (eventsStr !== 'N/A') {
+                            // If dates are in MM/DD format, append current year for display
+                            const currentYear = new Date().getFullYear();
+                            eventsStr = eventsStr.replace(/(\d{2}\/\d{2})(?=:\s)/g, `$1/${currentYear}`);
+                        }
+                        rowHtml += `<td>${eventsStr}</td>`;
+                        break;
+                    default:
+                        rowHtml += `<td>${stock[col.key] || 'N/A'}</td>`;
+                        break;
+                }
+            });
+            return `<tr>${rowHtml}</tr>`;
+        }
+
+        // Table sorting functionality
+        let sortState = {
+            above: { column: null, direction: 'asc' },
+            below: { column: null, direction: 'asc' }
+        };
+        
+        let stocksDataAbove = [];
+        let stocksDataBelow = [];
+        
+        function sortTable(section, column) {
+            const currentState = sortState[section];
+            
+            // Toggle direction if same column, otherwise default to ascending
+            if (currentState.column === column) {
+                currentState.direction = currentState.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentState.direction = 'asc';
+            }
+            currentState.column = column;
+            
+            // Update sort icons
+            updateSortIcons(section, column, currentState.direction);
+            
+            // Sort the data
+            const stocksData = section === 'above' ? stocksDataAbove : stocksDataBelow;
+            const sortedData = sortStockData(stocksData, column, currentState.direction);
+            
+            // Re-render the table
+            const tableBodyId = section === 'above' ? 'stockTableBodyAbove' : 'stockTableBodyBelow';
+            displayStocks(sortedData, tableBodyId);
+        }
+        
+        function updateSortIcons(section, activeColumn, direction) {
+            // Reset all icons for this section
+            const allIcons = document.querySelectorAll(`[id^="sort-icon-${section}-"]`);
+            allIcons.forEach(icon => {
+                icon.className = 'fas fa-sort text-muted';
+            });
+            
+            // Set active icon
+            const activeIcon = document.getElementById(`sort-icon-${section}-${activeColumn}`);
+            if (activeIcon) {
+                activeIcon.className = direction === 'asc' ? 'fas fa-sort-up text-primary' : 'fas fa-sort-down text-primary';
+            }
+        }
+        
+        // Helper to convert market cap strings like "12.3B" or "456M" into a pure numeric value (in dollars) for accurate sorting
+        function parseMarketCap(value) {
+            if (value == null) return 0; // treat null/undefined as 0 so they fall to the end
+            if (typeof value !== 'string') {
+                return Number(value) || 0;
+            }
+            // Remove commas, dollar signs, and whitespace, then work in upper-case for easy suffix check
+            const clean = value.replace(/[,$]/g, '').trim().toUpperCase();
+            const num = parseFloat(clean) || 0;
+            if (clean.endsWith('T')) {
+                return num * 1e12;  // trillions -> dollars
+            }
+            if (clean.endsWith('B')) {
+                return num * 1e9;  // billions -> dollars
+            }
+            if (clean.endsWith('M')) {
+                return num * 1e6;  // millions -> dollars
+            }
+            return num; // assume already absolute
+        }
+
+        // Extract the most recent date (YYYY-MM-DD) from a SeaChange events string.
+        // Returns a numeric timestamp (milliseconds) so it can be compared numerically.
+        function extractLatestDate(eventsStr) {
+            if (!eventsStr || typeof eventsStr !== 'string') return 0;
+            const yearNow = new Date().getFullYear();
+            const dateRegexHyphen = /(\d{4}-\d{2}-\d{2})/g;         // e.g. 2024-06-12
+            const dateRegexSlash  = /(\d{2})\/(\d{2})(?:\/(\d{2,4}))?/g; // e.g. 06/12 or 06/12/24 or 06/12/2024
+
+            let timestamps = [];
+
+            // Collect YYYY-MM-DD matches first
+            for (const m of eventsStr.matchAll(dateRegexHyphen)) {
+                const ts = Date.parse(m[1]);
+                if (!isNaN(ts)) timestamps.push(ts);
+            }
+
+            // Collect MM/DD[/YY] matches
+            for (const m of eventsStr.matchAll(dateRegexSlash)) {
+                const month = m[1];
+                const day = m[2];
+                let year = m[3];
+                if (!year) {
+                    year = yearNow; // assume current year if absent
+                } else if (year.length === 2) {
+                    year = parseInt(year) + 2000; // convert YY to YYYY
+                }
+                const ts = Date.parse(`${year}-${month}-${day}`);
+                if (!isNaN(ts)) timestamps.push(ts);
+            }
+
+            if (timestamps.length === 0) return 0;
+            return Math.max(...timestamps);
+        }
+ 
+        function sortStockData(data, column, direction) {
+            return [...data].sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+                
+                // Special case: sort "Current Price" column by percentage change, not the absolute price
+                if (column === 'current_price_with_change') {
+                    const pctA = a.price_change_pct || '';
+                    const pctB = b.price_change_pct || '';
+                    aVal = parseFloat(pctA.replace('%', '')) || 0;
+                    bVal = parseFloat(pctB.replace('%', '')) || 0;
+                }
+                
+                // Handle null/undefined values
+                if (aVal == null && bVal == null) return 0;
+                if (aVal == null) return 1;
+                if (bVal == null) return -1;
+                
+                // Custom handling for Market Cap column that may contain M/B suffixes
+                if (column === 'market_cap') {
+                    aVal = parseMarketCap(aVal);
+                    bVal = parseMarketCap(bVal);
+                }
+                
+                // Custom handling for Volume column that may contain K/M suffixes
+                if (column === 'volume') {
+                    aVal = parseMarketCap(aVal);
+                    bVal = parseMarketCap(bVal);
+                }
+                
+                // Custom handling for Dollar Volume column that may contain K/M/B suffixes
+                if (column === 'dollar_volume') {
+                    aVal = parseMarketCap(aVal);
+                    bVal = parseMarketCap(bVal);
+                }
+
+                // Custom handling for SeaChange events column – sort by latest date found
+                if (column === 'sea_change_events') {
+                    aVal = extractLatestDate(aVal);
+                    bVal = extractLatestDate(bVal);
+                }
+                
+                // Handle different data types
+                if (typeof aVal === 'string' && typeof bVal === 'string') {
+                    // Check if it's a percentage or currency value
+                    if (aVal.includes('%') || aVal.includes('$') || aVal.includes('-') && aVal.match(/[\d.]/)) {
+                        aVal = parseFloat(aVal.replace(/[%$,]/g, '')) || 0;
+                        bVal = parseFloat(bVal.replace(/[%$,]/g, '')) || 0;
+                    } else {
+                        // String comparison
+                        aVal = aVal.toLowerCase();
+                        bVal = bVal.toLowerCase();
+                    }
+                }
+                
+                // Numeric comparison
+                if (typeof aVal === 'number' && typeof bVal === 'number') {
+                    return direction === 'asc' ? aVal - bVal : bVal - aVal;
+                }
+                
+                // String comparison
+                if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+                if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        
+        // Enhanced displayStocks function to store data for sorting
+        function displayStocks(stocks, tableBodyId) {
+            const tbody = document.getElementById(tableBodyId);
+            const columns = COLUMN_CONFIGS[pageConfig.type].columns;
+            tbody.innerHTML = '';
+            
+            // Store data for sorting
+            if (tableBodyId === 'stockTableBodyAbove') {
+                stocksDataAbove = stocks;
+            } else if (tableBodyId === 'stockTableBodyBelow') {
+                stocksDataBelow = stocks;
+            }
+            
+            if (stocks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${columns.length}" class="text-center">No stocks found matching the criteria</td></tr>`;
+                return;
+            }
+            
+            stocks.forEach((stock, index) => {
+                tbody.innerHTML += generateTableRow(stock, columns, index + 1);
+            });
+        }
+
+        // Common selection management functions
+        function updateSelectionCount() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox:checked');
+            const count = checkboxes.length;
+            document.getElementById('selectedCount').textContent = count;
+            
+            const bulkCard = document.getElementById('bulkSelectionCard');
+            if (count > 0) {
+                bulkCard.style.display = 'block';
+            } else {
+                bulkCard.style.display = 'none';
+            }
+            
+            updateSelectAllCheckboxes();
+        }
+
+        function updateSelectAllCheckboxes() {
+            const aboveCheckboxes = document.querySelectorAll('#stockTableBodyAbove .stock-checkbox');
+            const belowCheckboxes = document.querySelectorAll('#stockTableBodyBelow .stock-checkbox');
+            
+            const aboveChecked = document.querySelectorAll('#stockTableBodyAbove .stock-checkbox:checked');
+            const belowChecked = document.querySelectorAll('#stockTableBodyBelow .stock-checkbox:checked');
+            
+            const selectAllAbove = document.getElementById('selectAllAboveCheckbox');
+            const selectAllBelow = document.getElementById('selectAllBelowCheckbox');
+            
+            if (selectAllAbove) {
+                selectAllAbove.checked = aboveCheckboxes.length > 0 && aboveChecked.length === aboveCheckboxes.length;
+                selectAllAbove.indeterminate = aboveChecked.length > 0 && aboveChecked.length < aboveCheckboxes.length;
+            }
+            
+            if (selectAllBelow) {
+                selectAllBelow.checked = belowCheckboxes.length > 0 && belowChecked.length === belowCheckboxes.length;
+                selectAllBelow.indeterminate = belowChecked.length > 0 && belowChecked.length < belowCheckboxes.length;
+            }
+        }
+
+        function toggleSelectAllAbove() {
+            const selectAllCheckbox = document.getElementById('selectAllAboveCheckbox');
+            const checkboxes = document.querySelectorAll('#stockTableBodyAbove .stock-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            updateSelectionCount();
+        }
+
+        function toggleSelectAllBelow() {
+            const selectAllCheckbox = document.getElementById('selectAllBelowCheckbox');
+            const checkboxes = document.querySelectorAll('#stockTableBodyBelow .stock-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            updateSelectionCount();
+        }
+
+        function selectAllAbove() {
+            const checkboxes = document.querySelectorAll('#stockTableBodyAbove .stock-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            updateSelectionCount();
+        }
+
+        function selectAllBelow() {
+            const checkboxes = document.querySelectorAll('#stockTableBodyBelow .stock-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            updateSelectionCount();
+        }
+
+        function clearSelection() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateSelectionCount();
+        }
+
+        function addSelectedToShortlist() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox:checked');
+            const tickers = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (tickers.length === 0) {
+                alert('Please select at least one stock to add to your shortlist.');
+                return;
+            }
+            
+            const notes = prompt('Optional notes for these stocks (leave blank if none):') || '';
+            
+            fetch('/api/shortlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tickers: tickers,
+                    notes: notes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error adding to shortlist: ' + data.error);
+                    return;
+                }
+                
+                let message = data.message;
+                if (data.errors && data.errors.length > 0) {
+                    message += '\n\nErrors:\n' + data.errors.join('\n');
+                }
+                
+                alert(message);
+                clearSelection();
+            })
+            .catch(error => {
+                alert('Error adding to shortlist: ' + error.message);
+            });
+        }
+
+        function addSelectedToBlacklist() {
+            const checkboxes = document.querySelectorAll('.stock-checkbox:checked');
+            const tickers = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (tickers.length === 0) {
+                alert('Please select at least one stock to add to your blacklist.');
+                return;
+            }
+            
+            const notes = prompt('Optional notes for these stocks (leave blank if none):') || '';
+            
+            fetch('/api/blacklist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tickers: tickers,
+                    notes: notes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error adding to blacklist: ' + data.error);
+                    return;
+                }
+                
+                let message = data.message;
+                if (data.errors && data.errors.length > 0) {
+                    message += '\n\nErrors:\n' + data.errors.join('\n');
+                }
+                
+                alert(message);
+                clearSelection();
+            })
+            .catch(error => {
+                alert('Error adding to blacklist: ' + error.message);
+            });
+        }
+
+        // Track pending flag changes
+        let pendingFlagChanges = new Map();
+
+        function toggleFlag(event) {
+            const checkbox = event.currentTarget;
+            const ticker = checkbox.getAttribute('data-ticker');
+            const flag = checkbox.getAttribute('data-flag'); // reviewed | shortlisted | blacklisted
+            const value = checkbox.checked;
+
+            // Store the change locally instead of immediately saving
+            const key = `${ticker}_${flag}`;
+            pendingFlagChanges.set(key, {
+                ticker: ticker,
+                flag: flag,
+                value: value
+            });
+
+            // Update the UI to show pending changes
+            updatePendingChangesUI();
+        }
+
+        function updatePendingChangesUI() {
+            const count = pendingFlagChanges.size;
+            const commitBtn = document.getElementById('commitFlagsBtn');
+            const pendingIndicator = document.getElementById('pendingChangesIndicator');
+            
+            if (commitBtn) {
+                if (count > 0) {
+                    commitBtn.style.display = 'inline-block';
+                    commitBtn.textContent = `Commit Flags (${count})`;
+                    commitBtn.disabled = false;
+                } else {
+                    commitBtn.style.display = 'none';
+                }
+            }
+            
+            if (pendingIndicator) {
+                if (count > 0) {
+                    pendingIndicator.style.display = 'inline-block';
+                    pendingIndicator.textContent = `${count} pending changes`;
+                } else {
+                    pendingIndicator.style.display = 'none';
+                }
+            }
+        }
+
+        function commitFlags() {
+            if (pendingFlagChanges.size === 0) {
+                alert('No pending changes to commit.');
+                return;
+            }
+
+            const commitBtn = document.getElementById('commitFlagsBtn');
+            const originalText = commitBtn.textContent;
+            commitBtn.textContent = 'Committing...';
+            commitBtn.disabled = true;
+
+            // Convert Map to array of changes
+            const changes = Array.from(pendingFlagChanges.values());
+
+            fetch('/api/flags/batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    changes: changes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error committing flags: ' + data.error);
+                    commitBtn.textContent = originalText;
+                    commitBtn.disabled = false;
+                    return;
+                }
+                
+                // Clear pending changes on success
+                pendingFlagChanges.clear();
+                updatePendingChangesUI();
+                
+                // Show success message
+                const successCount = data.success_count || changes.length;
+                alert(`Successfully committed ${successCount} flag changes!`);
+                
+                if (data.errors && data.errors.length > 0) {
+                    console.warn('Some errors occurred:', data.errors);
+                }
+            })
+            .catch(err => {
+                alert('Error committing flags: ' + err.message);
+                commitBtn.textContent = originalText;
+                commitBtn.disabled = false;
+            });
+        }
+
+        function discardPendingFlags() {
+            if (pendingFlagChanges.size === 0) {
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to discard ${pendingFlagChanges.size} pending flag changes?`)) {
+                return;
+            }
+
+            // Revert all checkboxes to their original state
+            pendingFlagChanges.forEach((change, key) => {
+                const checkbox = document.querySelector(`[data-ticker="${change.ticker}"][data-flag="${change.flag}"]`);
+                if (checkbox) {
+                    checkbox.checked = !change.value; // Revert to original state
+                }
+            });
+
+            // Clear pending changes
+            pendingFlagChanges.clear();
+            updatePendingChangesUI();
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

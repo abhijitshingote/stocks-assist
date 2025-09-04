@@ -1,0 +1,495 @@
+{% extends "base.html" %}
+
+{% block title %}Abi BlackList - Stock Screener{% endblock %}
+
+{% block page_title %}Abi BlackList{% endblock %}
+{% block page_description %}Your personalized stock blacklist - stocks to avoid in all screeners{% endblock %}
+
+{% set active_page = 'blacklist' %}
+
+{% block extra_css %}
+<style>
+    .blacklist-table {
+        font-size: 0.85rem;
+    }
+    .blacklist-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+        white-space: nowrap;
+    }
+    .blacklist-table td {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    .positive { color: #28a745; }
+    .negative { color: #dc3545; }
+    .ticker-link {
+        color: #dc3545; /* Red color for blacklisted stocks */
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .ticker-link:hover {
+        text-decoration: underline;
+    }
+    .remove-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    .notes-cell {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+    }
+    .blacklist-header {
+        background: linear-gradient(135deg, #dc3545, #a71e2a);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="blacklist-header">
+    <h4 class="mb-1">⚠️ Blacklisted Stocks</h4>
+    <p class="mb-0 small">These stocks are excluded from all screener results</p>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <!-- Page title and description are handled by base template -->
+    </div>
+    <div>
+        <!-- Buttons removed as requested -->
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loadingSpinner" class="loading-spinner">
+    <div class="spinner-border text-danger" role="status">
+        <span class="visually-hidden">Loading blacklist...</span>
+    </div>
+</div>
+
+<!-- Error Message -->
+<div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
+<!-- Empty State -->
+<div id="emptyState" class="empty-state" style="display: none;">
+    <h4>No stocks in your blacklist yet</h4>
+    <p>Visit the screening pages or ticker detail pages to add stocks to your blacklist.</p>
+    <p class="text-muted">Blacklisted stocks will be excluded from all screener results.</p>
+</div>
+
+<!-- Blacklist Table -->
+<div class="table-responsive" id="blacklistTableContainer" style="display: none;">
+    <table class="table table-striped table-hover table-sm">
+        <thead class="table-dark sticky-top">
+            <tr>
+                <th class="sortable-header" onclick="sortBlacklistTable('serial_number')" style="cursor: pointer;">
+                    # <i class="fas fa-sort text-muted" id="sort-icon-serial_number"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('ticker')" style="cursor: pointer;">
+                    Ticker <i class="fas fa-sort text-muted" id="sort-icon-ticker"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('company_name')" style="cursor: pointer;">
+                    Company <i class="fas fa-sort text-muted" id="sort-icon-company_name"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('concise_notes')" style="cursor: pointer;">
+                    Concise Notes <i class="fas fa-sort text-muted" id="sort-icon-concise_notes"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('market_cap')" style="cursor: pointer;">
+                    Market Cap <i class="fas fa-sort text-muted" id="sort-icon-market_cap"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('country')" style="cursor: pointer;">
+                    Country <i class="fas fa-sort text-muted" id="sort-icon-country"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('sector')" style="cursor: pointer;">
+                    Sector <i class="fas fa-sort text-muted" id="sort-icon-sector"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('industry')" style="cursor: pointer;">
+                    Industry <i class="fas fa-sort text-muted" id="sort-icon-industry"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('current_price_with_change')" style="cursor: pointer;">
+                    Current Price <i class="fas fa-sort text-muted" id="sort-icon-current_price_with_change"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('week_52_range')" style="cursor: pointer;">
+                    52Wk Range <i class="fas fa-sort text-muted" id="sort-icon-week_52_range"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('volume')" style="cursor: pointer;">
+                    Volume <i class="fas fa-sort text-muted" id="sort-icon-volume"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('dollar_volume')" style="cursor: pointer;">
+                    Dollar Volume <i class="fas fa-sort text-muted" id="sort-icon-dollar_volume"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('vol_change')" style="cursor: pointer;">
+                    Vol Change <i class="fas fa-sort text-muted" id="sort-icon-vol_change"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('return_5d')" style="cursor: pointer;">
+                    5D Return <i class="fas fa-sort text-muted" id="sort-icon-return_5d"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('return_20d')" style="cursor: pointer;">
+                    20D Return <i class="fas fa-sort text-muted" id="sort-icon-return_20d"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('return_60d')" style="cursor: pointer;">
+                    60D Return <i class="fas fa-sort text-muted" id="sort-icon-return_60d"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('return_120d')" style="cursor: pointer;">
+                    120D Return <i class="fas fa-sort text-muted" id="sort-icon-return_120d"></i>
+                </th>
+                <th class="sortable-header" onclick="sortBlacklistTable('flagged_date')" style="cursor: pointer;">
+                    Flagged Date <i class="fas fa-sort text-muted" id="sort-icon-flagged_date"></i>
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="blacklistTableBody">
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+    // Variables for sorting functionality
+    let blacklistData = [];
+    let blacklistSortState = { column: null, direction: 'asc' };
+
+    // Load blacklist data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadBlacklist();
+    });
+
+    function loadBlacklist() {
+        console.log('Loading blacklist...');
+        showLoading();
+        
+        fetch(appendRewindDate('/api/blacklist'))
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Blacklist data:', data);
+                hideLoading();
+                
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+                
+                if (data.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+                
+                displayBlacklist(data);
+            })
+            .catch(error => {
+                console.error('Error loading blacklist:', error);
+                hideLoading();
+                showError('Failed to load blacklist: ' + error.message);
+            });
+    }
+
+    function showLoading() {
+        document.getElementById('loadingSpinner').style.display = 'flex';
+        document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('blacklistTableContainer').style.display = 'none';
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingSpinner').style.display = 'none';
+    }
+
+    function showError(message) {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorMessage').style.display = 'block';
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('blacklistTableContainer').style.display = 'none';
+    }
+
+    function showEmptyState() {
+        document.getElementById('emptyState').style.display = 'block';
+        document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('blacklistTableContainer').style.display = 'none';
+        document.getElementById('clearAllBtn').style.display = 'none';
+    }
+
+    function sortBlacklistTable(column) {
+        // Toggle direction if same column, otherwise default to ascending
+        if (blacklistSortState.column === column) {
+            blacklistSortState.direction = blacklistSortState.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            blacklistSortState.direction = 'asc';
+        }
+        blacklistSortState.column = column;
+        
+        // Update sort icons
+        updateBlacklistSortIcons(column, blacklistSortState.direction);
+        
+        // Sort the data
+        const sortedData = sortBlacklistData(blacklistData, column, blacklistSortState.direction);
+        
+        // Re-render the table
+        renderBlacklistTable(sortedData);
+    }
+    
+    function updateBlacklistSortIcons(activeColumn, direction) {
+        // Reset all icons
+        const allIcons = document.querySelectorAll('[id^="sort-icon-"]');
+        allIcons.forEach(icon => {
+            icon.className = 'fas fa-sort text-muted';
+        });
+        
+        // Set active icon
+        const activeIcon = document.getElementById(`sort-icon-${activeColumn}`);
+        if (activeIcon) {
+            activeIcon.className = direction === 'asc' ? 'fas fa-sort-up text-primary' : 'fas fa-sort-down text-primary';
+        }
+    }
+    
+    function sortBlacklistData(data, column, direction) {
+        return [...data].sort((a, b) => {
+            let aVal = a[column];
+            let bVal = b[column];
+            
+            // Special handling: for Current Price column, sort by percentage change instead of price
+            if (column === 'current_price_with_change') {
+                const pctA = a.price_change_pct || '';
+                const pctB = b.price_change_pct || '';
+                aVal = parseFloat(pctA.replace('%', '')) || 0;
+                bVal = parseFloat(pctB.replace('%', '')) || 0;
+            }
+            
+            // Handle null/undefined values
+            if (aVal == null && bVal == null) return 0;
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+            
+            // Custom handling: Market Cap values may have M/B/T suffixes
+            if (column === 'market_cap') {
+                aVal = parseMarketCap(aVal);
+                bVal = parseMarketCap(bVal);
+            }
+            
+            // Custom handling: Volume values may have K/M suffixes
+            if (column === 'volume') {
+                aVal = parseMarketCap(aVal);
+                bVal = parseMarketCap(bVal);
+            }
+            
+            // Custom handling: Dollar Volume values may have K/M/B suffixes
+            if (column === 'dollar_volume') {
+                aVal = parseMarketCap(aVal);
+                bVal = parseMarketCap(bVal);
+            }
+            
+            // Custom handling: Volume Change values have "x" suffix (e.g., "2.5x")
+            if (column === 'volume_change' || column === 'vol_change') {
+                aVal = parseVolumeChange(aVal);
+                bVal = parseVolumeChange(bVal);
+            }
+            
+            // Handle different data types
+            if (typeof aVal === 'string' && typeof bVal === 'string') {
+                // Check if it's a percentage or currency value
+                if (aVal.includes('%') || aVal.includes('$') || (aVal.includes('-') && aVal.match(/[\d.]/))) {
+                    aVal = parseFloat(aVal.replace(/[%$,]/g, '')) || 0;
+                    bVal = parseFloat(bVal.replace(/[%$,]/g, '')) || 0;
+                } else {
+                    // String comparison
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+            }
+            
+            // Handle dates
+            if (column === 'flagged_date') {
+                aVal = new Date(aVal || 0);
+                bVal = new Date(bVal || 0);
+            }
+            
+            // Numeric comparison
+            if (typeof aVal === 'number' && typeof bVal === 'number') {
+                return direction === 'asc' ? aVal - bVal : bVal - aVal;
+            }
+            
+            // Date comparison
+            if (aVal instanceof Date && bVal instanceof Date) {
+                return direction === 'asc' ? aVal - bVal : bVal - aVal;
+            }
+            
+            // String comparison
+            if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }
+    
+    function renderBlacklistTable(stocks) {
+        const tbody = document.getElementById('blacklistTableBody');
+        tbody.innerHTML = '';
+        
+        stocks.forEach((stock, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="text-center">${index + 1}</td>
+                <td>
+                    <a href="/ticker/${stock.ticker}" class="ticker-link">
+                        ${stock.ticker}
+                    </a>
+                </td>
+                <td>${stock.company_name || 'N/A'}</td>
+                <td class="notes-cell" title="${stock.concise_notes || ''}">${stock.concise_notes || ''}</td>
+                <td>${stock.market_cap || 'N/A'}</td>
+                <td><span class="badge bg-info">${stock.country || 'N/A'}</span></td>
+                <td>${stock.sector || 'N/A'}</td>
+                <td>${stock.industry || 'N/A'}</td>
+                <td>${formatPriceWithChange(stock)}</td>
+                <td>${stock.week_52_range || stock.range_52w || 'N/A'}</td>
+                <td>${stock.volume || 'N/A'}</td>
+                <td>${stock.dollar_volume || 'N/A'}</td>
+                <td><span class="badge bg-warning text-dark">${stock.volume_change || stock.vol_change || 'N/A'}</span></td>
+                <td><span class="badge ${getReturnBadgeClass(stock.return_5d)}">${stock.return_5d || 'N/A'}</span></td>
+                <td><span class="badge ${getReturnBadgeClass(stock.return_20d)}">${stock.return_20d || 'N/A'}</span></td>
+                <td><span class="badge ${getReturnBadgeClass(stock.return_60d)}">${stock.return_60d || 'N/A'}</span></td>
+                <td><span class="badge ${getReturnBadgeClass(stock.return_120d)}">${stock.return_120d || 'N/A'}</span></td>
+                <td>${stock.flagged_date || 'N/A'}</td>
+                <td>
+                    <button class="btn btn-success btn-sm remove-btn" onclick="removeFromBlacklist('${stock.ticker}')">
+                        Remove
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function displayBlacklist(stocks) {
+        // Store data for sorting
+        blacklistData = stocks;
+        
+        document.getElementById('blacklistTableContainer').style.display = 'block';
+        document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+        
+        renderBlacklistTable(stocks);
+    }
+
+    function getReturnClass(returnValue) {
+        if (!returnValue) return '';
+        const numValue = parseFloat(returnValue.replace('%', ''));
+        return numValue >= 0 ? 'text-success' : 'text-danger';
+    }
+    
+    function getReturnBadgeClass(returnValue) {
+        if (!returnValue || returnValue === 'N/A') return 'bg-secondary';
+        const numValue = parseFloat(returnValue.replace('%', ''));
+        if (numValue >= 10) {
+            return 'bg-success';
+        } else if (numValue >= 0) {
+            return 'bg-success bg-opacity-50';
+        } else if (numValue >= -10) {
+            return 'bg-danger bg-opacity-50';
+        } else {
+            return 'bg-danger';
+        }
+    }
+
+    function formatPriceWithChange(stock) {
+        const price = stock.current_price || 'N/A';
+        const changeAmt = stock.price_change || '';
+        const changePct = stock.price_change_pct || '';
+        if (price === 'N/A') return price;
+        let html = `<span class=\"fw-bold text-success\">${price}</span>`;
+        if (!changeAmt && !changePct) return html;
+        const isPositive = !((changeAmt || changePct).includes('-'));
+        const changeClass = isPositive ? 'text-success' : 'text-danger';
+        const badgeClass = isPositive ? 'bg-success' : 'bg-danger';
+        if (changeAmt) {
+            html += ` <span class=\"ms-1 fw-bold ${changeClass}\">${changeAmt}</span>`;
+        }
+        if (changePct) {
+            html += ` <span class=\"badge ${badgeClass} ms-1\">${changePct}</span>`;
+        }
+        return html;
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    }
+
+    function removeFromBlacklist(ticker) {
+        if (!confirm(`Are you sure you want to remove ${ticker} from your blacklist?`)) {
+            return;
+        }
+        
+        // Use flags API to set blacklisted flag to false
+        fetch('/api/flags/batch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                changes: [{ ticker: ticker, flag: 'blacklisted', value: false }]
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error removing from blacklist: ' + data.error);
+                return;
+            }
+            
+            alert(`${ticker} removed from blacklist successfully!`);
+            loadBlacklist(); // Reload the list
+        })
+        .catch(error => {
+            alert('Error removing from blacklist: ' + error.message);
+        });
+    }
+
+    // ----- Helper Functions -----
+    function parseMarketCap(value) {
+        if (value == null) return 0;
+        if (typeof value !== 'string') { return Number(value) || 0; }
+        const clean = value.replace(/[,$]/g, '').trim().toUpperCase();
+        const num = parseFloat(clean) || 0;
+        if (clean.endsWith('T')) return num * 1e12;
+        if (clean.endsWith('B')) return num * 1e9;
+        if (clean.endsWith('M')) return num * 1e6;
+        return num;
+    }
+    
+    // Convert volume change strings like "2.5x" into numeric multipliers
+    function parseVolumeChange(value) {
+        if (value == null || value === 'N/A') return 0;
+        if (typeof value !== 'string') { return Number(value) || 0; }
+        const clean = value.replace(/x/gi, '').trim();
+        return parseFloat(clean) || 0;
+    }
+
+    // Removed clearAllBlacklist and refreshBlacklist functions as requested
+</script>
+{% endblock %} 

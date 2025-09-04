@@ -1,0 +1,176 @@
+{% extends "screener_base.html" %}
+
+{% block content %}
+<!-- Weight Controls -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Priority Weights</h5>
+    </div>
+    <div class="card-body">
+        <p class="text-muted mb-3">Adjust the weights to prioritize different return periods. Priority score = weight × return percentage for each period. Higher weights amplify the impact of returns in those periods.</p>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="weight1d" class="form-label">1-Day Return</label>
+                <input type="number" class="form-control" id="weight1d" value="30" step="0.1" min="0">
+            </div>
+            <div class="col-md-2">
+                <label for="weight5d" class="form-label">5-Day Return</label>
+                <input type="number" class="form-control" id="weight5d" value="20" step="0.1" min="0">
+            </div>
+            <div class="col-md-2">
+                <label for="weight20d" class="form-label">20-Day Return</label>
+                <input type="number" class="form-control" id="weight20d" value="10" step="0.1" min="0">
+            </div>
+            <div class="col-md-2">
+                <label for="weight60d" class="form-label">60-Day Return</label>
+                <input type="number" class="form-control" id="weight60d" value="1" step="0.1" min="0">
+            </div>
+            <div class="col-md-2">
+                <label for="weight120d" class="form-label">120-Day Return</label>
+                <input type="number" class="form-control" id="weight120d" value="1" step="0.1" min="0">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-primary" onclick="applyWeights()">Apply Weights</button>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="resetWeights()">Reset to Defaults</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ super() }}
+{% endblock %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+    // Weight management functions
+    function applyWeights() {
+        // Get current weights
+        const weights = {
+            weight1d: parseFloat(document.getElementById('weight1d').value) || 0,
+            weight5d: parseFloat(document.getElementById('weight5d').value) || 0,
+            weight20d: parseFloat(document.getElementById('weight20d').value) || 0,
+            weight60d: parseFloat(document.getElementById('weight60d').value) || 0,
+            weight120d: parseFloat(document.getElementById('weight120d').value) || 0
+        };
+        
+        // Reload data with new weights
+        loadStocksAbove();
+        loadStocksBelow();
+    }
+    
+    function resetWeights() {
+        document.getElementById('weight1d').value = 30;
+        document.getElementById('weight5d').value = 20;
+        document.getElementById('weight20d').value = 10;
+        document.getElementById('weight60d').value = 1;
+        document.getElementById('weight120d').value = 1;
+        applyWeights();
+    }
+    
+    // Override the API calls to include weights
+    function loadStocksAbove() {
+        const loading = document.getElementById('loading-above');
+        const error = document.getElementById('error-above');
+        const results = document.getElementById('results-above');
+        
+        loading.style.display = 'block';
+        error.style.display = 'none';
+        results.style.display = 'none';
+        
+        // Get current weights
+        const weights = {
+            weight1d: parseFloat(document.getElementById('weight1d').value) || 0,
+            weight5d: parseFloat(document.getElementById('weight5d').value) || 0,
+            weight20d: parseFloat(document.getElementById('weight20d').value) || 0,
+            weight60d: parseFloat(document.getElementById('weight60d').value) || 0,
+            weight120d: parseFloat(document.getElementById('weight120d').value) || 0
+        };
+        
+        // Build URL with weights
+        const params = new URLSearchParams(weights);
+        const url = `${pageConfig.apiAbove}?${params.toString()}`;
+        
+        fetch(appendRewindDate(url))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (data.error) {
+                    error.textContent = data.error;
+                    error.style.display = 'block';
+                    return;
+                }
+                
+                displayStocks(data, 'stockTableBodyAbove');
+                results.style.display = 'block';
+                countAboveVal = data.length;
+                updateSubtitles();
+            })
+            .catch(err => {
+                loading.style.display = 'none';
+                error.textContent = 'Error loading stocks: ' + err.message;
+                error.style.display = 'block';
+            });
+    }
+
+    function loadStocksBelow() {
+        const loading = document.getElementById('loading-below');
+        const error = document.getElementById('error-below');
+        const results = document.getElementById('results-below');
+        
+        loading.style.display = 'block';
+        error.style.display = 'none';
+        results.style.display = 'none';
+        
+        // Get current weights
+        const weights = {
+            weight1d: parseFloat(document.getElementById('weight1d').value) || 0,
+            weight5d: parseFloat(document.getElementById('weight5d').value) || 0,
+            weight20d: parseFloat(document.getElementById('weight20d').value) || 0,
+            weight60d: parseFloat(document.getElementById('weight60d').value) || 0,
+            weight120d: parseFloat(document.getElementById('weight120d').value) || 0
+        };
+        
+        // Build URL with weights
+        const params = new URLSearchParams(weights);
+        const url = `${pageConfig.apiBelow}?${params.toString()}`;
+        
+        fetch(appendRewindDate(url))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (data.error) {
+                    error.textContent = data.error;
+                    error.style.display = 'block';
+                    return;
+                }
+                
+                displayStocks(data, 'stockTableBodyBelow');
+                results.style.display = 'block';
+                countBelowVal = data.length;
+                updateSubtitles();
+            })
+            .catch(err => {
+                loading.style.display = 'none';
+                error.textContent = 'Error loading stocks: ' + err.message;
+                error.style.display = 'block';
+            });
+    }
+</script>
+{% endblock %} 

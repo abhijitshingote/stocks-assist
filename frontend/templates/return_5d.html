@@ -1,0 +1,21 @@
+{% extends "screener_base.html" %}
+
+{% block title %}5-Day Returns - Stock Screener{% endblock %}
+
+{% block page_title %}5-Day Returns{% endblock %}
+{% block page_description %}<span id="pageDescription">Loading...</span>{% endblock %}
+
+{% set active_page = 'return_5d' %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+    // Configure this page
+    pageConfig = {
+        type: 'returns',
+        returnDays: '5-Day',
+        apiAbove: '/api/Return5D-Above200M',
+        apiBelow: '/api/Return5D-Below200M'
+    };
+</script>
+{% endblock %} 
