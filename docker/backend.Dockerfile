@@ -17,21 +17,23 @@ ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Copy requirements first to leverage Docker cache
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY backend ./backend
+COPY db_scripts ./db_scripts
+COPY docker ./docker
+RUN pip install --no-cache-dir -r backend/requirements.txt
 
 # Install Playwright browsers and system dependencies
 # RUN playwright install chromium
 # RUN playwright install-deps
 
 # Copy application code
-COPY . .
+
 
 # Make the daily price update script executable
-RUN chmod +x daily_price_update.py
+RUN chmod +x db_scripts/update_date/daily_price_update.py
 
 # Make the startup script executable
-RUN chmod +x start.sh
+RUN chmod +x docker/start.sh
 
 # Create log file for cron
 RUN touch /var/log/cron.log
@@ -44,4 +46,4 @@ ENV FLASK_APP=app.py
 ENV FLASK_ENV=development
 
 # Command to run both cron and the application
-CMD ["./start.sh"] 
+CMD ["./docker/start.sh"] 

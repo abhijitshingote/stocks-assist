@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
+
+# Add backend directory to Python path to import models
+sys.path.append('/app/backend')
 from models import Stock
 import logging
 import pytz

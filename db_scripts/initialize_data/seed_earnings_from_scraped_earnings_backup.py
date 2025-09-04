@@ -1,10 +1,14 @@
 from datetime import datetime
 import os
 import json
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+# Add backend directory to Python path to import models
+sys.path.append('/app/backend')
 from models import Stock, Earnings
 import logging
 

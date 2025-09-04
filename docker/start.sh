@@ -31,4 +31,4 @@ touch /var/log/cron.log
 echo "$(date): Cron jobs installed and service started" >> /var/log/cron.log
 
 # Start the Flask application
-python app.py
+python backend/app.py
