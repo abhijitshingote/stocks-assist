@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request, render_template_string
-from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, init_db
+from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, StockRSI, init_db
 from sqlalchemy import desc, func, and_, text
 from datetime import datetime, timedelta
 import os
@@ -117,6 +117,38 @@ def get_latest_price_date():
 def index():
     return render_template('index.html')
 
+# ---------------------------------------------
+# Dashboard with upcoming market-moving events
+# ---------------------------------------------
+MARKET_EVENTS_CACHE_FILE = BACKUP_DIR / "market_events.html"
+
+def load_cached_market_events_html():
+    """Load cached upcoming market-moving events HTML from disk."""
+    try:
+        if MARKET_EVENTS_CACHE_FILE.exists():
+            return MARKET_EVENTS_CACHE_FILE.read_text(encoding='utf-8')
+        return "<p>No cached events found. Run the refresh script to populate them.</p>"
+    except Exception as e:
+        logger.error(f"Error reading cached market events: {e}")
+        return "<p>Unable to load cached events.</p>"
+
+
+@app.route('/dashboard')
+def dashboard():
+    events_html = load_cached_market_events_html()
+    # Derive last updated string from cache mtime
+    try:
+        if MARKET_EVENTS_CACHE_FILE.exists():
+            mtime = MARKET_EVENTS_CACHE_FILE.stat().st_mtime
+            eastern = pytz.timezone('US/Eastern')
+            last_updated = datetime.fromtimestamp(mtime, eastern).strftime('%Y-%m-%d %I:%M %p %Z')
+        else:
+            last_updated = None
+    except Exception:
+        last_updated = None
+
+    return render_template('dashboard.html', market_events_html=events_html, events_last_updated=last_updated)
+
 @app.route('/Return1D')
 def return_1d():
     return render_template('return_1d.html')
@@ -156,6 +188,10 @@ def abi_shortlist():
 @app.route('/AbiBlackList')
 def abi_blacklist():
     return render_template('abi_blacklist.html')
+
+@app.route('/RSI')
+def rsi_table():
+    return render_template('rsi_table.html')
 
 @app.route('/SeaChange')
 def sea_change():
@@ -3155,6 +3191,83 @@ def update_concise_note(ticker):
 def stock_research():
     """Display stock research results from HTML template"""
     return render_template('stock_research_results.html')
+
+@app.route('/api/rsi')
+def api_rsi():
+    """API endpoint to fetch RSI data with stock information"""
+    try:
+        # Join StockRSI with Stock to get company info
+        query = session.query(
+            StockRSI.ticker,
+            Stock.company_name,
+            Stock.sector,
+            Stock.industry,
+            Stock.market_cap,
+            StockRSI.rsi_spx_1week,
+            StockRSI.rsi_spx_1month, 
+            StockRSI.rsi_spx_3month,
+            StockRSI.rsi_qqq_1week,
+            StockRSI.rsi_qqq_1month,
+            StockRSI.rsi_qqq_3month,
+            StockRSI.rsi_spx_1week_percentile,
+            StockRSI.rsi_spx_1month_percentile,
+            StockRSI.rsi_spx_3month_percentile,
+            StockRSI.rsi_qqq_1week_percentile,
+            StockRSI.rsi_qqq_1month_percentile,
+            StockRSI.rsi_qqq_3month_percentile,
+            StockRSI.rsi_spx_correction,
+            StockRSI.rsi_spx_correction_percentile,
+            StockRSI.last_updated
+        ).join(Stock, StockRSI.ticker == Stock.ticker)
+        
+        # Apply global exclusions
+        query = apply_global_exclude_filters(query)
+        
+        results = query.all()
+        
+        # Helper function to safely handle numeric values including NaN
+        def safe_numeric_value(value, decimal_places=2):
+            if value is None:
+                return None
+            # Check for NaN values
+            if str(value).lower() == 'nan' or (hasattr(value, '__ne__') and value != value):
+                return None
+            try:
+                return round(float(value), decimal_places)
+            except (ValueError, TypeError):
+                return None
+        
+        # Convert to list of dictionaries
+        rsi_data = []
+        for row in results:
+            rsi_data.append({
+                'ticker': row.ticker,
+                'company_name': row.company_name,
+                'sector': row.sector,
+                'industry': row.industry,
+                'market_cap': safe_numeric_value(row.market_cap, 0),
+                'rsi_spx_1week': safe_numeric_value(row.rsi_spx_1week, 2),
+                'rsi_spx_1month': safe_numeric_value(row.rsi_spx_1month, 2),
+                'rsi_spx_3month': safe_numeric_value(row.rsi_spx_3month, 2),
+                'rsi_qqq_1week': safe_numeric_value(row.rsi_qqq_1week, 2),
+                'rsi_qqq_1month': safe_numeric_value(row.rsi_qqq_1month, 2),
+                'rsi_qqq_3month': safe_numeric_value(row.rsi_qqq_3month, 2),
+                'rsi_spx_1week_percentile': safe_numeric_value(row.rsi_spx_1week_percentile, 1),
+                'rsi_spx_1month_percentile': safe_numeric_value(row.rsi_spx_1month_percentile, 1),
+                'rsi_spx_3month_percentile': safe_numeric_value(row.rsi_spx_3month_percentile, 1),
+                'rsi_qqq_1week_percentile': safe_numeric_value(row.rsi_qqq_1week_percentile, 1),
+                'rsi_qqq_1month_percentile': safe_numeric_value(row.rsi_qqq_1month_percentile, 1),
+                'rsi_qqq_3month_percentile': safe_numeric_value(row.rsi_qqq_3month_percentile, 1),
+                'rsi_spx_correction': safe_numeric_value(row.rsi_spx_correction, 2),
+                'rsi_spx_correction_percentile': safe_numeric_value(row.rsi_spx_correction_percentile, 1),
+                'last_updated': row.last_updated.isoformat() if row.last_updated else None
+            })
+        
+        return jsonify(rsi_data)
+    
+    except Exception as e:
+        logger.error(f"Error fetching RSI data: {e}")
+        return jsonify({'error': 'Failed to fetch RSI data'}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000) 

@@ -23,6 +23,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/stocks_db
       - POLYGON_API_KEY=${POLYGON_API_KEY}
+      - PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY}
       - TZ=America/New_York
     ports:
       - "5002:5000"

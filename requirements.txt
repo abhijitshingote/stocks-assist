@@ -10,3 +10,5 @@ requests==2.31.0
 pytz==2024.1
 beautifulsoup4==4.12.3 
 playwright==1.54.0
+yfinance==0.2.65
+pandas-datareader==0.10.0

@@ -184,6 +184,30 @@ class Earnings(Base):
     def __repr__(self):
         return f"<Earnings(ticker='{self.ticker}', date='{self.earnings_date}', type='{self.announcement_type}', quarter='{self.quarter}')>"
 
+class StockRSI(Base):
+    __tablename__ = 'stock_rsi'
+
+    id = Column(Integer, primary_key=True)
+    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False, unique=True)
+    rsi_spx_1week = Column(Float)
+    rsi_spx_1month = Column(Float)
+    rsi_spx_3month = Column(Float)
+    rsi_qqq_1week = Column(Float)
+    rsi_qqq_1month = Column(Float)
+    rsi_qqq_3month = Column(Float)
+    rsi_spx_1week_percentile = Column(Float)
+    rsi_spx_1month_percentile = Column(Float)
+    rsi_spx_3month_percentile = Column(Float)
+    rsi_qqq_1week_percentile = Column(Float)
+    rsi_qqq_1month_percentile = Column(Float)
+    rsi_qqq_3month_percentile = Column(Float)
+    rsi_spx_correction = Column(Float)
+    rsi_spx_correction_percentile = Column(Float)
+    last_updated = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+
+    def __repr__(self):
+        return f"<StockRSI(ticker='{self.ticker}', spx_1w={self.rsi_spx_1week}, qqq_1w={self.rsi_qqq_1week})>"
+
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
     engine = create_engine(database_url)

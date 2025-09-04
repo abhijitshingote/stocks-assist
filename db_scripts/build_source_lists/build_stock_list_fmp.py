@@ -12,8 +12,12 @@ API_KEY = os.getenv('FMP_API_KEY')
 if not API_KEY:
     raise ValueError("FMP_API_KEY not found in environment variables. Please add it to your .env file.")
 
-OUTPUT_FILE = 'stock_list.csv'
-TEMP_FILE = 'stock_list_temp.csv'
+# Ensure data directory exists
+DATA_DIR = 'db_scripts/data'
+os.makedirs(DATA_DIR, exist_ok=True)
+
+OUTPUT_FILE = os.path.join(DATA_DIR, 'stock_list.csv')
+TEMP_FILE = os.path.join(DATA_DIR, 'stock_list_temp.csv')
 BASE_URL = 'https://financialmodelingprep.com/api/v3'
 
 def get_all_symbols():

@@ -30,6 +30,7 @@ def initialize_database(reset=False):
             connection.execute(text("DROP TABLE IF EXISTS concise_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS flags CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS comment CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS stock_rsi CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS ticker CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS price CASCADE;"))
             print("Old tables dropped.")
@@ -126,6 +127,30 @@ def initialize_database(reset=False):
             )
         """))
 
+        # Create stock_rsi table for relative strength metrics vs SPX/QQQ
+        connection.execute(text(f"""
+            {table_creation_clause} stock_rsi (
+                id SERIAL PRIMARY KEY,
+                ticker VARCHAR(10) NOT NULL UNIQUE,
+                rsi_spx_1week FLOAT,
+                rsi_spx_1month FLOAT,
+                rsi_spx_3month FLOAT,
+                rsi_qqq_1week FLOAT,
+                rsi_qqq_1month FLOAT,
+                rsi_qqq_3month FLOAT,
+                rsi_spx_1week_percentile FLOAT,
+                rsi_spx_1month_percentile FLOAT,
+                rsi_spx_3month_percentile FLOAT,
+                rsi_qqq_1week_percentile FLOAT,
+                rsi_qqq_1month_percentile FLOAT,
+                rsi_qqq_3month_percentile FLOAT,
+                rsi_spx_correction FLOAT,
+                rsi_spx_correction_percentile FLOAT,
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                FOREIGN KEY (ticker) REFERENCES ticker(ticker) ON DELETE CASCADE
+            )
+        """))
+
         # Concise notes table
         connection.execute(text(f"""
             {table_creation_clause} concise_notes (
@@ -156,6 +181,7 @@ def initialize_database(reset=False):
             {index_creation_clause} idx_flags_shortlisted ON flags(is_shortlisted);
             {index_creation_clause} idx_flags_blacklisted ON flags(is_blacklisted);
             {index_creation_clause} idx_notes_ticker ON concise_notes(ticker);
+            {index_creation_clause} idx_stock_rsi_ticker ON stock_rsi(ticker);
         """))
         
         connection.commit()
