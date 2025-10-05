@@ -285,7 +285,7 @@
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
                     { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
-                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'market_cap_badge' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
                     { key: 'industry', label: 'Industry', type: 'text' },
@@ -311,7 +311,7 @@
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
                     { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
-                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'market_cap_badge' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
                     { key: 'industry', label: 'Industry', type: 'text' },
@@ -337,7 +337,7 @@
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
                     { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
-                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'market_cap_badge' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
                     { key: 'industry', label: 'Industry', type: 'text' },
@@ -363,7 +363,7 @@
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
                     { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
-                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'market_cap_badge' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
                     { key: 'industry', label: 'Industry', type: 'text' },
@@ -389,7 +389,7 @@
                     { key: 'ticker', label: 'Ticker', type: 'ticker' },
                     { key: 'company_name', label: 'Company', type: 'text' },
                     { key: 'concise_notes', label: 'Concise Notes', type: 'text' },
-                    { key: 'market_cap', label: 'Market Cap', type: 'text' },
+                    { key: 'market_cap', label: 'Market Cap', type: 'market_cap_badge' },
                     { key: 'country', label: 'Country', type: 'badge_info' },
                     { key: 'sector', label: 'Sector', type: 'text' },
                     { key: 'industry', label: 'Industry', type: 'text' },
@@ -408,22 +408,22 @@
         };
 
         // Common table generation functions
-        function generateTableHeader(columns) {
+        function generateTableHeader(columns, categoryKey = 'above') {
             let headerHtml = '<tr>';
             columns.forEach(col => {
                 if (col.type === 'flag_checkbox') {
                     headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
                 } else if (col.type === 'checkbox') {
                     headerHtml += `<th style="width: ${col.width};">
-                        <input type="checkbox" class="form-check-input" id="selectAllAboveCheckbox" onchange="toggleSelectAllAbove()">
+                        <input type="checkbox" class="form-check-input" id="selectAll${categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1)}Checkbox" onchange="toggleSelectAll${categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1)}()">
                     </th>`;
                 } else if (col.type === 'serial') {
                     headerHtml += `<th style="width: ${col.width};">${col.label}</th>`;
                 } else if (col.type === 'review_toggle') {
                     headerHtml += `<th style="width: ${col.width};"></th>`;
                 } else {
-                    headerHtml += `<th class="sortable-header" onclick="sortTable('above', '${col.key}')" style="cursor: pointer;">
-                        ${col.label} <i class="fas fa-sort text-muted" id="sort-icon-above-${col.key}"></i>
+                    headerHtml += `<th class="sortable-header" onclick="sortTable('${categoryKey}', '${col.key}')" style="cursor: pointer;">
+                        ${col.label} <i class="fas fa-sort text-muted" id="sort-icon-${categoryKey}-${col.key}"></i>
                     </th>`;
                 }
             });
@@ -502,11 +502,12 @@
                         const currentPrice = stock.current_price || 'N/A';
                         const changePercent = stock.price_change_pct || '';
                         const changeAmount = stock.price_change || '';
-                        if (currentPrice !== 'N/A' && changePercent && changeAmount) {
-                            const isPositive = !changeAmount.includes('-');
+                        if (currentPrice !== 'N/A' && changePercent && changeAmount !== '') {
+                            const isPositive = typeof changeAmount === 'number' ? changeAmount >= 0 : !String(changeAmount).includes('-');
                             const changeClass = isPositive ? 'text-success' : 'text-danger';
                             const badgeClass = isPositive ? 'bg-success' : 'bg-danger';
-                            rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span> <span class="ms-1 fw-bold ${changeClass}">${changeAmount}</span> <span class="badge ${badgeClass} ms-1">${changePercent}</span></td>`;
+                            const formattedChange = typeof changeAmount === 'number' ? (isPositive ? `+${changeAmount.toFixed(2)}` : changeAmount.toFixed(2)) : changeAmount;
+                            rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span> <span class="ms-1 fw-bold ${changeClass}">${formattedChange}</span> <span class="badge ${badgeClass} ms-1">${changePercent}</span></td>`;
                         } else {
                             rowHtml += `<td><span class="fw-bold text-success">${currentPrice}</span></td>`;
                         }
@@ -544,6 +545,27 @@
                         }
                         rowHtml += `<td>${eventsStr}</td>`;
                         break;
+                    case 'market_cap_badge':
+                        const marketCap = stock[col.key];
+                        let formattedMarketCap = 'N/A';
+                        if (marketCap != null && marketCap !== 'N/A') {
+                            const capValue = typeof marketCap === 'string' ? parseFloat(marketCap) : marketCap;
+                            if (!isNaN(capValue)) {
+                                if (capValue >= 1e12) {
+                                    formattedMarketCap = `$${Math.round(capValue / 1e12)}T`;
+                                } else if (capValue >= 1e9) {
+                                    formattedMarketCap = `$${Math.round(capValue / 1e9)}B`;
+                                } else if (capValue >= 1e6) {
+                                    formattedMarketCap = `$${Math.round(capValue / 1e6)}M`;
+                                } else if (capValue >= 1e3) {
+                                    formattedMarketCap = `$${Math.round(capValue / 1e3)}K`;
+                                } else {
+                                    formattedMarketCap = `$${Math.round(capValue)}`;
+                                }
+                            }
+                        }
+                        rowHtml += `<td><span class="badge bg-warning text-dark">${formattedMarketCap}</span></td>`;
+                        break;
                     default:
                         rowHtml += `<td>${stock[col.key] || 'N/A'}</td>`;
                         break;
@@ -562,6 +584,11 @@
         let stocksDataBelow = [];
         
         function sortTable(section, column) {
+            // Initialize sort state for this section if it doesn't exist
+            if (!sortState[section]) {
+                sortState[section] = { column: '', direction: 'asc' };
+            }
+            
             const currentState = sortState[section];
             
             // Toggle direction if same column, otherwise default to ascending
@@ -575,12 +602,35 @@
             // Update sort icons
             updateSortIcons(section, column, currentState.direction);
             
-            // Sort the data
-            const stocksData = section === 'above' ? stocksDataAbove : stocksDataBelow;
+            // Sort the data - handle both old and new category systems
+            let stocksData;
+            if (section === 'above') {
+                stocksData = stocksDataAbove;
+            } else if (section === 'below') {
+                stocksData = stocksDataBelow;
+            } else {
+                // New category system
+                stocksData = stocksDataByCategory[section];
+            }
+            
+            if (!stocksData) {
+                console.error('No stocks data found for section:', section);
+                return;
+            }
+            
             const sortedData = sortStockData(stocksData, column, currentState.direction);
             
             // Re-render the table
-            const tableBodyId = section === 'above' ? 'stockTableBodyAbove' : 'stockTableBodyBelow';
+            let tableBodyId;
+            if (section === 'above') {
+                tableBodyId = 'stockTableBodyAbove';
+            } else if (section === 'below') {
+                tableBodyId = 'stockTableBodyBelow';
+            } else {
+                // New category system
+                tableBodyId = `stockTableBody-${section}`;
+            }
+            
             displayStocks(sortedData, tableBodyId);
         }
         
@@ -721,16 +771,32 @@
         }
         
         // Enhanced displayStocks function to store data for sorting
+        // Store stocks data for each category (for sorting)
+        const stocksDataByCategory = {};
+
         function displayStocks(stocks, tableBodyId) {
             const tbody = document.getElementById(tableBodyId);
+            if (!tbody) {
+                console.error('Table body not found:', tableBodyId);
+                return;
+            }
+            
             const columns = COLUMN_CONFIGS[pageConfig.type].columns;
             tbody.innerHTML = '';
             
-            // Store data for sorting
+            // Store data for sorting - handle both old and new category systems
             if (tableBodyId === 'stockTableBodyAbove') {
                 stocksDataAbove = stocks;
             } else if (tableBodyId === 'stockTableBodyBelow') {
                 stocksDataBelow = stocks;
+            } else {
+                // New category system: extract category key from tableBodyId
+                // Format: stockTableBody-mega, stockTableBody-large, etc.
+                const match = tableBodyId.match(/stockTableBody-(.+)/);
+                if (match) {
+                    const categoryKey = match[1];
+                    stocksDataByCategory[categoryKey] = stocks;
+                }
             }
             
             if (stocks.length === 0) {
@@ -837,7 +903,7 @@
             
             const notes = prompt('Optional notes for these stocks (leave blank if none):') || '';
             
-            fetch('/api/shortlist', {
+            fetch('/api/frontend/shortlist', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -878,7 +944,7 @@
             
             const notes = prompt('Optional notes for these stocks (leave blank if none):') || '';
             
-            fetch('/api/blacklist', {
+            fetch('/api/frontend/blacklist', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -968,7 +1034,7 @@
             // Convert Map to array of changes
             const changes = Array.from(pendingFlagChanges.values());
 
-            fetch('/api/flags/batch', {
+            fetch('/api/frontend/flags/batch', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

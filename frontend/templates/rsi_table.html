@@ -232,7 +232,7 @@
         console.log('Loading RSI data...');
         showLoading();
         
-        fetch('/api/rsi')
+        fetch('/api/frontend/rsi')
             .then(response => {
                 console.log('Response status:', response.status);
                 if (!response.ok) {

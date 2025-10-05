@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 app = Flask(
     __name__,
-    static_folder='../static',
-    template_folder='../templates'
+    static_folder='static',
+    template_folder='templates'
 )
 
 # Backend API base URL
@@ -350,6 +350,207 @@ def get_return_120d_below_200m_frontend():
     result = make_backend_request('/api/Return120D-Below200M', params=params)
     if result is None:
         return jsonify({'error': 'Failed to fetch 120D returns'}), 500
+    return jsonify(result)
+
+# New market cap category endpoints
+@app.route('/api/frontend/Return1D-MicroCap')
+def get_return_1d_micro_frontend():
+    """Get 1D returns for Micro Cap via backend API"""
+    result = make_backend_request('/api/Return1D-MicroCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return1D-SmallCap')
+def get_return_1d_small_frontend():
+    """Get 1D returns for Small Cap via backend API"""
+    result = make_backend_request('/api/Return1D-SmallCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return1D-MidCap')
+def get_return_1d_mid_frontend():
+    """Get 1D returns for Mid Cap via backend API"""
+    result = make_backend_request('/api/Return1D-MidCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return1D-LargeCap')
+def get_return_1d_large_frontend():
+    """Get 1D returns for Large Cap via backend API"""
+    result = make_backend_request('/api/Return1D-LargeCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return1D-MegaCap')
+def get_return_1d_mega_frontend():
+    """Get 1D returns for Mega Cap via backend API"""
+    result = make_backend_request('/api/Return1D-MegaCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return5D-MicroCap')
+def get_return_5d_micro_frontend():
+    """Get 5D returns for Micro Cap via backend API"""
+    result = make_backend_request('/api/Return5D-MicroCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return5D-SmallCap')
+def get_return_5d_small_frontend():
+    """Get 5D returns for Small Cap via backend API"""
+    result = make_backend_request('/api/Return5D-SmallCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return5D-MidCap')
+def get_return_5d_mid_frontend():
+    """Get 5D returns for Mid Cap via backend API"""
+    result = make_backend_request('/api/Return5D-MidCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return5D-LargeCap')
+def get_return_5d_large_frontend():
+    """Get 5D returns for Large Cap via backend API"""
+    result = make_backend_request('/api/Return5D-LargeCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return5D-MegaCap')
+def get_return_5d_mega_frontend():
+    """Get 5D returns for Mega Cap via backend API"""
+    result = make_backend_request('/api/Return5D-MegaCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return20D-MicroCap')
+def get_return_20d_micro_frontend():
+    """Get 20D returns for Micro Cap via backend API"""
+    result = make_backend_request('/api/Return20D-MicroCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return20D-SmallCap')
+def get_return_20d_small_frontend():
+    """Get 20D returns for Small Cap via backend API"""
+    result = make_backend_request('/api/Return20D-SmallCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return20D-MidCap')
+def get_return_20d_mid_frontend():
+    """Get 20D returns for Mid Cap via backend API"""
+    result = make_backend_request('/api/Return20D-MidCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return20D-LargeCap')
+def get_return_20d_large_frontend():
+    """Get 20D returns for Large Cap via backend API"""
+    result = make_backend_request('/api/Return20D-LargeCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return20D-MegaCap')
+def get_return_20d_mega_frontend():
+    """Get 20D returns for Mega Cap via backend API"""
+    result = make_backend_request('/api/Return20D-MegaCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return60D-MicroCap')
+def get_return_60d_micro_frontend():
+    """Get 60D returns for Micro Cap via backend API"""
+    result = make_backend_request('/api/Return60D-MicroCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return60D-SmallCap')
+def get_return_60d_small_frontend():
+    """Get 60D returns for Small Cap via backend API"""
+    result = make_backend_request('/api/Return60D-SmallCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return60D-MidCap')
+def get_return_60d_mid_frontend():
+    """Get 60D returns for Mid Cap via backend API"""
+    result = make_backend_request('/api/Return60D-MidCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return60D-LargeCap')
+def get_return_60d_large_frontend():
+    """Get 60D returns for Large Cap via backend API"""
+    result = make_backend_request('/api/Return60D-LargeCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return60D-MegaCap')
+def get_return_60d_mega_frontend():
+    """Get 60D returns for Mega Cap via backend API"""
+    result = make_backend_request('/api/Return60D-MegaCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return120D-MicroCap')
+def get_return_120d_micro_frontend():
+    """Get 120D returns for Micro Cap via backend API"""
+    result = make_backend_request('/api/Return120D-MicroCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return120D-SmallCap')
+def get_return_120d_small_frontend():
+    """Get 120D returns for Small Cap via backend API"""
+    result = make_backend_request('/api/Return120D-SmallCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return120D-MidCap')
+def get_return_120d_mid_frontend():
+    """Get 120D returns for Mid Cap via backend API"""
+    result = make_backend_request('/api/Return120D-MidCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return120D-LargeCap')
+def get_return_120d_large_frontend():
+    """Get 120D returns for Large Cap via backend API"""
+    result = make_backend_request('/api/Return120D-LargeCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Return120D-MegaCap')
+def get_return_120d_mega_frontend():
+    """Get 120D returns for Mega Cap via backend API"""
+    result = make_backend_request('/api/Return120D-MegaCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch data'}), 500
     return jsonify(result)
 
 @app.route('/api/frontend/Gapper-Above200M')

@@ -43,8 +43,8 @@ import re
 from urllib.parse import urlencode
 from playwright.sync_api import sync_playwright
 
-# Add current directory to path to import models
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Add backend directory to Python path to import models
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 from models import Stock, Earnings, init_db
 
 load_dotenv()

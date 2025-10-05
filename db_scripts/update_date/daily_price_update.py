@@ -6,17 +6,21 @@ Overwrites existing data for today's date if it exists.
 """
 
 import os
+import sys
 import logging
 from datetime import datetime, date
 from polygon import RESTClient
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
-from models import Base, Stock, Price
 from dotenv import load_dotenv
 import requests
 import time
 import pytz
+
+# Add backend to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
+from models import Base, Stock, Price
 
 # Configure logging
 logging.basicConfig(

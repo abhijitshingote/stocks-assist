@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
 
 # Add backend directory to Python path to import models
-sys.path.append('/app/backend')
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 from models import Stock
 import logging
 import pytz
@@ -192,7 +192,7 @@ def main():
     session = Session()
 
     try:
-        stocks_processed = load_stocks_from_csv(session)
+        stocks_processed = load_stocks_from_csv(session, 'db_scripts/data/stock_list.csv')
         if stocks_processed == 0:
             logger.error("No stocks loaded from CSV.")
             return

@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # Add backend directory to Python path to import models
-sys.path.append('/app/backend')
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 from models import Stock, Comment, Flags, ConciseNote
 import logging
 

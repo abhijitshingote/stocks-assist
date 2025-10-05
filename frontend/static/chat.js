@@ -28,7 +28,7 @@
     appendMessage('<span class="text-muted">Thinking...</span>', 'bot');
 
     try {
-      const res = await fetch('/api/perplexity', {
+      const res = await fetch('/api/frontend/perplexity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt })

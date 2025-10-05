@@ -1,6 +1,6 @@
 // Shared function to load latest price date in navbar
 function loadNavbarLatestDate() {
-    fetch('/api/latest_date')
+    fetch('/api/frontend/latest_date')
         .then(response => response.json())
         .then(data => {
             const navbarDateElement = document.getElementById('navbarLatestDate');

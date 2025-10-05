@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, StockRSI, init_db
-from sqlalchemy import desc, func, and_, text
+from sqlalchemy import desc, func, and_, or_, case, text
 from datetime import datetime, timedelta
 import os
 import logging
@@ -33,6 +33,15 @@ DEFAULT_PRIORITY_WEIGHTS = {
 # Minimum % move thresholds per period – easy to tweak
 RETURN_THRESHOLDS = {1: 5, 5: 10, 20: 15, 60: 20, 120: 30}
 
+# Market cap categories
+MARKET_CAP_CATEGORIES = {
+    'micro': {'label': 'Micro Cap', 'min': 0, 'max': 200000000, 'description': 'Up to $200M'},
+    'small': {'label': 'Small Cap', 'min': 200000000, 'max': 2000000000, 'description': '$200M - $2B'},
+    'mid': {'label': 'Mid Cap', 'min': 2000000000, 'max': 20000000000, 'description': '$2B - $20B'},
+    'large': {'label': 'Large Cap', 'min': 20000000000, 'max': 100000000000, 'description': '$20B - $100B'},
+    'mega': {'label': 'Mega Cap', 'min': 100000000000, 'max': None, 'description': 'Over $100B'}
+}
+
 # ------------------------------------------------------------------
 # Global sector / industry exclusions for all scanner pages
 # ------------------------------------------------------------------
@@ -59,6 +68,47 @@ def apply_global_exclude_filters(query):
     if industries:
         query = query.filter(~Stock.industry.in_(list(industries)))
     return query
+
+def is_common_stock(symbol):
+    """
+    Conservative filter: excludes only obvious non-common-stock tickers.
+    Keeps all others to avoid dropping legitimate common stocks.
+    """
+    if not symbol or not isinstance(symbol, str):
+        return False
+
+    s = symbol.upper().strip()
+
+    # Allow foreign or class shares (BRK.B, RY.TO, etc.)
+    if '.' in s:
+        return True
+
+    # Basic sanity check: exclude extremely long tickers
+    if len(s) > 7:
+        return False
+
+    # Explicit exclusions by common suffix patterns
+    bad_suffixes = (
+        "W", "WS", "WT", "WW",  # Warrants
+        "R", "RT",              # Rights
+        "U",                    # Units (SPAC)
+        "P", "L", "N", "M"      # Preferred or notes
+    )
+
+    # Exclude obvious "junk" patterns
+    junk_keywords = ("WARRANT", "RIGHT", "UNIT")
+
+    if any(kw in s for kw in junk_keywords):
+        return False
+
+    # Exclude certain suffixes only if ticker length > 4
+    # (so we don't accidentally drop legit 1–4 letter tickers like FORD, SONY)
+    for suf in bad_suffixes:
+        if s.endswith(suf) and len(s) > len(suf) + 3:
+            return False
+
+    # Otherwise, keep it — err on inclusion
+    return True
 
 BACKUP_DIR = Path(os.getenv("USER_DATA_DIR", "user_data"))
 BACKUP_DIR.mkdir(exist_ok=True)
@@ -227,8 +277,199 @@ def export_user_lists():
     except Exception as e:
         logger.error(f"Error exporting user lists: {str(e)}")
 
-def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
-    """Get stocks with strong momentum over specified period"""
+def enrich_stock_data(stocks_data):
+    """
+    Enrich stock data with additional fields:
+    - volume_change (e.g., "5.2x")
+    - week_52_range (e.g., "$10.50 - $25.30")
+    - return_5d, return_20d, return_60d, return_120d
+    
+    Args:
+        stocks_data: List of stock dictionaries with at least 'ticker' field
+    
+    Returns:
+        Enriched list of stock dictionaries
+    """
+    if not stocks_data:
+        return stocks_data
+    
+    try:
+        latest_date = get_latest_price_date()
+        if not latest_date:
+            logger.warning("No latest price date found for enrichment")
+            return stocks_data
+        
+        # Extract all tickers
+        tickers = [stock['ticker'] for stock in stocks_data]
+        
+        # Build a query to get all necessary price data for all tickers at once
+        # We need: latest volume, avg volume (last 20 days), 52-week high/low, historical prices for returns
+        
+        # Subquery for latest volume
+        latest_volume_subquery = session.query(
+            Price.ticker,
+            Price.volume.label('latest_volume'),
+            Price.close_price.label('latest_price')
+        ).filter(
+            Price.ticker.in_(tickers),
+            Price.date == latest_date
+        ).subquery()
+        
+        # Subquery for average volume (last 20 trading days)
+        avg_volume_date = latest_date - timedelta(days=30)
+        avg_volume_subquery = session.query(
+            Price.ticker,
+            func.avg(Price.volume).label('avg_volume')
+        ).filter(
+            Price.ticker.in_(tickers),
+            Price.date >= avg_volume_date,
+            Price.date <= latest_date,
+            Price.volume.isnot(None)
+        ).group_by(Price.ticker).subquery()
+        
+        # Subquery for 52-week high and low
+        week_52_date = latest_date - timedelta(days=365)
+        week_52_subquery = session.query(
+            Price.ticker,
+            func.max(Price.close_price).label('high_52w'),
+            func.min(Price.close_price).label('low_52w')
+        ).filter(
+            Price.ticker.in_(tickers),
+            Price.date >= week_52_date,
+            Price.date <= latest_date,
+            Price.close_price.isnot(None),
+            Price.close_price > 0
+        ).group_by(Price.ticker).subquery()
+        
+        # Subquery for historical prices at different periods
+        periods = {
+            'price_5d': latest_date - timedelta(days=5),
+            'price_20d': latest_date - timedelta(days=20),
+            'price_60d': latest_date - timedelta(days=60),
+            'price_120d': latest_date - timedelta(days=120)
+        }
+        
+        # Query to get average prices around each period (to handle missing trading days)
+        historical_prices = {}
+        for period_key, target_date in periods.items():
+            # Get prices within a 3-day window around the target date
+            window_start = target_date - timedelta(days=3)
+            window_end = target_date + timedelta(days=3)
+            
+            period_prices = session.query(
+                Price.ticker,
+                func.avg(Price.close_price).label('avg_price')
+            ).filter(
+                Price.ticker.in_(tickers),
+                Price.date >= window_start,
+                Price.date <= window_end,
+                Price.close_price.isnot(None),
+                Price.close_price > 0
+            ).group_by(Price.ticker).all()
+            
+            historical_prices[period_key] = {row.ticker: row.avg_price for row in period_prices}
+        
+        # Execute all subqueries
+        volume_data = session.query(
+            latest_volume_subquery.c.ticker,
+            latest_volume_subquery.c.latest_volume,
+            latest_volume_subquery.c.latest_price,
+            avg_volume_subquery.c.avg_volume,
+            week_52_subquery.c.high_52w,
+            week_52_subquery.c.low_52w
+        ).outerjoin(
+            avg_volume_subquery,
+            latest_volume_subquery.c.ticker == avg_volume_subquery.c.ticker
+        ).outerjoin(
+            week_52_subquery,
+            latest_volume_subquery.c.ticker == week_52_subquery.c.ticker
+        ).all()
+        
+        # Build lookup dictionary
+        enrichment_data = {}
+        for row in volume_data:
+            enrichment_data[row.ticker] = {
+                'latest_volume': row.latest_volume,
+                'latest_price': row.latest_price,
+                'avg_volume': row.avg_volume,
+                'high_52w': row.high_52w,
+                'low_52w': row.low_52w
+            }
+        
+        # Enrich each stock
+        for stock in stocks_data:
+            ticker = stock['ticker']
+            enrich = enrichment_data.get(ticker, {})
+            
+            # Volume change
+            latest_vol = enrich.get('latest_volume')
+            avg_vol = enrich.get('avg_volume')
+            if latest_vol and avg_vol and avg_vol > 0:
+                vol_change_ratio = latest_vol / avg_vol
+                stock['volume_change'] = f"{vol_change_ratio:.1f}x"
+            else:
+                stock['volume_change'] = None
+            
+            # 52-week range
+            high_52w = enrich.get('high_52w')
+            low_52w = enrich.get('low_52w')
+            if high_52w and low_52w:
+                stock['week_52_range'] = f"${low_52w:.2f} - ${high_52w:.2f}"
+            else:
+                stock['week_52_range'] = None
+            
+            # Calculate returns for different periods
+            current_price = stock.get('current_price') or stock.get('end_price') or stock.get('price') or enrich.get('latest_price')
+            
+            if current_price:
+                # 5-day return
+                price_5d = historical_prices['price_5d'].get(ticker)
+                if price_5d and price_5d > 0:
+                    return_5d_pct = ((current_price - price_5d) / price_5d) * 100
+                    stock['return_5d'] = f"{'+' if return_5d_pct >= 0 else ''}{return_5d_pct:.2f}%"
+                else:
+                    stock['return_5d'] = None
+                
+                # 20-day return
+                price_20d = historical_prices['price_20d'].get(ticker)
+                if price_20d and price_20d > 0:
+                    return_20d_pct = ((current_price - price_20d) / price_20d) * 100
+                    stock['return_20d'] = f"{'+' if return_20d_pct >= 0 else ''}{return_20d_pct:.2f}%"
+                else:
+                    stock['return_20d'] = None
+                
+                # 60-day return
+                price_60d = historical_prices['price_60d'].get(ticker)
+                if price_60d and price_60d > 0:
+                    return_60d_pct = ((current_price - price_60d) / price_60d) * 100
+                    stock['return_60d'] = f"{'+' if return_60d_pct >= 0 else ''}{return_60d_pct:.2f}%"
+                else:
+                    stock['return_60d'] = None
+                
+                # 120-day return
+                price_120d = historical_prices['price_120d'].get(ticker)
+                if price_120d and price_120d > 0:
+                    return_120d_pct = ((current_price - price_120d) / price_120d) * 100
+                    stock['return_120d'] = f"{'+' if return_120d_pct >= 0 else ''}{return_120d_pct:.2f}%"
+                else:
+                    stock['return_120d'] = None
+        
+        return stocks_data
+        
+    except Exception as e:
+        logger.error(f"Error enriching stock data: {str(e)}")
+        # Return original data if enrichment fails
+        return stocks_data
+
+def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, market_cap_category=None):
+    """Get stocks with strong momentum over specified period
+    
+    Args:
+        return_days: Number of days for the return calculation
+        above_200m: (Deprecated) Boolean for backward compatibility
+        min_return_pct: Minimum return percentage threshold
+        market_cap_category: One of 'micro', 'small', 'mid', 'large', 'mega'
+    """
     try:
         # Determine date range based on return_days
         end_date = get_latest_price_date()
@@ -238,6 +479,14 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
         start_date = end_date - timedelta(days=return_days)
 
         # Base query joining Stock and Price tables
+        # We'll get volume from the latest price record in a subquery
+        latest_volume_subquery = session.query(
+            Price.ticker,
+            Price.volume
+        ).filter(
+            Price.date == end_date
+        ).subquery()
+        
         base_query = session.query(
             Stock.ticker,
             Stock.company_name,
@@ -245,44 +494,74 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
             Stock.industry,
             Stock.market_cap,
             Stock.price,
+            Stock.country,
             func.min(Price.close_price).label('start_price'),
             func.max(Price.close_price).label('end_price'),
-            ((func.max(Price.close_price) - func.min(Price.close_price)) / func.min(Price.close_price) * 100).label('return_pct')
-        ).join(Price, Stock.ticker == Price.ticker)
+            ((func.max(Price.close_price) - func.min(Price.close_price)) / func.min(Price.close_price) * 100).label('return_pct'),
+            latest_volume_subquery.c.volume.label('volume')
+        ).join(Price, Stock.ticker == Price.ticker
+        ).outerjoin(latest_volume_subquery, Stock.ticker == latest_volume_subquery.c.ticker)
 
         # Apply date filtering
         base_query = base_query.filter(Price.date >= start_date, Price.date <= end_date)
 
-        # Apply market cap filter
-        if above_200m:
-            base_query = base_query.filter(Stock.market_cap >= 200000000)
-        else:
-            base_query = base_query.filter(Stock.market_cap < 200000000)
+        # Filter out invalid prices (null, zero, or negative)
+        base_query = base_query.filter(Price.close_price > 0)
 
-        # Apply minimum return percentage filter
+        # Apply market cap filter
+        if market_cap_category:
+            # Use new category system
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                base_query = base_query.filter(Stock.market_cap >= category['min'])
+                if category['max'] is not None:
+                    base_query = base_query.filter(Stock.market_cap < category['max'])
+        elif above_200m is not None:
+            # Backward compatibility with old system
+            if above_200m:
+                base_query = base_query.filter(Stock.market_cap >= 200000000)
+            else:
+                base_query = base_query.filter(Stock.market_cap < 200000000)
+
+        # Apply global exclusions
+        base_query = apply_global_exclude_filters(base_query)
+
+        # Group by stock first (required before HAVING clause)
+        base_query = base_query.group_by(
+            Stock.ticker, Stock.company_name, Stock.sector,
+            Stock.industry, Stock.market_cap, Stock.price, Stock.country,
+            latest_volume_subquery.c.volume
+        )
+
+        # Apply minimum return percentage filter using HAVING (not WHERE)
         if min_return_pct is not None:
-            base_query = base_query.filter(
+            base_query = base_query.having(
                 ((func.max(Price.close_price) - func.min(Price.close_price)) / func.min(Price.close_price) * 100) >= min_return_pct
             )
         else:
             # Use default threshold based on period
             threshold = RETURN_THRESHOLDS.get(return_days, 10)
-            base_query = base_query.filter(
+            base_query = base_query.having(
                 ((func.max(Price.close_price) - func.min(Price.close_price)) / func.min(Price.close_price) * 100) >= threshold
             )
 
-        # Apply global exclusions
-        base_query = apply_global_exclude_filters(base_query)
+        # Order by return percentage and get results
+        stocks = base_query.order_by(desc('return_pct')).limit(100).all()
 
-        # Group by stock and order by return percentage
-        stocks = base_query.group_by(
-            Stock.ticker, Stock.company_name, Stock.sector,
-            Stock.industry, Stock.market_cap, Stock.price
-        ).order_by(desc('return_pct')).limit(100).all()
-
-        # Format results
+        # Format results and filter for common stocks only
         results = []
         for stock in stocks:
+            # Skip non-common stocks (warrants, rights, units, preferred)
+            if not is_common_stock(stock.ticker):
+                continue
+                
+            volume = stock.volume if stock.volume else 0
+            dollar_volume = (stock.end_price * volume) if volume else 0
+            
+            # Calculate price change for display
+            price_change = stock.end_price - stock.start_price
+            price_change_pct = stock.return_pct
+            
             results.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
@@ -290,11 +569,19 @@ def get_momentum_stocks(return_days, above_200m=True, min_return_pct=None):
                 'industry': stock.industry,
                 'market_cap': stock.market_cap,
                 'price': stock.price,
+                'country': stock.country,
                 'start_price': round(stock.start_price, 2),
                 'end_price': round(stock.end_price, 2),
-                'return_pct': round(stock.return_pct, 2)
+                'return_pct': round(stock.return_pct, 2),
+                'current_price': round(stock.end_price, 2),
+                'price_change': round(price_change, 2),
+                'price_change_pct': f"{'+' if price_change_pct >= 0 else ''}{round(price_change_pct, 2)}%",
+                'volume': int(volume) if volume else None,
+                'dollar_volume': round(dollar_volume, 2) if dollar_volume else None
             })
 
+        # Enrich with additional data
+        results = enrich_stock_data(results)
         return results
 
     except Exception as e:
@@ -345,13 +632,20 @@ def get_gapper_stocks(above_200m=True):
         query = apply_global_exclude_filters(query)
 
         # Group by stock to get both dates
-        gap_stocks = query.group_by(Stock.ticker).having(
+        gap_stocks = query.group_by(
+            Stock.ticker, Stock.company_name, Stock.sector,
+            Stock.industry, Stock.market_cap, Stock.price
+        ).having(
             func.count(Price.date) == 2  # Must have both dates
         ).all()
 
-        # Calculate gap percentages and filter
+        # Calculate gap percentages and filter for common stocks
         results = []
         for stock in gap_stocks:
+            # Skip non-common stocks (warrants, rights, units, preferred)
+            if not is_common_stock(stock.ticker):
+                continue
+                
             if stock.prev_close and stock.today_open:
                 gap_pct = ((stock.today_open - stock.prev_close) / stock.prev_close) * 100
                 if gap_pct >= 5:  # Minimum 5% gap
@@ -369,7 +663,11 @@ def get_gapper_stocks(above_200m=True):
 
         # Sort by gap percentage descending and limit to top 100
         results.sort(key=lambda x: x['gap_pct'], reverse=True)
-        return results[:100]
+        results = results[:100]
+        
+        # Enrich with additional data
+        results = enrich_stock_data(results)
+        return results
 
     except Exception as e:
         logger.error(f"Error getting gapper stocks: {str(e)}")
@@ -418,9 +716,13 @@ def get_volume_spike_stocks(above_200m=True):
 
         volume_stocks = query.all()
 
-        # Calculate volume ratios and filter
+        # Calculate volume ratios and filter for common stocks
         results = []
         for stock in volume_stocks:
+            # Skip non-common stocks (warrants, rights, units, preferred)
+            if not is_common_stock(stock.ticker):
+                continue
+                
             if stock.avg_volume and stock.avg_volume > 0:
                 volume_ratio = stock.today_volume / stock.avg_volume
                 if volume_ratio >= 2:  # At least 2x average volume
@@ -440,7 +742,11 @@ def get_volume_spike_stocks(above_200m=True):
 
         # Sort by volume ratio descending and limit to top 100
         results.sort(key=lambda x: x['volume_ratio'], reverse=True)
-        return results[:100]
+        results = results[:100]
+        
+        # Enrich with additional data
+        results = enrich_stock_data(results)
+        return results
 
     except Exception as e:
         logger.error(f"Error getting volume spike stocks: {str(e)}")
@@ -489,6 +795,10 @@ def get_sea_change_stocks(above_200m=True):
 
         results = []
         for stock in sea_change_stocks:
+            # Skip non-common stocks (warrants, rights, units, preferred)
+            if not is_common_stock(stock.ticker):
+                continue
+                
             if stock.avg_price_60d and stock.avg_price_10d:
                 # Calculate momentum shift
                 momentum_shift = ((stock.avg_price_10d - stock.avg_price_60d) / stock.avg_price_60d) * 100
@@ -516,7 +826,11 @@ def get_sea_change_stocks(above_200m=True):
 
         # Sort by absolute momentum shift descending and limit to top 100
         results.sort(key=lambda x: abs(x['momentum_shift_pct']), reverse=True)
-        return results[:100]
+        results = results[:100]
+        
+        # Enrich with additional data
+        results = enrich_stock_data(results)
+        return results
 
     except Exception as e:
         logger.error(f"Error getting sea change stocks: {str(e)}")
@@ -578,6 +892,10 @@ def get_all_returns_data(above_200m=True, weights=None):
 
         results = []
         for stock in stocks:
+            # Skip non-common stocks (warrants, rights, units, preferred)
+            if not is_common_stock(stock.ticker):
+                continue
+                
             stock_data = {
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
@@ -608,7 +926,11 @@ def get_all_returns_data(above_200m=True, weights=None):
 
         # Sort by total score descending and limit to top 100
         results.sort(key=lambda x: x.get('total_score', 0), reverse=True)
-        return results[:100]
+        results = results[:100]
+        
+        # Enrich with additional data
+        results = enrich_stock_data(results)
+        return results
 
     except Exception as e:
         logger.error(f"Error getting all returns data: {str(e)}")
@@ -666,6 +988,10 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
 
         results = []
         for stock in stocks:
+            # Skip non-common stocks (warrants, rights, units, preferred)
+            if not is_common_stock(stock.ticker):
+                continue
+                
             stock_data = {
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
@@ -694,6 +1020,8 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
             stock_data['total_score'] = round(total_score, 2)
             results.append(stock_data)
 
+        # Enrich with additional data
+        results = enrich_stock_data(results)
         return results
 
     except Exception as e:
@@ -965,6 +1293,107 @@ def get_return_20d_above_200m():
 def get_return_20d_below_200m():
     return jsonify(get_momentum_stocks(20, above_200m=False))
 
+# New market cap category endpoints for returns
+@app.route('/api/Return1D-MicroCap')
+def get_return_1d_micro():
+    return jsonify(get_momentum_stocks(1, market_cap_category='micro'))
+
+@app.route('/api/Return1D-SmallCap')
+def get_return_1d_small():
+    return jsonify(get_momentum_stocks(1, market_cap_category='small'))
+
+@app.route('/api/Return1D-MidCap')
+def get_return_1d_mid():
+    return jsonify(get_momentum_stocks(1, market_cap_category='mid'))
+
+@app.route('/api/Return1D-LargeCap')
+def get_return_1d_large():
+    return jsonify(get_momentum_stocks(1, market_cap_category='large'))
+
+@app.route('/api/Return1D-MegaCap')
+def get_return_1d_mega():
+    return jsonify(get_momentum_stocks(1, market_cap_category='mega'))
+
+@app.route('/api/Return5D-MicroCap')
+def get_return_5d_micro():
+    return jsonify(get_momentum_stocks(5, market_cap_category='micro'))
+
+@app.route('/api/Return5D-SmallCap')
+def get_return_5d_small():
+    return jsonify(get_momentum_stocks(5, market_cap_category='small'))
+
+@app.route('/api/Return5D-MidCap')
+def get_return_5d_mid():
+    return jsonify(get_momentum_stocks(5, market_cap_category='mid'))
+
+@app.route('/api/Return5D-LargeCap')
+def get_return_5d_large():
+    return jsonify(get_momentum_stocks(5, market_cap_category='large'))
+
+@app.route('/api/Return5D-MegaCap')
+def get_return_5d_mega():
+    return jsonify(get_momentum_stocks(5, market_cap_category='mega'))
+
+@app.route('/api/Return20D-MicroCap')
+def get_return_20d_micro():
+    return jsonify(get_momentum_stocks(20, market_cap_category='micro'))
+
+@app.route('/api/Return20D-SmallCap')
+def get_return_20d_small():
+    return jsonify(get_momentum_stocks(20, market_cap_category='small'))
+
+@app.route('/api/Return20D-MidCap')
+def get_return_20d_mid():
+    return jsonify(get_momentum_stocks(20, market_cap_category='mid'))
+
+@app.route('/api/Return20D-LargeCap')
+def get_return_20d_large():
+    return jsonify(get_momentum_stocks(20, market_cap_category='large'))
+
+@app.route('/api/Return20D-MegaCap')
+def get_return_20d_mega():
+    return jsonify(get_momentum_stocks(20, market_cap_category='mega'))
+
+@app.route('/api/Return60D-MicroCap')
+def get_return_60d_micro():
+    return jsonify(get_momentum_stocks(60, market_cap_category='micro'))
+
+@app.route('/api/Return60D-SmallCap')
+def get_return_60d_small():
+    return jsonify(get_momentum_stocks(60, market_cap_category='small'))
+
+@app.route('/api/Return60D-MidCap')
+def get_return_60d_mid():
+    return jsonify(get_momentum_stocks(60, market_cap_category='mid'))
+
+@app.route('/api/Return60D-LargeCap')
+def get_return_60d_large():
+    return jsonify(get_momentum_stocks(60, market_cap_category='large'))
+
+@app.route('/api/Return60D-MegaCap')
+def get_return_60d_mega():
+    return jsonify(get_momentum_stocks(60, market_cap_category='mega'))
+
+@app.route('/api/Return120D-MicroCap')
+def get_return_120d_micro():
+    return jsonify(get_momentum_stocks(120, market_cap_category='micro'))
+
+@app.route('/api/Return120D-SmallCap')
+def get_return_120d_small():
+    return jsonify(get_momentum_stocks(120, market_cap_category='small'))
+
+@app.route('/api/Return120D-MidCap')
+def get_return_120d_mid():
+    return jsonify(get_momentum_stocks(120, market_cap_category='mid'))
+
+@app.route('/api/Return120D-LargeCap')
+def get_return_120d_large():
+    return jsonify(get_momentum_stocks(120, market_cap_category='large'))
+
+@app.route('/api/Return120D-MegaCap')
+def get_return_120d_mega():
+    return jsonify(get_momentum_stocks(120, market_cap_category='mega'))
+
 # Gapper API endpoints
 @app.route('/api/Gapper-Above200M')
 def get_gapper_above_200m():
@@ -1010,6 +1439,10 @@ def get_stocks():
 
         stocks_data = []
         for stock in stocks:
+            # Skip non-common stocks (warrants, rights, units, preferred)
+            if not is_common_stock(stock.ticker):
+                continue
+                
             stocks_data.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
@@ -1181,27 +1614,33 @@ def get_stock_earnings(ticker):
 
 @app.route('/api/market_cap_distribution')
 def get_market_cap_distribution():
-    """Get market cap distribution statistics"""
+    """Get market cap distribution statistics with refined buckets"""
     try:
-        # Get market cap ranges
+        # Define refined market cap ranges
+        # Micro Cap: ≤ $200M
+        # Small Cap: $200M – $2B
+        # Mid Cap: $2B – $20B
+        # Large Cap: $20B – $100B
+        # Mega Cap: > $100B
         ranges = [
-            (0, 500000000, "Under $500M"),
-            (500000000, 1000000000, "500M - 1B"),
-            (1000000000, 5000000000, "1B - 5B"),
-            (5000000000, 10000000000, "5B - 10B"),
-            (10000000000, 50000000000, "10B - 50B"),
-            (50000000000, float('inf'), "Over $50B")
+            (0, 200000000, "Micro Cap", "Up to $200M"),           # ≤ $200M
+            (200000000, 2000000000, "Small Cap", "$200M - $2B"),  # $200M - $2B
+            (2000000000, 20000000000, "Mid Cap", "$2B - $20B"),  # $2B - $20B
+            (20000000000, 100000000000, "Large Cap", "$20B - $100B"),  # $20B - $100B
+            (100000000000, float('inf'), "Mega Cap", "Over $100B")   # > $100B
         ]
 
         distribution = []
-        for min_cap, max_cap, label in ranges:
+        for min_cap, max_cap, label, description in ranges:
             if max_cap == float('inf'):
                 count = session.query(Stock).filter(Stock.market_cap >= min_cap).count()
             else:
                 count = session.query(Stock).filter(Stock.market_cap >= min_cap, Stock.market_cap < max_cap).count()
 
             distribution.append({
-                'range': label,
+                'category': label,
+                'range': label,  # Kept for backward compatibility
+                'description': description,  # Human-readable range description
                 'count': count,
                 'min_cap': min_cap,
                 'max_cap': max_cap if max_cap != float('inf') else None
@@ -1777,4 +2216,4 @@ def api_rsi():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5000)

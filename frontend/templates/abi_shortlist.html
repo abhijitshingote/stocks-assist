@@ -165,7 +165,7 @@
         console.log('Loading shortlist...');
         showLoading();
         
-        fetch(appendRewindDate('/api/shortlist'))
+        fetch(appendRewindDate('/api/frontend/shortlist'))
             .then(response => {
                 console.log('Response status:', response.status);
                 if (!response.ok) {

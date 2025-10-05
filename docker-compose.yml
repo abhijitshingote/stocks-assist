@@ -18,7 +18,7 @@ services:
       timeout: 5s
       retries: 5
 
-  web:
+  backend:
     build:
       context: .
       dockerfile: docker/backend.Dockerfile
@@ -26,15 +26,33 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/stocks_db
       - POLYGON_API_KEY=${POLYGON_API_KEY}
       - PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY}
+      - FMP_API_KEY=${FMP_API_KEY}
       - TZ=America/New_York
     ports:
-      - "5002:5000"
+      - "5001:5000"
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - .:/app
       - /app/venv
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    environment:
+      - BACKEND_URL=http://backend:5000
+      - TZ=America/New_York
+    ports:
+      - "5002:5000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app/frontend
+      - ./user_data:/app/user_data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
