@@ -479,10 +479,11 @@ def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, marke
         start_date = end_date - timedelta(days=return_days)
 
         # Base query joining Stock and Price tables
-        # We'll get volume from the latest price record in a subquery
-        latest_volume_subquery = session.query(
+        # We'll get volume and latest close price from the latest price record in a subquery
+        latest_price_subquery = session.query(
             Price.ticker,
-            Price.volume
+            Price.volume,
+            Price.close_price.label('latest_close')
         ).filter(
             Price.date == end_date
         ).subquery()
@@ -496,11 +497,11 @@ def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, marke
             Stock.price,
             Stock.country,
             func.min(Price.close_price).label('start_price'),
-            func.max(Price.close_price).label('end_price'),
-            ((func.max(Price.close_price) - func.min(Price.close_price)) / func.min(Price.close_price) * 100).label('return_pct'),
-            latest_volume_subquery.c.volume.label('volume')
+            latest_price_subquery.c.latest_close.label('end_price'),
+            ((latest_price_subquery.c.latest_close - func.min(Price.close_price)) / func.min(Price.close_price) * 100).label('return_pct'),
+            latest_price_subquery.c.volume.label('volume')
         ).join(Price, Stock.ticker == Price.ticker
-        ).outerjoin(latest_volume_subquery, Stock.ticker == latest_volume_subquery.c.ticker)
+        ).outerjoin(latest_price_subquery, Stock.ticker == latest_price_subquery.c.ticker)
 
         # Apply date filtering
         base_query = base_query.filter(Price.date >= start_date, Price.date <= end_date)
@@ -530,19 +531,19 @@ def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, marke
         base_query = base_query.group_by(
             Stock.ticker, Stock.company_name, Stock.sector,
             Stock.industry, Stock.market_cap, Stock.price, Stock.country,
-            latest_volume_subquery.c.volume
+            latest_price_subquery.c.volume, latest_price_subquery.c.latest_close
         )
 
         # Apply minimum return percentage filter using HAVING (not WHERE)
         if min_return_pct is not None:
             base_query = base_query.having(
-                ((func.max(Price.close_price) - func.min(Price.close_price)) / func.min(Price.close_price) * 100) >= min_return_pct
+                ((latest_price_subquery.c.latest_close - func.min(Price.close_price)) / func.min(Price.close_price) * 100) >= min_return_pct
             )
         else:
             # Use default threshold based on period
             threshold = RETURN_THRESHOLDS.get(return_days, 10)
             base_query = base_query.having(
-                ((func.max(Price.close_price) - func.min(Price.close_price)) / func.min(Price.close_price) * 100) >= threshold
+                ((latest_price_subquery.c.latest_close - func.min(Price.close_price)) / func.min(Price.close_price) * 100) >= threshold
             )
 
         # Order by return percentage and get results
