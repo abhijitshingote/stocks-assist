@@ -1506,13 +1506,112 @@ def get_stock_details(ticker):
         if not stock:
             return jsonify({'error': 'Stock not found'}), 404
 
+        # Get latest price date
+        latest_date = get_latest_price_date()
+        if not latest_date:
+            return jsonify({'error': 'No price data available'}), 500
+
+        # Get latest price data
+        latest_price = session.query(Price).filter(
+            Price.ticker == ticker,
+            Price.date == latest_date
+        ).first()
+
+        # Get previous trading day price for price change calculation
+        previous_date = latest_date - timedelta(days=1)
+        while previous_date.weekday() >= 5:  # Skip weekends
+            previous_date -= timedelta(days=1)
+        
+        previous_price = session.query(Price).filter(
+            Price.ticker == ticker,
+            Price.date == previous_date
+        ).first()
+
+        # Calculate 52-week high/low
+        week_52_date = latest_date - timedelta(days=365)
+        week_52_data = session.query(
+            func.max(Price.close_price).label('high_52w'),
+            func.min(Price.close_price).label('low_52w')
+        ).filter(
+            Price.ticker == ticker,
+            Price.date >= week_52_date,
+            Price.date <= latest_date,
+            Price.close_price.isnot(None),
+            Price.close_price > 0
+        ).first()
+
+        # Calculate average volume (last 20 trading days)
+        avg_volume_date = latest_date - timedelta(days=30)
+        avg_volume = session.query(
+            func.avg(Price.volume).label('avg_volume')
+        ).filter(
+            Price.ticker == ticker,
+            Price.date >= avg_volume_date,
+            Price.date <= latest_date,
+            Price.volume.isnot(None)
+        ).scalar()
+
+        # Calculate returns for different periods
+        returns = {}
+        for period, days in [('5d', 5), ('20d', 20), ('60d', 60)]:
+            period_date = latest_date - timedelta(days=days)
+            # Get price within a 3-day window around the target date
+            window_start = period_date - timedelta(days=3)
+            window_end = period_date + timedelta(days=3)
+            
+            period_price = session.query(
+                func.avg(Price.close_price).label('avg_price')
+            ).filter(
+                Price.ticker == ticker,
+                Price.date >= window_start,
+                Price.date <= window_end,
+                Price.close_price.isnot(None),
+                Price.close_price > 0
+            ).scalar()
+            
+            if period_price and latest_price and latest_price.close_price:
+                returns[f'return_{period}'] = ((latest_price.close_price - period_price) / period_price) * 100
+            else:
+                returns[f'return_{period}'] = None
+
+        # Calculate price changes
+        close_price = latest_price.close_price if latest_price else stock.price
+        price_change = None
+        price_change_pct = None
+        
+        if previous_price and previous_price.close_price and latest_price and latest_price.close_price:
+            price_change = latest_price.close_price - previous_price.close_price
+            price_change_pct = (price_change / previous_price.close_price) * 100
+
+        # Calculate volume change multiplier
+        volume_change_multiplier = None
+        if latest_price and latest_price.volume and avg_volume and avg_volume > 0:
+            volume_change_multiplier = latest_price.volume / avg_volume
+
         stock_data = {
             'ticker': stock.ticker,
             'company_name': stock.company_name,
             'sector': stock.sector,
             'industry': stock.industry,
+            'country': stock.country,
             'market_cap': stock.market_cap,
             'price': stock.price,
+            'close_price': close_price,
+            'price_change': price_change,
+            'price_change_pct': price_change_pct,
+            'volume': latest_price.volume if latest_price else None,
+            'avg_volume': avg_volume,
+            'volume_change_multiplier': volume_change_multiplier,
+            'week_52_high': week_52_data.high_52w if week_52_data else None,
+            'week_52_low': week_52_data.low_52w if week_52_data else None,
+            'return_5d': returns.get('return_5d'),
+            'return_20d': returns.get('return_20d'),
+            'return_60d': returns.get('return_60d'),
+            'shares_outstanding': getattr(stock, 'shares_outstanding', None),
+            'shares_float': getattr(stock, 'shares_float', None),
+            'short_float': getattr(stock, 'short_float', None),
+            'short_ratio': getattr(stock, 'short_ratio', None),
+            'short_interest': getattr(stock, 'short_interest', None),
             'beta': stock.beta,
             'vol_avg': stock.vol_avg,
             'last_div': stock.last_div,
@@ -1822,9 +1921,15 @@ def get_finviz_news(ticker):
                     time_cell = cells[0]
                     headline_cell = cells[1]
 
-                    # Extract time
+                    # Extract time - try multiple methods
+                    time_text = ""
+                    # Try finding div first
                     time_div = time_cell.find('div')
-                    time_text = time_div.get_text(strip=True) if time_div else ""
+                    if time_div:
+                        time_text = time_div.get_text(strip=True)
+                    # If no div, try getting text directly from td
+                    if not time_text:
+                        time_text = time_cell.get_text(strip=True)
 
                     # Extract headline and link
                     headline_link = headline_cell.find('a')
@@ -1837,7 +1942,7 @@ def get_finviz_news(ticker):
                         source = source_div.get_text(strip=True) if source_div else ""
 
                         news_items.append({
-                            'time': time_text,
+                            'time': time_text if time_text else 'N/A',
                             'headline': headline,
                             'link': link,
                             'source': source

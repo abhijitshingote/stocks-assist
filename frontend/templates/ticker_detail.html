@@ -655,7 +655,7 @@
         
         // Load ticker details
         function loadTickerDetails() {
-            fetch(appendRewindDate(`/api/stock/${ticker}`))
+            fetch(appendRewindDate(`/api/frontend/stock/${ticker}`))
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -770,7 +770,7 @@
         function loadCharts() {
             // Fetch both price data and earnings data in parallel
             Promise.all([
-                fetch(appendRewindDate(`/api/stock/${ticker}/prices`)).then(response => response.json()),
+                fetch(appendRewindDate(`/api/frontend/stock/${ticker}/prices`)).then(response => response.json()),
                 fetchEarningsData(ticker)
             ])
                 .then(([priceData, earningsData]) => {
@@ -1251,7 +1251,7 @@
         }
 
         function fetchEarningsData(ticker) {
-            return fetch(appendRewindDate(`/api/stock/${ticker}/earnings`))
+            return fetch(appendRewindDate(`/api/frontend/stock/${ticker}/earnings`))
                 .then(response => {
                     if (!response.ok) {
                         if (response.status === 404) {
@@ -1309,7 +1309,7 @@
         
         // Comments functions
         function loadComments() {
-            fetch(`/api/comments/${ticker}`)
+            fetch(`/api/frontend/comments/${ticker}`)
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('loadingComments').style.display = 'none';
@@ -1439,7 +1439,7 @@
                 return;
             }
             
-            fetch(`/api/comments/${commentId}`, {
+            fetch(`/api/frontend/comments/${commentId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1470,7 +1470,7 @@
                 return;
             }
             
-            fetch(`/api/comments/${commentId}`, {
+            fetch(`/api/frontend/comments/${commentId}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())
@@ -1504,7 +1504,7 @@
             button.disabled = true;
             button.textContent = 'Adding...';
             
-            fetch(`/api/comments/${ticker}`, {
+            fetch(`/api/frontend/comments/${ticker}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1646,7 +1646,7 @@
 
         // Flags functionality
         function loadFlags() {
-            fetch(appendRewindDate(`/api/flags/${ticker}`))
+            fetch(appendRewindDate(`/api/frontend/flags/${ticker}`))
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -1683,7 +1683,7 @@
             changes.push({ ticker: ticker, flag: 'shortlisted', value: shortlistCheck });
             changes.push({ ticker: ticker, flag: 'blacklisted', value: blacklistCheck });
             
-            fetch('/api/flags/batch', {
+            fetch('/api/frontend/flags/batch', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1722,7 +1722,7 @@
 
         // Concise Notes functionality
         function loadConciseNote() {
-            fetch(appendRewindDate(`/api/concise-notes/${ticker}`))
+            fetch(appendRewindDate(`/api/frontend/concise-notes/${ticker}`))
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -1752,7 +1752,7 @@
             errorDiv.style.display = 'none';
             successDiv.style.display = 'none';
             
-            fetch(`/api/concise-notes/${ticker}`, {
+            fetch(`/api/frontend/concise-notes/${ticker}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1801,7 +1801,7 @@
         });
 
         function fetchNews() {
-            fetch(`/api/finviz-news/${ticker}`)
+            fetch(`/api/frontend/finviz-news/${ticker}`)
                 .then(r => r.json())
                 .then(data => {
                     document.getElementById('newsLoading').style.display = 'none';
@@ -1818,7 +1818,7 @@
                     const tbody = document.querySelector('#newsTable tbody');
                     data.slice(0, 15).forEach(item => {
                         const tr = document.createElement('tr');
-                        tr.innerHTML = `<td style="white-space:nowrap;">${item.date} ${item.time}</td><td><a href="${item.url}" target="_blank">${item.headline}</a></td>`;
+                        tr.innerHTML = `<td style="white-space:nowrap;">${item.time || 'N/A'}</td><td><a href="${item.link}" target="_blank">${item.headline}</a></td>`;
                         tbody.appendChild(tr);
                     });
                     document.getElementById('newsTable').style.display = 'table';
