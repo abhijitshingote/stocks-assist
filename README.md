@@ -6,12 +6,13 @@
 ---
 
 ## Things to Do
-
-
+-- the categories should be user settable , market cap industry sector, threshold ,
+other filters
+-- FMP has deprecated endpoitn, need to fix build_stock_list_fmp.py
 - IPO screen  
 - dashboard page - like a doctors office, top movers, upcoming calendar, news,upcoming ipo, moving averages, SPX and NASDAQ performance on every page  
-
----
+--RSI analysis
+--- vol % of float or total outstanding
 
 ## First Run
 
@@ -20,10 +21,13 @@ docker-compose build --no-cache
 
 docker-compose down -v && docker-compose up -d && docker-compose exec web bash
 
-python initialize_db.py --reset
-python initial_seeding_db.py
-python daily_price_update.py
-crontab -l | sed '2 s/^#//' | crontab -
+python db_scripts/initialize_data/initialize_db.py --reset
+python db_scripts/initialize_data/seed_stock_table_from_masterstocklistcsv.py 
+python db_scripts/initialize_data/seed_1_year_price_table_from_polygon.py
+python db_scripts/initialize_data/seed_index_prices_polygon.py
+python db_scripts/update_date/daily_price_update.py
+python db_scripts/update_date/daily_indices_update.py
+crontab -l | sed '/^# \*/s/^# //' | crontab -
 # python get_earnings_dates.py
 python get_earnings_dates.py --missing --limit 100 --debug
 ```

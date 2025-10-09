@@ -31,6 +31,8 @@ def initialize_database(reset=False):
             connection.execute(text("DROP TABLE IF EXISTS flags CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS comment CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_rsi CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS index_price CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS index CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS ticker CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS price CASCADE;"))
             print("Old tables dropped.")
@@ -159,6 +161,39 @@ def initialize_database(reset=False):
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
             )
         """))
+
+        # Create index table for tracking indices and ETFs
+        connection.execute(text(f"""
+            {table_creation_clause} index (
+                id SERIAL PRIMARY KEY,
+                symbol VARCHAR(10) UNIQUE NOT NULL,
+                yahoo_symbol VARCHAR(20) NOT NULL,
+                name VARCHAR(255) NOT NULL,
+                description TEXT,
+                index_type VARCHAR(20),
+                is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """))
+
+        # Create index_price table for historical index/ETF prices
+        connection.execute(text(f"""
+            {table_creation_clause} index_price (
+                id SERIAL PRIMARY KEY,
+                symbol VARCHAR(10) NOT NULL,
+                date DATE NOT NULL,
+                open_price FLOAT,
+                high_price FLOAT,
+                low_price FLOAT,
+                close_price FLOAT,
+                volume FLOAT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                CONSTRAINT _index_symbol_date_uc UNIQUE (symbol, date),
+                FOREIGN KEY (symbol) REFERENCES index(symbol) ON DELETE CASCADE
+            )
+        """))
         
         # Create indexes for better query performance
         index_creation_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
@@ -182,6 +217,10 @@ def initialize_database(reset=False):
             {index_creation_clause} idx_flags_blacklisted ON flags(is_blacklisted);
             {index_creation_clause} idx_notes_ticker ON concise_notes(ticker);
             {index_creation_clause} idx_stock_rsi_ticker ON stock_rsi(ticker);
+            {index_creation_clause} idx_index_symbol ON index(symbol);
+            {index_creation_clause} idx_index_type ON index(index_type);
+            {index_creation_clause} idx_index_price_symbol ON index_price(symbol);
+            {index_creation_clause} idx_index_price_date ON index_price(date);
         """))
         
         connection.commit()
@@ -194,6 +233,8 @@ def initialize_database(reset=False):
             print("- Comment table created (user/AI comments with review workflow)")
             print("- Flags table created (reviewed/shortlisted/blacklisted booleans)")
             print("- Concise notes table created")
+            print("- Index table created (market indices/ETFs metadata)")
+            print("- Index_price table created (historical index/ETF prices)")
         else:
             print("Database initialization completed successfully!")
             print("- 'ticker' table ready (comprehensive FMP company data)")
@@ -201,6 +242,8 @@ def initialize_database(reset=False):
             print("- 'comment' table ready (user/AI comments with review workflow)")
             print("- 'flags' table ready (reviewed/shortlisted/blacklisted booleans)")
             print("- 'concise notes' table ready")
+            print("- 'index' table ready (market indices/ETFs metadata)")
+            print("- 'index_price' table ready (historical index/ETF prices)")
 
 if __name__ == "__main__":
     # Check for reset flag

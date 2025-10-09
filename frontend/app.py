@@ -553,34 +553,82 @@ def get_return_120d_mega_frontend():
         return jsonify({'error': 'Failed to fetch data'}), 500
     return jsonify(result)
 
-@app.route('/api/frontend/Gapper-Above200M')
-def get_gapper_above_200m_frontend():
-    """Get gapper stocks above 200M via backend API"""
-    result = make_backend_request('/api/Gapper-Above200M')
+@app.route('/api/frontend/Gapper-MicroCap')
+def get_gapper_micro_frontend():
+    """Get gapper stocks micro cap via backend API"""
+    result = make_backend_request('/api/Gapper-MicroCap')
     if result is None:
         return jsonify({'error': 'Failed to fetch gapper stocks'}), 500
     return jsonify(result)
 
-@app.route('/api/frontend/Gapper-Below200M')
-def get_gapper_below_200m_frontend():
-    """Get gapper stocks below 200M via backend API"""
-    result = make_backend_request('/api/Gapper-Below200M')
+@app.route('/api/frontend/Gapper-SmallCap')
+def get_gapper_small_frontend():
+    """Get gapper stocks small cap via backend API"""
+    result = make_backend_request('/api/Gapper-SmallCap')
     if result is None:
         return jsonify({'error': 'Failed to fetch gapper stocks'}), 500
     return jsonify(result)
 
-@app.route('/api/frontend/Volume-Above200M')
-def get_volume_above_200m_frontend():
-    """Get volume stocks above 200M via backend API"""
-    result = make_backend_request('/api/Volume-Above200M')
+@app.route('/api/frontend/Gapper-MidCap')
+def get_gapper_mid_frontend():
+    """Get gapper stocks mid cap via backend API"""
+    result = make_backend_request('/api/Gapper-MidCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch gapper stocks'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Gapper-LargeCap')
+def get_gapper_large_frontend():
+    """Get gapper stocks large cap via backend API"""
+    result = make_backend_request('/api/Gapper-LargeCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch gapper stocks'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Gapper-MegaCap')
+def get_gapper_mega_frontend():
+    """Get gapper stocks mega cap via backend API"""
+    result = make_backend_request('/api/Gapper-MegaCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch gapper stocks'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Volume-MicroCap')
+def get_volume_micro_frontend():
+    """Get volume stocks micro cap via backend API"""
+    result = make_backend_request('/api/Volume-MicroCap')
     if result is None:
         return jsonify({'error': 'Failed to fetch volume stocks'}), 500
     return jsonify(result)
 
-@app.route('/api/frontend/Volume-Below200M')
-def get_volume_below_200m_frontend():
-    """Get volume stocks below 200M via backend API"""
-    result = make_backend_request('/api/Volume-Below200M')
+@app.route('/api/frontend/Volume-SmallCap')
+def get_volume_small_frontend():
+    """Get volume stocks small cap via backend API"""
+    result = make_backend_request('/api/Volume-SmallCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch volume stocks'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Volume-MidCap')
+def get_volume_mid_frontend():
+    """Get volume stocks mid cap via backend API"""
+    result = make_backend_request('/api/Volume-MidCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch volume stocks'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Volume-LargeCap')
+def get_volume_large_frontend():
+    """Get volume stocks large cap via backend API"""
+    result = make_backend_request('/api/Volume-LargeCap')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch volume stocks'}), 500
+    return jsonify(result)
+
+@app.route('/api/frontend/Volume-MegaCap')
+def get_volume_mega_frontend():
+    """Get volume stocks mega cap via backend API"""
+    result = make_backend_request('/api/Volume-MegaCap')
     if result is None:
         return jsonify({'error': 'Failed to fetch volume stocks'}), 500
     return jsonify(result)
@@ -781,6 +829,42 @@ def api_rsi_frontend():
     if result is None:
         return jsonify({'error': 'Failed to fetch RSI data'}), 500
     return jsonify(result)
+
+@app.route('/Indices')
+def indices_page():
+    """Indices page showing SPX, QQQ, IWM with metrics and charts"""
+    return render_template('indices.html', active_page='indices')
+
+
+@app.route('/api/frontend/indices', methods=['GET'])
+def get_indices_proxy():
+    """Proxy endpoint for indices data"""
+    result = make_backend_request('/api/indices')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch indices data'}), 500
+    return jsonify(result)
+
+
+@app.route('/api/frontend/indices/<symbol>/prices', methods=['GET'])
+def get_index_prices_proxy(symbol):
+    """Proxy endpoint for index prices"""
+    days = request.args.get('days', '365')
+    result = make_backend_request(f'/api/indices/{symbol}/prices?days={days}')
+    if result is None:
+        return jsonify({'error': f'Failed to fetch prices for {symbol}'}), 500
+    return jsonify(result)
+
+
+@app.route('/api/frontend/economic-calendar', methods=['GET'])
+def get_economic_calendar_proxy():
+    """Proxy endpoint for economic calendar data"""
+    # Pass through refresh parameter if present
+    refresh = request.args.get('refresh', 'false')
+    result = make_backend_request(f'/api/economic-calendar?refresh={refresh}')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch economic calendar data'}), 500
+    return jsonify(result)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

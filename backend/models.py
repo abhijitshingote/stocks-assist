@@ -208,6 +208,39 @@ class StockRSI(Base):
     def __repr__(self):
         return f"<StockRSI(ticker='{self.ticker}', spx_1w={self.rsi_spx_1week}, qqq_1w={self.rsi_qqq_1week})>"
 
+class Index(Base):
+    __tablename__ = 'index'
+
+    id = Column(Integer, primary_key=True)
+    symbol = Column(String, unique=True, nullable=False)  # e.g., 'SPX', 'QQQ', 'IWM'
+    yahoo_symbol = Column(String, nullable=False)  # Yahoo Finance symbol (e.g., '^GSPC' for SPX)
+    name = Column(String, nullable=False)  # Full name (e.g., 'S&P 500')
+    description = Column(Text)  # Description of the index/ETF
+    index_type = Column(String)  # 'index' or 'etf'
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+
+    def __repr__(self):
+        return f"<Index(symbol='{self.symbol}', name='{self.name}', type='{self.index_type}')>"
+
+class IndexPrice(Base):
+    __tablename__ = 'index_price'
+
+    id = Column(Integer, primary_key=True)
+    symbol = Column(String, ForeignKey('index.symbol'), nullable=False)  # References Index.symbol
+    date = Column(Date, nullable=False)
+    open_price = Column(Float)
+    high_price = Column(Float)
+    low_price = Column(Float)
+    close_price = Column(Float)
+    volume = Column(Float)
+    created_at = Column(DateTime, default=get_eastern_datetime)
+    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+    
+    # Add unique constraint for symbol + date combination to enable upserts
+    __table_args__ = (UniqueConstraint('symbol', 'date', name='_index_symbol_date_uc'),)
+
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
     engine = create_engine(database_url)

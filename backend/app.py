@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, StockRSI, init_db
+from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, StockRSI, Index, IndexPrice, init_db
 from sqlalchemy import desc, func, and_, or_, case, text
 from datetime import datetime, timedelta
 import os
@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 import json
 from pathlib import Path
 from bs4 import BeautifulSoup
+import pandas as pd
+import numpy as np
 
 # Load environment variables
 load_dotenv()
@@ -132,6 +134,57 @@ def get_rewind_date():
         except ValueError:
             logger.warning(f"Invalid rewind_date format: {rewind_date_str}")
     return None
+
+# Economic Calendar Cache
+ECONOMIC_CALENDAR_CACHE_FILE = BACKUP_DIR / "economic_calendar_cache.json"
+CACHE_MAX_AGE_HOURS = 12  # Cache expires after 12 hours
+
+def get_cached_economic_calendar():
+    """
+    Get economic calendar from cache if available and not expired
+    
+    Returns:
+        dict or None: Cached data if valid, None otherwise
+    """
+    try:
+        if not ECONOMIC_CALENDAR_CACHE_FILE.exists():
+            return None
+        
+        with open(ECONOMIC_CALENDAR_CACHE_FILE, 'r') as f:
+            cached = json.load(f)
+        
+        # Check if cache is still valid
+        cached_time = datetime.strptime(cached['timestamp'], '%Y-%m-%d %H:%M:%S')
+        cached_time = pytz.timezone('US/Eastern').localize(cached_time)
+        current_time = get_eastern_datetime()
+        
+        age_hours = (current_time - cached_time).total_seconds() / 3600
+        
+        if age_hours < CACHE_MAX_AGE_HOURS:
+            logger.info(f"Using cached economic calendar (age: {age_hours:.1f} hours)")
+            cached['cached'] = True
+            return cached
+        else:
+            logger.info(f"Cache expired (age: {age_hours:.1f} hours)")
+            return None
+            
+    except Exception as e:
+        logger.error(f"Error reading economic calendar cache: {str(e)}")
+        return None
+
+def save_economic_calendar_cache(data):
+    """
+    Save economic calendar data to cache file
+    
+    Args:
+        data: Dictionary containing events and timestamp
+    """
+    try:
+        with open(ECONOMIC_CALENDAR_CACHE_FILE, 'w') as f:
+            json.dump(data, f, indent=2)
+        logger.info(f"Saved economic calendar to cache ({len(data.get('events', []))} events)")
+    except Exception as e:
+        logger.error(f"Error saving economic calendar cache: {str(e)}")
 
 def get_filtered_price_query():
     """Get a Price query filtered by the rewind date if specified.
@@ -589,21 +642,52 @@ def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, marke
         logger.error(f"Error getting momentum stocks for {return_days}d: {str(e)}")
         return []
 
-def get_gapper_stocks(above_200m=True):
-    """Get stocks that gapped up significantly"""
+def get_gapper_stocks(above_200m=None, market_cap_category=None):
+    """Get stocks that gapped up significantly
+    
+    Args:
+        above_200m: (Deprecated) Boolean for backward compatibility
+        market_cap_category: One of 'micro', 'small', 'mid', 'large', 'mega'
+    """
     try:
         # Get latest price date
         latest_date = get_latest_price_date()
         if not latest_date:
             return []
 
+        # Find previous trading day (skip weekends and look back up to 5 days)
         previous_date = latest_date - timedelta(days=1)
-
-        # Find previous trading day (skip weekends)
-        while previous_date.weekday() >= 5:  # Saturday = 5, Sunday = 6
+        days_checked = 0
+        while days_checked < 5:
+            # Check if there's price data for this date
+            has_data = session.query(Price).filter(
+                Price.date == previous_date,
+                Price.close_price.isnot(None)
+            ).first()
+            if has_data:
+                break
             previous_date -= timedelta(days=1)
+            days_checked += 1
 
-        # Query for gap-ups
+        # Subquery for previous day's close
+        prev_close_subquery = session.query(
+            Price.ticker,
+            Price.close_price.label('prev_close')
+        ).filter(
+            Price.date == previous_date,
+            Price.close_price.isnot(None)
+        ).subquery()
+
+        # Subquery for today's open
+        today_open_subquery = session.query(
+            Price.ticker,
+            Price.open_price.label('today_open')
+        ).filter(
+            Price.date == latest_date,
+            Price.open_price.isnot(None)
+        ).subquery()
+
+        # Main query joining both subqueries
         query = session.query(
             Stock.ticker,
             Stock.company_name,
@@ -611,34 +695,34 @@ def get_gapper_stocks(above_200m=True):
             Stock.industry,
             Stock.market_cap,
             Stock.price,
-            Price.close_price.label('prev_close'),
-            Price.open_price.label('today_open')
-        ).join(Price, Stock.ticker == Price.ticker)
-
-        # Get yesterday's close and today's open
-        query = query.filter(
-            or_(
-                and_(Price.date == previous_date, Price.close_price.isnot(None)),
-                and_(Price.date == latest_date, Price.open_price.isnot(None))
-            )
+            prev_close_subquery.c.prev_close,
+            today_open_subquery.c.today_open
+        ).join(
+            prev_close_subquery, Stock.ticker == prev_close_subquery.c.ticker
+        ).join(
+            today_open_subquery, Stock.ticker == today_open_subquery.c.ticker
         )
 
         # Apply market cap filter
-        if above_200m:
-            query = query.filter(Stock.market_cap >= 200000000)
-        else:
-            query = query.filter(Stock.market_cap < 200000000)
+        if market_cap_category:
+            # Use new category system
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                query = query.filter(Stock.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(Stock.market_cap < category['max'])
+        elif above_200m is not None:
+            # Backward compatibility with old system
+            if above_200m:
+                query = query.filter(Stock.market_cap >= 200000000)
+            else:
+                query = query.filter(Stock.market_cap < 200000000)
 
         # Apply global exclusions
         query = apply_global_exclude_filters(query)
 
-        # Group by stock to get both dates
-        gap_stocks = query.group_by(
-            Stock.ticker, Stock.company_name, Stock.sector,
-            Stock.industry, Stock.market_cap, Stock.price
-        ).having(
-            func.count(Price.date) == 2  # Must have both dates
-        ).all()
+        # Get results
+        gap_stocks = query.all()
 
         # Calculate gap percentages and filter for common stocks
         results = []
@@ -647,19 +731,30 @@ def get_gapper_stocks(above_200m=True):
             if not is_common_stock(stock.ticker):
                 continue
                 
-            if stock.prev_close and stock.today_open:
+            if stock.prev_close and stock.today_open and stock.prev_close > 0:
                 gap_pct = ((stock.today_open - stock.prev_close) / stock.prev_close) * 100
                 if gap_pct >= 5:  # Minimum 5% gap
+                    price_change = stock.today_open - stock.prev_close
+                    current_price = stock.price if stock.price else stock.today_open
+                    
                     results.append({
                         'ticker': stock.ticker,
                         'company_name': stock.company_name,
                         'sector': stock.sector,
                         'industry': stock.industry,
                         'market_cap': stock.market_cap,
-                        'price': stock.price,
+                        'price': current_price,
+                        'current_price': round(current_price, 2),
+                        'start_price': round(stock.prev_close, 2),
+                        'end_price': round(stock.today_open, 2),
+                        'price_change': round(price_change, 2),
+                        'price_change_pct': f"{'+' if gap_pct >= 0 else ''}{round(gap_pct, 2)}%",
+                        'return_pct': round(gap_pct, 2),
                         'prev_close': round(stock.prev_close, 2),
                         'today_open': round(stock.today_open, 2),
-                        'gap_pct': round(gap_pct, 2)
+                        'gap_pct': round(gap_pct, 2),
+                        'volume': None,  # Will be enriched
+                        'dollar_volume': None  # Will be enriched
                     })
 
         # Sort by gap percentage descending and limit to top 100
@@ -674,8 +769,13 @@ def get_gapper_stocks(above_200m=True):
         logger.error(f"Error getting gapper stocks: {str(e)}")
         return []
 
-def get_volume_spike_stocks(above_200m=True):
-    """Get stocks with significant volume spikes"""
+def get_volume_spike_stocks(above_200m=None, market_cap_category=None):
+    """Get stocks with significant volume spikes
+    
+    Args:
+        above_200m: (Deprecated) Boolean for backward compatibility
+        market_cap_category: One of 'micro', 'small', 'mid', 'large', 'mega'
+    """
     try:
         # Get latest price date
         latest_date = get_latest_price_date()
@@ -707,10 +807,19 @@ def get_volume_spike_stocks(above_200m=True):
          .filter(Price.date == latest_date)
 
         # Apply market cap filter
-        if above_200m:
-            query = query.filter(Stock.market_cap >= 200000000)
-        else:
-            query = query.filter(Stock.market_cap < 200000000)
+        if market_cap_category:
+            # Use new category system
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                query = query.filter(Stock.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(Stock.market_cap < category['max'])
+        elif above_200m is not None:
+            # Backward compatibility with old system
+            if above_200m:
+                query = query.filter(Stock.market_cap >= 200000000)
+            else:
+                query = query.filter(Stock.market_cap < 200000000)
 
         # Apply global exclusions
         query = apply_global_exclude_filters(query)
@@ -724,21 +833,36 @@ def get_volume_spike_stocks(above_200m=True):
             if not is_common_stock(stock.ticker):
                 continue
                 
-            if stock.avg_volume and stock.avg_volume > 0:
+            if stock.avg_volume and stock.avg_volume > 0 and stock.today_volume:
                 volume_ratio = stock.today_volume / stock.avg_volume
                 if volume_ratio >= 2:  # At least 2x average volume
+                    # Calculate price change
+                    price_change = stock.today_close - stock.today_open if (stock.today_close and stock.today_open) else 0
+                    price_change_pct = ((price_change / stock.today_open) * 100) if (stock.today_open and stock.today_open > 0) else 0
+                    current_price = stock.price if stock.price else stock.today_close
+                    
+                    # Calculate dollar volume
+                    dollar_volume = (current_price * stock.today_volume) if (current_price and stock.today_volume) else 0
+                    
                     results.append({
                         'ticker': stock.ticker,
                         'company_name': stock.company_name,
                         'sector': stock.sector,
                         'industry': stock.industry,
                         'market_cap': stock.market_cap,
-                        'price': stock.price,
+                        'price': current_price,
+                        'current_price': round(current_price, 2) if current_price else None,
+                        'start_price': round(stock.today_open, 2) if stock.today_open else None,
+                        'end_price': round(stock.today_close, 2) if stock.today_close else None,
+                        'price_change': round(price_change, 2),
+                        'price_change_pct': f"{'+' if price_change_pct >= 0 else ''}{round(price_change_pct, 2)}%",
+                        'return_pct': round(price_change_pct, 2),
+                        'volume': int(stock.today_volume),
+                        'dollar_volume': round(dollar_volume, 2) if dollar_volume else None,
                         'today_volume': int(stock.today_volume),
                         'avg_volume': round(stock.avg_volume, 0),
                         'volume_ratio': round(volume_ratio, 1),
-                        'today_close': round(stock.today_close, 2),
-                        'today_open': round(stock.today_open, 2)
+                        'volume_change': f"{volume_ratio:.1f}x"
                     })
 
         # Sort by volume ratio descending and limit to top 100
@@ -1396,22 +1520,46 @@ def get_return_120d_mega():
     return jsonify(get_momentum_stocks(120, market_cap_category='mega'))
 
 # Gapper API endpoints
-@app.route('/api/Gapper-Above200M')
-def get_gapper_above_200m():
-    return jsonify(get_gapper_stocks(above_200m=True))
+@app.route('/api/Gapper-MicroCap')
+def get_gapper_micro():
+    return jsonify(get_gapper_stocks(market_cap_category='micro'))
 
-@app.route('/api/Gapper-Below200M')
-def get_gapper_below_200m():
-    return jsonify(get_gapper_stocks(above_200m=False))
+@app.route('/api/Gapper-SmallCap')
+def get_gapper_small():
+    return jsonify(get_gapper_stocks(market_cap_category='small'))
+
+@app.route('/api/Gapper-MidCap')
+def get_gapper_mid():
+    return jsonify(get_gapper_stocks(market_cap_category='mid'))
+
+@app.route('/api/Gapper-LargeCap')
+def get_gapper_large():
+    return jsonify(get_gapper_stocks(market_cap_category='large'))
+
+@app.route('/api/Gapper-MegaCap')
+def get_gapper_mega():
+    return jsonify(get_gapper_stocks(market_cap_category='mega'))
 
 # Volume API endpoints
-@app.route('/api/Volume-Above200M')
-def get_volume_above_200m():
-    return jsonify(get_volume_spike_stocks(above_200m=True))
+@app.route('/api/Volume-MicroCap')
+def get_volume_micro():
+    return jsonify(get_volume_spike_stocks(market_cap_category='micro'))
 
-@app.route('/api/Volume-Below200M')
-def get_volume_below_200m():
-    return jsonify(get_volume_spike_stocks(above_200m=False))
+@app.route('/api/Volume-SmallCap')
+def get_volume_small():
+    return jsonify(get_volume_spike_stocks(market_cap_category='small'))
+
+@app.route('/api/Volume-MidCap')
+def get_volume_mid():
+    return jsonify(get_volume_spike_stocks(market_cap_category='mid'))
+
+@app.route('/api/Volume-LargeCap')
+def get_volume_large():
+    return jsonify(get_volume_spike_stocks(market_cap_category='large'))
+
+@app.route('/api/Volume-MegaCap')
+def get_volume_mega():
+    return jsonify(get_volume_spike_stocks(market_cap_category='mega'))
 
 # Sea Change API endpoints
 @app.route('/api/SeaChange-Above200M')
@@ -1821,6 +1969,154 @@ def get_perplexity_analysis():
 
     except Exception as e:
         logger.error(f"Error getting Perplexity analysis for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/economic-calendar', methods=['GET'])
+def get_economic_calendar():
+    """Get upcoming US economic calendar events using Perplexity API (cached)"""
+    try:
+        # Check if we should use cache
+        force_refresh = request.args.get('refresh', '').lower() == 'true'
+        
+        # Try to get from cache if not forcing refresh
+        if not force_refresh:
+            cached_data = get_cached_economic_calendar()
+            if cached_data:
+                return jsonify(cached_data)
+        
+        # If no cache or force refresh, fetch from Perplexity
+        logger.info("Fetching economic calendar from Perplexity API...")
+        
+        # Get API key
+        api_key = os.getenv('PERPLEXITY_API_KEY')
+        if not api_key:
+            return jsonify({'error': 'Perplexity API key not configured'}), 500
+
+        # Prepare the prompt for economic calendar events
+        prompt = (
+            "Provide a comprehensive economic calendar of market-moving events for the next 2 weeks "
+            "that could impact US equities. Include ALL of the following categories:\n\n"
+            "**US Economic Data (HIGHEST PRIORITY):**\n"
+            "- CPI, PPI, PCE inflation reports\n"
+            "- Non-farm payrolls, unemployment rate, jobless claims\n"
+            "- Retail sales, consumer sentiment (Michigan, Conference Board)\n"
+            "- PMI reports (ISM Manufacturing/Services, S&P Global)\n"
+            "- Housing data (starts, permits, existing home sales)\n"
+            "- GDP reports, industrial production, durable goods\n"
+            "- Fed Beige Book, Fed speakers (especially Chair Powell)\n\n"
+            "**Central Banks:**\n"
+            "- FOMC meetings, minutes, and rate decisions\n"
+            "- ECB, BOJ, BOE meetings and rate decisions\n"
+            "- Central bank speeches and press conferences\n\n"
+            "**Major Earnings:**\n"
+            "- Mega-cap tech: AAPL, MSFT, GOOGL, AMZN, META, NVDA, TSLA\n"
+            "- Major financials: JPM, BAC, GS, MS, WFC, C\n"
+            "- Other index movers and sector leaders\n\n"
+            "**Market Events:**\n"
+            "- Monthly/quarterly options expiration (OPEX)\n"
+            "- Triple witching, index rebalancing\n"
+            "- Treasury auctions (10Y, 30Y)\n\n"
+            "**Government/Policy:**\n"
+            "- Congressional votes, debt ceiling\n"
+            "- Trade policy announcements\n"
+            "- Regulatory decisions (SEC, FDA approvals)\n\n"
+            "For each event provide:\n"
+            "1. Specific date (e.g., 'Oct 10', 'Oct 15')\n"
+            "2. Time in ET (e.g., '8:30 AM ET', '2:00 PM ET') - if known\n"
+            "3. Event name (be specific)\n"
+            "4. One sentence on why it matters to markets\n"
+            '5. Importance: "high" (Fed, CPI, jobs, major tech earnings), "medium" (regional data, sector earnings), "low" (minor data)\n\n'
+            "Format as JSON array:\n"
+            "[\n"
+            '  {"date": "Oct 10", "time": "8:30 AM ET", "event": "US CPI (September)", "description": "Core inflation critical for Fed policy path", "importance": "high"},\n'
+            '  {"date": "Oct 15", "time": "Before Market", "event": "JPMorgan Q3 Earnings", "description": "Kicks off bank earnings, sets tone for financial sector", "importance": "high"}\n'
+            "]\n\n"
+            "Return ONLY the JSON array with 25-35 events, no markdown formatting or additional text. "
+            "Sort by date chronologically."
+        )
+
+        # Make API call to Perplexity
+        response = requests.post(
+            'https://api.perplexity.ai/chat/completions',
+            headers={
+                'Authorization': f'Bearer {api_key}',
+                'Content-Type': 'application/json'
+            },
+            json={
+                'model': 'sonar-pro',
+                'messages': [
+                    {
+                        'role': 'user',
+                        'content': prompt
+                    }
+                ],
+                'temperature': 0.2,
+                'stream': False
+            },
+            timeout=60
+        )
+
+        if response.status_code != 200:
+            logger.error(f"Perplexity API error: {response.status_code} - {response.text}")
+            return jsonify({'error': f'Perplexity API error: {response.status_code}'}), 500
+
+        result = response.json()
+        content = result.get('choices', [{}])[0].get('message', {}).get('content', '')
+        
+        if not content:
+            return jsonify({'error': 'No content received from Perplexity'}), 500
+
+        # Try to parse JSON from the response
+        import json
+        import re
+        
+        # Extract JSON array from response (handle markdown code blocks)
+        json_match = re.search(r'\[[\s\S]*\]', content)
+        if json_match:
+            events_json = json_match.group(0)
+            try:
+                events = json.loads(events_json)
+            except json.JSONDecodeError:
+                # If JSON parsing fails, return raw content
+                logger.warning("Failed to parse JSON from Perplexity response")
+                events = []
+                # Try to extract events from plain text
+                lines = content.strip().split('\n')
+                for line in lines:
+                    if line.strip() and not line.startswith('#'):
+                        events.append({
+                            'date': '',
+                            'time': '',
+                            'event': line.strip(),
+                            'description': '',
+                            'importance': 'medium'
+                        })
+        else:
+            events = []
+            lines = content.strip().split('\n')
+            for line in lines:
+                if line.strip() and not line.startswith('#'):
+                    events.append({
+                        'date': '',
+                        'time': '',
+                        'event': line.strip(),
+                        'description': '',
+                        'importance': 'medium'
+                    })
+
+        result = {
+            'events': events,
+            'timestamp': get_eastern_datetime().strftime('%Y-%m-%d %H:%M:%S'),
+            'cached': False
+        }
+        
+        # Save to cache
+        save_economic_calendar_cache(result)
+        
+        return jsonify(result)
+
+    except Exception as e:
+        logger.error(f"Error getting economic calendar: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/comments/<int:comment_id>', methods=['DELETE'])
@@ -2320,6 +2616,130 @@ def api_rsi():
     except Exception as e:
         logger.error(f"Error getting RSI data: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+# ============================================================================
+# INDEX/ETF ENDPOINTS
+# ============================================================================
+
+@app.route('/api/indices', methods=['GET'])
+def get_indices():
+    """Get all indices with current prices and moving averages"""
+    try:
+        # Get all indices
+        indices = session.query(Index).filter(Index.is_active == True).all()
+        
+        result = []
+        for index in indices:
+            # Get latest price
+            latest_price = session.query(IndexPrice).filter(
+                IndexPrice.symbol == index.symbol
+            ).order_by(desc(IndexPrice.date)).first()
+            
+            # Get price history for moving averages (last 250 trading days ~ 1 year)
+            prices = session.query(IndexPrice).filter(
+                IndexPrice.symbol == index.symbol
+            ).order_by(desc(IndexPrice.date)).limit(250).all()
+            
+            if not prices:
+                continue
+                
+            # Calculate moving averages
+            close_prices = [p.close_price for p in reversed(prices)]
+            
+            ma_10 = np.mean(close_prices[-10:]) if len(close_prices) >= 10 else None
+            ma_20 = np.mean(close_prices[-20:]) if len(close_prices) >= 20 else None
+            ma_50 = np.mean(close_prices[-50:]) if len(close_prices) >= 50 else None
+            ma_200 = np.mean(close_prices[-200:]) if len(close_prices) >= 200 else None
+            
+            # Calculate returns
+            ret_1d = ((close_prices[-1] - close_prices[-2]) / close_prices[-2] * 100) if len(close_prices) >= 2 else None
+            ret_5d = ((close_prices[-1] - close_prices[-6]) / close_prices[-6] * 100) if len(close_prices) >= 6 else None
+            ret_20d = ((close_prices[-1] - close_prices[-21]) / close_prices[-21] * 100) if len(close_prices) >= 21 else None
+            ret_60d = ((close_prices[-1] - close_prices[-61]) / close_prices[-61] * 100) if len(close_prices) >= 61 else None
+            
+            # Calculate all-time high and distance
+            all_time_high = max(close_prices) if close_prices else None
+            ath_distance = ((close_prices[-1] - all_time_high) / all_time_high * 100) if all_time_high else None
+            
+            # Find previous high (last significant peak before current price)
+            # Look for the highest price in the last 60 days (excluding most recent 5 days)
+            prev_high = None
+            prev_high_distance = None
+            if len(close_prices) >= 60:
+                # Get prices from 5 to 60 days ago
+                lookback_prices = close_prices[-60:-5]
+                prev_high = max(lookback_prices) if lookback_prices else None
+                if prev_high and close_prices[-1]:
+                    prev_high_distance = ((close_prices[-1] - prev_high) / prev_high * 100)
+            
+            result.append({
+                'symbol': index.symbol,
+                'name': index.name,
+                'description': index.description,
+                'index_type': index.index_type,
+                'current_price': latest_price.close_price if latest_price else None,
+                'date': latest_price.date.isoformat() if latest_price else None,
+                'ma_10': round(ma_10, 2) if ma_10 else None,
+                'ma_20': round(ma_20, 2) if ma_20 else None,
+                'ma_50': round(ma_50, 2) if ma_50 else None,
+                'ma_200': round(ma_200, 2) if ma_200 else None,
+                'return_1d': round(ret_1d, 2) if ret_1d else None,
+                'return_5d': round(ret_5d, 2) if ret_5d else None,
+                'return_20d': round(ret_20d, 2) if ret_20d else None,
+                'return_60d': round(ret_60d, 2) if ret_60d else None,
+                'all_time_high': round(all_time_high, 2) if all_time_high else None,
+                'ath_distance': round(ath_distance, 2) if ath_distance else None,
+                'prev_high': round(prev_high, 2) if prev_high else None,
+                'prev_high_distance': round(prev_high_distance, 2) if prev_high_distance else None,
+            })
+        
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error getting indices: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/indices/<symbol>/prices', methods=['GET'])
+def get_index_prices(symbol):
+    """Get price history for a specific index"""
+    try:
+        # Get index info
+        index = session.query(Index).filter(Index.symbol == symbol).first()
+        if not index:
+            return jsonify({'error': 'Index not found'}), 404
+        
+        # Get days parameter (default 365)
+        days = request.args.get('days', 365, type=int)
+        
+        # Get prices
+        prices = session.query(IndexPrice).filter(
+            IndexPrice.symbol == symbol
+        ).order_by(desc(IndexPrice.date)).limit(days).all()
+        
+        if not prices:
+            return jsonify({'error': 'No price data found'}), 404
+        
+        # Reverse to get chronological order
+        prices = list(reversed(prices))
+        
+        result = {
+            'symbol': index.symbol,
+            'name': index.name,
+            'prices': [{
+                'date': p.date.isoformat(),
+                'open_price': p.open_price,
+                'high_price': p.high_price,
+                'low_price': p.low_price,
+                'close_price': p.close_price,
+                'volume': p.volume
+            } for p in prices]
+        }
+        
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Error getting index prices for {symbol}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

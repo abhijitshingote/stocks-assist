@@ -1,0 +1,363 @@
+{
+  "events": [
+    {
+      "date": "Oct 09",
+      "time": "11:00 AM ET",
+      "event": "Treasury Buyback Announcement (Preliminary)",
+      "description": "Treasury buybacks can affect liquidity and bond yields, impacting equity valuations",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 09",
+      "time": "11:30 AM ET",
+      "event": "3-Month Bill Auction",
+      "description": "Short-term Treasury auctions influence funding rates and risk sentiment",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 09",
+      "time": "11:30 AM ET",
+      "event": "6-Month Bill Auction",
+      "description": "Short-term Treasury auctions influence funding rates and risk sentiment",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 09",
+      "time": "5:00 PM ET",
+      "event": "Fed Schmid Speech",
+      "description": "Fed official speeches can signal future monetary policy direction",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 10",
+      "time": "1:45 PM ET",
+      "event": "Fed Goolsbee Speech",
+      "description": "Fed official speeches can move rate expectations and market sentiment",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 10",
+      "time": "2:00 PM ET",
+      "event": "Michigan Consumer Sentiment (Preliminary)",
+      "description": "Consumer sentiment is a leading indicator for spending and economic growth",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 10",
+      "time": "2:00 PM ET",
+      "event": "Michigan 5-Year Inflation Expectations (Preliminary)",
+      "description": "Long-term inflation expectations influence Fed policy and bond yields",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 10",
+      "time": "5:00 PM ET",
+      "event": "Fed Musalem Speech",
+      "description": "Fed official speeches can impact rate outlook and market volatility",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 10",
+      "time": "6:00 PM ET",
+      "event": "Monthly Budget Statement",
+      "description": "Federal budget data affects fiscal outlook and Treasury supply",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 14",
+      "time": "8:30 AM ET",
+      "event": "US CPI (September)",
+      "description": "Core inflation critical for Fed policy path and equity valuations",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 14",
+      "time": "8:30 AM ET",
+      "event": "NY Empire State Manufacturing Index",
+      "description": "Regional manufacturing activity signals economic momentum",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 14",
+      "time": "6:00 PM ET",
+      "event": "Fed Beige Book",
+      "description": "Fed's regional economic survey guides monetary policy decisions",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 15",
+      "time": "Before Market",
+      "event": "JPMorgan Q3 Earnings",
+      "description": "Kicks off bank earnings, sets tone for financial sector",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 15",
+      "time": "Before Market",
+      "event": "Citigroup Q3 Earnings",
+      "description": "Major bank earnings impact financial sector sentiment",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 15",
+      "time": "Before Market",
+      "event": "Wells Fargo Q3 Earnings",
+      "description": "Major bank earnings impact financial sector sentiment",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 15",
+      "time": "After Market",
+      "event": "Tesla Q3 Earnings",
+      "description": "Tesla earnings drive sentiment in tech and auto sectors",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 16",
+      "time": "8:30 AM ET",
+      "event": "US PPI (September)",
+      "description": "Producer inflation impacts margins and Fed rate outlook",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 16",
+      "time": "8:30 AM ET",
+      "event": "US Retail Sales (September)",
+      "description": "Retail sales are a key gauge of consumer spending and economic health",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 16",
+      "time": "8:30 AM ET",
+      "event": "Initial Jobless Claims",
+      "description": "Weekly labor market data signals employment trends",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 16",
+      "time": "8:30 AM ET",
+      "event": "Philadelphia Fed Manufacturing Index",
+      "description": "Regional manufacturing index provides early economic signals",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 16",
+      "time": "10:00 AM ET",
+      "event": "Business Inventories",
+      "description": "Inventory levels impact GDP and supply chain outlook",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 16",
+      "time": "5:00 PM ET",
+      "event": "7-Year Note Auction",
+      "description": "Treasury auctions affect yields and equity risk premiums",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 17",
+      "time": "8:30 AM ET",
+      "event": "US Housing Starts & Building Permits (September)",
+      "description": "Housing data is a leading indicator for construction and consumer demand",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 17",
+      "time": "9:15 AM ET",
+      "event": "Industrial Production & Capacity Utilization",
+      "description": "Production data reflects manufacturing health and economic growth",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 17",
+      "time": "After Market",
+      "event": "Netflix Q3 Earnings",
+      "description": "Major tech/media earnings can drive sector and index moves",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 18",
+      "time": "All Day",
+      "event": "Monthly Options Expiration (OPEX)",
+      "description": "Options expiration can increase volatility and impact market direction",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 21",
+      "time": "8:30 AM ET",
+      "event": "US Existing Home Sales (September)",
+      "description": "Existing home sales reflect consumer confidence and housing market health",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 21",
+      "time": "Before Market",
+      "event": "Bank of America Q3 Earnings",
+      "description": "Major bank earnings impact financial sector sentiment",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 21",
+      "time": "Before Market",
+      "event": "Goldman Sachs Q3 Earnings",
+      "description": "Major bank earnings impact financial sector sentiment",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 21",
+      "time": "Before Market",
+      "event": "Morgan Stanley Q3 Earnings",
+      "description": "Major bank earnings impact financial sector sentiment",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 22",
+      "time": "Before Market",
+      "event": "Procter & Gamble Q3 Earnings",
+      "description": "Consumer staples earnings can signal demand trends",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 22",
+      "time": "After Market",
+      "event": "Nvidia Q3 Earnings",
+      "description": "Mega-cap tech earnings drive market sentiment and sector moves",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 23",
+      "time": "10:00 AM ET",
+      "event": "US New Home Sales (September)",
+      "description": "New home sales are a key housing market indicator",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 23",
+      "time": "All Day",
+      "event": "ECB Rate Decision & Press Conference",
+      "description": "ECB policy impacts global risk appetite and US dollar",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 23",
+      "time": "After Market",
+      "event": "Intel Q3 Earnings",
+      "description": "Semiconductor earnings impact tech sector and supply chain outlook",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 24",
+      "time": "10:00 AM ET",
+      "event": "Michigan Consumer Sentiment (Final)",
+      "description": "Final consumer sentiment reading can confirm or shift market expectations",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 24",
+      "time": "After Market",
+      "event": "Amazon Q3 Earnings",
+      "description": "Mega-cap tech earnings drive market sentiment and sector moves",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 25",
+      "time": "Before Market",
+      "event": "American Express Q3 Earnings",
+      "description": "Financial sector earnings can signal consumer and business spending trends",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 25",
+      "time": "After Market",
+      "event": "Microsoft Q3 Earnings",
+      "description": "Mega-cap tech earnings drive market sentiment and sector moves",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 25",
+      "time": "After Market",
+      "event": "Alphabet (Google) Q3 Earnings",
+      "description": "Mega-cap tech earnings drive market sentiment and sector moves",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 28",
+      "time": "8:30 AM ET",
+      "event": "US Advance Economic Indicators (Trade, Retail, Wholesale)",
+      "description": "Advance indicators provide early signals for GDP and sector trends",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 28",
+      "time": "10:00 AM ET",
+      "event": "US Housing Vacancies and Homeownership (Q3)",
+      "description": "Housing vacancy data reflects supply-demand balance and consumer health",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 29",
+      "time": "8:30 AM ET",
+      "event": "US Durable Goods Orders (September)",
+      "description": "Durable goods orders signal business investment and manufacturing strength",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 29",
+      "time": "10:00 AM ET",
+      "event": "Dallas Fed Manufacturing Survey",
+      "description": "Regional manufacturing survey provides economic momentum signals",
+      "importance": "medium"
+    },
+    {
+      "date": "Oct 29",
+      "time": "After Market",
+      "event": "Meta Platforms Q3 Earnings",
+      "description": "Mega-cap tech earnings drive market sentiment and sector moves",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 30",
+      "time": "8:30 AM ET",
+      "event": "US GDP Q3 (Advance)",
+      "description": "GDP growth is the broadest measure of economic health and market direction",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 30",
+      "time": "All Day",
+      "event": "Bank of Japan Rate Decision & Press Conference",
+      "description": "BOJ policy impacts global risk appetite and currency markets",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 30",
+      "time": "After Market",
+      "event": "Apple Q3 Earnings",
+      "description": "Mega-cap tech earnings drive market sentiment and sector moves",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 31",
+      "time": "8:30 AM ET",
+      "event": "US Personal Income & PCE Deflator (September)",
+      "description": "PCE inflation is the Fed's preferred measure and impacts rate outlook",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 31",
+      "time": "8:30 AM ET",
+      "event": "Employment Cost Index (Q3)",
+      "description": "Labor cost data influences inflation and Fed policy",
+      "importance": "high"
+    },
+    {
+      "date": "Oct 31",
+      "time": "After Market",
+      "event": "Chevron Q3 Earnings",
+      "description": "Energy sector earnings can impact commodity prices and market sentiment",
+      "importance": "medium"
+    }
+  ],
+  "timestamp": "2025-10-08 17:10:47",
+  "cached": false
+}

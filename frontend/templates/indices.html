@@ -1,0 +1,859 @@
+{% extends "base.html" %}
+
+{% block title %}Market Indices{% endblock %}
+
+{% block page_title %}Market Indices{% endblock %}
+
+{% block page_description %}Track SPX, QQQ, and IWM with key metrics and charts{% endblock %}
+
+{% block content %}
+<style>
+    .index-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+    
+    .index-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .index-header {
+        border-bottom: 3px solid;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .index-symbol {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    .index-name {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+    
+    .current-price {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .price-change {
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+    
+    .metric-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .metric-row:last-child {
+        border-bottom: none;
+    }
+    
+    .metric-label {
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .metric-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    .chart-container {
+        background: #ffffff;
+        border: none;
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .chart-title {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #198754;
+    }
+    
+    .chart-wrapper {
+        min-height: 400px;
+        position: relative;
+    }
+    
+    .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
+    }
+    
+    .badge-up {
+        background-color: #198754;
+        color: white;
+    }
+    
+    .badge-down {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    /* SPX color scheme */
+    .spx-theme .index-header { border-color: #0d6efd; }
+    .spx-theme .index-symbol { color: #0d6efd; }
+    
+    /* QQQ color scheme */
+    .qqq-theme .index-header { border-color: #198754; }
+    .qqq-theme .index-symbol { color: #198754; }
+    
+    /* IWM color scheme */
+    .iwm-theme .index-header { border-color: #dc3545; }
+    .iwm-theme .index-symbol { color: #dc3545; }
+</style>
+
+<!-- Index Cards -->
+<div class="row" id="indexCards">
+    <div class="col-12 text-center">
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Price Charts (1 Year)</h2>
+    </div>
+</div>
+
+<div class="row">
+    <!-- SPX Chart -->
+    <div class="col-lg-4 col-md-12 mb-4">
+        <div class="chart-container">
+            <div class="chart-title">S&P 500 (SPX)</div>
+            <div id="chartSPX" class="chart-wrapper"></div>
+            <div id="loadingSPX" class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- QQQ Chart -->
+    <div class="col-lg-4 col-md-12 mb-4">
+        <div class="chart-container">
+            <div class="chart-title">Nasdaq-100 (QQQ)</div>
+            <div id="chartQQQ" class="chart-wrapper"></div>
+            <div id="loadingQQQ" class="loading-spinner">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- IWM Chart -->
+    <div class="col-lg-4 col-md-12 mb-4">
+        <div class="chart-container">
+            <div class="chart-title">Russell 2000 (IWM)</div>
+            <div id="chartIWM" class="chart-wrapper"></div>
+            <div id="loadingIWM" class="loading-spinner">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Economic Calendar Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card" style="border: none; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div class="card-header" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); color: white; border-radius: 15px 15px 0 0; padding: 1.5rem;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            Upcoming Market Events (Next 2 Weeks)
+                        </h3>
+                        <small class="opacity-75">Powered by Perplexity AI</small>
+                        <span id="cacheStatus" class="ms-3 badge bg-light text-dark" style="display: none;"></span>
+                    </div>
+                    <button id="refreshCalendarBtn" class="btn btn-light btn-sm" onclick="refreshEconomicCalendar()">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-4" id="economicCalendarContainer">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Loading economic calendar events...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .event-card {
+        border-left: 4px solid;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .event-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .event-card.importance-high {
+        border-left-color: #dc3545;
+        background: linear-gradient(135deg, #fff5f5 0%, #f8f9fa 100%);
+    }
+    
+    .event-card.importance-medium {
+        border-left-color: #ffc107;
+        background: linear-gradient(135deg, #fffef5 0%, #f8f9fa 100%);
+    }
+    
+    .event-card.importance-low {
+        border-left-color: #0d6efd;
+        background: linear-gradient(135deg, #f5f9ff 0%, #f8f9fa 100%);
+    }
+    
+    .event-date {
+        font-weight: 700;
+        color: #495057;
+        font-size: 0.95rem;
+    }
+    
+    .event-time {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 600;
+    }
+    
+    .event-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #212529;
+        margin-bottom: 0.5rem;
+    }
+    
+    .event-description {
+        color: #495057;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    .importance-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .importance-high .importance-badge {
+        background-color: #dc3545;
+    }
+    
+    .importance-medium .importance-badge {
+        background-color: #ffc107;
+        color: #000;
+    }
+    
+    .importance-low .importance-badge {
+        background-color: #0d6efd;
+    }
+    
+    .quick-links-section {
+        margin-top: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .quick-links-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    
+    .quick-link-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+        border-left: 4px solid #0d6efd;
+        display: flex;
+        align-items: center;
+    }
+    
+    .quick-link-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .quick-link-card a {
+        color: #0d6efd;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        flex-grow: 1;
+    }
+    
+    .quick-link-card a:hover {
+        color: #0a58ca;
+        text-decoration: underline;
+    }
+    
+    .quick-link-icon {
+        font-size: 1.25rem;
+        margin-right: 1rem;
+        color: #6c757d;
+    }
+    
+    .quick-link-category {
+        font-size: 0.75rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+</style>
+
+<!-- Quick Links Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="quick-links-section">
+            <h4 class="quick-links-title">
+                <i class="fas fa-external-link-alt me-2"></i>
+                Market Analysis Resources
+            </h4>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="quick-link-category">Briefing.com</span>
+                    <div class="quick-link-card">
+                        <i class="fas fa-newspaper quick-link-icon"></i>
+                        <a href="https://www.briefing.com/story-stocks/archive" target="_blank" rel="noopener noreferrer">
+                            Story Stocks Archive
+                        </a>
+                        <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.85rem;"></i>
+                    </div>
+                    
+                    <div class="quick-link-card">
+                        <i class="fas fa-chart-line quick-link-icon"></i>
+                        <a href="https://www.briefing.com/stock-market-update" target="_blank" rel="noopener noreferrer">
+                            Stock Market Update
+                        </a>
+                        <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.85rem;"></i>
+                    </div>
+                    
+                    <div class="quick-link-card">
+                        <i class="fas fa-eye quick-link-icon"></i>
+                        <a href="https://www.briefing.com/the-big-picture" target="_blank" rel="noopener noreferrer">
+                            The Big Picture
+                        </a>
+                        <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.85rem;"></i>
+                    </div>
+                    
+                    <div class="quick-link-card">
+                        <i class="fas fa-file-alt quick-link-icon"></i>
+                        <a href="https://www.briefing.com/page-one" target="_blank" rel="noopener noreferrer">
+                            Page One
+                        </a>
+                        <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.85rem;"></i>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <span class="quick-link-category">Finviz</span>
+                    <div class="quick-link-card">
+                        <i class="fas fa-layer-group quick-link-icon"></i>
+                        <a href="https://finviz.com/groups.ashx" target="_blank" rel="noopener noreferrer">
+                            Sector & Industry Groups
+                        </a>
+                        <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.85rem;"></i>
+                    </div>
+                    
+                    <div class="quick-link-card">
+                        <i class="fas fa-search quick-link-icon"></i>
+                        <a href="https://finviz.com/screener.ashx" target="_blank" rel="noopener noreferrer">
+                            Stock Screener
+                        </a>
+                        <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.85rem;"></i>
+                    </div>
+                    
+                    <div class="quick-link-card">
+                        <i class="fas fa-map quick-link-icon"></i>
+                        <a href="https://finviz.com/map.ashx" target="_blank" rel="noopener noreferrer">
+                            Market Heat Map
+                        </a>
+                        <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.85rem;"></i>
+                    </div>
+                    
+                    <div class="quick-link-card">
+                        <i class="fas fa-calendar-alt quick-link-icon"></i>
+                        <a href="https://finviz.com/calendar.ashx" target="_blank" rel="noopener noreferrer">
+                            Economic Calendar
+                        </a>
+                        <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.85rem;"></i>
+                    </div>
+                    
+                    <span class="quick-link-category mt-3">MarketWatch</span>
+                    <div class="quick-link-card">
+                        <i class="fas fa-calendar-check quick-link-icon"></i>
+                        <a href="https://www.marketwatch.com/economy-politics/calendar" target="_blank" rel="noopener noreferrer">
+                            Economic Calendar
+                        </a>
+                        <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.85rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+    // Load index data and create cards
+    function loadIndexData() {
+        fetch('/api/frontend/indices')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                createIndexCards(data);
+                // Load charts for each index
+                data.forEach(index => {
+                    loadIndexChart(index.symbol);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading index data:', error);
+                document.getElementById('indexCards').innerHTML = 
+                    '<div class="col-12"><div class="alert alert-danger">Error loading index data: ' + error.message + '</div></div>';
+            });
+    }
+    
+    function createIndexCards(indices) {
+        const container = document.getElementById('indexCards');
+        container.innerHTML = '';
+        
+        const themeMap = {
+            'SPX': 'spx-theme',
+            'QQQ': 'qqq-theme',
+            'IWM': 'iwm-theme'
+        };
+        
+        indices.forEach(index => {
+            const changePercent = index.return_1d || 0;
+            const changeClass = changePercent >= 0 ? 'badge-up' : 'badge-down';
+            const changeIcon = changePercent >= 0 ? '▲' : '▼';
+            const theme = themeMap[index.symbol] || '';
+            
+            const cardHTML = `
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <div class="card index-card ${theme}">
+                        <div class="card-body">
+                            <div class="index-header">
+                                <div class="index-symbol">${index.symbol}</div>
+                                <div class="index-name">${index.name}</div>
+                            </div>
+                            
+                            <div class="text-center mb-4">
+                                <div class="current-price">$${index.current_price ? index.current_price.toFixed(2) : 'N/A'}</div>
+                                <div class="price-change">
+                                    <span class="badge ${changeClass}">
+                                        ${changeIcon} ${Math.abs(changePercent).toFixed(2)}% (1D)
+                                    </span>
+                                </div>
+                                <small class="text-muted">As of ${index.date || 'N/A'}</small>
+                            </div>
+                            
+                            <div class="metrics">
+                                <h6 class="text-center mb-3 text-muted">Moving Averages</h6>
+                                
+                                <div class="metric-row">
+                                    <span class="metric-label">10 DMA</span>
+                                    <span class="metric-value">${formatPrice(index.ma_10, index.current_price)}</span>
+                                </div>
+                                
+                                <div class="metric-row">
+                                    <span class="metric-label">20 DMA</span>
+                                    <span class="metric-value">${formatPrice(index.ma_20, index.current_price)}</span>
+                                </div>
+                                
+                                <div class="metric-row">
+                                    <span class="metric-label">50 DMA</span>
+                                    <span class="metric-value">${formatPrice(index.ma_50, index.current_price)}</span>
+                                </div>
+                                
+                                <div class="metric-row">
+                                    <span class="metric-label">200 DMA</span>
+                                    <span class="metric-value">${formatPrice(index.ma_200, index.current_price)}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h6 class="text-center mb-3 text-muted">Key Levels</h6>
+                                
+                                <div class="metric-row">
+                                    <span class="metric-label">All-Time High</span>
+                                    <span class="metric-value">${formatATH(index.all_time_high, index.ath_distance)}</span>
+                                </div>
+                                
+                                <div class="metric-row">
+                                    <span class="metric-label">Previous High (60D)</span>
+                                    <span class="metric-value">${formatPrevHigh(index.prev_high, index.prev_high_distance)}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h6 class="text-center mb-3 text-muted">Returns</h6>
+                                <div class="d-flex justify-content-around">
+                                    <div class="text-center">
+                                        <div class="small text-muted">5D</div>
+                                        <div class="fw-bold ${index.return_5d >= 0 ? 'text-success' : 'text-danger'}">
+                                            ${index.return_5d ? index.return_5d.toFixed(2) : 'N/A'}%
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="small text-muted">20D</div>
+                                        <div class="fw-bold ${index.return_20d >= 0 ? 'text-success' : 'text-danger'}">
+                                            ${index.return_20d ? index.return_20d.toFixed(2) : 'N/A'}%
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="small text-muted">60D</div>
+                                        <div class="fw-bold ${index.return_60d >= 0 ? 'text-success' : 'text-danger'}">
+                                            ${index.return_60d ? index.return_60d.toFixed(2) : 'N/A'}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML += cardHTML;
+        });
+    }
+    
+    function formatPrice(ma, currentPrice) {
+        if (!ma || !currentPrice) return 'N/A';
+        const diff = currentPrice - ma;
+        const diffPercent = (diff / ma * 100).toFixed(2);
+        const color = diff >= 0 ? 'text-success' : 'text-danger';
+        return `<span class="${color}">$${ma.toFixed(2)} (${diffPercent >= 0 ? '+' : ''}${diffPercent}%)</span>`;
+    }
+    
+    function formatATH(ath, distance) {
+        if (!ath) return 'N/A';
+        if (!distance && distance !== 0) return `$${ath.toFixed(2)}`;
+        
+        const color = distance >= 0 ? 'text-success' : 'text-danger';
+        const icon = distance >= 0 ? '🎯' : '📉';
+        return `<span class="${color}">$${ath.toFixed(2)} (${distance >= 0 ? '+' : ''}${distance.toFixed(2)}%) ${icon}</span>`;
+    }
+    
+    function formatPrevHigh(prevHigh, distance) {
+        if (!prevHigh) return 'N/A';
+        if (!distance && distance !== 0) return `$${prevHigh.toFixed(2)}`;
+        
+        const color = distance >= 0 ? 'text-success' : 'text-danger';
+        const status = distance >= 0 ? 'Above ✓' : 'Below';
+        return `<span class="${color}">$${prevHigh.toFixed(2)} (${distance >= 0 ? '+' : ''}${distance.toFixed(2)}%) ${status}</span>`;
+    }
+    
+    function loadIndexChart(symbol) {
+        const containerId = `chart${symbol}`;
+        const loadingId = `loading${symbol}`;
+        
+        // Fetch 5 years of data for complete 200 DMA calculation
+        fetch(`/api/frontend/indices/${symbol}/prices?days=1825`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                document.getElementById(loadingId).style.display = 'none';
+                createChart(data, containerId, symbol);
+            })
+            .catch(error => {
+                console.error(`Error loading chart for ${symbol}:`, error);
+                document.getElementById(loadingId).innerHTML = 
+                    '<div class="alert alert-danger">Error loading chart</div>';
+            });
+    }
+    
+    function calculateMA(data, period) {
+        const result = [];
+        for (let i = period - 1; i < data.length; i++) {
+            const slice = data.slice(i - period + 1, i + 1);
+            const sum = slice.reduce((acc, val) => acc + val.value, 0);
+            const avg = sum / period;
+            result.push({
+                time: data[i].time,
+                value: avg
+            });
+        }
+        return result;
+    }
+    
+    function createChart(data, containerId, symbol) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        // Process ALL price data (5 years for complete MA calculations)
+        const allProcessed = data.prices
+            .filter(d => d.date && d.close_price != null)
+            .map(d => ({
+                time: Math.floor(new Date(d.date + 'T00:00:00Z').getTime() / 1000),
+                value: +d.close_price
+            }))
+            .sort((a, b) => a.time - b.time);
+        
+        if (allProcessed.length === 0) {
+            container.innerHTML = '<div class="alert alert-warning">No price data available</div>';
+            return;
+        }
+        
+        // Calculate moving averages using ALL data (for complete lines)
+        const ma50 = calculateMA(allProcessed, 50);
+        const ma200 = calculateMA(allProcessed, 200);
+        
+        // Filter to show only last ~252 trading days (1 year) on chart
+        const oneYearAgo = Math.floor(Date.now() / 1000) - (365 * 24 * 60 * 60);
+        const processed = allProcessed.filter(d => d.time >= oneYearAgo);
+        const ma50Display = ma50.filter(d => d.time >= oneYearAgo);
+        const ma200Display = ma200.filter(d => d.time >= oneYearAgo);
+        
+        // Color scheme based on index
+        const colorMap = {
+            'SPX': '#0d6efd',
+            'QQQ': '#198754',
+            'IWM': '#dc3545'
+        };
+        
+        const color = colorMap[symbol] || '#0d6efd';
+        
+        // Create chart
+        const chart = LightweightCharts.createChart(container, {
+            width: container.clientWidth || 400,
+            height: 350,
+            layout: {
+                background: { color: '#ffffff' },
+                textColor: '#495057',
+                fontSize: 11
+            },
+            grid: {
+                vertLines: { color: '#f0f0f0' },
+                horzLines: { color: '#f0f0f0' }
+            },
+            crosshair: {
+                mode: LightweightCharts.CrosshairMode.Normal
+            },
+            rightPriceScale: {
+                borderColor: '#dee2e6'
+            },
+            timeScale: {
+                borderColor: '#dee2e6',
+                timeVisible: true,
+                secondsVisible: false
+            },
+            localization: {
+                dateFormat: 'yyyy-MM-dd'
+            }
+        });
+        
+        // Add 200 DMA line (red, thin) - add first so it's behind
+        if (ma200Display.length > 0) {
+            const ma200Series = chart.addLineSeries({
+                color: '#dc3545',
+                lineWidth: 1.5,
+                priceLineVisible: false,
+                title: '200 DMA'
+            });
+            ma200Series.setData(ma200Display);
+        }
+        
+        // Add 50 DMA line (green, thin)
+        if (ma50Display.length > 0) {
+            const ma50Series = chart.addLineSeries({
+                color: '#198754',
+                lineWidth: 1.5,
+                priceLineVisible: false,
+                title: '50 DMA'
+            });
+            ma50Series.setData(ma50Display);
+        }
+        
+        // Add main price line series (on top)
+        const lineSeries = chart.addLineSeries({
+            color: color,
+            lineWidth: 2,
+            priceLineVisible: false,
+            title: symbol
+        });
+        
+        lineSeries.setData(processed);
+        
+        // Fit content
+        chart.timeScale().fitContent();
+        
+        // Handle window resize
+        const resizeObserver = new ResizeObserver(entries => {
+            if (container.clientWidth > 0) {
+                chart.resize(container.clientWidth, 350);
+            }
+        });
+        resizeObserver.observe(container);
+    }
+    
+    // Load economic calendar events
+    function loadEconomicCalendar(forceRefresh = false) {
+        const url = forceRefresh ? '/api/frontend/economic-calendar?refresh=true' : '/api/frontend/economic-calendar';
+        
+        // Show loading state if refreshing
+        if (forceRefresh) {
+            const btn = document.getElementById('refreshCalendarBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Refreshing...';
+        }
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                displayEconomicEvents(data);
+                
+                // Update cache status
+                updateCacheStatus(data);
+                
+                // Reset button
+                if (forceRefresh) {
+                    const btn = document.getElementById('refreshCalendarBtn');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i>Refresh';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading economic calendar:', error);
+                document.getElementById('economicCalendarContainer').innerHTML = 
+                    '<div class="alert alert-danger">Error loading economic calendar: ' + error.message + '</div>';
+                
+                // Reset button on error
+                if (forceRefresh) {
+                    const btn = document.getElementById('refreshCalendarBtn');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i>Refresh';
+                }
+            });
+    }
+    
+    function refreshEconomicCalendar() {
+        loadEconomicCalendar(true);
+    }
+    
+    function updateCacheStatus(data) {
+        const statusBadge = document.getElementById('cacheStatus');
+        if (data.cached) {
+            statusBadge.textContent = '📦 Cached';
+            statusBadge.style.display = 'inline-block';
+        } else {
+            statusBadge.textContent = '✨ Fresh';
+            statusBadge.style.display = 'inline-block';
+            // Hide "Fresh" badge after 3 seconds
+            setTimeout(() => {
+                statusBadge.style.display = 'none';
+            }, 3000);
+        }
+    }
+    
+    function displayEconomicEvents(data) {
+        const container = document.getElementById('economicCalendarContainer');
+        
+        if (!data.events || data.events.length === 0) {
+            container.innerHTML = '<div class="alert alert-info">No upcoming events found.</div>';
+            return;
+        }
+        
+        let eventsHTML = '<div class="row">';
+        
+        data.events.forEach(event => {
+            const importance = event.importance || 'medium';
+            const importanceClass = `importance-${importance}`;
+            
+            eventsHTML += `
+                <div class="col-lg-6 col-md-12 mb-3">
+                    <div class="event-card ${importanceClass}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <span class="event-date">${event.date || 'TBD'}</span>
+                                ${event.time ? `<span class="event-time ms-2">${event.time}</span>` : ''}
+                            </div>
+                            <span class="badge importance-badge">${importance}</span>
+                        </div>
+                        <div class="event-title">${event.event || 'Unnamed Event'}</div>
+                        ${event.description ? `<div class="event-description">${event.description}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        eventsHTML += '</div>';
+        
+        if (data.timestamp) {
+            eventsHTML += `<div class="text-center mt-3"><small class="text-muted">Last updated: ${data.timestamp}</small></div>`;
+        }
+        
+        container.innerHTML = eventsHTML;
+    }
+    
+    // Load data on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadIndexData();
+        loadEconomicCalendar();
+    });
+</script>
+{% endblock %}
