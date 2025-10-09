@@ -19,7 +19,7 @@ other filters
 ```bash
 docker-compose build --no-cache
 
-docker-compose down -v && docker-compose up -d && docker-compose exec web bash
+docker-compose down -v && docker-compose up -d && docker-compose exec backend bash
 
 python db_scripts/initialize_data/initialize_db.py --reset
 python db_scripts/initialize_data/seed_stock_table_from_masterstocklistcsv.py 

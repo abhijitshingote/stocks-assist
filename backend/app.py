@@ -449,6 +449,35 @@ def enrich_stock_data(stocks_data):
                 'low_52w': row.low_52w
             }
         
+        # Get previous trading day price for 1-day change calculation
+        previous_date = latest_date - timedelta(days=1)
+        days_checked = 0
+        while days_checked < 5:
+            has_data = session.query(Price).filter(
+                Price.date == previous_date,
+                Price.ticker.in_(tickers),
+                Price.close_price.isnot(None)
+            ).first()
+            if has_data:
+                break
+            previous_date -= timedelta(days=1)
+            days_checked += 1
+        
+        # Query previous day prices
+        previous_prices = session.query(
+            Price.ticker,
+            Price.close_price.label('prev_close')
+        ).filter(
+            Price.ticker.in_(tickers),
+            Price.date == previous_date,
+            Price.close_price.isnot(None)
+        ).all()
+        
+        # Add previous prices to enrichment data
+        for row in previous_prices:
+            if row.ticker in enrichment_data:
+                enrichment_data[row.ticker]['prev_close'] = row.prev_close
+        
         # Enrich each stock
         for stock in stocks_data:
             ticker = stock['ticker']
@@ -471,8 +500,18 @@ def enrich_stock_data(stocks_data):
             else:
                 stock['week_52_range'] = None
             
-            # Calculate returns for different periods
+            # Calculate 1-day price change (for "Current Price" column display)
             current_price = stock.get('current_price') or stock.get('end_price') or stock.get('price') or enrich.get('latest_price')
+            prev_close = enrich.get('prev_close')
+            
+            if current_price and prev_close and prev_close > 0:
+                price_change_1d = current_price - prev_close
+                price_change_pct_1d = (price_change_1d / prev_close) * 100
+                # Override the price_change and price_change_pct with 1-day values
+                stock['price_change'] = round(price_change_1d, 2)
+                stock['price_change_pct'] = f"{'+' if price_change_pct_1d >= 0 else ''}{round(price_change_pct_1d, 2)}%"
+            
+            # Calculate returns for different periods
             
             if current_price:
                 # 5-day return
@@ -2412,6 +2451,7 @@ def build_flag_payload(flag_rows):
             'industry': row.industry,
             'market_cap': row.market_cap,
             'price': row.price,
+            'current_price': row.price,  # Add current_price for enrichment
             'is_reviewed': row.is_reviewed if hasattr(row, 'is_reviewed') else False,
             'is_shortlisted': row.is_shortlisted if hasattr(row, 'is_shortlisted') else False,
             'is_blacklisted': row.is_blacklisted if hasattr(row, 'is_blacklisted') else False
@@ -2447,6 +2487,9 @@ def api_shortlist():
 
         flag_rows = query.all()
         payload = build_flag_payload(flag_rows)
+        
+        # Enrich with additional data including 1-day price change
+        payload = enrich_stock_data(payload)
 
         return jsonify(payload)
 
@@ -2483,6 +2526,9 @@ def api_blacklist():
 
         flag_rows = query.all()
         payload = build_flag_payload(flag_rows)
+        
+        # Enrich with additional data including 1-day price change
+        payload = enrich_stock_data(payload)
 
         return jsonify(payload)
 
