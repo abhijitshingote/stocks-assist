@@ -223,6 +223,41 @@ def get_latest_price_date():
         logger.error(f"Error getting latest price date: {str(e)}")
         return None
 
+def get_trading_date_n_days_ago(reference_date, n_trading_days):
+    """Get the date that is N trading days before the reference date.
+    
+    This function queries the Price table to find actual trading days,
+    avoiding the calendar days bug where weekends/holidays are counted.
+    
+    Args:
+        reference_date: The reference date (typically latest price date)
+        n_trading_days: Number of trading days to go back
+    
+    Returns:
+        datetime.date or None: The date N trading days ago, or None if not found
+    """
+    try:
+        query = get_filtered_price_query()
+        
+        # Get distinct dates from Price table, ordered descending
+        # Use a reference ticker (SPY or any liquid stock) or just get any distinct dates
+        trading_dates = query.filter(
+            Price.date <= reference_date
+        ).with_entities(Price.date).distinct().order_by(desc(Price.date)).limit(n_trading_days + 1).all()
+        
+        if len(trading_dates) > n_trading_days:
+            return trading_dates[n_trading_days].date
+        elif trading_dates:
+            # If we don't have enough data, return the oldest date we have
+            return trading_dates[-1].date
+        else:
+            logger.warning(f"No trading dates found before {reference_date}")
+            return None
+            
+    except Exception as e:
+        logger.error(f"Error getting trading date {n_trading_days} days ago: {str(e)}")
+        return None
+
 def process_citations_in_content(content, citations):
     """Process citations in content and return formatted content with citations"""
     if not citations or not content:
@@ -369,45 +404,66 @@ def enrich_stock_data(stocks_data):
         ).subquery()
         
         # Subquery for average volume (last 20 trading days)
-        avg_volume_date = latest_date - timedelta(days=30)
-        avg_volume_subquery = session.query(
-            Price.ticker,
-            func.avg(Price.volume).label('avg_volume')
-        ).filter(
-            Price.ticker.in_(tickers),
-            Price.date >= avg_volume_date,
-            Price.date <= latest_date,
-            Price.volume.isnot(None)
-        ).group_by(Price.ticker).subquery()
+        avg_volume_date = get_trading_date_n_days_ago(latest_date, 20)
+        if avg_volume_date:
+            avg_volume_subquery = session.query(
+                Price.ticker,
+                func.avg(Price.volume).label('avg_volume')
+            ).filter(
+                Price.ticker.in_(tickers),
+                Price.date >= avg_volume_date,
+                Price.date <= latest_date,
+                Price.volume.isnot(None)
+            ).group_by(Price.ticker).subquery()
+        else:
+            # If no trading date available, create empty subquery
+            avg_volume_subquery = session.query(
+                Price.ticker,
+                func.avg(Price.volume).label('avg_volume')
+            ).filter(False).subquery()
         
-        # Subquery for 52-week high and low
-        week_52_date = latest_date - timedelta(days=365)
-        week_52_subquery = session.query(
-            Price.ticker,
-            func.max(Price.close_price).label('high_52w'),
-            func.min(Price.close_price).label('low_52w')
-        ).filter(
-            Price.ticker.in_(tickers),
-            Price.date >= week_52_date,
-            Price.date <= latest_date,
-            Price.close_price.isnot(None),
-            Price.close_price > 0
-        ).group_by(Price.ticker).subquery()
+        # Subquery for 52-week high and low (252 trading days)
+        week_52_date = get_trading_date_n_days_ago(latest_date, 252)
+        if not week_52_date:
+            # Skip if insufficient data
+            week_52_subquery = session.query(
+                Price.ticker,
+                func.max(Price.close_price).label('high_52w'),
+                func.min(Price.close_price).label('low_52w')
+            ).filter(False).subquery()
+        else:
+            week_52_subquery = session.query(
+                Price.ticker,
+                func.max(Price.close_price).label('high_52w'),
+                func.min(Price.close_price).label('low_52w')
+            ).filter(
+                Price.ticker.in_(tickers),
+                Price.date >= week_52_date,
+                Price.date <= latest_date,
+                Price.close_price.isnot(None),
+                Price.close_price > 0
+            ).group_by(Price.ticker).subquery()
         
-        # Subquery for historical prices at different periods
-        periods = {
-            'price_5d': latest_date - timedelta(days=5),
-            'price_20d': latest_date - timedelta(days=20),
-            'price_60d': latest_date - timedelta(days=60),
-            'price_120d': latest_date - timedelta(days=120)
+        # Get historical prices at different trading day periods
+        trading_day_periods = {
+            'price_5d': 5,
+            'price_20d': 20,
+            'price_60d': 60,
+            'price_120d': 120
         }
         
-        # Query to get average prices around each period (to handle missing trading days)
+        periods = {}
+        for period_key, days in trading_day_periods.items():
+            target_date = get_trading_date_n_days_ago(latest_date, days)
+            if target_date:
+                periods[period_key] = target_date
+        
+        # Query to get prices at each target trading day (with small window for exact match)
         historical_prices = {}
         for period_key, target_date in periods.items():
-            # Get prices within a 3-day window around the target date
-            window_start = target_date - timedelta(days=3)
-            window_end = target_date + timedelta(days=3)
+            # Get price on or very near the target date (1 day window for exact trading day)
+            window_start = target_date - timedelta(days=1)
+            window_end = target_date + timedelta(days=1)
             
             period_prices = session.query(
                 Price.ticker,
@@ -449,29 +505,20 @@ def enrich_stock_data(stocks_data):
                 'low_52w': row.low_52w
             }
         
-        # Get previous trading day price for 1-day change calculation
-        previous_date = latest_date - timedelta(days=1)
-        days_checked = 0
-        while days_checked < 5:
-            has_data = session.query(Price).filter(
-                Price.date == previous_date,
-                Price.ticker.in_(tickers),
-                Price.close_price.isnot(None)
-            ).first()
-            if has_data:
-                break
-            previous_date -= timedelta(days=1)
-            days_checked += 1
+        # Get previous trading day (1 trading day ago)
+        previous_date = get_trading_date_n_days_ago(latest_date, 1)
         
-        # Query previous day prices
-        previous_prices = session.query(
-            Price.ticker,
-            Price.close_price.label('prev_close')
-        ).filter(
-            Price.ticker.in_(tickers),
-            Price.date == previous_date,
-            Price.close_price.isnot(None)
-        ).all()
+        # Query previous day prices (only if we have a valid previous date)
+        previous_prices = []
+        if previous_date:
+            previous_prices = session.query(
+                Price.ticker,
+                Price.close_price.label('prev_close')
+            ).filter(
+                Price.ticker.in_(tickers),
+                Price.date == previous_date,
+                Price.close_price.isnot(None)
+            ).all()
         
         # Add previous prices to enrichment data
         for row in previous_prices:
@@ -557,18 +604,22 @@ def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, marke
     """Get stocks with strong momentum over specified period
     
     Args:
-        return_days: Number of days for the return calculation
+        return_days: Number of trading days for the return calculation
         above_200m: (Deprecated) Boolean for backward compatibility
         min_return_pct: Minimum return percentage threshold
         market_cap_category: One of 'micro', 'small', 'mid', 'large', 'mega'
     """
     try:
-        # Determine date range based on return_days
+        # Determine date range based on trading days
         end_date = get_latest_price_date()
         if not end_date:
             return []
 
-        start_date = end_date - timedelta(days=return_days)
+        # Use trading days instead of calendar days
+        start_date = get_trading_date_n_days_ago(end_date, return_days)
+        if not start_date:
+            logger.warning(f"Insufficient data to calculate {return_days} trading days ago")
+            return []
 
         # Base query joining Stock and Price tables
         # We'll get volume and latest close price from the latest price record in a subquery
@@ -694,19 +745,11 @@ def get_gapper_stocks(above_200m=None, market_cap_category=None):
         if not latest_date:
             return []
 
-        # Find previous trading day (skip weekends and look back up to 5 days)
-        previous_date = latest_date - timedelta(days=1)
-        days_checked = 0
-        while days_checked < 5:
-            # Check if there's price data for this date
-            has_data = session.query(Price).filter(
-                Price.date == previous_date,
-                Price.close_price.isnot(None)
-            ).first()
-            if has_data:
-                break
-            previous_date -= timedelta(days=1)
-            days_checked += 1
+        # Find previous trading day (1 trading day ago)
+        previous_date = get_trading_date_n_days_ago(latest_date, 1)
+        if not previous_date:
+            logger.warning("Insufficient data to find previous trading day for gapper stocks")
+            return []
 
         # Subquery for previous day's close
         prev_close_subquery = session.query(
@@ -809,7 +852,7 @@ def get_gapper_stocks(above_200m=None, market_cap_category=None):
         return []
 
 def get_volume_spike_stocks(above_200m=None, market_cap_category=None):
-    """Get stocks with significant volume spikes
+    """Get stocks with significant volume spikes using trading days
     
     Args:
         above_200m: (Deprecated) Boolean for backward compatibility
@@ -822,11 +865,16 @@ def get_volume_spike_stocks(above_200m=None, market_cap_category=None):
             return []
 
         # Calculate average volume over last 20 trading days
+        avg_volume_start = get_trading_date_n_days_ago(latest_date, 20)
+        if not avg_volume_start:
+            logger.warning("Insufficient data to calculate 20-day average volume for volume spike stocks")
+            return []
+        
         avg_volume_query = session.query(
             Price.ticker,
             func.avg(Price.volume).label('avg_volume')
         ).filter(
-            Price.date >= latest_date - timedelta(days=30)  # Roughly 20 trading days
+            Price.date >= avg_volume_start
         ).group_by(Price.ticker).subquery()
 
         # Get today's volume and compare with average
@@ -917,16 +965,25 @@ def get_volume_spike_stocks(above_200m=None, market_cap_category=None):
         return []
 
 def get_sea_change_stocks(above_200m=True):
-    """Get stocks that have changed direction recently (sea change)"""
+    """Get stocks that have changed direction recently (sea change) using trading days"""
     try:
         # Get latest price date
         latest_date = get_latest_price_date()
         if not latest_date:
             return []
 
-        # Get price data for last 60 days
+        # Get price data for last 60 trading days
         end_date = latest_date
-        start_date = end_date - timedelta(days=60)
+        start_date = get_trading_date_n_days_ago(end_date, 60)
+        if not start_date:
+            logger.warning("Insufficient data to calculate 60 trading days ago for sea change stocks")
+            return []
+        
+        # Get date for 10 trading days ago
+        date_10d_ago = get_trading_date_n_days_ago(end_date, 10)
+        if not date_10d_ago:
+            logger.warning("Insufficient data to calculate 10 trading days ago for sea change stocks")
+            return []
 
         # Query for stocks with recent direction change
         query = session.query(
@@ -937,7 +994,7 @@ def get_sea_change_stocks(above_200m=True):
             Stock.market_cap,
             Stock.price,
             func.avg(Price.close_price).label('avg_price_60d'),
-            func.avg(case((Price.date >= end_date - timedelta(days=10), Price.close_price), else_=None)).label('avg_price_10d'),
+            func.avg(case((Price.date >= date_10d_ago, Price.close_price), else_=None)).label('avg_price_10d'),
             func.max(Price.close_price).label('max_60d'),
             func.min(Price.close_price).label('min_60d')
         ).join(Price, Stock.ticker == Price.ticker)\
@@ -1001,7 +1058,7 @@ def get_sea_change_stocks(above_200m=True):
         return []
 
 def get_all_returns_data(above_200m=True, weights=None):
-    """Calculate all returns data with weighted scoring"""
+    """Calculate all returns data with weighted scoring using trading days"""
     try:
         if weights is None:
             weights = DEFAULT_PRIORITY_WEIGHTS
@@ -1011,7 +1068,7 @@ def get_all_returns_data(above_200m=True, weights=None):
         if not latest_date:
             return []
 
-        # Define periods for return calculation
+        # Define periods for return calculation (in trading days)
         periods = [
             (1, '1d_return'),
             (5, '5d_return'),
@@ -1020,13 +1077,26 @@ def get_all_returns_data(above_200m=True, weights=None):
             (120, '120d_return')
         ]
 
-        # Build dynamic query for returns
+        # Build dynamic query for returns using trading days
         query_parts = []
         for days, label in periods:
-            start_date = latest_date - timedelta(days=days)
-            query_parts.append(
-                func.avg(case((Price.date >= start_date, Price.close_price), else_=None)).label(f'{label}_avg')
-            )
+            # Get the actual trading date N days ago
+            start_date = get_trading_date_n_days_ago(latest_date, days)
+            if start_date:
+                query_parts.append(
+                    func.avg(case((Price.date >= start_date, Price.close_price), else_=None)).label(f'{label}_avg')
+                )
+            else:
+                # If we can't get the trading date, add null placeholder
+                query_parts.append(
+                    func.avg(case((False, Price.close_price), else_=None)).label(f'{label}_avg')
+                )
+
+        # Get start date for overall query filter (120 trading days back)
+        filter_start_date = get_trading_date_n_days_ago(latest_date, 120)
+        if not filter_start_date:
+            logger.warning("Insufficient data to calculate 120 trading days ago for all returns")
+            return []
 
         # Main query
         query = session.query(
@@ -1038,7 +1108,7 @@ def get_all_returns_data(above_200m=True, weights=None):
             Stock.price,
             *query_parts
         ).join(Price, Stock.ticker == Price.ticker)\
-         .filter(Price.date >= latest_date - timedelta(days=120))
+         .filter(Price.date >= filter_start_date)
 
         # Apply market cap filter
         if above_200m:
@@ -1101,14 +1171,14 @@ def get_all_returns_data(above_200m=True, weights=None):
         return []
 
 def get_all_returns_data_for_tickers(tickers, above_200m=None):
-    """Get all returns data for specific tickers"""
+    """Get all returns data for specific tickers using trading days"""
     try:
         # Get latest price date
         latest_date = get_latest_price_date()
         if not latest_date:
             return []
 
-        # Define periods for return calculation
+        # Define periods for return calculation (in trading days)
         periods = [
             (1, '1d_return'),
             (5, '5d_return'),
@@ -1117,13 +1187,26 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
             (120, '120d_return')
         ]
 
-        # Build dynamic query for returns
+        # Build dynamic query for returns using trading days
         query_parts = []
         for days, label in periods:
-            start_date = latest_date - timedelta(days=days)
-            query_parts.append(
-                func.avg(case((Price.date >= start_date, Price.close_price), else_=None)).label(f'{label}_avg')
-            )
+            # Get the actual trading date N days ago
+            start_date = get_trading_date_n_days_ago(latest_date, days)
+            if start_date:
+                query_parts.append(
+                    func.avg(case((Price.date >= start_date, Price.close_price), else_=None)).label(f'{label}_avg')
+                )
+            else:
+                # If we can't get the trading date, add null placeholder
+                query_parts.append(
+                    func.avg(case((False, Price.close_price), else_=None)).label(f'{label}_avg')
+                )
+
+        # Get start date for overall query filter (120 trading days back)
+        filter_start_date = get_trading_date_n_days_ago(latest_date, 120)
+        if not filter_start_date:
+            logger.warning("Insufficient data to calculate 120 trading days ago for ticker returns")
+            return []
 
         # Main query
         query = session.query(
@@ -1135,7 +1218,7 @@ def get_all_returns_data_for_tickers(tickers, above_200m=None):
             Stock.price,
             *query_parts
         ).join(Price, Stock.ticker == Price.ticker)\
-         .filter(Price.date >= latest_date - timedelta(days=120))\
+         .filter(Price.date >= filter_start_date)\
          .filter(Stock.ticker.in_(tickers))
 
         # Apply market cap filter if specified
@@ -1705,59 +1788,67 @@ def get_stock_details(ticker):
         ).first()
 
         # Get previous trading day price for price change calculation
-        previous_date = latest_date - timedelta(days=1)
-        while previous_date.weekday() >= 5:  # Skip weekends
-            previous_date -= timedelta(days=1)
-        
-        previous_price = session.query(Price).filter(
-            Price.ticker == ticker,
-            Price.date == previous_date
-        ).first()
+        previous_date = get_trading_date_n_days_ago(latest_date, 1)
+        previous_price = None
+        if previous_date:
+            previous_price = session.query(Price).filter(
+                Price.ticker == ticker,
+                Price.date == previous_date
+            ).first()
 
-        # Calculate 52-week high/low
-        week_52_date = latest_date - timedelta(days=365)
-        week_52_data = session.query(
-            func.max(Price.close_price).label('high_52w'),
-            func.min(Price.close_price).label('low_52w')
-        ).filter(
-            Price.ticker == ticker,
-            Price.date >= week_52_date,
-            Price.date <= latest_date,
-            Price.close_price.isnot(None),
-            Price.close_price > 0
-        ).first()
-
-        # Calculate average volume (last 20 trading days)
-        avg_volume_date = latest_date - timedelta(days=30)
-        avg_volume = session.query(
-            func.avg(Price.volume).label('avg_volume')
-        ).filter(
-            Price.ticker == ticker,
-            Price.date >= avg_volume_date,
-            Price.date <= latest_date,
-            Price.volume.isnot(None)
-        ).scalar()
-
-        # Calculate returns for different periods
-        returns = {}
-        for period, days in [('5d', 5), ('20d', 20), ('60d', 60)]:
-            period_date = latest_date - timedelta(days=days)
-            # Get price within a 3-day window around the target date
-            window_start = period_date - timedelta(days=3)
-            window_end = period_date + timedelta(days=3)
-            
-            period_price = session.query(
-                func.avg(Price.close_price).label('avg_price')
+        # Calculate 52-week high/low (252 trading days)
+        week_52_date = get_trading_date_n_days_ago(latest_date, 252)
+        week_52_data = None
+        if week_52_date:
+            week_52_data = session.query(
+                func.max(Price.close_price).label('high_52w'),
+                func.min(Price.close_price).label('low_52w')
             ).filter(
                 Price.ticker == ticker,
-                Price.date >= window_start,
-                Price.date <= window_end,
+                Price.date >= week_52_date,
+                Price.date <= latest_date,
                 Price.close_price.isnot(None),
                 Price.close_price > 0
+            ).first()
+
+        # Calculate average volume (last 20 trading days)
+        avg_volume_date = get_trading_date_n_days_ago(latest_date, 20)
+        avg_volume = None
+        if avg_volume_date:
+            avg_volume = session.query(
+                func.avg(Price.volume).label('avg_volume')
+            ).filter(
+                Price.ticker == ticker,
+                Price.date >= avg_volume_date,
+                Price.date <= latest_date,
+                Price.volume.isnot(None)
             ).scalar()
+
+        # Calculate returns for different trading day periods
+        returns = {}
+        for period, days in [('5d', 5), ('20d', 20), ('60d', 60)]:
+            # Get the exact trading day N days ago
+            period_date = get_trading_date_n_days_ago(latest_date, days)
             
-            if period_price and latest_price and latest_price.close_price:
-                returns[f'return_{period}'] = ((latest_price.close_price - period_price) / period_price) * 100
+            if period_date:
+                # Get price on or very near the target trading day (1 day window)
+                window_start = period_date - timedelta(days=1)
+                window_end = period_date + timedelta(days=1)
+                
+                period_price = session.query(
+                    func.avg(Price.close_price).label('avg_price')
+                ).filter(
+                    Price.ticker == ticker,
+                    Price.date >= window_start,
+                    Price.date <= window_end,
+                    Price.close_price.isnot(None),
+                    Price.close_price > 0
+                ).scalar()
+                
+                if period_price and latest_price and latest_price.close_price:
+                    returns[f'return_{period}'] = ((latest_price.close_price - period_price) / period_price) * 100
+                else:
+                    returns[f'return_{period}'] = None
             else:
                 returns[f'return_{period}'] = None
 
