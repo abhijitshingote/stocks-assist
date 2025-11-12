@@ -1484,16 +1484,26 @@ def review_ai_comment(comment_id):
 
 @app.route('/api/latest_date')
 def get_latest_date():
-    """Get the latest available price date"""
+    """Get the latest available price date and last update timestamp"""
     try:
         latest_date = get_latest_price_date()
-        if latest_date:
-            return jsonify({
-                'latest_date': latest_date.strftime('%Y-%m-%d'),
-                'formatted_date': latest_date.strftime('%B %d, %Y')
-            })
-        else:
+        if not latest_date:
             return jsonify({'error': 'No price data available'}), 404
+        
+        # Get the most recent updated_at timestamp (when daily_price_update.py last ran)
+        latest_update = session.query(Price).order_by(desc(Price.updated_at)).first()
+        
+        response = {
+            'latest_date': latest_date.strftime('%Y-%m-%d'),
+            'formatted_date': latest_date.strftime('%B %d, %Y')
+        }
+        
+        # Add last update timestamp if available
+        if latest_update and latest_update.updated_at:
+            response['last_update'] = latest_update.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+            response['last_update_formatted'] = latest_update.updated_at.strftime('%b %d, %Y %I:%M %p')
+        
+        return jsonify(response)
 
     except Exception as e:
         logger.error(f"Error getting latest date: {str(e)}")

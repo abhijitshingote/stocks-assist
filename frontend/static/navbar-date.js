@@ -5,7 +5,14 @@ function loadNavbarLatestDate() {
         .then(data => {
             const navbarDateElement = document.getElementById('navbarLatestDate');
             if (navbarDateElement) {
-                navbarDateElement.textContent = data.latest_date || 'N/A';
+                // Show last update timestamp if available, otherwise fall back to trading date
+                if (data.last_update_formatted) {
+                    navbarDateElement.textContent = data.last_update_formatted;
+                } else if (data.latest_date) {
+                    navbarDateElement.textContent = data.latest_date;
+                } else {
+                    navbarDateElement.textContent = 'N/A';
+                }
             }
         })
         .catch(error => {
