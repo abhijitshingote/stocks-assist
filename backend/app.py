@@ -622,10 +622,13 @@ def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, marke
             return []
 
         # Base query joining Stock and Price tables
-        # We'll get volume and latest close price from the latest price record in a subquery
+        # We'll get OHLCV data from the latest price record in a subquery
         latest_price_subquery = session.query(
             Price.ticker,
             Price.volume,
+            Price.open_price.label('open_price'),
+            Price.high_price.label('high_price'),
+            Price.low_price.label('low_price'),
             Price.close_price.label('latest_close')
         ).filter(
             Price.date == end_date
@@ -642,7 +645,10 @@ def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, marke
             func.min(Price.close_price).label('start_price'),
             latest_price_subquery.c.latest_close.label('end_price'),
             ((latest_price_subquery.c.latest_close - func.min(Price.close_price)) / func.min(Price.close_price) * 100).label('return_pct'),
-            latest_price_subquery.c.volume.label('volume')
+            latest_price_subquery.c.volume.label('volume'),
+            latest_price_subquery.c.open_price.label('open_price'),
+            latest_price_subquery.c.high_price.label('high_price'),
+            latest_price_subquery.c.low_price.label('low_price')
         ).join(Price, Stock.ticker == Price.ticker
         ).outerjoin(latest_price_subquery, Stock.ticker == latest_price_subquery.c.ticker)
 
@@ -674,7 +680,9 @@ def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, marke
         base_query = base_query.group_by(
             Stock.ticker, Stock.company_name, Stock.sector,
             Stock.industry, Stock.market_cap, Stock.price, Stock.country,
-            latest_price_subquery.c.volume, latest_price_subquery.c.latest_close
+            latest_price_subquery.c.volume, latest_price_subquery.c.open_price,
+            latest_price_subquery.c.high_price, latest_price_subquery.c.low_price,
+            latest_price_subquery.c.latest_close
         )
 
         # Apply minimum return percentage filter using HAVING (not WHERE)
@@ -721,7 +729,11 @@ def get_momentum_stocks(return_days, above_200m=None, min_return_pct=None, marke
                 'price_change': round(price_change, 2),
                 'price_change_pct': f"{'+' if price_change_pct >= 0 else ''}{round(price_change_pct, 2)}%",
                 'volume': int(volume) if volume else None,
-                'dollar_volume': round(dollar_volume, 2) if dollar_volume else None
+                'dollar_volume': round(dollar_volume, 2) if dollar_volume else None,
+                'open': round(stock.open_price, 2) if stock.open_price else None,
+                'high': round(stock.high_price, 2) if stock.high_price else None,
+                'low': round(stock.low_price, 2) if stock.low_price else None,
+                'close': round(stock.end_price, 2)
             })
 
         # Enrich with additional data
