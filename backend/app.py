@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, StockRSI, Index, IndexPrice, init_db
 from sqlalchemy import desc, func, and_, or_, case, text
 from datetime import datetime, timedelta
@@ -21,6 +22,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+
+# Enable CORS for all routes
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 session = init_db()
 
 # Global default weights for All Returns
@@ -2898,6 +2903,321 @@ def get_index_prices(symbol):
     except Exception as e:
         logger.error(f"Error getting index prices for {symbol}: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+
+# ============================================================================
+# GAINER REPORT ENDPOINT
+# ============================================================================
+
+@app.route('/api/test-gainer-report', methods=['POST'])
+def test_gainer_report():
+    """Test endpoint - returns JSON report without PDF/email"""
+    try:
+        data = request.json
+        date_str = data.get('date')
+        market_cap = data.get('market_cap', 'mega')
+        limit = data.get('limit', 10)
+        
+        if not date_str:
+            return jsonify({'error': 'Date is required'}), 400
+        
+        # Parse date
+        try:
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+        
+        # Get gainers
+        rewind_date = date_obj.strftime('%Y-%m-%d')
+        original_args = request.args
+        
+        from werkzeug.datastructures import ImmutableMultiDict
+        new_args = dict(original_args)
+        new_args['rewind_date'] = rewind_date
+        request.args = ImmutableMultiDict(new_args)
+        
+        try:
+            gainers = get_momentum_stocks(1, market_cap_category=market_cap)
+        finally:
+            request.args = original_args
+        
+        if not gainers:
+            return jsonify({'error': 'No gainers found for the specified date'}), 404
+        
+        # Limit and return
+        gainers = gainers[:limit]
+        
+        return jsonify({
+            'success': True,
+            'date': date_str,
+            'market_cap': market_cap,
+            'gainers_count': len(gainers),
+            'gainers': gainers
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in test gainer report: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/generate-gainer-report', methods=['POST'])
+def generate_gainer_report():
+    """Generate daily gainer report and optionally email as PDF"""
+    # Try importing dependencies first
+    try:
+        import markdown
+        from weasyprint import HTML
+        import smtplib
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        from email.mime.application import MIMEApplication
+        from io import BytesIO
+    except ImportError as ie:
+        return jsonify({
+            'error': f'Missing dependency: {str(ie)}. Please rebuild Docker containers.',
+            'instructions': 'Run: docker compose build && docker compose up -d'
+        }), 500
+    
+    try:
+        data = request.json
+        date_str = data.get('date')
+        market_cap = data.get('market_cap', 'mega')
+        limit = data.get('limit', 10)
+        email_to = data.get('email')
+        
+        if not date_str:
+            return jsonify({'error': 'Date is required'}), 400
+        
+        # Parse date
+        try:
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+        
+        # Get gainers from API
+        rewind_date = date_obj.strftime('%Y-%m-%d')
+        endpoint_map = {
+            'micro': '/api/Return1D-MicroCap',
+            'small': '/api/Return1D-SmallCap',
+            'mid': '/api/Return1D-MidCap',
+            'large': '/api/Return1D-LargeCap',
+            'mega': '/api/Return1D-MegaCap'
+        }
+        
+        endpoint = endpoint_map.get(market_cap)
+        if not endpoint:
+            return jsonify({'error': 'Invalid market cap category'}), 400
+        
+        # Temporarily set rewind date in request args for internal call
+        # Save original args
+        original_args = request.args
+        
+        # Create new args dict with rewind_date
+        from werkzeug.datastructures import ImmutableMultiDict
+        new_args = dict(original_args)
+        new_args['rewind_date'] = rewind_date
+        request.args = ImmutableMultiDict(new_args)
+        
+        try:
+            # Get gainers using the momentum function
+            gainers = get_momentum_stocks(1, market_cap_category=market_cap)
+        finally:
+            # Restore original args
+            request.args = original_args
+        
+        if not gainers:
+            return jsonify({'error': 'No gainers found for the specified date'}), 404
+        
+        # Limit gainers
+        gainers = gainers[:limit]
+        
+        # Generate markdown report
+        date_formatted = date_obj.strftime('%B %d, %Y')
+        md_content = f"# Daily Gainers Report - {date_formatted}\n\n"
+        md_content += f"**Market Cap:** {market_cap.title()}\n\n"
+        md_content += f"**Total Gainers:** {len(gainers)}\n\n"
+        md_content += "---\n\n"
+        
+        # Get Perplexity analysis for each stock
+        for i, stock in enumerate(gainers, 1):
+            ticker = stock['ticker']
+            company_name = stock.get('company_name', ticker)
+            return_pct = stock['return_pct']
+            
+            # Query Perplexity
+            perplexity_analysis = query_perplexity_api(ticker, company_name, date_formatted, return_pct)
+            
+            # Build markdown for this stock
+            md_content += f"## {i}. {company_name} ({ticker})\n\n"
+            md_content += f"**Return:** {return_pct}%  \n"
+            md_content += f"**Price:** ${stock.get('start_price')} → ${stock.get('end_price')}  \n"
+            
+            # OHLC
+            if stock.get('open') and stock.get('high') and stock.get('low') and stock.get('close'):
+                md_content += f"**Open:** ${stock['open']} | **High:** ${stock['high']} | **Low:** ${stock['low']} | **Close:** ${stock['close']}  \n"
+                
+                # Close vs high
+                if stock['high'] > 0:
+                    close_below_high = ((stock['high'] - stock['close']) / stock['high']) * 100
+                    md_content += f"**Close vs High:** {close_below_high:.2f}% below high  \n"
+            
+            # Volume
+            if stock.get('volume'):
+                md_content += f"**Volume:** {stock['volume']:,}"
+                if stock.get('volume_change'):
+                    md_content += f" ({stock['volume_change']} avg)"
+                md_content += "  \n"
+            
+            md_content += f"**Market Cap:** ${stock.get('market_cap', 0)/1e9:.2f}B  \n"
+            md_content += f"**Sector:** {stock.get('sector', 'N/A')}  \n\n"
+            md_content += f"### Analysis\n\n{perplexity_analysis}\n\n---\n\n"
+        
+        # Convert markdown to HTML
+        html_content = markdown.markdown(md_content)
+        
+        # Wrap in basic HTML structure with styling
+        html_full = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <style>
+                body {{ font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }}
+                h1 {{ color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }}
+                h2 {{ color: #34495e; margin-top: 30px; }}
+                h3 {{ color: #7f8c8d; }}
+                strong {{ color: #2c3e50; }}
+                hr {{ border: 1px solid #bdc3c7; margin: 20px 0; }}
+            </style>
+        </head>
+        <body>
+            {html_content}
+        </body>
+        </html>
+        """
+        
+        # Generate PDF
+        pdf_buffer = BytesIO()
+        HTML(string=html_full).write_pdf(pdf_buffer)
+        pdf_buffer.seek(0)
+        pdf_data = pdf_buffer.read()
+        
+        # If email is provided, send it
+        if email_to:
+            success = send_email_with_pdf(email_to, date_formatted, market_cap, pdf_data)
+            if not success:
+                return jsonify({'error': 'Failed to send email'}), 500
+            
+            return jsonify({
+                'success': True,
+                'message': f'Report generated and emailed to {email_to}',
+                'gainers_count': len(gainers)
+            })
+        else:
+            # Return PDF as response
+            from flask import send_file
+            return send_file(
+                BytesIO(pdf_data),
+                mimetype='application/pdf',
+                as_attachment=True,
+                download_name=f'gainer_report_{date_str}_{market_cap}.pdf'
+            )
+    
+    except Exception as e:
+        logger.error(f"Error generating gainer report: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
+def query_perplexity_api(ticker, company_name, date_str, return_pct):
+    """Query Perplexity API for stock movement analysis"""
+    try:
+        url = "https://api.perplexity.ai/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {os.getenv('PERPLEXITY_API_KEY')}",
+            "Content-Type": "application/json"
+        }
+        
+        entity = f"{company_name} ({ticker})" if company_name else ticker
+        
+        prompt = f"""Why did {entity} stock move up {return_pct:.2f}% on {date_str}?
+
+Search for specific events, news, or developments on or just before {date_str} including:
+• Earnings reports, analyst upgrades, product launches, partnerships
+• Sector developments, regulatory changes, market trends
+• Media coverage (CNBC, Bloomberg), social media trends
+• Technical factors (short squeezes, institutional buying)
+
+Provide a concise summary (3-5 sentences) with specific sources and dates. If no catalyst found, note if it's part of broader sector/market moves."""
+
+        data = {
+            "model": "sonar-pro",
+            "messages": [{"role": "user", "content": prompt}],
+            "stream": False
+        }
+        
+        response = requests.post(url, headers=headers, json=data, timeout=60)
+        response.raise_for_status()
+        return response.json()["choices"][0]["message"]["content"]
+    except Exception as e:
+        logger.error(f"Error querying Perplexity for {ticker}: {str(e)}")
+        return f"Unable to generate analysis: {str(e)}"
+
+
+def send_email_with_pdf(to_email, date_str, market_cap, pdf_data):
+    """Send email with PDF attachment"""
+    try:
+        # Email configuration from environment variables
+        smtp_server = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
+        smtp_port = int(os.getenv('SMTP_PORT', '587'))
+        smtp_user = os.getenv('SMTP_USER')
+        smtp_password = os.getenv('SMTP_PASSWORD')
+        from_email = os.getenv('FROM_EMAIL', smtp_user)
+        
+        if not smtp_user or not smtp_password:
+            logger.error("SMTP credentials not configured")
+            return False
+        
+        # Create message
+        msg = MIMEMultipart()
+        msg['From'] = from_email
+        msg['To'] = to_email
+        msg['Subject'] = f'Daily Gainers Report - {date_str} ({market_cap.title()} Cap)'
+        
+        # Email body
+        body = f"""
+        Please find attached your Daily Gainers Report for {date_str} ({market_cap.title()} Cap).
+        
+        This report analyzes the top 1-day gainers with AI-powered insights.
+        
+        Best regards,
+        Stocks Assist
+        """
+        
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Attach PDF
+        pdf_attachment = MIMEApplication(pdf_data, _subtype='pdf')
+        pdf_attachment.add_header('Content-Disposition', 'attachment', 
+                                 filename=f'gainer_report_{date_str}_{market_cap}.pdf')
+        msg.attach(pdf_attachment)
+        
+        # Send email
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.send_message(msg)
+        server.quit()
+        
+        logger.info(f"Email sent successfully to {to_email}")
+        return True
+    
+    except Exception as e:
+        logger.error(f"Error sending email: {str(e)}")
+        return False
 
 
 if __name__ == '__main__':

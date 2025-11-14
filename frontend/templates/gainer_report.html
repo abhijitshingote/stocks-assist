@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Gainer Report Generator{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">📊 Daily Gainer Report Generator</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <p class="card-text">Generate AI-powered daily gainer reports with detailed analysis and email them as PDF.</p>
+            
+            <form id="reportForm">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="reportDate" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="reportDate" required>
+                        <small class="form-text text-muted">Select the date for the report</small>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="marketCap" class="form-label">Market Cap Category</label>
+                        <select class="form-select" id="marketCap" required>
+                            <option value="mega" selected>Mega Cap (>$100B)</option>
+                            <option value="large">Large Cap ($20B-$100B)</option>
+                            <option value="mid">Mid Cap ($2B-$20B)</option>
+                            <option value="small">Small Cap ($200M-$2B)</option>
+                            <option value="micro">Micro Cap (<$200M)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="stockLimit" class="form-label">Number of Stocks</label>
+                        <input type="number" class="form-control" id="stockLimit" value="10" min="1" max="50" required>
+                        <small class="form-text text-muted">Max stocks to analyze (1-50)</small>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="emailAddress" class="form-label">Email Address (Optional)</label>
+                        <input type="email" class="form-control" id="emailAddress" placeholder="your@email.com">
+                        <small class="form-text text-muted">Leave empty to download PDF directly</small>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <button type="submit" class="btn btn-primary" id="generateBtn">
+                        <i class="bi bi-file-earmark-pdf"></i> Generate Report
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="quickTodayBtn">
+                        <i class="bi bi-calendar-check"></i> Quick: Today
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="quickYesterdayBtn">
+                        <i class="bi bi-calendar-minus"></i> Quick: Yesterday
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Progress section -->
+            <div id="progressSection" class="mt-4" style="display: none;">
+                <div class="alert alert-info">
+                    <h5><i class="bi bi-hourglass-split"></i> Generating Report...</h5>
+                    <p id="progressMessage">This may take a few minutes depending on the number of stocks.</p>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results section -->
+            <div id="resultsSection" class="mt-4" style="display: none;">
+                <div id="successAlert" class="alert alert-success" style="display: none;">
+                    <h5><i class="bi bi-check-circle"></i> Success!</h5>
+                    <p id="successMessage"></p>
+                </div>
+                <div id="errorAlert" class="alert alert-danger" style="display: none;">
+                    <h5><i class="bi bi-exclamation-triangle"></i> Error</h5>
+                    <p id="errorMessage"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Info cards -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-bar-chart-line"></i> Report Contents</h5>
+                    <ul class="small">
+                        <li>1-day return percentage</li>
+                        <li>OHLC prices & volume</li>
+                        <li>Close vs high analysis</li>
+                        <li>Volume change metrics</li>
+                        <li>AI-powered catalyst analysis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-robot"></i> AI Analysis</h5>
+                    <p class="small">
+                        Each stock is analyzed using Perplexity AI to identify:
+                    </p>
+                    <ul class="small">
+                        <li>Earnings & announcements</li>
+                        <li>Analyst upgrades</li>
+                        <li>Media coverage</li>
+                        <li>Sector trends</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-envelope"></i> Email Delivery</h5>
+                    <p class="small">
+                        Reports are automatically formatted as professional PDFs and can be emailed directly or downloaded.
+                    </p>
+                    <p class="small text-muted">
+                        <strong>Note:</strong> Generation time depends on the number of stocks (approx. 5-10 seconds per stock).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('reportForm');
+    const dateInput = document.getElementById('reportDate');
+    const progressSection = document.getElementById('progressSection');
+    const resultsSection = document.getElementById('resultsSection');
+    const successAlert = document.getElementById('successAlert');
+    const errorAlert = document.getElementById('errorAlert');
+    const generateBtn = document.getElementById('generateBtn');
+    
+    // Set default date to yesterday (most recent trading day)
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    dateInput.value = yesterday.toISOString().split('T')[0];
+    
+    // Quick date buttons
+    document.getElementById('quickTodayBtn').addEventListener('click', function() {
+        const today = new Date();
+        dateInput.value = today.toISOString().split('T')[0];
+    });
+    
+    document.getElementById('quickYesterdayBtn').addEventListener('click', function() {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        dateInput.value = yesterday.toISOString().split('T')[0];
+    });
+    
+    // Form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const data = {
+            date: document.getElementById('reportDate').value,
+            market_cap: document.getElementById('marketCap').value,
+            limit: parseInt(document.getElementById('stockLimit').value),
+            email: document.getElementById('emailAddress').value || null
+        };
+        
+        // Show progress
+        progressSection.style.display = 'block';
+        resultsSection.style.display = 'none';
+        generateBtn.disabled = true;
+        
+        const emailProvided = data.email;
+        
+        try {
+            // For browser-side JavaScript, always use localhost since that's where backend is exposed
+            // BACKEND_URL env var (http://backend:5000) is only for server-to-server calls
+            const backendUrl = 'http://localhost:5001';
+            console.log('Calling backend at:', backendUrl);
+            const response = await fetch(backendUrl + '/api/generate-gainer-report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            progressSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+            generateBtn.disabled = false;
+            
+            if (response.ok) {
+                if (emailProvided) {
+                    // Email was sent
+                    const result = await response.json();
+                    successAlert.style.display = 'block';
+                    errorAlert.style.display = 'none';
+                    document.getElementById('successMessage').textContent = result.message + ` (${result.gainers_count} stocks analyzed)`;
+                } else {
+                    // Download PDF
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `gainer_report_${data.date}_${data.market_cap}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    successAlert.style.display = 'block';
+                    errorAlert.style.display = 'none';
+                    document.getElementById('successMessage').textContent = 'Report generated successfully! Your download should start automatically.';
+                }
+            } else {
+                const error = await response.json();
+                errorAlert.style.display = 'block';
+                successAlert.style.display = 'none';
+                let errorMsg = error.error || 'Failed to generate report';
+                if (error.instructions) {
+                    errorMsg += '\n\nInstructions: ' + error.instructions;
+                }
+                document.getElementById('errorMessage').innerHTML = errorMsg.replace(/\n/g, '<br>');
+            }
+        } catch (error) {
+            progressSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+            generateBtn.disabled = false;
+            
+            errorAlert.style.display = 'block';
+            successAlert.style.display = 'none';
+            
+            let errorMsg = 'Network error: ' + error.message;
+            errorMsg += '<br><br><strong>Troubleshooting:</strong>';
+            errorMsg += '<br>1. Check if backend is running: <code>docker compose ps</code>';
+            errorMsg += '<br>2. Check backend logs: <code>docker compose logs backend --tail 50</code>';
+            errorMsg += '<br>3. Try rebuilding: <code>docker compose build && docker compose up -d</code>';
+            
+            document.getElementById('errorMessage').innerHTML = errorMsg;
+        }
+    });
+});
+</script>
+
+<style>
+    .card {
+        margin-bottom: 20px;
+    }
+    .form-label {
+        font-weight: 600;
+    }
+    .progress {
+        height: 25px;
+    }
+</style>
+{% endblock %}
+

@@ -1,4 +1,5 @@
 flask==3.0.2
+flask-cors==4.0.0
 psycopg2-binary==2.9.9
 polygon-api-client==1.12.3
 python-dotenv==1.0.1
@@ -10,3 +11,7 @@ requests==2.31.0
 pytz==2024.1
 beautifulsoup4==4.12.3
 yfinance==0.2.48
+markdown==3.5.1
+weasyprint==61.2
+pydyf==0.10.0
+Jinja2==3.1.2

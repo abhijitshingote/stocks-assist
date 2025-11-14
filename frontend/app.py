@@ -866,5 +866,11 @@ def get_economic_calendar_proxy():
     return jsonify(result)
 
 
+@app.route('/gainer-report')
+def gainer_report():
+    """Gainer report generator page"""
+    return render_template('gainer_report.html', BACKEND_URL=BACKEND_URL)
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
