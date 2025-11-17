@@ -3033,12 +3033,10 @@ def generate_gainer_report():
         # Limit gainers
         gainers = gainers[:limit]
         
-        # Generate markdown report
+        # Generate compact markdown report
         date_formatted = date_obj.strftime('%B %d, %Y')
         md_content = f"# Daily Gainers Report - {date_formatted}\n\n"
-        md_content += f"**Market Cap:** {market_cap.title()}\n\n"
-        md_content += f"**Total Gainers:** {len(gainers)}\n\n"
-        md_content += "---\n\n"
+        md_content += f"**Market Cap:** {market_cap.title()} | **Total Gainers:** {len(gainers)}\n\n"
         
         # Get Perplexity analysis for each stock
         for i, stock in enumerate(gainers, 1):
@@ -3049,47 +3047,83 @@ def generate_gainer_report():
             # Query Perplexity
             perplexity_analysis = query_perplexity_api(ticker, company_name, date_formatted, return_pct)
             
-            # Build markdown for this stock
+            # Build compact markdown for this stock
             md_content += f"## {i}. {company_name} ({ticker})\n\n"
-            md_content += f"**Return:** {return_pct}%  \n"
-            md_content += f"**Price:** ${stock.get('start_price')} → ${stock.get('end_price')}  \n"
+            md_content += f"**Return:** {return_pct}% | **Price:** ${stock.get('start_price')} → ${stock.get('end_price')} | **Mkt Cap:** ${stock.get('market_cap', 0)/1e9:.1f}B\n\n"
             
-            # OHLC
+            # Compact OHLC line
             if stock.get('open') and stock.get('high') and stock.get('low') and stock.get('close'):
-                md_content += f"**Open:** ${stock['open']} | **High:** ${stock['high']} | **Low:** ${stock['low']} | **Close:** ${stock['close']}  \n"
+                md_content += f"**OHLC:** O: ${stock['open']} | H: ${stock['high']} | L: ${stock['low']} | C: ${stock['close']}"
                 
-                # Close vs high
+                # Close vs high on same line
                 if stock['high'] > 0:
                     close_below_high = ((stock['high'] - stock['close']) / stock['high']) * 100
-                    md_content += f"**Close vs High:** {close_below_high:.2f}% below high  \n"
+                    md_content += f" | **Close:** {close_below_high:.1f}% below high"
+                md_content += "\n\n"
             
-            # Volume
+            # Volume and sector on one line
+            volume_sector_line = ""
             if stock.get('volume'):
-                md_content += f"**Volume:** {stock['volume']:,}"
+                volume_sector_line = f"**Volume:** {stock['volume']:,}"
                 if stock.get('volume_change'):
-                    md_content += f" ({stock['volume_change']} avg)"
-                md_content += "  \n"
+                    volume_sector_line += f" ({stock['volume_change']} avg)"
+            if stock.get('sector'):
+                if volume_sector_line:
+                    volume_sector_line += f" | **Sector:** {stock.get('sector')}"
+                else:
+                    volume_sector_line = f"**Sector:** {stock.get('sector')}"
+            if volume_sector_line:
+                md_content += f"{volume_sector_line}\n\n"
             
-            md_content += f"**Market Cap:** ${stock.get('market_cap', 0)/1e9:.2f}B  \n"
-            md_content += f"**Sector:** {stock.get('sector', 'N/A')}  \n\n"
-            md_content += f"### Analysis\n\n{perplexity_analysis}\n\n---\n\n"
+            md_content += f"**Analysis:** {perplexity_analysis}\n\n---\n\n"
         
         # Convert markdown to HTML
         html_content = markdown.markdown(md_content)
         
-        # Wrap in basic HTML structure with styling
+        # Wrap in basic HTML structure with compact styling
         html_full = f"""
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="utf-8">
             <style>
-                body {{ font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }}
-                h1 {{ color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }}
-                h2 {{ color: #34495e; margin-top: 30px; }}
-                h3 {{ color: #7f8c8d; }}
-                strong {{ color: #2c3e50; }}
-                hr {{ border: 1px solid #bdc3c7; margin: 20px 0; }}
+                @page {{
+                    size: letter;
+                    margin: 0.4in 0.5in;
+                }}
+                body {{
+                    font-family: Arial, sans-serif;
+                    font-size: 9pt;
+                    line-height: 1.2;
+                    margin: 0;
+                    padding: 0;
+                }}
+                h1 {{
+                    color: #1a1a1a;
+                    font-size: 14pt;
+                    font-weight: bold;
+                    margin: 0 0 8px 0;
+                    padding-bottom: 4px;
+                    border-bottom: 2px solid #2c5aa0;
+                }}
+                h2 {{
+                    color: #2c5aa0;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    margin: 10px 0 4px 0;
+                }}
+                p {{
+                    margin: 3px 0;
+                }}
+                strong {{
+                    color: #1a1a1a;
+                    font-weight: 600;
+                }}
+                hr {{
+                    border: none;
+                    border-top: 1px solid #ccc;
+                    margin: 8px 0;
+                }}
             </style>
         </head>
         <body>
@@ -3132,6 +3166,225 @@ def generate_gainer_report():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/api/send-daily-report', methods=['POST'])
+def send_daily_report():
+    """Generate comprehensive multi-cap daily report and email it"""
+    try:
+        import markdown
+        from weasyprint import HTML
+        from io import BytesIO
+    except ImportError as ie:
+        return jsonify({
+            'error': f'Missing dependency: {str(ie)}. Please rebuild Docker containers.',
+            'instructions': 'Run: docker compose build && docker compose up -d'
+        }), 500
+    
+    try:
+        data = request.json
+        date_str = data.get('date')
+        email_to = data.get('email', 'absunny2021@gmail.com')
+        
+        if not date_str:
+            return jsonify({'error': 'Date is required'}), 400
+        
+        # Parse date
+        try:
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+        
+        date_formatted = date_obj.strftime('%B %d, %Y')
+        rewind_date = date_obj.strftime('%Y-%m-%d')
+        
+        # Get gainers from all cap categories
+        cap_categories = {
+            'micro': {'name': 'Micro Cap (<$200M)', 'limit': 10},
+            'small': {'name': 'Small Cap ($200M-$2B)', 'limit': None},
+            'mid': {'name': 'Mid Cap ($2B-$20B)', 'limit': None},
+            'large': {'name': 'Large Cap ($20B-$100B)', 'limit': None},
+            'mega': {'name': 'Mega Cap (>$100B)', 'limit': None}
+        }
+        
+        all_gainers = {}
+        total_stocks = 0
+        
+        # Temporarily set rewind date in request args
+        original_args = request.args
+        from werkzeug.datastructures import ImmutableMultiDict
+        new_args = dict(original_args)
+        new_args['rewind_date'] = rewind_date
+        request.args = ImmutableMultiDict(new_args)
+        
+        try:
+            # Get gainers for each category
+            for cap_key, cap_info in cap_categories.items():
+                try:
+                    gainers = get_momentum_stocks(1, market_cap_category=cap_key)
+                    if gainers:
+                        limit = cap_info['limit']
+                        if limit:
+                            gainers = gainers[:limit]
+                        all_gainers[cap_key] = {
+                            'name': cap_info['name'],
+                            'stocks': gainers
+                        }
+                        total_stocks += len(gainers)
+                        logger.info(f"Retrieved {len(gainers)} gainers for {cap_key}")
+                except Exception as e:
+                    logger.error(f"Error getting gainers for {cap_key}: {str(e)}")
+                    all_gainers[cap_key] = {
+                        'name': cap_info['name'],
+                        'stocks': []
+                    }
+        finally:
+            # Restore original args
+            request.args = original_args
+        
+        if total_stocks == 0:
+            return jsonify({'error': 'No gainers found for the specified date'}), 404
+        
+        # Generate comprehensive markdown report
+        md_content = f"# Daily Gainers Report - {date_formatted}\n\n"
+        md_content += f"**Comprehensive Multi-Cap Analysis** | **Total Stocks:** {total_stocks}\n\n"
+        md_content += "---\n\n"
+        
+        # Process each cap category
+        for cap_key in ['mega', 'large', 'mid', 'small', 'micro']:
+            if cap_key not in all_gainers or not all_gainers[cap_key]['stocks']:
+                continue
+            
+            cap_data = all_gainers[cap_key]
+            md_content += f"# {cap_data['name']}\n\n"
+            md_content += f"**Count:** {len(cap_data['stocks'])} stocks\n\n"
+            
+            # Get Perplexity analysis for each stock
+            for i, stock in enumerate(cap_data['stocks'], 1):
+                ticker = stock['ticker']
+                company_name = stock.get('company_name', ticker)
+                return_pct = stock['return_pct']
+                
+                # Query Perplexity
+                perplexity_analysis = query_perplexity_api(ticker, company_name, date_formatted, return_pct)
+                
+                # Build compact markdown for this stock
+                md_content += f"## {i}. {company_name} ({ticker})\n\n"
+                md_content += f"**Return:** {return_pct}% | **Price:** ${stock.get('start_price')} → ${stock.get('end_price')} | **Mkt Cap:** ${stock.get('market_cap', 0)/1e9:.1f}B\n\n"
+                
+                # Compact OHLC line
+                if stock.get('open') and stock.get('high') and stock.get('low') and stock.get('close'):
+                    md_content += f"**OHLC:** O: ${stock['open']} | H: ${stock['high']} | L: ${stock['low']} | C: ${stock['close']}"
+                    
+                    # Close vs high on same line
+                    if stock['high'] > 0:
+                        close_below_high = ((stock['high'] - stock['close']) / stock['high']) * 100
+                        md_content += f" | **Close:** {close_below_high:.1f}% below high"
+                    md_content += "\n\n"
+                
+                # Volume and sector on one line
+                volume_sector_line = ""
+                if stock.get('volume'):
+                    volume_sector_line = f"**Volume:** {stock['volume']:,}"
+                    if stock.get('volume_change'):
+                        volume_sector_line += f" ({stock['volume_change']} avg)"
+                if stock.get('sector'):
+                    if volume_sector_line:
+                        volume_sector_line += f" | **Sector:** {stock.get('sector')}"
+                    else:
+                        volume_sector_line = f"**Sector:** {stock.get('sector')}"
+                if volume_sector_line:
+                    md_content += f"{volume_sector_line}\n\n"
+                
+                md_content += f"**Analysis:** {perplexity_analysis}\n\n---\n\n"
+            
+            # Add section separator between cap categories
+            md_content += "\n\n"
+        
+        # Convert markdown to HTML with compact styling
+        html_content = markdown.markdown(md_content)
+        
+        html_full = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <style>
+                @page {{
+                    size: letter;
+                    margin: 0.4in 0.5in;
+                }}
+                body {{
+                    font-family: Arial, sans-serif;
+                    font-size: 9pt;
+                    line-height: 1.2;
+                    margin: 0;
+                    padding: 0;
+                }}
+                h1 {{
+                    color: #1a1a1a;
+                    font-size: 14pt;
+                    font-weight: bold;
+                    margin: 0 0 8px 0;
+                    padding-bottom: 4px;
+                    border-bottom: 2px solid #2c5aa0;
+                }}
+                h2 {{
+                    color: #2c5aa0;
+                    font-size: 11pt;
+                    font-weight: bold;
+                    margin: 10px 0 4px 0;
+                }}
+                p {{
+                    margin: 3px 0;
+                }}
+                strong {{
+                    color: #1a1a1a;
+                    font-weight: 600;
+                }}
+                hr {{
+                    border: none;
+                    border-top: 1px solid #ccc;
+                    margin: 8px 0;
+                }}
+            </style>
+        </head>
+        <body>
+            {html_content}
+        </body>
+        </html>
+        """
+        
+        # Generate PDF
+        pdf_buffer = BytesIO()
+        HTML(string=html_full).write_pdf(pdf_buffer)
+        pdf_buffer.seek(0)
+        pdf_data = pdf_buffer.read()
+        
+        # Send email with PDF
+        success = send_email_with_pdf(
+            email_to, 
+            date_formatted, 
+            'Multi-Cap', 
+            pdf_data,
+            filename=f'daily_report_{date_str}_all_caps.pdf'
+        )
+        
+        if not success:
+            return jsonify({'error': 'Failed to send email'}), 500
+        
+        return jsonify({
+            'success': True,
+            'message': f'Daily report generated and emailed to {email_to}',
+            'total_stocks': total_stocks,
+            'breakdown': {cap: len(all_gainers[cap]['stocks']) for cap in all_gainers}
+        })
+    
+    except Exception as e:
+        logger.error(f"Error sending daily report: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
 def query_perplexity_api(ticker, company_name, date_str, return_pct):
     """Query Perplexity API for stock movement analysis"""
     try:
@@ -3167,8 +3420,13 @@ Provide a concise summary (3-5 sentences) with specific sources and dates. If no
         return f"Unable to generate analysis: {str(e)}"
 
 
-def send_email_with_pdf(to_email, date_str, market_cap, pdf_data):
+def send_email_with_pdf(to_email, date_str, market_cap, pdf_data, filename=None):
     """Send email with PDF attachment"""
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from email.mime.application import MIMEApplication
+    
     try:
         # Email configuration from environment variables
         smtp_server = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
@@ -3201,8 +3459,9 @@ def send_email_with_pdf(to_email, date_str, market_cap, pdf_data):
         
         # Attach PDF
         pdf_attachment = MIMEApplication(pdf_data, _subtype='pdf')
+        pdf_filename = filename or f'gainer_report_{date_str}_{market_cap}.pdf'
         pdf_attachment.add_header('Content-Disposition', 'attachment', 
-                                 filename=f'gainer_report_{date_str}_{market_cap}.pdf')
+                                 filename=pdf_filename)
         msg.attach(pdf_attachment)
         
         # Send email

@@ -57,6 +57,22 @@
                 </div>
             </form>
             
+            <!-- Big Daily Report Button -->
+            <div class="mt-5 pt-4 border-top">
+                <div class="text-center">
+                    <h3 class="mb-3">📧 Automated Daily Report</h3>
+                    <p class="text-muted mb-4">Send comprehensive multi-cap report to absunny2021@gmail.com</p>
+                    <button type="button" class="btn btn-success btn-lg px-5 py-3" id="sendDailyReportBtn">
+                        <i class="bi bi-envelope-check"></i> Send Daily Report
+                    </button>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            Includes: Small, Mid, Large, Mega (all) + Micro Cap (top 10)
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Progress section -->
             <div id="progressSection" class="mt-4" style="display: none;">
                 <div class="alert alert-info">
@@ -242,6 +258,73 @@ document.addEventListener('DOMContentLoaded', function() {
             errorMsg += '<br>3. Try rebuilding: <code>docker compose build && docker compose up -d</code>';
             
             document.getElementById('errorMessage').innerHTML = errorMsg;
+        }
+    });
+    
+    // Send Daily Report button
+    const sendDailyReportBtn = document.getElementById('sendDailyReportBtn');
+    sendDailyReportBtn.addEventListener('click', async function() {
+        if (!confirm('Send comprehensive daily report to absunny2021@gmail.com?\n\nThis will include:\n• Micro Cap (top 10)\n• Small Cap (all)\n• Mid Cap (all)\n• Large Cap (all)\n• Mega Cap (all)\n\nThis may take 5-15 minutes.')) {
+            return;
+        }
+        
+        // Use yesterday's date by default
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const dateStr = yesterday.toISOString().split('T')[0];
+        
+        // Show progress
+        progressSection.style.display = 'block';
+        resultsSection.style.display = 'none';
+        sendDailyReportBtn.disabled = true;
+        document.getElementById('progressMessage').textContent = 'Generating comprehensive multi-cap report... This will take 5-15 minutes.';
+        
+        try {
+            const backendUrl = 'http://localhost:5001';
+            console.log('Sending daily report request to:', backendUrl);
+            
+            const response = await fetch(backendUrl + '/api/send-daily-report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    date: dateStr,
+                    email: 'absunny2021@gmail.com'
+                })
+            });
+            
+            progressSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+            sendDailyReportBtn.disabled = false;
+            
+            if (response.ok) {
+                const result = await response.json();
+                successAlert.style.display = 'block';
+                errorAlert.style.display = 'none';
+                document.getElementById('successMessage').innerHTML = 
+                    `✅ Daily report sent successfully!<br>` +
+                    `📧 Sent to: absunny2021@gmail.com<br>` +
+                    `📅 Date: ${dateStr}<br>` +
+                    `📊 Total stocks analyzed: ${result.total_stocks || 'N/A'}`;
+            } else {
+                const error = await response.json();
+                errorAlert.style.display = 'block';
+                successAlert.style.display = 'none';
+                let errorMsg = error.error || 'Failed to send daily report';
+                if (error.instructions) {
+                    errorMsg += '\n\nInstructions: ' + error.instructions;
+                }
+                document.getElementById('errorMessage').innerHTML = errorMsg.replace(/\n/g, '<br>');
+            }
+        } catch (error) {
+            progressSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+            sendDailyReportBtn.disabled = false;
+            
+            errorAlert.style.display = 'block';
+            successAlert.style.display = 'none';
+            document.getElementById('errorMessage').innerHTML = 'Network error: ' + error.message;
         }
     });
 });
