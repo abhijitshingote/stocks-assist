@@ -52,16 +52,6 @@ class Stock(Base):
     is_actively_trading = Column(Boolean)  # isActivelyTrading
     is_adr = Column(Boolean)  # isAdr
     is_fund = Column(Boolean)  # isFund
-    # Yahoo Finance analyst data (updated by local script)
-    forward_eps = Column(Float)  # Forward 12-month EPS estimate
-    forward_pe = Column(Float)  # Forward P/E ratio
-    target_mean_price = Column(Float)  # Analyst mean price target
-    target_high_price = Column(Float)  # Analyst high price target
-    target_low_price = Column(Float)  # Analyst low price target
-    number_of_analysts = Column(Integer)  # Number of analysts covering the stock
-    recommendation_key = Column(String)  # buy, hold, sell, etc.
-    recommendation_mean = Column(Float)  # 1=Strong Buy, 5=Strong Sell
-    analyst_data_updated_at = Column(DateTime)  # When Yahoo Finance data was last updated
     created_at = Column(DateTime, default=get_eastern_datetime)
     updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
 

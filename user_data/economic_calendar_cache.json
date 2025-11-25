@@ -1,167 +1,251 @@
 {
   "events": [
     {
-      "date": "Oct 10",
-      "time": "10:00 AM ET",
-      "event": "University of Michigan Consumer Sentiment (Preliminary)",
-      "description": "Key gauge of consumer confidence and inflation expectations that influences Fed policy outlook",
-      "importance": "high"
-    },
-    {
-      "date": "Oct 10",
-      "time": "1:45 PM ET",
-      "event": "Fed Governor Goolsbee Speech",
-      "description": "FOMC voter provides insight on monetary policy stance and economic outlook",
-      "importance": "medium"
-    },
-    {
-      "date": "Oct 10",
-      "time": "5:00 PM ET",
-      "event": "Fed President Musalem Speech",
-      "description": "Regional Fed president comments may signal policy direction and economic assessment",
-      "importance": "medium"
-    },
-    {
-      "date": "Oct 10",
-      "time": "5:00 PM ET",
-      "event": "Baker Hughes Rig Count",
-      "description": "Weekly oil and gas drilling activity indicator affects energy sector sentiment",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 10",
-      "time": "6:00 PM ET",
-      "event": "Monthly Budget Statement",
-      "description": "Federal government fiscal position data impacts Treasury market and deficit concerns",
-      "importance": "medium"
-    },
-    {
-      "date": "Oct 14",
-      "time": "Not Specified",
-      "event": "Net Capital Flows",
-      "description": "Measures foreign investment flows into US assets and dollar demand",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 20",
-      "time": "2:00 PM ET",
-      "event": "Conference Board Leading Index",
-      "description": "Forward-looking composite indicator signals economic direction and recession risk",
-      "importance": "medium"
-    },
-    {
-      "date": "Oct 20",
-      "time": "3:30 PM ET",
-      "event": "3-Month and 6-Month Treasury Bill Auctions",
-      "description": "Short-term government borrowing costs reflect monetary policy expectations",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 21",
-      "time": "12:55 PM ET",
-      "event": "Redbook Retail Sales",
-      "description": "Weekly same-store sales data provides early read on consumer spending trends",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 21",
-      "time": "8:30 PM ET",
-      "event": "API Crude Oil Stock Change",
-      "description": "Weekly petroleum inventory data moves energy prices and inflation expectations",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 22",
-      "time": "11:00 AM ET",
-      "event": "MBA Mortgage Applications",
-      "description": "Weekly housing market activity indicator shows real estate demand trends",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 22",
-      "time": "2:30 PM ET",
-      "event": "EIA Crude Oil Stocks Change",
-      "description": "Official weekly petroleum inventory report impacts energy sector and inflation outlook",
-      "importance": "medium"
-    },
-    {
-      "date": "Oct 23",
+      "date": "Nov 18",
       "time": "8:30 AM ET",
-      "event": "Initial Jobless Claims",
-      "description": "Weekly unemployment filings are critical for assessing labor market health",
+      "event": "US Housing Starts & Building Permits (October)",
+      "description": "Key gauge of construction activity and housing sector health",
       "importance": "high"
     },
     {
-      "date": "Oct 23",
-      "time": "9:45 AM ET",
-      "event": "S&P Global Manufacturing PMI Flash",
-      "description": "Early read on manufacturing sector activity signals economic momentum",
+      "date": "Nov 18",
+      "time": "9:15 AM ET",
+      "event": "Fed Industrial Production & Capacity Utilization (October)",
+      "description": "Measures output of US factories and utilization rates, signals economic momentum",
       "importance": "medium"
     },
     {
-      "date": "Oct 23",
-      "time": "9:45 AM ET",
-      "event": "S&P Global Services PMI Flash",
-      "description": "Services sector activity indicator crucial given sector dominance in US economy",
+      "date": "Nov 18",
+      "time": "All Day",
+      "event": "Fed Governor Waller Speech",
+      "description": "Fed commentary can shift rate expectations and market sentiment",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 19",
+      "time": "8:30 AM ET",
+      "event": "US Activities of Foreign Affiliates Report",
+      "description": "Insight into multinational activity, limited direct market impact",
+      "importance": "low"
+    },
+    {
+      "date": "Nov 19",
+      "time": "All Day",
+      "event": "Fed Vice Chair Jefferson Speech",
+      "description": "Fed leadership remarks can influence policy outlook",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 20",
+      "time": "8:30 AM ET",
+      "event": "Weekly Jobless Claims",
+      "description": "Timely labor market indicator, watched for signs of economic stress",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 20",
+      "time": "10:00 AM ET",
+      "event": "Existing Home Sales (October)",
+      "description": "Measures housing market demand and consumer confidence",
       "importance": "medium"
     },
     {
-      "date": "Oct 23",
+      "date": "Nov 20",
+      "time": "All Day",
+      "event": "Fed President Williams Speech",
+      "description": "Fed regional president views on policy and economy",
+      "importance": "medium"
+    },
+    {
+      "date": "Nov 21",
+      "time": "10:00 AM ET",
+      "event": "University of Michigan Consumer Sentiment (Final, November)",
+      "description": "Consumer confidence impacts spending and market risk appetite",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 21",
+      "time": "All Day",
+      "event": "Monthly Options Expiration (OPEX)",
+      "description": "Options expiration can increase volatility and trading volume",
+      "importance": "medium"
+    },
+    {
+      "date": "Nov 22",
+      "time": "All Day",
+      "event": "Fed Chair Powell Speech",
+      "description": "Fed Chair remarks are the most influential for policy and markets",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 25",
+      "time": "8:30 AM ET",
+      "event": "US Advance International Trade in Goods (October)",
+      "description": "Trade balance affects GDP forecasts and currency markets",
+      "importance": "medium"
+    },
+    {
+      "date": "Nov 25",
+      "time": "8:30 AM ET",
+      "event": "US Durable Goods Orders (October)",
+      "description": "Key indicator of business investment and manufacturing demand",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 25",
+      "time": "10:00 AM ET",
+      "event": "New Home Sales (October)",
+      "description": "Reflects housing demand and construction sector strength",
+      "importance": "medium"
+    },
+    {
+      "date": "Nov 26",
+      "time": "8:30 AM ET",
+      "event": "US GDP 3Q 2025 (Second Estimate)",
+      "description": "Quarterly economic growth, critical for market and Fed outlook",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 26",
+      "time": "8:30 AM ET",
+      "event": "Personal Income & Outlays, PCE Inflation (October)",
+      "description": "Fed's preferred inflation gauge, key for rate expectations",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 26",
+      "time": "10:00 AM ET",
+      "event": "Fed Beige Book",
+      "description": "Anecdotal economic report used by Fed for policy decisions",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 27",
+      "time": "8:30 AM ET",
+      "event": "Weekly Jobless Claims",
+      "description": "Labor market update, especially relevant ahead of holidays",
+      "importance": "high"
+    },
+    {
+      "date": "Nov 28",
+      "time": "All Day",
+      "event": "Fed President Daly Speech",
+      "description": "Fed regional president views on economy and policy",
+      "importance": "medium"
+    },
+    {
+      "date": "Dec 2",
+      "time": "10:00 AM ET",
+      "event": "ISM Manufacturing PMI (November)",
+      "description": "Key manufacturing sector activity gauge, signals economic direction",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 3",
+      "time": "8:15 AM ET",
+      "event": "ADP Private Payrolls (November)",
+      "description": "Early read on US employment trends ahead of NFP",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 3",
+      "time": "10:00 AM ET",
+      "event": "JOLTS Job Openings (October)",
+      "description": "Measures labor demand and tightness, watched by Fed",
+      "importance": "medium"
+    },
+    {
+      "date": "Dec 4",
+      "time": "8:30 AM ET",
+      "event": "US Initial Jobless Claims",
+      "description": "Weekly labor market health check",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 4",
+      "time": "10:00 AM ET",
+      "event": "ISM Services PMI (November)",
+      "description": "Services sector activity, largest part of US economy",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 5",
+      "time": "8:30 AM ET",
+      "event": "US Non-Farm Payrolls & Unemployment Rate (November)",
+      "description": "Most important labor market report, drives Fed and market moves",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 5",
+      "time": "10:00 AM ET",
+      "event": "University of Michigan Consumer Sentiment (Prelim, December)",
+      "description": "Early read on consumer confidence for December",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 9",
+      "time": "All Day",
+      "event": "Treasury 10-Year Note Auction",
+      "description": "Major Treasury auction, impacts yields and risk assets",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 10",
+      "time": "8:30 AM ET",
+      "event": "US CPI (November)",
+      "description": "Critical inflation report, directly impacts Fed policy path",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 11",
+      "time": "8:30 AM ET",
+      "event": "US PPI (November)",
+      "description": "Producer inflation, upstream price pressures for CPI",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 11",
       "time": "2:00 PM ET",
-      "event": "Richmond Fed Manufacturing Index",
-      "description": "Regional manufacturing survey provides early economic activity signals",
-      "importance": "low"
+      "event": "Treasury 30-Year Bond Auction",
+      "description": "Long-term Treasury auction, affects rates and equities",
+      "importance": "high"
     },
     {
-      "date": "Oct 23",
+      "date": "Dec 12",
+      "time": "All Day",
+      "event": "ECB Policy Meeting & Rate Decision",
+      "description": "ECB decisions impact global rates and risk sentiment",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 12",
+      "time": "All Day",
+      "event": "Monthly Options Expiration (OPEX)",
+      "description": "Options expiration can drive volatility and market flows",
+      "importance": "medium"
+    },
+    {
+      "date": "Dec 13",
+      "time": "All Day",
+      "event": "FOMC Meeting Begins (Dec 13-14)",
+      "description": "Fed policy meeting, sets interest rate and guidance",
+      "importance": "high"
+    },
+    {
+      "date": "Dec 13",
+      "time": "After Market",
+      "event": "Oracle (ORCL) Earnings",
+      "description": "Major tech earnings, signals enterprise IT demand",
+      "importance": "medium"
+    },
+    {
+      "date": "Dec 14",
       "time": "2:00 PM ET",
-      "event": "Richmond Fed Services Index",
-      "description": "Mid-Atlantic services sector survey complements manufacturing data",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 23",
-      "time": "2:30 PM ET",
-      "event": "Dallas Fed Services Index",
-      "description": "Texas services sector activity reflects conditions in major regional economy",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 23",
-      "time": "3:30 PM ET",
-      "event": "52-Week Treasury Bill Auction",
-      "description": "One-year government borrowing costs indicate near-term rate expectations",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 23",
-      "time": "5:00 PM ET",
-      "event": "7-Year Treasury Note Auction",
-      "description": "Intermediate-term debt auction shows investor demand and yield curve positioning",
-      "importance": "medium"
-    },
-    {
-      "date": "Oct 29",
-      "time": "11:00 AM ET",
-      "event": "MBA Mortgage Applications",
-      "description": "Weekly housing finance activity tracks real estate market strength",
-      "importance": "low"
-    },
-    {
-      "date": "Oct 29",
-      "time": "12:30 PM ET",
-      "event": "Advance Goods Trade Balance",
-      "description": "Early trade deficit data impacts GDP estimates and dollar valuation",
-      "importance": "medium"
-    },
-    {
-      "date": "Oct 29",
-      "time": "12:30 PM ET",
-      "event": "Retail Inventories Ex Autos (Advance)",
-      "description": "Business inventory levels affect GDP calculations and supply chain assessment",
-      "importance": "low"
+      "event": "FOMC Rate Decision & Powell Press Conference",
+      "description": "Fed decision and Chair's remarks are the most market-moving events",
+      "importance": "high"
     }
   ],
-  "timestamp": "2025-10-09 09:02:12",
+  "timestamp": "2025-11-18 07:26:17",
   "cached": false
 }
