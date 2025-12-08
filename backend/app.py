@@ -834,7 +834,7 @@ def get_gapper_stocks(above_200m=None, market_cap_category=None):
                 gap_pct = ((stock.today_open - stock.prev_close) / stock.prev_close) * 100
                 if gap_pct >= 5:  # Minimum 5% gap
                     price_change = stock.today_open - stock.prev_close
-                    current_price = stock.price if stock.price else stock.today_open
+                    current_price = stock.today_open if stock.today_open else stock.price
                     
                     results.append({
                         'ticker': stock.ticker,
@@ -943,7 +943,7 @@ def get_volume_spike_stocks(above_200m=None, market_cap_category=None):
                     # Calculate price change
                     price_change = stock.today_close - stock.today_open if (stock.today_close and stock.today_open) else 0
                     price_change_pct = ((price_change / stock.today_open) * 100) if (stock.today_open and stock.today_open > 0) else 0
-                    current_price = stock.price if stock.price else stock.today_close
+                    current_price = stock.today_close if stock.today_close else stock.price
                     
                     # Calculate dollar volume
                     dollar_volume = (current_price * stock.today_volume) if (current_price and stock.today_volume) else 0

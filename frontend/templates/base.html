@@ -67,7 +67,12 @@
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Stocks-Assist</a>
+            <div class="d-flex flex-column">
+                <a class="navbar-brand" href="/">Stocks-Assist</a>
+                <small id="lastDbUpdate" style="font-size: 0.75rem; margin-top: -5px; color: #00d4ff;">
+                    lastUpdated: <span id="lastDbUpdateTime">Loading...</span>
+                </small>
+            </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -134,10 +139,6 @@
                 <button class="btn btn-outline-info me-2" type="button" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chatbot">
                     <i class="fas fa-comments"></i>
                 </button>
-
-                <span class="navbar-text" id="market-status">
-                    <small>lastTrade: <span id="navbarLatestDate">Loading...</span></small>
-                </span>
             </div>
         </div>
     </nav>
@@ -201,7 +202,29 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='navbar-date.js') }}"></script>
+    
+    <!-- Fetch and display last DB update timestamp -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/frontend/latest_date')
+                .then(response => response.json())
+                .then(data => {
+                    const updateElement = document.getElementById('lastDbUpdateTime');
+                    if (data.last_update_formatted) {
+                        updateElement.textContent = data.last_update_formatted;
+                    } else if (data.last_update) {
+                        updateElement.textContent = data.last_update;
+                    } else {
+                        updateElement.textContent = 'Not available';
+                        updateElement.classList.add('text-warning');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching last DB update:', error);
+                    document.getElementById('lastDbUpdateTime').textContent = 'Error';
+                });
+        });
+    </script>
     
     <!-- Rewind functionality -->
     <script>
@@ -235,12 +258,11 @@
                 window.location.href = newUrl.toString();
             });
             
-            // Update navbar latest date text when in rewind mode
+            // Update DB update timestamp when in rewind mode
             if (currentRewindDate) {
-                const navbarLatestDate = document.getElementById('navbarLatestDate');
-                if (navbarLatestDate) {
-                    const originalText = navbarLatestDate.textContent;
-                    navbarLatestDate.innerHTML = `${originalText} <span class="badge bg-warning text-dark ms-1">Rewound to ${currentRewindDate}</span>`;
+                const dbUpdateElement = document.getElementById('lastDbUpdate');
+                if (dbUpdateElement) {
+                    dbUpdateElement.innerHTML += ` <span class="badge bg-warning text-dark ms-1" style="font-size: 0.6rem;">Rewound to ${currentRewindDate}</span>`;
                 }
             }
         });
