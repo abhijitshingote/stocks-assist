@@ -216,12 +216,49 @@
                     return stock;
                 });
                 
-                // For SeaChange page, sort by latest event date before display
+                // Apply default sorting based on page type
+                let defaultSortColumn = null;
+                let defaultSortDirection = 'desc';
+                
                 if (pageConfig.type === 'sea_change') {
-                    data = sortStockData(data, 'sea_change_events', 'desc');
+                    // Sort by latest event date
+                    defaultSortColumn = 'sea_change_events';
+                    data = sortStockData(data, defaultSortColumn, defaultSortDirection);
+                } else if (pageConfig.type === 'returns' && pageConfig.returnDays) {
+                    // Sort by the appropriate return column
+                    const days = pageConfig.returnDays.replace('-Day', '');
+                    // For 1-day returns, the enriched return_1d column might not exist, so use return_pct as fallback
+                    if (days === '1') {
+                        defaultSortColumn = 'return_pct';
+                    } else {
+                        defaultSortColumn = `return_${days.toLowerCase()}d`;
+                    }
+                    data = sortStockData(data, defaultSortColumn, defaultSortDirection);
+                } else if (pageConfig.type === 'gapper') {
+                    // Sort by price change percentage (gap)
+                    defaultSortColumn = 'price_change_pct';
+                    data = sortStockData(data, defaultSortColumn, defaultSortDirection);
+                } else if (pageConfig.type === 'volume') {
+                    // Sort by volume ratio
+                    defaultSortColumn = 'volume_ratio';
+                    data = sortStockData(data, defaultSortColumn, defaultSortDirection);
+                }
+                
+                // Update sort state to reflect the default sort
+                if (defaultSortColumn) {
+                    if (!sortState[categoryKey]) {
+                        sortState[categoryKey] = { column: '', direction: 'asc' };
+                    }
+                    sortState[categoryKey].column = defaultSortColumn;
+                    sortState[categoryKey].direction = defaultSortDirection;
                 }
                 
                 displayStocks(data, `stockTableBody-${categoryKey}`);
+                
+                // Update sort icons to reflect the default sort
+                if (defaultSortColumn) {
+                    updateSortIcons(categoryKey, defaultSortColumn, defaultSortDirection);
+                }
                 results.style.display = 'block';
                 categoryCounts[categoryKey] = data.length;
                 updateSubtitles();
