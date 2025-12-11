@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, StockRSI, Index, IndexPrice, init_db
+from models import Stock, Price, Comment, Flags, ConciseNote, Earnings, StockRSI, Index, IndexPrice, TriggerEvent, init_db
 from sqlalchemy import desc, func, and_, or_, case, text
 from datetime import datetime, timedelta
 import os
@@ -3477,6 +3477,118 @@ def send_email_with_pdf(to_email, date_str, market_cap, pdf_data, filename=None)
     except Exception as e:
         logger.error(f"Error sending email: {str(e)}")
         return False
+
+
+# ------------------------------------------------------------------
+# Triggers API Endpoints
+# ------------------------------------------------------------------
+
+@app.route('/api/triggers/dates', methods=['GET'])
+def get_trigger_dates():
+    """Get all unique dates when triggers were run"""
+    try:
+        dates = session.query(func.distinct(TriggerEvent.trigger_date)) \
+            .order_by(desc(TriggerEvent.trigger_date)) \
+            .all()
+        
+        date_list = [d[0].strftime('%Y-%m-%d') for d in dates]
+        
+        return jsonify({
+            'dates': date_list,
+            'count': len(date_list)
+        })
+    except Exception as e:
+        logger.error(f"Error fetching trigger dates: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/triggers/events', methods=['GET'])
+def get_trigger_events():
+    """Get trigger events for a specific date"""
+    try:
+        # Get date parameter
+        date_str = request.args.get('date')
+        if not date_str:
+            # Default to most recent date
+            most_recent = session.query(func.max(TriggerEvent.trigger_date)).scalar()
+            if not most_recent:
+                return jsonify({'events': [], 'date': None, 'message': 'No trigger events found'})
+            trigger_date = most_recent
+        else:
+            trigger_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        
+        # Query trigger events for this date
+        events = session.query(TriggerEvent).filter(
+            TriggerEvent.trigger_date == trigger_date
+        ).order_by(TriggerEvent.trigger_name, desc(TriggerEvent.trigger_value)).all()
+        
+        # Group events by trigger name
+        grouped_events = {}
+        for event in events:
+            if event.trigger_name not in grouped_events:
+                grouped_events[event.trigger_name] = []
+            
+            # Parse metadata
+            metadata = json.loads(event.trigger_metadata) if event.trigger_metadata else {}
+            
+            # Get stock details
+            stock = session.query(Stock).filter(Stock.ticker == event.ticker).first()
+            
+            event_data = {
+                'ticker': event.ticker,
+                'company_name': stock.company_name if stock else 'N/A',
+                'sector': stock.sector if stock else 'N/A',
+                'industry': stock.industry if stock else 'N/A',
+                'market_cap': stock.market_cap if stock else None,
+                'trigger_value': event.trigger_value,
+                'metadata': metadata,
+                'created_at': event.created_at.strftime('%Y-%m-%d %H:%M:%S') if event.created_at else None
+            }
+            
+            grouped_events[event.trigger_name].append(event_data)
+        
+        return jsonify({
+            'date': trigger_date.strftime('%Y-%m-%d'),
+            'events': grouped_events,
+            'total_triggers': len(grouped_events),
+            'total_stocks': len(events)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error fetching trigger events: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/triggers/summary', methods=['GET'])
+def get_triggers_summary():
+    """Get summary of all trigger events across dates"""
+    try:
+        # Get summary by trigger name and date
+        summary = session.query(
+            TriggerEvent.trigger_date,
+            TriggerEvent.trigger_name,
+            func.count(TriggerEvent.id).label('count')
+        ).group_by(
+            TriggerEvent.trigger_date,
+            TriggerEvent.trigger_name
+        ).order_by(
+            desc(TriggerEvent.trigger_date),
+            TriggerEvent.trigger_name
+        ).all()
+        
+        # Organize by date
+        results = {}
+        for trigger_date, trigger_name, count in summary:
+            date_str = trigger_date.strftime('%Y-%m-%d')
+            if date_str not in results:
+                results[date_str] = {}
+            results[date_str][trigger_name] = count
+        
+        return jsonify({
+            'summary': results
+        })
+        
+    except Exception as e:
+        logger.error(f"Error fetching trigger summary: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

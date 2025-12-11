@@ -872,5 +872,43 @@ def gainer_report():
     return render_template('gainer_report.html', BACKEND_URL=BACKEND_URL)
 
 
+# ------------------------------------------------------------------
+# Triggers Page and API Proxies
+# ------------------------------------------------------------------
+
+@app.route('/triggers')
+def triggers_page():
+    """Triggers page - displays stock candidates identified by trigger rules"""
+    return render_template('triggers.html', active_page='triggers')
+
+
+@app.route('/api/frontend/triggers/dates', methods=['GET'])
+def get_triggers_dates_proxy():
+    """Proxy endpoint for trigger dates"""
+    result = make_backend_request('/api/triggers/dates')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch trigger dates'}), 500
+    return jsonify(result)
+
+
+@app.route('/api/frontend/triggers/events', methods=['GET'])
+def get_triggers_events_proxy():
+    """Proxy endpoint for trigger events"""
+    date_param = request.args.get('date', '')
+    result = make_backend_request(f'/api/triggers/events?date={date_param}')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch trigger events'}), 500
+    return jsonify(result)
+
+
+@app.route('/api/frontend/triggers/summary', methods=['GET'])
+def get_triggers_summary_proxy():
+    """Proxy endpoint for trigger summary"""
+    result = make_backend_request('/api/triggers/summary')
+    if result is None:
+        return jsonify({'error': 'Failed to fetch trigger summary'}), 500
+    return jsonify(result)
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

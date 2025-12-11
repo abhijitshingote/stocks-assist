@@ -241,6 +241,25 @@ class IndexPrice(Base):
     # Add unique constraint for symbol + date combination to enable upserts
     __table_args__ = (UniqueConstraint('symbol', 'date', name='_index_symbol_date_uc'),)
 
+class TriggerEvent(Base):
+    __tablename__ = 'trigger_event'
+
+    id = Column(Integer, primary_key=True)
+    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
+    trigger_name = Column(String, nullable=False)  # Name of the trigger that fired
+    trigger_date = Column(Date, nullable=False)  # Date when trigger was run
+    trigger_value = Column(Float)  # Optional value that caused trigger (e.g., return %, volume change)
+    trigger_metadata = Column(Text)  # JSON string with additional trigger-specific data
+    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
+    
+    # Index for fast querying by date
+    __table_args__ = (
+        UniqueConstraint('ticker', 'trigger_name', 'trigger_date', name='_trigger_event_uc'),
+    )
+    
+    def __repr__(self):
+        return f"<TriggerEvent(ticker='{self.ticker}', trigger='{self.trigger_name}', date='{self.trigger_date}')>"
+
 def init_db():
     database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
     engine = create_engine(database_url)

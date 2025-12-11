@@ -36,7 +36,7 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 
 
 # Make the daily price update script executable
-RUN chmod +x db_scripts/update_date/daily_price_update.py
+RUN chmod +x db_scripts/update_data/daily_price_update.py
 
 # Make the startup script executable
 RUN chmod +x docker/start.sh

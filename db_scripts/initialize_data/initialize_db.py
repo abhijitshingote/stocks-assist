@@ -27,6 +27,7 @@ def initialize_database(reset=False):
             print("Resetting database - dropping existing tables...")
             # Drop all tables if they exist (including both old and new table names)
 
+            connection.execute(text("DROP TABLE IF EXISTS trigger_event CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS concise_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS flags CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS comment CASCADE;"))
@@ -194,6 +195,21 @@ def initialize_database(reset=False):
                 FOREIGN KEY (symbol) REFERENCES index(symbol) ON DELETE CASCADE
             )
         """))
+
+        # Create trigger_event table for storing trigger scan results
+        connection.execute(text(f"""
+            {table_creation_clause} trigger_event (
+                id SERIAL PRIMARY KEY,
+                ticker VARCHAR(10) NOT NULL,
+                trigger_name VARCHAR(255) NOT NULL,
+                trigger_date DATE NOT NULL,
+                trigger_value FLOAT,
+                trigger_metadata TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                CONSTRAINT _trigger_event_uc UNIQUE (ticker, trigger_name, trigger_date),
+                FOREIGN KEY (ticker) REFERENCES ticker(ticker) ON DELETE CASCADE
+            )
+        """))
         
         # Create indexes for better query performance
         index_creation_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
@@ -221,6 +237,9 @@ def initialize_database(reset=False):
             {index_creation_clause} idx_index_type ON index(index_type);
             {index_creation_clause} idx_index_price_symbol ON index_price(symbol);
             {index_creation_clause} idx_index_price_date ON index_price(date);
+            {index_creation_clause} idx_trigger_event_ticker ON trigger_event(ticker);
+            {index_creation_clause} idx_trigger_event_trigger_name ON trigger_event(trigger_name);
+            {index_creation_clause} idx_trigger_event_trigger_date ON trigger_event(trigger_date);
         """))
         
         connection.commit()
@@ -235,6 +254,7 @@ def initialize_database(reset=False):
             print("- Concise notes table created")
             print("- Index table created (market indices/ETFs metadata)")
             print("- Index_price table created (historical index/ETF prices)")
+            print("- Trigger_event table created (trigger scan results)")
         else:
             print("Database initialization completed successfully!")
             print("- 'ticker' table ready (comprehensive FMP company data)")
@@ -244,6 +264,7 @@ def initialize_database(reset=False):
             print("- 'concise notes' table ready")
             print("- 'index' table ready (market indices/ETFs metadata)")
             print("- 'index_price' table ready (historical index/ETF prices)")
+            print("- 'trigger_event' table ready (trigger scan results)")
 
 if __name__ == "__main__":
     # Check for reset flag
