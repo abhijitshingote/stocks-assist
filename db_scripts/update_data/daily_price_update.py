@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
 """
-Daily Price Update Script
-Fetches today's stock price data using Polygon.io snapshot API and updates the Price table.
+Daily Price Update Script (FMP API)
+Fetches today's stock price data using FMP batch quote API and updates the OHLC table.
 Overwrites existing data for today's date if it exists.
 """
 
 import os
 import sys
 import logging
-from datetime import datetime, date
-from polygon import RESTClient
-from sqlalchemy import create_engine, and_
+from datetime import datetime, date, timedelta
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
 from dotenv import load_dotenv
 import requests
 import time
 import pytz
+import argparse
 
 # Add backend to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
-from models import Base, Stock, Price
+from models import Base, Ticker, OHLC
 
 # Configure logging
 logging.basicConfig(
@@ -36,12 +36,13 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-# Initialize Polygon.io client
-POLYGON_API_KEY = os.getenv('POLYGON_API_KEY')
-if not POLYGON_API_KEY:
-    raise ValueError("POLYGON_API_KEY not found in environment variables")
+# FMP API configuration
+FMP_API_KEY = os.getenv('FMP_API_KEY')
+if not FMP_API_KEY:
+    raise ValueError("FMP_API_KEY not found in environment variables")
 
-client = RESTClient(POLYGON_API_KEY)
+BASE_URL = 'https://financialmodelingprep.com/stable'
+
 
 def get_eastern_date():
     """Get current date in Eastern Time (handles EST/EDT automatically)"""
@@ -49,10 +50,12 @@ def get_eastern_date():
     eastern_now = datetime.now(eastern)
     return eastern_now.date()
 
+
 def get_eastern_datetime():
     """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
     eastern = pytz.timezone('US/Eastern')
     return datetime.now(eastern)
+
 
 def init_db():
     """Initialize database connection"""
@@ -65,281 +68,266 @@ def init_db():
     Session = sessionmaker(bind=engine)
     return Session(), engine
 
+
 def get_existing_tickers(session):
-    """Get all tickers that exist in the Stock table"""
+    """Get all tickers that exist in the Ticker table"""
     try:
-        tickers = session.query(Stock.ticker).all()
+        tickers = session.query(Ticker.ticker).filter(
+            Ticker.is_actively_trading == True
+        ).all()
         ticker_list = [t[0] for t in tickers]
-        logger.info(f"Found {len(ticker_list)} existing tickers in database")
+        logger.info(f"Found {len(ticker_list)} actively trading tickers in database")
         return ticker_list
     except Exception as e:
         logger.error(f"Error fetching existing tickers: {str(e)}")
         return []
 
-def fetch_market_snapshot():
-    """
-    Fetch today's market snapshot data for all tickers using Polygon's snapshot endpoint
-    """
-    logger.info("Fetching today's market snapshot data...")
-    
-    try:
-        # Use the v2 snapshot endpoint for all US stocks
-        url = f"https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers"
-        params = {
-            'apiKey': POLYGON_API_KEY,
-            'include_otc': 'false'  # Exclude OTC securities
-        }
-        
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        
-        data = response.json()
-        
-        if data.get('status') == 'OK' and 'tickers' in data:
-            logger.info(f"Successfully fetched snapshot data for {len(data['tickers'])} tickers")
-            return data['tickers']
-        else:
-            logger.error(f"API response error: {data.get('status', 'Unknown error')}")
-            return []
-            
-    except Exception as e:
-        logger.error(f"Error fetching market snapshot: {str(e)}")
-        return []
 
-def fetch_specific_tickers_snapshot(tickers, batch_size=100):
+def parse_float(value):
+    """Parse float value safely"""
+    try:
+        return float(value) if value is not None else None
+    except (ValueError, TypeError):
+        return None
+
+
+def parse_int(value):
+    """Parse integer value safely"""
+    try:
+        return int(float(value)) if value is not None else None
+    except (ValueError, TypeError):
+        return None
+
+
+def format_duration(seconds):
+    """Format duration in hours, minutes, seconds"""
+    hrs = int(seconds // 3600)
+    mins = int((seconds % 3600) // 60)
+    secs = int(seconds % 60)
+    if hrs > 0:
+        return f"{hrs}h {mins}m {secs}s"
+    elif mins > 0:
+        return f"{mins}m {secs}s"
+    return f"{secs}s"
+
+
+def fetch_eod_prices(tickers, target_date, delay=0.12, progress_interval=100):
     """
-    Fetch snapshot data for specific tickers in batches using the v3 snapshot endpoint
-    This is used as a fallback if the full market snapshot doesn't work
+    Fetch EOD price data one ticker at a time using FMP historical-price-eod/full endpoint.
+    
+    Args:
+        tickers: List of ticker symbols
+        target_date: The date to fetch prices for
+        delay: Delay between API calls in seconds
+        progress_interval: How often to print progress (every N tickers)
+    
+    Returns:
+        List of price data dictionaries
     """
-    logger.info(f"Fetching snapshot data for {len(tickers)} specific tickers...")
+    total = len(tickers)
+    date_str = target_date.strftime('%Y-%m-%d')
     
-    all_snapshots = []
+    # Estimate time
+    estimated_seconds = total * delay
+    logger.info(f"Fetching EOD prices for {total} tickers (date: {date_str})")
+    logger.info(f"Estimated time: {format_duration(estimated_seconds)} (at {delay}s/ticker)")
+    logger.info("-" * 60)
     
-    # Process tickers in batches
-    for i in range(0, len(tickers), batch_size):
-        batch = tickers[i:i + batch_size]
-        ticker_list = ','.join(batch)
-        
+    all_prices = []
+    success_count = 0
+    error_count = 0
+    start_time = time.time()
+    
+    for i, ticker in enumerate(tickers):
         try:
-            url = f"https://api.polygon.io/v3/snapshot"
+            url = f"{BASE_URL}/historical-price-eod/full"
             params = {
-                'ticker.any_of': ticker_list,
-                'apiKey': POLYGON_API_KEY
+                'apikey': FMP_API_KEY,
+                'symbol': ticker,
+                'from': date_str,
+                'to': date_str
             }
             
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, timeout=30)
             response.raise_for_status()
             
             data = response.json()
             
-            if data.get('status') == 'OK' and 'results' in data:
-                all_snapshots.extend(data['results'])
-                logger.info(f"Batch {i//batch_size + 1}: fetched {len(data['results'])} tickers")
-            else:
-                logger.warning(f"No data for batch {i//batch_size + 1}: {data.get('status', 'Unknown')}")
+            # Handle list or dict response
+            historical = data if isinstance(data, list) else data.get('historical', [])
+            for item in historical:
+                all_prices.append({
+                    'symbol': ticker,
+                    **item
+                })
+            
+            if historical:
+                success_count += 1
             
             # Rate limiting
-            time.sleep(0.1)
+            time.sleep(delay)
             
         except Exception as e:
-            logger.error(f"Error fetching batch {i//batch_size + 1}: {str(e)}")
+            error_count += 1
+            # Only log errors for non-404s (missing data is expected for some tickers)
+            if '404' not in str(e) and '429' not in str(e):
+                logger.debug(f"Error fetching {ticker}: {str(e)}")
+            continue
+        
+        # Progress reporting
+        if (i + 1) % progress_interval == 0 or (i + 1) == total:
+            elapsed = time.time() - start_time
+            pct = ((i + 1) / total) * 100
+            avg_time = elapsed / (i + 1)
+            remaining = avg_time * (total - i - 1)
+            
+            logger.info(
+                f"Progress: {i+1:,}/{total:,} ({pct:.1f}%) | "
+                f"Found: {len(all_prices):,} | "
+                f"Elapsed: {format_duration(elapsed)} | "
+                f"ETA: {format_duration(remaining)}"
+            )
+    
+    # Final summary
+    total_time = time.time() - start_time
+    logger.info("-" * 60)
+    logger.info(f"Fetch complete: {len(all_prices):,} prices from {success_count:,} tickers")
+    logger.info(f"Errors/Missing: {error_count:,} | Total time: {format_duration(total_time)}")
+    
+    return all_prices
+
+
+def process_quote_data(quotes, existing_tickers_set):
+    """
+    Process FMP quote data and prepare for database insertion.
+    
+    FMP quote format:
+    {
+        "symbol": "AAPL",
+        "name": "Apple Inc.",
+        "price": 195.89,
+        "changesPercentage": 1.5,
+        "change": 2.89,
+        "dayLow": 193.05,
+        "dayHigh": 196.40,
+        "yearHigh": 199.62,
+        "yearLow": 164.08,
+        "marketCap": 3000000000000,
+        "priceAvg50": 185.50,
+        "priceAvg200": 180.25,
+        "volume": 58000000,
+        "avgVolume": 55000000,
+        "exchange": "NASDAQ",
+        "open": 194.00,
+        "previousClose": 193.00,
+        "timestamp": 1699999999
+    }
+    """
+    price_records = []
+    processed_count = 0
+    today = get_eastern_date()
+    now = get_eastern_datetime()
+    
+    logger.info(f"Processing quote data for {len(quotes)} tickers...")
+    
+    for quote in quotes:
+        try:
+            ticker = quote.get('symbol')
+            if not ticker or ticker not in existing_tickers_set:
+                continue
+            
+            # Extract price data
+            open_price = parse_float(quote.get('open'))
+            high_price = parse_float(quote.get('dayHigh'))
+            low_price = parse_float(quote.get('dayLow'))
+            close_price = parse_float(quote.get('price'))  # Current price as close
+            volume = parse_int(quote.get('volume'))
+            
+            # Skip if missing essential data
+            if close_price is None:
+                continue
+            
+            # Determine the trading date from timestamp if available
+            trading_date = today
+            if 'timestamp' in quote and quote['timestamp']:
+                try:
+                    timestamp = quote['timestamp']
+                    dt = datetime.fromtimestamp(timestamp, tz=pytz.UTC)
+                    eastern = pytz.timezone('US/Eastern')
+                    eastern_dt = dt.astimezone(eastern)
+                    trading_date = eastern_dt.date()
+                except (ValueError, TypeError, OSError):
+                    trading_date = today
+            
+            price_record = {
+                'ticker': ticker,
+                'date': trading_date,
+                'open': open_price,
+                'high': high_price,
+                'low': low_price,
+                'close': close_price,
+                'volume': volume
+            }
+            
+            price_records.append(price_record)
+            processed_count += 1
+                
+        except Exception as e:
+            logger.error(f"Error processing quote for {quote.get('symbol', 'unknown')}: {str(e)}")
             continue
     
-    logger.info(f"Total snapshots fetched: {len(all_snapshots)}")
-    return all_snapshots
+    logger.info(f"Processed {processed_count} valid price records from quote data")
+    return price_records
 
-def process_v2_snapshot_data(snapshots, existing_tickers):
+
+def process_eod_data(eod_prices, existing_tickers_set):
     """
-    Process v2 snapshot data and prepare for database insertion
-    v2 format: {'ticker': 'AAPL', 'day': {'o': 150, 'h': 155, 'l': 149, 'c': 154, 'v': 1000000}, 'lastTrade': {'t': timestamp}}
+    Process FMP historical/EOD price data and prepare for database insertion.
     """
     price_records = []
     processed_count = 0
     
-    logger.info(f"Processing v2 snapshot data for {len(snapshots)} tickers...")
+    logger.info(f"Processing EOD data for {len(eod_prices)} records...")
     
-    for snapshot in snapshots:
+    for item in eod_prices:
         try:
-            ticker = snapshot.get('ticker')
-            if not ticker or ticker not in existing_tickers:
+            ticker = item.get('symbol')
+            if not ticker or ticker not in existing_tickers_set:
                 continue
             
-            # Extract today's price data
-            day_data = snapshot.get('day', {})
-            
-            # Skip if no day data available
-            if not day_data:
+            # Parse date
+            date_str = item.get('date')
+            if not date_str:
                 continue
+            trading_date = datetime.strptime(date_str, '%Y-%m-%d').date()
             
-            # Extract the actual trading date from the API response
-            trading_date = None
-            last_trade_timestamp = None
-            
-            # Prefer updated field first (nanosecond timestamp)
-            timestamp_ns = snapshot.get('updated')
-            if timestamp_ns:
-                try:
-                    # Convert nanosecond timestamp to seconds and then to datetime
-                    timestamp_seconds = timestamp_ns / 1_000_000_000
-                    utc_dt = datetime.fromtimestamp(timestamp_seconds, tz=pytz.UTC)
-                    eastern = pytz.timezone('US/Eastern')
-                    eastern_dt = utc_dt.astimezone(eastern)
-                    trading_date = eastern_dt.date()
-                    last_trade_timestamp = eastern_dt
-                except (ValueError, TypeError, OSError) as e:
-                    logger.warning(f"Could not parse updated timestamp {timestamp_ns} for {ticker}: {e}")
-            
-            # Fallback to min.t if updated is not available
-            if not trading_date:
-                min_data = snapshot.get('min', {})
-                if 't' in min_data:
-                    try:
-                        timestamp_ms = min_data['t']
-                        dt = datetime.fromtimestamp(timestamp_ms / 1000, tz=pytz.UTC)
-                        eastern_dt = dt.astimezone(pytz.timezone('US/Eastern'))
-                        trading_date = eastern_dt.date()
-                        last_trade_timestamp = eastern_dt
-                    except (ValueError, TypeError, OSError) as e:
-                        logger.warning(f"Could not parse min timestamp {timestamp_ms} for {ticker}: {e}")
-            
-            # If we still don't have a trading date, fall back to today (should rarely happen)
-            if not trading_date:
-                trading_date = get_eastern_date()
-                logger.warning(f"No timestamp data found for {ticker}, using current date: {trading_date}")
-            
-            # Create price record
             price_record = {
                 'ticker': ticker,
-                'date': trading_date,  # Use actual trading date from API
-                'open_price': day_data.get('o'),
-                'high_price': day_data.get('h'),
-                'low_price': day_data.get('l'),
-                'close_price': day_data.get('c'),
-                'volume': day_data.get('v'),
-                'last_traded_timestamp': last_trade_timestamp,
-                'created_at': get_eastern_datetime(),
-                'updated_at': get_eastern_datetime()
+                'date': trading_date,
+                'open': parse_float(item.get('open')),
+                'high': parse_float(item.get('high')),
+                'low': parse_float(item.get('low')),
+                'close': parse_float(item.get('close')),
+                'volume': parse_int(item.get('volume'))
             }
             
             # Only add if we have at least a close price
-            if price_record['close_price'] is not None:
+            if price_record['close'] is not None:
                 price_records.append(price_record)
                 processed_count += 1
                 
         except Exception as e:
-            logger.error(f"Error processing v2 snapshot for {snapshot.get('ticker', 'unknown')}: {str(e)}")
+            logger.error(f"Error processing EOD for {item.get('symbol', 'unknown')}: {str(e)}")
             continue
     
-    logger.info(f"Processed {processed_count} valid price records from v2 snapshot data")
+    logger.info(f"Processed {processed_count} valid price records from EOD data")
     return price_records
 
-def process_v3_snapshot_data(snapshots, existing_tickers):
-    """
-    Process v3 snapshot data and prepare for database insertion
-    v3 format: {'ticker': 'AAPL', 'value': 154, 'session': {'change': 2, 'change_percent': 1.3, ...}, 'last_trade': {'participant_timestamp': timestamp}}
-    """
-    price_records = []
-    processed_count = 0
-    
-    logger.info(f"Processing v3 snapshot data for {len(snapshots)} tickers...")
-    
-    for snapshot in snapshots:
-        try:
-            ticker = snapshot.get('ticker')
-            if not ticker or ticker not in existing_tickers:
-                continue
-            
-            # V3 snapshot has different structure
-            session_data = snapshot.get('session', {})
-            market_status = snapshot.get('market_status', 'closed')
-            
-            # Skip if market is not open and no session data
-            if not session_data:
-                continue
-            
-            # Extract the actual trading date from the v3 API response
-            trading_date = None
-            last_trade_timestamp = None
-            
-            # Prefer updated field first (nanosecond timestamp)
-            timestamp_ns = snapshot.get('updated')
-            if timestamp_ns:
-                try:
-                    timestamp_seconds = timestamp_ns / 1_000_000_000
-                    utc_dt = datetime.fromtimestamp(timestamp_seconds, tz=pytz.UTC)
-                    eastern = pytz.timezone('US/Eastern')
-                    eastern_dt = utc_dt.astimezone(eastern)
-                    trading_date = eastern_dt.date()
-                    last_trade_timestamp = eastern_dt
-                except (ValueError, TypeError, OSError) as e:
-                    logger.warning(f"Could not parse updated timestamp {timestamp_ns} for {ticker}: {e}")
-            
-            # Fallback to last_minute.t timestamp
-            if not trading_date:
-                last_minute = snapshot.get('last_minute', {})
-                if 't' in last_minute:
-                    try:
-                        timestamp_ms = last_minute['t']
-                        dt = datetime.fromtimestamp(timestamp_ms / 1000, tz=pytz.UTC)
-                        eastern_dt = dt.astimezone(pytz.timezone('US/Eastern'))
-                        trading_date = eastern_dt.date()
-                        last_trade_timestamp = eastern_dt
-                    except (ValueError, TypeError, OSError) as e:
-                        logger.warning(f"Could not parse last_minute timestamp {timestamp_ms} for {ticker}: {e}")
-            
-            # Fallback to last_trade timestamp fields
-            if not trading_date:
-                last_trade = snapshot.get('last_trade')
-                if last_trade:
-                    timestamp_ns = (last_trade.get('participant_timestamp') or 
-                                  last_trade.get('sip_timestamp') or 
-                                  last_trade.get('timeframe'))
-                    if timestamp_ns:
-                        try:
-                            timestamp_seconds = timestamp_ns / 1_000_000_000
-                            utc_dt = datetime.fromtimestamp(timestamp_seconds, tz=pytz.UTC)
-                            eastern = pytz.timezone('US/Eastern')
-                            eastern_dt = utc_dt.astimezone(eastern)
-                            trading_date = eastern_dt.date()
-                            last_trade_timestamp = eastern_dt
-                        except (ValueError, TypeError, OSError) as e:
-                            logger.warning(f"Could not parse last_trade timestamp {timestamp_ns} for {ticker}: {e}")
-            
-            # Final fallback to current date
-            if not trading_date:
-                trading_date = get_eastern_date()
-                logger.warning(f"No timestamp data found for {ticker}, using current date: {trading_date}")
-            
-            # For v3, we need to use different field names
-            price_record = {
-                'ticker': ticker,
-                'date': trading_date,  # Use actual trading date from API
-                'open_price': session_data.get('open'),
-                'high_price': session_data.get('high'),
-                'low_price': session_data.get('low'),
-                'close_price': session_data.get('close') or snapshot.get('value'),  # value is current price
-                'volume': session_data.get('volume'),
-                'last_traded_timestamp': last_trade_timestamp,
-                'created_at': get_eastern_datetime(),
-                'updated_at': get_eastern_datetime()
-            }
-            
-            # Only add if we have at least a close price
-            if price_record['close_price'] is not None:
-                price_records.append(price_record)
-                processed_count += 1
-                
-        except Exception as e:
-            logger.error(f"Error processing v3 snapshot for {snapshot.get('ticker', 'unknown')}: {str(e)}")
-            continue
-    
-    logger.info(f"Processed {processed_count} valid price records from v3 snapshot data")
-    return price_records
 
 def bulk_upsert_prices(session, engine, price_records):
     """
-    Bulk upsert price records using PostgreSQL's ON CONFLICT functionality
-    This will automatically overwrite existing records for the same ticker and date
+    Bulk upsert price records using PostgreSQL's ON CONFLICT functionality.
+    This will automatically overwrite existing records for the same ticker and date.
     """
     if not price_records:
         logger.warning("No price records to upsert")
@@ -349,24 +337,22 @@ def bulk_upsert_prices(session, engine, price_records):
     
     try:
         # Use PostgreSQL's INSERT ... ON CONFLICT for efficient upserts
-        stmt = insert(Price).values(price_records)
+        stmt = insert(OHLC).values(price_records)
         
         # Define what to do on conflict (use the constraint name)
         stmt = stmt.on_conflict_do_update(
-            constraint='_ticker_date_uc',
+            constraint='uq_ohlc',
             set_=dict(
-                open_price=stmt.excluded.open_price,
-                high_price=stmt.excluded.high_price,
-                low_price=stmt.excluded.low_price,
-                close_price=stmt.excluded.close_price,
-                volume=stmt.excluded.volume,
-                last_traded_timestamp=stmt.excluded.last_traded_timestamp,
-                updated_at=stmt.excluded.updated_at
+                open=stmt.excluded.open,
+                high=stmt.excluded.high,
+                low=stmt.excluded.low,
+                close=stmt.excluded.close,
+                volume=stmt.excluded.volume
             )
         )
         
         # Execute the bulk upsert
-        result = session.execute(stmt)
+        session.execute(stmt)
         session.commit()
         
         logger.info(f"Successfully upserted {len(price_records)} price records")
@@ -377,9 +363,21 @@ def bulk_upsert_prices(session, engine, price_records):
         logger.error(f"Error in bulk upsert: {str(e)}")
         return 0
 
+
 def main():
     """Main function to fetch today's price data and update the database"""
-    logger.info("=== Starting Daily Price Update ===")
+    parser = argparse.ArgumentParser(description='Daily price update from FMP API')
+    parser.add_argument('--date', type=str, help='Target date (YYYY-MM-DD). Defaults to today.')
+    parser.add_argument('--delay', type=float, default=0.12,
+                        help='Delay between API calls in seconds (default: 0.12)')
+    parser.add_argument('--progress', type=int, default=100,
+                        help='Print progress every N tickers (default: 100)')
+    args = parser.parse_args()
+    
+    overall_start = time.time()
+    logger.info("=" * 60)
+    logger.info("=== Starting Daily Price Update (FMP) ===")
+    logger.info("=" * 60)
     
     session, engine = init_db()
     
@@ -392,35 +390,43 @@ def main():
         
         existing_tickers_set = set(existing_tickers)
         
-        # Step 2: Fetch today's market snapshot
-        logger.info("Attempting to fetch full market snapshot...")
-        snapshots = fetch_market_snapshot()
-        
-        price_records = []
-        
-        if snapshots:
-            # Process v2 snapshot data
-            price_records = process_v2_snapshot_data(snapshots, existing_tickers_set)
+        # Determine target date
+        if args.date:
+            target_date = datetime.strptime(args.date, '%Y-%m-%d').date()
         else:
-            # Fallback: fetch specific tickers
-            logger.info("Full market snapshot failed, trying specific tickers...")
-            snapshots = fetch_specific_tickers_snapshot(existing_tickers, batch_size=50)
-            if snapshots:
-                price_records = process_v3_snapshot_data(snapshots, existing_tickers_set)
+            target_date = get_eastern_date()
         
-        # Step 3: Bulk upsert the price data
-        if price_records:
-            upserted_count = bulk_upsert_prices(session, engine, price_records)
-            logger.info(f"Daily price update completed. Updated {upserted_count} records for {get_eastern_date()}")
+        logger.info(f"Target date: {target_date}")
+        
+        # Step 2: Fetch price data (single ticker at a time)
+        eod_data = fetch_eod_prices(
+            existing_tickers, 
+            target_date, 
+            delay=args.delay,
+            progress_interval=args.progress
+        )
+        
+        # Step 3: Process and upsert the price data
+        if eod_data:
+            price_records = process_eod_data(eod_data, existing_tickers_set)
+            if price_records:
+                upserted_count = bulk_upsert_prices(session, engine, price_records)
+                logger.info(f"Updated {upserted_count:,} records for {target_date}")
+            else:
+                logger.warning("No valid price records after processing")
         else:
-            logger.warning("No price records to update")
+            logger.warning("No price data fetched")
         
     except Exception as e:
         logger.error(f"Error in main process: {str(e)}")
         session.rollback()
     finally:
         session.close()
-        logger.info("=== Daily Price Update Completed ===")
+        total_time = time.time() - overall_start
+        logger.info("=" * 60)
+        logger.info(f"=== Daily Price Update Completed in {format_duration(total_time)} ===")
+        logger.info("=" * 60)
+
 
 if __name__ == "__main__":
-    main() 
+    main()

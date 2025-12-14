@@ -1,0 +1,8 @@
+# Environment Assumptions
+- I am using WSL2 on Windows.
+- All commands should be written assuming a Linux environment.
+- Use Docker and docker-compose and most scripts should be run inside the backend container.
+- Do not generate Windows PowerShell or CMD commands unless explicitly asked.
+- Assume code will run inside WSL using Ubuntu.
+
+When I type TEST123, always respond with OK.  

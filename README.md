@@ -1,20 +1,35 @@
-# Stocks Assist
-
-**Note:**  
-- OTC stocks are excluded
-
----
-
-## Things to Do
+## General - Things to Do
 -- the categories should be user settable , market cap industry sector, threshold ,
 other filters
--- FMP has deprecated endpoitn, need to fix build_stock_list_fmp.py
 - IPO screen  
 - dashboard page - like a doctors office, top movers, upcoming calendar, news,upcoming ipo, moving averages, SPX and NASDAQ performance on every page  
 --RSI analysis
 --- vol % of float or total outstanding
 
+## FMP things to do
+modify seed index prices to work with fmp
+migrate carefully screening logic to new app.py and drop all the fluff
+what should be run in update_data
+dekete tmp?
+
+#seed_profiles has IPO date, market cap
+#seed_ratios has pe ratio ttm, 
+# we are missing outstanding shares so we dont have to run 1 ticker at a time company profile to get mcap
+# punted on income statment since ttm is higher paid tier and quaterly or non ttm is confusing
 ## First Run
+```bash
+docker-compose run --rm backend bash -c "
+  python db_scripts/initialize_data/initialize_db.py --reset && \
+  python db_scripts/initialize_data/seed_tickers_from_fmp.py && \
+python db_scripts/initialize_data/seed_earnings_from_fmp.py
+python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py
+  python db_scripts/initialize_data/seed_indices_from_fmp.py && \
+  python db_scripts/initialize_data/seed_ohlc_from_fmp.py --days 365
+  python db_scripts/initialize_data/seed_profiles_from_fmp.py
+ python db_scripts/initialize_data/seed_ratios_from_fmp.py
+"
+```
+
 
 ```bash
 docker-compose build --no-cache
@@ -22,7 +37,7 @@ docker-compose build --no-cache
 docker-compose down -v && docker-compose up -d && docker-compose exec backend bash
 
 python db_scripts/initialize_data/initialize_db.py --reset
-python db_scripts/initialize_data/seed_stock_table_from_masterstocklistcsv.py 
+python db_scripts/initialize_data/seed_tickers_from_fmp.py 
 python db_scripts/initialize_data/seed_1_year_price_table_from_polygon.py
 python db_scripts/initialize_data/seed_index_prices_polygon.py
 python db_scripts/update_data/daily_price_update.py

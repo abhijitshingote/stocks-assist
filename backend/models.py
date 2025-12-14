@@ -1,268 +1,311 @@
 import os
-from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, Boolean, create_engine, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, Boolean, ForeignKey, UniqueConstraint, BigInteger
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import relationship
 from datetime import datetime
 import pytz
 
 Base = declarative_base()
 
-def get_eastern_datetime():
-    """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
-    eastern = pytz.timezone('US/Eastern')
-    return datetime.now(eastern)
+# ------------------------------------------------------------
+# 1. Ticker (from Company Screener - basic info, bulk updates)
+# Source: /stable/company-screener
+# ------------------------------------------------------------
+class Ticker(Base):
+    __tablename__ = "tickers"
 
-class Stock(Base):
-    __tablename__ = 'ticker'
-
-    id = Column(Integer, primary_key=True)
-    ticker = Column(String, unique=True, nullable=False)  # Primary identifier
+    ticker = Column(String(20), primary_key=True)
+    company_name = Column(String(255))
+    exchange = Column(String(100))
+    exchange_short_name = Column(String(20))
+    sector = Column(String(100))
+    industry = Column(String(100))
+    country = Column(String(50))
+    
+    # Screener metrics (updated frequently)
     price = Column(Float)
+    market_cap = Column(BigInteger)
     beta = Column(Float)
-    vol_avg = Column(Integer)  # volAvg
-    market_cap = Column(Float)  # mktCap
-    last_div = Column(Float)  # lastDiv
-    range = Column(String)
-    changes = Column(Float)
-    company_name = Column(String)  # companyName
-    currency = Column(String)
-    cik = Column(String)
-    isin = Column(String)
-    cusip = Column(String)
-    exchange = Column(String)
-    exchange_short_name = Column(String)  # exchangeShortName
-    industry = Column(String)
-    website = Column(String)
+    volume = Column(BigInteger)
+    last_annual_dividend = Column(Float)
+    
+    # Flags
+    is_etf = Column(Boolean, default=False)
+    is_fund = Column(Boolean, default=False)
+    is_actively_trading = Column(Boolean, default=True)
+
+    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")), 
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+
+# ------------------------------------------------------------
+# 2. CompanyProfile (from Profile endpoint - detailed info)
+# Source: /stable/profile?symbol=AAPL
+# ------------------------------------------------------------
+class CompanyProfile(Base):
+    __tablename__ = "company_profiles"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    
+    # Identifiers
+    cik = Column(String(20))
+    isin = Column(String(20))
+    cusip = Column(String(20))
+    
+    # Company details
     description = Column(Text)
-    ceo = Column(String)
-    sector = Column(String)
-    country = Column(String)
-    full_time_employees = Column(Integer)  # fullTimeEmployees
-    phone = Column(String)
-    address = Column(String)
-    city = Column(String)
-    state = Column(String)
-    zip = Column(String)
-    dcf_diff = Column(Float)  # dcfDiff
-    dcf = Column(Float)
-    image = Column(String)
-    ipo_date = Column(Date)  # ipoDate
-    default_image = Column(Boolean)  # defaultImage
-    is_etf = Column(Boolean)  # isEtf
-    is_actively_trading = Column(Boolean)  # isActivelyTrading
-    is_adr = Column(Boolean)  # isAdr
-    is_fund = Column(Boolean)  # isFund
-    created_at = Column(DateTime, default=get_eastern_datetime)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
-
-    def __repr__(self):
-        return f"<Stock(ticker='{self.ticker}', company_name='{self.company_name}', sector='{self.sector}', industry='{self.industry}')>"
-
-class Price(Base):
-    __tablename__ = 'price'
-    id = Column(Integer, primary_key=True)
-    ticker = Column(String, nullable=False)
-    date = Column(Date, nullable=False)
-    open_price = Column(Float)
-    high_price = Column(Float)
-    low_price = Column(Float)
-    close_price = Column(Float)
-    volume = Column(Float)
-    last_traded_timestamp = Column(DateTime)  # When the last trade occurred for this price
-    created_at = Column(DateTime, default=get_eastern_datetime)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+    ceo = Column(String(255))
+    website = Column(String(255))
     
-    # Add unique constraint for ticker + date combination to enable upserts
-    __table_args__ = (UniqueConstraint('ticker', 'date', name='_ticker_date_uc'),)
-
-class Comment(Base):
-    __tablename__ = 'comment'
+    # Location
+    phone = Column(String(50))
+    address = Column(String(255))
+    city = Column(String(100))
+    state = Column(String(100))
+    zip = Column(String(20))
     
-    id = Column(Integer, primary_key=True)
-    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
-    comment_text = Column(Text, nullable=False)
-    comment_type = Column(String, nullable=False, default='user')  # 'user' or 'ai'
-    status = Column(String, nullable=False, default='active')  # 'active', 'pending', 'approved', 'rejected'
-    ai_source = Column(String)  # which AI model/service generated this (for AI comments)
-    reviewed_by = Column(String)  # who reviewed this AI comment (optional)
-    reviewed_at = Column(DateTime)  # when was this reviewed
-    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+    # Other profile data
+    full_time_employees = Column(Integer)
+    ipo_date = Column(Date)
+    image = Column(String(255))
+    currency = Column(String(20))
     
-    def __repr__(self):
-        return f"<Comment(ticker='{self.ticker}', type='{self.comment_type}', status='{self.status}', created_at='{self.created_at}')>"
-
-class ShortList(Base):
-    __tablename__ = 'shortlist'
+    # Market data (from profile endpoint)
+    vol_avg = Column(BigInteger)
+    last_div = Column(Float)
+    price = Column(Float)
+    range_52_week = Column(String(50))
+    change = Column(Float)
+    change_percentage = Column(Float)
     
-    id = Column(Integer, primary_key=True)
-    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
-    shortlisted_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    notes = Column(Text)  # Optional notes about why this stock was shortlisted
-    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
-    
-    # Ensure each ticker can only be shortlisted once
-    __table_args__ = (UniqueConstraint('ticker', name='_ticker_shortlist_uc'),)
-    
-    def __repr__(self):
-        return f"<ShortList(ticker='{self.ticker}', shortlisted_at='{self.shortlisted_at}')>"
+    # Additional flags
+    is_adr = Column(Boolean, default=False)
+    default_image = Column(Boolean, default=False)
 
-class BlackList(Base):
-    __tablename__ = 'blacklist'
-    
-    id = Column(Integer, primary_key=True)
-    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
-    blacklisted_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    notes = Column(Text)  # Optional notes about why this stock was blacklisted
-    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
-    
-    # Ensure each ticker can only be blacklisted once
-    __table_args__ = (UniqueConstraint('ticker', name='_ticker_blacklist_uc'),)
-    
-    def __repr__(self):
-        return f"<BlackList(ticker='{self.ticker}', blacklisted_at='{self.blacklisted_at}')>"
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-class Reviewed(Base):
-    __tablename__ = 'reviewed'
+    ticker_rel = relationship("Ticker")
 
-    id = Column(Integer, primary_key=True)
-    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
-    reviewed_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
 
-    __table_args__ = (UniqueConstraint('ticker', name='_ticker_reviewed_uc'),)
+# ------------------------------------------------------------
+# 3. OHLC (Daily price history)
+# ------------------------------------------------------------
+class OHLC(Base):
+    __tablename__ = "ohlc"
 
-    def __repr__(self):
-        return f"<Reviewed(ticker='{self.ticker}', reviewed_at='{self.reviewed_at}')>"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ticker = Column(String(20), ForeignKey("tickers.ticker"))
+    date = Column(Date)
+    open = Column(Float)
+    high = Column(Float)
+    low = Column(Float)
+    close = Column(Float)
+    volume = Column(BigInteger)
 
-class Flags(Base):
-    __tablename__ = 'flags'
-    ticker = Column(String, primary_key=True)
-    is_reviewed = Column(Boolean, default=False, nullable=False)
-    is_shortlisted = Column(Boolean, default=False, nullable=False)
-    is_blacklisted = Column(Boolean, default=False, nullable=False)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime, nullable=False)
+    __table_args__ = (UniqueConstraint("ticker", "date", name="uq_ohlc"),)
 
-    def __repr__(self):
-        return f"<Flags(ticker='{self.ticker}', reviewed={self.is_reviewed}, shortlisted={self.is_shortlisted}, blacklisted={self.is_blacklisted})>"
+    ticker_rel = relationship("Ticker")
 
-class ConciseNote(Base):
-    __tablename__ = 'concise_notes'
-    ticker = Column(String, primary_key=True)
-    note = Column(String, nullable=False)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime, nullable=False)
 
-    def __repr__(self):
-        return f"<ConciseNote(ticker='{self.ticker}', note='{self.note[:20]}...')>"
-
-class Earnings(Base):
-    __tablename__ = 'earnings'
-    
-    id = Column(Integer, primary_key=True)
-    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
-    earnings_date = Column(Date, nullable=False)
-    announcement_type = Column(String, nullable=False, default='earnings')  # 'earnings', 'pre-announcement', 'guidance'  
-    estimated_eps = Column(Float)  # Analyst consensus estimate
-    actual_eps = Column(Float)     # Actual reported EPS (null until announced)
-    revenue_estimate = Column(Float)  # Revenue estimate in millions
-    actual_revenue = Column(Float)    # Actual revenue in millions (null until announced)
-    is_confirmed = Column(Boolean, default=False, nullable=False)  # Whether date is confirmed vs estimated
-    quarter = Column(String)  # e.g., 'Q1 2024', 'Q4 2023'
-    fiscal_year = Column(Integer)  # Fiscal year
-    announcement_time = Column(String)  # 'BMO' (before market open), 'AMC' (after market close), 'DMT' (during market hours)
-    source = Column(String)  # Source of the earnings date info (e.g., 'Perplexity', 'SEC', 'Company PR')
-    notes = Column(Text)  # Additional notes about the earnings
-    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
-    
-    # Ensure uniqueness of ticker + earnings_date + announcement_type
-    __table_args__ = (UniqueConstraint('ticker', 'earnings_date', 'announcement_type', name='_ticker_date_type_uc'),)
-    
-    def __repr__(self):
-        return f"<Earnings(ticker='{self.ticker}', date='{self.earnings_date}', type='{self.announcement_type}', quarter='{self.quarter}')>"
-
-class StockRSI(Base):
-    __tablename__ = 'stock_rsi'
-
-    id = Column(Integer, primary_key=True)
-    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False, unique=True)
-    rsi_spx_1week = Column(Float)
-    rsi_spx_1month = Column(Float)
-    rsi_spx_3month = Column(Float)
-    rsi_qqq_1week = Column(Float)
-    rsi_qqq_1month = Column(Float)
-    rsi_qqq_3month = Column(Float)
-    rsi_spx_1week_percentile = Column(Float)
-    rsi_spx_1month_percentile = Column(Float)
-    rsi_spx_3month_percentile = Column(Float)
-    rsi_qqq_1week_percentile = Column(Float)
-    rsi_qqq_1month_percentile = Column(Float)
-    rsi_qqq_3month_percentile = Column(Float)
-    rsi_spx_correction = Column(Float)
-    rsi_spx_correction_percentile = Column(Float)
-    last_updated = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
-
-    def __repr__(self):
-        return f"<StockRSI(ticker='{self.ticker}', spx_1w={self.rsi_spx_1week}, qqq_1w={self.rsi_qqq_1week})>"
-
+# ------------------------------------------------------------
+# 4. Index table (S&P 500, NASDAQ 100, etc.)
+# ------------------------------------------------------------
 class Index(Base):
-    __tablename__ = 'index'
+    __tablename__ = "indices"
 
-    id = Column(Integer, primary_key=True)
-    symbol = Column(String, unique=True, nullable=False)  # e.g., 'SPX', 'QQQ', 'IWM'
-    yahoo_symbol = Column(String, nullable=False)  # Yahoo Finance symbol (e.g., '^GSPC' for SPX)
-    name = Column(String, nullable=False)  # Full name (e.g., 'S&P 500')
-    description = Column(Text)  # Description of the index/ETF
-    index_type = Column(String)  # 'index' or 'etf'
-    is_active = Column(Boolean, default=True, nullable=False)
-    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
+    symbol = Column(String(20), primary_key=True)
+    name = Column(String(255))
+    description = Column(Text)
+    index_type = Column(String(20))  # 'index', 'etf', etc.
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
-    def __repr__(self):
-        return f"<Index(symbol='{self.symbol}', name='{self.name}', type='{self.index_type}')>"
 
+# ------------------------------------------------------------
+# 4b. IndexPrice table (Daily price history for indices/ETFs)
+# ------------------------------------------------------------
 class IndexPrice(Base):
-    __tablename__ = 'index_price'
+    __tablename__ = "index_prices"
 
-    id = Column(Integer, primary_key=True)
-    symbol = Column(String, ForeignKey('index.symbol'), nullable=False)  # References Index.symbol
-    date = Column(Date, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    symbol = Column(String(20))
+    date = Column(Date)
     open_price = Column(Float)
     high_price = Column(Float)
     low_price = Column(Float)
     close_price = Column(Float)
-    volume = Column(Float)
-    created_at = Column(DateTime, default=get_eastern_datetime)
-    updated_at = Column(DateTime, default=get_eastern_datetime, onupdate=get_eastern_datetime)
-    
-    # Add unique constraint for symbol + date combination to enable upserts
-    __table_args__ = (UniqueConstraint('symbol', 'date', name='_index_symbol_date_uc'),)
+    volume = Column(BigInteger)
+    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
-class TriggerEvent(Base):
-    __tablename__ = 'trigger_event'
+    __table_args__ = (UniqueConstraint("symbol", "date", name="uq_index_price"),)
 
-    id = Column(Integer, primary_key=True)
-    ticker = Column(String, ForeignKey('ticker.ticker'), nullable=False)
-    trigger_name = Column(String, nullable=False)  # Name of the trigger that fired
-    trigger_date = Column(Date, nullable=False)  # Date when trigger was run
-    trigger_value = Column(Float)  # Optional value that caused trigger (e.g., return %, volume change)
-    trigger_metadata = Column(Text)  # JSON string with additional trigger-specific data
-    created_at = Column(DateTime, default=get_eastern_datetime, nullable=False)
-    
-    # Index for fast querying by date
-    __table_args__ = (
-        UniqueConstraint('ticker', 'trigger_name', 'trigger_date', name='_trigger_event_uc'),
-    )
-    
-    def __repr__(self):
-        return f"<TriggerEvent(ticker='{self.ticker}', trigger='{self.trigger_name}', date='{self.trigger_date}')>"
 
-def init_db():
-    database_url = os.getenv('DATABASE_URL', 'postgresql://localhost:5432/stocks_db')
-    engine = create_engine(database_url)
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
-    return Session() 
+# ------------------------------------------------------------
+# 5. IndexComponents (mapping index → tickers)
+# ------------------------------------------------------------
+class IndexComponents(Base):
+    __tablename__ = "index_components"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    index_symbol = Column(String(20), ForeignKey("indices.symbol"))
+    ticker = Column(String(20), ForeignKey("tickers.ticker"))
+
+    __table_args__ = (UniqueConstraint("index_symbol", "ticker", name="uq_index_component"),)
+
+    index_rel = relationship("Index")
+    ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 6. RatiosTTM (from /stable/ratios-ttm)
+# ------------------------------------------------------------
+class RatiosTTM(Base):
+    __tablename__ = "ratios_ttm"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    
+    # Profitability
+    gross_profit_margin = Column(Float)
+    operating_profit_margin = Column(Float)
+    net_profit_margin = Column(Float)
+    
+    # Valuation
+    pe_ratio = Column(Float)
+    peg_ratio = Column(Float)
+    price_to_book = Column(Float)
+    price_to_sales = Column(Float)
+    price_to_free_cash_flow = Column(Float)
+    
+    # Liquidity
+    current_ratio = Column(Float)
+    quick_ratio = Column(Float)
+    cash_ratio = Column(Float)
+    
+    # Leverage
+    debt_to_equity = Column(Float)
+    debt_to_assets = Column(Float)
+    
+    # Efficiency
+    asset_turnover = Column(Float)
+    inventory_turnover = Column(Float)
+    receivables_turnover = Column(Float)
+    
+    # Returns
+    return_on_assets = Column(Float)
+    return_on_equity = Column(Float)
+    
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 7. AnalystEstimates (from /stable/analyst-estimates)
+# ------------------------------------------------------------
+class AnalystEstimates(Base):
+    __tablename__ = "analyst_estimates"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ticker = Column(String(20), ForeignKey("tickers.ticker"))
+    date = Column(Date)
+    
+    revenue_avg = Column(BigInteger)
+    revenue_low = Column(BigInteger)
+    revenue_high = Column(BigInteger)
+    ebitda_avg = Column(BigInteger)
+    ebit_avg = Column(BigInteger)
+    net_income_avg = Column(BigInteger)
+    eps_avg = Column(Float)
+    eps_low = Column(Float)
+    eps_high = Column(Float)
+    num_analysts_revenue = Column(Integer)
+    num_analysts_eps = Column(Integer)
+
+    __table_args__ = (UniqueConstraint("ticker", "date", name="uq_analyst_est"),)
+
+    ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 8. Earnings (from /stable/earnings)
+# ------------------------------------------------------------
+class Earnings(Base):
+    __tablename__ = "earnings"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ticker = Column(String(20), ForeignKey("tickers.ticker"))
+    date = Column(Date)
+    
+    eps_actual = Column(Float)
+    eps_estimated = Column(Float)
+    revenue_actual = Column(BigInteger)
+    revenue_estimated = Column(BigInteger)
+
+    __table_args__ = (UniqueConstraint("ticker", "date", name="uq_earnings"),)
+
+    ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 9. SyncMetadata (ETL tracking)
+# ------------------------------------------------------------
+class SyncMetadata(Base):
+    __tablename__ = "sync_metadata"
+
+    key = Column(String(100), primary_key=True)
+    last_synced_at = Column(DateTime)
+
+
+# ------------------------------------------------------------
+# 10. StockMetrics (pre-computed screener/dashboard metrics)
+# ------------------------------------------------------------
+class StockMetrics(Base):
+    __tablename__ = "stock_metrics"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    company_name = Column(String(255))
+    country = Column(String(50))
+    sector = Column(String(100))
+    industry = Column(String(100))
+    ipo_date = Column(Date)
+    market_cap = Column(BigInteger)
+    current_price = Column(Float)
+    range_52_week = Column(String(50))
+    volume = Column(BigInteger)
+    dollar_volume = Column(Float)
+    vol_vs_10d_avg = Column(Float)
+    
+    # Price change percentages
+    dr_1 = Column(Float)   # 1-day return
+    dr_5 = Column(Float)   # 5-day return
+    dr_20 = Column(Float)  # 20-day return
+    dr_60 = Column(Float)  # 60-day return
+    dr_120 = Column(Float) # 120-day return
+    
+    # Volatility
+    atr20 = Column(Float)  # 20-day Average True Range (as %)
+    
+    # Valuation metrics
+    pe = Column(Float)      # P/E ratio (TTM)
+    ps_ttm = Column(Float)  # Price-to-Sales (TTM)
+    fpe = Column(Float)     # Forward P/E
+    fps = Column(Float)     # Forward Price-to-Sales
+    
+    # Relative strength (percentile rank 1-100)
+    rsi = Column(Integer)
+    
+    # Short interest (nullable for future use)
+    short_float = Column(Float)
+    short_ratio = Column(Float)
+    short_interest = Column(Float)
+    low_float = Column(Boolean)
+    
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")

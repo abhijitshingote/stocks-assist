@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 """
-Daily Indices Update Script
-Fetches today's index/ETF price data using Polygon.io and updates the IndexPrice table.
-Updates SPX (via SPY), QQQ, and IWM with latest daily data.
+Daily Indices Update Script (FMP API)
+Fetches today's index/ETF price data using FMP and updates the IndexPrice table.
+Updates SPY, QQQ, and IWM with latest daily data.
 """
 
 import os
 import sys
 import logging
 from datetime import datetime, date, timedelta
-from polygon import RESTClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
 from dotenv import load_dotenv
+import requests
 import time
 import pytz
+import argparse
 
 # Add backend to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
@@ -35,19 +36,16 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-# Initialize Polygon.io client
-POLYGON_API_KEY = os.getenv('POLYGON_API_KEY')
-if not POLYGON_API_KEY:
-    raise ValueError("POLYGON_API_KEY not found in environment variables")
+# FMP API configuration
+FMP_API_KEY = os.getenv('FMP_API_KEY')
+if not FMP_API_KEY:
+    raise ValueError("FMP_API_KEY not found in environment variables")
 
-client = RESTClient(POLYGON_API_KEY)
+BASE_URL = 'https://financialmodelingprep.com/stable'
 
-# Index symbols we track
-INDEX_SYMBOLS = {
-    'SPX': 'SPY',  # Track S&P 500 via SPY ETF
-    'QQQ': 'QQQ',  # Nasdaq-100 ETF
-    'IWM': 'IWM'   # Russell 2000 ETF
-}
+# ETF symbols we track
+ETF_SYMBOLS = ['SPY', 'QQQ', 'IWM']
+
 
 def get_eastern_date():
     """Get current date in Eastern Time (handles EST/EDT automatically)"""
@@ -55,10 +53,12 @@ def get_eastern_date():
     eastern_now = datetime.now(eastern)
     return eastern_now.date()
 
+
 def get_eastern_datetime():
     """Get current datetime in Eastern Time (handles EST/EDT automatically)"""
     eastern = pytz.timezone('US/Eastern')
     return datetime.now(eastern)
+
 
 def init_db():
     """Initialize database connection"""
@@ -71,12 +71,29 @@ def init_db():
     Session = sessionmaker(bind=engine)
     return Session(), engine
 
-def fetch_index_price_data(polygon_symbol, days_back=5):
+
+def parse_float(value):
+    """Parse float value safely"""
+    try:
+        return float(value) if value is not None else None
+    except (ValueError, TypeError):
+        return None
+
+
+def parse_int(value):
+    """Parse integer value safely"""
+    try:
+        return int(float(value)) if value is not None else None
+    except (ValueError, TypeError):
+        return None
+
+
+def fetch_index_price_data(symbol, days_back=5):
     """
-    Fetch recent price data for a single index/ETF from Polygon
+    Fetch recent price data for a single index/ETF from FMP
     
     Args:
-        polygon_symbol: The Polygon symbol (SPY, QQQ, IWM)
+        symbol: The ETF symbol (SPY, QQQ, IWM)
         days_back: Number of days to fetch (default 5 to ensure we get latest)
     
     Returns:
@@ -86,47 +103,103 @@ def fetch_index_price_data(polygon_symbol, days_back=5):
         end_date = datetime.now()
         start_date = end_date - timedelta(days=days_back)
         
-        logger.info(f"Fetching {days_back} days of data for {polygon_symbol}...")
+        logger.info(f"Fetching {days_back} days of data for {symbol}...")
         
-        # Get daily aggregates
-        aggs = client.get_aggs(
-            polygon_symbol,
-            multiplier=1,
-            timespan="day",
-            from_=start_date.strftime('%Y-%m-%d'),
-            to=end_date.strftime('%Y-%m-%d')
-        )
+        url = f"{BASE_URL}/historical-price-eod/full"
+        params = {
+            'apikey': FMP_API_KEY,
+            'symbol': symbol,
+            'from': start_date.strftime('%Y-%m-%d'),
+            'to': end_date.strftime('%Y-%m-%d')
+        }
         
-        if not aggs:
-            logger.warning(f"No data returned from Polygon for {polygon_symbol}")
+        response = requests.get(url, params=params, timeout=30)
+        response.raise_for_status()
+        
+        data = response.json()
+        
+        # Handle different response formats
+        if isinstance(data, list):
+            historical = data
+        elif 'historical' in data:
+            historical = data['historical']
+        else:
+            logger.warning(f"No data returned from FMP for {symbol}")
+            return []
+        
+        if not historical:
+            logger.warning(f"No data returned from FMP for {symbol}")
             return []
         
         price_data = []
-        for agg in aggs:
-            price_date = datetime.fromtimestamp(agg.timestamp / 1000).date()
+        for item in historical:
+            price_date = datetime.strptime(item['date'], '%Y-%m-%d').date()
             price_data.append({
                 'date': price_date,
-                'open_price': agg.open,
-                'high_price': agg.high,
-                'low_price': agg.low,
-                'close_price': agg.close,
-                'volume': agg.volume
+                'open_price': parse_float(item.get('open')),
+                'high_price': parse_float(item.get('high')),
+                'low_price': parse_float(item.get('low')),
+                'close_price': parse_float(item.get('close')),
+                'volume': parse_int(item.get('volume'))
             })
         
-        logger.info(f"✓ Fetched {len(price_data)} records for {polygon_symbol}")
+        # Sort by date ascending
+        price_data.sort(key=lambda x: x['date'])
+        
+        logger.info(f"✓ Fetched {len(price_data)} records for {symbol}")
         return price_data
         
     except Exception as e:
-        logger.error(f"Error fetching data for {polygon_symbol}: {str(e)}")
+        logger.error(f"Error fetching data for {symbol}: {str(e)}")
         return []
+
+
+def fetch_current_quote(symbol):
+    """
+    Fetch current quote for a single symbol (for intraday updates).
+    
+    Args:
+        symbol: The ETF symbol
+    
+    Returns:
+        Price data dictionary or None
+    """
+    try:
+        url = f"{BASE_URL}/quote/{symbol}"
+        params = {'apikey': FMP_API_KEY}
+        
+        response = requests.get(url, params=params, timeout=30)
+        response.raise_for_status()
+        
+        data = response.json()
+        
+        if data and len(data) > 0:
+            quote = data[0]
+            today = get_eastern_date()
+            
+            return {
+                'date': today,
+                'open_price': parse_float(quote.get('open')),
+                'high_price': parse_float(quote.get('dayHigh')),
+                'low_price': parse_float(quote.get('dayLow')),
+                'close_price': parse_float(quote.get('price')),
+                'volume': parse_int(quote.get('volume'))
+            }
+        
+        return None
+        
+    except Exception as e:
+        logger.error(f"Error fetching quote for {symbol}: {str(e)}")
+        return None
+
 
 def upsert_index_prices(session, symbol, price_data):
     """
-    Upsert index price data into the index_price table
+    Upsert index price data into the index_prices table
     
     Args:
         session: Database session
-        symbol: Index symbol (SPX, QQQ, IWM)
+        symbol: Index/ETF symbol (SPY, QQQ, IWM)
         price_data: List of price records
     
     Returns:
@@ -138,6 +211,7 @@ def upsert_index_prices(session, symbol, price_data):
     try:
         inserted_count = 0
         updated_count = 0
+        now = get_eastern_datetime()
         
         for data in price_data:
             # Check if record exists
@@ -154,8 +228,8 @@ def upsert_index_prices(session, symbol, price_data):
                 low_price=data['low_price'],
                 close_price=data['close_price'],
                 volume=data['volume'],
-                created_at=get_eastern_datetime(),
-                updated_at=get_eastern_datetime()
+                created_at=now,
+                updated_at=now
             )
             
             # Update on conflict
@@ -169,7 +243,7 @@ def upsert_index_prices(session, symbol, price_data):
             }
             
             stmt = stmt.on_conflict_do_update(
-                index_elements=['symbol', 'date'],
+                constraint='uq_index_price',
                 set_=update_dict
             )
             
@@ -188,9 +262,15 @@ def upsert_index_prices(session, symbol, price_data):
         session.rollback()
         return 0, 0
 
-def update_all_indices(session):
+
+def update_all_indices(session, days_back=5, use_quote=False):
     """
     Update all tracked indices with latest price data
+    
+    Args:
+        session: Database session
+        days_back: Number of days to fetch historical data
+        use_quote: If True, use quote endpoint for current day only
     
     Returns:
         Dictionary with update statistics
@@ -202,14 +282,22 @@ def update_all_indices(session):
         'failed': []
     }
     
-    for symbol, polygon_symbol in INDEX_SYMBOLS.items():
+    for symbol in ETF_SYMBOLS:
         try:
             logger.info(f"\n{'='*60}")
-            logger.info(f"Updating {symbol} (via {polygon_symbol})")
+            logger.info(f"Updating {symbol}")
             logger.info(f"{'='*60}")
             
-            # Fetch price data (last 5 days to ensure we get latest)
-            price_data = fetch_index_price_data(polygon_symbol, days_back=5)
+            # Fetch price data
+            if use_quote:
+                # Use quote endpoint for current day only
+                price_data = []
+                quote = fetch_current_quote(symbol)
+                if quote:
+                    price_data = [quote]
+            else:
+                # Use historical endpoint for multiple days
+                price_data = fetch_index_price_data(symbol, days_back=days_back)
             
             if not price_data:
                 logger.warning(f"No price data fetched for {symbol}")
@@ -225,8 +313,8 @@ def update_all_indices(session):
             
             logger.info(f"✓ {symbol}: {inserted} new, {updated} updated records")
             
-            # Rate limiting - be nice to Polygon API
-            time.sleep(0.5)
+            # Rate limiting - be nice to FMP API
+            time.sleep(0.3)
             
         except Exception as e:
             logger.error(f"Error updating {symbol}: {str(e)}")
@@ -235,10 +323,25 @@ def update_all_indices(session):
     
     return stats
 
+
 def main():
     """Main execution function"""
+    parser = argparse.ArgumentParser(description='Daily indices update from FMP API')
+    parser.add_argument('--days', type=int, default=5,
+                        help='Number of days of history to fetch (default: 5)')
+    parser.add_argument('--quote', action='store_true',
+                        help='Use quote endpoint for current day only (faster)')
+    parser.add_argument('--symbols', type=str, nargs='+',
+                        help='Specific symbols to update (default: SPY QQQ IWM)')
+    args = parser.parse_args()
+    
+    # Override symbols if provided
+    global ETF_SYMBOLS
+    if args.symbols:
+        ETF_SYMBOLS = [s.upper() for s in args.symbols]
+    
     logger.info("="*80)
-    logger.info("DAILY INDICES UPDATE SCRIPT")
+    logger.info("DAILY INDICES UPDATE SCRIPT (FMP)")
     logger.info(f"Started at: {get_eastern_datetime().strftime('%Y-%m-%d %H:%M:%S %Z')}")
     logger.info("="*80)
     
@@ -246,16 +349,21 @@ def main():
         # Initialize database
         session, engine = init_db()
         
-        # Check if indices exist in database
-        index_count = session.query(Index).count()
-        if index_count == 0:
-            logger.error("No indices found in database. Please run seed_index_prices_polygon.py first.")
-            return
+        # Check if indices exist in database (optional - proceed even if table doesn't match)
+        try:
+            index_count = session.query(Index).count()
+            if index_count == 0:
+                logger.warning("No indices found in database. Will still update index_prices table.")
+            else:
+                logger.info(f"Found {index_count} indices in database")
+        except Exception as e:
+            logger.warning(f"Could not query indices table: {e}. Proceeding with index_prices update.")
+            session.rollback()  # Clear the failed transaction
         
-        logger.info(f"Found {index_count} indices in database")
+        logger.info(f"ETFs to update: {ETF_SYMBOLS}")
         
         # Update all indices
-        stats = update_all_indices(session)
+        stats = update_all_indices(session, days_back=args.days, use_quote=args.quote)
         
         # Print summary
         logger.info("\n" + "="*80)
@@ -276,6 +384,6 @@ def main():
         logger.error(f"Fatal error in daily update: {str(e)}", exc_info=True)
         sys.exit(1)
 
+
 if __name__ == '__main__':
     main()
-

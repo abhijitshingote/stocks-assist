@@ -12,5 +12,5 @@ How does this app work
         - seed_comments_flags_from_backup.py - not sure if still in use but doesnt use data api , maybe just perplexity
         - seed_index_prices_polygon.py - see which fields are being fetched
         - seed_earnings_from_scraped_earnings_backup.py  - not sure if still in use but doesnt use data api
-        - seed_stock_table_from_masterstocklistcsv.py - BROKEN, needs new data provider, review fields
+        - seed_tickers_from_fmp.py - Uses FMP company-screener endpoint
         

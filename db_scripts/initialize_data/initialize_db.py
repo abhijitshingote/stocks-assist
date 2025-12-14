@@ -7,267 +7,313 @@ load_dotenv()
 
 def initialize_database(reset=False):
     """
-    Initialize the database with proper table structure.
+    Initialize the database with proper table structure based on backend/models.py.
+    
+    Tables:
+    1. tickers - Basic info from Company Screener (bulk updates)
+    2. company_profiles - Detailed info from Profile endpoint
+    3. ohlc - Daily price history
+    4. indices - Index definitions
+    5. index_prices - Index/ETF price history
+    6. index_components - Index to ticker mapping
+    7. ratios_ttm - Financial ratios TTM
+    8. analyst_estimates - Analyst estimates
+    9. earnings - Earnings data
+    10. sync_metadata - ETL tracking
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
-                     If False, create tables only if they don't exist.
     """
-    # Get database URL from environment variable
     database_url = os.getenv('DATABASE_URL')
     if not database_url:
         raise ValueError("DATABASE_URL environment variable is not set")
 
-    # Create engine
     engine = create_engine(database_url)
 
-    # Create tables
     with engine.connect() as connection:
         if reset:
             print("Resetting database - dropping existing tables...")
-            # Drop all tables if they exist (including both old and new table names)
-
-            connection.execute(text("DROP TABLE IF EXISTS trigger_event CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS concise_notes CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS flags CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS comment CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS stock_rsi CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS index_price CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS index CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS ticker CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS price CASCADE;"))
+            # Drop in reverse dependency order
+            connection.execute(text("DROP TABLE IF EXISTS stock_metrics CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS sync_metadata CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS earnings CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS analyst_estimates CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS ratios_ttm CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS index_components CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS index_prices CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS indices CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS ohlc CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS company_profiles CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS tickers CASCADE;"))
             print("Old tables dropped.")
         
-        # Create ticker table with comprehensive FMP fields
-        table_creation_clause = "CREATE TABLE" if reset else "CREATE TABLE IF NOT EXISTS"
+        table_clause = "CREATE TABLE" if reset else "CREATE TABLE IF NOT EXISTS"
+        
+        # 1. tickers - from Company Screener (basic info, bulk updates)
         connection.execute(text(f"""
-            {table_creation_clause} ticker (
-                id SERIAL PRIMARY KEY,
-                ticker VARCHAR(10) UNIQUE NOT NULL,
-                price FLOAT,
-                beta FLOAT,
-                vol_avg INTEGER,
-                market_cap FLOAT,
-                last_div FLOAT,
-                range VARCHAR(50),
-                changes FLOAT,
+            {table_clause} tickers (
+                ticker VARCHAR(20) PRIMARY KEY,
                 company_name VARCHAR(255),
-                currency VARCHAR(10),
+                exchange VARCHAR(100),
+                exchange_short_name VARCHAR(20),
+                sector VARCHAR(100),
+                industry VARCHAR(100),
+                country VARCHAR(50),
+                price FLOAT,
+                market_cap BIGINT,
+                beta FLOAT,
+                volume BIGINT,
+                last_annual_dividend FLOAT,
+                is_etf BOOLEAN DEFAULT FALSE,
+                is_fund BOOLEAN DEFAULT FALSE,
+                is_actively_trading BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """))
+        
+        # 2. company_profiles - from Profile endpoint (detailed info)
+        connection.execute(text(f"""
+            {table_clause} company_profiles (
+                ticker VARCHAR(20) PRIMARY KEY,
                 cik VARCHAR(20),
                 isin VARCHAR(20),
                 cusip VARCHAR(20),
-                exchange VARCHAR(100),
-                exchange_short_name VARCHAR(20),
-                industry VARCHAR(100),
-                website VARCHAR(255),
                 description TEXT,
-                ceo VARCHAR(100),
-                sector VARCHAR(100),
-                country VARCHAR(10),
-                full_time_employees INTEGER,
+                ceo VARCHAR(255),
+                website VARCHAR(255),
                 phone VARCHAR(50),
                 address VARCHAR(255),
                 city VARCHAR(100),
-                state VARCHAR(10),
+                state VARCHAR(100),
                 zip VARCHAR(20),
-                dcf_diff FLOAT,
-                dcf FLOAT,
-                image VARCHAR(255),
+                full_time_employees INTEGER,
                 ipo_date DATE,
-                default_image BOOLEAN,
-                is_etf BOOLEAN,
-                is_actively_trading BOOLEAN,
-                is_adr BOOLEAN,
-                is_fund BOOLEAN,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """))
-        
-        # Create price table
-        connection.execute(text(f"""
-            {table_creation_clause} price (
-                id SERIAL PRIMARY KEY,
-                ticker VARCHAR(10) NOT NULL,
-                date DATE NOT NULL,
-                open_price FLOAT,
-                high_price FLOAT,
-                low_price FLOAT,
-                close_price FLOAT,
-                volume FLOAT,
-                last_traded_timestamp TIMESTAMP WITH TIME ZONE,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                image VARCHAR(255),
+                currency VARCHAR(20),
+                vol_avg BIGINT,
+                last_div FLOAT,
+                price FLOAT,
+                range_52_week VARCHAR(50),
+                change FLOAT,
+                change_percentage FLOAT,
+                is_adr BOOLEAN DEFAULT FALSE,
+                default_image BOOLEAN DEFAULT FALSE,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT _ticker_date_uc UNIQUE (ticker, date)
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
         """))
         
-        # Create comment table
+        # 3. ohlc - Daily price history
         connection.execute(text(f"""
-            {table_creation_clause} comment (
+            {table_clause} ohlc (
                 id SERIAL PRIMARY KEY,
-                ticker VARCHAR(10) NOT NULL,
-                comment_text TEXT NOT NULL,
-                comment_type VARCHAR(20) NOT NULL DEFAULT 'user',
-                status VARCHAR(20) NOT NULL DEFAULT 'active',
-                ai_source VARCHAR(50),
-                reviewed_by VARCHAR(100),
-                reviewed_at TIMESTAMP,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (ticker) REFERENCES ticker(ticker) ON DELETE CASCADE
+                ticker VARCHAR(20),
+                date DATE,
+                open FLOAT,
+                high FLOAT,
+                low FLOAT,
+                close FLOAT,
+                volume BIGINT,
+                CONSTRAINT uq_ohlc UNIQUE (ticker, date),
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
         """))
         
-        # Create flags table (reviewed/shortlisted/blacklisted booleans)
+        # 4. indices - Index definitions
         connection.execute(text(f"""
-            {table_creation_clause} flags (
-                ticker VARCHAR(10) PRIMARY KEY,
-                is_reviewed BOOLEAN NOT NULL DEFAULT FALSE,
-                is_shortlisted BOOLEAN NOT NULL DEFAULT FALSE,
-                is_blacklisted BOOLEAN NOT NULL DEFAULT FALSE,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-            )
-        """))
-
-        # Create stock_rsi table for relative strength metrics vs SPX/QQQ
-        connection.execute(text(f"""
-            {table_creation_clause} stock_rsi (
-                id SERIAL PRIMARY KEY,
-                ticker VARCHAR(10) NOT NULL UNIQUE,
-                rsi_spx_1week FLOAT,
-                rsi_spx_1month FLOAT,
-                rsi_spx_3month FLOAT,
-                rsi_qqq_1week FLOAT,
-                rsi_qqq_1month FLOAT,
-                rsi_qqq_3month FLOAT,
-                rsi_spx_1week_percentile FLOAT,
-                rsi_spx_1month_percentile FLOAT,
-                rsi_spx_3month_percentile FLOAT,
-                rsi_qqq_1week_percentile FLOAT,
-                rsi_qqq_1month_percentile FLOAT,
-                rsi_qqq_3month_percentile FLOAT,
-                rsi_spx_correction FLOAT,
-                rsi_spx_correction_percentile FLOAT,
-                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                FOREIGN KEY (ticker) REFERENCES ticker(ticker) ON DELETE CASCADE
-            )
-        """))
-
-        # Concise notes table
-        connection.execute(text(f"""
-            {table_creation_clause} concise_notes (
-                ticker VARCHAR(10) PRIMARY KEY,
-                note TEXT NOT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-            )
-        """))
-
-        # Create index table for tracking indices and ETFs
-        connection.execute(text(f"""
-            {table_creation_clause} index (
-                id SERIAL PRIMARY KEY,
-                symbol VARCHAR(10) UNIQUE NOT NULL,
-                yahoo_symbol VARCHAR(20) NOT NULL,
-                name VARCHAR(255) NOT NULL,
+            {table_clause} indices (
+                symbol VARCHAR(20) PRIMARY KEY,
+                name VARCHAR(255),
                 description TEXT,
                 index_type VARCHAR(20),
-                is_active BOOLEAN NOT NULL DEFAULT TRUE,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                is_active BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """))
-
-        # Create index_price table for historical index/ETF prices
+        
+        # 4b. index_prices - Daily price history for indices/ETFs
         connection.execute(text(f"""
-            {table_creation_clause} index_price (
+            {table_clause} index_prices (
                 id SERIAL PRIMARY KEY,
-                symbol VARCHAR(10) NOT NULL,
-                date DATE NOT NULL,
+                symbol VARCHAR(20),
+                date DATE,
                 open_price FLOAT,
                 high_price FLOAT,
                 low_price FLOAT,
                 close_price FLOAT,
-                volume FLOAT,
+                volume BIGINT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT _index_symbol_date_uc UNIQUE (symbol, date),
-                FOREIGN KEY (symbol) REFERENCES index(symbol) ON DELETE CASCADE
+                CONSTRAINT uq_index_price UNIQUE (symbol, date)
             )
         """))
-
-        # Create trigger_event table for storing trigger scan results
+        
+        # 5. index_components - Index to ticker mapping
         connection.execute(text(f"""
-            {table_creation_clause} trigger_event (
+            {table_clause} index_components (
                 id SERIAL PRIMARY KEY,
-                ticker VARCHAR(10) NOT NULL,
-                trigger_name VARCHAR(255) NOT NULL,
-                trigger_date DATE NOT NULL,
-                trigger_value FLOAT,
-                trigger_metadata TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                CONSTRAINT _trigger_event_uc UNIQUE (ticker, trigger_name, trigger_date),
-                FOREIGN KEY (ticker) REFERENCES ticker(ticker) ON DELETE CASCADE
+                index_symbol VARCHAR(20),
+                ticker VARCHAR(20),
+                CONSTRAINT uq_index_component UNIQUE (index_symbol, ticker),
+                FOREIGN KEY (index_symbol) REFERENCES indices(symbol) ON DELETE CASCADE,
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
+            )
+        """))
+        
+        # 6. ratios_ttm - from /stable/ratios-ttm
+        connection.execute(text(f"""
+            {table_clause} ratios_ttm (
+                ticker VARCHAR(20) PRIMARY KEY,
+                gross_profit_margin FLOAT,
+                operating_profit_margin FLOAT,
+                net_profit_margin FLOAT,
+                pe_ratio FLOAT,
+                peg_ratio FLOAT,
+                price_to_book FLOAT,
+                price_to_sales FLOAT,
+                price_to_free_cash_flow FLOAT,
+                current_ratio FLOAT,
+                quick_ratio FLOAT,
+                cash_ratio FLOAT,
+                debt_to_equity FLOAT,
+                debt_to_assets FLOAT,
+                asset_turnover FLOAT,
+                inventory_turnover FLOAT,
+                receivables_turnover FLOAT,
+                return_on_assets FLOAT,
+                return_on_equity FLOAT,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
+            )
+        """))
+        
+        # 7. analyst_estimates - from /stable/analyst-estimates
+        connection.execute(text(f"""
+            {table_clause} analyst_estimates (
+                id SERIAL PRIMARY KEY,
+                ticker VARCHAR(20),
+                date DATE,
+                revenue_avg BIGINT,
+                revenue_low BIGINT,
+                revenue_high BIGINT,
+                ebitda_avg BIGINT,
+                ebit_avg BIGINT,
+                net_income_avg BIGINT,
+                eps_avg FLOAT,
+                eps_low FLOAT,
+                eps_high FLOAT,
+                num_analysts_revenue INTEGER,
+                num_analysts_eps INTEGER,
+                CONSTRAINT uq_analyst_est UNIQUE (ticker, date),
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
+            )
+        """))
+        
+        # 8. earnings - from /stable/earnings
+        connection.execute(text(f"""
+            {table_clause} earnings (
+                id SERIAL PRIMARY KEY,
+                ticker VARCHAR(20),
+                date DATE,
+                eps_actual FLOAT,
+                eps_estimated FLOAT,
+                revenue_actual BIGINT,
+                revenue_estimated BIGINT,
+                CONSTRAINT uq_earnings UNIQUE (ticker, date),
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
+            )
+        """))
+        
+        # 9. sync_metadata - ETL tracking
+        connection.execute(text(f"""
+            {table_clause} sync_metadata (
+                key VARCHAR(100) PRIMARY KEY,
+                last_synced_at TIMESTAMP
+            )
+        """))
+        
+        # 10. stock_metrics - Pre-computed stock metrics for screener/dashboard
+        connection.execute(text(f"""
+            {table_clause} stock_metrics (
+                ticker VARCHAR(20) PRIMARY KEY,
+                company_name VARCHAR(255),
+                country VARCHAR(50),
+                sector VARCHAR(100),
+                industry VARCHAR(100),
+                ipo_date DATE,
+                market_cap BIGINT,
+                current_price FLOAT,
+                range_52_week VARCHAR(50),
+                volume BIGINT,
+                dollar_volume FLOAT,
+                vol_vs_10d_avg FLOAT,
+                dr_1 FLOAT,
+                dr_5 FLOAT,
+                dr_20 FLOAT,
+                dr_60 FLOAT,
+                dr_120 FLOAT,
+                atr20 FLOAT,
+                pe FLOAT,
+                ps_ttm FLOAT,
+                fpe FLOAT,
+                fps FLOAT,
+                rsi INTEGER,
+                short_float FLOAT,
+                short_ratio FLOAT,
+                short_interest FLOAT,
+                low_float BOOLEAN,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
         """))
         
         # Create indexes for better query performance
-        index_creation_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
+        idx_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
         connection.execute(text(f"""
-            {index_creation_clause} idx_ticker_ticker ON ticker(ticker);
-            {index_creation_clause} idx_ticker_sector ON ticker(sector);
-            {index_creation_clause} idx_ticker_industry ON ticker(industry);
-            {index_creation_clause} idx_ticker_market_cap ON ticker(market_cap);
-            {index_creation_clause} idx_ticker_exchange_short_name ON ticker(exchange_short_name);
-            {index_creation_clause} idx_ticker_is_actively_trading ON ticker(is_actively_trading);
-            {index_creation_clause} idx_ticker_price ON ticker(price);
-            {index_creation_clause} idx_price_ticker ON price(ticker);
-            {index_creation_clause} idx_price_date ON price(date);
-            {index_creation_clause} idx_price_last_traded_timestamp ON price(last_traded_timestamp);
-            {index_creation_clause} idx_comment_ticker ON comment(ticker);
-            {index_creation_clause} idx_comment_created_at ON comment(created_at);
-            {index_creation_clause} idx_comment_type ON comment(comment_type);
-            {index_creation_clause} idx_comment_status ON comment(status);
-            {index_creation_clause} idx_flags_reviewed ON flags(is_reviewed);
-            {index_creation_clause} idx_flags_shortlisted ON flags(is_shortlisted);
-            {index_creation_clause} idx_flags_blacklisted ON flags(is_blacklisted);
-            {index_creation_clause} idx_notes_ticker ON concise_notes(ticker);
-            {index_creation_clause} idx_stock_rsi_ticker ON stock_rsi(ticker);
-            {index_creation_clause} idx_index_symbol ON index(symbol);
-            {index_creation_clause} idx_index_type ON index(index_type);
-            {index_creation_clause} idx_index_price_symbol ON index_price(symbol);
-            {index_creation_clause} idx_index_price_date ON index_price(date);
-            {index_creation_clause} idx_trigger_event_ticker ON trigger_event(ticker);
-            {index_creation_clause} idx_trigger_event_trigger_name ON trigger_event(trigger_name);
-            {index_creation_clause} idx_trigger_event_trigger_date ON trigger_event(trigger_date);
+            {idx_clause} idx_tickers_exchange ON tickers(exchange_short_name);
+            {idx_clause} idx_tickers_sector ON tickers(sector);
+            {idx_clause} idx_tickers_industry ON tickers(industry);
+            {idx_clause} idx_tickers_country ON tickers(country);
+            {idx_clause} idx_tickers_market_cap ON tickers(market_cap);
+            {idx_clause} idx_tickers_actively_trading ON tickers(is_actively_trading);
+            {idx_clause} idx_ohlc_ticker ON ohlc(ticker);
+            {idx_clause} idx_ohlc_date ON ohlc(date);
+            {idx_clause} idx_analyst_est_ticker ON analyst_estimates(ticker);
+            {idx_clause} idx_analyst_est_date ON analyst_estimates(date);
+            {idx_clause} idx_earnings_ticker ON earnings(ticker);
+            {idx_clause} idx_earnings_date ON earnings(date);
+            {idx_clause} idx_index_prices_symbol ON index_prices(symbol);
+            {idx_clause} idx_index_prices_date ON index_prices(date);
+            {idx_clause} idx_stock_metrics_sector ON stock_metrics(sector);
+            {idx_clause} idx_stock_metrics_industry ON stock_metrics(industry);
+            {idx_clause} idx_stock_metrics_market_cap ON stock_metrics(market_cap);
+            {idx_clause} idx_stock_metrics_dr_20 ON stock_metrics(dr_20);
+            {idx_clause} idx_stock_metrics_rsi ON stock_metrics(rsi);
         """))
         
         connection.commit()
         
         if reset:
             print("Database reset completed successfully!")
-            print("- All existing tables dropped")
-            print("- New 'ticker' table created (comprehensive FMP company data)")
-            print("- Price table created")
-            print("- Comment table created (user/AI comments with review workflow)")
-            print("- Flags table created (reviewed/shortlisted/blacklisted booleans)")
-            print("- Concise notes table created")
-            print("- Index table created (market indices/ETFs metadata)")
-            print("- Index_price table created (historical index/ETF prices)")
-            print("- Trigger_event table created (trigger scan results)")
         else:
             print("Database initialization completed successfully!")
-            print("- 'ticker' table ready (comprehensive FMP company data)")
-            print("- 'price' table ready (daily price data)")
-            print("- 'comment' table ready (user/AI comments with review workflow)")
-            print("- 'flags' table ready (reviewed/shortlisted/blacklisted booleans)")
-            print("- 'concise notes' table ready")
-            print("- 'index' table ready (market indices/ETFs metadata)")
-            print("- 'index_price' table ready (historical index/ETF prices)")
-            print("- 'trigger_event' table ready (trigger scan results)")
+        
+        print("Tables:")
+        print("  - tickers (from Company Screener)")
+        print("  - company_profiles (from Profile endpoint)")
+        print("  - ohlc (price history)")
+        print("  - indices (index definitions)")
+        print("  - index_prices (index/ETF price history)")
+        print("  - index_components (index → ticker mapping)")
+        print("  - ratios_ttm (from Ratios TTM endpoint)")
+        print("  - analyst_estimates (from Analyst Estimates endpoint)")
+        print("  - earnings (from Earnings endpoint)")
+        print("  - sync_metadata (ETL tracking)")
+        print("  - stock_metrics (pre-computed screener metrics)")
+
 
 if __name__ == "__main__":
-    # Check for reset flag
     reset_mode = "--reset" in sys.argv
-    
-    initialize_database(reset=reset_mode) 
+    initialize_database(reset=reset_mode)
