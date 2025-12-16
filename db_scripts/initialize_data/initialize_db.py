@@ -20,6 +20,8 @@ def initialize_database(reset=False):
     8. analyst_estimates - Analyst estimates
     9. earnings - Earnings data
     10. sync_metadata - ETL tracking
+    11. stock_metrics - Pre-computed screener metrics
+    12. historical_rsi - Daily RSI time series
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
@@ -34,6 +36,7 @@ def initialize_database(reset=False):
         if reset:
             print("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
+            connection.execute(text("DROP TABLE IF EXISTS historical_rsi CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_metrics CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS sync_metadata CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS earnings CASCADE;"))
@@ -260,11 +263,25 @@ def initialize_database(reset=False):
                 fpe FLOAT,
                 fps FLOAT,
                 rsi INTEGER,
+                rsi_mktcap INTEGER,
                 short_float FLOAT,
                 short_ratio FLOAT,
                 short_interest FLOAT,
                 low_float BOOLEAN,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
+            )
+        """))
+        
+        # 11. historical_rsi - Daily RSI time series for all stocks
+        connection.execute(text(f"""
+            {table_clause} historical_rsi (
+                id SERIAL PRIMARY KEY,
+                ticker VARCHAR(20),
+                date DATE,
+                rsi_global INTEGER,
+                rsi_mktcap INTEGER,
+                CONSTRAINT uq_historical_rsi UNIQUE (ticker, date),
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
         """))
@@ -291,6 +308,9 @@ def initialize_database(reset=False):
             {idx_clause} idx_stock_metrics_market_cap ON stock_metrics(market_cap);
             {idx_clause} idx_stock_metrics_dr_20 ON stock_metrics(dr_20);
             {idx_clause} idx_stock_metrics_rsi ON stock_metrics(rsi);
+            {idx_clause} idx_historical_rsi_ticker ON historical_rsi(ticker);
+            {idx_clause} idx_historical_rsi_date ON historical_rsi(date);
+            {idx_clause} idx_historical_rsi_ticker_date ON historical_rsi(ticker, date);
         """))
         
         connection.commit()
@@ -312,6 +332,7 @@ def initialize_database(reset=False):
         print("  - earnings (from Earnings endpoint)")
         print("  - sync_metadata (ETL tracking)")
         print("  - stock_metrics (pre-computed screener metrics)")
+        print("  - historical_rsi (daily RSI time series)")
 
 
 if __name__ == "__main__":

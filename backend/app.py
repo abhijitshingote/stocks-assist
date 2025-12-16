@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, func, desc
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
-    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata
+    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics
 )
 import os
 import logging
@@ -412,267 +412,57 @@ def get_latest_date():
         s.close()
 
 
+def get_stock_metrics_data(session, ticker):
+    """Get all stock_metrics fields for a ticker. Returns dict or None if not found."""
+    ticker = ticker.upper()
+    metrics = session.query(StockMetrics).filter(StockMetrics.ticker == ticker).first()
+    
+    if not metrics:
+        return None
+    
+    return {
+        'ticker': metrics.ticker,
+        'company_name': metrics.company_name,
+        'country': metrics.country,
+        'sector': metrics.sector,
+        'industry': metrics.industry,
+        'ipo_date': metrics.ipo_date.strftime('%Y-%m-%d') if metrics.ipo_date else None,
+        'market_cap': metrics.market_cap,
+        'current_price': metrics.current_price,
+        'range_52_week': metrics.range_52_week,
+        'volume': metrics.volume,
+        'dollar_volume': metrics.dollar_volume,
+        'vol_vs_10d_avg': metrics.vol_vs_10d_avg,
+        'dr_1': metrics.dr_1,
+        'dr_5': metrics.dr_5,
+        'dr_20': metrics.dr_20,
+        'dr_60': metrics.dr_60,
+        'dr_120': metrics.dr_120,
+        'atr20': metrics.atr20,
+        'pe': metrics.pe,
+        'ps_ttm': metrics.ps_ttm,
+        'fpe': metrics.fpe,
+        'fps': metrics.fps,
+        'rsi': metrics.rsi,
+        'short_float': metrics.short_float,
+        'short_ratio': metrics.short_ratio,
+        'short_interest': metrics.short_interest,
+        'low_float': metrics.low_float,
+        'updated_at': metrics.updated_at.strftime('%Y-%m-%d %H:%M:%S') if metrics.updated_at else None
+    }
+
+
 @app.route('/api/stock/<ticker>')
 def get_stock_details(ticker):
-    """Get detailed information for a specific stock."""
+    """API endpoint to get stock metrics for a ticker."""
     s = Session()
     try:
-        ticker = ticker.upper()
-
-        # Get basic ticker info
-        stock = s.query(Ticker).filter(Ticker.ticker == ticker).first()
-        if not stock:
+        data = get_stock_metrics_data(s, ticker)
+        if data is None:
             return jsonify({'error': 'Stock not found'}), 404
-
-        # Get company profile (detailed info)
-        profile = s.query(CompanyProfile).filter(CompanyProfile.ticker == ticker).first()
-
-        # Get ratios
-        ratios = s.query(RatiosTTM).filter(RatiosTTM.ticker == ticker).first()
-
-        # Get latest price date
-        latest_date = get_latest_price_date(s)
-        if not latest_date:
-            return jsonify({'error': 'No price data available'}), 500
-
-        # Get latest price data
-        latest_price = s.query(OHLC).filter(
-            OHLC.ticker == ticker,
-            OHLC.date == latest_date
-        ).first()
-
-        # Get previous trading day price for price change calculation
-        previous_date = get_trading_date_n_days_ago(s, latest_date, 1)
-        previous_price = None
-        if previous_date:
-            previous_price = s.query(OHLC).filter(
-                OHLC.ticker == ticker,
-                OHLC.date == previous_date
-            ).first()
-
-        # Calculate 52-week high/low (252 trading days)
-        week_52_date = get_trading_date_n_days_ago(s, latest_date, 252)
-        week_52_high = None
-        week_52_low = None
-        if week_52_date:
-            week_52_data = s.query(
-                func.max(OHLC.high).label('high_52w'),
-                func.min(OHLC.low).label('low_52w')
-            ).filter(
-                OHLC.ticker == ticker,
-                OHLC.date >= week_52_date,
-                OHLC.date <= latest_date,
-                OHLC.close.isnot(None),
-                OHLC.close > 0
-            ).first()
-            if week_52_data:
-                week_52_high = week_52_data.high_52w
-                week_52_low = week_52_data.low_52w
-
-        # Calculate average volume (last 20 trading days)
-        avg_volume_date = get_trading_date_n_days_ago(s, latest_date, 20)
-        avg_volume = None
-        if avg_volume_date:
-            avg_volume = s.query(
-                func.avg(OHLC.volume).label('avg_volume')
-            ).filter(
-                OHLC.ticker == ticker,
-                OHLC.date >= avg_volume_date,
-                OHLC.date <= latest_date,
-                OHLC.volume.isnot(None)
-            ).scalar()
-
-        # Calculate returns for different trading day periods
-        returns = {}
-        for period, days in [('1d', 1), ('5d', 5), ('20d', 20), ('60d', 60), ('120d', 120)]:
-            period_date = get_trading_date_n_days_ago(s, latest_date, days)
-            if period_date:
-                period_price = s.query(OHLC.close).filter(
-                    OHLC.ticker == ticker,
-                    OHLC.date == period_date,
-                    OHLC.close.isnot(None),
-                    OHLC.close > 0
-                ).scalar()
-                
-                if period_price and latest_price and latest_price.close:
-                    returns[f'return_{period}'] = round(
-                        ((latest_price.close - period_price) / period_price) * 100, 2
-                    )
-                else:
-                    returns[f'return_{period}'] = None
-            else:
-                returns[f'return_{period}'] = None
-
-        # Calculate price changes
-        close_price = latest_price.close if latest_price else stock.price
-        price_change = None
-        price_change_pct = None
-        
-        if previous_price and previous_price.close and latest_price and latest_price.close:
-            price_change = round(latest_price.close - previous_price.close, 2)
-            price_change_pct = round((price_change / previous_price.close) * 100, 2)
-
-        # Calculate volume change multiplier
-        volume_change_multiplier = None
-        if latest_price and latest_price.volume and avg_volume and avg_volume > 0:
-            volume_change_multiplier = round(latest_price.volume / avg_volume, 2)
-
-        # Get upcoming earnings (next earnings date)
-        upcoming_earnings = s.query(Earnings).filter(
-            Earnings.ticker == ticker,
-            Earnings.date >= date.today()
-        ).order_by(Earnings.date).first()
-
-        # Get most recent earnings
-        recent_earnings = s.query(Earnings).filter(
-            Earnings.ticker == ticker,
-            Earnings.date < date.today()
-        ).order_by(desc(Earnings.date)).first()
-
-        # Get latest analyst estimates
-        analyst_est = s.query(AnalystEstimates).filter(
-            AnalystEstimates.ticker == ticker
-        ).order_by(desc(AnalystEstimates.date)).first()
-
-        # Get index memberships
-        index_memberships = s.query(IndexComponents.index_symbol).filter(
-            IndexComponents.ticker == ticker
-        ).all()
-        indices = [idx[0] for idx in index_memberships]
-
-        # Build response
-        stock_data = {
-            # Basic info (from Ticker)
-            'ticker': stock.ticker,
-            'company_name': stock.company_name,
-            'sector': stock.sector,
-            'industry': stock.industry,
-            'country': stock.country,
-            'exchange': stock.exchange,
-            'exchange_short_name': stock.exchange_short_name,
-            'market_cap': stock.market_cap,
-            'beta': stock.beta,
-            'last_annual_dividend': stock.last_annual_dividend,
-            'is_etf': stock.is_etf,
-            'is_fund': stock.is_fund,
-            'is_actively_trading': stock.is_actively_trading,
-
-            # Price data
-            'price': close_price,
-            'open': latest_price.open if latest_price else None,
-            'high': latest_price.high if latest_price else None,
-            'low': latest_price.low if latest_price else None,
-            'close': latest_price.close if latest_price else None,
-            'volume': latest_price.volume if latest_price else stock.volume,
-            'price_date': latest_date.strftime('%Y-%m-%d') if latest_date else None,
-            'price_change': price_change,
-            'price_change_pct': price_change_pct,
-            
-            # Volume metrics
-            'avg_volume': int(avg_volume) if avg_volume else None,
-            'volume_change_multiplier': volume_change_multiplier,
-            
-            # 52-week range
-            'week_52_high': week_52_high,
-            'week_52_low': week_52_low,
-            
-            # Returns
-            'return_1d': returns.get('return_1d'),
-            'return_5d': returns.get('return_5d'),
-            'return_20d': returns.get('return_20d'),
-            'return_60d': returns.get('return_60d'),
-            'return_120d': returns.get('return_120d'),
-
-            # Index memberships
-            'indices': indices,
-        }
-
-        # Add profile data if available
-        if profile:
-            stock_data.update({
-                'cik': profile.cik,
-                'isin': profile.isin,
-                'cusip': profile.cusip,
-                'description': profile.description,
-                'ceo': profile.ceo,
-                'website': profile.website,
-                'phone': profile.phone,
-                'address': profile.address,
-                'city': profile.city,
-                'state': profile.state,
-                'zip': profile.zip,
-                'full_time_employees': profile.full_time_employees,
-                'ipo_date': profile.ipo_date.strftime('%Y-%m-%d') if profile.ipo_date else None,
-                'image': profile.image,
-                'currency': profile.currency,
-                'range_52_week': profile.range_52_week,
-                'is_adr': profile.is_adr,
-            })
-
-        # Add ratios if available
-        if ratios:
-            stock_data['ratios'] = {
-                # Valuation
-                'pe_ratio': ratios.pe_ratio,
-                'peg_ratio': ratios.peg_ratio,
-                'price_to_book': ratios.price_to_book,
-                'price_to_sales': ratios.price_to_sales,
-                'price_to_free_cash_flow': ratios.price_to_free_cash_flow,
-                # Profitability
-                'gross_profit_margin': ratios.gross_profit_margin,
-                'operating_profit_margin': ratios.operating_profit_margin,
-                'net_profit_margin': ratios.net_profit_margin,
-                # Liquidity
-                'current_ratio': ratios.current_ratio,
-                'quick_ratio': ratios.quick_ratio,
-                'cash_ratio': ratios.cash_ratio,
-                # Leverage
-                'debt_to_equity': ratios.debt_to_equity,
-                'debt_to_assets': ratios.debt_to_assets,
-                # Returns
-                'return_on_assets': ratios.return_on_assets,
-                'return_on_equity': ratios.return_on_equity,
-                # Efficiency
-                'asset_turnover': ratios.asset_turnover,
-                'inventory_turnover': ratios.inventory_turnover,
-                'receivables_turnover': ratios.receivables_turnover,
-            }
-
-        # Add earnings data if available
-        if upcoming_earnings:
-            stock_data['upcoming_earnings'] = {
-                'date': upcoming_earnings.date.strftime('%Y-%m-%d'),
-                'eps_estimated': upcoming_earnings.eps_estimated,
-                'revenue_estimated': upcoming_earnings.revenue_estimated,
-            }
-
-        if recent_earnings:
-            stock_data['recent_earnings'] = {
-                'date': recent_earnings.date.strftime('%Y-%m-%d'),
-                'eps_actual': recent_earnings.eps_actual,
-                'eps_estimated': recent_earnings.eps_estimated,
-                'eps_surprise': round(recent_earnings.eps_actual - recent_earnings.eps_estimated, 4) if recent_earnings.eps_actual and recent_earnings.eps_estimated else None,
-                'revenue_actual': recent_earnings.revenue_actual,
-                'revenue_estimated': recent_earnings.revenue_estimated,
-            }
-
-        # Add analyst estimates if available
-        if analyst_est:
-            stock_data['analyst_estimates'] = {
-                'date': analyst_est.date.strftime('%Y-%m-%d') if analyst_est.date else None,
-                'revenue_avg': analyst_est.revenue_avg,
-                'revenue_low': analyst_est.revenue_low,
-                'revenue_high': analyst_est.revenue_high,
-                'eps_avg': analyst_est.eps_avg,
-                'eps_low': analyst_est.eps_low,
-                'eps_high': analyst_est.eps_high,
-                'num_analysts_revenue': analyst_est.num_analysts_revenue,
-                'num_analysts_eps': analyst_est.num_analysts_eps,
-            }
-
-        return jsonify(stock_data)
-
+        return jsonify(data)
     except Exception as e:
+        logger.error(f"Error getting stock details for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
@@ -968,6 +758,359 @@ def get_volume_mega():
     s = Session()
     try:
         return jsonify(get_volume_spike_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
+# RSI Endpoints (by Market Cap)
+# ============================================================================
+
+def get_rsi_stocks(session, market_cap_category):
+    """Get stocks with RSI data for a given market cap category, sorted by RSI descending."""
+    try:
+        query = session.query(
+            StockMetrics.ticker,
+            StockMetrics.company_name,
+            StockMetrics.sector,
+            StockMetrics.industry,
+            StockMetrics.market_cap,
+            StockMetrics.current_price,
+            StockMetrics.rsi,
+            StockMetrics.dr_1,
+            StockMetrics.dr_5,
+            StockMetrics.dr_20,
+            StockMetrics.updated_at
+        ).filter(
+            StockMetrics.rsi.isnot(None),
+            StockMetrics.market_cap.isnot(None)
+        )
+
+        # Apply market cap filter
+        category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+        if category:
+            query = query.filter(StockMetrics.market_cap >= category['min'])
+            if category['max'] is not None:
+                query = query.filter(StockMetrics.market_cap < category['max'])
+
+        # Order by RSI descending (highest RSI first)
+        stocks = query.order_by(desc(StockMetrics.rsi)).limit(100).all()
+
+        results = []
+        for stock in stocks:
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'rsi': stock.rsi,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
+            })
+
+        return results
+
+    except Exception as e:
+        logger.error(f"Error getting RSI stocks for {market_cap_category}: {str(e)}")
+        return []
+
+
+@app.route('/api/RSI-MicroCap')
+def get_rsi_micro():
+    s = Session()
+    try:
+        return jsonify(get_rsi_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/RSI-SmallCap')
+def get_rsi_small():
+    s = Session()
+    try:
+        return jsonify(get_rsi_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/RSI-MidCap')
+def get_rsi_mid():
+    s = Session()
+    try:
+        return jsonify(get_rsi_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/RSI-LargeCap')
+def get_rsi_large():
+    s = Session()
+    try:
+        return jsonify(get_rsi_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/RSI-MegaCap')
+def get_rsi_mega():
+    s = Session()
+    try:
+        return jsonify(get_rsi_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
+# OHLC Data Endpoint (for charts)
+# ============================================================================
+
+@app.route('/api/ohlc/<ticker>')
+def get_ohlc_data(ticker):
+    """Get OHLC data for a specific ticker (last 365 days)."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        
+        # Get last 365 calendar days of data
+        from datetime import timedelta
+        end_date = get_latest_price_date(s)
+        if not end_date:
+            return jsonify({'error': 'No price data available'}), 404
+        
+        start_date = end_date - timedelta(days=365)
+        
+        ohlc_data = s.query(
+            OHLC.date,
+            OHLC.open,
+            OHLC.high,
+            OHLC.low,
+            OHLC.close,
+            OHLC.volume
+        ).filter(
+            OHLC.ticker == ticker,
+            OHLC.date >= start_date,
+            OHLC.date <= end_date
+        ).order_by(OHLC.date.asc()).all()
+        
+        if not ohlc_data:
+            return jsonify({'error': 'No OHLC data found for ticker'}), 404
+        
+        results = []
+        for row in ohlc_data:
+            results.append({
+                'time': row.date.strftime('%Y-%m-%d'),
+                'open': round(row.open, 2) if row.open else None,
+                'high': round(row.high, 2) if row.high else None,
+                'low': round(row.low, 2) if row.low else None,
+                'close': round(row.close, 2) if row.close else None,
+                'volume': row.volume
+            })
+        
+        return jsonify(results)
+    
+    except Exception as e:
+        logger.error(f"Error getting OHLC data for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+# ============================================================================
+# Sector RSI Endpoint
+# ============================================================================
+
+@app.route('/api/sector-rsi')
+def get_sector_rsi():
+    """
+    Calculate market-cap weighted RSI for each sector.
+    Takes top 10 stocks by market cap in each sector, then calculates
+    weighted average RSI using market cap as weights.
+    """
+    s = Session()
+    try:
+        # Get all stocks with RSI and market cap data, grouped by sector
+        stocks = s.query(
+            StockMetrics.ticker,
+            StockMetrics.company_name,
+            StockMetrics.sector,
+            StockMetrics.market_cap,
+            StockMetrics.rsi,
+            StockMetrics.dr_1,
+            StockMetrics.dr_5,
+            StockMetrics.dr_20
+        ).filter(
+            StockMetrics.rsi.isnot(None),
+            StockMetrics.market_cap.isnot(None),
+            StockMetrics.sector.isnot(None),
+            StockMetrics.sector != ''
+        ).order_by(
+            StockMetrics.sector,
+            desc(StockMetrics.market_cap)
+        ).all()
+        
+        # Group stocks by sector and take top 10 by market cap
+        from collections import defaultdict
+        sector_stocks = defaultdict(list)
+        
+        for stock in stocks:
+            if len(sector_stocks[stock.sector]) < 10:
+                sector_stocks[stock.sector].append({
+                    'ticker': stock.ticker,
+                    'company_name': stock.company_name,
+                    'market_cap': stock.market_cap,
+                    'rsi': stock.rsi,
+                    'dr_1': stock.dr_1,
+                    'dr_5': stock.dr_5,
+                    'dr_20': stock.dr_20
+                })
+        
+        # Calculate weighted average RSI for each sector
+        results = []
+        for sector, stocks_list in sector_stocks.items():
+            if not stocks_list:
+                continue
+            
+            total_market_cap = sum(s['market_cap'] for s in stocks_list)
+            if total_market_cap == 0:
+                continue
+            
+            # Weighted average RSI
+            weighted_rsi = sum(
+                s['rsi'] * s['market_cap'] for s in stocks_list
+            ) / total_market_cap
+            
+            # Weighted average returns
+            weighted_dr_1 = sum(
+                (s['dr_1'] or 0) * s['market_cap'] for s in stocks_list
+            ) / total_market_cap
+            
+            weighted_dr_5 = sum(
+                (s['dr_5'] or 0) * s['market_cap'] for s in stocks_list
+            ) / total_market_cap
+            
+            weighted_dr_20 = sum(
+                (s['dr_20'] or 0) * s['market_cap'] for s in stocks_list
+            ) / total_market_cap
+            
+            results.append({
+                'sector': sector,
+                'weighted_rsi': round(weighted_rsi, 1),
+                'total_market_cap': total_market_cap,
+                'stock_count': len(stocks_list),
+                'dr_1': round(weighted_dr_1, 2),
+                'dr_5': round(weighted_dr_5, 2),
+                'dr_20': round(weighted_dr_20, 2),
+                'top_stocks': stocks_list
+            })
+        
+        # Sort by weighted RSI descending
+        results.sort(key=lambda x: x['weighted_rsi'], reverse=True)
+        
+        return jsonify(results)
+    
+    except Exception as e:
+        logger.error(f"Error calculating sector RSI: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+# ============================================================================
+# RSI Market Cap Endpoints (RSI percentile within market cap bucket)
+# ============================================================================
+
+def get_rsi_mktcap_stocks(session, market_cap_category):
+    """Get stocks with rsi_mktcap data for a given market cap category, sorted by rsi_mktcap descending."""
+    try:
+        query = session.query(
+            StockMetrics.ticker,
+            StockMetrics.company_name,
+            StockMetrics.sector,
+            StockMetrics.industry,
+            StockMetrics.market_cap,
+            StockMetrics.current_price,
+            StockMetrics.rsi,
+            StockMetrics.rsi_mktcap,
+            StockMetrics.dr_1,
+            StockMetrics.dr_5,
+            StockMetrics.dr_20,
+            StockMetrics.updated_at
+        ).filter(
+            StockMetrics.rsi_mktcap.isnot(None),
+            StockMetrics.market_cap.isnot(None)
+        )
+
+        # Apply market cap filter
+        category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+        if category:
+            query = query.filter(StockMetrics.market_cap >= category['min'])
+            if category['max'] is not None:
+                query = query.filter(StockMetrics.market_cap < category['max'])
+
+        # Order by rsi_mktcap descending (highest RSI first)
+        stocks = query.order_by(desc(StockMetrics.rsi_mktcap)).limit(100).all()
+
+        results = []
+        for stock in stocks:
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'rsi': stock.rsi,
+                'rsi_mktcap': stock.rsi_mktcap,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
+            })
+
+        return results
+
+    except Exception as e:
+        logger.error(f"Error getting RSI MktCap stocks for {market_cap_category}: {str(e)}")
+        return []
+
+
+@app.route('/api/RSIMktCap-MicroCap')
+def get_rsi_mktcap_micro():
+    s = Session()
+    try:
+        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/RSIMktCap-SmallCap')
+def get_rsi_mktcap_small():
+    s = Session()
+    try:
+        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/RSIMktCap-MidCap')
+def get_rsi_mktcap_mid():
+    s = Session()
+    try:
+        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/RSIMktCap-LargeCap')
+def get_rsi_mktcap_large():
+    s = Session()
+    try:
+        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/RSIMktCap-MegaCap')
+def get_rsi_mktcap_mega():
+    s = Session()
+    try:
+        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='mega'))
     finally:
         s.close()
 

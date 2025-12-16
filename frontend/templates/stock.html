@@ -1,0 +1,768 @@
+{% extends "base.html" %}
+
+{% block title %}{{ ticker }} - Stock Metrics{% endblock %}
+
+{% block extra_styles %}
+.stock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ticker-info h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent-green);
+    margin-bottom: 0.25rem;
+}
+
+.company-name {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+}
+
+.price-display {
+    text-align: right;
+}
+
+.current-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.price-positive { color: var(--accent-green); }
+.price-negative { color: var(--accent-red); }
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.metrics-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.metrics-section h2 {
+    font-size: 1rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.metric-row:last-child {
+    border-bottom: none;
+}
+
+.metric-label {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.metric-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.return-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.return-positive {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+}
+
+.return-negative {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--accent-red);
+}
+
+.return-neutral {
+    background: rgba(139, 148, 158, 0.15);
+    color: var(--text-secondary);
+}
+
+.loading {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-secondary);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.error-message {
+    text-align: center;
+    padding: 4rem;
+    color: var(--accent-red);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: var(--accent-blue);
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.updated-at {
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* Candlestick Chart */
+.chart-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chart-header h2 {
+    font-size: 1rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.chart-timeframe {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.timeframe-btn {
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+}
+
+.timeframe-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.timeframe-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--bg-dark);
+}
+
+#chartContainer {
+    width: 100%;
+    height: 400px;
+    position: relative;
+}
+
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    color: var(--text-muted);
+}
+
+.chart-loading .loading-spinner {
+    margin-bottom: 1rem;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}
+
+.legend-dot.bullish {
+    background: var(--accent-green);
+}
+
+.legend-dot.bearish {
+    background: var(--accent-red);
+}
+
+.chart-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+}
+
+.chart-stat {
+    color: var(--text-secondary);
+}
+
+.chart-stat span {
+    color: var(--text-primary);
+    margin-left: 0.25rem;
+}
+{% endblock %}
+
+{% block content %}
+<a href="/" class="back-link">← Back to Home</a>
+
+<div id="loading" class="loading">
+    <div class="loading-spinner"></div>
+    <p>Loading stock data...</p>
+</div>
+
+<div id="error" class="error-message" style="display: none;">
+    <p>Stock not found or error loading data.</p>
+    <a href="/" class="btn btn-secondary" style="margin-top: 1rem;">Go Back</a>
+</div>
+
+<div id="stock-content" style="display: none;">
+    <div class="stock-header">
+        <div class="ticker-info">
+            <h1 id="ticker">{{ ticker }}</h1>
+            <div class="company-name" id="companyName">Loading...</div>
+            <div style="margin-top: 0.5rem;">
+                <span class="tag" id="sector">--</span>
+                <span class="tag" id="industry">--</span>
+                <span class="tag" id="country">--</span>
+            </div>
+        </div>
+        <div class="price-display">
+            <div class="current-price" id="currentPrice">--</div>
+            <div class="text-secondary" id="range52Week">52W: --</div>
+        </div>
+    </div>
+
+    <!-- Candlestick Chart -->
+    <div class="chart-section">
+        <div class="chart-header">
+            <h2>Price Chart</h2>
+            <div class="chart-timeframe">
+                <button class="timeframe-btn" data-days="30">1M</button>
+                <button class="timeframe-btn" data-days="90">3M</button>
+                <button class="timeframe-btn active" data-days="180">6M</button>
+                <button class="timeframe-btn" data-days="365">1Y</button>
+            </div>
+        </div>
+        <div id="chartLoading" class="chart-loading">
+            <div class="loading-spinner"></div>
+            <span>Loading chart...</span>
+        </div>
+        <div id="chartContainer"></div>
+        <div class="chart-legend">
+            <div class="legend-item">
+                <div class="legend-dot bullish"></div>
+                <span>Bullish</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot bearish"></div>
+                <span>Bearish</span>
+            </div>
+        </div>
+        <div class="chart-stats" id="chartStats"></div>
+    </div>
+
+    <div class="metrics-grid">
+        <!-- Returns Section -->
+        <div class="metrics-section">
+            <h2>Price Returns</h2>
+            <div class="metric-row">
+                <span class="metric-label">1 Day</span>
+                <span class="metric-value return-badge" id="dr1">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">5 Days</span>
+                <span class="metric-value return-badge" id="dr5">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">20 Days</span>
+                <span class="metric-value return-badge" id="dr20">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">60 Days</span>
+                <span class="metric-value return-badge" id="dr60">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">120 Days</span>
+                <span class="metric-value return-badge" id="dr120">--</span>
+            </div>
+        </div>
+
+        <!-- Volume Section -->
+        <div class="metrics-section">
+            <h2>Volume & Trading</h2>
+            <div class="metric-row">
+                <span class="metric-label">Volume</span>
+                <span class="metric-value" id="volume">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Dollar Volume</span>
+                <span class="metric-value" id="dollarVolume">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Vol vs 10D Avg</span>
+                <span class="metric-value" id="volVs10dAvg">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Market Cap</span>
+                <span class="metric-value" id="marketCap">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">IPO Date</span>
+                <span class="metric-value" id="ipoDate">--</span>
+            </div>
+        </div>
+
+        <!-- Valuation Section -->
+        <div class="metrics-section">
+            <h2>Valuation Metrics</h2>
+            <div class="metric-row">
+                <span class="metric-label">P/E Ratio (TTM)</span>
+                <span class="metric-value" id="pe">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Price-to-Sales (TTM)</span>
+                <span class="metric-value" id="psTtm">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Forward P/E</span>
+                <span class="metric-value" id="fpe">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Forward P/S</span>
+                <span class="metric-value" id="fps">--</span>
+            </div>
+        </div>
+
+        <!-- Technical Section -->
+        <div class="metrics-section">
+            <h2>Technical Indicators</h2>
+            <div class="metric-row">
+                <span class="metric-label">RSI (Percentile)</span>
+                <span class="metric-value" id="rsi">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">ATR 20 (%)</span>
+                <span class="metric-value" id="atr20">--</span>
+            </div>
+        </div>
+
+        <!-- Short Interest Section -->
+        <div class="metrics-section">
+            <h2>Short Interest</h2>
+            <div class="metric-row">
+                <span class="metric-label">Short Float</span>
+                <span class="metric-value" id="shortFloat">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Short Ratio</span>
+                <span class="metric-value" id="shortRatio">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Short Interest</span>
+                <span class="metric-value" id="shortInterest">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Low Float</span>
+                <span class="metric-value" id="lowFloat">--</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="updated-at" id="updatedAt"></div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Lightweight Charts by TradingView -->
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+const ticker = '{{ ticker }}';
+let chart = null;
+let candlestickSeries = null;
+let volumeSeries = null;
+let allOhlcData = [];
+let currentTimeframe = 180;
+
+function formatNumber(num, decimals = 2) {
+    if (num == null) return '--';
+    return Number(num).toFixed(decimals);
+}
+
+function formatLargeNumber(num) {
+    if (num == null) return '--';
+    if (num >= 1e12) return '$' + (num / 1e12).toFixed(1) + 'T';
+    if (num >= 1e9) return '$' + (num / 1e9).toFixed(1) + 'B';
+    if (num >= 1e6) return '$' + (num / 1e6).toFixed(1) + 'M';
+    if (num >= 1e3) return '$' + (num / 1e3).toFixed(1) + 'K';
+    return '$' + num.toLocaleString();
+}
+
+function formatVolume(num) {
+    if (num == null) return '--';
+    if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+    return num.toLocaleString();
+}
+
+function formatReturn(value, elementId) {
+    const element = document.getElementById(elementId);
+    if (value == null) {
+        element.textContent = '--';
+        element.classList.add('return-neutral');
+        return;
+    }
+    
+    const formatted = (value >= 0 ? '+' : '') + formatNumber(value, 2) + '%';
+    element.textContent = formatted;
+    element.classList.remove('return-positive', 'return-negative', 'return-neutral');
+    element.classList.add(value >= 0 ? 'return-positive' : 'return-negative');
+}
+
+async function loadStockData() {
+    try {
+        const response = await fetch(`/api/frontend/stock/${ticker}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            return;
+        }
+        
+        // Populate the page
+        document.getElementById('ticker').textContent = data.ticker;
+        document.getElementById('companyName').textContent = data.company_name || 'Unknown Company';
+        document.getElementById('sector').textContent = data.sector || '--';
+        document.getElementById('industry').textContent = data.industry || '--';
+        document.getElementById('country').textContent = data.country || '--';
+        
+        // Price
+        if (data.current_price != null) {
+            document.getElementById('currentPrice').textContent = '$' + formatNumber(data.current_price, 2);
+            document.getElementById('currentPrice').classList.add('price-positive');
+        }
+        document.getElementById('range52Week').textContent = '52W: ' + (data.range_52_week || '--');
+        
+        // Returns
+        formatReturn(data.dr_1, 'dr1');
+        formatReturn(data.dr_5, 'dr5');
+        formatReturn(data.dr_20, 'dr20');
+        formatReturn(data.dr_60, 'dr60');
+        formatReturn(data.dr_120, 'dr120');
+        
+        // Volume
+        document.getElementById('volume').textContent = formatVolume(data.volume);
+        document.getElementById('dollarVolume').textContent = data.dollar_volume != null ? formatLargeNumber(data.dollar_volume) : '--';
+        document.getElementById('volVs10dAvg').textContent = data.vol_vs_10d_avg != null ? formatNumber(data.vol_vs_10d_avg, 2) + 'x' : '--';
+        document.getElementById('marketCap').textContent = formatLargeNumber(data.market_cap);
+        document.getElementById('ipoDate').textContent = data.ipo_date || '--';
+        
+        // Valuation
+        document.getElementById('pe').textContent = data.pe != null ? formatNumber(data.pe, 2) : '--';
+        document.getElementById('psTtm').textContent = data.ps_ttm != null ? formatNumber(data.ps_ttm, 2) : '--';
+        document.getElementById('fpe').textContent = data.fpe != null ? formatNumber(data.fpe, 2) : '--';
+        document.getElementById('fps').textContent = data.fps != null ? formatNumber(data.fps, 2) : '--';
+        
+        // Technical
+        document.getElementById('rsi').textContent = data.rsi != null ? data.rsi : '--';
+        document.getElementById('atr20').textContent = data.atr20 != null ? formatNumber(data.atr20, 2) + '%' : '--';
+        
+        // Short Interest
+        document.getElementById('shortFloat').textContent = data.short_float != null ? formatNumber(data.short_float, 2) + '%' : '--';
+        document.getElementById('shortRatio').textContent = data.short_ratio != null ? formatNumber(data.short_ratio, 2) : '--';
+        document.getElementById('shortInterest').textContent = data.short_interest != null ? formatNumber(data.short_interest, 2) + '%' : '--';
+        document.getElementById('lowFloat').textContent = data.low_float != null ? (data.low_float ? 'Yes' : 'No') : '--';
+        
+        // Updated at
+        if (data.updated_at) {
+            document.getElementById('updatedAt').textContent = 'Last updated: ' + data.updated_at;
+        }
+        
+        // Show content
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('stock-content').style.display = 'block';
+        
+        // Load chart after stock data is loaded
+        loadChartData();
+        
+    } catch (error) {
+        console.error('Error loading stock data:', error);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+    }
+}
+
+// ============================================
+// Chart Functions
+// ============================================
+
+async function loadChartData() {
+    try {
+        const response = await fetch(`/api/frontend/ohlc/${ticker}`);
+        const data = await response.json();
+        
+        if (data.error || !Array.isArray(data) || data.length === 0) {
+            document.getElementById('chartLoading').innerHTML = '<span style="color: var(--text-muted);">No chart data available</span>';
+            return;
+        }
+        
+        allOhlcData = data;
+        initChart();
+        updateChart(currentTimeframe);
+        setupTimeframeButtons();
+        
+    } catch (error) {
+        console.error('Error loading chart data:', error);
+        document.getElementById('chartLoading').innerHTML = '<span style="color: var(--text-muted);">Failed to load chart</span>';
+    }
+}
+
+function initChart() {
+    document.getElementById('chartLoading').style.display = 'none';
+    
+    const container = document.getElementById('chartContainer');
+    
+    chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: 400,
+        layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#8b949e',
+            fontFamily: "'JetBrains Mono', monospace",
+        },
+        grid: {
+            vertLines: { color: 'rgba(48, 54, 61, 0.5)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.5)' },
+        },
+        crosshair: {
+            mode: LightweightCharts.CrosshairMode.Normal,
+            vertLine: {
+                width: 1,
+                color: 'rgba(88, 166, 255, 0.5)',
+                style: LightweightCharts.LineStyle.Dashed,
+            },
+            horzLine: {
+                width: 1,
+                color: 'rgba(88, 166, 255, 0.5)',
+                style: LightweightCharts.LineStyle.Dashed,
+            },
+        },
+        rightPriceScale: {
+            borderColor: '#30363d',
+            scaleMargins: {
+                top: 0.1,
+                bottom: 0.2,
+            },
+        },
+        timeScale: {
+            borderColor: '#30363d',
+            timeVisible: true,
+            secondsVisible: false,
+        },
+        handleScroll: {
+            mouseWheel: true,
+            pressedMouseMove: true,
+        },
+        handleScale: {
+            axisPressedMouseMove: true,
+            mouseWheel: true,
+            pinch: true,
+        },
+    });
+    
+    // Candlestick series
+    candlestickSeries = chart.addCandlestickSeries({
+        upColor: '#3fb950',
+        downColor: '#f85149',
+        borderDownColor: '#f85149',
+        borderUpColor: '#3fb950',
+        wickDownColor: '#f85149',
+        wickUpColor: '#3fb950',
+    });
+    
+    // Volume series
+    volumeSeries = chart.addHistogramSeries({
+        color: '#26a69a',
+        priceFormat: {
+            type: 'volume',
+        },
+        priceScaleId: '',
+        scaleMargins: {
+            top: 0.85,
+            bottom: 0,
+        },
+    });
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+        if (chart) {
+            chart.applyOptions({ width: container.clientWidth });
+        }
+    });
+    
+    // Crosshair move handler for tooltip
+    chart.subscribeCrosshairMove(param => {
+        updateChartTooltip(param);
+    });
+}
+
+function updateChart(days) {
+    if (!allOhlcData.length) return;
+    
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    const cutoffStr = cutoffDate.toISOString().split('T')[0];
+    
+    const filteredData = allOhlcData.filter(d => d.time >= cutoffStr);
+    
+    if (filteredData.length === 0) {
+        // If filter is too strict, show all data
+        setChartData(allOhlcData);
+    } else {
+        setChartData(filteredData);
+    }
+    
+    chart.timeScale().fitContent();
+    updateChartStats(filteredData.length > 0 ? filteredData : allOhlcData);
+}
+
+function setChartData(data) {
+    // Candlestick data
+    const candleData = data.map(d => ({
+        time: d.time,
+        open: d.open,
+        high: d.high,
+        low: d.low,
+        close: d.close,
+    }));
+    candlestickSeries.setData(candleData);
+    
+    // Volume data with colors
+    const volumeData = data.map(d => ({
+        time: d.time,
+        value: d.volume,
+        color: d.close >= d.open ? 'rgba(63, 185, 80, 0.4)' : 'rgba(248, 81, 73, 0.4)',
+    }));
+    volumeSeries.setData(volumeData);
+}
+
+function setupTimeframeButtons() {
+    document.querySelectorAll('.timeframe-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentTimeframe = parseInt(this.dataset.days);
+            updateChart(currentTimeframe);
+        });
+    });
+}
+
+function updateChartStats(data) {
+    if (!data || data.length === 0) return;
+    
+    const firstPrice = data[0].close;
+    const lastPrice = data[data.length - 1].close;
+    const changePercent = ((lastPrice - firstPrice) / firstPrice * 100).toFixed(2);
+    const highest = Math.max(...data.map(d => d.high));
+    const lowest = Math.min(...data.map(d => d.low));
+    
+    const statsHtml = `
+        <div class="chart-stat">Change: <span class="${changePercent >= 0 ? 'text-green' : 'text-red'}">${changePercent >= 0 ? '+' : ''}${changePercent}%</span></div>
+        <div class="chart-stat">High: <span>$${highest.toFixed(2)}</span></div>
+        <div class="chart-stat">Low: <span>$${lowest.toFixed(2)}</span></div>
+        <div class="chart-stat">Range: <span>$${(highest - lowest).toFixed(2)}</span></div>
+    `;
+    document.getElementById('chartStats').innerHTML = statsHtml;
+}
+
+function updateChartTooltip(param) {
+    // Optional: Could add a floating tooltip here
+}
+
+document.addEventListener('DOMContentLoaded', loadStockData);
+</script>
+{% endblock %}
+

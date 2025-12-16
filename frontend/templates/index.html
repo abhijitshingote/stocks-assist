@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Stocks Assist - Home{% endblock %}
+
+{% block extra_styles %}
+.hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    margin-bottom: 2rem;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+.search-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-box {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+    text-transform: none;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-green);
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s;
+}
+
+.feature-card:hover {
+    border-color: var(--accent-green);
+    transform: translateY(-4px);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.feature-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.terminal-box {
+    background: #000;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.terminal-header {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.terminal-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.terminal-dot.red { background: #ff5f56; }
+.terminal-dot.yellow { background: #ffbd2e; }
+.terminal-dot.green { background: #27c93f; }
+
+.terminal-line {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.terminal-line .prompt {
+    color: var(--accent-green);
+}
+
+.terminal-line .command {
+    color: var(--accent-blue);
+}
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Stock Metrics Dashboard</h1>
+    <p>Look up detailed metrics for any stock in our database. Enter a ticker symbol to get started.</p>
+    
+    <div class="search-container">
+        <form class="search-box" onsubmit="goToStock(event)">
+            <input type="text" 
+                   class="search-input" 
+                   id="tickerInput" 
+                   placeholder="Enter ticker symbol..." 
+                   autocomplete="off"
+                   maxlength="10">
+            <button type="submit" class="btn btn-primary">Look Up</button>
+        </form>
+    </div>
+</div>
+
+<div class="features">
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Price Returns</h3>
+        <p>View 1-day, 5-day, 20-day, 60-day, and 120-day returns at a glance.</p>
+    </div>
+    
+    <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>Valuation Metrics</h3>
+        <p>P/E ratio, Price-to-Sales, Forward P/E, and more valuation data.</p>
+    </div>
+    
+    <div class="feature-card">
+        <div class="feature-icon">📉</div>
+        <h3>Technical Indicators</h3>
+        <p>RSI, ATR, volume analysis, and volatility metrics.</p>
+    </div>
+</div>
+
+<div class="terminal-box">
+    <div class="terminal-header">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+    </div>
+    <div class="terminal-line">
+        <span class="prompt">$</span> <span class="command">curl</span> /api/stock/AAPL
+    </div>
+    <div class="terminal-line text-muted">
+        # Returns all stock_metrics fields for the given ticker
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function goToStock(event) {
+    event.preventDefault();
+    const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
+    if (ticker) {
+        window.location.href = '/stock/' + ticker;
+    }
+}
+
+// Allow pressing Enter to submit
+document.getElementById('tickerInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        goToStock(e);
+    }
+});
+</script>
+{% endblock %}
+

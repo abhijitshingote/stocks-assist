@@ -298,6 +298,7 @@ class StockMetrics(Base):
     
     # Relative strength (percentile rank 1-100)
     rsi = Column(Integer)
+    rsi_mktcap = Column(Integer)  # RSI percentile within market cap bucket
     
     # Short interest (nullable for future use)
     short_float = Column(Float)
@@ -307,5 +308,26 @@ class StockMetrics(Base):
     
     updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 11. HistoricalRSI (daily RSI time series for all stocks)
+# ------------------------------------------------------------
+class HistoricalRSI(Base):
+    __tablename__ = "historical_rsi"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ticker = Column(String(20), ForeignKey("tickers.ticker"))
+    date = Column(Date)
+    
+    # RSI percentile rank (1-100) across all stocks for this date
+    rsi_global = Column(Integer)
+    
+    # RSI percentile rank (1-100) within market cap bucket for this date
+    rsi_mktcap = Column(Integer)
+
+    __table_args__ = (UniqueConstraint("ticker", "date", name="uq_historical_rsi"),)
 
     ticker_rel = relationship("Ticker")

@@ -215,6 +215,19 @@ def compute_and_load_metrics(connection):
             0.2 * (s.ret_20 - sp.ret_20) AS rel_strength_raw
         FROM stock_returns s
         JOIN spy_returns sp ON sp.date = s.date
+    ),
+    -- Market cap buckets for RSI within market cap
+    market_cap_bucket AS (
+        SELECT
+            t.ticker,
+            CASE
+                WHEN t.market_cap < 200000000 THEN 'micro'
+                WHEN t.market_cap < 2000000000 THEN 'small'
+                WHEN t.market_cap < 20000000000 THEN 'mid'
+                WHEN t.market_cap < 100000000000 THEN 'large'
+                ELSE 'mega'
+            END AS mktcap_bucket
+        FROM tickers t
     )
     INSERT INTO stock_metrics (
         ticker,
@@ -240,6 +253,7 @@ def compute_and_load_metrics(connection):
         fpe,
         fps,
         rsi,
+        rsi_mktcap,
         short_float,
         short_ratio,
         short_interest,
@@ -270,6 +284,7 @@ def compute_and_load_metrics(connection):
         ROUND((t.price / NULLIF(fe.eps_avg,0))::numeric, 2) AS fpe,
         ROUND((t.market_cap / NULLIF(fe.revenue_avg,0))::numeric, 2) AS fps,
         rs.rsi,
+        rs_mc.rsi_mktcap,
         NULL::FLOAT as short_float,
         NULL::FLOAT as short_ratio,
         NULL::FLOAT as short_interest,
@@ -289,6 +304,17 @@ def compute_and_load_metrics(connection):
         FROM rel_strength
         WHERE date = (SELECT max_date FROM latest_date)
     ) rs ON t.ticker = rs.ticker
+    LEFT JOIN (
+        SELECT
+            rs.ticker,
+            NTILE(100) OVER (
+                PARTITION BY mcb.mktcap_bucket
+                ORDER BY rs.rel_strength_raw
+            ) AS rsi_mktcap
+        FROM rel_strength rs
+        JOIN market_cap_bucket mcb ON rs.ticker = mcb.ticker
+        WHERE rs.date = (SELECT max_date FROM latest_date)
+    ) rs_mc ON t.ticker = rs_mc.ticker
     WHERE t.is_actively_trading = TRUE
       AND t.is_etf = FALSE
       AND t.is_fund = FALSE

@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+
+{% block title %}Sector RSI - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent-yellow) 0%, var(--accent-red) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Stats Summary */
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.stat-card .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-primary);
+}
+
+.stat-card .value.highlight {
+    color: var(--accent-yellow);
+}
+
+/* Sector Grid */
+.sector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 1.25rem;
+}
+
+/* Sector Card */
+.sector-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.sector-card:hover {
+    border-color: var(--accent-yellow);
+}
+
+.sector-card.expanded {
+    grid-column: 1 / -1;
+}
+
+.sector-header {
+    padding: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.sector-info {
+    flex: 1;
+}
+
+.sector-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.sector-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.sector-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* RSI Display */
+.rsi-display {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.rsi-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.rsi-high { color: var(--accent-green); }
+.rsi-mid { color: var(--accent-yellow); }
+.rsi-low { color: var(--accent-red); }
+
+.rsi-bar-wrapper {
+    width: 100px;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.rsi-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.rsi-bar-fill.high { background: linear-gradient(90deg, var(--accent-green), #4eca5f); }
+.rsi-bar-fill.mid { background: linear-gradient(90deg, var(--accent-yellow), #e5b526); }
+.rsi-bar-fill.low { background: linear-gradient(90deg, var(--accent-red), #ff6b5e); }
+
+/* Expand Icon */
+.expand-icon {
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    transition: transform 0.3s;
+}
+
+.sector-card.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+/* Returns Row */
+.returns-row {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0 1.25rem 1rem;
+    font-size: 0.85rem;
+}
+
+.return-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.return-label {
+    color: var(--text-muted);
+}
+
+.return-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+}
+
+.return-positive { color: var(--accent-green); }
+.return-negative { color: var(--accent-red); }
+
+/* Stocks Table */
+.stocks-detail {
+    display: none;
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.sector-card.expanded .stocks-detail {
+    display: block;
+}
+
+.stocks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.stocks-table th {
+    text-align: left;
+    padding: 0.5rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stocks-table td {
+    padding: 0.6rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stocks-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.stocks-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.stock-ticker {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+.stock-ticker:hover {
+    color: var(--accent-purple);
+    text-decoration: underline;
+}
+
+.stock-name {
+    color: var(--text-secondary);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.stock-rsi {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+}
+
+.stock-mcap {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-secondary);
+}
+
+.weight-bar {
+    width: 50px;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.weight-bar-fill {
+    height: 100%;
+    background: var(--accent-purple);
+    border-radius: 2px;
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-yellow);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Sector RSI</h1>
+    <p>Market-cap weighted RSI by sector (top 10 stocks per sector)</p>
+</div>
+
+<!-- Stats Summary -->
+<div class="stats-summary" id="statsSummary" style="display: none;">
+    <div class="stat-card">
+        <div class="label">Sectors</div>
+        <div class="value highlight" id="sectorCount">—</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Highest RSI</div>
+        <div class="value" id="highestRsi">—</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Lowest RSI</div>
+        <div class="value" id="lowestRsi">—</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Average RSI</div>
+        <div class="value" id="avgRsi">—</div>
+    </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" id="loadingState">
+    <div class="spinner"></div>
+    <span>Calculating sector RSI...</span>
+</div>
+
+<!-- Empty State -->
+<div class="empty-state" id="emptyState" style="display: none;">
+    <h3>No sector RSI data available</h3>
+    <p>No stocks found with RSI data.</p>
+</div>
+
+<!-- Sector Grid -->
+<div class="sector-grid" id="sectorGrid" style="display: none;">
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let sectorData = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadSectorRsi();
+});
+
+async function loadSectorRsi() {
+    try {
+        const response = await fetch('/api/frontend/sector-rsi');
+        const data = await response.json();
+        
+        if (data.error || !Array.isArray(data) || data.length === 0) {
+            showEmpty();
+            return;
+        }
+        
+        sectorData = data;
+        hideLoading();
+        updateStats(data);
+        renderSectorCards(data);
+        
+    } catch (error) {
+        console.error('Error loading sector RSI:', error);
+        showEmpty();
+    }
+}
+
+function updateStats(data) {
+    document.getElementById('statsSummary').style.display = 'grid';
+    document.getElementById('sectorCount').textContent = data.length;
+    
+    const rsiValues = data.map(d => d.weighted_rsi);
+    document.getElementById('highestRsi').textContent = Math.max(...rsiValues).toFixed(1);
+    document.getElementById('lowestRsi').textContent = Math.min(...rsiValues).toFixed(1);
+    
+    const avgRsi = rsiValues.reduce((a, b) => a + b, 0) / rsiValues.length;
+    document.getElementById('avgRsi').textContent = avgRsi.toFixed(1);
+}
+
+function renderSectorCards(data) {
+    const grid = document.getElementById('sectorGrid');
+    grid.style.display = 'grid';
+    
+    grid.innerHTML = data.map((sector, index) => {
+        const rsiClass = getRsiClass(sector.weighted_rsi);
+        const maxMcap = Math.max(...sector.top_stocks.map(s => s.market_cap));
+        
+        return `
+            <div class="sector-card" data-index="${index}">
+                <div class="sector-header" onclick="toggleSector(${index})">
+                    <div class="sector-info">
+                        <div class="sector-name">${sector.sector}</div>
+                        <div class="sector-meta">
+                            <span>📊 ${sector.stock_count} stocks</span>
+                            <span>💰 ${formatMarketCap(sector.total_market_cap)}</span>
+                        </div>
+                    </div>
+                    <div class="rsi-display">
+                        <div class="rsi-number ${rsiClass}">${sector.weighted_rsi}</div>
+                        <div class="rsi-bar-wrapper">
+                            <div class="rsi-bar-fill ${rsiClass}" style="width: ${sector.weighted_rsi}%"></div>
+                        </div>
+                    </div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="returns-row">
+                    <div class="return-item">
+                        <span class="return-label">1D:</span>
+                        <span class="return-value ${sector.dr_1 >= 0 ? 'return-positive' : 'return-negative'}">${formatReturn(sector.dr_1)}</span>
+                    </div>
+                    <div class="return-item">
+                        <span class="return-label">5D:</span>
+                        <span class="return-value ${sector.dr_5 >= 0 ? 'return-positive' : 'return-negative'}">${formatReturn(sector.dr_5)}</span>
+                    </div>
+                    <div class="return-item">
+                        <span class="return-label">20D:</span>
+                        <span class="return-value ${sector.dr_20 >= 0 ? 'return-positive' : 'return-negative'}">${formatReturn(sector.dr_20)}</span>
+                    </div>
+                </div>
+                <div class="stocks-detail">
+                    <table class="stocks-table">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Company</th>
+                                <th>RSI</th>
+                                <th>Market Cap</th>
+                                <th>Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sector.top_stocks.map(stock => `
+                                <tr>
+                                    <td><a href="/stock/${stock.ticker}" class="stock-ticker">${stock.ticker}</a></td>
+                                    <td class="stock-name" title="${stock.company_name || ''}">${stock.company_name || '—'}</td>
+                                    <td class="stock-rsi ${getRsiClass(stock.rsi)}">${stock.rsi}</td>
+                                    <td class="stock-mcap">${formatMarketCap(stock.market_cap)}</td>
+                                    <td>
+                                        <div class="weight-bar">
+                                            <div class="weight-bar-fill" style="width: ${(stock.market_cap / sector.total_market_cap * 100).toFixed(0)}%"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function toggleSector(index) {
+    const card = document.querySelector(`.sector-card[data-index="${index}"]`);
+    card.classList.toggle('expanded');
+}
+
+function getRsiClass(rsi) {
+    if (rsi >= 70) return 'rsi-high';
+    if (rsi >= 30) return 'rsi-mid';
+    return 'rsi-low';
+}
+
+function formatMarketCap(value) {
+    if (value == null) return '—';
+    if (value >= 1e12) return '$' + (value / 1e12).toFixed(2) + 'T';
+    if (value >= 1e9) return '$' + (value / 1e9).toFixed(1) + 'B';
+    if (value >= 1e6) return '$' + (value / 1e6).toFixed(0) + 'M';
+    return '$' + value.toLocaleString();
+}
+
+function formatReturn(value) {
+    if (value == null) return '—';
+    const sign = value >= 0 ? '+' : '';
+    return sign + value.toFixed(2) + '%';
+}
+
+function hideLoading() {
+    document.getElementById('loadingState').style.display = 'none';
+}
+
+function showEmpty() {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+}
+</script>
+{% endblock %}
+

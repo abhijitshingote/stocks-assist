@@ -12,6 +12,8 @@ migrate carefully screening logic to new app.py and drop all the fluff
 what should be run in update_data
 dekete tmp?
 
+cat stocks_db_backup.dump |  docker-compose exec -T db pg_restore -U postgres -d stocks_db --clean --if-exists
+
 #seed_profiles has IPO date, market cap
 #seed_ratios has pe ratio ttm, 
 # we are missing outstanding shares so we dont have to run 1 ticker at a time company profile to get mcap
