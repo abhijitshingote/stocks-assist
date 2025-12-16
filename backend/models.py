@@ -296,6 +296,10 @@ class StockMetrics(Base):
     fpe = Column(Float)     # Forward P/E
     fps = Column(Float)     # Forward Price-to-Sales
     
+    # Growth metrics (forward estimate vs TTM, in %)
+    eps_growth = Column(Float)      # Projected EPS growth %
+    revenue_growth = Column(Float)  # Projected revenue growth %
+    
     # Relative strength (percentile rank 1-100)
     rsi = Column(Integer)
     rsi_mktcap = Column(Integer)  # RSI percentile within market cap bucket

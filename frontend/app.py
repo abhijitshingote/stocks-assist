@@ -60,6 +60,12 @@ def rsi_mktcap_page():
     return render_template('rsi_mktcap.html')
 
 
+@app.route('/rsi-momentum')
+def rsi_momentum_page():
+    """RSI Momentum page - RSI MktCap change over 5 trading days"""
+    return render_template('rsi_momentum.html')
+
+
 @app.route('/stock/<ticker>')
 def stock_detail(ticker):
     """Stock detail page"""
@@ -131,6 +137,26 @@ def api_rsi_mktcap(market_cap):
     data, status_code = make_backend_request(f'/api/RSIMktCap-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch RSI MktCap data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/rsi-momentum/<market_cap>')
+def api_rsi_momentum(market_cap):
+    """Proxy endpoint for RSI Momentum (5-day RSI MktCap change) from backend"""
+    cap_map = {
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+    
+    data, status_code = make_backend_request(f'/api/RSIMomentum-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch RSI Momentum data'}), status_code
     return jsonify(data), status_code
 
 

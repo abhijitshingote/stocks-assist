@@ -95,13 +95,14 @@
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    overflow: hidden;
+    overflow-x: auto;
 }
 
 .rsi-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    min-width: 900px;
 }
 
 .rsi-table thead {
@@ -109,7 +110,7 @@
 }
 
 .rsi-table th {
-    padding: 1rem;
+    padding: 0.75rem 0.5rem;
     text-align: left;
     font-weight: 600;
     color: var(--text-primary);
@@ -117,6 +118,7 @@
     cursor: pointer;
     user-select: none;
     white-space: nowrap;
+    font-size: 0.8rem;
 }
 
 .rsi-table th:hover {
@@ -124,7 +126,7 @@
 }
 
 .rsi-table th .sort-icon {
-    margin-left: 0.5rem;
+    margin-left: 0.25rem;
     opacity: 0.5;
 }
 
@@ -134,7 +136,7 @@
 }
 
 .rsi-table td {
-    padding: 0.875rem 1rem;
+    padding: 0.6rem 0.5rem;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-secondary);
 }
@@ -157,7 +159,7 @@
     text-decoration: none;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
 }
 
 .ticker-link:hover {
@@ -167,7 +169,7 @@
 
 /* Company Name */
 .company-name {
-    max-width: 200px;
+    max-width: 140px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -190,7 +192,7 @@
 .rsi-value {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .rsi-high {
@@ -209,14 +211,14 @@
 .rsi-cell {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .rsi-bar-container {
-    width: 60px;
-    height: 8px;
+    width: 40px;
+    height: 6px;
     background: var(--border-color);
-    border-radius: 4px;
+    border-radius: 3px;
     overflow: hidden;
 }
 
@@ -380,6 +382,8 @@
                 <th data-sort="dr_1">1D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_5">5D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_20">20D <span class="sort-icon">↕</span></th>
+                <th data-sort="eps_growth">EPS Gr <span class="sort-icon">↕</span></th>
+                <th data-sort="revenue_growth">Rev Gr <span class="sort-icon">↕</span></th>
                 <th data-sort="market_cap">Market Cap <span class="sort-icon">↕</span></th>
             </tr>
         </thead>
@@ -513,6 +517,8 @@ function renderTable(data) {
             <td class="${getReturnClass(stock.dr_1)}">${formatReturn(stock.dr_1)}</td>
             <td class="${getReturnClass(stock.dr_5)}">${formatReturn(stock.dr_5)}</td>
             <td class="${getReturnClass(stock.dr_20)}">${formatReturn(stock.dr_20)}</td>
+            <td class="${getReturnClass(stock.eps_growth)}">${formatReturn(stock.eps_growth)}</td>
+            <td class="${getReturnClass(stock.revenue_growth)}">${formatReturn(stock.revenue_growth)}</td>
             <td class="market-cap">${formatMarketCap(stock.market_cap)}</td>
         </tr>
     `).join('');

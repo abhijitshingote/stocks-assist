@@ -262,6 +262,8 @@ def initialize_database(reset=False):
                 ps_ttm FLOAT,
                 fpe FLOAT,
                 fps FLOAT,
+                eps_growth FLOAT,
+                revenue_growth FLOAT,
                 rsi INTEGER,
                 rsi_mktcap INTEGER,
                 short_float FLOAT,

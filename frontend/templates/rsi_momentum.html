@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}RSI Market Cap - Stocks Assist{% endblock %}
+{% block title %}RSI Momentum - Stocks Assist{% endblock %}
 
 {% block extra_styles %}
 .page-header {
@@ -11,7 +11,7 @@
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+    background: linear-gradient(135deg, #ff6b6b 0%, var(--accent-yellow) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -50,13 +50,13 @@
 }
 
 .cap-tab:hover {
-    border-color: var(--accent-green);
+    border-color: #ff6b6b;
     color: var(--text-primary);
 }
 
 .cap-tab.active {
-    background: linear-gradient(135deg, rgba(63, 185, 80, 0.2) 0%, rgba(88, 166, 255, 0.2) 100%);
-    border-color: var(--accent-green);
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(210, 153, 34, 0.2) 100%);
+    border-color: #ff6b6b;
     color: var(--text-primary);
 }
 
@@ -86,7 +86,7 @@
     width: 48px;
     height: 48px;
     border: 3px solid var(--border-color);
-    border-top-color: var(--accent-green);
+    border-top-color: #ff6b6b;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
@@ -108,11 +108,11 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
-    min-width: 1000px;
+    min-width: 1100px;
 }
 
 .rsi-table thead {
-    background: rgba(63, 185, 80, 0.1);
+    background: rgba(255, 107, 107, 0.1);
 }
 
 .rsi-table th {
@@ -128,7 +128,7 @@
 }
 
 .rsi-table th:hover {
-    background: rgba(63, 185, 80, 0.15);
+    background: rgba(255, 107, 107, 0.15);
 }
 
 .rsi-table th .sort-icon {
@@ -138,7 +138,7 @@
 
 .rsi-table th.sorted .sort-icon {
     opacity: 1;
-    color: var(--accent-green);
+    color: #ff6b6b;
 }
 
 .rsi-table td {
@@ -169,7 +169,7 @@
 }
 
 .ticker-link:hover {
-    color: var(--accent-green);
+    color: #ff6b6b;
     text-decoration: underline;
 }
 
@@ -213,6 +213,31 @@
     color: var(--accent-red);
 }
 
+/* RSI Change - HIGHLIGHTED */
+.rsi-change {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.rsi-change.positive {
+    background: rgba(63, 185, 80, 0.2);
+    color: var(--accent-green);
+}
+
+.rsi-change.negative {
+    background: rgba(248, 81, 73, 0.2);
+    color: var(--accent-red);
+}
+
+.rsi-change.neutral {
+    background: rgba(139, 148, 158, 0.2);
+    color: var(--text-secondary);
+}
+
 /* RSI Bar */
 .rsi-cell {
     display: flex;
@@ -230,7 +255,7 @@
 
 .rsi-bar {
     height: 100%;
-    border-radius: 4px;
+    border-radius: 3px;
     transition: width 0.3s ease;
 }
 
@@ -246,8 +271,8 @@
     background: linear-gradient(90deg, var(--accent-red), #ff6b5e);
 }
 
-/* Global RSI (smaller, secondary) */
-.rsi-global {
+/* 5D Ago Value */
+.rsi-5d-ago {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.85rem;
     color: var(--text-muted);
@@ -319,14 +344,14 @@
     color: var(--text-primary);
 }
 
-.stat-value.green {
-    color: var(--accent-green);
+.stat-value.highlight {
+    color: #ff6b6b;
 }
 
 /* Info box */
 .info-box {
-    background: rgba(63, 185, 80, 0.1);
-    border: 1px solid rgba(63, 185, 80, 0.3);
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
     border-radius: 8px;
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
@@ -335,30 +360,30 @@
 }
 
 .info-box strong {
-    color: var(--accent-green);
+    color: #ff6b6b;
 }
 {% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1>RSI Market Cap</h1>
-    <p>Relative Strength percentile within each market cap bucket</p>
-    <div class="subtitle">Compare stocks against peers of similar size for fairer momentum comparison</div>
+    <h1>RSI Momentum</h1>
+    <p>Stocks with highest RSI MktCap improvement over 5 trading days</p>
+    <div class="subtitle">Find stocks gaining relative strength within their market cap tier</div>
 </div>
 
 <div class="info-box">
-    <strong>How it works:</strong> RSI MktCap ranks each stock's relative strength only against other stocks in the same market cap category (Mega, Large, Mid, Small, Micro). This gives you an apples-to-apples comparison within each size tier.
+    <strong>How it works:</strong> Shows stocks ranked by their RSI MktCap change over the last 5 trading days. A large positive change means the stock is gaining momentum relative to peers in the same market cap bucket.
 </div>
 
 <!-- Stats Bar -->
 <div class="stats-bar">
     <div class="stat-item">
         <span class="stat-label">Total Stocks</span>
-        <span class="stat-value green" id="totalStocks">—</span>
+        <span class="stat-value highlight" id="totalStocks">—</span>
     </div>
     <div class="stat-item">
-        <span class="stat-label">Avg RSI MktCap</span>
-        <span class="stat-value" id="avgRsi">—</span>
+        <span class="stat-label">Avg Change</span>
+        <span class="stat-value" id="avgChange">—</span>
     </div>
     <div class="stat-item">
         <span class="stat-label">Category</span>
@@ -393,12 +418,12 @@
 <!-- Loading State -->
 <div class="loading-container" id="loadingState">
     <div class="spinner"></div>
-    <span>Loading RSI Market Cap data...</span>
+    <span>Loading RSI Momentum data...</span>
 </div>
 
 <!-- Empty State -->
 <div class="empty-state" id="emptyState" style="display: none;">
-    <h3>No RSI Market Cap data available</h3>
+    <h3>No RSI Momentum data available</h3>
     <p>No stocks found for this market cap category.</p>
 </div>
 
@@ -410,15 +435,16 @@
                 <th data-sort="ticker">Ticker <span class="sort-icon">↕</span></th>
                 <th data-sort="company_name">Company <span class="sort-icon">↕</span></th>
                 <th data-sort="sector">Sector <span class="sort-icon">↕</span></th>
-                <th data-sort="rsi_mktcap" class="sorted">RSI MktCap <span class="sort-icon">↓</span></th>
-                <th data-sort="rsi">RSI Global <span class="sort-icon">↕</span></th>
+                <th data-sort="rsi_mktcap_change" class="sorted">5D Chg <span class="sort-icon">↓</span></th>
+                <th data-sort="rsi_mktcap">RSI MC <span class="sort-icon">↕</span></th>
+                <th data-sort="rsi_mktcap_5d_ago">5D Ago <span class="sort-icon">↕</span></th>
                 <th data-sort="current_price">Price <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_1">1D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_5">5D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_20">20D <span class="sort-icon">↕</span></th>
                 <th data-sort="eps_growth">EPS Gr <span class="sort-icon">↕</span></th>
                 <th data-sort="revenue_growth">Rev Gr <span class="sort-icon">↕</span></th>
-                <th data-sort="market_cap">Market Cap <span class="sort-icon">↕</span></th>
+                <th data-sort="market_cap">Mkt Cap <span class="sort-icon">↕</span></th>
             </tr>
         </thead>
         <tbody id="tableBody">
@@ -430,7 +456,7 @@
 {% block extra_scripts %}
 <script>
 let currentData = [];
-let sortColumn = 'rsi_mktcap';
+let sortColumn = 'rsi_mktcap_change';
 let sortDirection = 'desc';
 
 const capLabels = {
@@ -464,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
             } else {
                 sortColumn = col;
-                sortDirection = (col === 'rsi_mktcap' || col === 'rsi') ? 'desc' : 'asc';
+                sortDirection = (col === 'rsi_mktcap_change' || col === 'rsi_mktcap') ? 'desc' : 'asc';
             }
             updateSortIcons();
             renderTable(sortData(currentData));
@@ -475,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadData(marketCap) {
     showLoading();
     
-    fetch(`/api/frontend/rsi-mktcap/${marketCap}`)
+    fetch(`/api/frontend/rsi-momentum/${marketCap}`)
         .then(response => response.json())
         .then(data => {
             currentData = data;
@@ -491,7 +517,7 @@ function loadData(marketCap) {
             }
         })
         .catch(error => {
-            console.error('Error loading RSI MktCap data:', error);
+            console.error('Error loading RSI Momentum data:', error);
             hideLoading();
             showEmpty();
         });
@@ -540,6 +566,9 @@ function renderTable(data) {
             <td class="company-name" title="${stock.company_name || ''}">${stock.company_name || '—'}</td>
             <td>${stock.sector ? `<span class="sector-badge">${stock.sector}</span>` : '—'}</td>
             <td>
+                <span class="rsi-change ${getChangeClass(stock.rsi_mktcap_change)}">${formatChange(stock.rsi_mktcap_change)}</span>
+            </td>
+            <td>
                 <div class="rsi-cell">
                     <span class="rsi-value ${getRsiClass(stock.rsi_mktcap)}">${stock.rsi_mktcap || '—'}</span>
                     <div class="rsi-bar-container">
@@ -547,7 +576,7 @@ function renderTable(data) {
                     </div>
                 </div>
             </td>
-            <td class="rsi-global">${stock.rsi || '—'}</td>
+            <td class="rsi-5d-ago">${stock.rsi_mktcap_5d_ago || '—'}</td>
             <td class="price">${stock.current_price ? '$' + stock.current_price.toFixed(2) : '—'}</td>
             <td class="${getReturnClass(stock.dr_1)}">${formatReturn(stock.dr_1)}</td>
             <td class="${getReturnClass(stock.dr_5)}">${formatReturn(stock.dr_5)}</td>
@@ -557,6 +586,19 @@ function renderTable(data) {
             <td class="market-cap">${formatMarketCap(stock.market_cap)}</td>
         </tr>
     `).join('');
+}
+
+function getChangeClass(change) {
+    if (change == null) return 'neutral';
+    if (change > 0) return 'positive';
+    if (change < 0) return 'negative';
+    return 'neutral';
+}
+
+function formatChange(value) {
+    if (value == null) return '—';
+    const sign = value > 0 ? '+' : '';
+    return sign + value;
 }
 
 function getRsiClass(rsi) {
@@ -596,13 +638,13 @@ function updateStats(count, data) {
     document.getElementById('totalStocks').textContent = count;
     
     if (data && data.length > 0) {
-        const validRsi = data.filter(d => d.rsi_mktcap != null).map(d => d.rsi_mktcap);
-        const avg = validRsi.length > 0 
-            ? (validRsi.reduce((a, b) => a + b, 0) / validRsi.length).toFixed(1)
+        const validChanges = data.filter(d => d.rsi_mktcap_change != null).map(d => d.rsi_mktcap_change);
+        const avg = validChanges.length > 0 
+            ? (validChanges.reduce((a, b) => a + b, 0) / validChanges.length).toFixed(1)
             : '—';
-        document.getElementById('avgRsi').textContent = avg;
+        document.getElementById('avgChange').textContent = (avg > 0 ? '+' : '') + avg;
     } else {
-        document.getElementById('avgRsi').textContent = '—';
+        document.getElementById('avgChange').textContent = '—';
     }
 }
 

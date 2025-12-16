@@ -413,6 +413,14 @@
                 <span class="metric-label">Forward P/S</span>
                 <span class="metric-value" id="fps">--</span>
             </div>
+            <div class="metric-row">
+                <span class="metric-label">EPS Growth (Est.)</span>
+                <span class="metric-value return-badge" id="epsGrowth">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Revenue Growth (Est.)</span>
+                <span class="metric-value return-badge" id="revenueGrowth">--</span>
+            </div>
         </div>
 
         <!-- Technical Section -->
@@ -545,6 +553,10 @@ async function loadStockData() {
         document.getElementById('psTtm').textContent = data.ps_ttm != null ? formatNumber(data.ps_ttm, 2) : '--';
         document.getElementById('fpe').textContent = data.fpe != null ? formatNumber(data.fpe, 2) : '--';
         document.getElementById('fps').textContent = data.fps != null ? formatNumber(data.fps, 2) : '--';
+        
+        // Growth metrics
+        formatReturn(data.eps_growth, 'epsGrowth');
+        formatReturn(data.revenue_growth, 'revenueGrowth');
         
         // Technical
         document.getElementById('rsi').textContent = data.rsi != null ? data.rsi : '--';

@@ -2,7 +2,7 @@
 
 from flask import Flask, jsonify
 from flask_cors import CORS
-from sqlalchemy import create_engine, func, desc
+from sqlalchemy import create_engine, func, desc, text
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
@@ -443,6 +443,8 @@ def get_stock_metrics_data(session, ticker):
         'ps_ttm': metrics.ps_ttm,
         'fpe': metrics.fpe,
         'fps': metrics.fps,
+        'eps_growth': metrics.eps_growth,
+        'revenue_growth': metrics.revenue_growth,
         'rsi': metrics.rsi,
         'short_float': metrics.short_float,
         'short_ratio': metrics.short_ratio,
@@ -780,6 +782,10 @@ def get_rsi_stocks(session, market_cap_category):
             StockMetrics.dr_1,
             StockMetrics.dr_5,
             StockMetrics.dr_20,
+            StockMetrics.pe,
+            StockMetrics.fpe,
+            StockMetrics.eps_growth,
+            StockMetrics.revenue_growth,
             StockMetrics.updated_at
         ).filter(
             StockMetrics.rsi.isnot(None),
@@ -809,6 +815,10 @@ def get_rsi_stocks(session, market_cap_category):
                 'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
                 'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
                 'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'pe': round(stock.pe, 2) if stock.pe else None,
+                'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
+                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
 
@@ -1034,6 +1044,10 @@ def get_rsi_mktcap_stocks(session, market_cap_category):
             StockMetrics.dr_1,
             StockMetrics.dr_5,
             StockMetrics.dr_20,
+            StockMetrics.pe,
+            StockMetrics.fpe,
+            StockMetrics.eps_growth,
+            StockMetrics.revenue_growth,
             StockMetrics.updated_at
         ).filter(
             StockMetrics.rsi_mktcap.isnot(None),
@@ -1064,6 +1078,10 @@ def get_rsi_mktcap_stocks(session, market_cap_category):
                 'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
                 'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
                 'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'pe': round(stock.pe, 2) if stock.pe else None,
+                'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
+                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
 
@@ -1111,6 +1129,160 @@ def get_rsi_mktcap_mega():
     s = Session()
     try:
         return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
+# RSI Momentum Endpoints (RSI MktCap change over 5 trading days)
+# ============================================================================
+
+def get_rsi_momentum_stocks(connection, market_cap_category=None):
+    """
+    Get stocks with highest RSI_mktcap change over 5 trading days.
+    Joins with stock_metrics to get enriched data.
+    """
+    try:
+        # Build market cap filter
+        mcap_filter = ""
+        if market_cap_category:
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                mcap_filter = f"AND sm.market_cap >= {category['min']}"
+                if category['max'] is not None:
+                    mcap_filter += f" AND sm.market_cap < {category['max']}"
+        
+        query = f"""
+        WITH trading_dates AS (
+            SELECT DISTINCT date
+            FROM historical_rsi
+            ORDER BY date DESC
+            LIMIT 6
+        ),
+        latest_date AS (
+            SELECT MAX(date) as max_date FROM trading_dates
+        ),
+        date_5d_ago AS (
+            SELECT MIN(date) as min_date FROM trading_dates
+        ),
+        rsi_change AS (
+            SELECT 
+                h_today.ticker,
+                h_today.rsi_mktcap as rsi_mktcap_today,
+                h_today.rsi_global as rsi_global_today,
+                h_5d.rsi_mktcap as rsi_mktcap_5d_ago,
+                h_5d.rsi_global as rsi_global_5d_ago,
+                (h_today.rsi_mktcap - h_5d.rsi_mktcap) as rsi_mktcap_change,
+                (h_today.rsi_global - h_5d.rsi_global) as rsi_global_change
+            FROM historical_rsi h_today
+            CROSS JOIN latest_date ld
+            CROSS JOIN date_5d_ago d5
+            LEFT JOIN historical_rsi h_5d 
+                ON h_today.ticker = h_5d.ticker 
+                AND h_5d.date = d5.min_date
+            WHERE h_today.date = ld.max_date
+              AND h_5d.rsi_mktcap IS NOT NULL
+        )
+        SELECT 
+            rc.ticker,
+            sm.company_name,
+            sm.sector,
+            sm.industry,
+            sm.market_cap,
+            sm.current_price,
+            rc.rsi_mktcap_today,
+            rc.rsi_global_today,
+            rc.rsi_mktcap_5d_ago,
+            rc.rsi_mktcap_change,
+            rc.rsi_global_change,
+            sm.dr_1,
+            sm.dr_5,
+            sm.dr_20,
+            sm.eps_growth,
+            sm.revenue_growth,
+            sm.updated_at
+        FROM rsi_change rc
+        JOIN stock_metrics sm ON rc.ticker = sm.ticker
+        WHERE rc.rsi_mktcap_change IS NOT NULL
+        {mcap_filter}
+        ORDER BY rc.rsi_mktcap_change DESC
+        LIMIT 100
+        """
+        
+        result = connection.execute(text(query))
+        rows = result.fetchall()
+        
+        results = []
+        for row in rows:
+            results.append({
+                'ticker': row[0],
+                'company_name': row[1],
+                'sector': row[2],
+                'industry': row[3],
+                'market_cap': row[4],
+                'current_price': round(row[5], 2) if row[5] else None,
+                'rsi_mktcap': row[6],
+                'rsi': row[7],
+                'rsi_mktcap_5d_ago': row[8],
+                'rsi_mktcap_change': row[9],
+                'rsi_global_change': row[10],
+                'dr_1': round(row[11], 2) if row[11] else None,
+                'dr_5': round(row[12], 2) if row[12] else None,
+                'dr_20': round(row[13], 2) if row[13] else None,
+                'eps_growth': round(row[14], 2) if row[14] else None,
+                'revenue_growth': round(row[15], 2) if row[15] else None,
+                'updated_at': row[16].strftime('%Y-%m-%d %H:%M:%S') if row[16] else None
+            })
+        
+        return results
+    
+    except Exception as e:
+        logger.error(f"Error getting RSI momentum stocks: {str(e)}")
+        return []
+
+
+@app.route('/api/RSIMomentum-MicroCap')
+def get_rsi_momentum_micro():
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/RSIMomentum-SmallCap')
+def get_rsi_momentum_small():
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/RSIMomentum-MidCap')
+def get_rsi_momentum_mid():
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/RSIMomentum-LargeCap')
+def get_rsi_momentum_large():
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/RSIMomentum-MegaCap')
+def get_rsi_momentum_mega():
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='mega'))
     finally:
         s.close()
 
