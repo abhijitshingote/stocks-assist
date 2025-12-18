@@ -20,16 +20,17 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
-import logging
 import pytz
 
-# Add backend directory to Python path to import models
+# Add backend and db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Script name for logging
+SCRIPT_NAME = 'seed_tickers_from_fmp'
+logger = get_logger(SCRIPT_NAME)
 
 load_dotenv()
 
@@ -208,16 +209,7 @@ def process_stocks(session, stocks, batch_size=500):
     return tickers_new_total, tickers_updated_total
 
 
-def format_duration(seconds):
-    """Format duration in hours, minutes, seconds"""
-    hrs = int(seconds // 3600)
-    mins = int((seconds % 3600) // 60)
-    secs = int(seconds % 60)
-    if hrs > 0:
-        return f"{hrs}h {mins}m {secs}s"
-    elif mins > 0:
-        return f"{mins}m {secs}s"
-    return f"{secs}s"
+# format_duration is imported from db_scripts.logger
 
 
 def main():
@@ -271,13 +263,16 @@ def main():
         logger.info(f"  Time taken: {format_duration(elapsed)}")
         logger.info("=" * 60)
         logger.info("✅ Tickers seeding completed successfully!")
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{new_t} new, {upd_t} updated tickers', total_tickers)
 
     except Exception as e:
         logger.error(f"Error in tickers seeding: {e}")
         session.rollback()
+        write_summary(SCRIPT_NAME, 'FAILED', str(e))
         raise
     finally:
         session.close()
+        flush_logger(SCRIPT_NAME)
 
 
 if __name__ == '__main__':

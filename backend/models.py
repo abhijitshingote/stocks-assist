@@ -335,3 +335,27 @@ class HistoricalRSI(Base):
     __table_args__ = (UniqueConstraint("ticker", "date", name="uq_historical_rsi"),)
 
     ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 12. RsiIndices (RSI rankings within index universes: SPX, NDX, DJI)
+# ------------------------------------------------------------
+class RsiIndices(Base):
+    __tablename__ = "rsi_indices"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    
+    # Index membership flags
+    is_spx = Column(Boolean, default=False)  # S&P 500
+    is_ndx = Column(Boolean, default=False)  # NASDAQ 100
+    is_dji = Column(Boolean, default=False)  # Dow Jones Industrial Average
+    
+    # RSI percentile rank (1-100) within each index universe
+    rsi_spx = Column(Integer)   # RSI percentile within S&P 500
+    rsi_ndx = Column(Integer)   # RSI percentile within NASDAQ 100
+    rsi_dji = Column(Integer)   # RSI percentile within Dow Jones
+    
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")

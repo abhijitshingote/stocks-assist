@@ -40,6 +40,8 @@ database/data/
 
 # Logs
 *.log
+logs_detailed.txt
+logs_summary.txt
 
 # OS generated files
 .DS_Store

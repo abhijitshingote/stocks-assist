@@ -23,20 +23,15 @@ from dotenv import load_dotenv
 import time
 import pytz
 
-# Add backend to Python path
+# Add backend and db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Base, HistoricalRSI
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('historical_rsi_update.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# Script name for logging
+SCRIPT_NAME = 'historical_rsi_update'
+logger = get_logger(SCRIPT_NAME)
 
 # Load environment variables
 load_dotenv()
@@ -211,16 +206,19 @@ def main():
                 total_count, date_count = compute_and_load_historical_rsi(connection)
             
             logger.info(f"Successfully updated historical_rsi: {total_count} records, {date_count} trading days")
+            write_summary(SCRIPT_NAME, 'SUCCESS', f'Updated {date_count} trading days', total_count)
             
     except Exception as e:
         logger.error(f"Error in historical RSI update: {str(e)}")
+        write_summary(SCRIPT_NAME, 'FAILED', str(e))
         raise
     finally:
         session.close()
         total_time = time.time() - overall_start
         logger.info("=" * 60)
-        logger.info(f"=== Historical RSI Update Completed in {total_time:.2f}s ===")
+        logger.info(f"=== Historical RSI Update Completed in {format_duration(total_time)} ===")
         logger.info("=" * 60)
+        flush_logger(SCRIPT_NAME)
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ import json
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from backend.models import Ticker, OHLC
+from db_scripts.logger import get_logger, write_summary, flush_logger
 from sqlalchemy import func, and_, desc, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
@@ -26,6 +27,10 @@ from dotenv import load_dotenv
 import pytz
 
 load_dotenv()
+
+# Script name for logging
+SCRIPT_NAME = 'run_triggers'
+logger = get_logger(SCRIPT_NAME)
 
 
 def init_db():
@@ -325,17 +330,17 @@ def run_triggers(target_date=None, config_path='db_scripts/data/triggers_config.
         target_date = datetime.strptime(target_date, '%Y-%m-%d').date()
     
     if not target_date:
-        print("Error: No price data found in database")
+        logger.error("Error: No price data found in database")
         return
     
-    print(f"Running triggers for date: {target_date}")
-    print(f"Found {len(config['triggers'])} triggers to evaluate")
+    logger.info(f"Running triggers for date: {target_date}")
+    logger.info(f"Found {len(config['triggers'])} triggers to evaluate")
     
     # Get all stocks with global filters applied
     stocks_query = apply_global_filters(session, config)
     stocks = stocks_query.all()
     
-    print(f"Evaluating {len(stocks)} stocks after global filters")
+    logger.info(f"Evaluating {len(stocks)} stocks after global filters")
     
     # Track results
     results = {trigger['name']: [] for trigger in config['triggers']}
@@ -344,7 +349,7 @@ def run_triggers(target_date=None, config_path='db_scripts/data/triggers_config.
     # Evaluate each stock against each trigger
     for i, ticker_obj in enumerate(stocks):
         if (i + 1) % 500 == 0:
-            print(f"  Progress: {i + 1}/{len(stocks)} stocks evaluated...")
+            logger.info(f"  Progress: {i + 1}/{len(stocks)} stocks evaluated...")
         
         metrics = get_stock_metrics(session, ticker_obj, target_date)
         
@@ -388,26 +393,29 @@ def run_triggers(target_date=None, config_path='db_scripts/data/triggers_config.
                 results_with_metrics[trigger_name].append(trigger_metadata)
     
     # Print summary
-    print("\n" + "="*60)
-    print("TRIGGER RESULTS SUMMARY")
-    print("="*60)
+    logger.info("\n" + "="*60)
+    logger.info("TRIGGER RESULTS SUMMARY")
+    logger.info("="*60)
     
     total_matches = 0
     for trigger_name, tickers in results.items():
         count = len(tickers)
         total_matches += count
-        print(f"\n{trigger_name}: {count} stocks")
+        logger.info(f"\n{trigger_name}: {count} stocks")
         if count > 0 and count <= 10:
-            print(f"  Tickers: {', '.join(tickers)}")
+            logger.info(f"  Tickers: {', '.join(tickers)}")
         elif count > 10:
-            print(f"  Top 10: {', '.join(tickers[:10])}")
+            logger.info(f"  Top 10: {', '.join(tickers[:10])}")
     
-    print("\n" + "="*60)
-    print(f"Total matches across all triggers: {total_matches}")
-    print(f"Results computed for date: {target_date}")
-    print("="*60)
+    logger.info("\n" + "="*60)
+    logger.info(f"Total matches across all triggers: {total_matches}")
+    logger.info(f"Results computed for date: {target_date}")
+    logger.info("="*60)
+    
+    write_summary(SCRIPT_NAME, 'SUCCESS', f'{len(config["triggers"])} triggers evaluated', total_matches)
     
     session.close()
+    flush_logger(SCRIPT_NAME)
     return results, results_with_metrics
 
 
@@ -429,7 +437,7 @@ def main():
         }
         with open(args.output, 'w') as f:
             json.dump(output_data, f, indent=2, default=str)
-        print(f"\nDetailed results saved to: {args.output}")
+        logger.info(f"\nDetailed results saved to: {args.output}")
 
 
 if __name__ == '__main__':

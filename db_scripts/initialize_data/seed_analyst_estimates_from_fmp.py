@@ -12,14 +12,17 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
-import logging
 import argparse
 
+# Add db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, AnalystEstimates, SyncMetadata
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Script name for logging
+SCRIPT_NAME = 'seed_analyst_estimates_from_fmp'
+logger = get_logger(SCRIPT_NAME)
 load_dotenv()
 
 BASE_URL = 'https://financialmodelingprep.com/stable'
@@ -32,11 +35,7 @@ def get_api_key():
     return api_key
 
 
-def format_duration(seconds):
-    hrs, mins, secs = int(seconds // 3600), int((seconds % 3600) // 60), int(seconds % 60)
-    if hrs > 0: return f"{hrs}h {mins}m {secs}s"
-    elif mins > 0: return f"{mins}m {secs}s"
-    return f"{secs}s"
+# format_duration is imported from db_scripts.logger
 
 
 def fetch_analyst_estimates(api_key, symbol, limit=10):
@@ -140,12 +139,19 @@ def main():
         logger.info(f"  Time taken: {format_duration(time.time() - start_time)}")
         logger.info("=" * 60)
         logger.info("✅ Analyst estimates seeding completed!")
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{len(tickers)} tickers processed', total)
 
     except KeyboardInterrupt:
         session.commit()
         logger.info("Interrupted, progress saved.")
+        write_summary(SCRIPT_NAME, 'INTERRUPTED', 'Progress saved')
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        raise
     finally:
         session.close()
+        flush_logger(SCRIPT_NAME)
 
 
 if __name__ == '__main__':

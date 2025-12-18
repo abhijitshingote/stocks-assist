@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}RSI by Market Cap - Stocks Assist{% endblock %}
+{% block title %}RSI All Market - Stocks Assist{% endblock %}
 
 {% block extra_styles %}
 .page-header {
@@ -313,7 +313,7 @@
 
 {% block content %}
 <div class="page-header">
-    <h1>RSI by Market Cap</h1>
+    <h1>RSI All Market</h1>
     <p>Relative Strength Index rankings segmented by market capitalization</p>
 </div>
 
@@ -329,13 +329,17 @@
     </div>
     <div class="stat-item">
         <span class="stat-label">Category</span>
-        <span class="stat-value" id="currentCategory">Mega Cap</span>
+        <span class="stat-value" id="currentCategory">All</span>
     </div>
 </div>
 
 <!-- Market Cap Tabs -->
 <div class="cap-tabs">
-    <button class="cap-tab active" data-cap="mega">
+    <button class="cap-tab active" data-cap="all">
+        All
+        <span class="cap-label">No Filter</span>
+    </button>
+    <button class="cap-tab" data-cap="mega">
         Mega
         <span class="cap-label">&gt;$100B</span>
     </button>
@@ -400,6 +404,7 @@ let sortColumn = 'rsi';
 let sortDirection = 'desc';
 
 const capLabels = {
+    'all': 'All',
     'mega': 'Mega Cap',
     'large': 'Large Cap',
     'mid': 'Mid Cap',
@@ -409,7 +414,7 @@ const capLabels = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    loadData('mega');
+    loadData('all');
     
     // Tab click handlers
     document.querySelectorAll('.cap-tab').forEach(tab => {

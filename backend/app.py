@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, func, desc, text
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
-    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics
+    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices
 )
 import os
 import logging
@@ -829,6 +829,14 @@ def get_rsi_stocks(session, market_cap_category):
         return []
 
 
+@app.route('/api/RSI-All')
+def get_rsi_all():
+    s = Session()
+    try:
+        return jsonify(get_rsi_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
 @app.route('/api/RSI-MicroCap')
 def get_rsi_micro():
     s = Session()
@@ -1092,6 +1100,14 @@ def get_rsi_mktcap_stocks(session, market_cap_category):
         return []
 
 
+@app.route('/api/RSIMktCap-All')
+def get_rsi_mktcap_all():
+    s = Session()
+    try:
+        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
 @app.route('/api/RSIMktCap-MicroCap')
 def get_rsi_mktcap_micro():
     s = Session()
@@ -1241,6 +1257,15 @@ def get_rsi_momentum_stocks(connection, market_cap_category=None):
         return []
 
 
+@app.route('/api/RSIMomentum-All')
+def get_rsi_momentum_all():
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category=None))
+    finally:
+        s.close()
+
 @app.route('/api/RSIMomentum-MicroCap')
 def get_rsi_momentum_micro():
     s = Session()
@@ -1283,6 +1308,120 @@ def get_rsi_momentum_mega():
     try:
         with s.get_bind().connect() as conn:
             return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
+# RSI Index Endpoints (RSI within index universes: SPX, NDX, DJI)
+# ============================================================================
+
+def get_rsi_index_stocks(session, index_type, market_cap_category=None):
+    """
+    Get stocks with RSI data for a given index universe.
+    Joins rsi_indices with stock_metrics for full stock data.
+    Optional market_cap_category filter for view filtering (doesn't affect RSI calculation).
+    """
+    try:
+        # Map index type to column names
+        index_map = {
+            'spx': {'flag': 'is_spx', 'rsi_col': 'rsi_spx', 'name': 'S&P 500'},
+            'ndx': {'flag': 'is_ndx', 'rsi_col': 'rsi_ndx', 'name': 'NASDAQ 100'},
+            'dji': {'flag': 'is_dji', 'rsi_col': 'rsi_dji', 'name': 'Dow Jones'}
+        }
+        
+        if index_type not in index_map:
+            return []
+        
+        idx = index_map[index_type]
+        
+        query = session.query(
+            RsiIndices.ticker,
+            getattr(RsiIndices, idx['rsi_col']).label('rsi_index'),
+            StockMetrics.company_name,
+            StockMetrics.sector,
+            StockMetrics.industry,
+            StockMetrics.market_cap,
+            StockMetrics.current_price,
+            StockMetrics.rsi,
+            StockMetrics.dr_1,
+            StockMetrics.dr_5,
+            StockMetrics.dr_20,
+            StockMetrics.pe,
+            StockMetrics.fpe,
+            StockMetrics.eps_growth,
+            StockMetrics.revenue_growth,
+            StockMetrics.updated_at
+        ).join(
+            StockMetrics, RsiIndices.ticker == StockMetrics.ticker
+        ).filter(
+            getattr(RsiIndices, idx['flag']) == True,
+            getattr(RsiIndices, idx['rsi_col']).isnot(None)
+        )
+        
+        # Apply optional market cap filter (view filter only, doesn't affect RSI calculation)
+        if market_cap_category:
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                query = query.filter(StockMetrics.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(StockMetrics.market_cap < category['max'])
+        
+        query = query.order_by(desc(getattr(RsiIndices, idx['rsi_col'])))
+        stocks = query.all()
+
+        results = []
+        for stock in stocks:
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'rsi_index': stock.rsi_index,
+                'rsi': stock.rsi,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'pe': round(stock.pe, 2) if stock.pe else None,
+                'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
+                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
+                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
+            })
+
+        return results
+
+    except Exception as e:
+        logger.error(f"Error getting RSI index stocks for {index_type}: {str(e)}")
+        return []
+
+
+@app.route('/api/RSI-SPX')
+@app.route('/api/RSI-SPX/<market_cap>')
+def get_rsi_spx(market_cap=None):
+    s = Session()
+    try:
+        return jsonify(get_rsi_index_stocks(s, index_type='spx', market_cap_category=market_cap))
+    finally:
+        s.close()
+
+@app.route('/api/RSI-NDX')
+@app.route('/api/RSI-NDX/<market_cap>')
+def get_rsi_ndx(market_cap=None):
+    s = Session()
+    try:
+        return jsonify(get_rsi_index_stocks(s, index_type='ndx', market_cap_category=market_cap))
+    finally:
+        s.close()
+
+@app.route('/api/RSI-DJI')
+@app.route('/api/RSI-DJI/<market_cap>')
+def get_rsi_dji(market_cap=None):
+    s = Session()
+    try:
+        return jsonify(get_rsi_index_stocks(s, index_type='dji', market_cap_category=market_cap))
     finally:
         s.close()
 

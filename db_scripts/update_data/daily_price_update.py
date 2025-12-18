@@ -18,20 +18,15 @@ import time
 import pytz
 import argparse
 
-# Add backend to Python path
+# Add backend and db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Base, Ticker, OHLC
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('daily_price_update.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# Script name for logging
+SCRIPT_NAME = 'daily_price_update'
+logger = get_logger(SCRIPT_NAME)
 
 # Load environment variables
 load_dotenv()
@@ -99,16 +94,7 @@ def parse_int(value):
         return None
 
 
-def format_duration(seconds):
-    """Format duration in hours, minutes, seconds"""
-    hrs = int(seconds // 3600)
-    mins = int((seconds % 3600) // 60)
-    secs = int(seconds % 60)
-    if hrs > 0:
-        return f"{hrs}h {mins}m {secs}s"
-    elif mins > 0:
-        return f"{mins}m {secs}s"
-    return f"{secs}s"
+# format_duration is imported from db_scripts.logger
 
 
 def fetch_eod_prices(tickers, target_date, delay=0.12, progress_interval=100):
@@ -412,20 +398,25 @@ def main():
             if price_records:
                 upserted_count = bulk_upsert_prices(session, engine, price_records)
                 logger.info(f"Updated {upserted_count:,} records for {target_date}")
+                write_summary(SCRIPT_NAME, 'SUCCESS', f'Updated prices for {target_date}', upserted_count)
             else:
                 logger.warning("No valid price records after processing")
+                write_summary(SCRIPT_NAME, 'WARNING', 'No valid price records after processing')
         else:
             logger.warning("No price data fetched")
+            write_summary(SCRIPT_NAME, 'WARNING', 'No price data fetched')
         
     except Exception as e:
         logger.error(f"Error in main process: {str(e)}")
         session.rollback()
+        write_summary(SCRIPT_NAME, 'FAILED', str(e))
     finally:
         session.close()
         total_time = time.time() - overall_start
         logger.info("=" * 60)
         logger.info(f"=== Daily Price Update Completed in {format_duration(total_time)} ===")
         logger.info("=" * 60)
+        flush_logger(SCRIPT_NAME)
 
 
 if __name__ == "__main__":

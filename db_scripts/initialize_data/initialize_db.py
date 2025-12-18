@@ -3,7 +3,15 @@ import os
 import sys
 from dotenv import load_dotenv
 
+# Add db_scripts to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
+from db_scripts.logger import get_logger, write_summary, flush_logger
+
 load_dotenv()
+
+# Script name for logging
+SCRIPT_NAME = 'initialize_db'
+logger = get_logger(SCRIPT_NAME)
 
 def initialize_database(reset=False):
     """
@@ -22,6 +30,7 @@ def initialize_database(reset=False):
     10. sync_metadata - ETL tracking
     11. stock_metrics - Pre-computed screener metrics
     12. historical_rsi - Daily RSI time series
+    13. rsi_indices - RSI rankings within index universes (SPX, NDX, DJI)
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
@@ -34,8 +43,9 @@ def initialize_database(reset=False):
 
     with engine.connect() as connection:
         if reset:
-            print("Resetting database - dropping existing tables...")
+            logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
+            connection.execute(text("DROP TABLE IF EXISTS rsi_indices CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS historical_rsi CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_metrics CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS sync_metadata CASCADE;"))
@@ -48,7 +58,7 @@ def initialize_database(reset=False):
             connection.execute(text("DROP TABLE IF EXISTS ohlc CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS company_profiles CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS tickers CASCADE;"))
-            print("Old tables dropped.")
+            logger.info("Old tables dropped.")
         
         table_clause = "CREATE TABLE" if reset else "CREATE TABLE IF NOT EXISTS"
         
@@ -288,6 +298,21 @@ def initialize_database(reset=False):
             )
         """))
         
+        # 12. rsi_indices - RSI rankings within index universes (SPX, NDX, DJI)
+        connection.execute(text(f"""
+            {table_clause} rsi_indices (
+                ticker VARCHAR(20) PRIMARY KEY,
+                is_spx BOOLEAN DEFAULT FALSE,
+                is_ndx BOOLEAN DEFAULT FALSE,
+                is_dji BOOLEAN DEFAULT FALSE,
+                rsi_spx INTEGER,
+                rsi_ndx INTEGER,
+                rsi_dji INTEGER,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
+            )
+        """))
+        
         # Create indexes for better query performance
         idx_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
         connection.execute(text(f"""
@@ -313,28 +338,36 @@ def initialize_database(reset=False):
             {idx_clause} idx_historical_rsi_ticker ON historical_rsi(ticker);
             {idx_clause} idx_historical_rsi_date ON historical_rsi(date);
             {idx_clause} idx_historical_rsi_ticker_date ON historical_rsi(ticker, date);
+            {idx_clause} idx_rsi_indices_is_spx ON rsi_indices(is_spx);
+            {idx_clause} idx_rsi_indices_is_ndx ON rsi_indices(is_ndx);
+            {idx_clause} idx_rsi_indices_is_dji ON rsi_indices(is_dji);
         """))
         
         connection.commit()
         
         if reset:
-            print("Database reset completed successfully!")
+            logger.info("Database reset completed successfully!")
+            write_summary(SCRIPT_NAME, 'SUCCESS', 'Database reset completed - all tables recreated')
         else:
-            print("Database initialization completed successfully!")
+            logger.info("Database initialization completed successfully!")
+            write_summary(SCRIPT_NAME, 'SUCCESS', 'Database initialized - tables created if not exists')
         
-        print("Tables:")
-        print("  - tickers (from Company Screener)")
-        print("  - company_profiles (from Profile endpoint)")
-        print("  - ohlc (price history)")
-        print("  - indices (index definitions)")
-        print("  - index_prices (index/ETF price history)")
-        print("  - index_components (index → ticker mapping)")
-        print("  - ratios_ttm (from Ratios TTM endpoint)")
-        print("  - analyst_estimates (from Analyst Estimates endpoint)")
-        print("  - earnings (from Earnings endpoint)")
-        print("  - sync_metadata (ETL tracking)")
-        print("  - stock_metrics (pre-computed screener metrics)")
-        print("  - historical_rsi (daily RSI time series)")
+        logger.info("Tables:")
+        logger.info("  - tickers (from Company Screener)")
+        logger.info("  - company_profiles (from Profile endpoint)")
+        logger.info("  - ohlc (price history)")
+        logger.info("  - indices (index definitions)")
+        logger.info("  - index_prices (index/ETF price history)")
+        logger.info("  - index_components (index → ticker mapping)")
+        logger.info("  - ratios_ttm (from Ratios TTM endpoint)")
+        logger.info("  - analyst_estimates (from Analyst Estimates endpoint)")
+        logger.info("  - earnings (from Earnings endpoint)")
+        logger.info("  - sync_metadata (ETL tracking)")
+        logger.info("  - stock_metrics (pre-computed screener metrics)")
+        logger.info("  - historical_rsi (daily RSI time series)")
+        logger.info("  - rsi_indices (RSI within index universes: SPX, NDX, DJI)")
+        
+        flush_logger(SCRIPT_NAME)
 
 
 if __name__ == "__main__":

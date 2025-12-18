@@ -18,20 +18,15 @@ import time
 import pytz
 import argparse
 
-# Add backend to Python path
+# Add backend and db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Base, Index, IndexPrice
+from db_scripts.logger import get_logger, write_summary, flush_logger
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('daily_indices_update.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# Script name for logging
+SCRIPT_NAME = 'daily_indices_update'
+logger = get_logger(SCRIPT_NAME)
 
 # Load environment variables
 load_dotenv()
@@ -377,11 +372,17 @@ def main():
         logger.info(f"Completed at: {get_eastern_datetime().strftime('%Y-%m-%d %H:%M:%S %Z')}")
         logger.info("="*80)
         
+        total_records = stats['total_inserted'] + stats['total_updated']
+        write_summary(SCRIPT_NAME, 'SUCCESS', f"Updated {', '.join(stats['success'])}", total_records)
+        
         # Close session
         session.close()
+        flush_logger(SCRIPT_NAME)
         
     except Exception as e:
         logger.error(f"Fatal error in daily update: {str(e)}", exc_info=True)
+        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        flush_logger(SCRIPT_NAME)
         sys.exit(1)
 
 
