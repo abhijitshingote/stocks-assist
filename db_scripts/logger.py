@@ -148,25 +148,40 @@ def flush_logger(script_name):
         _active_handlers[logger_name].flush_to_file()
 
 
-def write_summary(script_name, status, message, records_affected=None):
+def write_summary(script_name, status, message, records_affected=None, duration_seconds=None):
     """
     Write a summary line to the summary log file.
-    
+
     Args:
         script_name: Name of the script
         status: Status string (e.g., 'SUCCESS', 'FAILED', 'WARNING')
         message: Brief summary message
         records_affected: Optional count of records affected
-    
+        duration_seconds: Optional duration in seconds
+
     Example output:
-        2025-12-18 10:30:15 | daily_price_update | SUCCESS | Updated 500 stocks
+        2025-12-18 10:30:15 | daily_price_update | SUCCESS | Updated 500 stocks | Duration: 45.2s
     """
     timestamp = get_eastern_datetime().strftime('%Y-%m-%d %H:%M:%S')
-    
+
+    parts = [timestamp, script_name, status, message]
+
     if records_affected is not None:
-        summary_line = f"{timestamp} | {script_name} | {status} | {message} | Records: {records_affected}\n"
-    else:
-        summary_line = f"{timestamp} | {script_name} | {status} | {message}\n"
+        parts.append(f"Records: {records_affected}")
+
+    if duration_seconds is not None:
+        # Format duration nicely
+        if duration_seconds < 1:
+            duration_str = f"{duration_seconds:.1f}ms"
+        elif duration_seconds < 60:
+            duration_str = f"{duration_seconds:.1f}s"
+        else:
+            minutes = int(duration_seconds // 60)
+            seconds = duration_seconds % 60
+            duration_str = f"{minutes}m {seconds:.1f}s"
+        parts.append(f"Duration: {duration_str}")
+
+    summary_line = " | ".join(parts) + "\n"
     
     prepend_to_file(LOGS_SUMMARY_PATH, summary_line)
 

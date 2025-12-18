@@ -23,8 +23,8 @@ cat stocks_db_backup.dump |  docker-compose exec -T db pg_restore -U postgres -d
 docker-compose exec  backend bash -c "
   python db_scripts/initialize_data/initialize_db.py --reset && \
   python db_scripts/initialize_data/seed_tickers_from_fmp.py && \
-python db_scripts/initialize_data/seed_earnings_from_fmp.py
-python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py
+python db_scripts/initialize_data/seed_earnings_from_fmp.py && \
+python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py && \
   python db_scripts/initialize_data/seed_index_prices_fmp.py && \
     python db_scripts/initialize_data/seed_index_constituents_fmp.py && \
   python db_scripts/initialize_data/seed_ohlc_from_fmp.py --days 365 && \
