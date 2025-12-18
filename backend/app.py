@@ -1426,5 +1426,152 @@ def get_rsi_dji(market_cap=None):
         s.close()
 
 
+# ============================================================================
+# Top Performance Endpoints (Union of top stocks by 1D, 5D, 20D returns)
+# ============================================================================
+
+def get_top_performance_stocks(session, market_cap_category=None):
+    """
+    Get union of top 30 stocks by dr_1, dr_5, and dr_20 from stock_metrics.
+    Returns combined list with all columns for consistency with other pages.
+    """
+    try:
+        # Base query for fetching all needed columns
+        def build_query(return_column, limit=30):
+            query = session.query(
+                StockMetrics.ticker,
+                StockMetrics.company_name,
+                StockMetrics.sector,
+                StockMetrics.industry,
+                StockMetrics.market_cap,
+                StockMetrics.current_price,
+                StockMetrics.rsi,
+                StockMetrics.rsi_mktcap,
+                StockMetrics.dr_1,
+                StockMetrics.dr_5,
+                StockMetrics.dr_20,
+                StockMetrics.dr_60,
+                StockMetrics.dr_120,
+                StockMetrics.pe,
+                StockMetrics.fpe,
+                StockMetrics.eps_growth,
+                StockMetrics.revenue_growth,
+                StockMetrics.volume,
+                StockMetrics.dollar_volume,
+                StockMetrics.updated_at
+            ).filter(
+                getattr(StockMetrics, return_column).isnot(None),
+                StockMetrics.market_cap.isnot(None)
+            )
+            
+            # Apply market cap filter
+            if market_cap_category:
+                category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+                if category:
+                    query = query.filter(StockMetrics.market_cap >= category['min'])
+                    if category['max'] is not None:
+                        query = query.filter(StockMetrics.market_cap < category['max'])
+            
+            # Order by the specified return column descending
+            query = query.order_by(desc(getattr(StockMetrics, return_column))).limit(limit)
+            return query
+        
+        # Get top 30 from each return period
+        top_1d = build_query('dr_1').all()
+        top_5d = build_query('dr_5').all()
+        top_20d = build_query('dr_20').all()
+        
+        # Combine and deduplicate by ticker
+        seen_tickers = set()
+        combined_stocks = []
+        
+        for stock_list in [top_1d, top_5d, top_20d]:
+            for stock in stock_list:
+                if stock.ticker not in seen_tickers:
+                    seen_tickers.add(stock.ticker)
+                    combined_stocks.append(stock)
+        
+        # Format results
+        results = []
+        for stock in combined_stocks:
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'rsi': stock.rsi,
+                'rsi_mktcap': stock.rsi_mktcap,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'dr_60': round(stock.dr_60, 2) if stock.dr_60 else None,
+                'dr_120': round(stock.dr_120, 2) if stock.dr_120 else None,
+                'pe': round(stock.pe, 2) if stock.pe else None,
+                'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
+                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
+                'volume': int(stock.volume) if stock.volume else None,
+                'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
+                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
+            })
+        
+        return results
+    
+    except Exception as e:
+        logger.error(f"Error getting top performance stocks: {str(e)}")
+        return []
+
+
+@app.route('/api/TopPerformance-All')
+def get_top_performance_all():
+    s = Session()
+    try:
+        return jsonify(get_top_performance_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
+@app.route('/api/TopPerformance-MicroCap')
+def get_top_performance_micro():
+    s = Session()
+    try:
+        return jsonify(get_top_performance_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/TopPerformance-SmallCap')
+def get_top_performance_small():
+    s = Session()
+    try:
+        return jsonify(get_top_performance_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/TopPerformance-MidCap')
+def get_top_performance_mid():
+    s = Session()
+    try:
+        return jsonify(get_top_performance_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/TopPerformance-LargeCap')
+def get_top_performance_large():
+    s = Session()
+    try:
+        return jsonify(get_top_performance_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/TopPerformance-MegaCap')
+def get_top_performance_mega():
+    s = Session()
+    try:
+        return jsonify(get_top_performance_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

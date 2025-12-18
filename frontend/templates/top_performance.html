@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Top Performance - Stocks Assist{% endblock %}
+{% block title %}Top Stocks - Stocks Assist{% endblock %}
 
 {% block extra_styles %}
 .page-header {
@@ -11,7 +11,7 @@
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+    background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -28,6 +28,50 @@
     margin-top: 0.5rem;
 }
 
+/* Market Cap Tabs */
+.cap-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.cap-tab {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.cap-tab:hover {
+    border-color: var(--accent-green);
+    color: var(--text-primary);
+}
+
+.cap-tab.active {
+    background: linear-gradient(135deg, rgba(63, 185, 80, 0.2) 0%, rgba(88, 166, 255, 0.2) 100%);
+    border-color: var(--accent-green);
+    color: var(--text-primary);
+}
+
+.cap-tab .cap-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    font-weight: 400;
+}
+
+.cap-tab.active .cap-label {
+    color: var(--text-secondary);
+}
+
 /* Loading State */
 .loading-container {
     display: flex;
@@ -42,7 +86,7 @@
     width: 48px;
     height: 48px;
     border: 3px solid var(--border-color);
-    border-top-color: #00d4aa;
+    border-top-color: var(--accent-green);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
@@ -52,26 +96,26 @@
     to { transform: rotate(360deg); }
 }
 
-/* Performance Table */
-.perf-table-container {
+/* Top Performance Table */
+.top-table-container {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     overflow-x: auto;
 }
 
-.perf-table {
+.top-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
-    min-width: 1100px;
+    min-width: 1000px;
 }
 
-.perf-table thead {
-    background: rgba(0, 212, 170, 0.1);
+.top-table thead {
+    background: rgba(63, 185, 80, 0.1);
 }
 
-.perf-table th {
+.top-table th {
     padding: 0.75rem 0.5rem;
     text-align: left;
     font-weight: 600;
@@ -83,35 +127,35 @@
     font-size: 0.8rem;
 }
 
-.perf-table th:hover {
-    background: rgba(0, 212, 170, 0.15);
+.top-table th:hover {
+    background: rgba(63, 185, 80, 0.15);
 }
 
-.perf-table th .sort-icon {
+.top-table th .sort-icon {
     margin-left: 0.25rem;
     opacity: 0.5;
 }
 
-.perf-table th.sorted .sort-icon {
+.top-table th.sorted .sort-icon {
     opacity: 1;
-    color: #00d4aa;
+    color: var(--accent-green);
 }
 
-.perf-table td {
+.top-table td {
     padding: 0.6rem 0.5rem;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-secondary);
 }
 
-.perf-table tbody tr {
+.top-table tbody tr {
     transition: background 0.15s;
 }
 
-.perf-table tbody tr:hover {
+.top-table tbody tr:hover {
     background: var(--bg-card-hover);
 }
 
-.perf-table tbody tr:last-child td {
+.top-table tbody tr:last-child td {
     border-bottom: none;
 }
 
@@ -125,7 +169,7 @@
 }
 
 .ticker-link:hover {
-    color: #00d4aa;
+    color: var(--accent-green);
     text-decoration: underline;
 }
 
@@ -150,6 +194,34 @@
     white-space: nowrap;
 }
 
+/* Return Values */
+.return-positive {
+    color: var(--accent-green);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.return-negative {
+    color: var(--accent-red);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.return-neutral {
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Market Cap Format */
+.market-cap {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-secondary);
+}
+
+/* Price */
+.price {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-primary);
+}
+
 /* RSI Value */
 .rsi-value {
     font-family: 'JetBrains Mono', monospace;
@@ -169,31 +241,6 @@
     color: var(--accent-red);
 }
 
-/* RSI Change - HIGHLIGHTED */
-.rsi-change {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-    font-size: 1.1rem;
-    padding: 0.35rem 0.6rem;
-    border-radius: 6px;
-    display: inline-block;
-}
-
-.rsi-change.positive {
-    background: rgba(63, 185, 80, 0.2);
-    color: var(--accent-green);
-}
-
-.rsi-change.negative {
-    background: rgba(248, 81, 73, 0.2);
-    color: var(--accent-red);
-}
-
-.rsi-change.neutral {
-    background: rgba(139, 148, 158, 0.2);
-    color: var(--text-secondary);
-}
-
 /* RSI Bar */
 .rsi-cell {
     display: flex;
@@ -211,7 +258,7 @@
 
 .rsi-bar {
     height: 100%;
-    border-radius: 3px;
+    border-radius: 4px;
     transition: width 0.3s ease;
 }
 
@@ -227,34 +274,11 @@
     background: linear-gradient(90deg, var(--accent-red), #ff6b5e);
 }
 
-/* 5D Ago Value */
-.rsi-5d-ago {
+/* Global RSI (smaller, secondary) */
+.rsi-global {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.85rem;
     color: var(--text-muted);
-}
-
-/* Return Values */
-.return-positive {
-    color: var(--accent-green);
-    font-family: 'JetBrains Mono', monospace;
-}
-
-.return-negative {
-    color: var(--accent-red);
-    font-family: 'JetBrains Mono', monospace;
-}
-
-/* Market Cap Format */
-.market-cap {
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text-secondary);
-}
-
-/* Price */
-.price {
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text-primary);
 }
 
 /* Empty State */
@@ -300,14 +324,14 @@
     color: var(--text-primary);
 }
 
-.stat-value.highlight {
-    color: #00d4aa;
+.stat-value.green {
+    color: var(--accent-green);
 }
 
 /* Info box */
 .info-box {
-    background: rgba(0, 212, 170, 0.1);
-    border: 1px solid rgba(0, 212, 170, 0.3);
+    background: rgba(63, 185, 80, 0.1);
+    border: 1px solid rgba(63, 185, 80, 0.3);
     border-radius: 8px;
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
@@ -316,84 +340,52 @@
 }
 
 .info-box strong {
-    color: #00d4aa;
-}
-
-/* Market Cap Tabs */
-.cap-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.cap-tab {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: all 0.2s;
-    font-family: 'JetBrains Mono', monospace;
-}
-
-.cap-tab:hover {
-    border-color: #00d4aa;
-    color: var(--text-primary);
-}
-
-.cap-tab.active {
-    background: linear-gradient(135deg, rgba(0, 212, 170, 0.2) 0%, rgba(0, 168, 204, 0.2) 100%);
-    border-color: #00d4aa;
-    color: var(--text-primary);
-}
-
-.cap-tab .cap-label {
-    display: block;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 0.25rem;
-    font-weight: 400;
-}
-
-.cap-tab.active .cap-label {
-    color: var(--text-secondary);
+    color: var(--accent-green);
 }
 {% endblock %}
 
 {% block content %}
 <div class="page-header">
-    <h1>Top Performance</h1>
-    <p>Best performing stocks by 1D, 5D, and 20D returns</p>
-    <div class="subtitle">Union of top 30 stocks in each return period, sorted by 5D return</div>
+    <h1>Top Stocks</h1>
+    <p>Best performing stocks across 1D, 5D, and 20D periods</p>
+    <div class="subtitle">Union of top 30 stocks from each time period - catch the momentum leaders</div>
 </div>
 
 <div class="info-box">
-    <strong>How it works:</strong> This page combines the top 30 stocks by 1-day, 5-day, and 20-day returns into a single list within each market cap category. Stocks may appear in multiple top-30 lists, but are shown only once. Includes RSI momentum change data to show relative strength momentum.
+    <strong>How it works:</strong> This page shows a combined list of the top 30 stocks by 1-day return, top 30 by 5-day return, and top 30 by 20-day return. Stocks that appear in multiple lists are shown only once, giving you a comprehensive view of the strongest performers across different time horizons.
 </div>
 
 <!-- Stats Bar -->
 <div class="stats-bar">
     <div class="stat-item">
         <span class="stat-label">Total Stocks</span>
-        <span class="stat-value highlight" id="totalStocks">—</span>
+        <span class="stat-value green" id="totalStocks">—</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">Avg 1D Return</span>
+        <span class="stat-value" id="avg1D">—</span>
     </div>
     <div class="stat-item">
         <span class="stat-label">Avg 5D Return</span>
-        <span class="stat-value" id="avgReturn">—</span>
+        <span class="stat-value" id="avg5D">—</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">Avg 20D Return</span>
+        <span class="stat-value" id="avg20D">—</span>
     </div>
     <div class="stat-item">
         <span class="stat-label">Category</span>
-        <span class="stat-value" id="currentCategory">Mega Cap</span>
+        <span class="stat-value" id="currentCategory">All</span>
     </div>
 </div>
 
 <!-- Market Cap Tabs -->
 <div class="cap-tabs">
-    <button class="cap-tab active" data-cap="mega">
+    <button class="cap-tab active" data-cap="all">
+        All
+        <span class="cap-label">No Filter</span>
+    </button>
+    <button class="cap-tab" data-cap="mega">
         Mega
         <span class="cap-label">&gt;$100B</span>
     </button>
@@ -418,33 +410,32 @@
 <!-- Loading State -->
 <div class="loading-container" id="loadingState">
     <div class="spinner"></div>
-    <span>Loading Top Performance data...</span>
+    <span>Loading top performance data...</span>
 </div>
 
 <!-- Empty State -->
 <div class="empty-state" id="emptyState" style="display: none;">
-    <h3>No Top Performance data available</h3>
-    <p>No stocks found matching the criteria.</p>
+    <h3>No top performance data available</h3>
+    <p>No stocks found for this market cap category.</p>
 </div>
 
-<!-- Performance Table -->
-<div class="perf-table-container" id="tableContainer" style="display: none;">
-    <table class="perf-table">
+<!-- Top Performance Table -->
+<div class="top-table-container" id="tableContainer" style="display: none;">
+    <table class="top-table">
         <thead>
             <tr>
                 <th data-sort="ticker">Ticker <span class="sort-icon">↕</span></th>
                 <th data-sort="company_name">Company <span class="sort-icon">↕</span></th>
                 <th data-sort="sector">Sector <span class="sort-icon">↕</span></th>
-                <th data-sort="rsi_mktcap_change">5D Chg <span class="sort-icon">↕</span></th>
-                <th data-sort="rsi_mktcap">RSI MC <span class="sort-icon">↕</span></th>
-                <th data-sort="rsi_mktcap_5d_ago">5D Ago <span class="sort-icon">↕</span></th>
+                <th data-sort="rsi_mktcap">RSI MktCap <span class="sort-icon">↕</span></th>
+                <th data-sort="rsi">RSI Global <span class="sort-icon">↕</span></th>
                 <th data-sort="current_price">Price <span class="sort-icon">↕</span></th>
-                <th data-sort="dr_1">1D <span class="sort-icon">↕</span></th>
-                <th data-sort="dr_5" class="sorted">5D <span class="sort-icon">↓</span></th>
+                <th data-sort="dr_1" class="sorted">1D <span class="sort-icon">↓</span></th>
+                <th data-sort="dr_5">5D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_20">20D <span class="sort-icon">↕</span></th>
                 <th data-sort="eps_growth">EPS Gr <span class="sort-icon">↕</span></th>
                 <th data-sort="revenue_growth">Rev Gr <span class="sort-icon">↕</span></th>
-                <th data-sort="market_cap">Mkt Cap <span class="sort-icon">↕</span></th>
+                <th data-sort="market_cap">Market Cap <span class="sort-icon">↕</span></th>
             </tr>
         </thead>
         <tbody id="tableBody">
@@ -456,10 +447,11 @@
 {% block extra_scripts %}
 <script>
 let currentData = [];
-let sortColumn = 'dr_5';
+let sortColumn = 'dr_1';
 let sortDirection = 'desc';
 
 const capLabels = {
+    'all': 'All',
     'mega': 'Mega Cap',
     'large': 'Large Cap',
     'mid': 'Mid Cap',
@@ -469,7 +461,7 @@ const capLabels = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    loadData('mega');
+    loadData('all');
     
     // Tab click handlers
     document.querySelectorAll('.cap-tab').forEach(tab => {
@@ -483,14 +475,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Sort handlers
-    document.querySelectorAll('.perf-table th[data-sort]').forEach(th => {
+    document.querySelectorAll('.top-table th[data-sort]').forEach(th => {
         th.addEventListener('click', function() {
             const col = this.dataset.sort;
             if (sortColumn === col) {
                 sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
             } else {
                 sortColumn = col;
-                sortDirection = (col === 'dr_5' || col === 'dr_1' || col === 'dr_20' || col === 'rsi_mktcap_change' || col === 'rsi_mktcap') ? 'desc' : 'asc';
+                // Default to descending for numeric columns that are typically higher is better
+                sortDirection = ['dr_1', 'dr_5', 'dr_20', 'eps_growth', 'revenue_growth', 'rsi', 'rsi_mktcap'].includes(col) ? 'desc' : 'asc';
             }
             updateSortIcons();
             renderTable(sortData(currentData));
@@ -517,7 +510,7 @@ function loadData(marketCap) {
             }
         })
         .catch(error => {
-            console.error('Error loading Top Performance data:', error);
+            console.error('Error loading top performance data:', error);
             hideLoading();
             showEmpty();
         });
@@ -544,13 +537,13 @@ function sortData(data) {
 }
 
 function updateSortIcons() {
-    document.querySelectorAll('.perf-table th').forEach(th => {
+    document.querySelectorAll('.top-table th').forEach(th => {
         th.classList.remove('sorted');
         const icon = th.querySelector('.sort-icon');
         if (icon) icon.textContent = '↕';
     });
     
-    const activeHeader = document.querySelector(`.perf-table th[data-sort="${sortColumn}"]`);
+    const activeHeader = document.querySelector(`.top-table th[data-sort="${sortColumn}"]`);
     if (activeHeader) {
         activeHeader.classList.add('sorted');
         const icon = activeHeader.querySelector('.sort-icon');
@@ -566,9 +559,6 @@ function renderTable(data) {
             <td class="company-name" title="${stock.company_name || ''}">${stock.company_name || '—'}</td>
             <td>${stock.sector ? `<span class="sector-badge">${stock.sector}</span>` : '—'}</td>
             <td>
-                <span class="rsi-change ${getChangeClass(stock.rsi_mktcap_change)}">${formatChange(stock.rsi_mktcap_change)}</span>
-            </td>
-            <td>
                 <div class="rsi-cell">
                     <span class="rsi-value ${getRsiClass(stock.rsi_mktcap)}">${stock.rsi_mktcap || '—'}</span>
                     <div class="rsi-bar-container">
@@ -576,7 +566,7 @@ function renderTable(data) {
                     </div>
                 </div>
             </td>
-            <td class="rsi-5d-ago">${stock.rsi_mktcap_5d_ago || '—'}</td>
+            <td class="rsi-global">${stock.rsi || '—'}</td>
             <td class="price">${stock.current_price ? '$' + stock.current_price.toFixed(2) : '—'}</td>
             <td class="${getReturnClass(stock.dr_1)}">${formatReturn(stock.dr_1)}</td>
             <td class="${getReturnClass(stock.dr_5)}">${formatReturn(stock.dr_5)}</td>
@@ -586,19 +576,6 @@ function renderTable(data) {
             <td class="market-cap">${formatMarketCap(stock.market_cap)}</td>
         </tr>
     `).join('');
-}
-
-function getChangeClass(change) {
-    if (change == null) return 'neutral';
-    if (change > 0) return 'positive';
-    if (change < 0) return 'negative';
-    return 'neutral';
-}
-
-function formatChange(value) {
-    if (value == null) return '—';
-    const sign = value > 0 ? '+' : '';
-    return sign + value;
 }
 
 function getRsiClass(rsi) {
@@ -616,7 +593,7 @@ function getRsiBarClass(rsi) {
 }
 
 function getReturnClass(value) {
-    if (value == null) return '';
+    if (value == null) return 'return-neutral';
     return value >= 0 ? 'return-positive' : 'return-negative';
 }
 
@@ -638,13 +615,28 @@ function updateStats(count, data) {
     document.getElementById('totalStocks').textContent = count;
     
     if (data && data.length > 0) {
-        const validReturns = data.filter(d => d.dr_5 != null).map(d => d.dr_5);
-        const avg = validReturns.length > 0 
-            ? (validReturns.reduce((a, b) => a + b, 0) / validReturns.length).toFixed(1)
+        // Calculate average returns
+        const valid1D = data.filter(d => d.dr_1 != null).map(d => d.dr_1);
+        const valid5D = data.filter(d => d.dr_5 != null).map(d => d.dr_5);
+        const valid20D = data.filter(d => d.dr_20 != null).map(d => d.dr_20);
+        
+        const avg1D = valid1D.length > 0 
+            ? (valid1D.reduce((a, b) => a + b, 0) / valid1D.length).toFixed(2) + '%'
             : '—';
-        document.getElementById('avgReturn').textContent = (avg > 0 ? '+' : '') + avg + '%';
+        const avg5D = valid5D.length > 0 
+            ? (valid5D.reduce((a, b) => a + b, 0) / valid5D.length).toFixed(2) + '%'
+            : '—';
+        const avg20D = valid20D.length > 0 
+            ? (valid20D.reduce((a, b) => a + b, 0) / valid20D.length).toFixed(2) + '%'
+            : '—';
+        
+        document.getElementById('avg1D').textContent = avg1D;
+        document.getElementById('avg5D').textContent = avg5D;
+        document.getElementById('avg20D').textContent = avg20D;
     } else {
-        document.getElementById('avgReturn').textContent = '—';
+        document.getElementById('avg1D').textContent = '—';
+        document.getElementById('avg5D').textContent = '—';
+        document.getElementById('avg20D').textContent = '—';
     }
 }
 
@@ -669,4 +661,3 @@ function showEmpty() {
 }
 </script>
 {% endblock %}
-

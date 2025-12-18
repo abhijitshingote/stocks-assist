@@ -84,6 +84,12 @@ def rsi_dji_page():
     return render_template('rsi_dji.html')
 
 
+@app.route('/top-performance')
+def top_performance_page():
+    """Top Performance page - Union of top stocks by 1D, 5D, 20D returns"""
+    return render_template('top_performance.html')
+
+
 @app.route('/stock/<ticker>')
 def stock_detail(ticker):
     """Stock detail page"""
@@ -213,6 +219,27 @@ def api_rsi_index(index_type, market_cap=None):
     data, status_code = make_backend_request(endpoint)
     if data is None:
         return jsonify({'error': 'Failed to fetch RSI Index data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/top-performance/<market_cap>')
+def api_top_performance(market_cap):
+    """Proxy endpoint for Top Performance (union of top stocks by 1D, 5D, 20D returns) from backend"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+    
+    data, status_code = make_backend_request(f'/api/TopPerformance-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Top Performance data'}), status_code
     return jsonify(data), status_code
 
 
