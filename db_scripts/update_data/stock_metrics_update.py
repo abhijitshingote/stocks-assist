@@ -348,11 +348,13 @@ def main():
             count = compute_and_load_metrics(connection)
             
             logger.info(f"Successfully updated stock_metrics with {count} records")
-            write_summary(SCRIPT_NAME, 'SUCCESS', 'Updated stock metrics', count)
+            total_time = time.time() - overall_start
+            write_summary(SCRIPT_NAME, 'SUCCESS', 'Updated stock metrics', count, duration_seconds=total_time)
             
     except Exception as e:
         logger.error(f"Error in stock metrics update: {str(e)}")
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        total_time = time.time() - overall_start
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=total_time)
         raise
     finally:
         session.close()

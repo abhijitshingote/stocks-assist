@@ -1,11 +1,12 @@
 from sqlalchemy import create_engine, text
 import os
 import sys
+import time
 from dotenv import load_dotenv
 
 # Add db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
-from db_scripts.logger import get_logger, write_summary, flush_logger
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
 
 load_dotenv()
 
@@ -35,6 +36,7 @@ def initialize_database(reset=False):
     Args:
         reset (bool): If True, drop existing tables and recreate them.
     """
+    start_time = time.time()
     database_url = os.getenv('DATABASE_URL')
     if not database_url:
         raise ValueError("DATABASE_URL environment variable is not set")
@@ -345,12 +347,13 @@ def initialize_database(reset=False):
         
         connection.commit()
         
+        elapsed = time.time() - start_time
         if reset:
             logger.info("Database reset completed successfully!")
-            write_summary(SCRIPT_NAME, 'SUCCESS', 'Database reset completed - all tables recreated')
+            write_summary(SCRIPT_NAME, 'SUCCESS', 'Database reset completed - all tables recreated', duration_seconds=elapsed)
         else:
             logger.info("Database initialization completed successfully!")
-            write_summary(SCRIPT_NAME, 'SUCCESS', 'Database initialized - tables created if not exists')
+            write_summary(SCRIPT_NAME, 'SUCCESS', 'Database initialized - tables created if not exists', duration_seconds=elapsed)
         
         logger.info("Tables:")
         logger.info("  - tickers (from Company Screener)")

@@ -126,21 +126,24 @@ def main():
         session.execute(stmt)
         session.commit()
 
+        elapsed = time.time() - start_time
         logger.info("=" * 60)
         logger.info(f"  Records: {total}")
         logger.info(f"  Total in DB: {session.query(Earnings).count()}")
-        logger.info(f"  Time taken: {format_duration(time.time() - start_time)}")
+        logger.info(f"  Time taken: {format_duration(elapsed)}")
         logger.info("=" * 60)
         logger.info("✅ Earnings seeding completed!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{len(tickers)} tickers processed', total)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{len(tickers)} tickers processed', total, duration_seconds=elapsed)
 
     except KeyboardInterrupt:
         session.commit()
         logger.info("Interrupted, progress saved.")
-        write_summary(SCRIPT_NAME, 'INTERRUPTED', 'Progress saved')
+        elapsed = time.time() - start_time
+        write_summary(SCRIPT_NAME, 'INTERRUPTED', 'Progress saved', duration_seconds=elapsed)
     except Exception as e:
         logger.error(f"Error: {e}")
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        elapsed = time.time() - start_time
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=elapsed)
         raise
     finally:
         session.close()

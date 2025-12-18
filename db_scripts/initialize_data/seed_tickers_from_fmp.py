@@ -263,12 +263,13 @@ def main():
         logger.info(f"  Time taken: {format_duration(elapsed)}")
         logger.info("=" * 60)
         logger.info("✅ Tickers seeding completed successfully!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{new_t} new, {upd_t} updated tickers', total_tickers)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{new_t} new, {upd_t} updated tickers', total_tickers, duration_seconds=elapsed)
 
     except Exception as e:
         logger.error(f"Error in tickers seeding: {e}")
         session.rollback()
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        elapsed = time_module.time() - start_time
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=elapsed)
         raise
     finally:
         session.close()

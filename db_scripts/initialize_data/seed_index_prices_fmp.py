@@ -242,24 +242,27 @@ def main():
 
         total_prices = session.query(IndexPrice).count()
         
+        elapsed = time.time() - start_time
         logger.info("\n" + "=" * 60)
         logger.info("Results:")
         logger.info(f"  Total index_prices records: {total_prices}")
         logger.info(f"  New this run: {total_inserted}")
         logger.info(f"  Updated this run: {total_updated}")
-        logger.info(f"  Time taken: {format_duration(time.time() - start_time)}")
+        logger.info(f"  Time taken: {format_duration(elapsed)}")
         logger.info("=" * 60)
         logger.info("✅ Index price seeding completed!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{total_inserted} new, {total_updated} updated', total_prices)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{total_inserted} new, {total_updated} updated', total_prices, duration_seconds=elapsed)
 
     except KeyboardInterrupt:
         logger.info("\n⚠️ Interrupted. Saving progress...")
         session.commit()
-        write_summary(SCRIPT_NAME, 'INTERRUPTED', 'Progress saved')
+        elapsed = time.time() - start_time
+        write_summary(SCRIPT_NAME, 'INTERRUPTED', 'Progress saved', duration_seconds=elapsed)
     except Exception as e:
         logger.error(f"Error: {str(e)}")
         session.rollback()
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        elapsed = time.time() - start_time
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=elapsed)
         raise
     finally:
         session.close()

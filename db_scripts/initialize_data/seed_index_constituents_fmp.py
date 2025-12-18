@@ -371,12 +371,13 @@ def main():
         logger.info(f"  Time taken: {format_duration(elapsed)}")
         logger.info("=" * 60)
         logger.info("✅ Index constituents seeding completed!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{total_indices} indices, {total_components} components', total_components)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{total_indices} indices, {total_components} components', total_components, duration_seconds=elapsed)
 
     except Exception as e:
         logger.error(f"Error: {e}")
         session.rollback()
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        elapsed = time.time() - start_time
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=elapsed)
         raise
     finally:
         session.close()

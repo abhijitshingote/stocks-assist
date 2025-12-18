@@ -272,17 +272,19 @@ def main():
         logger.info(f"  Time taken: {format_duration(elapsed)}")
         logger.info("=" * 60)
         logger.info("✅ OHLC seeding completed!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{processed} tickers processed, {inserted} records inserted', total_ohlc)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{processed} tickers processed, {inserted} records inserted', total_ohlc, duration_seconds=elapsed)
 
     except KeyboardInterrupt:
         logger.info("\n⚠️ Interrupted. Saving progress...")
         session.commit()
         update_sync_metadata(session, 'ohlc_last_sync')
-        write_summary(SCRIPT_NAME, 'INTERRUPTED', 'Progress saved')
+        elapsed = time.time() - start_time
+        write_summary(SCRIPT_NAME, 'INTERRUPTED', 'Progress saved', duration_seconds=elapsed)
     except Exception as e:
         logger.error(f"Error: {e}")
         session.rollback()
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        elapsed = time.time() - start_time
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=elapsed)
         raise
     finally:
         session.close()

@@ -393,23 +393,25 @@ def main():
         )
         
         # Step 3: Process and upsert the price data
+        total_time = time.time() - overall_start
         if eod_data:
             price_records = process_eod_data(eod_data, existing_tickers_set)
             if price_records:
                 upserted_count = bulk_upsert_prices(session, engine, price_records)
                 logger.info(f"Updated {upserted_count:,} records for {target_date}")
-                write_summary(SCRIPT_NAME, 'SUCCESS', f'Updated prices for {target_date}', upserted_count)
+                write_summary(SCRIPT_NAME, 'SUCCESS', f'Updated prices for {target_date}', upserted_count, duration_seconds=total_time)
             else:
                 logger.warning("No valid price records after processing")
-                write_summary(SCRIPT_NAME, 'WARNING', 'No valid price records after processing')
+                write_summary(SCRIPT_NAME, 'WARNING', 'No valid price records after processing', duration_seconds=total_time)
         else:
             logger.warning("No price data fetched")
-            write_summary(SCRIPT_NAME, 'WARNING', 'No price data fetched')
+            write_summary(SCRIPT_NAME, 'WARNING', 'No price data fetched', duration_seconds=total_time)
         
     except Exception as e:
         logger.error(f"Error in main process: {str(e)}")
         session.rollback()
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        total_time = time.time() - overall_start
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=total_time)
     finally:
         session.close()
         total_time = time.time() - overall_start

@@ -206,11 +206,13 @@ def main():
                 total_count, date_count = compute_and_load_historical_rsi(connection)
             
             logger.info(f"Successfully updated historical_rsi: {total_count} records, {date_count} trading days")
-            write_summary(SCRIPT_NAME, 'SUCCESS', f'Updated {date_count} trading days', total_count)
+            total_time = time.time() - overall_start
+            write_summary(SCRIPT_NAME, 'SUCCESS', f'Updated {date_count} trading days', total_count, duration_seconds=total_time)
             
     except Exception as e:
         logger.error(f"Error in historical RSI update: {str(e)}")
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        total_time = time.time() - overall_start
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=total_time)
         raise
     finally:
         session.close()

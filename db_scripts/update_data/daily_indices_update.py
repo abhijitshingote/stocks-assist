@@ -22,7 +22,7 @@ import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Base, Index, IndexPrice
-from db_scripts.logger import get_logger, write_summary, flush_logger
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
 
 # Script name for logging
 SCRIPT_NAME = 'daily_indices_update'
@@ -321,6 +321,8 @@ def update_all_indices(session, days_back=5, use_quote=False):
 
 def main():
     """Main execution function"""
+    overall_start = time.time()
+    
     parser = argparse.ArgumentParser(description='Daily indices update from FMP API')
     parser.add_argument('--days', type=int, default=5,
                         help='Number of days of history to fetch (default: 5)')
@@ -373,15 +375,20 @@ def main():
         logger.info("="*80)
         
         total_records = stats['total_inserted'] + stats['total_updated']
-        write_summary(SCRIPT_NAME, 'SUCCESS', f"Updated {', '.join(stats['success'])}", total_records)
+        total_time = time.time() - overall_start
+        write_summary(SCRIPT_NAME, 'SUCCESS', f"Updated {', '.join(stats['success'])}", total_records, duration_seconds=total_time)
         
         # Close session
         session.close()
+        logger.info("=" * 60)
+        logger.info(f"=== Daily Indices Update Completed in {format_duration(total_time)} ===")
+        logger.info("=" * 60)
         flush_logger(SCRIPT_NAME)
         
     except Exception as e:
         logger.error(f"Fatal error in daily update: {str(e)}", exc_info=True)
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        total_time = time.time() - overall_start
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=total_time)
         flush_logger(SCRIPT_NAME)
         sys.exit(1)
 

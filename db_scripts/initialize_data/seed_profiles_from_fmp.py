@@ -274,17 +274,19 @@ def main():
         logger.info(f"  Time taken: {format_duration(elapsed)}")
         logger.info("=" * 60)
         logger.info("✅ Profile seeding completed!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{profiles_ok} profiles saved, {failed} failed', total_profiles)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{profiles_ok} profiles saved, {failed} failed', total_profiles, duration_seconds=elapsed)
 
     except KeyboardInterrupt:
         logger.info("\n⚠️ Interrupted by user. Committing current progress...")
         session.commit()
         logger.info("Progress saved.")
-        write_summary(SCRIPT_NAME, 'INTERRUPTED', 'Progress saved')
+        elapsed = time.time() - start_time
+        write_summary(SCRIPT_NAME, 'INTERRUPTED', 'Progress saved', duration_seconds=elapsed)
     except Exception as e:
         logger.error(f"Error in profile seeding: {e}")
         session.rollback()
-        write_summary(SCRIPT_NAME, 'FAILED', str(e))
+        elapsed = time.time() - start_time
+        write_summary(SCRIPT_NAME, 'FAILED', str(e), duration_seconds=elapsed)
         raise
     finally:
         session.close()
