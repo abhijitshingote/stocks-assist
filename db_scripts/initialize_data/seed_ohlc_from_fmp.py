@@ -213,7 +213,7 @@ def main():
     parser = argparse.ArgumentParser(description='Seed OHLC table from FMP Historical Price API')
     parser.add_argument('--limit', type=int, default=None,
                         help='Max tickers to process (default: all)')
-    parser.add_argument('--days', type=int, default=365,
+    parser.add_argument('--days', type=int, default=730,
                         help='Days of history to fetch for new tickers (default: 365)')
     parser.add_argument('--delay', type=float, default=0.15,
                         help='Delay between API calls (default: 0.15s)')

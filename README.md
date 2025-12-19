@@ -27,7 +27,7 @@ python db_scripts/initialize_data/seed_earnings_from_fmp.py && \
 python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py && \
   python db_scripts/initialize_data/seed_index_prices_fmp.py && \
     python db_scripts/initialize_data/seed_index_constituents_fmp.py && \
-  python db_scripts/initialize_data/seed_ohlc_from_fmp.py --days 365 && \
+  python db_scripts/initialize_data/seed_ohlc_from_fmp.py && \
   python db_scripts/initialize_data/seed_profiles_from_fmp.py && \
  python db_scripts/initialize_data/seed_ratios_from_fmp.py && \ 
  python db_scripts/update_data/stock_metrics_update.py && \
@@ -49,11 +49,11 @@ docker-compose exec backend bash -c "
 docker-compose exec backend bash -c "
   python db_scripts/initialize_data/initialize_db.py --reset && \
   python db_scripts/initialize_data/seed_tickers_from_fmp.py --limit 10 && \
-python db_scripts/initialize_data/seed_earnings_from_fmp.py --limit 10
-python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py --limit 10
+python db_scripts/initialize_data/seed_earnings_from_fmp.py --limit 10 && \
+python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py --limit 10 && \
   python db_scripts/initialize_data/seed_index_prices_fmp.py && \
     python db_scripts/initialize_data/seed_index_constituents_fmp.py && \
-  python db_scripts/initialize_data/seed_ohlc_from_fmp.py --days 365 --limit 10 && \
+  python db_scripts/initialize_data/seed_ohlc_from_fmp.py  --limit 10 && \
   python db_scripts/initialize_data/seed_profiles_from_fmp.py --limit 10 && \
  python db_scripts/initialize_data/seed_ratios_from_fmp.py --limit 10 && \
  python db_scripts/update_data/stock_metrics_update.py && \
