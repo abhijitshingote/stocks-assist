@@ -376,6 +376,10 @@
                 <div class="legend-dot" style="background: #00bcd4;"></div>
                 <span>RSI MktCap</span>
             </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #f5f5dc;"></div>
+                <span>EPS (A=Actual, E=Est)</span>
+            </div>
         </div>
         <div class="chart-stats" id="chartStats"></div>
     </div>
@@ -516,6 +520,7 @@ let dma50Series = null;
 let dma200Series = null;
 let rsiSeries = null;
 let allOhlcData = [];
+let allEarningsData = [];
 let currentTimeframe = 365;
 
 function formatNumber(num, decimals = 2) {
@@ -639,8 +644,14 @@ async function loadStockData() {
 
 async function loadChartData() {
     try {
-        const response = await fetch(`/api/frontend/ohlc/${ticker}`);
-        const data = await response.json();
+        // Fetch OHLC and Earnings EPS data in parallel
+        const [ohlcResponse, earningsResponse] = await Promise.all([
+            fetch(`/api/frontend/ohlc/${ticker}`),
+            fetch(`/api/frontend/earnings-eps/${ticker}`)
+        ]);
+        
+        const data = await ohlcResponse.json();
+        const earningsData = await earningsResponse.json();
         
         if (data.error || !Array.isArray(data) || data.length === 0) {
             document.getElementById('chartLoading').innerHTML = '<span style="color: var(--text-muted);">No chart data available</span>';
@@ -648,6 +659,8 @@ async function loadChartData() {
         }
         
         allOhlcData = data;
+        allEarningsData = Array.isArray(earningsData) ? earningsData : [];
+        
         initChart();
         updateChart(currentTimeframe);
         setupTimeframeButtons();
@@ -905,6 +918,42 @@ function setChartData(data) {
             value: d.rsi_mktcap,
         }));
     rsiSeries.setData(rsiData);
+    
+    // Add EPS earnings markers
+    const dataTimeSet = new Set(data.map(d => d.time));
+    const filteredEarnings = allEarningsData.filter(e => dataTimeSet.has(e.time));
+    
+    if (filteredEarnings.length > 0) {
+        const markers = filteredEarnings.map(earning => {
+            // Build the label text
+            const actualText = earning.eps_actual != null ? `A: $${earning.eps_actual}` : '';
+            const estText = earning.eps_estimated != null ? `E: $${earning.eps_estimated}` : '';
+            let labelText = '';
+            if (actualText && estText) {
+                labelText = `${actualText} | ${estText}`;
+            } else {
+                labelText = actualText || estText || 'EPS';
+            }
+            
+            // Determine if beat or miss for color
+            let color = '#f5f5dc'; // Off-white/beige default
+            if (earning.eps_actual != null && earning.eps_estimated != null) {
+                color = earning.eps_actual >= earning.eps_estimated ? '#90EE90' : '#FFB6C1'; // Light green for beat, light pink for miss
+            }
+            
+            return {
+                time: earning.time,
+                position: 'belowBar',
+                color: color,
+                shape: 'arrowUp',
+                text: labelText,
+            };
+        });
+        
+        candlestickSeries.setMarkers(markers);
+    } else {
+        candlestickSeries.setMarkers([]);
+    }
     
     // Sync RSI chart time scale with main chart
     if (rsiChart && chart) {

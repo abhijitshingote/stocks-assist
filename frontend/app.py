@@ -136,6 +136,15 @@ def api_ohlc(ticker):
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/earnings-eps/<ticker>')
+def api_earnings_eps(ticker):
+    """Proxy endpoint for earnings EPS data from backend"""
+    data, status_code = make_backend_request(f'/api/earnings-eps/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch earnings EPS data'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/sector-rsi')
 def api_sector_rsi():
     """Proxy endpoint for sector RSI from backend"""

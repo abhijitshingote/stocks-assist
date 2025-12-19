@@ -952,6 +952,53 @@ def get_ohlc_data(ticker):
 
 
 # ============================================================================
+# Earnings EPS Endpoint (for chart annotations)
+# ============================================================================
+
+@app.route('/api/earnings-eps/<ticker>')
+def get_earnings_eps(ticker):
+    """Get actual and estimated EPS data for a specific ticker over the last 365 days."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        
+        from datetime import timedelta
+        end_date = get_latest_price_date(s)
+        if not end_date:
+            return jsonify({'error': 'No price data available'}), 404
+        
+        # Get earnings from the last 365 days
+        start_date = end_date - timedelta(days=365)
+        
+        # Get earnings data with actual and estimated EPS
+        earnings_data = s.query(
+            Earnings.date,
+            Earnings.eps_actual,
+            Earnings.eps_estimated
+        ).filter(
+            Earnings.ticker == ticker,
+            Earnings.date >= start_date,
+            Earnings.date <= end_date
+        ).order_by(Earnings.date.asc()).all()
+        
+        results = []
+        for row in earnings_data:
+            results.append({
+                'time': row.date.strftime('%Y-%m-%d'),
+                'eps_actual': round(row.eps_actual, 2) if row.eps_actual is not None else None,
+                'eps_estimated': round(row.eps_estimated, 2) if row.eps_estimated is not None else None
+            })
+        
+        return jsonify(results)
+    
+    except Exception as e:
+        logger.error(f"Error getting earnings EPS data for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+# ============================================================================
 # Sector RSI Endpoint
 # ============================================================================
 
