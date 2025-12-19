@@ -365,11 +365,11 @@
                 <span>Bearish</span>
             </div>
             <div class="legend-item">
-                <div class="legend-dot" style="background: #f0b90b;"></div>
+                <div class="legend-dot" style="background: #00ff00;"></div>
                 <span>50 DMA</span>
             </div>
             <div class="legend-item">
-                <div class="legend-dot" style="background: #e040fb;"></div>
+                <div class="legend-dot" style="background: #ff0000;"></div>
                 <span>200 DMA</span>
             </div>
             <div class="legend-item">
@@ -725,19 +725,19 @@ function initChart() {
         wickUpColor: '#3fb950',
     });
     
-    // 50 DMA line - gold/yellow color
+    // 50 DMA line - parrot green color
     dma50Series = chart.addLineSeries({
-        color: '#f0b90b',
+        color: '#00ff00',
         lineWidth: 2,
         lineStyle: LightweightCharts.LineStyle.Solid,
         priceLineVisible: false,
         lastValueVisible: false,
         crosshairMarkerVisible: false,
     });
-    
-    // 200 DMA line - purple/magenta color
+
+    // 200 DMA line - red color
     dma200Series = chart.addLineSeries({
-        color: '#e040fb',
+        color: '#ff0000',
         lineWidth: 2,
         lineStyle: LightweightCharts.LineStyle.Solid,
         priceLineVisible: false,
