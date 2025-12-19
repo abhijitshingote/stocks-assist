@@ -295,6 +295,8 @@ def initialize_database(reset=False):
                 date DATE,
                 rsi_global INTEGER,
                 rsi_mktcap INTEGER,
+                dma_50 FLOAT,
+                dma_200 FLOAT,
                 CONSTRAINT uq_historical_rsi UNIQUE (ticker, date),
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )

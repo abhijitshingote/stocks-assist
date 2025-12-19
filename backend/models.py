@@ -331,6 +331,10 @@ class HistoricalRSI(Base):
     
     # RSI percentile rank (1-100) within market cap bucket for this date
     rsi_mktcap = Column(Integer)
+    
+    # Daily Moving Averages
+    dma_50 = Column(Float)   # 50-day simple moving average
+    dma_200 = Column(Float)  # 200-day simple moving average
 
     __table_args__ = (UniqueConstraint("ticker", "date", name="uq_historical_rsi"),)
 

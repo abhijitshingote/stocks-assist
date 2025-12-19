@@ -219,8 +219,30 @@
 
 #chartContainer {
     width: 100%;
-    height: 400px;
+    height: 500px;
     position: relative;
+}
+
+#rsiChartContainer {
+    width: 100%;
+    height: 150px;
+    position: relative;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.5rem;
+}
+
+.rsi-label {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    z-index: 10;
+    background: rgba(13, 17, 23, 0.8);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
 }
 
 .chart-loading {
@@ -228,7 +250,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 400px;
+    height: 500px;
     color: var(--text-muted);
 }
 
@@ -321,8 +343,8 @@
             <div class="chart-timeframe">
                 <button class="timeframe-btn" data-days="30">1M</button>
                 <button class="timeframe-btn" data-days="90">3M</button>
-                <button class="timeframe-btn active" data-days="180">6M</button>
-                <button class="timeframe-btn" data-days="365">1Y</button>
+                <button class="timeframe-btn" data-days="180">6M</button>
+                <button class="timeframe-btn active" data-days="365">1Y</button>
             </div>
         </div>
         <div id="chartLoading" class="chart-loading">
@@ -330,6 +352,9 @@
             <span>Loading chart...</span>
         </div>
         <div id="chartContainer"></div>
+        <div id="rsiChartContainer">
+            <div class="rsi-label">RSI MktCap (1-100)</div>
+        </div>
         <div class="chart-legend">
             <div class="legend-item">
                 <div class="legend-dot bullish"></div>
@@ -338,6 +363,18 @@
             <div class="legend-item">
                 <div class="legend-dot bearish"></div>
                 <span>Bearish</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #f0b90b;"></div>
+                <span>50 DMA</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #e040fb;"></div>
+                <span>200 DMA</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #00bcd4;"></div>
+                <span>RSI MktCap</span>
             </div>
         </div>
         <div class="chart-stats" id="chartStats"></div>
@@ -431,6 +468,10 @@
                 <span class="metric-value" id="rsi">--</span>
             </div>
             <div class="metric-row">
+                <span class="metric-label">RSI MktCap</span>
+                <span class="metric-value" id="rsiMktcap">--</span>
+            </div>
+            <div class="metric-row">
                 <span class="metric-label">ATR 20 (%)</span>
                 <span class="metric-value" id="atr20">--</span>
             </div>
@@ -468,10 +509,14 @@
 <script>
 const ticker = '{{ ticker }}';
 let chart = null;
+let rsiChart = null;
 let candlestickSeries = null;
 let volumeSeries = null;
+let dma50Series = null;
+let dma200Series = null;
+let rsiSeries = null;
 let allOhlcData = [];
-let currentTimeframe = 180;
+let currentTimeframe = 365;
 
 function formatNumber(num, decimals = 2) {
     if (num == null) return '--';
@@ -560,6 +605,7 @@ async function loadStockData() {
         
         // Technical
         document.getElementById('rsi').textContent = data.rsi != null ? data.rsi : '--';
+        document.getElementById('rsiMktcap').textContent = data.rsi_mktcap != null ? data.rsi_mktcap : '--';
         document.getElementById('atr20').textContent = data.atr20 != null ? formatNumber(data.atr20, 2) + '%' : '--';
         
         // Short Interest
@@ -606,6 +652,15 @@ async function loadChartData() {
         updateChart(currentTimeframe);
         setupTimeframeButtons();
         
+        // Update price display from latest OHLC close
+        if (data.length > 0) {
+            const latestData = data[data.length - 1];
+            if (latestData.close != null) {
+                const priceElement = document.getElementById('currentPrice');
+                priceElement.textContent = '$' + formatNumber(latestData.close, 2);
+            }
+        }
+        
     } catch (error) {
         console.error('Error loading chart data:', error);
         document.getElementById('chartLoading').innerHTML = '<span style="color: var(--text-muted);">Failed to load chart</span>';
@@ -616,18 +671,20 @@ function initChart() {
     document.getElementById('chartLoading').style.display = 'none';
     
     const container = document.getElementById('chartContainer');
+    const rsiContainer = document.getElementById('rsiChartContainer');
     
+    // Main price chart
     chart = LightweightCharts.createChart(container, {
         width: container.clientWidth,
-        height: 400,
+        height: 500,
         layout: {
             background: { type: 'solid', color: 'transparent' },
             textColor: '#8b949e',
             fontFamily: "'JetBrains Mono', monospace",
         },
         grid: {
-            vertLines: { color: 'rgba(48, 54, 61, 0.5)' },
-            horzLines: { color: 'rgba(48, 54, 61, 0.5)' },
+            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
         },
         crosshair: {
             mode: LightweightCharts.CrosshairMode.Normal,
@@ -645,8 +702,8 @@ function initChart() {
         rightPriceScale: {
             borderColor: '#30363d',
             scaleMargins: {
-                top: 0.1,
-                bottom: 0.2,
+                top: 0.05,
+                bottom: 0.15,
             },
         },
         timeScale: {
@@ -668,6 +725,26 @@ function initChart() {
         wickUpColor: '#3fb950',
     });
     
+    // 50 DMA line - gold/yellow color
+    dma50Series = chart.addLineSeries({
+        color: '#f0b90b',
+        lineWidth: 2,
+        lineStyle: LightweightCharts.LineStyle.Solid,
+        priceLineVisible: false,
+        lastValueVisible: false,
+        crosshairMarkerVisible: false,
+    });
+    
+    // 200 DMA line - purple/magenta color
+    dma200Series = chart.addLineSeries({
+        color: '#e040fb',
+        lineWidth: 2,
+        lineStyle: LightweightCharts.LineStyle.Solid,
+        priceLineVisible: false,
+        lastValueVisible: false,
+        crosshairMarkerVisible: false,
+    });
+    
     // Volume series
     volumeSeries = chart.addHistogramSeries({
         color: '#26a69a',
@@ -676,9 +753,63 @@ function initChart() {
         },
         priceScaleId: '',
         scaleMargins: {
-            top: 0.85,
+            top: 0.88,
             bottom: 0,
         },
+    });
+    
+    // RSI MktCap subplot chart
+    rsiChart = LightweightCharts.createChart(rsiContainer, {
+        width: rsiContainer.clientWidth,
+        height: 150,
+        layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#8b949e',
+            fontFamily: "'JetBrains Mono', monospace",
+        },
+        grid: {
+            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
+        },
+        crosshair: {
+            mode: LightweightCharts.CrosshairMode.Normal,
+            vertLine: {
+                width: 1,
+                color: 'rgba(88, 166, 255, 0.5)',
+                style: LightweightCharts.LineStyle.Dashed,
+            },
+            horzLine: {
+                width: 1,
+                color: 'rgba(88, 166, 255, 0.5)',
+                style: LightweightCharts.LineStyle.Dashed,
+            },
+        },
+        rightPriceScale: {
+            borderColor: '#30363d',
+            scaleMargins: {
+                top: 0.1,
+                bottom: 0.1,
+            },
+        },
+        timeScale: {
+            borderColor: '#30363d',
+            timeVisible: true,
+            secondsVisible: false,
+            visible: false,
+        },
+        handleScroll: false,
+        handleScale: false,
+    });
+    
+    // RSI MktCap area series - cyan color
+    rsiSeries = rsiChart.addAreaSeries({
+        lineColor: '#00bcd4',
+        topColor: 'rgba(0, 188, 212, 0.4)',
+        bottomColor: 'rgba(0, 188, 212, 0.05)',
+        lineWidth: 2,
+        priceLineVisible: false,
+        lastValueVisible: true,
+        crosshairMarkerVisible: true,
     });
     
     // Handle resize
@@ -686,11 +817,23 @@ function initChart() {
         if (chart) {
             chart.applyOptions({ width: container.clientWidth });
         }
+        if (rsiChart) {
+            rsiChart.applyOptions({ width: rsiContainer.clientWidth });
+        }
     });
     
-    // Crosshair move handler for tooltip
+    // Sync crosshair between charts
     chart.subscribeCrosshairMove(param => {
         updateChartTooltip(param);
+        if (param.time && rsiChart) {
+            rsiChart.setCrosshairPosition(param.point?.y || 0, param.time, rsiSeries);
+        }
+    });
+    
+    rsiChart.subscribeCrosshairMove(param => {
+        if (param.time && chart) {
+            chart.setCrosshairPosition(param.point?.y || 0, param.time, candlestickSeries);
+        }
     });
 }
 
@@ -711,6 +854,9 @@ function updateChart(days) {
     }
     
     chart.timeScale().fitContent();
+    if (rsiChart) {
+        rsiChart.timeScale().fitContent();
+    }
     updateChartStats(filteredData.length > 0 ? filteredData : allOhlcData);
 }
 
@@ -725,13 +871,45 @@ function setChartData(data) {
     }));
     candlestickSeries.setData(candleData);
     
+    // 50 DMA data
+    const dma50Data = data
+        .filter(d => d.dma_50 != null)
+        .map(d => ({
+            time: d.time,
+            value: d.dma_50,
+        }));
+    dma50Series.setData(dma50Data);
+    
+    // 200 DMA data
+    const dma200Data = data
+        .filter(d => d.dma_200 != null)
+        .map(d => ({
+            time: d.time,
+            value: d.dma_200,
+        }));
+    dma200Series.setData(dma200Data);
+    
     // Volume data with colors
     const volumeData = data.map(d => ({
         time: d.time,
         value: d.volume,
-        color: d.close >= d.open ? 'rgba(63, 185, 80, 0.4)' : 'rgba(248, 81, 73, 0.4)',
+        color: d.close >= d.open ? 'rgba(63, 185, 80, 0.3)' : 'rgba(248, 81, 73, 0.3)',
     }));
     volumeSeries.setData(volumeData);
+    
+    // RSI MktCap data for subplot
+    const rsiData = data
+        .filter(d => d.rsi_mktcap != null)
+        .map(d => ({
+            time: d.time,
+            value: d.rsi_mktcap,
+        }));
+    rsiSeries.setData(rsiData);
+    
+    // Sync RSI chart time scale with main chart
+    if (rsiChart && chart) {
+        rsiChart.timeScale().fitContent();
+    }
 }
 
 function setupTimeframeButtons() {

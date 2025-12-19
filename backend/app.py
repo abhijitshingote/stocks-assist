@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, func, desc, text
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
-    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices
+    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI
 )
 import os
 import logging
@@ -420,6 +420,13 @@ def get_stock_metrics_data(session, ticker):
     if not metrics:
         return None
     
+    # Get latest OHLC close price instead of using ticker table price
+    latest_ohlc = session.query(OHLC.close).filter(
+        OHLC.ticker == ticker
+    ).order_by(OHLC.date.desc()).first()
+    
+    current_price = round(latest_ohlc.close, 2) if latest_ohlc and latest_ohlc.close else metrics.current_price
+    
     return {
         'ticker': metrics.ticker,
         'company_name': metrics.company_name,
@@ -428,7 +435,7 @@ def get_stock_metrics_data(session, ticker):
         'industry': metrics.industry,
         'ipo_date': metrics.ipo_date.strftime('%Y-%m-%d') if metrics.ipo_date else None,
         'market_cap': metrics.market_cap,
-        'current_price': metrics.current_price,
+        'current_price': current_price,
         'range_52_week': metrics.range_52_week,
         'volume': metrics.volume,
         'dollar_volume': metrics.dollar_volume,
@@ -446,6 +453,7 @@ def get_stock_metrics_data(session, ticker):
         'eps_growth': metrics.eps_growth,
         'revenue_growth': metrics.revenue_growth,
         'rsi': metrics.rsi,
+        'rsi_mktcap': metrics.rsi_mktcap,
         'short_float': metrics.short_float,
         'short_ratio': metrics.short_ratio,
         'short_interest': metrics.short_interest,
@@ -884,26 +892,33 @@ def get_rsi_mega():
 
 @app.route('/api/ohlc/<ticker>')
 def get_ohlc_data(ticker):
-    """Get OHLC data for a specific ticker (last 365 days)."""
+    """Get OHLC data for a specific ticker with DMAs and RSI MktCap from historical_rsi."""
     s = Session()
     try:
         ticker = ticker.upper()
         
-        # Get last 365 calendar days of data
         from datetime import timedelta
         end_date = get_latest_price_date(s)
         if not end_date:
             return jsonify({'error': 'No price data available'}), 404
         
-        start_date = end_date - timedelta(days=365)
+        # Fetch 400 calendar days (enough for 1Y display with buffer)
+        start_date = end_date - timedelta(days=400)
         
+        # Get OHLC data with historical RSI and DMAs
         ohlc_data = s.query(
             OHLC.date,
             OHLC.open,
             OHLC.high,
             OHLC.low,
             OHLC.close,
-            OHLC.volume
+            OHLC.volume,
+            HistoricalRSI.rsi_mktcap,
+            HistoricalRSI.dma_50,
+            HistoricalRSI.dma_200
+        ).outerjoin(
+            HistoricalRSI,
+            (OHLC.ticker == HistoricalRSI.ticker) & (OHLC.date == HistoricalRSI.date)
         ).filter(
             OHLC.ticker == ticker,
             OHLC.date >= start_date,
@@ -921,7 +936,10 @@ def get_ohlc_data(ticker):
                 'high': round(row.high, 2) if row.high else None,
                 'low': round(row.low, 2) if row.low else None,
                 'close': round(row.close, 2) if row.close else None,
-                'volume': row.volume
+                'volume': row.volume,
+                'dma_50': float(row.dma_50) if row.dma_50 else None,
+                'dma_200': float(row.dma_200) if row.dma_200 else None,
+                'rsi_mktcap': row.rsi_mktcap
             })
         
         return jsonify(results)

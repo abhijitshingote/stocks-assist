@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
 Historical RSI Update Script
-Computes and stores daily RSI percentile rankings for all stocks.
+Computes and stores daily RSI percentile rankings and DMAs for all stocks.
 
 This script computes:
 - rsi_global: RSI percentile rank (1-100) across all stocks for each date
 - rsi_mktcap: RSI percentile rank (1-100) within market cap bucket for each date
+- dma_50: 50-day simple moving average
+- dma_200: 200-day simple moving average
 
 The RSI is computed as a weighted relative strength vs SPY:
 - 40% weight on 4-day return difference
@@ -80,17 +82,17 @@ def get_available_dates(connection, after_date=None):
 
 def compute_and_load_historical_rsi(connection, start_date=None):
     """
-    Compute historical RSI for all dates and insert into historical_rsi table.
+    Compute historical RSI and DMAs for all dates and insert into historical_rsi table.
     Uses INSERT ... ON CONFLICT to handle updates for existing dates.
     """
-    logger.info("Computing historical RSI data...")
+    logger.info("Computing historical RSI and DMA data...")
     
     # Build date filter if needed
     date_filter = ""
     if start_date:
         date_filter = f"AND rs.date > '{start_date}'"
     
-    # The comprehensive SQL query to compute historical RSI
+    # The comprehensive SQL query to compute historical RSI and DMAs
     rsi_query = f"""
     WITH stock_returns AS (
         SELECT
@@ -136,6 +138,33 @@ def compute_and_load_historical_rsi(connection, start_date=None):
           AND t.is_etf = FALSE
           AND t.is_fund = FALSE
     ),
+    -- Calculate DMAs using window functions
+    dma_calc AS (
+        SELECT
+            o.ticker,
+            o.date,
+            ROUND(AVG(o.close) OVER (
+                PARTITION BY o.ticker 
+                ORDER BY o.date 
+                ROWS BETWEEN 49 PRECEDING AND CURRENT ROW
+            )::numeric, 2) AS dma_50,
+            ROUND(AVG(o.close) OVER (
+                PARTITION BY o.ticker 
+                ORDER BY o.date 
+                ROWS BETWEEN 199 PRECEDING AND CURRENT ROW
+            )::numeric, 2) AS dma_200,
+            COUNT(o.close) OVER (
+                PARTITION BY o.ticker 
+                ORDER BY o.date 
+                ROWS BETWEEN 49 PRECEDING AND CURRENT ROW
+            ) AS dma_50_count,
+            COUNT(o.close) OVER (
+                PARTITION BY o.ticker 
+                ORDER BY o.date 
+                ROWS BETWEEN 199 PRECEDING AND CURRENT ROW
+            ) AS dma_200_count
+        FROM ohlc o
+    ),
     rsi_ranked AS (
         SELECT
             rs.ticker,
@@ -155,17 +184,22 @@ def compute_and_load_historical_rsi(connection, start_date=None):
         WHERE rs.rel_strength_raw IS NOT NULL
         {date_filter}
     )
-    INSERT INTO historical_rsi (ticker, date, rsi_global, rsi_mktcap)
+    INSERT INTO historical_rsi (ticker, date, rsi_global, rsi_mktcap, dma_50, dma_200)
     SELECT
-        ticker,
-        date,
-        rsi_global,
-        rsi_mktcap
-    FROM rsi_ranked
+        rr.ticker,
+        rr.date,
+        rr.rsi_global,
+        rr.rsi_mktcap,
+        CASE WHEN dc.dma_50_count >= 50 THEN dc.dma_50 ELSE NULL END,
+        CASE WHEN dc.dma_200_count >= 200 THEN dc.dma_200 ELSE NULL END
+    FROM rsi_ranked rr
+    LEFT JOIN dma_calc dc ON rr.ticker = dc.ticker AND rr.date = dc.date
     ON CONFLICT (ticker, date) 
     DO UPDATE SET 
         rsi_global = EXCLUDED.rsi_global,
-        rsi_mktcap = EXCLUDED.rsi_mktcap
+        rsi_mktcap = EXCLUDED.rsi_mktcap,
+        dma_50 = EXCLUDED.dma_50,
+        dma_200 = EXCLUDED.dma_200
     """
     
     result = connection.execute(text(rsi_query))
