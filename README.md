@@ -6,14 +6,25 @@ other filters
 --RSI analysis
 --- vol % of float or total outstanding
 
+Triggers
+- near 50d
+- R1D, ,,, R20D - Rank
+- Volume
+- Gap
+- High ATR
+- Low Float
+- Theme
+
 ## FMP things to do
 modify seed index prices to work with fmp
 migrate carefully screening logic to new app.py and drop all the fluff
 what should be run in update_data
 dekete tmp?
+```bash
+docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
 
 cat stocks_db_backup.dump |  docker-compose exec -T db pg_restore -U postgres -d stocks_db --clean --if-exists
-
+```
 #seed_profiles has IPO date, market cap
 #seed_ratios has pe ratio ttm, 
 # we are missing outstanding shares so we dont have to run 1 ticker at a time company profile to get mcap
@@ -34,6 +45,22 @@ python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py && \
   python db_scripts/update_data/historical_rsi_update.py && \
    python db_scripts/update_data/rsi_indices_update.py 
 "
+
+docker-compose exec backend bash -c "
+  python db_scripts/initialize_data/initialize_db.py --reset && \
+  python db_scripts/initialize_data/seed_tickers_from_fmp.py && \
+  python db_scripts/initialize_data/seed_earnings_from_fmp.py && \
+  python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py && \
+  python db_scripts/initialize_data/seed_index_prices_fmp.py && \
+  python db_scripts/initialize_data/seed_index_constituents_fmp.py && \
+  python db_scripts/initialize_data/seed_ohlc_from_fmp.py && \
+  python db_scripts/initialize_data/seed_profiles_from_fmp.py && \
+  python db_scripts/initialize_data/seed_ratios_from_fmp.py && \
+  python db_scripts/update_data/stock_metrics_update.py && \
+  python db_scripts/update_data/historical_rsi_update.py && \
+  python db_scripts/update_data/rsi_indices_update.py
+" && \
+docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
 ```
 
 ```bash - update
