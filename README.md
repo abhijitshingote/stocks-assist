@@ -17,6 +17,7 @@ Triggers
 - Sales Growth
 - IPO Date
 - Short Data
+- add last and next earnings date and maybe eps to column set
 
 ```bash
 docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
