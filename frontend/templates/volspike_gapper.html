@@ -1,0 +1,726 @@
+{% extends "base.html" %}
+
+{% block title %}Volume Spike & Gapper - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent-yellow) 0%, var(--accent-red) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.page-header .subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+/* Market Cap Tabs */
+.cap-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.cap-tab {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.cap-tab:hover {
+    border-color: var(--accent-yellow);
+    color: var(--text-primary);
+}
+
+.cap-tab.active {
+    background: linear-gradient(135deg, rgba(210, 153, 34, 0.2) 0%, rgba(248, 81, 73, 0.2) 100%);
+    border-color: var(--accent-yellow);
+    color: var(--text-primary);
+}
+
+.cap-tab .cap-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    font-weight: 400;
+}
+
+.cap-tab.active .cap-label {
+    color: var(--text-secondary);
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-yellow);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Data Table */
+.data-table-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 1800px;
+}
+
+/* Date pills for spike/gap days */
+.date-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    max-width: 180px;
+}
+
+.date-pill {
+    display: inline-block;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+}
+
+.date-pill.spike {
+    background: rgba(210, 153, 34, 0.15);
+    color: var(--accent-yellow);
+}
+
+.date-pill.gap {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--accent-red);
+}
+
+.data-table thead {
+    background: rgba(210, 153, 34, 0.1);
+}
+
+.data-table th {
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    font-size: 0.8rem;
+}
+
+.data-table th:hover {
+    background: rgba(210, 153, 34, 0.15);
+}
+
+.data-table th .sort-icon {
+    margin-left: 0.25rem;
+    opacity: 0.5;
+}
+
+.data-table th.sorted .sort-icon {
+    opacity: 1;
+    color: var(--accent-yellow);
+}
+
+.data-table td {
+    padding: 0.6rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.data-table tbody tr {
+    transition: background 0.15s;
+}
+
+.data-table tbody tr:hover {
+    background: var(--bg-card-hover);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Ticker Link */
+.ticker-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.ticker-link:hover {
+    color: var(--accent-green);
+    text-decoration: underline;
+}
+
+/* Company Name */
+.company-name {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-primary);
+}
+
+/* Sector Badge */
+.sector-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent-blue);
+    white-space: nowrap;
+}
+
+/* Count badges */
+.count-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.count-badge.spike {
+    background: rgba(210, 153, 34, 0.2);
+    color: var(--accent-yellow);
+}
+
+.count-badge.gap {
+    background: rgba(248, 81, 73, 0.2);
+    color: var(--accent-red);
+}
+
+.count-badge.zero {
+    background: var(--border-color);
+    color: var(--text-muted);
+}
+
+/* RSI Value */
+.rsi-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.rsi-high {
+    color: var(--accent-green);
+}
+
+.rsi-mid {
+    color: var(--accent-yellow);
+}
+
+.rsi-low {
+    color: var(--accent-red);
+}
+
+/* RSI Bar */
+.rsi-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rsi-bar-container {
+    width: 40px;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.rsi-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.rsi-bar.high {
+    background: linear-gradient(90deg, var(--accent-green), #4eca5f);
+}
+
+.rsi-bar.mid {
+    background: linear-gradient(90deg, var(--accent-yellow), #e5b526);
+}
+
+.rsi-bar.low {
+    background: linear-gradient(90deg, var(--accent-red), #ff6b5e);
+}
+
+/* Return Values */
+.return-positive {
+    color: var(--accent-green);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.return-negative {
+    color: var(--accent-red);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Market Cap Format */
+.market-cap {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-secondary);
+}
+
+/* Price */
+.price {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-primary);
+}
+
+/* Volume ratio */
+.volume-ratio {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-yellow);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+}
+
+.empty-state h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-primary);
+}
+
+.stat-value.yellow {
+    color: var(--accent-yellow);
+}
+
+.stat-value.red {
+    color: var(--accent-red);
+}
+
+/* Info box */
+.info-box {
+    background: rgba(210, 153, 34, 0.1);
+    border: 1px solid rgba(210, 153, 34, 0.3);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.info-box strong {
+    color: var(--accent-yellow);
+}
+
+.info-box .definition {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(210, 153, 34, 0.2);
+}
+
+.info-box .definition-title {
+    color: var(--accent-red);
+    font-weight: 600;
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Volume Spike & Gapper</h1>
+    <p>Stocks showing unusual volume spikes and gap-up activity</p>
+    <div class="subtitle">Identify potential breakout candidates in the last 30 days</div>
+</div>
+
+<div class="info-box">
+    <strong>Volume Spike:</strong> Stock's daily volume ≥ 3.5× its prior 20-trading-day average with close ≥ 3% above previous day.
+    <div class="definition">
+        <span class="definition-title">Gapper:</span> Stock opens/closes significantly higher than previous day close (low > prev close × 1.05 OR close > prev close × 1.15).
+    </div>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+    <div class="stat-item">
+        <span class="stat-label">Total Stocks</span>
+        <span class="stat-value yellow" id="totalStocks">—</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">With Spikes</span>
+        <span class="stat-value yellow" id="withSpikes">—</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">With Gaps</span>
+        <span class="stat-value red" id="withGaps">—</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">Category</span>
+        <span class="stat-value" id="currentCategory">All</span>
+    </div>
+</div>
+
+<!-- Market Cap Tabs -->
+<div class="cap-tabs">
+    <button class="cap-tab active" data-cap="all">
+        All
+        <span class="cap-label">No Filter</span>
+    </button>
+    <button class="cap-tab" data-cap="mega">
+        Mega
+        <span class="cap-label">&gt;$100B</span>
+    </button>
+    <button class="cap-tab" data-cap="large">
+        Large
+        <span class="cap-label">$20B–$100B</span>
+    </button>
+    <button class="cap-tab" data-cap="mid">
+        Mid
+        <span class="cap-label">$2B–$20B</span>
+    </button>
+    <button class="cap-tab" data-cap="small">
+        Small
+        <span class="cap-label">$200M–$2B</span>
+    </button>
+    <button class="cap-tab" data-cap="micro">
+        Micro
+        <span class="cap-label">&lt;$200M</span>
+    </button>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" id="loadingState">
+    <div class="spinner"></div>
+    <span>Loading Volume Spike & Gapper data...</span>
+</div>
+
+<!-- Empty State -->
+<div class="empty-state" id="emptyState" style="display: none;">
+    <h3>No Volume Spike or Gapper activity found</h3>
+    <p>No stocks found for this market cap category in the last 30 days.</p>
+</div>
+
+<!-- Data Table -->
+<div class="data-table-container" id="tableContainer" style="display: none;">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th data-sort="ticker">Ticker <span class="sort-icon">↕</span></th>
+                <th data-sort="company_name">Company <span class="sort-icon">↕</span></th>
+                <th data-sort="sector">Sector <span class="sort-icon">↕</span></th>
+                <th data-sort="spike_day_count" class="sorted">Spikes <span class="sort-icon">↓</span></th>
+                <th>Spike Dates</th>
+                <th data-sort="avg_volume_spike">Avg Vol Spike <span class="sort-icon">↕</span></th>
+                <th data-sort="gapper_day_count">Gaps <span class="sort-icon">↕</span></th>
+                <th>Gap Dates</th>
+                <th data-sort="avg_return_gapper">Avg Gap Ret <span class="sort-icon">↕</span></th>
+                <th data-sort="rsi_mktcap">RSI MktCap <span class="sort-icon">↕</span></th>
+                <th data-sort="current_price">Price <span class="sort-icon">↕</span></th>
+                <th data-sort="dr_1">1D <span class="sort-icon">↕</span></th>
+                <th data-sort="dr_5">5D <span class="sort-icon">↕</span></th>
+                <th data-sort="dr_20">20D <span class="sort-icon">↕</span></th>
+                <th data-sort="eps_growth">EPS Gr <span class="sort-icon">↕</span></th>
+                <th data-sort="revenue_growth">Rev Gr <span class="sort-icon">↕</span></th>
+                <th data-sort="market_cap">Market Cap <span class="sort-icon">↕</span></th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let currentData = [];
+let sortColumn = 'spike_day_count';
+let sortDirection = 'desc';
+
+const capLabels = {
+    'all': 'All',
+    'mega': 'Mega Cap',
+    'large': 'Large Cap',
+    'mid': 'Mid Cap',
+    'small': 'Small Cap',
+    'micro': 'Micro Cap'
+};
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadData('all');
+    
+    // Tab click handlers
+    document.querySelectorAll('.cap-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.cap-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            const cap = this.dataset.cap;
+            document.getElementById('currentCategory').textContent = capLabels[cap];
+            loadData(cap);
+        });
+    });
+    
+    // Sort handlers
+    document.querySelectorAll('.data-table th[data-sort]').forEach(th => {
+        th.addEventListener('click', function() {
+            const col = this.dataset.sort;
+            if (sortColumn === col) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = col;
+                sortDirection = (col === 'spike_day_count' || col === 'gapper_day_count' || col === 'rsi_mktcap' || col === 'avg_volume_spike') ? 'desc' : 'asc';
+            }
+            updateSortIcons();
+            renderTable(sortData(currentData));
+        });
+    });
+});
+
+function loadData(marketCap) {
+    showLoading();
+    
+    fetch(`/api/frontend/volspike-gapper/${marketCap}`)
+        .then(response => response.json())
+        .then(data => {
+            currentData = data;
+            hideLoading();
+            
+            if (data.length === 0) {
+                showEmpty();
+                updateStats(0, 0, 0);
+            } else {
+                showTable();
+                updateStats(data.length, data.filter(d => d.spike_day_count > 0).length, data.filter(d => d.gapper_day_count > 0).length);
+                renderTable(sortData(data));
+            }
+        })
+        .catch(error => {
+            console.error('Error loading Volume Spike & Gapper data:', error);
+            hideLoading();
+            showEmpty();
+        });
+}
+
+function sortData(data) {
+    return [...data].sort((a, b) => {
+        let aVal = a[sortColumn];
+        let bVal = b[sortColumn];
+        
+        if (aVal == null) return 1;
+        if (bVal == null) return -1;
+        
+        if (typeof aVal === 'string') {
+            aVal = aVal.toLowerCase();
+            bVal = bVal.toLowerCase();
+            return sortDirection === 'asc' 
+                ? aVal.localeCompare(bVal) 
+                : bVal.localeCompare(aVal);
+        }
+        
+        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+    });
+}
+
+function updateSortIcons() {
+    document.querySelectorAll('.data-table th').forEach(th => {
+        th.classList.remove('sorted');
+        const icon = th.querySelector('.sort-icon');
+        if (icon) icon.textContent = '↕';
+    });
+    
+    const activeHeader = document.querySelector(`.data-table th[data-sort="${sortColumn}"]`);
+    if (activeHeader) {
+        activeHeader.classList.add('sorted');
+        const icon = activeHeader.querySelector('.sort-icon');
+        if (icon) icon.textContent = sortDirection === 'asc' ? '↑' : '↓';
+    }
+}
+
+function renderTable(data) {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = data.map(stock => `
+        <tr>
+            <td><a href="/stock/${stock.ticker}" class="ticker-link">${stock.ticker}</a></td>
+            <td class="company-name" title="${stock.company_name || ''}">${stock.company_name || '—'}</td>
+            <td>${stock.sector ? `<span class="sector-badge">${stock.sector}</span>` : '—'}</td>
+            <td><span class="count-badge ${stock.spike_day_count > 0 ? 'spike' : 'zero'}">${stock.spike_day_count}</span></td>
+            <td>${formatDatePills(stock.volume_spike_days, 'spike')}</td>
+            <td class="volume-ratio">${stock.avg_volume_spike ? stock.avg_volume_spike.toFixed(1) + 'x' : '—'}</td>
+            <td><span class="count-badge ${stock.gapper_day_count > 0 ? 'gap' : 'zero'}">${stock.gapper_day_count}</span></td>
+            <td>${formatDatePills(stock.gap_days, 'gap')}</td>
+            <td class="${getReturnClass(stock.avg_return_gapper * 100)}">${stock.avg_return_gapper ? (stock.avg_return_gapper * 100).toFixed(1) + '%' : '—'}</td>
+            <td>
+                <div class="rsi-cell">
+                    <span class="rsi-value ${getRsiClass(stock.rsi_mktcap)}">${stock.rsi_mktcap || '—'}</span>
+                    <div class="rsi-bar-container">
+                        <div class="rsi-bar ${getRsiBarClass(stock.rsi_mktcap)}" style="width: ${stock.rsi_mktcap || 0}%"></div>
+                    </div>
+                </div>
+            </td>
+            <td class="price">${stock.current_price ? '$' + stock.current_price.toFixed(2) : '—'}</td>
+            <td class="${getReturnClass(stock.dr_1)}">${formatReturn(stock.dr_1)}</td>
+            <td class="${getReturnClass(stock.dr_5)}">${formatReturn(stock.dr_5)}</td>
+            <td class="${getReturnClass(stock.dr_20)}">${formatReturn(stock.dr_20)}</td>
+            <td class="${getReturnClass(stock.eps_growth)}">${formatReturn(stock.eps_growth)}</td>
+            <td class="${getReturnClass(stock.revenue_growth)}">${formatReturn(stock.revenue_growth)}</td>
+            <td class="market-cap">${formatMarketCap(stock.market_cap)}</td>
+        </tr>
+    `).join('');
+}
+
+function formatDatePills(dates, type) {
+    if (!dates || dates.length === 0) return '—';
+    return `<div class="date-pills">${dates.map(d => `<span class="date-pill ${type}">${formatShortDate(d)}</span>`).join('')}</div>`;
+}
+
+function formatShortDate(dateStr) {
+    if (!dateStr) return '';
+    // Parse date string (YYYY-MM-DD) and format as MM/DD
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+        return parts[1] + '/' + parts[2];
+    }
+    return dateStr;
+}
+
+function getRsiClass(rsi) {
+    if (rsi == null) return '';
+    if (rsi >= 70) return 'rsi-high';
+    if (rsi >= 30) return 'rsi-mid';
+    return 'rsi-low';
+}
+
+function getRsiBarClass(rsi) {
+    if (rsi == null) return 'mid';
+    if (rsi >= 70) return 'high';
+    if (rsi >= 30) return 'mid';
+    return 'low';
+}
+
+function getReturnClass(value) {
+    if (value == null) return '';
+    return value >= 0 ? 'return-positive' : 'return-negative';
+}
+
+function formatReturn(value) {
+    if (value == null) return '—';
+    const sign = value >= 0 ? '+' : '';
+    return sign + value.toFixed(2) + '%';
+}
+
+function formatMarketCap(value) {
+    if (value == null) return '—';
+    if (value >= 1e12) return '$' + (value / 1e12).toFixed(2) + 'T';
+    if (value >= 1e9) return '$' + (value / 1e9).toFixed(2) + 'B';
+    if (value >= 1e6) return '$' + (value / 1e6).toFixed(0) + 'M';
+    return '$' + value.toLocaleString();
+}
+
+function updateStats(count, withSpikes, withGaps) {
+    document.getElementById('totalStocks').textContent = count;
+    document.getElementById('withSpikes').textContent = withSpikes;
+    document.getElementById('withGaps').textContent = withGaps;
+}
+
+function showLoading() {
+    document.getElementById('loadingState').style.display = 'flex';
+    document.getElementById('tableContainer').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'none';
+}
+
+function hideLoading() {
+    document.getElementById('loadingState').style.display = 'none';
+}
+
+function showTable() {
+    document.getElementById('tableContainer').style.display = 'block';
+    document.getElementById('emptyState').style.display = 'none';
+}
+
+function showEmpty() {
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('tableContainer').style.display = 'none';
+}
+</script>
+{% endblock %}
+

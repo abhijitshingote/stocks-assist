@@ -3,7 +3,7 @@
 other filters
 - IPO screen  
 - dashboard page - like a doctors office, top movers, upcoming calendar, news,upcoming ipo, moving averages, SPX and NASDAQ performance on every page  
---RSI analysis
+--RSI too volatile - smooth it out 
 --- vol % of float or total outstanding
 
 Triggers
@@ -15,11 +15,7 @@ Triggers
 - Low Float
 - Theme
 
-## FMP things to do
-modify seed index prices to work with fmp
-migrate carefully screening logic to new app.py and drop all the fluff
-what should be run in update_data
-dekete tmp?
+
 ```bash
 docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
 
@@ -31,21 +27,6 @@ cat stocks_db_backup.dump |  docker-compose exec -T db pg_restore -U postgres -d
 # punted on income statment since ttm is higher paid tier and quaterly or non ttm is confusing
 ## First Run
 ```bash
-docker-compose exec  backend bash -c "
-  python db_scripts/initialize_data/initialize_db.py --reset && \
-  python db_scripts/initialize_data/seed_tickers_from_fmp.py && \
-python db_scripts/initialize_data/seed_earnings_from_fmp.py && \
-python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py && \
-  python db_scripts/initialize_data/seed_index_prices_fmp.py && \
-    python db_scripts/initialize_data/seed_index_constituents_fmp.py && \
-  python db_scripts/initialize_data/seed_ohlc_from_fmp.py && \
-  python db_scripts/initialize_data/seed_profiles_from_fmp.py && \
- python db_scripts/initialize_data/seed_ratios_from_fmp.py && \ 
- python db_scripts/update_data/stock_metrics_update.py && \
-  python db_scripts/update_data/historical_rsi_update.py && \
-   python db_scripts/update_data/rsi_indices_update.py 
-"
-
 docker-compose exec backend bash -c "
   python db_scripts/initialize_data/initialize_db.py --reset && \
   python db_scripts/initialize_data/seed_tickers_from_fmp.py && \
@@ -58,7 +39,8 @@ docker-compose exec backend bash -c "
   python db_scripts/initialize_data/seed_ratios_from_fmp.py && \
   python db_scripts/update_data/stock_metrics_update.py && \
   python db_scripts/update_data/historical_rsi_update.py && \
-  python db_scripts/update_data/rsi_indices_update.py
+  python db_scripts/update_data/rsi_indices_update.py && \
+  python db_scripts/update_data/volspike_gapper_update.py
 " && \
 docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
 ```
@@ -69,7 +51,8 @@ docker-compose exec backend bash -c "
  python db_scripts/update_data/daily_indices_update.py  && \
  python db_scripts/update_data/stock_metrics_update.py && \
   python db_scripts/update_data/historical_rsi_update.py && \
-   python db_scripts/update_data/rsi_indices_update.py
+   python db_scripts/update_data/rsi_indices_update.py && \
+   python db_scripts/update_data/volspike_gapper_update.py
 "
 ```
 ```bash - test full load
@@ -85,7 +68,8 @@ python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py --limit 10 
  python db_scripts/initialize_data/seed_ratios_from_fmp.py --limit 10 && \
  python db_scripts/update_data/stock_metrics_update.py && \
   python db_scripts/update_data/historical_rsi_update.py && \
-   python db_scripts/update_data/rsi_indices_update.py
+   python db_scripts/update_data/rsi_indices_update.py && \
+   python db_scripts/update_data/volspike_gapper_update.py
 "
 ```
 ```bash - test update
@@ -94,26 +78,10 @@ docker-compose exec backend bash -c "
   python db_scripts/update_data/daily_indices_update.py --days 1 && \
   python db_scripts/update_data/stock_metrics_update.py && \
   python db_scripts/update_data/historical_rsi_update.py && \
-  python db_scripts/update_data/rsi_indices_update.py
+  python db_scripts/update_data/rsi_indices_update.py && \
+  python db_scripts/update_data/volspike_gapper_update.py
 "
-```bash
-docker-compose build --no-cache
-
-docker-compose down -v && docker-compose up -d && docker-compose exec backend bash
-
-python db_scripts/initialize_data/initialize_db.py --reset
-python db_scripts/initialize_data/seed_tickers_from_fmp.py 
-python db_scripts/initialize_data/seed_1_year_price_table_from_polygon.py
-python db_scripts/initialize_data/seed_index_prices_polygon.py
-python db_scripts/update_data/daily_price_update.py
-python db_scripts/update_data/daily_indices_update.py
-crontab -l | sed '/^# \*/s/^# //' | crontab -
-# python get_earnings_dates.py
-python get_earnings_dates.py --missing --limit 100 --debug
-
-docker exec stocks-assist-backend-1 python db_scripts/update_data/run_triggers.py
 ```
-
 
 
 

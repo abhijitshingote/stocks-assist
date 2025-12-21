@@ -32,6 +32,7 @@ def initialize_database(reset=False):
     11. stock_metrics - Pre-computed screener metrics
     12. historical_rsi - Daily RSI time series
     13. rsi_indices - RSI rankings within index universes (SPX, NDX, DJI)
+    14. stock_volspike_gapper - Volume spike and gapper detection
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
@@ -47,6 +48,7 @@ def initialize_database(reset=False):
         if reset:
             logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
+            connection.execute(text("DROP TABLE IF EXISTS stock_volspike_gapper CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS rsi_indices CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS historical_rsi CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_metrics CASCADE;"))
@@ -317,6 +319,21 @@ def initialize_database(reset=False):
             )
         """))
         
+        # 13. stock_volspike_gapper - Volume spike and gapper detection
+        connection.execute(text(f"""
+            {table_clause} stock_volspike_gapper (
+                ticker VARCHAR(20) PRIMARY KEY,
+                spike_day_count INTEGER,
+                avg_volume_spike FLOAT,
+                volume_spike_days TEXT,
+                gapper_day_count INTEGER,
+                avg_return_gapper FLOAT,
+                gap_days TEXT,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
+            )
+        """))
+        
         # Create indexes for better query performance
         idx_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
         connection.execute(text(f"""
@@ -345,6 +362,8 @@ def initialize_database(reset=False):
             {idx_clause} idx_rsi_indices_is_spx ON rsi_indices(is_spx);
             {idx_clause} idx_rsi_indices_is_ndx ON rsi_indices(is_ndx);
             {idx_clause} idx_rsi_indices_is_dji ON rsi_indices(is_dji);
+            {idx_clause} idx_volspike_gapper_spike_count ON stock_volspike_gapper(spike_day_count);
+            {idx_clause} idx_volspike_gapper_gapper_count ON stock_volspike_gapper(gapper_day_count);
         """))
         
         connection.commit()
@@ -371,6 +390,7 @@ def initialize_database(reset=False):
         logger.info("  - stock_metrics (pre-computed screener metrics)")
         logger.info("  - historical_rsi (daily RSI time series)")
         logger.info("  - rsi_indices (RSI within index universes: SPX, NDX, DJI)")
+        logger.info("  - stock_volspike_gapper (volume spike and gapper detection)")
         
         flush_logger(SCRIPT_NAME)
 

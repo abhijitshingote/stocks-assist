@@ -2,11 +2,12 @@
 
 from flask import Flask, jsonify
 from flask_cors import CORS
-from sqlalchemy import create_engine, func, desc, text
+from sqlalchemy import create_engine, func, desc, text, or_
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
-    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI
+    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
+    StockVolspikeGapper
 )
 import os
 import logging
@@ -1634,6 +1635,157 @@ def get_top_performance_mega():
     s = Session()
     try:
         return jsonify(get_top_performance_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
+# Volume Spike & Gapper Endpoints
+# ============================================================================
+
+def get_volspike_gapper_stocks(session, market_cap_category=None):
+    """
+    Get stocks with volume spike and/or gapper activity in the last 30 days.
+    Joins with stock_metrics for enriched data.
+    """
+    try:
+        query = session.query(
+            StockVolspikeGapper.ticker,
+            StockVolspikeGapper.spike_day_count,
+            StockVolspikeGapper.avg_volume_spike,
+            StockVolspikeGapper.volume_spike_days,
+            StockVolspikeGapper.gapper_day_count,
+            StockVolspikeGapper.avg_return_gapper,
+            StockVolspikeGapper.gap_days,
+            StockMetrics.company_name,
+            StockMetrics.sector,
+            StockMetrics.industry,
+            StockMetrics.market_cap,
+            StockMetrics.current_price,
+            StockMetrics.rsi,
+            StockMetrics.rsi_mktcap,
+            StockMetrics.dr_1,
+            StockMetrics.dr_5,
+            StockMetrics.dr_20,
+            StockMetrics.volume,
+            StockMetrics.dollar_volume,
+            StockMetrics.vol_vs_10d_avg,
+            StockMetrics.eps_growth,
+            StockMetrics.revenue_growth,
+            StockMetrics.updated_at
+        ).join(
+            StockMetrics, StockVolspikeGapper.ticker == StockMetrics.ticker
+        ).filter(
+            # Only include stocks that have at least one spike day or one gap day
+            # Use COALESCE to handle NULL values (treat NULL as 0)
+            or_(
+                func.coalesce(StockVolspikeGapper.spike_day_count, 0) > 0,
+                func.coalesce(StockVolspikeGapper.gapper_day_count, 0) > 0
+            )
+        )
+
+        # Apply market cap filter
+        if market_cap_category:
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                query = query.filter(StockMetrics.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(StockMetrics.market_cap < category['max'])
+
+        # Order by spike_day_count + gapper_day_count descending (handle NULLs)
+        query = query.order_by(
+            desc(
+                func.coalesce(StockVolspikeGapper.spike_day_count, 0) + 
+                func.coalesce(StockVolspikeGapper.gapper_day_count, 0)
+            )
+        ).limit(200)
+
+        stocks = query.all()
+
+        results = []
+        for stock in stocks:
+            # Parse the date strings back to arrays (filter out empty strings)
+            spike_dates = [d for d in (stock.volume_spike_days or '').split(',') if d.strip()]
+            gap_dates = [d for d in (stock.gap_days or '').split(',') if d.strip()]
+            
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'spike_day_count': stock.spike_day_count or 0,
+                'avg_volume_spike': float(stock.avg_volume_spike) if stock.avg_volume_spike else None,
+                'volume_spike_days': spike_dates,
+                'gapper_day_count': stock.gapper_day_count or 0,
+                'avg_return_gapper': float(stock.avg_return_gapper) if stock.avg_return_gapper else None,
+                'gap_days': gap_dates,
+                'rsi': stock.rsi,
+                'rsi_mktcap': stock.rsi_mktcap,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'volume': int(stock.volume) if stock.volume else None,
+                'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
+                'vol_vs_10d_avg': float(stock.vol_vs_10d_avg) if stock.vol_vs_10d_avg else None,
+                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
+                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
+                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
+            })
+
+        return results
+
+    except Exception as e:
+        logger.error(f"Error getting volspike gapper stocks for {market_cap_category}: {str(e)}")
+        return []
+
+
+@app.route('/api/VolspikeGapper-All')
+def get_volspike_gapper_all():
+    s = Session()
+    try:
+        return jsonify(get_volspike_gapper_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
+@app.route('/api/VolspikeGapper-MicroCap')
+def get_volspike_gapper_micro():
+    s = Session()
+    try:
+        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/VolspikeGapper-SmallCap')
+def get_volspike_gapper_small():
+    s = Session()
+    try:
+        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/VolspikeGapper-MidCap')
+def get_volspike_gapper_mid():
+    s = Session()
+    try:
+        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/VolspikeGapper-LargeCap')
+def get_volspike_gapper_large():
+    s = Session()
+    try:
+        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/VolspikeGapper-MegaCap')
+def get_volspike_gapper_mega():
+    s = Session()
+    try:
+        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='mega'))
     finally:
         s.close()
 

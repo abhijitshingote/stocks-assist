@@ -363,3 +363,27 @@ class RsiIndices(Base):
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
     ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 13. StockVolspikeGapper (volume spike and gapper detection)
+# ------------------------------------------------------------
+class StockVolspikeGapper(Base):
+    __tablename__ = "stock_volspike_gapper"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    
+    # Volume spike metrics (last 30 days)
+    spike_day_count = Column(Integer)        # Number of volume spike days
+    avg_volume_spike = Column(Float)         # Average volume ratio on spike days
+    volume_spike_days = Column(Text)         # Array of spike dates (stored as JSON string)
+    
+    # Gapper metrics (last 30 days)
+    gapper_day_count = Column(Integer)       # Number of gap-up days
+    avg_return_gapper = Column(Float)        # Average return on gap days
+    gap_days = Column(Text)                  # Array of gap dates (stored as JSON string)
+    
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")

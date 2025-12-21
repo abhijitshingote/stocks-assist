@@ -90,6 +90,12 @@ def top_performance_page():
     return render_template('top_performance.html')
 
 
+@app.route('/volspike-gapper')
+def volspike_gapper_page():
+    """Volume Spike & Gapper page - Stocks with unusual volume and gap activity"""
+    return render_template('volspike_gapper.html')
+
+
 @app.route('/stock/<ticker>')
 def stock_detail(ticker):
     """Stock detail page"""
@@ -249,6 +255,27 @@ def api_top_performance(market_cap):
     data, status_code = make_backend_request(f'/api/TopPerformance-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch Top Performance data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/volspike-gapper/<market_cap>')
+def api_volspike_gapper(market_cap):
+    """Proxy endpoint for Volume Spike & Gapper data from backend"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+    
+    data, status_code = make_backend_request(f'/api/VolspikeGapper-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Volume Spike & Gapper data'}), status_code
     return jsonify(data), status_code
 
 
