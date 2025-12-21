@@ -265,6 +265,7 @@ def initialize_database(reset=False):
                 range_52_week VARCHAR(50),
                 volume BIGINT,
                 dollar_volume FLOAT,
+                avg_vol_10d FLOAT,
                 vol_vs_10d_avg FLOAT,
                 dr_1 FLOAT,
                 dr_5 FLOAT,

@@ -102,13 +102,14 @@
     border: 1px solid var(--border-color);
     border-radius: 12px;
     overflow-x: auto;
+    max-width: 100%;
 }
 
 .rsi-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.85rem;
-    min-width: 1100px;
+    font-size: 0.75rem;
+    table-layout: fixed;
 }
 
 .rsi-table thead {
@@ -116,7 +117,7 @@
 }
 
 .rsi-table th {
-    padding: 0.75rem 0.5rem;
+    padding: 0.5rem 0.25rem;
     text-align: left;
     font-weight: 600;
     color: var(--text-primary);
@@ -124,7 +125,7 @@
     cursor: pointer;
     user-select: none;
     white-space: nowrap;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
 }
 
 .rsi-table th:hover {
@@ -142,7 +143,7 @@
 }
 
 .rsi-table td {
-    padding: 0.6rem 0.5rem;
+    padding: 0.4rem 0.25rem;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-secondary);
 }
@@ -175,7 +176,7 @@
 
 /* Company Name */
 .company-name {
-    max-width: 130px;
+    max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -446,9 +447,14 @@
                 <th data-sort="dr_1">1D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_5">5D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_20">20D <span class="sort-icon">↕</span></th>
-                <th data-sort="eps_growth">EPS Gr <span class="sort-icon">↕</span></th>
-                <th data-sort="revenue_growth">Rev Gr <span class="sort-icon">↕</span></th>
-                <th data-sort="market_cap">Mkt Cap <span class="sort-icon">↕</span></th>
+                <th data-sort="eps_growth">EPS <span class="sort-icon">↕</span></th>
+                <th data-sort="revenue_growth">Rev <span class="sort-icon">↕</span></th>
+                <th data-sort="fpe">FPE <span class="sort-icon">↕</span></th>
+                <th data-sort="fps">FPS <span class="sort-icon">↕</span></th>
+                <th data-sort="ipo_date">IPO <span class="sort-icon">↕</span></th>
+                <th data-sort="vol_vs_10d_avg">Vol10 <span class="sort-icon">↕</span></th>
+                <th data-sort="atr20">ATR <span class="sort-icon">↕</span></th>
+                <th data-sort="market_cap">MktCap <span class="sort-icon">↕</span></th>
             </tr>
         </thead>
         <tbody id="tableBody">
@@ -588,6 +594,11 @@ function renderTable(data) {
             <td class="${getReturnClass(stock.dr_20)}">${formatReturn(stock.dr_20)}</td>
             <td class="${getReturnClass(stock.eps_growth)}">${formatReturn(stock.eps_growth)}</td>
             <td class="${getReturnClass(stock.revenue_growth)}">${formatReturn(stock.revenue_growth)}</td>
+            <td class="${getReturnClass(stock.fpe)}">${stock.fpe ? stock.fpe.toFixed(2) : '—'}</td>
+            <td class="${getReturnClass(stock.fps)}">${stock.fps ? stock.fps.toFixed(2) : '—'}</td>
+            <td>${stock.ipo_date || '—'}</td>
+            <td class="${getReturnClass(stock.vol_vs_10d_avg)}">${stock.vol_vs_10d_avg ? stock.vol_vs_10d_avg.toFixed(2) : '—'}</td>
+            <td class="${getReturnClass(stock.atr20)}">${stock.atr20 ? stock.atr20.toFixed(2) + '%' : '—'}</td>
             <td class="market-cap">${formatMarketCap(stock.market_cap)}</td>
         </tr>
     `).join('');

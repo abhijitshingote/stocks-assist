@@ -278,6 +278,7 @@ class StockMetrics(Base):
     range_52_week = Column(String(50))
     volume = Column(BigInteger)
     dollar_volume = Column(Float)
+    avg_vol_10d = Column(Float)
     vol_vs_10d_avg = Column(Float)
     
     # Price change percentages

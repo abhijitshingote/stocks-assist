@@ -41,6 +41,13 @@ GLOBAL_EXCLUDE = {
     'industry': {'Biotechnology'}
 }
 
+# Global liquidity filters (applied to all scanner views)
+GLOBAL_LIQUIDITY_FILTERS = {
+    'avg_vol_10d_min': 50000,        # Minimum 10-day average volume
+    'dollar_volume_min': 10000000,   # Minimum dollar volume ($10M)
+    'price_min': 3,                  # Minimum stock price ($3)
+}
+
 
 def get_latest_price_date(session):
     """Get the most recent price date available."""
@@ -68,6 +75,30 @@ def apply_global_exclude_filters(query):
         query = query.filter(~Ticker.sector.in_(list(sectors)))
     if industries:
         query = query.filter(~Ticker.industry.in_(list(industries)))
+    return query
+
+
+def apply_global_liquidity_filters(query, metrics_model=StockMetrics):
+    """Apply global liquidity filters (avg_vol_10d, dollar_volume, price) to a SQLAlchemy query.
+    
+    Args:
+        query: SQLAlchemy query object
+        metrics_model: The model to filter on (default: StockMetrics)
+    
+    Returns:
+        Filtered query
+    """
+    avg_vol_min = GLOBAL_LIQUIDITY_FILTERS.get('avg_vol_10d_min')
+    dollar_vol_min = GLOBAL_LIQUIDITY_FILTERS.get('dollar_volume_min')
+    price_min = GLOBAL_LIQUIDITY_FILTERS.get('price_min')
+    
+    if avg_vol_min:
+        query = query.filter(metrics_model.avg_vol_10d >= avg_vol_min)
+    if dollar_vol_min:
+        query = query.filter(metrics_model.dollar_volume >= dollar_vol_min)
+    if price_min:
+        query = query.filter(metrics_model.current_price >= price_min)
+    
     return query
 
 
@@ -109,9 +140,15 @@ def get_momentum_stocks(session, return_days, market_cap_category=None):
             latest_price_subquery.c.volume.label('volume'),
             latest_price_subquery.c.open_price.label('open_price'),
             latest_price_subquery.c.high_price.label('high_price'),
-            latest_price_subquery.c.low_price.label('low_price')
+            latest_price_subquery.c.low_price.label('low_price'),
+            StockMetrics.ipo_date,
+            StockMetrics.vol_vs_10d_avg,
+            StockMetrics.fpe,
+            StockMetrics.fps,
+            StockMetrics.atr20
         ).join(OHLC, Ticker.ticker == OHLC.ticker
-        ).outerjoin(latest_price_subquery, Ticker.ticker == latest_price_subquery.c.ticker)
+        ).outerjoin(latest_price_subquery, Ticker.ticker == latest_price_subquery.c.ticker
+        ).join(StockMetrics, Ticker.ticker == StockMetrics.ticker)
 
         # Apply date filtering
         base_query = base_query.filter(OHLC.date >= start_date, OHLC.date <= end_date)
@@ -129,6 +166,9 @@ def get_momentum_stocks(session, return_days, market_cap_category=None):
 
         # Apply global exclusions
         base_query = apply_global_exclude_filters(base_query)
+        
+        # Apply global liquidity filters
+        base_query = apply_global_liquidity_filters(base_query)
 
         # Group by stock
         base_query = base_query.group_by(
@@ -136,7 +176,8 @@ def get_momentum_stocks(session, return_days, market_cap_category=None):
             Ticker.industry, Ticker.market_cap, Ticker.price, Ticker.country,
             latest_price_subquery.c.volume, latest_price_subquery.c.open_price,
             latest_price_subquery.c.high_price, latest_price_subquery.c.low_price,
-            latest_price_subquery.c.latest_close
+            latest_price_subquery.c.latest_close, StockMetrics.ipo_date,
+            StockMetrics.vol_vs_10d_avg, StockMetrics.fpe, StockMetrics.fps, StockMetrics.atr20
         )
 
         # Apply return threshold filter
@@ -176,7 +217,12 @@ def get_momentum_stocks(session, return_days, market_cap_category=None):
                 'open': round(stock.open_price, 2) if stock.open_price else None,
                 'high': round(stock.high_price, 2) if stock.high_price else None,
                 'low': round(stock.low_price, 2) if stock.low_price else None,
-                'close': round(stock.end_price, 2)
+                'close': round(stock.end_price, 2),
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
+                'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'fps': round(stock.fps, 2) if stock.fps else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None
             })
 
         return results
@@ -221,11 +267,18 @@ def get_gapper_stocks(session, market_cap_category=None):
         Ticker.market_cap,
         Ticker.price,
         prev_close_subquery.c.prev_close,
-        today_open_subquery.c.today_open
+        today_open_subquery.c.today_open,
+        StockMetrics.ipo_date,
+        StockMetrics.vol_vs_10d_avg,
+        StockMetrics.fpe,
+        StockMetrics.fps,
+        StockMetrics.atr20
     ).join(
         prev_close_subquery, Ticker.ticker == prev_close_subquery.c.ticker
     ).join(
         today_open_subquery, Ticker.ticker == today_open_subquery.c.ticker
+    ).join(
+        StockMetrics, Ticker.ticker == StockMetrics.ticker
     )
 
     if market_cap_category:
@@ -236,6 +289,9 @@ def get_gapper_stocks(session, market_cap_category=None):
                 query = query.filter(Ticker.market_cap < category['max'])
 
     query = apply_global_exclude_filters(query)
+    
+    # Apply global liquidity filters
+    query = apply_global_liquidity_filters(query)
 
     gap_stocks = query.all()
 
@@ -264,7 +320,12 @@ def get_gapper_stocks(session, market_cap_category=None):
                     'today_open': round(stock.today_open, 2),
                     'gap_pct': round(gap_pct, 2),
                     'volume': None,
-                    'dollar_volume': None
+                    'dollar_volume': None,
+                    'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                    'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
+                    'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                    'fps': round(stock.fps, 2) if stock.fps else None,
+                    'atr20': round(stock.atr20, 2) if stock.atr20 else None
                 })
 
     results.sort(key=lambda x: x['gap_pct'], reverse=True)
@@ -309,9 +370,15 @@ def get_volume_spike_stocks(session, market_cap_category=None):
         today_data.c.today_volume,
         today_data.c.today_close,
         today_data.c.today_open,
-        avg_volume_query.c.avg_volume
+        avg_volume_query.c.avg_volume,
+        StockMetrics.ipo_date,
+        StockMetrics.vol_vs_10d_avg,
+        StockMetrics.fpe,
+        StockMetrics.fps,
+        StockMetrics.atr20
     ).join(today_data, Ticker.ticker == today_data.c.ticker)\
-     .join(avg_volume_query, Ticker.ticker == avg_volume_query.c.ticker)
+     .join(avg_volume_query, Ticker.ticker == avg_volume_query.c.ticker)\
+     .join(StockMetrics, Ticker.ticker == StockMetrics.ticker)
 
     if market_cap_category:
         category = MARKET_CAP_CATEGORIES.get(market_cap_category)
@@ -321,6 +388,9 @@ def get_volume_spike_stocks(session, market_cap_category=None):
                 query = query.filter(Ticker.market_cap < category['max'])
 
     query = apply_global_exclude_filters(query)
+    
+    # Apply global liquidity filters
+    query = apply_global_liquidity_filters(query)
 
     volume_stocks = query.all()
 
@@ -352,7 +422,12 @@ def get_volume_spike_stocks(session, market_cap_category=None):
                     'today_volume': int(stock.today_volume),
                     'avg_volume': round(stock.avg_volume, 0),
                     'volume_ratio': round(volume_ratio, 1),
-                    'volume_change': f"{volume_ratio:.1f}x"
+                    'volume_change': f"{volume_ratio:.1f}x",
+                    'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                    'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
+                    'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                    'fps': round(stock.fps, 2) if stock.fps else None,
+                    'atr20': round(stock.atr20, 2) if stock.atr20 else None
                 })
 
     results.sort(key=lambda x: x['volume_ratio'], reverse=True)
@@ -793,6 +868,10 @@ def get_rsi_stocks(session, market_cap_category):
             StockMetrics.dr_20,
             StockMetrics.pe,
             StockMetrics.fpe,
+            StockMetrics.fps,
+            StockMetrics.ipo_date,
+            StockMetrics.vol_vs_10d_avg,
+            StockMetrics.atr20,
             StockMetrics.eps_growth,
             StockMetrics.revenue_growth,
             StockMetrics.updated_at
@@ -807,6 +886,9 @@ def get_rsi_stocks(session, market_cap_category):
             query = query.filter(StockMetrics.market_cap >= category['min'])
             if category['max'] is not None:
                 query = query.filter(StockMetrics.market_cap < category['max'])
+
+        # Apply global liquidity filters
+        query = apply_global_liquidity_filters(query)
 
         # Order by RSI descending (highest RSI first)
         stocks = query.order_by(desc(StockMetrics.rsi)).limit(100).all()
@@ -826,6 +908,10 @@ def get_rsi_stocks(session, market_cap_category):
                 'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
                 'pe': round(stock.pe, 2) if stock.pe else None,
                 'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'fps': round(stock.fps, 2) if stock.fps else None,
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
                 'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
                 'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
@@ -1120,6 +1206,10 @@ def get_rsi_mktcap_stocks(session, market_cap_category):
             StockMetrics.dr_20,
             StockMetrics.pe,
             StockMetrics.fpe,
+            StockMetrics.fps,
+            StockMetrics.ipo_date,
+            StockMetrics.vol_vs_10d_avg,
+            StockMetrics.atr20,
             StockMetrics.eps_growth,
             StockMetrics.revenue_growth,
             StockMetrics.updated_at
@@ -1134,6 +1224,9 @@ def get_rsi_mktcap_stocks(session, market_cap_category):
             query = query.filter(StockMetrics.market_cap >= category['min'])
             if category['max'] is not None:
                 query = query.filter(StockMetrics.market_cap < category['max'])
+
+        # Apply global liquidity filters
+        query = apply_global_liquidity_filters(query)
 
         # Order by rsi_mktcap descending (highest RSI first)
         stocks = query.order_by(desc(StockMetrics.rsi_mktcap)).limit(100).all()
@@ -1154,6 +1247,10 @@ def get_rsi_mktcap_stocks(session, market_cap_category):
                 'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
                 'pe': round(stock.pe, 2) if stock.pe else None,
                 'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'fps': round(stock.fps, 2) if stock.fps else None,
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
                 'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
                 'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
@@ -1234,6 +1331,18 @@ def get_rsi_momentum_stocks(connection, market_cap_category=None):
                 if category['max'] is not None:
                     mcap_filter += f" AND sm.market_cap < {category['max']}"
         
+        # Build liquidity filter
+        liquidity_filter = ""
+        avg_vol_min = GLOBAL_LIQUIDITY_FILTERS.get('avg_vol_10d_min')
+        dollar_vol_min = GLOBAL_LIQUIDITY_FILTERS.get('dollar_volume_min')
+        price_min = GLOBAL_LIQUIDITY_FILTERS.get('price_min')
+        if avg_vol_min:
+            liquidity_filter += f" AND sm.avg_vol_10d >= {avg_vol_min}"
+        if dollar_vol_min:
+            liquidity_filter += f" AND sm.dollar_volume >= {dollar_vol_min}"
+        if price_min:
+            liquidity_filter += f" AND sm.current_price >= {price_min}"
+        
         query = f"""
         WITH trading_dates AS (
             SELECT DISTINCT date
@@ -1265,7 +1374,7 @@ def get_rsi_momentum_stocks(connection, market_cap_category=None):
             WHERE h_today.date = ld.max_date
               AND h_5d.rsi_mktcap IS NOT NULL
         )
-        SELECT 
+        SELECT
             rc.ticker,
             sm.company_name,
             sm.sector,
@@ -1280,6 +1389,11 @@ def get_rsi_momentum_stocks(connection, market_cap_category=None):
             sm.dr_1,
             sm.dr_5,
             sm.dr_20,
+            sm.fpe,
+            sm.fps,
+            sm.ipo_date,
+            sm.vol_vs_10d_avg,
+            sm.atr20,
             sm.eps_growth,
             sm.revenue_growth,
             sm.updated_at
@@ -1287,6 +1401,7 @@ def get_rsi_momentum_stocks(connection, market_cap_category=None):
         JOIN stock_metrics sm ON rc.ticker = sm.ticker
         WHERE rc.rsi_mktcap_change IS NOT NULL
         {mcap_filter}
+        {liquidity_filter}
         ORDER BY rc.rsi_mktcap_change DESC
         LIMIT 100
         """
@@ -1311,9 +1426,14 @@ def get_rsi_momentum_stocks(connection, market_cap_category=None):
                 'dr_1': round(row[11], 2) if row[11] else None,
                 'dr_5': round(row[12], 2) if row[12] else None,
                 'dr_20': round(row[13], 2) if row[13] else None,
-                'eps_growth': round(row[14], 2) if row[14] else None,
-                'revenue_growth': round(row[15], 2) if row[15] else None,
-                'updated_at': row[16].strftime('%Y-%m-%d %H:%M:%S') if row[16] else None
+                'fpe': round(row[14], 2) if row[14] else None,
+                'fps': round(row[15], 2) if row[15] else None,
+                'ipo_date': row[16].strftime('%Y-%m-%d') if row[16] else None,
+                'vol_vs_10d_avg': round(row[17], 2) if row[17] else None,
+                'atr20': round(row[18], 2) if row[18] else None,
+                'eps_growth': round(row[19], 2) if row[19] else None,
+                'revenue_growth': round(row[20], 2) if row[20] else None,
+                'updated_at': row[21].strftime('%Y-%m-%d %H:%M:%S') if row[21] else None
             })
         
         return results
@@ -1415,6 +1535,10 @@ def get_rsi_index_stocks(session, index_type, market_cap_category=None):
             StockMetrics.dr_20,
             StockMetrics.pe,
             StockMetrics.fpe,
+            StockMetrics.fps,
+            StockMetrics.ipo_date,
+            StockMetrics.vol_vs_10d_avg,
+            StockMetrics.atr20,
             StockMetrics.eps_growth,
             StockMetrics.revenue_growth,
             StockMetrics.updated_at
@@ -1432,6 +1556,9 @@ def get_rsi_index_stocks(session, index_type, market_cap_category=None):
                 query = query.filter(StockMetrics.market_cap >= category['min'])
                 if category['max'] is not None:
                     query = query.filter(StockMetrics.market_cap < category['max'])
+        
+        # Apply global liquidity filters
+        query = apply_global_liquidity_filters(query)
         
         query = query.order_by(desc(getattr(RsiIndices, idx['rsi_col'])))
         stocks = query.all()
@@ -1452,6 +1579,10 @@ def get_rsi_index_stocks(session, index_type, market_cap_category=None):
                 'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
                 'pe': round(stock.pe, 2) if stock.pe else None,
                 'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'fps': round(stock.fps, 2) if stock.fps else None,
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
                 'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
                 'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
@@ -1520,6 +1651,10 @@ def get_top_performance_stocks(session, market_cap_category=None):
                 StockMetrics.dr_120,
                 StockMetrics.pe,
                 StockMetrics.fpe,
+                StockMetrics.fps,
+                StockMetrics.ipo_date,
+                StockMetrics.vol_vs_10d_avg,
+                StockMetrics.atr20,
                 StockMetrics.eps_growth,
                 StockMetrics.revenue_growth,
                 StockMetrics.volume,
@@ -1537,6 +1672,9 @@ def get_top_performance_stocks(session, market_cap_category=None):
                     query = query.filter(StockMetrics.market_cap >= category['min'])
                     if category['max'] is not None:
                         query = query.filter(StockMetrics.market_cap < category['max'])
+            
+            # Apply global liquidity filters
+            query = apply_global_liquidity_filters(query)
             
             # Order by the specified return column descending
             query = query.order_by(desc(getattr(StockMetrics, return_column))).limit(limit)
@@ -1576,6 +1714,10 @@ def get_top_performance_stocks(session, market_cap_category=None):
                 'dr_120': round(stock.dr_120, 2) if stock.dr_120 else None,
                 'pe': round(stock.pe, 2) if stock.pe else None,
                 'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'fps': round(stock.fps, 2) if stock.fps else None,
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
                 'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
                 'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'volume': int(stock.volume) if stock.volume else None,
@@ -1667,6 +1809,10 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
             StockMetrics.dr_1,
             StockMetrics.dr_5,
             StockMetrics.dr_20,
+            StockMetrics.fpe,
+            StockMetrics.fps,
+            StockMetrics.ipo_date,
+            StockMetrics.atr20,
             StockMetrics.volume,
             StockMetrics.dollar_volume,
             StockMetrics.vol_vs_10d_avg,
@@ -1691,6 +1837,9 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
                 query = query.filter(StockMetrics.market_cap >= category['min'])
                 if category['max'] is not None:
                     query = query.filter(StockMetrics.market_cap < category['max'])
+
+        # Apply global liquidity filters
+        query = apply_global_liquidity_filters(query)
 
         # Order by spike_day_count + gapper_day_count descending (handle NULLs)
         query = query.order_by(
@@ -1726,6 +1875,10 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
                 'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
                 'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
                 'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'fps': round(stock.fps, 2) if stock.fps else None,
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
                 'volume': int(stock.volume) if stock.volume else None,
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'vol_vs_10d_avg': float(stock.vol_vs_10d_avg) if stock.vol_vs_10d_avg else None,

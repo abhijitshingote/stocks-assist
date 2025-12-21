@@ -14,7 +14,9 @@ Triggers
 - High ATR
 - Low Float
 - Theme
-
+- Sales Growth
+- IPO Date
+- Short Data
 
 ```bash
 docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
