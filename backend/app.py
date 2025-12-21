@@ -1698,7 +1698,7 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
                 func.coalesce(StockVolspikeGapper.spike_day_count, 0) + 
                 func.coalesce(StockVolspikeGapper.gapper_day_count, 0)
             )
-        ).limit(200)
+        )
 
         stocks = query.all()
 
