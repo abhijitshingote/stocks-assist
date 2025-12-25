@@ -163,6 +163,11 @@ def get_stock_metrics_data(session, ticker):
     if not metrics:
         return None
     
+    # Get volspike/gapper data
+    volspike_gapper = session.query(StockVolspikeGapper).filter(
+        StockVolspikeGapper.ticker == ticker
+    ).first()
+    
     return {
         'ticker': metrics.ticker,
         'company_name': metrics.company_name,
@@ -194,7 +199,14 @@ def get_stock_metrics_data(session, ticker):
         'short_ratio': metrics.short_ratio,
         'short_interest': metrics.short_interest,
         'low_float': metrics.low_float,
-        'updated_at': metrics.updated_at.strftime('%Y-%m-%d %H:%M:%S') if metrics.updated_at else None
+        'updated_at': metrics.updated_at.strftime('%Y-%m-%d %H:%M:%S') if metrics.updated_at else None,
+        # Volspike/Gapper data
+        'spike_day_count': volspike_gapper.spike_day_count if volspike_gapper else 0,
+        'avg_volume_spike': volspike_gapper.avg_volume_spike if volspike_gapper else None,
+        'volume_spike_days': volspike_gapper.volume_spike_days if volspike_gapper else None,
+        'gapper_day_count': volspike_gapper.gapper_day_count if volspike_gapper else 0,
+        'avg_return_gapper': volspike_gapper.avg_return_gapper if volspike_gapper else None,
+        'gap_days': volspike_gapper.gap_days if volspike_gapper else None,
     }
 
 

@@ -7,21 +7,38 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
     border-bottom: 1px solid var(--border-color);
 }
 
 .ticker-info h1 {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: var(--accent-green);
     margin-bottom: 0.25rem;
 }
 
 .company-name {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+.header-tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.75rem;
     color: var(--text-secondary);
 }
 
@@ -31,81 +48,310 @@
 
 .current-price {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
 }
 
 .price-positive { color: var(--accent-green); }
 .price-negative { color: var(--accent-red); }
 
-.metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
+.price-subtext {
+    font-size: 0.85rem;
+    color: var(--text-muted);
 }
 
-.metrics-section {
+/* Compact Metrics Grid */
+.metrics-compact {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
-.metrics-section h2 {
-    font-size: 1rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
+.metrics-compact-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem 0.75rem;
 }
 
-.metric-row {
+@media (max-width: 900px) {
+    .metrics-compact-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.4rem 0.5rem;
+    }
+}
+
+.metric-cell {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border-color);
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.4rem 0.3rem;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.2);
+    background: rgba(48, 54, 61, 0.05);
+    border-radius: 4px;
 }
 
-.metric-row:last-child {
+.metric-cell:nth-last-child(-n+6) {
     border-bottom: none;
 }
 
-.metric-label {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
+@media (max-width: 900px) {
+    .metric-cell:nth-last-child(-n+3) {
+        border-bottom: none;
+    }
+    .metric-cell:nth-last-child(n+4) {
+        border-bottom: 1px solid rgba(48, 54, 61, 0.2);
+    }
 }
 
-.metric-value {
+.metric-cell .label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-cell .value {
     font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
 }
 
-.return-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 6px;
+.value-positive { color: var(--accent-green); }
+.value-negative { color: var(--accent-red); }
+
+/* Highlight Badges */
+.highlight-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.highlight-badge {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.highlight-badge.volspike {
+    border-left: 4px solid #ff9800;
+}
+
+.highlight-badge.gapper {
+    border-left: 4px solid #9c27b0;
+}
+
+.highlight-badge.inactive {
+    opacity: 0.4;
+    border-left-color: var(--border-color);
+}
+
+.highlight-icon {
+    font-size: 1.8rem;
+    margin-top: 0.1rem;
+}
+
+.highlight-content {
+    flex: 1;
+}
+
+.highlight-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.highlight-title {
+    font-size: 0.85rem;
     font-weight: 600;
+    color: var(--text-primary);
+}
+
+.highlight-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.highlight-badge.volspike .highlight-value {
+    color: #ff9800;
+}
+
+.highlight-badge.gapper .highlight-value {
+    color: #9c27b0;
+}
+
+.highlight-badge.inactive .highlight-value {
+    color: var(--text-muted);
+}
+
+.highlight-stats {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.highlight-stat {
+    margin-bottom: 0.25rem;
+}
+
+.highlight-stat:last-child {
+    margin-bottom: 0;
+}
+
+.highlight-dates {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Chart Section */
+.chart-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chart-header h2 {
     font-size: 0.9rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
 }
 
-.return-positive {
-    background: rgba(63, 185, 80, 0.15);
-    color: var(--accent-green);
+.chart-timeframe {
+    display: flex;
+    gap: 0.4rem;
 }
 
-.return-negative {
-    background: rgba(248, 81, 73, 0.15);
-    color: var(--accent-red);
+.timeframe-btn {
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
 }
 
-.return-neutral {
-    background: rgba(139, 148, 158, 0.15);
+.timeframe-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.timeframe-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--bg-dark);
+}
+
+#chartContainer {
+    width: 100%;
+    height: 450px;
+    position: relative;
+}
+
+#rsiChartContainer {
+    width: 100%;
+    height: 120px;
+    position: relative;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.5rem;
+}
+
+.rsi-label {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    z-index: 10;
+    background: rgba(13, 17, 23, 0.8);
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+}
+
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 450px;
+    color: var(--text-muted);
+}
+
+.chart-legend {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
     color: var(--text-secondary);
 }
 
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+}
+
+.legend-dot.bullish { background: var(--accent-green); }
+.legend-dot.bearish { background: var(--accent-red); }
+
+.chart-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+}
+
+.chart-stat {
+    color: var(--text-secondary);
+}
+
+.chart-stat span {
+    color: var(--text-primary);
+    margin-left: 0.25rem;
+}
+
+/* Loading States */
 .loading {
     text-align: center;
     padding: 4rem;
@@ -138,7 +384,8 @@
     gap: 0.5rem;
     color: var(--text-secondary);
     text-decoration: none;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
     transition: color 0.2s;
 }
 
@@ -146,163 +393,11 @@
     color: var(--accent-blue);
 }
 
-.tag {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    background: var(--bg-card-hover);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-}
-
 .updated-at {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     color: var(--text-muted);
-    font-size: 0.85rem;
-}
-
-/* Candlestick Chart */
-.chart-section {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.chart-header h2 {
-    font-size: 1rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin: 0;
-}
-
-.chart-timeframe {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.timeframe-btn {
-    padding: 0.4rem 0.75rem;
-    border-radius: 6px;
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    cursor: pointer;
     font-size: 0.8rem;
-    font-family: 'JetBrains Mono', monospace;
-    transition: all 0.2s;
-}
-
-.timeframe-btn:hover {
-    border-color: var(--accent-blue);
-    color: var(--text-primary);
-}
-
-.timeframe-btn.active {
-    background: var(--accent-blue);
-    border-color: var(--accent-blue);
-    color: var(--bg-dark);
-}
-
-#chartContainer {
-    width: 100%;
-    height: 500px;
-    position: relative;
-}
-
-#rsiChartContainer {
-    width: 100%;
-    height: 150px;
-    position: relative;
-    margin-top: 0.5rem;
-    border-top: 1px solid var(--border-color);
-    padding-top: 0.5rem;
-}
-
-.rsi-label {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
-    z-index: 10;
-    background: rgba(13, 17, 23, 0.8);
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-}
-
-.chart-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 500px;
-    color: var(--text-muted);
-}
-
-.chart-loading .loading-spinner {
-    margin-bottom: 1rem;
-}
-
-.chart-legend {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 1rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--border-color);
-    font-size: 0.85rem;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-secondary);
-}
-
-.legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-}
-
-.legend-dot.bullish {
-    background: var(--accent-green);
-}
-
-.legend-dot.bearish {
-    background: var(--accent-red);
-}
-
-.chart-stats {
-    display: flex;
-    gap: 2rem;
-    margin-top: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-}
-
-.chart-stat {
-    color: var(--text-secondary);
-}
-
-.chart-stat span {
-    color: var(--text-primary);
-    margin-left: 0.25rem;
 }
 {% endblock %}
 
@@ -320,19 +415,132 @@
 </div>
 
 <div id="stock-content" style="display: none;">
+    <!-- Header -->
     <div class="stock-header">
         <div class="ticker-info">
             <h1 id="ticker">{{ ticker }}</h1>
             <div class="company-name" id="companyName">Loading...</div>
-            <div style="margin-top: 0.5rem;">
+            <div class="header-tags">
                 <span class="tag" id="sector">--</span>
                 <span class="tag" id="industry">--</span>
-                <span class="tag" id="country">--</span>
             </div>
         </div>
         <div class="price-display">
             <div class="current-price" id="currentPrice">--</div>
-            <div class="text-secondary" id="range52Week">52W: --</div>
+            <div class="price-subtext" id="range52Week">52W: --</div>
+        </div>
+    </div>
+
+    <!-- Volspike & Gapper Highlights -->
+    <div class="highlight-section">
+        <div class="highlight-badge volspike" id="volspikeBadge">
+            <div class="highlight-icon">⚡</div>
+            <div class="highlight-content">
+                <div class="highlight-header">
+                    <div class="highlight-title">Volume Spikes</div>
+                    <div class="highlight-value" id="spikeCount">0</div>
+                </div>
+                <div class="highlight-stats" id="volspikeStats">
+                    <div class="highlight-stat">Avg volume: <span id="avgVolumeSpike">--</span>x</div>
+                </div>
+                <div class="highlight-dates" id="volspikeDates"></div>
+            </div>
+        </div>
+        <div class="highlight-badge gapper" id="gapperBadge">
+            <div class="highlight-icon">🚀</div>
+            <div class="highlight-content">
+                <div class="highlight-header">
+                    <div class="highlight-title">Gap Days</div>
+                    <div class="highlight-value" id="gapperCount">0</div>
+                </div>
+                <div class="highlight-stats" id="gapperStats">
+                    <div class="highlight-stat">Avg return: <span id="avgReturnGapper">--</span>%</div>
+                </div>
+                <div class="highlight-dates" id="gapperDates"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Metrics Grid -->
+    <div class="metrics-compact">
+        <div class="metrics-compact-grid">
+            <!-- Row 1 -->
+            <div class="metric-cell">
+                <span class="label">1D</span>
+                <span class="value" id="dr1">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">5D</span>
+                <span class="value" id="dr5">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">20D</span>
+                <span class="value" id="dr20">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">60D</span>
+                <span class="value" id="dr60">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">Mkt Cap</span>
+                <span class="value" id="marketCap">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">ATR 20%</span>
+                <span class="value" id="atr20">--</span>
+            </div>
+
+            <!-- Row 2 - Valuation Ratios Together -->
+            <div class="metric-cell">
+                <span class="label">P/E</span>
+                <span class="value" id="pe">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">Fwd P/E</span>
+                <span class="value" id="fpe">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">P/S</span>
+                <span class="value" id="psTtm">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">Fwd P/S</span>
+                <span class="value" id="fps">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">RSI</span>
+                <span class="value" id="rsi">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">RSI Mkt</span>
+                <span class="value" id="rsiMktcap">--</span>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="metric-cell">
+                <span class="label">EPS Growth</span>
+                <span class="value" id="epsGrowth">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">Rev Growth</span>
+                <span class="value" id="revenueGrowth">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">Short Float</span>
+                <span class="value" id="shortFloat">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">Short Ratio</span>
+                <span class="value" id="shortRatio">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">Vol vs Avg</span>
+                <span class="value" id="volVs10dAvg">--</span>
+            </div>
+            <div class="metric-cell">
+                <span class="label">Vol</span>
+                <span class="value" id="volume">--</span>
+            </div>
         </div>
     </div>
 
@@ -384,125 +592,6 @@
         <div class="chart-stats" id="chartStats"></div>
     </div>
 
-    <div class="metrics-grid">
-        <!-- Returns Section -->
-        <div class="metrics-section">
-            <h2>Price Returns</h2>
-            <div class="metric-row">
-                <span class="metric-label">1 Day</span>
-                <span class="metric-value return-badge" id="dr1">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">5 Days</span>
-                <span class="metric-value return-badge" id="dr5">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">20 Days</span>
-                <span class="metric-value return-badge" id="dr20">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">60 Days</span>
-                <span class="metric-value return-badge" id="dr60">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">120 Days</span>
-                <span class="metric-value return-badge" id="dr120">--</span>
-            </div>
-        </div>
-
-        <!-- Volume Section -->
-        <div class="metrics-section">
-            <h2>Volume & Trading</h2>
-            <div class="metric-row">
-                <span class="metric-label">Volume</span>
-                <span class="metric-value" id="volume">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Dollar Volume</span>
-                <span class="metric-value" id="dollarVolume">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Vol vs 10D Avg</span>
-                <span class="metric-value" id="volVs10dAvg">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Market Cap</span>
-                <span class="metric-value" id="marketCap">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">IPO Date</span>
-                <span class="metric-value" id="ipoDate">--</span>
-            </div>
-        </div>
-
-        <!-- Valuation Section -->
-        <div class="metrics-section">
-            <h2>Valuation Metrics</h2>
-            <div class="metric-row">
-                <span class="metric-label">P/E Ratio (TTM)</span>
-                <span class="metric-value" id="pe">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Price-to-Sales (TTM)</span>
-                <span class="metric-value" id="psTtm">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Forward P/E</span>
-                <span class="metric-value" id="fpe">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Forward P/S</span>
-                <span class="metric-value" id="fps">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">EPS Growth (Est.)</span>
-                <span class="metric-value return-badge" id="epsGrowth">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Revenue Growth (Est.)</span>
-                <span class="metric-value return-badge" id="revenueGrowth">--</span>
-            </div>
-        </div>
-
-        <!-- Technical Section -->
-        <div class="metrics-section">
-            <h2>Technical Indicators</h2>
-            <div class="metric-row">
-                <span class="metric-label">RSI (Percentile)</span>
-                <span class="metric-value" id="rsi">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">RSI MktCap</span>
-                <span class="metric-value" id="rsiMktcap">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">ATR 20 (%)</span>
-                <span class="metric-value" id="atr20">--</span>
-            </div>
-        </div>
-
-        <!-- Short Interest Section -->
-        <div class="metrics-section">
-            <h2>Short Interest</h2>
-            <div class="metric-row">
-                <span class="metric-label">Short Float</span>
-                <span class="metric-value" id="shortFloat">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Short Ratio</span>
-                <span class="metric-value" id="shortRatio">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Short Interest</span>
-                <span class="metric-value" id="shortInterest">--</span>
-            </div>
-            <div class="metric-row">
-                <span class="metric-label">Low Float</span>
-                <span class="metric-value" id="lowFloat">--</span>
-            </div>
-        </div>
-    </div>
-
     <div class="updated-at" id="updatedAt"></div>
 </div>
 {% endblock %}
@@ -545,18 +634,19 @@ function formatVolume(num) {
     return num.toLocaleString();
 }
 
-function formatReturn(value, elementId) {
-    const element = document.getElementById(elementId);
-    if (value == null) {
-        element.textContent = '--';
-        element.classList.add('return-neutral');
-        return;
-    }
-    
-    const formatted = (value >= 0 ? '+' : '') + formatNumber(value, 2) + '%';
-    element.textContent = formatted;
-    element.classList.remove('return-positive', 'return-negative', 'return-neutral');
-    element.classList.add(value >= 0 ? 'return-positive' : 'return-negative');
+function formatReturn(value) {
+    if (value == null) return { text: '--', className: '' };
+    const formatted = (value >= 0 ? '+' : '') + formatNumber(value, 1) + '%';
+    const className = value >= 0 ? 'value-positive' : 'value-negative';
+    return { text: formatted, className };
+}
+
+function setReturnValue(elementId, value) {
+    const el = document.getElementById(elementId);
+    const { text, className } = formatReturn(value);
+    el.textContent = text;
+    el.classList.remove('value-positive', 'value-negative');
+    if (className) el.classList.add(className);
 }
 
 async function loadStockData() {
@@ -570,12 +660,11 @@ async function loadStockData() {
             return;
         }
         
-        // Populate the page
+        // Header
         document.getElementById('ticker').textContent = data.ticker;
         document.getElementById('companyName').textContent = data.company_name || 'Unknown Company';
         document.getElementById('sector').textContent = data.sector || '--';
         document.getElementById('industry').textContent = data.industry || '--';
-        document.getElementById('country').textContent = data.country || '--';
         
         // Price
         if (data.current_price != null) {
@@ -584,40 +673,81 @@ async function loadStockData() {
         }
         document.getElementById('range52Week').textContent = '52W: ' + (data.range_52_week || '--');
         
+        // Volspike & Gapper Highlights
+        const spikeCount = data.spike_day_count || 0;
+        const gapperCount = data.gapper_day_count || 0;
+
+        document.getElementById('spikeCount').textContent = spikeCount;
+        document.getElementById('gapperCount').textContent = gapperCount;
+
+        // Volume spike stats
+        if (data.avg_volume_spike != null) {
+            document.getElementById('avgVolumeSpike').textContent = formatNumber(data.avg_volume_spike, 1);
+        }
+
+        // Gapper stats
+        if (data.avg_return_gapper != null) {
+            document.getElementById('avgReturnGapper').textContent = formatNumber(data.avg_return_gapper * 100, 1);
+        }
+
+        // Volume spike dates
+        if (data.volume_spike_days && spikeCount > 0) {
+            try {
+                const dates = data.volume_spike_days.split(',');
+                if (dates.length > 0) {
+                    document.getElementById('volspikeDates').textContent = 'Dates: ' + dates.slice(0, 5).join(', ') + (dates.length > 5 ? '...' : '');
+                }
+            } catch (e) {
+                console.warn('Error parsing volume spike dates:', e);
+            }
+        }
+
+        // Gapper dates
+        if (data.gap_days && gapperCount > 0) {
+            try {
+                const dates = data.gap_days.split(',');
+                if (dates.length > 0) {
+                    document.getElementById('gapperDates').textContent = 'Dates: ' + dates.slice(0, 5).join(', ') + (dates.length > 5 ? '...' : '');
+                }
+            } catch (e) {
+                console.warn('Error parsing gapper dates:', e);
+            }
+        }
+
+        if (spikeCount === 0) {
+            document.getElementById('volspikeBadge').classList.add('inactive');
+        }
+        if (gapperCount === 0) {
+            document.getElementById('gapperBadge').classList.add('inactive');
+        }
+        
         // Returns
-        formatReturn(data.dr_1, 'dr1');
-        formatReturn(data.dr_5, 'dr5');
-        formatReturn(data.dr_20, 'dr20');
-        formatReturn(data.dr_60, 'dr60');
-        formatReturn(data.dr_120, 'dr120');
+        setReturnValue('dr1', data.dr_1);
+        setReturnValue('dr5', data.dr_5);
+        setReturnValue('dr20', data.dr_20);
+        setReturnValue('dr60', data.dr_60);
         
-        // Volume
-        document.getElementById('volume').textContent = formatVolume(data.volume);
-        document.getElementById('dollarVolume').textContent = data.dollar_volume != null ? formatLargeNumber(data.dollar_volume) : '--';
-        document.getElementById('volVs10dAvg').textContent = data.vol_vs_10d_avg != null ? formatNumber(data.vol_vs_10d_avg, 2) + 'x' : '--';
+        // Valuation & metrics
         document.getElementById('marketCap').textContent = formatLargeNumber(data.market_cap);
-        document.getElementById('ipoDate').textContent = data.ipo_date || '--';
-        
-        // Valuation
-        document.getElementById('pe').textContent = data.pe != null ? formatNumber(data.pe, 2) : '--';
-        document.getElementById('psTtm').textContent = data.ps_ttm != null ? formatNumber(data.ps_ttm, 2) : '--';
-        document.getElementById('fpe').textContent = data.fpe != null ? formatNumber(data.fpe, 2) : '--';
-        document.getElementById('fps').textContent = data.fps != null ? formatNumber(data.fps, 2) : '--';
-        
-        // Growth metrics
-        formatReturn(data.eps_growth, 'epsGrowth');
-        formatReturn(data.revenue_growth, 'revenueGrowth');
+        document.getElementById('pe').textContent = data.pe != null ? formatNumber(data.pe, 1) : '--';
+        document.getElementById('psTtm').textContent = data.ps_ttm != null ? formatNumber(data.ps_ttm, 1) : '--';
+        document.getElementById('fpe').textContent = data.fpe != null ? formatNumber(data.fpe, 1) : '--';
+        document.getElementById('fps').textContent = data.fps != null ? formatNumber(data.fps, 1) : '--';
         
         // Technical
         document.getElementById('rsi').textContent = data.rsi != null ? data.rsi : '--';
         document.getElementById('rsiMktcap').textContent = data.rsi_mktcap != null ? data.rsi_mktcap : '--';
-        document.getElementById('atr20').textContent = data.atr20 != null ? formatNumber(data.atr20, 2) + '%' : '--';
+        document.getElementById('atr20').textContent = data.atr20 != null ? formatNumber(data.atr20, 1) + '%' : '--';
+        document.getElementById('volVs10dAvg').textContent = data.vol_vs_10d_avg != null ? formatNumber(data.vol_vs_10d_avg, 1) + 'x' : '--';
+        document.getElementById('volume').textContent = formatVolume(data.volume);
         
-        // Short Interest
-        document.getElementById('shortFloat').textContent = data.short_float != null ? formatNumber(data.short_float, 2) + '%' : '--';
-        document.getElementById('shortRatio').textContent = data.short_ratio != null ? formatNumber(data.short_ratio, 2) : '--';
-        document.getElementById('shortInterest').textContent = data.short_interest != null ? formatNumber(data.short_interest, 2) + '%' : '--';
-        document.getElementById('lowFloat').textContent = data.low_float != null ? (data.low_float ? 'Yes' : 'No') : '--';
+        // Growth
+        setReturnValue('epsGrowth', data.eps_growth);
+        setReturnValue('revenueGrowth', data.revenue_growth);
+        
+        // Short interest
+        document.getElementById('shortFloat').textContent = data.short_float != null ? formatNumber(data.short_float, 1) + '%' : '--';
+        document.getElementById('shortRatio').textContent = data.short_ratio != null ? formatNumber(data.short_ratio, 1) : '--';
         
         // Updated at
         if (data.updated_at) {
@@ -628,7 +758,7 @@ async function loadStockData() {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('stock-content').style.display = 'block';
         
-        // Load chart after stock data is loaded
+        // Load chart
         loadChartData();
         
     } catch (error) {
@@ -644,7 +774,6 @@ async function loadStockData() {
 
 async function loadChartData() {
     try {
-        // Fetch OHLC and Earnings EPS data in parallel
         const [ohlcResponse, earningsResponse] = await Promise.all([
             fetch(`/api/frontend/ohlc/${ticker}`),
             fetch(`/api/frontend/earnings-eps/${ticker}`)
@@ -665,7 +794,6 @@ async function loadChartData() {
         updateChart(currentTimeframe);
         setupTimeframeButtons();
         
-        // Update price display from latest OHLC close
         if (data.length > 0) {
             const latestData = data[data.length - 1];
             if (latestData.close != null) {
@@ -686,10 +814,9 @@ function initChart() {
     const container = document.getElementById('chartContainer');
     const rsiContainer = document.getElementById('rsiChartContainer');
     
-    // Main price chart
     chart = LightweightCharts.createChart(container, {
         width: container.clientWidth,
-        height: 500,
+        height: 450,
         layout: {
             background: { type: 'solid', color: 'transparent' },
             textColor: '#8b949e',
@@ -728,7 +855,6 @@ function initChart() {
         handleScale: false,
     });
     
-    // Candlestick series
     candlestickSeries = chart.addCandlestickSeries({
         upColor: '#3fb950',
         downColor: '#f85149',
@@ -738,7 +864,6 @@ function initChart() {
         wickUpColor: '#3fb950',
     });
     
-    // 50 DMA line - parrot green color
     dma50Series = chart.addLineSeries({
         color: '#00ff00',
         lineWidth: 2,
@@ -748,7 +873,6 @@ function initChart() {
         crosshairMarkerVisible: false,
     });
 
-    // 200 DMA line - red color
     dma200Series = chart.addLineSeries({
         color: '#ff0000',
         lineWidth: 2,
@@ -758,7 +882,6 @@ function initChart() {
         crosshairMarkerVisible: false,
     });
     
-    // Volume series
     volumeSeries = chart.addHistogramSeries({
         color: '#26a69a',
         priceFormat: {
@@ -771,10 +894,9 @@ function initChart() {
         },
     });
     
-    // RSI MktCap subplot chart
     rsiChart = LightweightCharts.createChart(rsiContainer, {
         width: rsiContainer.clientWidth,
-        height: 150,
+        height: 120,
         layout: {
             background: { type: 'solid', color: 'transparent' },
             textColor: '#8b949e',
@@ -817,7 +939,6 @@ function initChart() {
         handleScale: false,
     });
     
-    // RSI MktCap area series - cyan color
     rsiSeries = rsiChart.addAreaSeries({
         lineColor: '#00bcd4',
         topColor: 'rgba(0, 188, 212, 0.4)',
@@ -828,7 +949,6 @@ function initChart() {
         crosshairMarkerVisible: true,
     });
     
-    // Handle resize
     window.addEventListener('resize', () => {
         if (chart) {
             chart.applyOptions({ width: container.clientWidth });
@@ -838,9 +958,7 @@ function initChart() {
         }
     });
     
-    // Sync crosshair between charts
     chart.subscribeCrosshairMove(param => {
-        updateChartTooltip(param);
         if (param.time && rsiChart) {
             rsiChart.setCrosshairPosition(param.point?.y || 0, param.time, rsiSeries);
         }
@@ -863,7 +981,6 @@ function updateChart(days) {
     const filteredData = allOhlcData.filter(d => d.time >= cutoffStr);
     
     if (filteredData.length === 0) {
-        // If filter is too strict, show all data
         setChartData(allOhlcData);
     } else {
         setChartData(filteredData);
@@ -877,7 +994,6 @@ function updateChart(days) {
 }
 
 function setChartData(data) {
-    // Candlestick data
     const candleData = data.map(d => ({
         time: d.time,
         open: d.open,
@@ -887,7 +1003,6 @@ function setChartData(data) {
     }));
     candlestickSeries.setData(candleData);
     
-    // 50 DMA data
     const dma50Data = data
         .filter(d => d.dma_50 != null)
         .map(d => ({
@@ -896,7 +1011,6 @@ function setChartData(data) {
         }));
     dma50Series.setData(dma50Data);
     
-    // 200 DMA data
     const dma200Data = data
         .filter(d => d.dma_200 != null)
         .map(d => ({
@@ -905,7 +1019,6 @@ function setChartData(data) {
         }));
     dma200Series.setData(dma200Data);
     
-    // Volume data with colors
     const volumeData = data.map(d => ({
         time: d.time,
         value: d.volume,
@@ -913,7 +1026,6 @@ function setChartData(data) {
     }));
     volumeSeries.setData(volumeData);
     
-    // RSI MktCap data for subplot
     const rsiData = data
         .filter(d => d.rsi_mktcap != null)
         .map(d => ({
@@ -922,13 +1034,11 @@ function setChartData(data) {
         }));
     rsiSeries.setData(rsiData);
     
-    // Add EPS earnings markers
     const dataTimeSet = new Set(data.map(d => d.time));
     const filteredEarnings = allEarningsData.filter(e => dataTimeSet.has(e.time));
     
     if (filteredEarnings.length > 0) {
         const markers = filteredEarnings.map(earning => {
-            // Build the label text
             const actualText = earning.eps_actual != null ? `A: $${earning.eps_actual}` : '';
             const estText = earning.eps_estimated != null ? `E: $${earning.eps_estimated}` : '';
             let labelText = '';
@@ -938,10 +1048,9 @@ function setChartData(data) {
                 labelText = actualText || estText || 'EPS';
             }
             
-            // Determine if beat or miss for color
-            let color = '#f5f5dc'; // Off-white/beige default
+            let color = '#f5f5dc';
             if (earning.eps_actual != null && earning.eps_estimated != null) {
-                color = earning.eps_actual >= earning.eps_estimated ? '#90EE90' : '#FFB6C1'; // Light green for beat, light pink for miss
+                color = earning.eps_actual >= earning.eps_estimated ? '#90EE90' : '#FFB6C1';
             }
             
             return {
@@ -958,7 +1067,6 @@ function setChartData(data) {
         candlestickSeries.setMarkers([]);
     }
     
-    // Sync RSI chart time scale with main chart
     if (rsiChart && chart) {
         rsiChart.timeScale().fitContent();
     }
@@ -993,11 +1101,6 @@ function updateChartStats(data) {
     document.getElementById('chartStats').innerHTML = statsHtml;
 }
 
-function updateChartTooltip(param) {
-    // Optional: Could add a floating tooltip here
-}
-
 document.addEventListener('DOMContentLoaded', loadStockData);
 </script>
 {% endblock %}
-
