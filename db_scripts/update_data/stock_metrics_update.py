@@ -168,14 +168,13 @@ def compute_and_load_metrics(connection):
         GROUP BY ticker
     ),
     forward_estimates AS (
+        -- Forward = current year + 1 (e.g., if we're in 2025, pick FY2026 estimates)
         SELECT DISTINCT ON (ticker)
             eps_avg,
             revenue_avg,
             ticker
         FROM analyst_estimates a
-        CROSS JOIN latest_date ld
-        WHERE a.date > ld.max_date
-          AND a.date <= ld.max_date + INTERVAL '12 months'
+        WHERE EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE) + 1
           AND a.eps_avg IS NOT NULL
           AND a.revenue_avg IS NOT NULL
         ORDER BY ticker, a.date ASC
