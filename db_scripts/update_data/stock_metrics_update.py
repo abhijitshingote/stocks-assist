@@ -9,6 +9,8 @@ This script computes various metrics including:
 - ATR20 (Average True Range as %)
 - P/E, P/S (TTM and Forward)
 - RSI (Relative Strength percentile vs SPY)
+- YoY Revenue Growth (t-1, t, t+1, t+2, avg of t+1 and t+2)
+- YoY EPS Growth (t-1, t, t+1, t+2, avg of t+1 and t+2)
 """
 
 import os
@@ -46,9 +48,8 @@ def init_db():
     DATABASE_URL = os.getenv('DATABASE_URL')
     if not DATABASE_URL:
         raise ValueError("DATABASE_URL not found in environment variables")
-    
+
     engine = create_engine(DATABASE_URL)
-    Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     return Session(), engine
 
@@ -70,6 +71,74 @@ def compute_and_load_metrics(connection):
     metrics_query = """
     WITH latest_date AS (
         SELECT MAX(date) as max_date FROM ohlc
+    ),
+    -- Parameters for YoY growth calculations
+    params AS (
+        SELECT
+            EXTRACT(YEAR FROM CURRENT_DATE)::int AS current_year,
+            ARRAY[
+                EXTRACT(YEAR FROM CURRENT_DATE)::int + 1,
+                EXTRACT(YEAR FROM CURRENT_DATE)::int + 2
+            ] AS avg_growth_years
+    ),
+    -- YoY Revenue Growth from analyst estimates
+    revenue_growth_yoy AS (
+        SELECT
+            e.ticker,
+            e.date,
+            EXTRACT(YEAR FROM e.date)::int AS year,
+            ROUND(
+                (
+                    (e.revenue_avg - LAG(e.revenue_avg) OVER (PARTITION BY e.ticker ORDER BY e.date))::numeric
+                    / NULLIF(LAG(e.revenue_avg) OVER (PARTITION BY e.ticker ORDER BY e.date), 0)::numeric
+                    * 100
+                ),
+                2
+            ) AS yoy_revenue_growth_pct
+        FROM analyst_estimates e
+    ),
+    -- YoY EPS Growth from analyst estimates
+    eps_growth_yoy AS (
+        SELECT
+            e.ticker,
+            e.date,
+            EXTRACT(YEAR FROM e.date)::int AS year,
+            ROUND(
+                (
+                    (e.eps_avg - LAG(e.eps_avg) OVER (PARTITION BY e.ticker ORDER BY e.date))::numeric
+                    / NULLIF(LAG(e.eps_avg) OVER (PARTITION BY e.ticker ORDER BY e.date), 0)::numeric
+                    * 100
+                ),
+                2
+            ) AS yoy_eps_growth_pct
+        FROM analyst_estimates e
+    ),
+    -- Dynamic growth pivoted by year
+    dynamic_growth AS (
+        SELECT
+            rg.ticker,
+            -- Revenue Growth
+            MAX(CASE WHEN rg.year = p.current_year - 1 THEN rg.yoy_revenue_growth_pct END) AS rev_growth_t_minus_1,
+            MAX(CASE WHEN rg.year = p.current_year     THEN rg.yoy_revenue_growth_pct END) AS rev_growth_t,
+            MAX(CASE WHEN rg.year = p.current_year + 1 THEN rg.yoy_revenue_growth_pct END) AS rev_growth_t_plus_1,
+            MAX(CASE WHEN rg.year = p.current_year + 2 THEN rg.yoy_revenue_growth_pct END) AS rev_growth_t_plus_2,
+            ROUND(
+                AVG(rg.yoy_revenue_growth_pct) FILTER (WHERE rg.year = ANY (p.avg_growth_years))::numeric,
+                2
+            ) AS avg_rev_growth,
+            -- EPS Growth
+            MAX(CASE WHEN eg.year = p.current_year - 1 THEN eg.yoy_eps_growth_pct END) AS eps_growth_t_minus_1,
+            MAX(CASE WHEN eg.year = p.current_year     THEN eg.yoy_eps_growth_pct END) AS eps_growth_t,
+            MAX(CASE WHEN eg.year = p.current_year + 1 THEN eg.yoy_eps_growth_pct END) AS eps_growth_t_plus_1,
+            MAX(CASE WHEN eg.year = p.current_year + 2 THEN eg.yoy_eps_growth_pct END) AS eps_growth_t_plus_2,
+            ROUND(
+                AVG(eg.yoy_eps_growth_pct) FILTER (WHERE eg.year = ANY (p.avg_growth_years))::numeric,
+                2
+            ) AS avg_eps_growth
+        FROM revenue_growth_yoy rg
+        LEFT JOIN eps_growth_yoy eg ON rg.ticker = eg.ticker AND rg.year = eg.year
+        CROSS JOIN params p
+        GROUP BY rg.ticker, p.current_year, p.avg_growth_years
     ),
     price_changes AS (
         SELECT 
@@ -249,6 +318,16 @@ def compute_and_load_metrics(connection):
         fps,
         eps_growth,
         revenue_growth,
+        rev_growth_t_minus_1,
+        rev_growth_t,
+        rev_growth_t_plus_1,
+        rev_growth_t_plus_2,
+        avg_rev_growth,
+        eps_growth_t_minus_1,
+        eps_growth_t,
+        eps_growth_t_plus_1,
+        eps_growth_t_plus_2,
+        avg_eps_growth,
         rsi,
         rsi_mktcap,
         short_float,
@@ -283,6 +362,16 @@ def compute_and_load_metrics(connection):
         ROUND((t.market_cap::numeric / NULLIF(fe.revenue_avg::numeric, 0)), 2) AS fps,
         ROUND(((fe.eps_avg::numeric - tf.eps_ttm::numeric) / NULLIF(ABS(tf.eps_ttm::numeric), 0) * 100)::numeric, 2) AS eps_growth,
         ROUND(((fe.revenue_avg::numeric - tf.revenue_ttm::numeric) / NULLIF(tf.revenue_ttm::numeric, 0) * 100)::numeric, 2) AS revenue_growth,
+        dg.rev_growth_t_minus_1,
+        dg.rev_growth_t,
+        dg.rev_growth_t_plus_1,
+        dg.rev_growth_t_plus_2,
+        dg.avg_rev_growth,
+        dg.eps_growth_t_minus_1,
+        dg.eps_growth_t,
+        dg.eps_growth_t_plus_1,
+        dg.eps_growth_t_plus_2,
+        dg.avg_eps_growth,
         rs.rsi,
         rs_mc.rsi_mktcap,
         NULL::FLOAT as short_float,
@@ -297,6 +386,7 @@ def compute_and_load_metrics(connection):
     LEFT JOIN atr20 atr20 ON t.ticker = atr20.ticker
     LEFT JOIN ttm_financials tf ON t.ticker = tf.ticker
     LEFT JOIN forward_estimates fe ON t.ticker = fe.ticker
+    LEFT JOIN dynamic_growth dg ON t.ticker = dg.ticker
     LEFT JOIN (
         SELECT
             ticker,

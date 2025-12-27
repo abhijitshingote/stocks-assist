@@ -19,6 +19,8 @@ Triggers
 - Short Data
 - add last and next earnings date and maybe eps to column set
 
+Did R1D + vol spike,or gapper, has a high ATR, float, did it beat and raise, does it have a high RSI or experience a high change in RSI
+
 ```bash
 docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
 

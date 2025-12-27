@@ -300,6 +300,20 @@ class StockMetrics(Base):
     # Growth metrics (forward estimate vs TTM, in %)
     eps_growth = Column(Float)      # Projected EPS growth %
     revenue_growth = Column(Float)  # Projected revenue growth %
+
+    # YoY Revenue Growth by year (from analyst estimates)
+    rev_growth_t_minus_1 = Column(Float)  # Revenue growth t-1 year
+    rev_growth_t = Column(Float)          # Revenue growth current year
+    rev_growth_t_plus_1 = Column(Float)   # Revenue growth t+1 year
+    rev_growth_t_plus_2 = Column(Float)   # Revenue growth t+2 year
+    avg_rev_growth = Column(Float)        # Average revenue growth (t+1, t+2)
+
+    # YoY EPS Growth by year (from analyst estimates)
+    eps_growth_t_minus_1 = Column(Float)  # EPS growth t-1 year
+    eps_growth_t = Column(Float)          # EPS growth current year
+    eps_growth_t_plus_1 = Column(Float)   # EPS growth t+1 year
+    eps_growth_t_plus_2 = Column(Float)   # EPS growth t+2 year
+    avg_eps_growth = Column(Float)        # Average EPS growth (t+1, t+2)
     
     # Relative strength (percentile rank 1-100)
     rsi = Column(Integer)
