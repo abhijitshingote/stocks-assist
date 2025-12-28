@@ -646,6 +646,114 @@
         gap: 0.5rem;
     }
 }
+
+/* Notes Indicator & Tooltip */
+.notes-indicator {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    margin-left: 0.3rem;
+}
+
+.notes-icon-btn {
+    font-size: 0.9rem;
+    opacity: 0.3;
+    transition: opacity 0.2s, transform 0.2s;
+    display: inline-block;
+    padding: 0.2rem;
+}
+
+.notes-icon-btn.has-notes {
+    opacity: 1;
+    color: var(--accent-yellow);
+}
+
+.notes-indicator:hover .notes-icon-btn {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.notes-tooltip {
+    position: absolute;
+    top: 100%;
+    left: -10px;
+    z-index: 1000;
+    min-width: 320px;
+    max-width: 450px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+    pointer-events: none;
+}
+
+/* Invisible bridge to connect icon and tooltip */
+.notes-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: transparent;
+}
+
+.notes-indicator:hover .notes-tooltip {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.notes-tooltip-header {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notes-tooltip-content {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.notes-tooltip-content.empty {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.notes-tooltip-meta {
+    margin-top: 0.5rem;
+    padding-top: 0.3rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.notes-edit-link {
+    font-size: 0.65rem;
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+.notes-edit-link:hover {
+    text-decoration: underline;
+}
 {% endblock %}
 
 {% block content %}
@@ -757,6 +865,10 @@ function loadData(marketCap) {
                 showCards();
                 document.getElementById('totalStocks').textContent = data.length;
                 renderCards(data);
+                
+                // Load notes for all displayed stocks
+                const tickers = data.map(stock => stock.ticker);
+                loadNotesForStocks(tickers);
             }
         })
         .catch(error => {
@@ -772,6 +884,17 @@ function renderCards(data) {
         <div class="stock-card">
             <div class="card-header">
                 <a href="/stock/${stock.ticker}" class="ticker-link">${stock.ticker}</a>
+                <div class="notes-indicator" data-ticker="${stock.ticker}">
+                    <span class="notes-icon-btn" title="Notes">📝</span>
+                    <div class="notes-tooltip">
+                        <div class="notes-tooltip-header">
+                            <span>Notes for ${stock.ticker}</span>
+                            <a href="/stock/${stock.ticker}" class="notes-edit-link">Edit →</a>
+                        </div>
+                        <div class="notes-tooltip-content empty">Loading...</div>
+                        <div class="notes-tooltip-meta"></div>
+                    </div>
+                </div>
                 <span class="company-name">${stock.company_name || '—'}</span>
                 <span class="sector-badge">${stock.sector || '—'}</span>
                 <div class="tags-container">${renderTags(stock.tags)}</div>
@@ -1076,6 +1199,59 @@ function showCards() {
 function showEmpty() {
     document.getElementById('emptyState').style.display = 'block';
     document.getElementById('stockCards').style.display = 'none';
+}
+
+// ============================================
+// Notes Functions
+// ============================================
+
+let stockNotes = {}; // Cache for loaded notes
+
+async function loadNotesForStocks(tickers) {
+    if (!tickers || tickers.length === 0) return;
+    
+    try {
+        const response = await fetch('/api/frontend/stock-notes/batch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ tickers: tickers }),
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            stockNotes = { ...stockNotes, ...data };
+            updateNotesIndicators();
+        }
+    } catch (error) {
+        console.error('Error loading notes:', error);
+    }
+}
+
+function updateNotesIndicators() {
+    document.querySelectorAll('.notes-indicator').forEach(indicator => {
+        const ticker = indicator.dataset.ticker;
+        const iconBtn = indicator.querySelector('.notes-icon-btn');
+        const tooltipContent = indicator.querySelector('.notes-tooltip-content');
+        const tooltipMeta = indicator.querySelector('.notes-tooltip-meta');
+        
+        if (stockNotes[ticker] && stockNotes[ticker].notes) {
+            iconBtn.classList.add('has-notes');
+            tooltipContent.textContent = stockNotes[ticker].notes;
+            tooltipContent.classList.remove('empty');
+            
+            if (stockNotes[ticker].updated_at) {
+                const date = new Date(stockNotes[ticker].updated_at);
+                tooltipMeta.textContent = `Updated: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
+        } else {
+            iconBtn.classList.remove('has-notes');
+            tooltipContent.textContent = 'No notes yet. Click Edit to add your analysis.';
+            tooltipContent.classList.add('empty');
+            tooltipMeta.textContent = '';
+        }
+    });
 }
 </script>
 {% endblock %}

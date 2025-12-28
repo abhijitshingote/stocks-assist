@@ -1,17 +1,21 @@
 """Flask API for stocks database."""
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from sqlalchemy import create_engine, func, desc, text, or_
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper, MainView
+    StockVolspikeGapper, MainView, StockNotes
 )
 import os
+import json
 import logging
 from datetime import date
+
+# Path to persist stock notes (survives database resets)
+STOCK_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_notes.json')
 
 app = Flask(__name__)
 CORS(app)
@@ -1728,6 +1732,139 @@ def get_main_view_mega():
     s = Session()
     try:
         return jsonify(get_main_view_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================
+# Stock Notes API Endpoints
+# ============================================================
+
+def export_all_notes_to_file():
+    """Export all stock notes to JSON file for persistence across database resets."""
+    s = Session()
+    try:
+        notes = s.query(StockNotes).filter(StockNotes.notes.isnot(None), StockNotes.notes != '').all()
+        
+        data = {}
+        for note in notes:
+            data[note.ticker] = {
+                'notes': note.notes,
+                'created_at': note.created_at.isoformat() if note.created_at else None,
+                'updated_at': note.updated_at.isoformat() if note.updated_at else None
+            }
+        
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(STOCK_NOTES_FILE), exist_ok=True)
+        
+        with open(STOCK_NOTES_FILE, 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        logger.info(f"Exported {len(data)} stock notes to {STOCK_NOTES_FILE}")
+    except Exception as e:
+        logger.error(f"Error exporting stock notes: {str(e)}")
+    finally:
+        s.close()
+
+
+@app.route('/api/stock-notes/<ticker>', methods=['GET'])
+def get_stock_notes(ticker):
+    """Get notes for a specific stock."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        note = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
+        if note:
+            return jsonify({
+                'ticker': note.ticker,
+                'notes': note.notes,
+                'updated_at': note.updated_at.isoformat() if note.updated_at else None
+            })
+        return jsonify({
+            'ticker': ticker,
+            'notes': None,
+            'updated_at': None
+        })
+    finally:
+        s.close()
+
+
+@app.route('/api/stock-notes/<ticker>', methods=['PUT'])
+def update_stock_notes(ticker):
+    """Create or update notes for a specific stock."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        data = request.get_json()
+        
+        if not data or 'notes' not in data:
+            return jsonify({'error': 'notes field is required'}), 400
+        
+        notes_content = data['notes']
+        
+        # Check if notes already exist for this ticker
+        existing = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
+        
+        if existing:
+            # Update existing notes
+            existing.notes = notes_content if notes_content else None
+            s.commit()
+            
+            # Export all notes to file for persistence
+            export_all_notes_to_file()
+            
+            return jsonify({
+                'ticker': existing.ticker,
+                'notes': existing.notes,
+                'updated_at': existing.updated_at.isoformat() if existing.updated_at else None,
+                'message': 'Notes updated successfully'
+            })
+        else:
+            # Create new notes entry
+            new_note = StockNotes(ticker=ticker, notes=notes_content if notes_content else None)
+            s.add(new_note)
+            s.commit()
+            
+            # Export all notes to file for persistence
+            export_all_notes_to_file()
+            
+            return jsonify({
+                'ticker': new_note.ticker,
+                'notes': new_note.notes,
+                'updated_at': new_note.updated_at.isoformat() if new_note.updated_at else None,
+                'message': 'Notes created successfully'
+            }), 201
+    except Exception as e:
+        s.rollback()
+        logger.error(f"Error updating stock notes for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/stock-notes/batch', methods=['POST'])
+def get_stock_notes_batch():
+    """Get notes for multiple tickers at once (for screener views)."""
+    s = Session()
+    try:
+        data = request.get_json()
+        
+        if not data or 'tickers' not in data:
+            return jsonify({'error': 'tickers field is required'}), 400
+        
+        tickers = [t.upper() for t in data['tickers']]
+        
+        notes = s.query(StockNotes).filter(StockNotes.ticker.in_(tickers)).all()
+        
+        result = {}
+        for note in notes:
+            if note.notes:  # Only include non-empty notes
+                result[note.ticker] = {
+                    'notes': note.notes,
+                    'updated_at': note.updated_at.isoformat() if note.updated_at else None
+                }
+        
+        return jsonify(result)
     finally:
         s.close()
 

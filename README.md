@@ -45,7 +45,8 @@ docker-compose exec backend bash -c "
   python db_scripts/update_data/stock_metrics_update.py && \
   python db_scripts/update_data/historical_rsi_update.py && \
   python db_scripts/update_data/rsi_indices_update.py && \
-  python db_scripts/update_data/volspike_gapper_update.py
+  python db_scripts/update_data/volspike_gapper_update.py & \
+  python db_scripts/initialize_data/seed_stock_notes.py
 " && \
 docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
 ```

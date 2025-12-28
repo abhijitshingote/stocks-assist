@@ -1,6 +1,6 @@
 """Frontend Flask app - renders templates and proxies API calls to backend."""
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 import os
 import requests
 import logging
@@ -17,11 +17,19 @@ app = Flask(__name__,
 BACKEND_URL = os.getenv('BACKEND_URL', 'http://localhost:5001')
 
 
-def make_backend_request(endpoint):
+def make_backend_request(endpoint, method='GET', json_data=None):
     """Helper function to make requests to the backend API."""
     try:
         url = f"{BACKEND_URL}{endpoint}"
-        response = requests.get(url)
+        
+        if method == 'GET':
+            response = requests.get(url)
+        elif method == 'PUT':
+            response = requests.put(url, json=json_data)
+        elif method == 'POST':
+            response = requests.post(url, json=json_data)
+        else:
+            return None, 400
         
         if response.status_code >= 400:
             logger.error(f"Backend API error {response.status_code}: {response.text}")
@@ -303,6 +311,39 @@ def api_main_view(market_cap):
     data, status_code = make_backend_request(f'/api/MainView-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch Main View data'}), status_code
+    return jsonify(data), status_code
+
+
+# ============================================================
+# Stock Notes Endpoints
+# ============================================================
+
+@app.route('/api/frontend/stock-notes/<ticker>', methods=['GET'])
+def api_get_stock_notes(ticker):
+    """Proxy endpoint to get notes for a specific stock"""
+    data, status_code = make_backend_request(f'/api/stock-notes/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch stock notes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/stock-notes/<ticker>', methods=['PUT'])
+def api_update_stock_notes(ticker):
+    """Proxy endpoint to create or update notes for a specific stock"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request(f'/api/stock-notes/{ticker}', method='PUT', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to update stock notes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/stock-notes/batch', methods=['POST'])
+def api_get_stock_notes_batch():
+    """Proxy endpoint to get notes for multiple tickers at once"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/stock-notes/batch', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to fetch stock notes batch'}), status_code
     return jsonify(data), status_code
 
 

@@ -483,3 +483,21 @@ class MainView(Base):
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
     ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 15. StockNotes (user-entered long-form notes/comments per stock)
+# ------------------------------------------------------------
+class StockNotes(Base):
+    __tablename__ = "stock_notes"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    
+    # Long-form notes content (markdown supported)
+    notes = Column(Text)
+    
+    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")

@@ -399,6 +399,145 @@
     color: var(--text-muted);
     font-size: 0.8rem;
 }
+
+/* Notes Section */
+.notes-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.notes-header h2 {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.notes-header h2 .notes-icon {
+    font-size: 1.1rem;
+}
+
+.notes-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.notes-btn {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+}
+
+.notes-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.notes-btn.primary {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--bg-dark);
+}
+
+.notes-btn.primary:hover {
+    background: var(--accent-green);
+    border-color: var(--accent-green);
+}
+
+.notes-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.notes-content {
+    min-height: 100px;
+}
+
+.notes-display {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.notes-display.empty {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.notes-textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+.notes-textarea:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+.notes-textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.notes-meta {
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: right;
+}
+
+.notes-save-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+.notes-save-status.saving {
+    color: var(--accent-yellow);
+}
+
+.notes-save-status.saved {
+    color: var(--accent-green);
+}
+
+.notes-save-status.error {
+    color: var(--accent-red);
+}
 {% endblock %}
 
 {% block content %}
@@ -582,6 +721,24 @@
             </div>
         </div>
         <div class="chart-stats" id="chartStats"></div>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="notes-section">
+        <div class="notes-header">
+            <h2><span class="notes-icon">📝</span> Notes</h2>
+            <div class="notes-actions">
+                <button class="notes-btn" id="editNotesBtn" onclick="toggleEditMode()">Edit</button>
+                <button class="notes-btn primary" id="saveNotesBtn" onclick="saveNotes()" style="display: none;">Save</button>
+                <button class="notes-btn" id="cancelNotesBtn" onclick="cancelEdit()" style="display: none;">Cancel</button>
+                <span class="notes-save-status" id="saveStatus"></span>
+            </div>
+        </div>
+        <div class="notes-content">
+            <div class="notes-display" id="notesDisplay">Loading notes...</div>
+            <textarea class="notes-textarea" id="notesTextarea" style="display: none;" placeholder="Add your notes here... You can write multiple paragraphs of analysis, thesis, key metrics to watch, etc."></textarea>
+        </div>
+        <div class="notes-meta" id="notesMeta"></div>
     </div>
 
     <div class="updated-at" id="updatedAt"></div>
@@ -1091,6 +1248,120 @@ function updateChartStats(data) {
     document.getElementById('chartStats').innerHTML = statsHtml;
 }
 
-document.addEventListener('DOMContentLoaded', loadStockData);
+// ============================================
+// Notes Functions
+// ============================================
+
+let currentNotes = '';
+let isEditMode = false;
+
+async function loadNotes() {
+    try {
+        const response = await fetch(`/api/frontend/stock-notes/${ticker}`);
+        const data = await response.json();
+        
+        currentNotes = data.notes || '';
+        updateNotesDisplay();
+        
+        if (data.updated_at) {
+            const date = new Date(data.updated_at);
+            document.getElementById('notesMeta').textContent = `Last updated: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+        } else {
+            document.getElementById('notesMeta').textContent = '';
+        }
+    } catch (error) {
+        console.error('Error loading notes:', error);
+        document.getElementById('notesDisplay').textContent = 'Error loading notes';
+        document.getElementById('notesDisplay').classList.add('empty');
+    }
+}
+
+function updateNotesDisplay() {
+    const display = document.getElementById('notesDisplay');
+    if (currentNotes && currentNotes.trim()) {
+        display.textContent = currentNotes;
+        display.classList.remove('empty');
+    } else {
+        display.textContent = 'No notes yet. Click Edit to add your analysis.';
+        display.classList.add('empty');
+    }
+}
+
+function toggleEditMode() {
+    isEditMode = true;
+    document.getElementById('notesDisplay').style.display = 'none';
+    document.getElementById('notesTextarea').style.display = 'block';
+    document.getElementById('notesTextarea').value = currentNotes;
+    document.getElementById('notesTextarea').focus();
+    
+    document.getElementById('editNotesBtn').style.display = 'none';
+    document.getElementById('saveNotesBtn').style.display = 'inline-block';
+    document.getElementById('cancelNotesBtn').style.display = 'inline-block';
+    document.getElementById('saveStatus').textContent = '';
+}
+
+function cancelEdit() {
+    isEditMode = false;
+    document.getElementById('notesDisplay').style.display = 'block';
+    document.getElementById('notesTextarea').style.display = 'none';
+    
+    document.getElementById('editNotesBtn').style.display = 'inline-block';
+    document.getElementById('saveNotesBtn').style.display = 'none';
+    document.getElementById('cancelNotesBtn').style.display = 'none';
+    document.getElementById('saveStatus').textContent = '';
+}
+
+async function saveNotes() {
+    const newNotes = document.getElementById('notesTextarea').value;
+    const saveStatus = document.getElementById('saveStatus');
+    const saveBtn = document.getElementById('saveNotesBtn');
+    
+    saveStatus.textContent = 'Saving...';
+    saveStatus.className = 'notes-save-status saving';
+    saveBtn.disabled = true;
+    
+    try {
+        const response = await fetch(`/api/frontend/stock-notes/${ticker}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ notes: newNotes }),
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            currentNotes = newNotes;
+            updateNotesDisplay();
+            cancelEdit();
+            
+            saveStatus.textContent = '✓ Saved';
+            saveStatus.className = 'notes-save-status saved';
+            
+            if (data.updated_at) {
+                const date = new Date(data.updated_at);
+                document.getElementById('notesMeta').textContent = `Last updated: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
+            
+            setTimeout(() => {
+                saveStatus.textContent = '';
+            }, 3000);
+        } else {
+            throw new Error(data.error || 'Failed to save notes');
+        }
+    } catch (error) {
+        console.error('Error saving notes:', error);
+        saveStatus.textContent = '✕ Error saving';
+        saveStatus.className = 'notes-save-status error';
+    } finally {
+        saveBtn.disabled = false;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadStockData();
+    loadNotes();
+});
 </script>
 {% endblock %}

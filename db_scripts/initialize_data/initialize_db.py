@@ -34,6 +34,7 @@ def initialize_database(reset=False):
     13. rsi_indices - RSI rankings within index universes (SPX, NDX, DJI)
     14. stock_volspike_gapper - Volume spike and gapper detection
     15. main_view - Combined screener view with metrics, volspike/gapper, and tags
+    16. stock_notes - User notes for stocks
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
@@ -50,6 +51,7 @@ def initialize_database(reset=False):
             logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
             connection.execute(text("DROP TABLE IF EXISTS main_view CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS stock_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_volspike_gapper CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS rsi_indices CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS historical_rsi CASCADE;"))
@@ -402,7 +404,17 @@ def initialize_database(reset=False):
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
         """))
-        
+
+        # 16. stock_notes - User notes for stocks
+        connection.execute(text(f"""
+            {table_clause} stock_notes (
+                ticker VARCHAR(20) PRIMARY KEY REFERENCES tickers(ticker),
+                notes TEXT,
+                created_at TIMESTAMP DEFAULT NOW(),
+                updated_at TIMESTAMP DEFAULT NOW()
+            )
+        """))
+
         # Create indexes for better query performance
         idx_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
         connection.execute(text(f"""
@@ -469,6 +481,7 @@ def initialize_database(reset=False):
         logger.info("  - rsi_indices (RSI within index universes: SPX, NDX, DJI)")
         logger.info("  - stock_volspike_gapper (volume spike and gapper detection)")
         logger.info("  - main_view (combined screener view with tags)")
+        logger.info("  - stock_notes (user notes for stocks)")
         
         flush_logger(SCRIPT_NAME)
 
