@@ -247,6 +247,26 @@
     color: var(--text-muted);
 }
 
+/* Event type badge */
+.event-type-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.75rem;
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.event-type-badge.spike {
+    background: rgba(210, 153, 34, 0.2);
+    color: var(--accent-yellow);
+}
+
+.event-type-badge.gap {
+    background: rgba(248, 81, 73, 0.2);
+    color: var(--accent-red);
+}
+
 /* RSI Value */
 .rsi-value {
     font-family: 'JetBrains Mono', monospace;
@@ -411,7 +431,7 @@
 <div class="page-header">
     <h1>Volume Spike & Gapper</h1>
     <p>Stocks showing unusual volume spikes and gap-up activity</p>
-    <div class="subtitle">Identify potential breakout candidates in the last 30 days</div>
+    <div class="subtitle">Identify potential breakout candidates in the last 365 days (market cap &gt; $1B, excludes Biotechnology)</div>
 </div>
 
 <div class="info-box">
@@ -478,7 +498,7 @@
 <!-- Empty State -->
 <div class="empty-state" id="emptyState" style="display: none;">
     <h3>No Volume Spike or Gapper activity found</h3>
-    <p>No stocks found for this market cap category in the last 30 days.</p>
+    <p>No stocks found for this market cap category in the last 365 days.</p>
 </div>
 
 <!-- Data Table -->
@@ -489,7 +509,9 @@
                 <th data-sort="ticker">Ticker <span class="sort-icon">↕</span></th>
                 <th data-sort="company_name">Company <span class="sort-icon">↕</span></th>
                 <th data-sort="sector">Sector <span class="sort-icon">↕</span></th>
-                <th data-sort="spike_day_count" class="sorted">Spikes <span class="sort-icon">↓</span></th>
+                <th data-sort="last_event_date" class="sorted">Last Event <span class="sort-icon">↓</span></th>
+                <th data-sort="last_event_type">Type <span class="sort-icon">↕</span></th>
+                <th data-sort="spike_day_count">Spikes <span class="sort-icon">↕</span></th>
                 <th>Spike Dates</th>
                 <th data-sort="avg_volume_spike">Avg Vol Spike <span class="sort-icon">↕</span></th>
                 <th data-sort="gapper_day_count">Gaps <span class="sort-icon">↕</span></th>
@@ -500,8 +522,6 @@
                 <th data-sort="dr_1">1D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_5">5D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_20">20D <span class="sort-icon">↕</span></th>
-                <th data-sort="eps_growth">EPS <span class="sort-icon">↕</span></th>
-                <th data-sort="revenue_growth">Rev <span class="sort-icon">↕</span></th>
                 <th data-sort="fpe">FPE <span class="sort-icon">↕</span></th>
                 <th data-sort="fps">FPS <span class="sort-icon">↕</span></th>
                 <th data-sort="ipo_date">IPO <span class="sort-icon">↕</span></th>
@@ -519,7 +539,7 @@
 {% block extra_scripts %}
 <script>
 let currentData = [];
-let sortColumn = 'spike_day_count';
+let sortColumn = 'last_event_date';
 let sortDirection = 'desc';
 
 const capLabels = {
@@ -554,7 +574,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
             } else {
                 sortColumn = col;
-                sortDirection = (col === 'spike_day_count' || col === 'gapper_day_count' || col === 'rsi_mktcap' || col === 'avg_volume_spike') ? 'desc' : 'asc';
+                sortDirection = (col === 'last_event_date' || col === 'spike_day_count' || col === 'gapper_day_count' || col === 'rsi_mktcap' || col === 'avg_volume_spike') ? 'desc' : 'asc';
             }
             updateSortIcons();
             renderTable(sortData(currentData));
@@ -629,6 +649,8 @@ function renderTable(data) {
             <td><a href="/stock/${stock.ticker}" class="ticker-link">${stock.ticker}</a></td>
             <td class="company-name" title="${stock.company_name || ''}">${stock.company_name || '—'}</td>
             <td>${stock.sector ? `<span class="sector-badge">${stock.sector}</span>` : '—'}</td>
+            <td><span class="date-pill ${stock.last_event_type === 'volume_spike' ? 'spike' : 'gap'}">${stock.last_event_date || '—'}</span></td>
+            <td><span class="event-type-badge ${stock.last_event_type === 'volume_spike' ? 'spike' : 'gap'}">${formatEventType(stock.last_event_type)}</span></td>
             <td><span class="count-badge ${stock.spike_day_count > 0 ? 'spike' : 'zero'}">${stock.spike_day_count}</span></td>
             <td>${formatDatePills(stock.volume_spike_days, 'spike')}</td>
             <td class="volume-ratio">${stock.avg_volume_spike ? stock.avg_volume_spike.toFixed(1) + 'x' : '—'}</td>
@@ -647,8 +669,6 @@ function renderTable(data) {
             <td class="${getReturnClass(stock.dr_1)}">${formatReturn(stock.dr_1)}</td>
             <td class="${getReturnClass(stock.dr_5)}">${formatReturn(stock.dr_5)}</td>
             <td class="${getReturnClass(stock.dr_20)}">${formatReturn(stock.dr_20)}</td>
-            <td class="${getReturnClass(stock.eps_growth)}">${formatReturn(stock.eps_growth)}</td>
-            <td class="${getReturnClass(stock.revenue_growth)}">${formatReturn(stock.revenue_growth)}</td>
             <td class="${getReturnClass(stock.fpe)}">${stock.fpe ? stock.fpe.toFixed(2) : '—'}</td>
             <td class="${getReturnClass(stock.fps)}">${stock.fps ? stock.fps.toFixed(2) : '—'}</td>
             <td>${stock.ipo_date || '—'}</td>
@@ -657,6 +677,11 @@ function renderTable(data) {
             <td class="market-cap">${formatMarketCap(stock.market_cap)}</td>
         </tr>
     `).join('');
+}
+
+function formatEventType(type) {
+    if (!type) return '—';
+    return type === 'volume_spike' ? 'Spike' : 'Gap';
 }
 
 function formatDatePills(dates, type) {

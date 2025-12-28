@@ -96,6 +96,12 @@ def volspike_gapper_page():
     return render_template('volspike_gapper.html')
 
 
+@app.route('/main-view')
+def main_view_page():
+    """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
+    return render_template('main_view.html')
+
+
 @app.route('/stock/<ticker>')
 def stock_detail(ticker):
     """Stock detail page"""
@@ -276,6 +282,27 @@ def api_volspike_gapper(market_cap):
     data, status_code = make_backend_request(f'/api/VolspikeGapper-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch Volume Spike & Gapper data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/main-view/<market_cap>')
+def api_main_view(market_cap):
+    """Proxy endpoint for Main View data from backend"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+    
+    data, status_code = make_backend_request(f'/api/MainView-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Main View data'}), status_code
     return jsonify(data), status_code
 
 

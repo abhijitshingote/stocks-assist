@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper
+    StockVolspikeGapper, MainView
 )
 import os
 import logging
@@ -191,8 +191,6 @@ def get_stock_metrics_data(session, ticker):
         'ps_ttm': metrics.ps_ttm,
         'fpe': metrics.fpe,
         'fps': metrics.fps,
-        'eps_growth': metrics.eps_growth,
-        'revenue_growth': metrics.revenue_growth,
         'rsi': metrics.rsi,
         'rsi_mktcap': metrics.rsi_mktcap,
         'short_float': metrics.short_float,
@@ -207,6 +205,8 @@ def get_stock_metrics_data(session, ticker):
         'gapper_day_count': volspike_gapper.gapper_day_count if volspike_gapper else 0,
         'avg_return_gapper': volspike_gapper.avg_return_gapper if volspike_gapper else None,
         'gap_days': volspike_gapper.gap_days if volspike_gapper else None,
+        'last_event_date': volspike_gapper.last_event_date.strftime('%Y-%m-%d') if volspike_gapper and volspike_gapper.last_event_date else None,
+        'last_event_type': volspike_gapper.last_event_type if volspike_gapper else None,
     }
 
 
@@ -544,8 +544,6 @@ def get_rsi_stocks(session, market_cap_category):
             StockMetrics.ipo_date,
             StockMetrics.vol_vs_10d_avg,
             StockMetrics.atr20,
-            StockMetrics.eps_growth,
-            StockMetrics.revenue_growth,
             StockMetrics.updated_at
         ).filter(
             StockMetrics.rsi.isnot(None),
@@ -584,8 +582,6 @@ def get_rsi_stocks(session, market_cap_category):
                 'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
                 'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
                 'atr20': round(stock.atr20, 2) if stock.atr20 else None,
-                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
-                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
 
@@ -882,8 +878,6 @@ def get_rsi_mktcap_stocks(session, market_cap_category):
             StockMetrics.ipo_date,
             StockMetrics.vol_vs_10d_avg,
             StockMetrics.atr20,
-            StockMetrics.eps_growth,
-            StockMetrics.revenue_growth,
             StockMetrics.updated_at
         ).filter(
             StockMetrics.rsi_mktcap.isnot(None),
@@ -923,8 +917,6 @@ def get_rsi_mktcap_stocks(session, market_cap_category):
                 'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
                 'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
                 'atr20': round(stock.atr20, 2) if stock.atr20 else None,
-                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
-                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
 
@@ -1066,8 +1058,6 @@ def get_rsi_momentum_stocks(connection, market_cap_category=None):
             sm.ipo_date,
             sm.vol_vs_10d_avg,
             sm.atr20,
-            sm.eps_growth,
-            sm.revenue_growth,
             sm.updated_at
         FROM rsi_change rc
         JOIN stock_metrics sm ON rc.ticker = sm.ticker
@@ -1103,9 +1093,7 @@ def get_rsi_momentum_stocks(connection, market_cap_category=None):
                 'ipo_date': row[16].strftime('%Y-%m-%d') if row[16] else None,
                 'vol_vs_10d_avg': round(row[17], 2) if row[17] else None,
                 'atr20': round(row[18], 2) if row[18] else None,
-                'eps_growth': round(row[19], 2) if row[19] else None,
-                'revenue_growth': round(row[20], 2) if row[20] else None,
-                'updated_at': row[21].strftime('%Y-%m-%d %H:%M:%S') if row[21] else None
+                'updated_at': row[19].strftime('%Y-%m-%d %H:%M:%S') if row[19] else None
             })
         
         return results
@@ -1211,8 +1199,6 @@ def get_rsi_index_stocks(session, index_type, market_cap_category=None):
             StockMetrics.ipo_date,
             StockMetrics.vol_vs_10d_avg,
             StockMetrics.atr20,
-            StockMetrics.eps_growth,
-            StockMetrics.revenue_growth,
             StockMetrics.updated_at
         ).join(
             StockMetrics, RsiIndices.ticker == StockMetrics.ticker
@@ -1255,8 +1241,6 @@ def get_rsi_index_stocks(session, index_type, market_cap_category=None):
                 'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
                 'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
                 'atr20': round(stock.atr20, 2) if stock.atr20 else None,
-                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
-                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
 
@@ -1327,8 +1311,6 @@ def get_top_performance_stocks(session, market_cap_category=None):
                 StockMetrics.ipo_date,
                 StockMetrics.vol_vs_10d_avg,
                 StockMetrics.atr20,
-                StockMetrics.eps_growth,
-                StockMetrics.revenue_growth,
                 StockMetrics.volume,
                 StockMetrics.dollar_volume,
                 StockMetrics.updated_at
@@ -1390,8 +1372,6 @@ def get_top_performance_stocks(session, market_cap_category=None):
                 'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
                 'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
                 'atr20': round(stock.atr20, 2) if stock.atr20 else None,
-                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
-                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'volume': int(stock.volume) if stock.volume else None,
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
@@ -1459,8 +1439,9 @@ def get_top_performance_mega():
 
 def get_volspike_gapper_stocks(session, market_cap_category=None):
     """
-    Get stocks with volume spike and/or gapper activity in the last 30 days.
+    Get stocks with volume spike and/or gapper activity in the last 365 days.
     Joins with stock_metrics for enriched data.
+    Sorted by last_event_date descending (most recent events first).
     """
     try:
         query = session.query(
@@ -1471,6 +1452,8 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
             StockVolspikeGapper.gapper_day_count,
             StockVolspikeGapper.avg_return_gapper,
             StockVolspikeGapper.gap_days,
+            StockVolspikeGapper.last_event_date,
+            StockVolspikeGapper.last_event_type,
             StockMetrics.company_name,
             StockMetrics.sector,
             StockMetrics.industry,
@@ -1488,8 +1471,6 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
             StockMetrics.volume,
             StockMetrics.dollar_volume,
             StockMetrics.vol_vs_10d_avg,
-            StockMetrics.eps_growth,
-            StockMetrics.revenue_growth,
             StockMetrics.updated_at
         ).join(
             StockMetrics, StockVolspikeGapper.ticker == StockMetrics.ticker
@@ -1513,12 +1494,9 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
         # Apply global liquidity filters
         query = apply_global_liquidity_filters(query)
 
-        # Order by spike_day_count + gapper_day_count descending (handle NULLs)
+        # Order by last_event_date descending (most recent events first)
         query = query.order_by(
-            desc(
-                func.coalesce(StockVolspikeGapper.spike_day_count, 0) + 
-                func.coalesce(StockVolspikeGapper.gapper_day_count, 0)
-            )
+            desc(StockVolspikeGapper.last_event_date)
         )
 
         stocks = query.all()
@@ -1542,6 +1520,8 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
                 'gapper_day_count': stock.gapper_day_count or 0,
                 'avg_return_gapper': float(stock.avg_return_gapper) if stock.avg_return_gapper else None,
                 'gap_days': gap_dates,
+                'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
+                'last_event_type': stock.last_event_type,
                 'rsi': stock.rsi,
                 'rsi_mktcap': stock.rsi_mktcap,
                 'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
@@ -1554,8 +1534,6 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
                 'volume': int(stock.volume) if stock.volume else None,
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'vol_vs_10d_avg': float(stock.vol_vs_10d_avg) if stock.vol_vs_10d_avg else None,
-                'eps_growth': round(stock.eps_growth, 2) if stock.eps_growth else None,
-                'revenue_growth': round(stock.revenue_growth, 2) if stock.revenue_growth else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
 
@@ -1611,6 +1589,145 @@ def get_volspike_gapper_mega():
     s = Session()
     try:
         return jsonify(get_volspike_gapper_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
+# Main View Endpoints
+# ============================================================================
+
+def get_main_view_stocks(session, market_cap_category=None):
+    """
+    Get stocks from main_view table with optional market cap filter.
+    Returns combined metrics, volspike/gapper data, and computed tags.
+    """
+    try:
+        query = session.query(MainView)
+
+        # Apply market cap filter
+        if market_cap_category:
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                query = query.filter(MainView.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(MainView.market_cap < category['max'])
+
+        # Order by market cap descending
+        query = query.order_by(desc(MainView.market_cap))
+
+        stocks = query.all()
+
+        results = []
+        for stock in stocks:
+            # Parse the date strings back to arrays (filter out empty strings)
+            spike_dates = [d for d in (stock.volume_spike_days or '').split(',') if d.strip()]
+            gap_dates = [d for d in (stock.gap_days or '').split(',') if d.strip()]
+            
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'country': stock.country,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'range_52_week': stock.range_52_week,
+                'volume': int(stock.volume) if stock.volume else None,
+                'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
+                'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
+                'vol_vs_10d_avg': float(stock.vol_vs_10d_avg) if stock.vol_vs_10d_avg else None,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'dr_60': round(stock.dr_60, 2) if stock.dr_60 else None,
+                'dr_120': round(stock.dr_120, 2) if stock.dr_120 else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
+                'pe': round(stock.pe, 2) if stock.pe else None,
+                'ps_ttm': round(stock.ps_ttm, 2) if stock.ps_ttm else None,
+                'fpe': round(stock.fpe, 2) if stock.fpe else None,
+                'fps': round(stock.fps, 2) if stock.fps else None,
+                'rev_growth_t_minus_1': round(stock.rev_growth_t_minus_1, 2) if stock.rev_growth_t_minus_1 else None,
+                'rev_growth_t': round(stock.rev_growth_t, 2) if stock.rev_growth_t else None,
+                'rev_growth_t_plus_1': round(stock.rev_growth_t_plus_1, 2) if stock.rev_growth_t_plus_1 else None,
+                'rev_growth_t_plus_2': round(stock.rev_growth_t_plus_2, 2) if stock.rev_growth_t_plus_2 else None,
+                'avg_rev_growth': round(stock.avg_rev_growth, 2) if stock.avg_rev_growth else None,
+                'eps_growth_t_minus_1': round(stock.eps_growth_t_minus_1, 2) if stock.eps_growth_t_minus_1 else None,
+                'eps_growth_t': round(stock.eps_growth_t, 2) if stock.eps_growth_t else None,
+                'eps_growth_t_plus_1': round(stock.eps_growth_t_plus_1, 2) if stock.eps_growth_t_plus_1 else None,
+                'eps_growth_t_plus_2': round(stock.eps_growth_t_plus_2, 2) if stock.eps_growth_t_plus_2 else None,
+                'avg_eps_growth': round(stock.avg_eps_growth, 2) if stock.avg_eps_growth else None,
+                'rsi': stock.rsi,
+                'rsi_mktcap': stock.rsi_mktcap,
+                'short_float': round(stock.short_float, 2) if stock.short_float else None,
+                'short_ratio': round(stock.short_ratio, 2) if stock.short_ratio else None,
+                'short_interest': round(stock.short_interest, 2) if stock.short_interest else None,
+                'low_float': stock.low_float,
+                'spike_day_count': stock.spike_day_count or 0,
+                'avg_volume_spike': round(stock.avg_volume_spike, 2) if stock.avg_volume_spike else None,
+                'volume_spike_days': spike_dates,
+                'gapper_day_count': stock.gapper_day_count or 0,
+                'avg_return_gapper': round(stock.avg_return_gapper, 4) if stock.avg_return_gapper else None,
+                'gap_days': gap_dates,
+                'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
+                'last_event_type': stock.last_event_type,
+                'tags': stock.tags,
+                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
+            })
+
+        return results
+
+    except Exception as e:
+        logger.error(f"Error getting main_view stocks for {market_cap_category}: {str(e)}")
+        return []
+
+
+@app.route('/api/MainView-All')
+def get_main_view_all():
+    s = Session()
+    try:
+        return jsonify(get_main_view_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
+@app.route('/api/MainView-MicroCap')
+def get_main_view_micro():
+    s = Session()
+    try:
+        return jsonify(get_main_view_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/MainView-SmallCap')
+def get_main_view_small():
+    s = Session()
+    try:
+        return jsonify(get_main_view_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/MainView-MidCap')
+def get_main_view_mid():
+    s = Session()
+    try:
+        return jsonify(get_main_view_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/MainView-LargeCap')
+def get_main_view_large():
+    s = Session()
+    try:
+        return jsonify(get_main_view_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/MainView-MegaCap')
+def get_main_view_mega():
+    s = Session()
+    try:
+        return jsonify(get_main_view_stocks(s, market_cap_category='mega'))
     finally:
         s.close()
 

@@ -33,6 +33,7 @@ def initialize_database(reset=False):
     12. historical_rsi - Daily RSI time series
     13. rsi_indices - RSI rankings within index universes (SPX, NDX, DJI)
     14. stock_volspike_gapper - Volume spike and gapper detection
+    15. main_view - Combined screener view with metrics, volspike/gapper, and tags
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
@@ -48,6 +49,7 @@ def initialize_database(reset=False):
         if reset:
             logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
+            connection.execute(text("DROP TABLE IF EXISTS main_view CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_volspike_gapper CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS rsi_indices CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS historical_rsi CASCADE;"))
@@ -277,8 +279,6 @@ def initialize_database(reset=False):
                 ps_ttm FLOAT,
                 fpe FLOAT,
                 fps FLOAT,
-                eps_growth FLOAT,
-                revenue_growth FLOAT,
                 rev_growth_t_minus_1 FLOAT,
                 rev_growth_t FLOAT,
                 rev_growth_t_plus_1 FLOAT,
@@ -340,6 +340,64 @@ def initialize_database(reset=False):
                 gapper_day_count INTEGER,
                 avg_return_gapper FLOAT,
                 gap_days TEXT,
+                last_event_date DATE,
+                last_event_type VARCHAR(20),
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
+            )
+        """))
+        
+        # 14. main_view - Combined screener view with metrics, volspike/gapper, and tags
+        connection.execute(text(f"""
+            {table_clause} main_view (
+                ticker VARCHAR(20) PRIMARY KEY,
+                company_name VARCHAR(255),
+                country VARCHAR(50),
+                sector VARCHAR(100),
+                industry VARCHAR(100),
+                ipo_date DATE,
+                market_cap BIGINT,
+                current_price FLOAT,
+                range_52_week VARCHAR(50),
+                volume BIGINT,
+                dollar_volume FLOAT,
+                avg_vol_10d FLOAT,
+                vol_vs_10d_avg FLOAT,
+                dr_1 FLOAT,
+                dr_5 FLOAT,
+                dr_20 FLOAT,
+                dr_60 FLOAT,
+                dr_120 FLOAT,
+                atr20 FLOAT,
+                pe FLOAT,
+                ps_ttm FLOAT,
+                fpe FLOAT,
+                fps FLOAT,
+                rev_growth_t_minus_1 FLOAT,
+                rev_growth_t FLOAT,
+                rev_growth_t_plus_1 FLOAT,
+                rev_growth_t_plus_2 FLOAT,
+                avg_rev_growth FLOAT,
+                eps_growth_t_minus_1 FLOAT,
+                eps_growth_t FLOAT,
+                eps_growth_t_plus_1 FLOAT,
+                eps_growth_t_plus_2 FLOAT,
+                avg_eps_growth FLOAT,
+                rsi INTEGER,
+                rsi_mktcap INTEGER,
+                short_float FLOAT,
+                short_ratio FLOAT,
+                short_interest FLOAT,
+                low_float BOOLEAN,
+                spike_day_count INTEGER,
+                avg_volume_spike FLOAT,
+                volume_spike_days TEXT,
+                gapper_day_count INTEGER,
+                avg_return_gapper FLOAT,
+                gap_days TEXT,
+                last_event_date DATE,
+                last_event_type VARCHAR(20),
+                tags TEXT,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
@@ -375,6 +433,14 @@ def initialize_database(reset=False):
             {idx_clause} idx_rsi_indices_is_dji ON rsi_indices(is_dji);
             {idx_clause} idx_volspike_gapper_spike_count ON stock_volspike_gapper(spike_day_count);
             {idx_clause} idx_volspike_gapper_gapper_count ON stock_volspike_gapper(gapper_day_count);
+            {idx_clause} idx_volspike_gapper_last_event_date ON stock_volspike_gapper(last_event_date DESC);
+            {idx_clause} idx_main_view_market_cap ON main_view(market_cap);
+            {idx_clause} idx_main_view_sector ON main_view(sector);
+            {idx_clause} idx_main_view_industry ON main_view(industry);
+            {idx_clause} idx_main_view_dr_5 ON main_view(dr_5);
+            {idx_clause} idx_main_view_dr_20 ON main_view(dr_20);
+            {idx_clause} idx_main_view_dr_60 ON main_view(dr_60);
+            {idx_clause} idx_main_view_dr_120 ON main_view(dr_120);
         """))
         
         connection.commit()
@@ -402,6 +468,7 @@ def initialize_database(reset=False):
         logger.info("  - historical_rsi (daily RSI time series)")
         logger.info("  - rsi_indices (RSI within index universes: SPX, NDX, DJI)")
         logger.info("  - stock_volspike_gapper (volume spike and gapper detection)")
+        logger.info("  - main_view (combined screener view with tags)")
         
         flush_logger(SCRIPT_NAME)
 

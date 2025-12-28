@@ -518,14 +518,6 @@
 
             <!-- Row 3 -->
             <div class="metric-cell">
-                <span class="label">EPS Growth</span>
-                <span class="value" id="epsGrowth">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">Rev Growth</span>
-                <span class="value" id="revenueGrowth">--</span>
-            </div>
-            <div class="metric-cell">
                 <span class="label">Short Float</span>
                 <span class="value" id="shortFloat">--</span>
             </div>
@@ -742,8 +734,6 @@ async function loadStockData() {
         document.getElementById('volume').textContent = formatVolume(data.volume);
         
         // Growth
-        setReturnValue('epsGrowth', data.eps_growth);
-        setReturnValue('revenueGrowth', data.revenue_growth);
         
         // Short interest
         document.getElementById('shortFloat').textContent = data.short_float != null ? formatNumber(data.short_float, 1) + '%' : '--';

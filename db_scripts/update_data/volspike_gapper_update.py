@@ -5,9 +5,9 @@ Truncates and reloads the stock_volspike_gapper table with pre-computed metrics.
 
 This script computes:
 - Volume Spike: Stock's daily volume ≥ 3.5× its prior 20-trading-day average 
-  (which must be > 0) and the close is ≥ 3% above previous day close within the last 30 days.
+  (which must be > 0) and the close is ≥ 3% above previous day close within the last 365 days.
 - Gapper: Stock's low > previous day close × 1.05 or close > previous day close × 1.15 
-  within the last 30 days.
+  within the last 365 days.
 """
 
 import os
@@ -51,6 +51,14 @@ def compute_and_load_volspike_gapper(connection):
     """
     Compute volume spike and gapper metrics using the comprehensive SQL query 
     and insert into stock_volspike_gapper table.
+    
+    Filters:
+    - market_cap > 1B
+    - fps < 100
+    - industry <> 'Biotechnology'
+    - Must have at least one spike or gap event
+    
+    Sorted by last_event_date DESC.
     """
     logger.info("Computing volume spike and gapper metrics...")
     
@@ -58,12 +66,12 @@ def compute_and_load_volspike_gapper(connection):
     metrics_query = """
     WITH params AS (
         SELECT
-            30  AS vol_spike_lookback_days,   -- lookback window for spike days
-            20  AS avg_days,                  -- prior trading days for avg volume
-            3.5 AS spike_mult,                -- volume spike threshold
-            0.03 AS min_daily_gain,           -- +3% close-to-close gain
-            0.05 AS min_gap_pct,              -- min gap % for gapper condition
-            30  AS gap_lookback_days          -- lookback window for gapper
+            365  AS vol_spike_lookback_days,   -- lookback window for spike days
+            20  AS avg_days,                   -- prior trading days for avg volume
+            3.5 AS spike_mult,                 -- volume spike threshold
+            0.03 AS min_daily_gain,            -- +3% close-to-close gain
+            0.05 AS min_gap_pct,               -- min gap % for gapper condition
+            365  AS gap_lookback_days          -- lookback window for gapper
     ),
 
     -- Rank all trading days per ticker
@@ -83,13 +91,11 @@ def compute_and_load_volspike_gapper(connection):
 
     -- Candidate spike days (last N calendar days, trading-day ranked)
     candidate_days AS (
-        SELECT
-            r.*
+        SELECT r.*
         FROM ranked_ohlc r
         CROSS JOIN params p
-        WHERE r.date >= (
-            SELECT MAX(date) FROM ohlc
-        ) - (p.vol_spike_lookback_days || ' days')::INTERVAL
+        WHERE r.date >= (SELECT MAX(date) FROM ohlc)
+                        - (p.vol_spike_lookback_days || ' days')::INTERVAL
     ),
 
     -- Compute prior 20 trading-day average volume + previous close
@@ -109,13 +115,10 @@ def compute_and_load_volspike_gapper(connection):
         JOIN ranked_ohlc pc
           ON pc.ticker = cd.ticker
          AND pc.rn = cd.rn - 1
-        WHERE pc.close IS NOT NULL
-          AND pc.close > 0
         GROUP BY
             cd.ticker, cd.date, cd.rn,
             cd.volume, cd.close, pc.close
         HAVING COUNT(prev.volume) = 20
-           AND AVG(prev.volume) > 0
     ),
 
     -- Apply volume spike + price confirmation
@@ -125,10 +128,7 @@ def compute_and_load_volspike_gapper(connection):
             vb.date AS spike_date,
             vb.day_volume,
             vb.avg_volume_20d,
-            ROUND(
-                vb.day_volume / NULLIF(vb.avg_volume_20d, 0),
-                2
-            ) AS volume_ratio,
+            ROUND(vb.day_volume / NULLIF(vb.avg_volume_20d, 0), 2) AS volume_ratio,
             ROUND(
                 (vb.day_close / NULLIF(vb.prev_close, 0) - 1)::numeric,
                 4
@@ -141,13 +141,11 @@ def compute_and_load_volspike_gapper(connection):
 
     -- Candidate gap days (gapper logic)
     candidate_gap_days AS (
-        SELECT
-            r.*
+        SELECT r.*
         FROM ranked_ohlc r
         CROSS JOIN params p
-        WHERE r.date >= (
-            SELECT MAX(date) FROM ohlc
-        ) - (p.gap_lookback_days || ' days')::INTERVAL
+        WHERE r.date >= (SELECT MAX(date) FROM ohlc)
+                        - (p.gap_lookback_days || ' days')::INTERVAL
     ),
 
     gap_days AS (
@@ -185,22 +183,48 @@ def compute_and_load_volspike_gapper(connection):
         gapper_day_count,
         avg_return_gapper,
         gap_days,
-        updated_at
+        updated_at,
+        last_event_date,
+        last_event_type
     )
     SELECT
         sm.ticker,
         COUNT(DISTINCT vs.spike_date) AS spike_day_count,
         ROUND(AVG(vs.volume_ratio)::numeric, 2) AS avg_volume_spike,
-        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT vs.spike_date ORDER BY vs.spike_date), ',') AS volume_spike_days,
+        ARRAY_TO_STRING(
+            ARRAY_AGG(DISTINCT vs.spike_date ORDER BY vs.spike_date),
+            ','
+        ) AS volume_spike_days,
         COUNT(DISTINCT gd.gap_date) AS gapper_day_count,
         ROUND(AVG(gr.daily_return), 4) AS avg_return_gapper,
-        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT gd.gap_date ORDER BY gd.gap_date), ',') AS gap_days,
-        CURRENT_TIMESTAMP as updated_at
+        ARRAY_TO_STRING(
+            ARRAY_AGG(DISTINCT gd.gap_date ORDER BY gd.gap_date),
+            ','
+        ) AS gap_days,
+        CURRENT_TIMESTAMP AS updated_at,
+        GREATEST(
+            MAX(vs.spike_date),
+            MAX(gd.gap_date)
+        ) AS last_event_date,
+        CASE
+            WHEN MAX(vs.spike_date) IS NOT NULL
+             AND MAX(vs.spike_date) >= MAX(gd.gap_date)
+                THEN 'volume_spike'
+            ELSE 'gapper'
+        END AS last_event_type
     FROM stock_metrics sm
     LEFT JOIN volume_spikes vs ON vs.ticker = sm.ticker
-    LEFT JOIN gap_days gd ON gd.ticker = sm.ticker
-    LEFT JOIN gap_returns gr ON gr.ticker = sm.ticker
+    LEFT JOIN gap_days gd      ON gd.ticker = sm.ticker
+    LEFT JOIN gap_returns gr   ON gr.ticker = sm.ticker
+    WHERE sm.market_cap > 1000000000
+      AND sm.fps < 100
+      AND sm.industry <> 'Biotechnology'
     GROUP BY sm.ticker
+    HAVING GREATEST(
+        MAX(vs.spike_date),
+        MAX(gd.gap_date)
+    ) IS NOT NULL
+    ORDER BY last_event_date DESC
     """
     
     result = connection.execute(text(metrics_query))

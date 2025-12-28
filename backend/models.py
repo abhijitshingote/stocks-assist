@@ -298,8 +298,6 @@ class StockMetrics(Base):
     fps = Column(Float)     # Forward Price-to-Sales
     
     # Growth metrics (forward estimate vs TTM, in %)
-    eps_growth = Column(Float)      # Projected EPS growth %
-    revenue_growth = Column(Float)  # Projected revenue growth %
 
     # YoY Revenue Growth by year (from analyst estimates)
     rev_growth_t_minus_1 = Column(Float)  # Revenue growth t-1 year
@@ -388,15 +386,98 @@ class StockVolspikeGapper(Base):
 
     ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
     
-    # Volume spike metrics (last 30 days)
+    # Volume spike metrics (last 365 days)
     spike_day_count = Column(Integer)        # Number of volume spike days
     avg_volume_spike = Column(Float)         # Average volume ratio on spike days
-    volume_spike_days = Column(Text)         # Array of spike dates (stored as JSON string)
+    volume_spike_days = Column(Text)         # Array of spike dates (stored as comma-separated string)
     
-    # Gapper metrics (last 30 days)
+    # Gapper metrics (last 365 days)
     gapper_day_count = Column(Integer)       # Number of gap-up days
     avg_return_gapper = Column(Float)        # Average return on gap days
-    gap_days = Column(Text)                  # Array of gap dates (stored as JSON string)
+    gap_days = Column(Text)                  # Array of gap dates (stored as comma-separated string)
+    
+    # Event tracking for sorting
+    last_event_date = Column(Date)           # Most recent spike or gap date
+    last_event_type = Column(String(20))     # 'volume_spike' or 'gapper'
+    
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 14. MainView (pre-computed screener view combining metrics, volspike/gapper, and tags)
+# ------------------------------------------------------------
+class MainView(Base):
+    __tablename__ = "main_view"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    
+    # From stock_metrics
+    company_name = Column(String(255))
+    country = Column(String(50))
+    sector = Column(String(100))
+    industry = Column(String(100))
+    ipo_date = Column(Date)
+    market_cap = Column(BigInteger)
+    current_price = Column(Float)
+    range_52_week = Column(String(50))
+    volume = Column(BigInteger)
+    dollar_volume = Column(Float)
+    avg_vol_10d = Column(Float)
+    vol_vs_10d_avg = Column(Float)
+    
+    # Price returns
+    dr_1 = Column(Float)
+    dr_5 = Column(Float)
+    dr_20 = Column(Float)
+    dr_60 = Column(Float)
+    dr_120 = Column(Float)
+    
+    # Volatility
+    atr20 = Column(Float)
+    
+    # Valuation metrics
+    pe = Column(Float)
+    ps_ttm = Column(Float)
+    fpe = Column(Float)
+    fps = Column(Float)
+    
+    # Growth metrics
+    rev_growth_t_minus_1 = Column(Float)
+    rev_growth_t = Column(Float)
+    rev_growth_t_plus_1 = Column(Float)
+    rev_growth_t_plus_2 = Column(Float)
+    avg_rev_growth = Column(Float)
+    eps_growth_t_minus_1 = Column(Float)
+    eps_growth_t = Column(Float)
+    eps_growth_t_plus_1 = Column(Float)
+    eps_growth_t_plus_2 = Column(Float)
+    avg_eps_growth = Column(Float)
+    
+    # RSI
+    rsi = Column(Integer)
+    rsi_mktcap = Column(Integer)
+    
+    # Short interest
+    short_float = Column(Float)
+    short_ratio = Column(Float)
+    short_interest = Column(Float)
+    low_float = Column(Boolean)
+    
+    # From stock_volspike_gapper
+    spike_day_count = Column(Integer)
+    avg_volume_spike = Column(Float)
+    volume_spike_days = Column(Text)
+    gapper_day_count = Column(Integer)
+    avg_return_gapper = Column(Float)
+    gap_days = Column(Text)
+    last_event_date = Column(Date)
+    last_event_type = Column(String(20))
+    
+    # Computed tags
+    tags = Column(Text)
     
     updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))

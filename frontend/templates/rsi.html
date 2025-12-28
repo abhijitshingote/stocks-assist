@@ -387,8 +387,6 @@
                 <th data-sort="dr_1">1D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_5">5D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_20">20D <span class="sort-icon">↕</span></th>
-                <th data-sort="eps_growth">EPS <span class="sort-icon">↕</span></th>
-                <th data-sort="revenue_growth">Rev <span class="sort-icon">↕</span></th>
                 <th data-sort="fpe">FPE <span class="sort-icon">↕</span></th>
                 <th data-sort="fps">FPS <span class="sort-icon">↕</span></th>
                 <th data-sort="ipo_date">IPO <span class="sort-icon">↕</span></th>
@@ -528,8 +526,6 @@ function renderTable(data) {
             <td class="${getReturnClass(stock.dr_1)}">${formatReturn(stock.dr_1)}</td>
             <td class="${getReturnClass(stock.dr_5)}">${formatReturn(stock.dr_5)}</td>
             <td class="${getReturnClass(stock.dr_20)}">${formatReturn(stock.dr_20)}</td>
-            <td class="${getReturnClass(stock.eps_growth)}">${formatReturn(stock.eps_growth)}</td>
-            <td class="${getReturnClass(stock.revenue_growth)}">${formatReturn(stock.revenue_growth)}</td>
             <td class="${getReturnClass(stock.fpe)}">${stock.fpe ? stock.fpe.toFixed(2) : '—'}</td>
             <td class="${getReturnClass(stock.fps)}">${stock.fps ? stock.fps.toFixed(2) : '—'}</td>
             <td>${stock.ipo_date || '—'}</td>
