@@ -538,6 +538,64 @@
 .notes-save-status.error {
     color: var(--accent-red);
 }
+
+/* Preference Controls */
+.preference-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.pref-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+}
+
+.pref-btn:hover {
+    border-color: var(--accent-purple);
+    color: var(--text-primary);
+    background: var(--bg-card-hover);
+}
+
+.pref-btn.active.favorite {
+    background: rgba(255, 215, 0, 0.15);
+    border-color: #ffd700;
+    color: #ffd700;
+}
+
+.pref-btn.active.dislike {
+    background: rgba(248, 81, 73, 0.15);
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+}
+
+.pref-btn .icon {
+    font-size: 1rem;
+}
+
+.pref-status {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.pref-status.saving {
+    color: var(--accent-yellow);
+}
+
+.pref-status.saved {
+    color: var(--accent-green);
+}
 {% endblock %}
 
 {% block content %}
@@ -563,6 +621,15 @@
                 <span class="tag" id="sector">--</span>
                 <span class="tag" id="industry">--</span>
             </div>
+            <div class="preference-controls">
+                <button class="pref-btn favorite" id="favBtn" onclick="togglePreference('favorite')">
+                    <span class="icon">⭐</span> Favorite
+                </button>
+                <button class="pref-btn dislike" id="dislikeBtn" onclick="togglePreference('dislike')">
+                    <span class="icon">👎</span> Dislike
+                </button>
+            </div>
+            <div class="pref-status" id="prefStatus"></div>
         </div>
         <div class="price-display">
             <div class="current-price" id="currentPrice">--</div>
@@ -1359,9 +1426,85 @@ async function saveNotes() {
     }
 }
 
+// ============================================
+// Preference Functions
+// ============================================
+
+let currentPreference = null;
+
+async function loadPreference() {
+    try {
+        const response = await fetch(`/api/frontend/stock-preferences/${ticker}`);
+        const data = await response.json();
+        
+        currentPreference = data.preference;
+        updatePreferenceUI();
+    } catch (error) {
+        console.error('Error loading preference:', error);
+    }
+}
+
+function updatePreferenceUI() {
+    const favBtn = document.getElementById('favBtn');
+    const dislikeBtn = document.getElementById('dislikeBtn');
+    
+    // Reset both buttons
+    favBtn.classList.remove('active');
+    dislikeBtn.classList.remove('active');
+    
+    // Apply active state based on preference
+    if (currentPreference === 'favorite') {
+        favBtn.classList.add('active');
+    } else if (currentPreference === 'dislike') {
+        dislikeBtn.classList.add('active');
+    }
+}
+
+async function togglePreference(prefType) {
+    const prefStatus = document.getElementById('prefStatus');
+    
+    // If clicking same preference, toggle off
+    const newPref = currentPreference === prefType ? null : prefType;
+    
+    prefStatus.textContent = 'Saving...';
+    prefStatus.className = 'pref-status saving';
+    
+    try {
+        const response = await fetch(`/api/frontend/stock-preferences/${ticker}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ preference: newPref }),
+        });
+        
+        if (response.ok) {
+            currentPreference = newPref;
+            updatePreferenceUI();
+            
+            const statusText = newPref === 'favorite' ? '✓ Added to favorites' :
+                               newPref === 'dislike' ? '✓ Marked as dislike' :
+                               '✓ Preference cleared';
+            prefStatus.textContent = statusText;
+            prefStatus.className = 'pref-status saved';
+            
+            setTimeout(() => {
+                prefStatus.textContent = '';
+            }, 2000);
+        } else {
+            throw new Error('Failed to update preference');
+        }
+    } catch (error) {
+        console.error('Error updating preference:', error);
+        prefStatus.textContent = 'Error saving';
+        prefStatus.className = 'pref-status';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     loadStockData();
     loadNotes();
+    loadPreference();
 });
 </script>
 {% endblock %}

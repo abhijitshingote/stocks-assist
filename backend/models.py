@@ -501,3 +501,21 @@ class StockNotes(Base):
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
     ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 16. StockPreference (user favorite/dislike status per stock)
+# ------------------------------------------------------------
+class StockPreference(Base):
+    __tablename__ = "stock_preferences"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    
+    # Preference status: 'favorite', 'dislike', or None (neutral)
+    preference = Column(String(20))
+    
+    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")

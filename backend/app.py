@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper, MainView, StockNotes
+    StockVolspikeGapper, MainView, StockNotes, StockPreference
 )
 import os
 import json
@@ -16,6 +16,8 @@ from datetime import date
 
 # Path to persist stock notes (survives database resets)
 STOCK_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_notes.json')
+# Path to persist stock preferences (survives database resets)
+STOCK_PREFERENCES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_preferences.json')
 
 app = Flask(__name__)
 CORS(app)
@@ -1865,6 +1867,160 @@ def get_stock_notes_batch():
                 }
         
         return jsonify(result)
+    finally:
+        s.close()
+
+
+# ============================================================
+# Stock Preferences API Endpoints
+# ============================================================
+
+def export_all_preferences_to_file():
+    """Export all stock preferences to JSON file for persistence across database resets."""
+    s = Session()
+    try:
+        prefs = s.query(StockPreference).filter(StockPreference.preference.isnot(None)).all()
+        
+        data = {}
+        for pref in prefs:
+            data[pref.ticker] = {
+                'preference': pref.preference,
+                'created_at': pref.created_at.isoformat() if pref.created_at else None,
+                'updated_at': pref.updated_at.isoformat() if pref.updated_at else None
+            }
+        
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(STOCK_PREFERENCES_FILE), exist_ok=True)
+        
+        with open(STOCK_PREFERENCES_FILE, 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        logger.info(f"Exported {len(data)} stock preferences to {STOCK_PREFERENCES_FILE}")
+    except Exception as e:
+        logger.error(f"Error exporting stock preferences: {str(e)}")
+    finally:
+        s.close()
+
+
+@app.route('/api/stock-preferences/<ticker>', methods=['GET'])
+def get_stock_preference(ticker):
+    """Get preference for a specific stock."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        pref = s.query(StockPreference).filter(StockPreference.ticker == ticker).first()
+        if pref:
+            return jsonify({
+                'ticker': pref.ticker,
+                'preference': pref.preference,
+                'updated_at': pref.updated_at.isoformat() if pref.updated_at else None
+            })
+        return jsonify({
+            'ticker': ticker,
+            'preference': None,
+            'updated_at': None
+        })
+    finally:
+        s.close()
+
+
+@app.route('/api/stock-preferences/<ticker>', methods=['PUT'])
+def update_stock_preference(ticker):
+    """Create or update preference for a specific stock."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        data = request.get_json()
+        
+        if not data or 'preference' not in data:
+            return jsonify({'error': 'preference field is required'}), 400
+        
+        preference_value = data['preference']
+        
+        # Validate preference value
+        if preference_value is not None and preference_value not in ['favorite', 'dislike']:
+            return jsonify({'error': 'preference must be "favorite", "dislike", or null'}), 400
+        
+        # Check if preference already exists for this ticker
+        existing = s.query(StockPreference).filter(StockPreference.ticker == ticker).first()
+        
+        if existing:
+            # Update existing preference
+            existing.preference = preference_value
+            s.commit()
+            
+            # Export all preferences to file for persistence
+            export_all_preferences_to_file()
+            
+            return jsonify({
+                'ticker': existing.ticker,
+                'preference': existing.preference,
+                'updated_at': existing.updated_at.isoformat() if existing.updated_at else None,
+                'message': 'Preference updated successfully'
+            })
+        else:
+            # Create new preference entry
+            new_pref = StockPreference(ticker=ticker, preference=preference_value)
+            s.add(new_pref)
+            s.commit()
+            
+            # Export all preferences to file for persistence
+            export_all_preferences_to_file()
+            
+            return jsonify({
+                'ticker': new_pref.ticker,
+                'preference': new_pref.preference,
+                'updated_at': new_pref.updated_at.isoformat() if new_pref.updated_at else None,
+                'message': 'Preference created successfully'
+            }), 201
+    except Exception as e:
+        s.rollback()
+        logger.error(f"Error updating stock preference for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/stock-preferences/batch', methods=['POST'])
+def get_stock_preferences_batch():
+    """Get preferences for multiple tickers at once."""
+    s = Session()
+    try:
+        data = request.get_json()
+        
+        if not data or 'tickers' not in data:
+            return jsonify({'error': 'tickers field is required'}), 400
+        
+        tickers = [t.upper() for t in data['tickers']]
+        
+        prefs = s.query(StockPreference).filter(StockPreference.ticker.in_(tickers)).all()
+        
+        result = {}
+        for pref in prefs:
+            if pref.preference:  # Only include non-null preferences
+                result[pref.ticker] = {
+                    'preference': pref.preference,
+                    'updated_at': pref.updated_at.isoformat() if pref.updated_at else None
+                }
+        
+        return jsonify(result)
+    finally:
+        s.close()
+
+
+@app.route('/api/stock-preferences/list/<preference_type>')
+def list_stock_preferences(preference_type):
+    """List all stocks with a specific preference (favorites or dislikes)."""
+    s = Session()
+    try:
+        if preference_type not in ['favorite', 'dislike']:
+            return jsonify({'error': 'preference_type must be "favorite" or "dislike"'}), 400
+        
+        prefs = s.query(StockPreference).filter(StockPreference.preference == preference_type).all()
+        
+        tickers = [pref.ticker for pref in prefs]
+        
+        return jsonify({'tickers': tickers, 'count': len(tickers)})
     finally:
         s.close()
 

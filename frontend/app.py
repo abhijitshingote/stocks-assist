@@ -347,5 +347,47 @@ def api_get_stock_notes_batch():
     return jsonify(data), status_code
 
 
+# ============================================================
+# Stock Preferences Endpoints
+# ============================================================
+
+@app.route('/api/frontend/stock-preferences/<ticker>', methods=['GET'])
+def api_get_stock_preference(ticker):
+    """Proxy endpoint to get preference for a specific stock"""
+    data, status_code = make_backend_request(f'/api/stock-preferences/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch stock preference'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/stock-preferences/<ticker>', methods=['PUT'])
+def api_update_stock_preference(ticker):
+    """Proxy endpoint to create or update preference for a specific stock"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request(f'/api/stock-preferences/{ticker}', method='PUT', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to update stock preference'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/stock-preferences/batch', methods=['POST'])
+def api_get_stock_preferences_batch():
+    """Proxy endpoint to get preferences for multiple tickers at once"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/stock-preferences/batch', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to fetch stock preferences batch'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/stock-preferences/list/<preference_type>')
+def api_list_stock_preferences(preference_type):
+    """Proxy endpoint to list all stocks with a specific preference"""
+    data, status_code = make_backend_request(f'/api/stock-preferences/list/{preference_type}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch stock preferences list'}), status_code
+    return jsonify(data), status_code
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

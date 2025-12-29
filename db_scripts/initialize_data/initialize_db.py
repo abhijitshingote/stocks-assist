@@ -35,6 +35,7 @@ def initialize_database(reset=False):
     14. stock_volspike_gapper - Volume spike and gapper detection
     15. main_view - Combined screener view with metrics, volspike/gapper, and tags
     16. stock_notes - User notes for stocks
+    17. stock_preferences - User favorite/dislike status for stocks
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
@@ -52,6 +53,7 @@ def initialize_database(reset=False):
             # Drop in reverse dependency order
             connection.execute(text("DROP TABLE IF EXISTS main_view CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_notes CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS stock_preferences CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_volspike_gapper CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS rsi_indices CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS historical_rsi CASCADE;"))
@@ -415,6 +417,16 @@ def initialize_database(reset=False):
             )
         """))
 
+        # 17. stock_preferences - User favorite/dislike status for stocks
+        connection.execute(text(f"""
+            {table_clause} stock_preferences (
+                ticker VARCHAR(20) PRIMARY KEY REFERENCES tickers(ticker),
+                preference VARCHAR(20),
+                created_at TIMESTAMP DEFAULT NOW(),
+                updated_at TIMESTAMP DEFAULT NOW()
+            )
+        """))
+
         # Create indexes for better query performance
         idx_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
         connection.execute(text(f"""
@@ -482,6 +494,7 @@ def initialize_database(reset=False):
         logger.info("  - stock_volspike_gapper (volume spike and gapper detection)")
         logger.info("  - main_view (combined screener view with tags)")
         logger.info("  - stock_notes (user notes for stocks)")
+        logger.info("  - stock_preferences (user favorite/dislike status for stocks)")
         
         flush_logger(SCRIPT_NAME)
 

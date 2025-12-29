@@ -754,6 +754,99 @@
 .notes-edit-link:hover {
     text-decoration: underline;
 }
+
+/* Preference Filter Tabs */
+.preference-filter {
+    display: flex;
+    gap: 0.3rem;
+    margin-left: auto;
+    align-items: center;
+}
+
+.pref-filter-btn {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.75rem;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.pref-filter-btn:hover {
+    border-color: var(--accent-purple);
+    color: var(--text-primary);
+}
+
+.pref-filter-btn.active {
+    background: linear-gradient(135deg, rgba(163, 113, 247, 0.2) 0%, rgba(88, 166, 255, 0.2) 100%);
+    border-color: var(--accent-purple);
+    color: var(--text-primary);
+}
+
+.pref-filter-btn .count {
+    font-size: 0.65rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.1rem 0.25rem;
+    border-radius: 3px;
+}
+
+/* Favorite/Dislike Icons */
+.preference-controls {
+    display: flex;
+    gap: 0.15rem;
+    margin-left: 0.25rem;
+}
+
+.pref-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.15rem 0.2rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    opacity: 0.3;
+    transition: all 0.2s;
+    line-height: 1;
+}
+
+.pref-btn:hover {
+    opacity: 0.8;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.pref-btn.active {
+    opacity: 1;
+}
+
+.pref-btn.favorite.active {
+    color: #ffd700;
+    text-shadow: 0 0 4px rgba(255, 215, 0, 0.5);
+}
+
+.pref-btn.dislike.active {
+    color: var(--accent-red);
+}
+
+/* Card styling when filtered */
+.stock-card.is-favorite {
+    border-left: 3px solid #ffd700;
+}
+
+.stock-card.is-dislike {
+    border-left: 3px solid var(--accent-red);
+    opacity: 0.7;
+}
+
+.stock-card.hidden-by-filter {
+    display: none;
+}
 {% endblock %}
 
 {% block content %}
@@ -770,8 +863,23 @@
         <span class="stat-value purple" id="totalStocks">—</span>
     </div>
     <div class="stat-item">
+        <span class="stat-label">Showing</span>
+        <span class="stat-value" id="showingStocks">—</span>
+    </div>
+    <div class="stat-item">
         <span class="stat-label">Category</span>
         <span class="stat-value" id="currentCategory">All</span>
+    </div>
+    <div class="preference-filter">
+        <button class="pref-filter-btn active" data-filter="all">
+            All
+        </button>
+        <button class="pref-filter-btn" data-filter="favorite">
+            ⭐ Favorites <span class="count" id="favCount">0</span>
+        </button>
+        <button class="pref-filter-btn" data-filter="dislike">
+            👎 Dislikes <span class="count" id="dislikeCount">0</span>
+        </button>
     </div>
 </div>
 
@@ -823,6 +931,7 @@
 {% block extra_scripts %}
 <script>
 let currentData = [];
+let currentFilter = 'all'; // 'all', 'favorite', 'dislike'
 
 const capLabels = {
     'all': 'All',
@@ -847,6 +956,16 @@ document.addEventListener('DOMContentLoaded', function() {
             loadData(cap);
         });
     });
+    
+    // Preference filter handlers
+    document.querySelectorAll('.pref-filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.pref-filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            applyPreferenceFilter();
+        });
+    });
 });
 
 function loadData(marketCap) {
@@ -861,14 +980,17 @@ function loadData(marketCap) {
             if (data.length === 0) {
                 showEmpty();
                 document.getElementById('totalStocks').textContent = '0';
+                document.getElementById('showingStocks').textContent = '0';
             } else {
                 showCards();
                 document.getElementById('totalStocks').textContent = data.length;
+                document.getElementById('showingStocks').textContent = data.length;
                 renderCards(data);
                 
-                // Load notes for all displayed stocks
+                // Load notes and preferences for all displayed stocks
                 const tickers = data.map(stock => stock.ticker);
                 loadNotesForStocks(tickers);
+                loadPreferencesForStocks(tickers);
             }
         })
         .catch(error => {
@@ -881,9 +1003,13 @@ function loadData(marketCap) {
 function renderCards(data) {
     const container = document.getElementById('stockCards');
     container.innerHTML = data.map(stock => `
-        <div class="stock-card">
+        <div class="stock-card" data-ticker="${stock.ticker}">
             <div class="card-header">
                 <a href="/stock/${stock.ticker}" class="ticker-link">${stock.ticker}</a>
+                <div class="preference-controls">
+                    <button class="pref-btn favorite" data-ticker="${stock.ticker}" title="Add to favorites" onclick="togglePreference('${stock.ticker}', 'favorite')">⭐</button>
+                    <button class="pref-btn dislike" data-ticker="${stock.ticker}" title="Mark as dislike" onclick="togglePreference('${stock.ticker}', 'dislike')">👎</button>
+                </div>
                 <div class="notes-indicator" data-ticker="${stock.ticker}">
                     <span class="notes-icon-btn" title="Notes">📝</span>
                     <div class="notes-tooltip">
@@ -1252,6 +1378,146 @@ function updateNotesIndicators() {
             tooltipMeta.textContent = '';
         }
     });
+}
+
+// ============================================
+// Preference Functions
+// ============================================
+
+let stockPreferences = {}; // Cache for loaded preferences
+
+async function loadPreferencesForStocks(tickers) {
+    if (!tickers || tickers.length === 0) return;
+    
+    try {
+        const response = await fetch('/api/frontend/stock-preferences/batch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ tickers: tickers }),
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            stockPreferences = { ...stockPreferences, ...data };
+            updatePreferenceIndicators();
+            updatePreferenceCounts();
+            applyPreferenceFilter();
+        }
+    } catch (error) {
+        console.error('Error loading preferences:', error);
+    }
+}
+
+function updatePreferenceIndicators() {
+    document.querySelectorAll('.stock-card').forEach(card => {
+        const ticker = card.dataset.ticker;
+        const favBtn = card.querySelector('.pref-btn.favorite');
+        const dislikeBtn = card.querySelector('.pref-btn.dislike');
+        
+        // Reset states
+        favBtn?.classList.remove('active');
+        dislikeBtn?.classList.remove('active');
+        card.classList.remove('is-favorite', 'is-dislike');
+        
+        if (stockPreferences[ticker]) {
+            const pref = stockPreferences[ticker].preference;
+            if (pref === 'favorite') {
+                favBtn?.classList.add('active');
+                card.classList.add('is-favorite');
+            } else if (pref === 'dislike') {
+                dislikeBtn?.classList.add('active');
+                card.classList.add('is-dislike');
+            }
+        }
+    });
+}
+
+function updatePreferenceCounts() {
+    let favCount = 0;
+    let dislikeCount = 0;
+    
+    // Count from current displayed data
+    currentData.forEach(stock => {
+        const pref = stockPreferences[stock.ticker];
+        if (pref) {
+            if (pref.preference === 'favorite') favCount++;
+            else if (pref.preference === 'dislike') dislikeCount++;
+        }
+    });
+    
+    document.getElementById('favCount').textContent = favCount;
+    document.getElementById('dislikeCount').textContent = dislikeCount;
+}
+
+async function togglePreference(ticker, prefType) {
+    const currentPref = stockPreferences[ticker]?.preference;
+    
+    // If clicking the same preference, remove it (toggle off)
+    const newPref = currentPref === prefType ? null : prefType;
+    
+    try {
+        const response = await fetch(`/api/frontend/stock-preferences/${ticker}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ preference: newPref }),
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (newPref) {
+                stockPreferences[ticker] = { preference: newPref, updated_at: data.updated_at };
+            } else {
+                delete stockPreferences[ticker];
+            }
+            updatePreferenceIndicators();
+            updatePreferenceCounts();
+            applyPreferenceFilter();
+        }
+    } catch (error) {
+        console.error('Error updating preference:', error);
+    }
+}
+
+function applyPreferenceFilter() {
+    let visibleCount = 0;
+    
+    document.querySelectorAll('.stock-card').forEach(card => {
+        const ticker = card.dataset.ticker;
+        const pref = stockPreferences[ticker]?.preference;
+        
+        let visible = true;
+        
+        if (currentFilter === 'favorite') {
+            visible = pref === 'favorite';
+        } else if (currentFilter === 'dislike') {
+            visible = pref === 'dislike';
+        }
+        // 'all' shows everything
+        
+        if (visible) {
+            card.classList.remove('hidden-by-filter');
+            visibleCount++;
+        } else {
+            card.classList.add('hidden-by-filter');
+        }
+    });
+    
+    document.getElementById('showingStocks').textContent = visibleCount;
+    
+    // Show empty state if no stocks visible
+    if (visibleCount === 0 && currentData.length > 0) {
+        document.getElementById('emptyState').style.display = 'block';
+        document.getElementById('emptyState').querySelector('p').textContent = 
+            currentFilter === 'favorite' ? 'No favorites yet. Click ⭐ on stocks to add them.' :
+            currentFilter === 'dislike' ? 'No dislikes yet. Click 👎 on stocks to mark them.' :
+            'No stocks match the criteria for this market cap category.';
+    } else {
+        document.getElementById('emptyState').style.display = 'none';
+    }
 }
 </script>
 {% endblock %}
