@@ -174,6 +174,10 @@ def get_stock_metrics_data(session, ticker):
         StockVolspikeGapper.ticker == ticker
     ).first()
     
+    # Parse volspike/gapper date strings back to arrays
+    spike_dates = [d for d in (volspike_gapper.volume_spike_days or '').split(',') if d.strip()] if volspike_gapper else []
+    gap_dates = [d for d in (volspike_gapper.gap_days or '').split(',') if d.strip()] if volspike_gapper else []
+    
     return {
         'ticker': metrics.ticker,
         'company_name': metrics.company_name,
@@ -186,6 +190,7 @@ def get_stock_metrics_data(session, ticker):
         'range_52_week': metrics.range_52_week,
         'volume': metrics.volume,
         'dollar_volume': metrics.dollar_volume,
+        'avg_vol_10d': metrics.avg_vol_10d,
         'vol_vs_10d_avg': metrics.vol_vs_10d_avg,
         'dr_1': metrics.dr_1,
         'dr_5': metrics.dr_5,
@@ -197,6 +202,18 @@ def get_stock_metrics_data(session, ticker):
         'ps_ttm': metrics.ps_ttm,
         'fpe': metrics.fpe,
         'fps': metrics.fps,
+        # Revenue growth fields
+        'rev_growth_t_minus_1': round(metrics.rev_growth_t_minus_1, 2) if metrics.rev_growth_t_minus_1 else None,
+        'rev_growth_t': round(metrics.rev_growth_t, 2) if metrics.rev_growth_t else None,
+        'rev_growth_t_plus_1': round(metrics.rev_growth_t_plus_1, 2) if metrics.rev_growth_t_plus_1 else None,
+        'rev_growth_t_plus_2': round(metrics.rev_growth_t_plus_2, 2) if metrics.rev_growth_t_plus_2 else None,
+        'avg_rev_growth': round(metrics.avg_rev_growth, 2) if metrics.avg_rev_growth else None,
+        # EPS growth fields
+        'eps_growth_t_minus_1': round(metrics.eps_growth_t_minus_1, 2) if metrics.eps_growth_t_minus_1 else None,
+        'eps_growth_t': round(metrics.eps_growth_t, 2) if metrics.eps_growth_t else None,
+        'eps_growth_t_plus_1': round(metrics.eps_growth_t_plus_1, 2) if metrics.eps_growth_t_plus_1 else None,
+        'eps_growth_t_plus_2': round(metrics.eps_growth_t_plus_2, 2) if metrics.eps_growth_t_plus_2 else None,
+        'avg_eps_growth': round(metrics.avg_eps_growth, 2) if metrics.avg_eps_growth else None,
         'rsi': metrics.rsi,
         'rsi_mktcap': metrics.rsi_mktcap,
         'short_float': metrics.short_float,
@@ -207,10 +224,10 @@ def get_stock_metrics_data(session, ticker):
         # Volspike/Gapper data
         'spike_day_count': volspike_gapper.spike_day_count if volspike_gapper else 0,
         'avg_volume_spike': volspike_gapper.avg_volume_spike if volspike_gapper else None,
-        'volume_spike_days': volspike_gapper.volume_spike_days if volspike_gapper else None,
+        'volume_spike_days': spike_dates,
         'gapper_day_count': volspike_gapper.gapper_day_count if volspike_gapper else 0,
         'avg_return_gapper': volspike_gapper.avg_return_gapper if volspike_gapper else None,
-        'gap_days': volspike_gapper.gap_days if volspike_gapper else None,
+        'gap_days': gap_dates,
         'last_event_date': volspike_gapper.last_event_date.strftime('%Y-%m-%d') if volspike_gapper and volspike_gapper.last_event_date else None,
         'last_event_type': volspike_gapper.last_event_type if volspike_gapper else None,
     }

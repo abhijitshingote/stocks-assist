@@ -60,161 +60,384 @@
     color: var(--text-muted);
 }
 
-/* Compact Metrics Grid */
-.metrics-compact {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 0.75rem;
+/* Data Sections Container (main_view style) */
+.data-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
     margin-bottom: 1.5rem;
 }
 
-.metrics-compact-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 0.5rem 0.75rem;
+/* Section Wrapper */
+.section-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: stretch;
 }
 
-@media (max-width: 900px) {
-    .metrics-compact-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.4rem 0.5rem;
-    }
-}
-
-.metric-cell {
+/* Individual Section */
+.data-section {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    padding: 0.4rem 0.3rem;
-    border-bottom: 1px solid rgba(48, 54, 61, 0.2);
-    background: rgba(48, 54, 61, 0.05);
-    border-radius: 4px;
+    background: var(--bg-card);
+    border-radius: 6px;
+    padding: 0.4rem 0.5rem;
+    border-left: 3px solid var(--border-color);
+    flex: 1 1 auto;
+    min-width: fit-content;
 }
 
-.metric-cell:nth-last-child(-n+6) {
-    border-bottom: none;
+.data-section.price-section {
+    border-left-color: var(--accent-blue);
+    flex: 1.2;
 }
 
-@media (max-width: 900px) {
-    .metric-cell:nth-last-child(-n+3) {
-        border-bottom: none;
-    }
-    .metric-cell:nth-last-child(n+4) {
-        border-bottom: 1px solid rgba(48, 54, 61, 0.2);
-    }
+.data-section.technical-section {
+    border-left-color: var(--accent-purple);
+    flex: 1;
 }
 
-.metric-cell .label {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-weight: 500;
+.data-section.returns-section {
+    border-left-color: var(--accent-green);
+    flex: 1.5;
+}
+
+.data-section.valuation-section {
+    border-left-color: var(--accent-yellow);
+    flex: 1;
+}
+
+.data-section.growth-section {
+    border-left-color: #ff79c6;
+    flex: 1.6;
+}
+
+.data-section.short-section {
+    border-left-color: var(--accent-red);
+    flex: 1.2;
+}
+
+.data-section.events-section {
+    border-left-color: var(--accent-yellow);
+    background: rgba(210, 153, 34, 0.05);
+    flex: 1;
+}
+
+.data-section.info-section {
+    border-left-color: var(--text-muted);
+    flex: 1.5;
+}
+
+/* Full-width row layout */
+.section-group.full-row {
+    flex-wrap: nowrap;
+}
+
+.section-header {
+    font-size: 0.6rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+    opacity: 0.7;
+    line-height: 1;
 }
 
-.metric-cell .value {
+.section-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.section-row .data-cell {
+    flex: 1 1 auto;
+}
+
+.data-cell {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1;
+}
+
+.data-cell.inline {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.2rem;
+}
+
+.data-label {
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+.data-value {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: 0.9rem;
     color: var(--text-primary);
-    line-height: 1.2;
+    line-height: 1.1;
 }
 
+.data-value.lg {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.data-value.sm {
+    font-size: 0.8rem;
+}
+
+.data-value.positive {
+    color: var(--accent-green);
+}
+
+.data-value.negative {
+    color: var(--accent-red);
+}
+
+.data-value.muted {
+    color: var(--text-muted);
+}
+
+.data-value.highlight {
+    color: var(--accent-purple);
+    font-weight: 600;
+}
+
+.data-value.warn {
+    color: var(--accent-yellow);
+}
+
+/* Compact return display */
+.returns-inline {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.return-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 36px;
+    flex: 1;
+}
+
+.return-item .data-label {
+    font-size: 0.52rem;
+}
+
+.return-item .data-value {
+    font-size: 0.88rem;
+}
+
+/* Growth timeline display */
+.growth-timeline {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    flex: 1;
+}
+
+.growth-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.08rem 0.2rem;
+    border-radius: 3px;
+    min-width: 40px;
+    flex: 1;
+}
+
+.growth-item .data-label {
+    font-size: 0.5rem;
+}
+
+.growth-item .data-value {
+    font-size: 0.82rem;
+}
+
+.growth-item.past {
+    opacity: 0.7;
+}
+
+.growth-item.current {
+    background: rgba(163, 113, 247, 0.15);
+}
+
+.growth-item.future {
+    background: rgba(88, 166, 255, 0.1);
+}
+
+.growth-avg {
+    border-left: 1px solid var(--border-color);
+    padding-left: 0.25rem;
+    margin-left: 0.1rem;
+}
+
+/* Valuation pairs */
+.val-pair {
+    display: flex;
+    gap: 0.4rem;
+    align-items: flex-end;
+    flex: 1;
+}
+
+.val-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.val-item.forward .data-label {
+    color: var(--accent-blue);
+}
+
+.valuation-section .section-row {
+    gap: 0.7rem;
+}
+
+/* Short interest bar */
+.short-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.short-bar-container {
+    width: 40px;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.short-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent-red);
+    transition: width 0.3s;
+}
+
+/* RSI Bar */
+.rsi-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.rsi-bar-container {
+    width: 30px;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.rsi-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.rsi-bar.high {
+    background: linear-gradient(90deg, var(--accent-green), #4eca5f);
+}
+
+.rsi-bar.mid {
+    background: linear-gradient(90deg, var(--accent-yellow), #e5b526);
+}
+
+.rsi-bar.low {
+    background: linear-gradient(90deg, var(--accent-red), #ff6b5e);
+}
+
+/* Event badges and date pills */
+.event-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.08rem 0.25rem;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.event-badge.spike {
+    background: rgba(210, 153, 34, 0.2);
+    color: var(--accent-yellow);
+}
+
+.event-badge.gap {
+    background: rgba(248, 81, 73, 0.2);
+    color: var(--accent-red);
+}
+
+.date-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+}
+
+.date-pill {
+    display: inline-block;
+    padding: 0.05rem 0.2rem;
+    border-radius: 2px;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+}
+
+.date-pill.spike {
+    background: rgba(210, 153, 34, 0.15);
+    color: var(--accent-yellow);
+}
+
+.date-pill.gap {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--accent-red);
+}
+
+/* Value class helpers */
 .value-positive { color: var(--accent-green); }
 .value-negative { color: var(--accent-red); }
 
-/* Highlight Badges */
-.highlight-section {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+/* Responsive */
+@media (max-width: 900px) {
+    .section-group.full-row {
+        flex-wrap: wrap;
+    }
+    
+    .section-group .data-section {
+        min-width: 150px;
+    }
 }
 
-.highlight-badge {
-    flex: 1;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-}
-
-.highlight-badge.volspike {
-    border-left: 4px solid #ff9800;
-}
-
-.highlight-badge.gapper {
-    border-left: 4px solid #9c27b0;
-}
-
-.highlight-badge.inactive {
-    opacity: 0.4;
-    border-left-color: var(--border-color);
-}
-
-.highlight-icon {
-    font-size: 1.8rem;
-    margin-top: 0.1rem;
-}
-
-.highlight-content {
-    flex: 1;
-}
-
-.highlight-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-.highlight-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.highlight-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.highlight-badge.volspike .highlight-value {
-    color: #ff9800;
-}
-
-.highlight-badge.gapper .highlight-value {
-    color: #9c27b0;
-}
-
-.highlight-badge.inactive .highlight-value {
-    color: var(--text-muted);
-}
-
-.highlight-stats {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    line-height: 1.4;
-}
-
-.highlight-stat {
-    margin-bottom: 0.25rem;
-}
-
-.highlight-stat:last-child {
-    margin-bottom: 0;
-}
-
-.highlight-dates {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    margin-top: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
+@media (max-width: 768px) {
+    .section-group {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    
+    .section-group.full-row {
+        flex-wrap: wrap;
+    }
+    
+    .data-section {
+        width: 100%;
+    }
+    
+    .returns-inline,
+    .growth-timeline {
+        flex-wrap: wrap;
+    }
 }
 
 /* Chart Section */
@@ -637,107 +860,181 @@
         </div>
     </div>
 
-    <!-- Volspike & Gapper Highlights -->
-    <div class="highlight-section">
-        <div class="highlight-badge volspike" id="volspikeBadge">
-            <div class="highlight-icon">⚡</div>
-            <div class="highlight-content">
-                <div class="highlight-header">
-                    <div class="highlight-title">Volume Spikes</div>
-                    <div class="highlight-value" id="spikeCount">0</div>
+    <!-- Main View Style Metrics -->
+    <div class="data-sections" id="dataSections">
+        <!-- Row 1: Price, Technical, Returns -->
+        <div class="section-group full-row">
+            <!-- Price & Market Section -->
+            <div class="data-section price-section">
+                <div class="section-header">Price & Market</div>
+                <div class="section-row">
+                    <div class="data-cell">
+                        <span class="data-label">Price</span>
+                        <span class="data-value lg" id="priceValue">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">MktCap</span>
+                        <span class="data-value" id="marketCap">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">Volume</span>
+                        <span class="data-value sm" id="volume">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">$Vol</span>
+                        <span class="data-value sm" id="dollarVolume">--</span>
+                    </div>
                 </div>
-                <div class="highlight-stats" id="volspikeStats">
-                    <div class="highlight-stat">Avg volume: <span id="avgVolumeSpike">--</span>x</div>
+            </div>
+            
+            <!-- Technical Section -->
+            <div class="data-section technical-section">
+                <div class="section-header">Technical</div>
+                <div class="section-row">
+                    <div class="data-cell">
+                        <span class="data-label">RSI</span>
+                        <div class="rsi-cell">
+                            <span class="data-value" id="rsiMktcap">--</span>
+                            <div class="rsi-bar-container"><div class="rsi-bar mid" id="rsiBar" style="width:0%"></div></div>
+                        </div>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">ATR%</span>
+                        <span class="data-value" id="atr20">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">Vol/Avg</span>
+                        <span class="data-value" id="volVs10dAvg">--</span>
+                    </div>
                 </div>
-                <div class="highlight-dates" id="volspikeDates"></div>
+            </div>
+            
+            <!-- Returns Section -->
+            <div class="data-section returns-section">
+                <div class="section-header">Returns</div>
+                <div class="returns-inline">
+                    <div class="return-item"><span class="data-label">1D</span><span class="data-value" id="dr1">--</span></div>
+                    <div class="return-item"><span class="data-label">5D</span><span class="data-value" id="dr5">--</span></div>
+                    <div class="return-item"><span class="data-label">20D</span><span class="data-value" id="dr20">--</span></div>
+                    <div class="return-item"><span class="data-label">60D</span><span class="data-value" id="dr60">--</span></div>
+                    <div class="return-item"><span class="data-label">120D</span><span class="data-value" id="dr120">--</span></div>
+                </div>
             </div>
         </div>
-        <div class="highlight-badge gapper" id="gapperBadge">
-            <div class="highlight-icon">🚀</div>
-            <div class="highlight-content">
-                <div class="highlight-header">
-                    <div class="highlight-title">Gap Days</div>
-                    <div class="highlight-value" id="gapperCount">0</div>
+        
+        <!-- Row 2: Valuation, Revenue Growth, EPS Growth -->
+        <div class="section-group full-row">
+            <!-- Valuation Section -->
+            <div class="data-section valuation-section">
+                <div class="section-header">Valuation</div>
+                <div class="section-row">
+                    <div class="val-pair">
+                        <div class="val-item">
+                            <span class="data-label">P/E</span>
+                            <span class="data-value" id="pe">--</span>
+                        </div>
+                        <div class="val-item forward">
+                            <span class="data-label">Fwd</span>
+                            <span class="data-value" id="fpe">--</span>
+                        </div>
+                    </div>
+                    <div class="val-pair">
+                        <div class="val-item">
+                            <span class="data-label">P/S</span>
+                            <span class="data-value" id="psTtm">--</span>
+                        </div>
+                        <div class="val-item forward">
+                            <span class="data-label">Fwd</span>
+                            <span class="data-value" id="fps">--</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="highlight-stats" id="gapperStats">
-                    <div class="highlight-stat">Avg return: <span id="avgReturnGapper">--</span>%</div>
+            </div>
+            
+            <!-- Revenue Growth Section -->
+            <div class="data-section growth-section">
+                <div class="section-header">Revenue Growth</div>
+                <div class="growth-timeline">
+                    <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value" id="revGrowthTMinus1">--</span></div>
+                    <div class="growth-item current"><span class="data-label">T</span><span class="data-value" id="revGrowthT">--</span></div>
+                    <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value" id="revGrowthTPlus1">--</span></div>
+                    <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value" id="revGrowthTPlus2">--</span></div>
+                    <div class="growth-avg"><div class="data-cell"><span class="data-label">Avg</span><span class="data-value" id="avgRevGrowth">--</span></div></div>
                 </div>
-                <div class="highlight-dates" id="gapperDates"></div>
+            </div>
+            
+            <!-- EPS Growth Section -->
+            <div class="data-section growth-section">
+                <div class="section-header">EPS Growth</div>
+                <div class="growth-timeline">
+                    <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value" id="epsGrowthTMinus1">--</span></div>
+                    <div class="growth-item current"><span class="data-label">T</span><span class="data-value" id="epsGrowthT">--</span></div>
+                    <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value" id="epsGrowthTPlus1">--</span></div>
+                    <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value" id="epsGrowthTPlus2">--</span></div>
+                    <div class="growth-avg"><div class="data-cell"><span class="data-label">Avg</span><span class="data-value" id="avgEpsGrowth">--</span></div></div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Compact Metrics Grid -->
-    <div class="metrics-compact">
-        <div class="metrics-compact-grid">
-            <!-- Row 1 -->
-            <div class="metric-cell">
-                <span class="label">1D</span>
-                <span class="value" id="dr1">--</span>
+        
+        <!-- Row 3: Short Interest, Info -->
+        <div class="section-group full-row">
+            <!-- Short Interest Section -->
+            <div class="data-section short-section">
+                <div class="section-header">Short Interest</div>
+                <div class="section-row">
+                    <div class="data-cell">
+                        <span class="data-label">Float%</span>
+                        <div class="short-bar">
+                            <span class="data-value" id="shortFloat">--</span>
+                            <div class="short-bar-container"><div class="short-bar-fill" id="shortBarFill" style="width:0%"></div></div>
+                        </div>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">Ratio</span>
+                        <span class="data-value" id="shortRatio">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">Interest</span>
+                        <span class="data-value sm" id="shortInterest">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">LowFloat</span>
+                        <span class="data-value" id="lowFloat">--</span>
+                    </div>
+                </div>
             </div>
-            <div class="metric-cell">
-                <span class="label">5D</span>
-                <span class="value" id="dr5">--</span>
+            
+            <!-- Info Section -->
+            <div class="data-section info-section">
+                <div class="section-header">Info</div>
+                <div class="section-row">
+                    <div class="data-cell">
+                        <span class="data-label">Industry</span>
+                        <span class="data-value muted sm" id="industryInfo">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">Country</span>
+                        <span class="data-value muted sm" id="countryInfo">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">IPO</span>
+                        <span class="data-value muted" id="ipoYear">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">52W</span>
+                        <span class="data-value muted sm" id="range52Info">--</span>
+                    </div>
+                </div>
             </div>
-            <div class="metric-cell">
-                <span class="label">20D</span>
-                <span class="value" id="dr20">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">60D</span>
-                <span class="value" id="dr60">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">Mkt Cap</span>
-                <span class="value" id="marketCap">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">ATR 20%</span>
-                <span class="value" id="atr20">--</span>
-            </div>
-
-            <!-- Row 2 - Valuation Ratios Together -->
-            <div class="metric-cell">
-                <span class="label">P/E</span>
-                <span class="value" id="pe">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">Fwd P/E</span>
-                <span class="value" id="fpe">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">P/S</span>
-                <span class="value" id="psTtm">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">Fwd P/S</span>
-                <span class="value" id="fps">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">RSI</span>
-                <span class="value" id="rsi">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">RSI Mkt</span>
-                <span class="value" id="rsiMktcap">--</span>
-            </div>
-
-            <!-- Row 3 -->
-            <div class="metric-cell">
-                <span class="label">Short Float</span>
-                <span class="value" id="shortFloat">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">Short Ratio</span>
-                <span class="value" id="shortRatio">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">Vol vs Avg</span>
-                <span class="value" id="volVs10dAvg">--</span>
-            </div>
-            <div class="metric-cell">
-                <span class="label">Vol</span>
-                <span class="value" id="volume">--</span>
+        </div>
+        
+        <!-- Events Section (Volume Spikes & Gappers) -->
+        <div class="section-group full-row" id="eventsSection" style="display: none;">
+            <div class="data-section events-section">
+                <div class="section-header">Volume Events</div>
+                <div class="section-row" id="eventsContent">
+                    <!-- Will be populated dynamically -->
+                </div>
             </div>
         </div>
     </div>
@@ -861,8 +1158,68 @@ function setReturnValue(elementId, value) {
     const el = document.getElementById(elementId);
     const { text, className } = formatReturn(value);
     el.textContent = text;
-    el.classList.remove('value-positive', 'value-negative');
-    if (className) el.classList.add(className);
+    el.classList.remove('value-positive', 'value-negative', 'positive', 'negative', 'muted');
+    if (value == null) {
+        el.classList.add('muted');
+    } else if (value >= 0) {
+        el.classList.add('positive');
+    } else {
+        el.classList.add('negative');
+    }
+}
+
+function setGrowthValue(elementId, value, isHighlight = false) {
+    const el = document.getElementById(elementId);
+    if (value == null) {
+        el.textContent = '--';
+        el.className = 'data-value muted';
+    } else {
+        const sign = value >= 0 ? '+' : '';
+        el.textContent = sign + formatNumber(value, 0) + '%';
+        let className = 'data-value ';
+        if (value >= 0) {
+            className += 'positive';
+        } else {
+            className += 'negative';
+        }
+        if (isHighlight && value > 25) {
+            className += ' highlight';
+        }
+        el.className = className;
+    }
+}
+
+function getRsiClass(rsi) {
+    if (rsi == null) return '';
+    if (rsi >= 70) return 'positive';
+    if (rsi >= 30) return '';
+    return 'negative';
+}
+
+function getRsiBarClass(rsi) {
+    if (rsi == null) return 'mid';
+    if (rsi >= 70) return 'high';
+    if (rsi >= 30) return 'mid';
+    return 'low';
+}
+
+function formatDatePills(dates, type) {
+    if (!dates || dates.length === 0) return '';
+    const sliced = dates.slice(0, 3);
+    let html = sliced.map(d => `<span class="date-pill ${type}">${formatShortDate(d)}</span>`).join('');
+    if (dates.length > 3) {
+        html += `<span class="date-pill ${type}">+${dates.length - 3}</span>`;
+    }
+    return html;
+}
+
+function formatShortDate(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+        return parts[1] + '/' + parts[2];
+    }
+    return dateStr;
 }
 
 async function loadStockData() {
@@ -882,86 +1239,151 @@ async function loadStockData() {
         document.getElementById('sector').textContent = data.sector || '--';
         document.getElementById('industry').textContent = data.industry || '--';
         
-        // Price
+        // Price in header
         if (data.current_price != null) {
             document.getElementById('currentPrice').textContent = '$' + formatNumber(data.current_price, 2);
             document.getElementById('currentPrice').classList.add('price-positive');
         }
         document.getElementById('range52Week').textContent = '52W: ' + (data.range_52_week || '--');
         
-        // Volspike & Gapper Highlights
-        const spikeCount = data.spike_day_count || 0;
-        const gapperCount = data.gapper_day_count || 0;
-
-        document.getElementById('spikeCount').textContent = spikeCount;
-        document.getElementById('gapperCount').textContent = gapperCount;
-
-        // Volume spike stats
-        if (data.avg_volume_spike != null) {
-            document.getElementById('avgVolumeSpike').textContent = formatNumber(data.avg_volume_spike, 1);
-        }
-
-        // Gapper stats
-        if (data.avg_return_gapper != null) {
-            document.getElementById('avgReturnGapper').textContent = formatNumber(data.avg_return_gapper * 100, 1);
-        }
-
-        // Volume spike dates
-        if (data.volume_spike_days && spikeCount > 0) {
-            try {
-                const dates = data.volume_spike_days.split(',');
-                if (dates.length > 0) {
-                    document.getElementById('volspikeDates').textContent = 'Dates: ' + dates.slice(0, 5).join(', ') + (dates.length > 5 ? '...' : '');
-                }
-            } catch (e) {
-                console.warn('Error parsing volume spike dates:', e);
-            }
-        }
-
-        // Gapper dates
-        if (data.gap_days && gapperCount > 0) {
-            try {
-                const dates = data.gap_days.split(',');
-                if (dates.length > 0) {
-                    document.getElementById('gapperDates').textContent = 'Dates: ' + dates.slice(0, 5).join(', ') + (dates.length > 5 ? '...' : '');
-                }
-            } catch (e) {
-                console.warn('Error parsing gapper dates:', e);
-            }
-        }
-
-        if (spikeCount === 0) {
-            document.getElementById('volspikeBadge').classList.add('inactive');
-        }
-        if (gapperCount === 0) {
-            document.getElementById('gapperBadge').classList.add('inactive');
+        // === Price & Market Section ===
+        document.getElementById('priceValue').textContent = data.current_price ? '$' + formatNumber(data.current_price, 2) : '--';
+        document.getElementById('marketCap').textContent = formatLargeNumber(data.market_cap);
+        document.getElementById('volume').textContent = formatVolume(data.volume);
+        document.getElementById('dollarVolume').textContent = data.dollar_volume ? formatLargeNumber(data.dollar_volume) : '--';
+        
+        // === Technical Section ===
+        const rsiValue = data.rsi_mktcap;
+        document.getElementById('rsiMktcap').textContent = rsiValue != null ? rsiValue : '--';
+        if (rsiValue != null) {
+            document.getElementById('rsiMktcap').className = 'data-value ' + getRsiClass(rsiValue);
+            const rsiBar = document.getElementById('rsiBar');
+            rsiBar.style.width = rsiValue + '%';
+            rsiBar.className = 'rsi-bar ' + getRsiBarClass(rsiValue);
         }
         
-        // Returns
+        const atr = data.atr20;
+        const atrEl = document.getElementById('atr20');
+        atrEl.textContent = atr != null ? formatNumber(atr, 1) + '%' : '--';
+        if (atr > 5) atrEl.classList.add('warn');
+        
+        const volVsAvg = data.vol_vs_10d_avg;
+        const volVsEl = document.getElementById('volVs10dAvg');
+        volVsEl.textContent = volVsAvg != null ? formatNumber(volVsAvg, 1) + 'x' : '--';
+        if (volVsAvg > 1.5) volVsEl.classList.add('highlight');
+        
+        // === Returns Section ===
         setReturnValue('dr1', data.dr_1);
         setReturnValue('dr5', data.dr_5);
         setReturnValue('dr20', data.dr_20);
         setReturnValue('dr60', data.dr_60);
+        setReturnValue('dr120', data.dr_120);
         
-        // Valuation & metrics
-        document.getElementById('marketCap').textContent = formatLargeNumber(data.market_cap);
-        document.getElementById('pe').textContent = data.pe != null ? formatNumber(data.pe, 1) : '--';
+        // === Valuation Section ===
+        document.getElementById('pe').textContent = data.pe != null ? formatNumber(data.pe, 0) : '--';
+        document.getElementById('fpe').textContent = data.fpe != null ? formatNumber(data.fpe, 0) : '--';
         document.getElementById('psTtm').textContent = data.ps_ttm != null ? formatNumber(data.ps_ttm, 1) : '--';
-        document.getElementById('fpe').textContent = data.fpe != null ? formatNumber(data.fpe, 1) : '--';
         document.getElementById('fps').textContent = data.fps != null ? formatNumber(data.fps, 1) : '--';
         
-        // Technical
-        document.getElementById('rsi').textContent = data.rsi != null ? data.rsi : '--';
-        document.getElementById('rsiMktcap').textContent = data.rsi_mktcap != null ? data.rsi_mktcap : '--';
-        document.getElementById('atr20').textContent = data.atr20 != null ? formatNumber(data.atr20, 1) + '%' : '--';
-        document.getElementById('volVs10dAvg').textContent = data.vol_vs_10d_avg != null ? formatNumber(data.vol_vs_10d_avg, 1) + 'x' : '--';
-        document.getElementById('volume').textContent = formatVolume(data.volume);
+        // === Revenue Growth Section ===
+        setGrowthValue('revGrowthTMinus1', data.rev_growth_t_minus_1);
+        setGrowthValue('revGrowthT', data.rev_growth_t);
+        setGrowthValue('revGrowthTPlus1', data.rev_growth_t_plus_1);
+        setGrowthValue('revGrowthTPlus2', data.rev_growth_t_plus_2);
+        setGrowthValue('avgRevGrowth', data.avg_rev_growth, true);
         
-        // Growth
+        // === EPS Growth Section ===
+        setGrowthValue('epsGrowthTMinus1', data.eps_growth_t_minus_1);
+        setGrowthValue('epsGrowthT', data.eps_growth_t);
+        setGrowthValue('epsGrowthTPlus1', data.eps_growth_t_plus_1);
+        setGrowthValue('epsGrowthTPlus2', data.eps_growth_t_plus_2);
+        setGrowthValue('avgEpsGrowth', data.avg_eps_growth);
         
-        // Short interest
-        document.getElementById('shortFloat').textContent = data.short_float != null ? formatNumber(data.short_float, 1) + '%' : '--';
+        // === Short Interest Section ===
+        const shortFloat = data.short_float;
+        const shortFloatEl = document.getElementById('shortFloat');
+        shortFloatEl.textContent = shortFloat != null ? formatNumber(shortFloat, 1) + '%' : '--';
+        if (shortFloat > 20) shortFloatEl.classList.add('highlight');
+        if (shortFloat != null) {
+            document.getElementById('shortBarFill').style.width = Math.min(shortFloat * 2, 100) + '%';
+        }
+        
         document.getElementById('shortRatio').textContent = data.short_ratio != null ? formatNumber(data.short_ratio, 1) : '--';
+        document.getElementById('shortInterest').textContent = data.short_interest != null ? formatLargeNumber(data.short_interest) : '--';
+        
+        const lowFloatEl = document.getElementById('lowFloat');
+        lowFloatEl.textContent = data.low_float ? '✓' : '--';
+        lowFloatEl.className = 'data-value ' + (data.low_float ? 'highlight' : 'muted');
+        
+        // === Info Section ===
+        document.getElementById('industryInfo').textContent = data.industry || '--';
+        document.getElementById('countryInfo').textContent = data.country || '--';
+        document.getElementById('ipoYear').textContent = data.ipo_date ? data.ipo_date.slice(0, 4) : '--';
+        document.getElementById('range52Info').textContent = data.range_52_week || '--';
+        
+        // === Volume Events Section ===
+        const spikeCount = data.spike_day_count || 0;
+        const gapperCount = data.gapper_day_count || 0;
+        
+        if (spikeCount > 0 || gapperCount > 0) {
+            document.getElementById('eventsSection').style.display = 'flex';
+            let eventsHtml = '';
+            
+            // Last Event
+            if (data.last_event_date) {
+                const eventType = data.last_event_type === 'volume_spike' ? 'spike' : 'gap';
+                const eventLabel = data.last_event_type === 'volume_spike' ? 'Spike' : 'Gap';
+                eventsHtml += `
+                    <div class="data-cell">
+                        <span class="data-label">Last Event</span>
+                        <span class="event-badge ${eventType}">${eventLabel} ${data.last_event_date.slice(5)}</span>
+                    </div>
+                `;
+            }
+            
+            // Volume Spikes
+            if (spikeCount > 0) {
+                const avgSpike = data.avg_volume_spike ? formatNumber(data.avg_volume_spike, 1) + 'x' : '--';
+                eventsHtml += `
+                    <div class="data-cell">
+                        <span class="data-label">Spikes</span>
+                        <span class="data-value highlight">${spikeCount} <span class="muted sm">(${avgSpike} avg)</span></span>
+                    </div>
+                `;
+                
+                if (data.volume_spike_days && data.volume_spike_days.length > 0) {
+                    eventsHtml += `
+                        <div class="data-cell">
+                            <span class="data-label">Spike Dates</span>
+                            <div class="date-pills">${formatDatePills(data.volume_spike_days, 'spike')}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Gappers
+            if (gapperCount > 0) {
+                const avgReturn = data.avg_return_gapper ? formatNumber(data.avg_return_gapper * 100, 1) + '%' : '--';
+                const returnClass = data.avg_return_gapper >= 0 ? 'positive' : 'negative';
+                eventsHtml += `
+                    <div class="data-cell">
+                        <span class="data-label">Gaps</span>
+                        <span class="data-value highlight">${gapperCount} <span class="${returnClass} sm">(${avgReturn} avg)</span></span>
+                    </div>
+                `;
+                
+                if (data.gap_days && data.gap_days.length > 0) {
+                    eventsHtml += `
+                        <div class="data-cell">
+                            <span class="data-label">Gap Dates</span>
+                            <div class="date-pills">${formatDatePills(data.gap_days, 'gap')}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            document.getElementById('eventsContent').innerHTML = eventsHtml;
+        }
         
         // Updated at
         if (data.updated_at) {
