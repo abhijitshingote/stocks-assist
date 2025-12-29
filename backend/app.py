@@ -1636,9 +1636,6 @@ def get_main_view_stocks(session, market_cap_category=None):
                 if category['max'] is not None:
                     query = query.filter(MainView.market_cap < category['max'])
 
-        # Order by market cap descending
-        query = query.order_by(desc(MainView.market_cap))
-
         stocks = query.all()
 
         results = []

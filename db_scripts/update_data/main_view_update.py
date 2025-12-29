@@ -229,7 +229,7 @@ def compute_and_load_main_view(connection):
         AND sm.avg_vol_10d > 50000       
         AND sm.dollar_volume > 10000000  
         AND sm.current_price > 3 )
-    ORDER BY sm.market_cap
+    ORDER BY sm.dr_20 DESC
     """
     
     result = connection.execute(text(main_view_query))

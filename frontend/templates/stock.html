@@ -25,6 +25,14 @@
     color: var(--text-secondary);
 }
 
+.company-market-cap {
+    color: var(--accent-yellow);
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-left: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
 .header-tags {
     display: flex;
     gap: 0.5rem;
@@ -1235,7 +1243,10 @@ async function loadStockData() {
         
         // Header
         document.getElementById('ticker').textContent = data.ticker;
-        document.getElementById('companyName').textContent = data.company_name || 'Unknown Company';
+        const companyNameEl = document.getElementById('companyName');
+        const companyName = data.company_name || 'Unknown Company';
+        const marketCapDisplay = data.market_cap ? ' <span class="company-market-cap">( $' + formatLargeNumber(data.market_cap).replace('$', '') + ' )</span>' : '';
+        companyNameEl.innerHTML = companyName + marketCapDisplay;
         document.getElementById('sector').textContent = data.sector || '--';
         document.getElementById('industry').textContent = data.industry || '--';
         
