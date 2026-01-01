@@ -1,31 +1,31 @@
 services:
-  db:
+  db-dev:
     image: postgres:14
     environment:
-      POSTGRES_DB: stocks_db
+      POSTGRES_DB: stocks_db_dev
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       TZ: America/New_York
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_dev:/var/lib/postgresql/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  backend:
+  backend-dev:
     build:
       context: .
       dockerfile: docker/backend.Dockerfile
     env_file:
       - .env
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/stocks_db
+      - DATABASE_URL=postgresql://postgres:postgres@db-dev:5432/stocks_db_dev
       - POLYGON_API_KEY=${POLYGON_API_KEY}
       - PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY}
       - FMP_API_KEY=${FMP_API_KEY}
@@ -35,9 +35,9 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - TZ=America/New_York
     ports:
-      - "5001:5000"
+      - "5003:5000"
     depends_on:
-      db:
+      db-dev:
         condition: service_healthy
     volumes:
       - .:/app
@@ -45,19 +45,19 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
-  frontend:
+  frontend-dev:
     build:
       context: .
       dockerfile: docker/frontend.Dockerfile
     env_file:
       - .env
     environment:
-      - BACKEND_URL=http://backend:5000
+      - BACKEND_URL=http://backend-dev:5000
       - TZ=America/New_York
     ports:
-      - "5002:5000"
+      - "5004:5000"
     depends_on:
-      - backend
+      - backend-dev
     volumes:
       - ./frontend:/app/frontend
       - ./user_data:/app/user_data
@@ -65,4 +65,4 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
 volumes:
-  postgres_data: 
+  postgres_data_dev:

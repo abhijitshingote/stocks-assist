@@ -24,7 +24,7 @@ Did R1D + vol spike,or gapper, has a high ATR, float, did it beat and raise, doe
 ```bash
 docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
 
-cat stocks_db_backup.dump |  docker-compose exec -T db pg_restore -U postgres -d stocks_db --clean --if-exists
+cat stocks_db_backup_2025-12-31.dump |  docker-compose exec -T db pg_restore -U postgres -d stocks_db --clean --if-exists
 ```
 #seed_profiles has IPO date, market cap
 #seed_ratios has pe ratio ttm, 
@@ -45,11 +45,12 @@ docker-compose exec backend bash -c "
   python db_scripts/update_data/stock_metrics_update.py && \
   python db_scripts/update_data/historical_rsi_update.py && \
   python db_scripts/update_data/rsi_indices_update.py && \
-  python db_scripts/update_data/volspike_gapper_update.py & \
+  python db_scripts/update_data/volspike_gapper_update.py && \
+  python db_scripts/update_data/main_view_update.py && \
   python db_scripts/initialize_data/seed_stock_notes.py && \
   python db_scripts/initialize_data/seed_stock_preferences.py
 " && \
-docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup.dump
+docker-compose exec -T db pg_dump -U postgres -Fc stocks_db > stocks_db_backup_$(date +%Y-%m-%d).dump
 ```
 
 ```bash - update

@@ -1,3 +1,5 @@
+stocks_db_backup_*.dump
+tmp
 # Python
 __pycache__/
 *.py[cod]
@@ -85,3 +87,4 @@ build/
  
 
 postgres_data
+.cursorrules
