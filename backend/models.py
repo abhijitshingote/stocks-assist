@@ -291,13 +291,19 @@ class StockMetrics(Base):
     # Volatility
     atr20 = Column(Float)  # 20-day Average True Range (as %)
     
-    # Valuation metrics
-    pe = Column(Float)      # P/E ratio (TTM)
-    ps_ttm = Column(Float)  # Price-to-Sales (TTM)
-    fpe = Column(Float)     # Forward P/E
-    fps = Column(Float)     # Forward Price-to-Sales
+    # P/E Ratio trajectory (by fiscal year, using analyst estimates)
+    pe_t_minus_1 = Column(Float)  # P/E for year t-1
+    pe_t = Column(Float)          # P/E for current year t
+    pe_t_plus_1 = Column(Float)   # P/E for year t+1
+    pe_t_plus_2 = Column(Float)   # P/E for year t+2
     
-    # Growth metrics (forward estimate vs TTM, in %)
+    # P/S Ratio trajectory (by fiscal year, using analyst estimates)
+    ps_t_minus_1 = Column(Float)  # P/S for year t-1
+    ps_t = Column(Float)          # P/S for current year t
+    ps_t_plus_1 = Column(Float)   # P/S for year t+1
+    ps_t_plus_2 = Column(Float)   # P/S for year t+2
+    
+    # Growth metrics (YoY from analyst estimates, in %)
 
     # YoY Revenue Growth by year (from analyst estimates)
     rev_growth_t_minus_1 = Column(Float)  # Revenue growth t-1 year
@@ -436,11 +442,17 @@ class MainView(Base):
     # Volatility
     atr20 = Column(Float)
     
-    # Valuation metrics
-    pe = Column(Float)
-    ps_ttm = Column(Float)
-    fpe = Column(Float)
-    fps = Column(Float)
+    # P/E Ratio trajectory (by fiscal year)
+    pe_t_minus_1 = Column(Float)
+    pe_t = Column(Float)
+    pe_t_plus_1 = Column(Float)
+    pe_t_plus_2 = Column(Float)
+    
+    # P/S Ratio trajectory (by fiscal year)
+    ps_t_minus_1 = Column(Float)
+    ps_t = Column(Float)
+    ps_t_plus_1 = Column(Float)
+    ps_t_plus_2 = Column(Float)
     
     # Growth metrics
     rev_growth_t_minus_1 = Column(Float)

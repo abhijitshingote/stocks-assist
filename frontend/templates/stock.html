@@ -118,7 +118,7 @@
 
 .data-section.growth-section {
     border-left-color: #ff79c6;
-    flex: 1.6;
+    flex: 1;
 }
 
 .data-section.short-section {
@@ -930,35 +930,8 @@
             </div>
         </div>
         
-        <!-- Row 2: Valuation, Revenue Growth, EPS Growth -->
+        <!-- Row 2: Revenue Growth, P/S Ratio -->
         <div class="section-group full-row">
-            <!-- Valuation Section -->
-            <div class="data-section valuation-section">
-                <div class="section-header">Valuation</div>
-                <div class="section-row">
-                    <div class="val-pair">
-                        <div class="val-item">
-                            <span class="data-label">P/E</span>
-                            <span class="data-value" id="pe">--</span>
-                        </div>
-                        <div class="val-item forward">
-                            <span class="data-label">Fwd</span>
-                            <span class="data-value" id="fpe">--</span>
-                        </div>
-                    </div>
-                    <div class="val-pair">
-                        <div class="val-item">
-                            <span class="data-label">P/S</span>
-                            <span class="data-value" id="psTtm">--</span>
-                        </div>
-                        <div class="val-item forward">
-                            <span class="data-label">Fwd</span>
-                            <span class="data-value" id="fps">--</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Revenue Growth Section -->
             <div class="data-section growth-section">
                 <div class="section-header">Revenue Growth</div>
@@ -970,6 +943,20 @@
                 </div>
             </div>
             
+            <!-- P/S Ratio Section -->
+            <div class="data-section valuation-section">
+                <div class="section-header">P/S Ratio</div>
+                <div class="growth-timeline">
+                    <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value" id="psTMinus1">--</span></div>
+                    <div class="growth-item current"><span class="data-label">T</span><span class="data-value" id="psT">--</span></div>
+                    <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value" id="psTPlus1">--</span></div>
+                    <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value" id="psTPlus2">--</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Row 3: EPS Growth, P/E Ratio -->
+        <div class="section-group full-row">
             <!-- EPS Growth Section -->
             <div class="data-section growth-section">
                 <div class="section-header">EPS Growth</div>
@@ -980,9 +967,20 @@
                     <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value" id="epsGrowthTPlus2">--</span></div>
                 </div>
             </div>
+            
+            <!-- P/E Ratio Section -->
+            <div class="data-section valuation-section">
+                <div class="section-header">P/E Ratio</div>
+                <div class="growth-timeline">
+                    <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value" id="peTMinus1">--</span></div>
+                    <div class="growth-item current"><span class="data-label">T</span><span class="data-value" id="peT">--</span></div>
+                    <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value" id="peTPlus1">--</span></div>
+                    <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value" id="peTPlus2">--</span></div>
+                </div>
+            </div>
         </div>
         
-        <!-- Row 3: Short Interest, Info -->
+        <!-- Row 4: Short Interest, Info -->
         <div class="section-group full-row">
             <!-- Short Interest Section -->
             <div class="data-section short-section">
@@ -1195,6 +1193,17 @@ function setGrowthValue(elementId, value, isHighlight = false) {
     }
 }
 
+function setValuationValue(elementId, value, decimals = 1) {
+    const el = document.getElementById(elementId);
+    if (value == null || value <= 0) {
+        el.textContent = '--';
+        el.className = 'data-value muted';
+    } else {
+        el.textContent = formatNumber(value, decimals);
+        el.className = 'data-value';
+    }
+}
+
 function getRsiClass(rsi) {
     if (rsi == null) return '';
     if (rsi >= 70) return 'positive';
@@ -1288,11 +1297,17 @@ async function loadStockData() {
         setReturnValue('dr60', data.dr_60);
         setReturnValue('dr120', data.dr_120);
         
-        // === Valuation Section ===
-        document.getElementById('pe').textContent = data.pe != null ? formatNumber(data.pe, 0) : '--';
-        document.getElementById('fpe').textContent = data.fpe != null ? formatNumber(data.fpe, 0) : '--';
-        document.getElementById('psTtm').textContent = data.ps_ttm != null ? formatNumber(data.ps_ttm, 1) : '--';
-        document.getElementById('fps').textContent = data.fps != null ? formatNumber(data.fps, 1) : '--';
+        // === P/E Ratio Section ===
+        setValuationValue('peTMinus1', data.pe_t_minus_1, 0);
+        setValuationValue('peT', data.pe_t, 0);
+        setValuationValue('peTPlus1', data.pe_t_plus_1, 0);
+        setValuationValue('peTPlus2', data.pe_t_plus_2, 0);
+        
+        // === P/S Ratio Section ===
+        setValuationValue('psTMinus1', data.ps_t_minus_1, 1);
+        setValuationValue('psT', data.ps_t, 1);
+        setValuationValue('psTPlus1', data.ps_t_plus_1, 1);
+        setValuationValue('psTPlus2', data.ps_t_plus_2, 1);
         
         // === Revenue Growth Section ===
         setGrowthValue('revGrowthTMinus1', data.rev_growth_t_minus_1);

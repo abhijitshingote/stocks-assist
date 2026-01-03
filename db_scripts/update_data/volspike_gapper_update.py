@@ -54,7 +54,6 @@ def compute_and_load_volspike_gapper(connection):
     
     Filters:
     - market_cap > 1B
-    - fps < 100
     - industry <> 'Biotechnology'
     - Must have at least one spike or gap event
     

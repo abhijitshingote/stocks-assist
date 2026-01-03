@@ -86,10 +86,14 @@ def compute_and_load_main_view(connection):
         dr_60,
         dr_120,
         atr20,
-        pe,
-        ps_ttm,
-        fpe,
-        fps,
+        pe_t_minus_1,
+        pe_t,
+        pe_t_plus_1,
+        pe_t_plus_2,
+        ps_t_minus_1,
+        ps_t,
+        ps_t_plus_1,
+        ps_t_plus_2,
         rev_growth_t_minus_1,
         rev_growth_t,
         rev_growth_t_plus_1,
@@ -137,10 +141,14 @@ def compute_and_load_main_view(connection):
             sm.dr_60,
             sm.dr_120,
             sm.atr20,
-            sm.pe,
-            sm.ps_ttm,
-            sm.fpe,
-            sm.fps,
+            sm.pe_t_minus_1,
+            sm.pe_t,
+            sm.pe_t_plus_1,
+            sm.pe_t_plus_2,
+            sm.ps_t_minus_1,
+            sm.ps_t,
+            sm.ps_t_plus_1,
+            sm.ps_t_plus_2,
             sm.rev_growth_t_minus_1,
             sm.rev_growth_t,
             sm.rev_growth_t_plus_1,
@@ -231,6 +239,7 @@ def compute_and_load_main_view(connection):
 
     ) AS tt
     WHERE tt.tags <> ''
+    order by dr_20 desc
     """
     
     result = connection.execute(text(main_view_query))

@@ -434,8 +434,8 @@
                 <th data-sort="dr_1" class="sorted">1D <span class="sort-icon">↓</span></th>
                 <th data-sort="dr_5">5D <span class="sort-icon">↕</span></th>
                 <th data-sort="dr_20">20D <span class="sort-icon">↕</span></th>
-                <th data-sort="fpe">FPE <span class="sort-icon">↕</span></th>
-                <th data-sort="fps">FPS <span class="sort-icon">↕</span></th>
+                <th data-sort="pe_t">P/E T <span class="sort-icon">↕</span></th>
+                <th data-sort="pe_t_plus_1">P/E T+1 <span class="sort-icon">↕</span></th>
                 <th data-sort="ipo_date">IPO <span class="sort-icon">↕</span></th>
                 <th data-sort="vol_vs_10d_avg">Vol10 <span class="sort-icon">↕</span></th>
                 <th data-sort="atr20">ATR <span class="sort-icon">↕</span></th>
@@ -575,8 +575,8 @@ function renderTable(data) {
             <td class="${getReturnClass(stock.dr_1)}">${formatReturn(stock.dr_1)}</td>
             <td class="${getReturnClass(stock.dr_5)}">${formatReturn(stock.dr_5)}</td>
             <td class="${getReturnClass(stock.dr_20)}">${formatReturn(stock.dr_20)}</td>
-            <td class="${getReturnClass(stock.fpe)}">${stock.fpe ? stock.fpe.toFixed(2) : '—'}</td>
-            <td class="${getReturnClass(stock.fps)}">${stock.fps ? stock.fps.toFixed(2) : '—'}</td>
+            <td>${stock.pe_t ? stock.pe_t.toFixed(1) : '—'}</td>
+            <td>${stock.pe_t_plus_1 ? stock.pe_t_plus_1.toFixed(1) : '—'}</td>
             <td>${stock.ipo_date || '—'}</td>
             <td class="${getReturnClass(stock.vol_vs_10d_avg)}">${stock.vol_vs_10d_avg ? stock.vol_vs_10d_avg.toFixed(2) : '—'}</td>
             <td class="${getReturnClass(stock.atr20)}">${stock.atr20 ? stock.atr20.toFixed(2) + '%' : '—'}</td>

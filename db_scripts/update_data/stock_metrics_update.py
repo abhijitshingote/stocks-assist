@@ -127,6 +127,33 @@ def compute_and_load_metrics(connection):
         CROSS JOIN params p
         GROUP BY rg.ticker, p.current_year
     ),
+    -- Valuation metrics by fiscal year (P/E and P/S trajectory)
+    yearly_estimates AS (
+        SELECT
+            a.ticker,
+            EXTRACT(YEAR FROM a.date)::int AS year,
+            a.eps_avg,
+            a.revenue_avg
+        FROM analyst_estimates a
+        WHERE a.eps_avg IS NOT NULL OR a.revenue_avg IS NOT NULL
+    ),
+    valuation_trajectory AS (
+        SELECT
+            ye.ticker,
+            -- EPS by year (for P/E calculation)
+            MAX(CASE WHEN ye.year = p.current_year - 1 THEN ye.eps_avg END) AS eps_t_minus_1,
+            MAX(CASE WHEN ye.year = p.current_year     THEN ye.eps_avg END) AS eps_t,
+            MAX(CASE WHEN ye.year = p.current_year + 1 THEN ye.eps_avg END) AS eps_t_plus_1,
+            MAX(CASE WHEN ye.year = p.current_year + 2 THEN ye.eps_avg END) AS eps_t_plus_2,
+            -- Revenue by year (for P/S calculation)
+            MAX(CASE WHEN ye.year = p.current_year - 1 THEN ye.revenue_avg END) AS rev_t_minus_1,
+            MAX(CASE WHEN ye.year = p.current_year     THEN ye.revenue_avg END) AS rev_t,
+            MAX(CASE WHEN ye.year = p.current_year + 1 THEN ye.revenue_avg END) AS rev_t_plus_1,
+            MAX(CASE WHEN ye.year = p.current_year + 2 THEN ye.revenue_avg END) AS rev_t_plus_2
+        FROM yearly_estimates ye
+        CROSS JOIN params p
+        GROUP BY ye.ticker, p.current_year
+    ),
     price_changes AS (
         SELECT 
             o_today.ticker,
@@ -205,36 +232,6 @@ def compute_and_load_metrics(connection):
         WHERE rn <= 20
         GROUP BY ticker
     ),
-    ttm_financials AS (
-        SELECT
-            ticker,
-            SUM(eps_actual) AS eps_ttm,
-            SUM(revenue_actual) AS revenue_ttm
-        FROM (
-            SELECT
-                e.*,
-                ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY date DESC) AS rn
-            FROM earnings e
-            CROSS JOIN latest_date ld
-            WHERE e.date <= ld.max_date
-              AND e.eps_actual IS NOT NULL
-              AND e.revenue_actual IS NOT NULL
-        ) sub
-        WHERE rn <= 4
-        GROUP BY ticker
-    ),
-    forward_estimates AS (
-        -- Forward = current year + 1 (e.g., if we're in 2025, pick FY2026 estimates)
-        SELECT DISTINCT ON (ticker)
-            eps_avg,
-            revenue_avg,
-            ticker
-        FROM analyst_estimates a
-        WHERE EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE) + 1
-          AND a.eps_avg IS NOT NULL
-          AND a.revenue_avg IS NOT NULL
-        ORDER BY ticker, a.date ASC
-    ),
     -- Compute stock returns
     stock_returns AS (
         SELECT
@@ -299,10 +296,14 @@ def compute_and_load_metrics(connection):
         dr_60,
         dr_120,
         atr20,
-        pe,
-        ps_ttm,
-        fpe,
-        fps,
+        pe_t_minus_1,
+        pe_t,
+        pe_t_plus_1,
+        pe_t_plus_2,
+        ps_t_minus_1,
+        ps_t,
+        ps_t_plus_1,
+        ps_t_plus_2,
         rev_growth_t_minus_1,
         rev_growth_t,
         rev_growth_t_plus_1,
@@ -339,10 +340,16 @@ def compute_and_load_metrics(connection):
         pc.dr_60,
         pc.dr_120,
         ROUND(atr20.atr20::numeric, 2) AS atr20,
-        ROUND((pc.current_close::numeric / NULLIF(tf.eps_ttm::numeric, 0)), 2) AS pe,
-        ROUND((t.market_cap::numeric / NULLIF(tf.revenue_ttm::numeric, 0)), 2) AS ps_ttm,
-        ROUND((pc.current_close::numeric / NULLIF(fe.eps_avg::numeric, 0)), 2) AS fpe,
-        ROUND((t.market_cap::numeric / NULLIF(fe.revenue_avg::numeric, 0)), 2) AS fps,
+        -- P/E trajectory (current price / EPS for each year)
+        ROUND((pc.current_close::numeric / NULLIF(vt.eps_t_minus_1::numeric, 0)), 2) AS pe_t_minus_1,
+        ROUND((pc.current_close::numeric / NULLIF(vt.eps_t::numeric, 0)), 2) AS pe_t,
+        ROUND((pc.current_close::numeric / NULLIF(vt.eps_t_plus_1::numeric, 0)), 2) AS pe_t_plus_1,
+        ROUND((pc.current_close::numeric / NULLIF(vt.eps_t_plus_2::numeric, 0)), 2) AS pe_t_plus_2,
+        -- P/S trajectory (market cap / revenue for each year)
+        ROUND((t.market_cap::numeric / NULLIF(vt.rev_t_minus_1::numeric, 0)), 2) AS ps_t_minus_1,
+        ROUND((t.market_cap::numeric / NULLIF(vt.rev_t::numeric, 0)), 2) AS ps_t,
+        ROUND((t.market_cap::numeric / NULLIF(vt.rev_t_plus_1::numeric, 0)), 2) AS ps_t_plus_1,
+        ROUND((t.market_cap::numeric / NULLIF(vt.rev_t_plus_2::numeric, 0)), 2) AS ps_t_plus_2,
         dg.rev_growth_t_minus_1,
         dg.rev_growth_t,
         dg.rev_growth_t_plus_1,
@@ -363,8 +370,7 @@ def compute_and_load_metrics(connection):
     LEFT JOIN price_changes pc ON t.ticker = pc.ticker
     LEFT JOIN volume_avg va ON t.ticker = va.ticker
     LEFT JOIN atr20 atr20 ON t.ticker = atr20.ticker
-    LEFT JOIN ttm_financials tf ON t.ticker = tf.ticker
-    LEFT JOIN forward_estimates fe ON t.ticker = fe.ticker
+    LEFT JOIN valuation_trajectory vt ON t.ticker = vt.ticker
     LEFT JOIN dynamic_growth dg ON t.ticker = dg.ticker
     LEFT JOIN (
         SELECT

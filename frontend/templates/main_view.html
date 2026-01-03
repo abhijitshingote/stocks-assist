@@ -300,7 +300,7 @@
 
 .data-section.growth-section {
     border-left-color: #ff79c6;
-    flex: 1.6;
+    flex: 1;
 }
 
 .data-section.short-section {
@@ -1094,35 +1094,8 @@ function renderCards(data) {
                     </div>
                 </div>
                 
-                <!-- Row 2: Valuation, Revenue Growth, EPS Growth -->
+                <!-- Row 2: Revenue Growth, P/S Ratio -->
                 <div class="section-group full-row">
-                    <!-- Valuation Section -->
-                    <div class="data-section valuation-section">
-                        <div class="section-header">Valuation</div>
-                        <div class="section-row">
-                            <div class="val-pair">
-                                <div class="val-item">
-                                    <span class="data-label">P/E</span>
-                                    <span class="data-value">${stock.pe ? stock.pe.toFixed(0) : '—'}</span>
-                                </div>
-                                <div class="val-item forward">
-                                    <span class="data-label">Fwd</span>
-                                    <span class="data-value">${stock.fpe ? stock.fpe.toFixed(0) : '—'}</span>
-                                </div>
-                            </div>
-                            <div class="val-pair">
-                                <div class="val-item">
-                                    <span class="data-label">P/S</span>
-                                    <span class="data-value">${stock.ps_ttm ? stock.ps_ttm.toFixed(1) : '—'}</span>
-                                </div>
-                                <div class="val-item forward">
-                                    <span class="data-label">Fwd</span>
-                                    <span class="data-value">${stock.fps ? stock.fps.toFixed(1) : '—'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Revenue Growth Section -->
                     <div class="data-section growth-section">
                         <div class="section-header">Revenue Growth</div>
@@ -1134,6 +1107,20 @@ function renderCards(data) {
                         </div>
                     </div>
                     
+                    <!-- P/S Ratio Section -->
+                    <div class="data-section valuation-section">
+                        <div class="section-header">P/S Ratio</div>
+                        <div class="growth-timeline">
+                            <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value">${formatValuation(stock.ps_t_minus_1, 1)}</span></div>
+                            <div class="growth-item current"><span class="data-label">T</span><span class="data-value">${formatValuation(stock.ps_t, 1)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value">${formatValuation(stock.ps_t_plus_1, 1)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value">${formatValuation(stock.ps_t_plus_2, 1)}</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 3: EPS Growth, P/E Ratio -->
+                <div class="section-group full-row">
                     <!-- EPS Growth Section -->
                     <div class="data-section growth-section">
                         <div class="section-header">EPS Growth</div>
@@ -1144,9 +1131,20 @@ function renderCards(data) {
                             <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value ${getReturnClass(stock.eps_growth_t_plus_2)}">${formatReturn(stock.eps_growth_t_plus_2)}</span></div>
                         </div>
                     </div>
+                    
+                    <!-- P/E Ratio Section -->
+                    <div class="data-section valuation-section">
+                        <div class="section-header">P/E Ratio</div>
+                        <div class="growth-timeline">
+                            <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value">${formatValuation(stock.pe_t_minus_1, 0)}</span></div>
+                            <div class="growth-item current"><span class="data-label">T</span><span class="data-value">${formatValuation(stock.pe_t, 0)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value">${formatValuation(stock.pe_t_plus_1, 0)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value">${formatValuation(stock.pe_t_plus_2, 0)}</span></div>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Row 3: Short Interest, Info -->
+                <!-- Row 4: Short Interest, Info -->
                 <div class="section-group full-row">
                     <!-- Short Interest Section -->
                     <div class="data-section short-section">
@@ -1295,6 +1293,11 @@ function formatReturn(value) {
     if (value == null) return '—';
     const sign = value >= 0 ? '+' : '';
     return sign + value.toFixed(0) + '%';
+}
+
+function formatValuation(value, decimals = 1) {
+    if (value == null || value <= 0) return '—';
+    return value.toFixed(decimals);
 }
 
 function formatMarketCap(value) {
