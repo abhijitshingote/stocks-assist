@@ -217,14 +217,14 @@ def compute_and_load_main_view(connection):
             OR sm.dr_60  > 50
             OR sm.dr_20  > 20
             OR sm.dr_5   > 10
-            OR (sm.avg_rev_growth > 25 AND sm.rev_growth_t_plus_2 > 15)
+            OR (sm.avg_rev_growth > 25 AND (sm.rev_growth_t_plus_2 > 15 OR sm.rev_growth_t_plus_2 IS NULL))
         ) 
         OR (svg.ticker IS NOT NULL 
             AND svg.last_event_date >= CURRENT_DATE - INTERVAL '60 days'
             AND (svg.spike_day_count > 0 OR svg.gapper_day_count > 0)))
         AND 
         ((sm.ticker IS NULL OR sm.market_cap > 1000000000)
-        AND (sm.ticker IS NULL OR sm.fps < 100)
+        AND (sm.ticker IS NULL OR (sm.fps is  null or sm.fps < 100))
         AND (sm.ticker IS NULL OR sm.industry <> 'Biotechnology')
         AND sm.avg_vol_10d > 50000       
         AND sm.dollar_volume > 10000000  

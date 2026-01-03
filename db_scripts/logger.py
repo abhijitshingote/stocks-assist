@@ -19,6 +19,7 @@ Usage:
 
 import logging
 import os
+import time
 from datetime import datetime
 import pytz
 from pathlib import Path
@@ -218,4 +219,99 @@ def format_duration(seconds):
     elif mins > 0:
         return f"{mins}m {secs}s"
     return f"{secs}s"
+
+
+def progress_bar(current, total, width=40, prefix="Progress:", suffix=""):
+    """
+    Create a progress bar string that can be printed inline.
+
+    Args:
+        current: Current progress value
+        total: Total value to reach
+        width: Width of the progress bar
+        prefix: Text before the progress bar
+        suffix: Text after the progress bar
+
+    Returns:
+        String representation of progress bar
+    """
+    if total == 0:
+        return f"{prefix} [{('█' * width)}] 100% {suffix}"
+
+    percentage = int((current / total) * 100)
+    filled_width = int(width * current / total)
+    bar = "█" * filled_width + "░" * (width - filled_width)
+
+    return f"{prefix} [{bar}] {percentage}% ({current}/{total}) {suffix}"
+
+
+class ProgressTracker:
+    """
+    Track progress and display updates with a progress bar.
+    Updates the display less frequently to avoid spam.
+    """
+
+    def __init__(self, total, logger, update_interval=50, prefix="Progress:"):
+        self.total = total
+        self.logger = logger
+        self.update_interval = update_interval
+        self.prefix = prefix
+        self.last_update = 0
+        self.start_time = time.time()
+
+    def update(self, current, suffix=""):
+        """Update progress display if enough items have been processed"""
+        if current - self.last_update >= self.update_interval or current == self.total:
+            elapsed = time.time() - self.start_time
+            rate = current / elapsed if elapsed > 0 else 0
+            eta = (self.total - current) / rate if rate > 0 else 0
+
+            eta_str = f" | ETA: {format_duration(eta)}" if eta > 0 else ""
+            progress_str = progress_bar(current, self.total, prefix=self.prefix, suffix=f"{suffix}{eta_str}")
+
+            # Use \r to overwrite the current line
+            print(f"\r{progress_str}", end="", flush=True)
+
+            self.last_update = current
+
+            # Log to file only occasionally (every 10 updates or at completion)
+            if current % (self.update_interval * 10) == 0 or current == self.total:
+                self.logger.info(progress_str)
+
+    def finish(self, suffix=""):
+        """Finalize the progress display"""
+        print()  # New line after progress bar
+        elapsed = time.time() - self.start_time
+        self.logger.info(f"Completed in {format_duration(elapsed)} {suffix}")
+
+
+def estimate_processing_time(script_name, item_count, processing_rate_per_minute=None):
+    """
+    Estimate processing time based on historical data or defaults.
+
+    Args:
+        script_name: Name of the script for rate lookup
+        item_count: Number of items to process
+        processing_rate_per_minute: Override rate (items per minute)
+
+    Returns:
+        Estimated time in minutes
+    """
+    # Historical processing rates (items per minute) based on observed data
+    rates = {
+        'seed_earnings_from_fmp': 45,  # ~45 tickers per minute based on logs
+        'seed_analyst_estimates_from_fmp': 50,  # ~50 tickers per minute
+        'seed_ohlc_from_fmp': 35,  # ~35 tickers per minute
+        'seed_profiles_from_fmp': 60,  # ~60 tickers per minute
+        'seed_ratios_from_fmp': 70,  # ~70 tickers per minute
+    }
+
+    rate = processing_rate_per_minute or rates.get(script_name, 30)  # Default 30 items/minute
+
+    estimated_minutes = item_count / rate
+
+    # Add some buffer for variability
+    estimated_minutes *= 1.2
+
+    return estimated_minutes
 

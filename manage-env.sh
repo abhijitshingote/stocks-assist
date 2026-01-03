@@ -105,35 +105,109 @@ case $ACTION in
         ;;
     init)
         echo "Initializing $ENV database..."
-        docker-compose -f $COMPOSE_FILE exec $BACKEND_SERVICE bash -c "
-          python db_scripts/initialize_data/initialize_db.py --reset && \
-          python db_scripts/initialize_data/seed_tickers_from_fmp.py && \
-          python db_scripts/initialize_data/seed_earnings_from_fmp.py && \
-          python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py && \
-          python db_scripts/initialize_data/seed_index_prices_fmp.py && \
-          python db_scripts/initialize_data/seed_index_constituents_fmp.py && \
-          python db_scripts/initialize_data/seed_ohlc_from_fmp.py && \
-          python db_scripts/initialize_data/seed_profiles_from_fmp.py && \
-          python db_scripts/initialize_data/seed_ratios_from_fmp.py && \
-          python db_scripts/update_data/stock_metrics_update.py && \
-          python db_scripts/update_data/historical_rsi_update.py && \
-          python db_scripts/update_data/rsi_indices_update.py && \
-          python db_scripts/update_data/volspike_gapper_update.py && \
-          python db_scripts/update_data/main_view_update.py && \
-          python db_scripts/initialize_data/seed_stock_notes.py && \
-          python db_scripts/initialize_data/seed_stock_preferences.py
-        "
+        echo ""
+        echo "Database initialization scripts:"
+        echo "=================================="
+        scripts=(
+            "initialize_db.py --reset:Reset database tables"
+            "seed_tickers_from_fmp.py:Seed tickers from FMP screener"
+            "seed_earnings_from_fmp.py:Seed earnings data"
+            "seed_analyst_estimates_from_fmp.py:Seed analyst estimates"
+            "seed_index_prices_fmp.py:Seed index/ETF prices"
+            "seed_index_constituents_fmp.py:Seed index constituents"
+            "seed_ohlc_from_fmp.py:Seed OHLC price history"
+            "seed_profiles_from_fmp.py:Seed company profiles"
+            "seed_ratios_from_fmp.py:Seed financial ratios"
+            "stock_metrics_update.py:Compute stock metrics"
+            "historical_rsi_update.py:Compute historical RSI"
+            "rsi_indices_update.py:Compute RSI for indices"
+            "volspike_gapper_update.py:Detect volume spikes/gappers"
+            "main_view_update.py:Update main screener view"
+            "seed_stock_notes.py:Seed user stock notes"
+            "seed_stock_preferences.py:Seed user stock preferences"
+        )
+
+        total_scripts=${#scripts[@]}
+        completed=0
+        start_time=$(date +%s)
+
+        for script_info in "${scripts[@]}"; do
+            script=$(echo "$script_info" | cut -d':' -f1)
+            description=$(echo "$script_info" | cut -d':' -f2-)
+            completed=$((completed + 1))
+
+            echo ""
+            echo "[$completed/$total_scripts] Running: $description"
+            echo "Script: $script"
+            echo "Started at: $(date '+%H:%M:%S')"
+            script_start=$(date +%s)
+
+            if docker-compose -f $COMPOSE_FILE exec $BACKEND_SERVICE python "db_scripts/initialize_data/$script" 2>&1; then
+                script_end=$(date +%s)
+                duration=$((script_end - script_start))
+                echo "✅ Completed in ${duration}s"
+            else
+                echo "❌ Failed: $script"
+                echo "Database initialization stopped due to error."
+                exit 1
+            fi
+        done
+
+        end_time=$(date +%s)
+        total_duration=$((end_time - start_time))
+        echo ""
+        echo "=================================="
+        echo "✅ Database initialization completed!"
+        echo "Total time: ${total_duration}s"
+        echo "=================================="
         ;;
     update)
         echo "Updating $ENV database..."
-        docker-compose -f $COMPOSE_FILE exec $BACKEND_SERVICE bash -c "
-          python db_scripts/update_data/daily_price_update.py && \
-          python db_scripts/update_data/daily_indices_update.py && \
-          python db_scripts/update_data/stock_metrics_update.py && \
-          python db_scripts/update_data/historical_rsi_update.py && \
-          python db_scripts/update_data/rsi_indices_update.py && \
-          python db_scripts/update_data/volspike_gapper_update.py
-        "
+        echo ""
+        echo "Database update scripts:"
+        echo "========================"
+        scripts=(
+            "daily_price_update.py:Update daily stock prices"
+            "daily_indices_update.py:Update daily index prices"
+            "stock_metrics_update.py:Update stock metrics"
+            "historical_rsi_update.py:Update historical RSI"
+            "rsi_indices_update.py:Update RSI for indices"
+            "volspike_gapper_update.py:Update volume spikes/gappers"
+        )
+
+        total_scripts=${#scripts[@]}
+        completed=0
+        start_time=$(date +%s)
+
+        for script_info in "${scripts[@]}"; do
+            script=$(echo "$script_info" | cut -d':' -f1)
+            description=$(echo "$script_info" | cut -d':' -f2-)
+            completed=$((completed + 1))
+
+            echo ""
+            echo "[$completed/$total_scripts] Running: $description"
+            echo "Script: $script"
+            echo "Started at: $(date '+%H:%M:%S')"
+            script_start=$(date +%s)
+
+            if docker-compose -f $COMPOSE_FILE exec $BACKEND_SERVICE python "db_scripts/update_data/$script" 2>&1; then
+                script_end=$(date +%s)
+                duration=$((script_end - script_start))
+                echo "✅ Completed in ${duration}s"
+            else
+                echo "❌ Failed: $script"
+                echo "Database update stopped due to error."
+                exit 1
+            fi
+        done
+
+        end_time=$(date +%s)
+        total_duration=$((end_time - start_time))
+        echo ""
+        echo "========================"
+        echo "✅ Database update completed!"
+        echo "Total time: ${total_duration}s"
+        echo "========================"
         ;;
     status)
         echo "Status of $ENV environment:"

@@ -18,7 +18,7 @@ import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, AnalystEstimates, SyncMetadata
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, estimate_processing_time
 
 # Script name for logging
 SCRIPT_NAME = 'seed_analyst_estimates_from_fmp'
@@ -117,17 +117,24 @@ def main():
     try:
         tickers = get_tickers(session, args.limit)
         logger.info(f"Tickers: {len(tickers)}")
-        
+
+        estimated_time = estimate_processing_time(SCRIPT_NAME, len(tickers))
+        logger.info(f"Estimated time: ~{estimated_time:.1f} minutes")
+
+        # Initialize progress tracker
+        progress = ProgressTracker(len(tickers), logger, update_interval=50, prefix="Estimates:")
+
         total = 0
         for i, ticker in enumerate(tickers):
             estimates = fetch_analyst_estimates(api_key, ticker)
             total += upsert_estimates(session, ticker, estimates)
             if (i + 1) % 50 == 0:
                 session.commit()
-                logger.info(f"  Progress: {i+1}/{len(tickers)}")
+            progress.update(i + 1, f"| Records: {total}")
             time.sleep(args.delay)
-        
+
         session.commit()
+        progress.finish(f"- Total records: {total}")
         stmt = insert(SyncMetadata).values(key='analyst_estimates_sync', last_synced_at=datetime.utcnow())
         stmt = stmt.on_conflict_do_update(index_elements=['key'], set_={'last_synced_at': datetime.utcnow()})
         session.execute(stmt)

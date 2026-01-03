@@ -21,7 +21,7 @@ import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, OHLC, SyncMetadata
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, estimate_processing_time
 
 # Script name for logging
 SCRIPT_NAME = 'seed_ohlc_from_fmp'
@@ -144,18 +144,21 @@ def get_last_ohlc_date(session, ticker):
 
 def process_ohlc(session, api_key, tickers, days_back=365, delay=0.15, commit_every=10):
     """Fetch and process OHLC for tickers"""
-    
+
     records_inserted = 0
     tickers_processed = 0
     tickers_failed = 0
-    
+
+    # Initialize progress tracker
+    progress = ProgressTracker(len(tickers), logger, update_interval=commit_every, prefix="OHLC:")
+
     to_date = datetime.now().date()
     default_from_date = to_date - timedelta(days=days_back)
-    
+
     for i, ticker in enumerate(tickers):
         # Check last date we have for this ticker
         last_date = get_last_ohlc_date(session, ticker)
-        
+
         if last_date:
             # Fetch only new data (from day after last date)
             from_date = last_date + timedelta(days=1)
@@ -165,22 +168,22 @@ def process_ohlc(session, api_key, tickers, days_back=365, delay=0.15, commit_ev
                 continue
         else:
             from_date = default_from_date
-        
+
         # Fetch prices
         prices = fetch_historical_prices(api_key, ticker, from_date, to_date)
-        
+
         if not prices:
             tickers_failed += 1
             time.sleep(delay)
             continue
-        
+
         # Build OHLC records
         ohlc_batch = []
         for p in prices:
             date = parse_date(p.get('date'))
             if not date:
                 continue
-            
+
             ohlc_batch.append({
                 'ticker': ticker,
                 'date': date,
@@ -190,17 +193,17 @@ def process_ohlc(session, api_key, tickers, days_back=365, delay=0.15, commit_ev
                 'close': parse_float(p.get('close')),
                 'volume': parse_int(p.get('volume'))
             })
-        
+
         # Upsert
         count = upsert_ohlc_batch(session, ohlc_batch)
         records_inserted += count
         tickers_processed += 1
-        
-        if (i + 1) % commit_every == 0:
-            logger.info(f"  Progress: {i+1}/{len(tickers)} tickers, {records_inserted} records")
-        
+
+        progress.update(i + 1, f"| Records: {records_inserted}")
+
         time.sleep(delay)
-    
+
+    progress.finish(f"- Total records: {records_inserted}")
     return tickers_processed, records_inserted, tickers_failed
 
 
@@ -245,8 +248,8 @@ def main():
         logger.info(f"Tickers to process: {len(tickers)}")
         logger.info(f"Days of history: {args.days}")
         logger.info(f"API delay: {args.delay}s")
-        
-        estimated_time = len(tickers) * args.delay / 60
+
+        estimated_time = estimate_processing_time(SCRIPT_NAME, len(tickers))
         logger.info(f"Estimated time: ~{estimated_time:.1f} minutes")
         logger.info("-" * 60)
         
