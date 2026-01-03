@@ -9,8 +9,8 @@ This script computes various metrics including:
 - ATR20 (Average True Range as %)
 - P/E, P/S (TTM and Forward)
 - RSI (Relative Strength percentile vs SPY)
-- YoY Revenue Growth (t-1, t, t+1, t+2, avg of t+1 and t+2)
-- YoY EPS Growth (t-1, t, t+1, t+2, avg of t+1 and t+2)
+- YoY Revenue Growth (t-1, t, t+1, t+2)
+- YoY EPS Growth (t-1, t, t+1, t+2)
 """
 
 import os
@@ -74,12 +74,7 @@ def compute_and_load_metrics(connection):
     ),
     -- Parameters for YoY growth calculations
     params AS (
-        SELECT
-            EXTRACT(YEAR FROM CURRENT_DATE)::int AS current_year,
-            ARRAY[
-                EXTRACT(YEAR FROM CURRENT_DATE)::int + 1,
-                EXTRACT(YEAR FROM CURRENT_DATE)::int + 2
-            ] AS avg_growth_years
+        SELECT EXTRACT(YEAR FROM CURRENT_DATE)::int AS current_year
     ),
     -- YoY Revenue Growth from analyst estimates
     revenue_growth_yoy AS (
@@ -122,23 +117,15 @@ def compute_and_load_metrics(connection):
             MAX(CASE WHEN rg.year = p.current_year     THEN rg.yoy_revenue_growth_pct END) AS rev_growth_t,
             MAX(CASE WHEN rg.year = p.current_year + 1 THEN rg.yoy_revenue_growth_pct END) AS rev_growth_t_plus_1,
             MAX(CASE WHEN rg.year = p.current_year + 2 THEN rg.yoy_revenue_growth_pct END) AS rev_growth_t_plus_2,
-            ROUND(
-                AVG(rg.yoy_revenue_growth_pct) FILTER (WHERE rg.year = ANY (p.avg_growth_years))::numeric,
-                2
-            ) AS avg_rev_growth,
             -- EPS Growth
             MAX(CASE WHEN eg.year = p.current_year - 1 THEN eg.yoy_eps_growth_pct END) AS eps_growth_t_minus_1,
             MAX(CASE WHEN eg.year = p.current_year     THEN eg.yoy_eps_growth_pct END) AS eps_growth_t,
             MAX(CASE WHEN eg.year = p.current_year + 1 THEN eg.yoy_eps_growth_pct END) AS eps_growth_t_plus_1,
-            MAX(CASE WHEN eg.year = p.current_year + 2 THEN eg.yoy_eps_growth_pct END) AS eps_growth_t_plus_2,
-            ROUND(
-                AVG(eg.yoy_eps_growth_pct) FILTER (WHERE eg.year = ANY (p.avg_growth_years))::numeric,
-                2
-            ) AS avg_eps_growth
+            MAX(CASE WHEN eg.year = p.current_year + 2 THEN eg.yoy_eps_growth_pct END) AS eps_growth_t_plus_2
         FROM revenue_growth_yoy rg
         LEFT JOIN eps_growth_yoy eg ON rg.ticker = eg.ticker AND rg.year = eg.year
         CROSS JOIN params p
-        GROUP BY rg.ticker, p.current_year, p.avg_growth_years
+        GROUP BY rg.ticker, p.current_year
     ),
     price_changes AS (
         SELECT 
@@ -320,12 +307,10 @@ def compute_and_load_metrics(connection):
         rev_growth_t,
         rev_growth_t_plus_1,
         rev_growth_t_plus_2,
-        avg_rev_growth,
         eps_growth_t_minus_1,
         eps_growth_t,
         eps_growth_t_plus_1,
         eps_growth_t_plus_2,
-        avg_eps_growth,
         rsi,
         rsi_mktcap,
         short_float,
@@ -362,12 +347,10 @@ def compute_and_load_metrics(connection):
         dg.rev_growth_t,
         dg.rev_growth_t_plus_1,
         dg.rev_growth_t_plus_2,
-        dg.avg_rev_growth,
         dg.eps_growth_t_minus_1,
         dg.eps_growth_t,
         dg.eps_growth_t_plus_1,
         dg.eps_growth_t_plus_2,
-        dg.avg_eps_growth,
         rs.rsi,
         rs_mc.rsi_mktcap,
         NULL::FLOAT as short_float,

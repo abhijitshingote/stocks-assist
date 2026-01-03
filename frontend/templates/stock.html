@@ -967,7 +967,6 @@
                     <div class="growth-item current"><span class="data-label">T</span><span class="data-value" id="revGrowthT">--</span></div>
                     <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value" id="revGrowthTPlus1">--</span></div>
                     <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value" id="revGrowthTPlus2">--</span></div>
-                    <div class="growth-avg"><div class="data-cell"><span class="data-label">Avg</span><span class="data-value" id="avgRevGrowth">--</span></div></div>
                 </div>
             </div>
             
@@ -979,7 +978,6 @@
                     <div class="growth-item current"><span class="data-label">T</span><span class="data-value" id="epsGrowthT">--</span></div>
                     <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value" id="epsGrowthTPlus1">--</span></div>
                     <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value" id="epsGrowthTPlus2">--</span></div>
-                    <div class="growth-avg"><div class="data-cell"><span class="data-label">Avg</span><span class="data-value" id="avgEpsGrowth">--</span></div></div>
                 </div>
             </div>
         </div>
@@ -1301,14 +1299,12 @@ async function loadStockData() {
         setGrowthValue('revGrowthT', data.rev_growth_t);
         setGrowthValue('revGrowthTPlus1', data.rev_growth_t_plus_1);
         setGrowthValue('revGrowthTPlus2', data.rev_growth_t_plus_2);
-        setGrowthValue('avgRevGrowth', data.avg_rev_growth, true);
         
         // === EPS Growth Section ===
         setGrowthValue('epsGrowthTMinus1', data.eps_growth_t_minus_1);
         setGrowthValue('epsGrowthT', data.eps_growth_t);
         setGrowthValue('epsGrowthTPlus1', data.eps_growth_t_plus_1);
         setGrowthValue('epsGrowthTPlus2', data.eps_growth_t_plus_2);
-        setGrowthValue('avgEpsGrowth', data.avg_eps_growth);
         
         // === Short Interest Section ===
         const shortFloat = data.short_float;

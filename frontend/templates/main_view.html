@@ -1131,7 +1131,6 @@ function renderCards(data) {
                             <div class="growth-item current"><span class="data-label">T</span><span class="data-value ${getReturnClass(stock.rev_growth_t)}">${formatReturn(stock.rev_growth_t)}</span></div>
                             <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value ${getReturnClass(stock.rev_growth_t_plus_1)}">${formatReturn(stock.rev_growth_t_plus_1)}</span></div>
                             <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value ${getReturnClass(stock.rev_growth_t_plus_2)}">${formatReturn(stock.rev_growth_t_plus_2)}</span></div>
-                            <div class="growth-avg"><div class="data-cell"><span class="data-label">Avg</span><span class="data-value ${getReturnClass(stock.avg_rev_growth)} ${stock.avg_rev_growth > 25 ? 'highlight' : ''}">${formatReturn(stock.avg_rev_growth)}</span></div></div>
                         </div>
                     </div>
                     
@@ -1143,7 +1142,6 @@ function renderCards(data) {
                             <div class="growth-item current"><span class="data-label">T</span><span class="data-value ${getReturnClass(stock.eps_growth_t)}">${formatReturn(stock.eps_growth_t)}</span></div>
                             <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value ${getReturnClass(stock.eps_growth_t_plus_1)}">${formatReturn(stock.eps_growth_t_plus_1)}</span></div>
                             <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value ${getReturnClass(stock.eps_growth_t_plus_2)}">${formatReturn(stock.eps_growth_t_plus_2)}</span></div>
-                            <div class="growth-avg"><div class="data-cell"><span class="data-label">Avg</span><span class="data-value ${getReturnClass(stock.avg_eps_growth)}">${formatReturn(stock.avg_eps_growth)}</span></div></div>
                         </div>
                     </div>
                 </div>
