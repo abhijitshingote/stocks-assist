@@ -2055,5 +2055,189 @@ def list_stock_preferences(preference_type):
         s.close()
 
 
+# ============================================================================
+# Stock Detail Data Endpoints (for stock detail page)
+# ============================================================================
+
+@app.route('/api/earnings/<ticker>')
+def get_earnings_data(ticker):
+    """Get full earnings history for a specific ticker (last 12 quarters)."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        
+        earnings_data = s.query(Earnings).filter(
+            Earnings.ticker == ticker
+        ).order_by(desc(Earnings.date)).limit(12).all()
+        
+        results = []
+        for row in earnings_data:
+            # Calculate surprise if both actual and estimated exist
+            eps_surprise = None
+            eps_surprise_pct = None
+            rev_surprise = None
+            rev_surprise_pct = None
+            
+            if row.eps_actual is not None and row.eps_estimated is not None and row.eps_estimated != 0:
+                eps_surprise = row.eps_actual - row.eps_estimated
+                eps_surprise_pct = (eps_surprise / abs(row.eps_estimated)) * 100
+            
+            if row.revenue_actual is not None and row.revenue_estimated is not None and row.revenue_estimated != 0:
+                rev_surprise = row.revenue_actual - row.revenue_estimated
+                rev_surprise_pct = (rev_surprise / abs(row.revenue_estimated)) * 100
+            
+            results.append({
+                'date': row.date.strftime('%Y-%m-%d') if row.date else None,
+                'eps_actual': round(row.eps_actual, 2) if row.eps_actual is not None else None,
+                'eps_estimated': round(row.eps_estimated, 2) if row.eps_estimated is not None else None,
+                'eps_surprise': round(eps_surprise, 2) if eps_surprise is not None else None,
+                'eps_surprise_pct': round(eps_surprise_pct, 1) if eps_surprise_pct is not None else None,
+                'revenue_actual': row.revenue_actual,
+                'revenue_estimated': row.revenue_estimated,
+                'rev_surprise': rev_surprise,
+                'rev_surprise_pct': round(rev_surprise_pct, 1) if rev_surprise_pct is not None else None
+            })
+        
+        return jsonify(results)
+    
+    except Exception as e:
+        logger.error(f"Error getting earnings data for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/analyst-estimates/<ticker>')
+def get_analyst_estimates_data(ticker):
+    """Get analyst estimates for a specific ticker (future years)."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        
+        # Get estimates - typically annual estimates for upcoming years
+        estimates_data = s.query(AnalystEstimates).filter(
+            AnalystEstimates.ticker == ticker
+        ).order_by(AnalystEstimates.date.asc()).all()
+        
+        results = []
+        for row in estimates_data:
+            results.append({
+                'date': row.date.strftime('%Y-%m-%d') if row.date else None,
+                'revenue_avg': row.revenue_avg,
+                'revenue_low': row.revenue_low,
+                'revenue_high': row.revenue_high,
+                'ebitda_avg': row.ebitda_avg,
+                'ebit_avg': row.ebit_avg,
+                'net_income_avg': row.net_income_avg,
+                'eps_avg': round(row.eps_avg, 2) if row.eps_avg is not None else None,
+                'eps_low': round(row.eps_low, 2) if row.eps_low is not None else None,
+                'eps_high': round(row.eps_high, 2) if row.eps_high is not None else None,
+                'num_analysts_revenue': row.num_analysts_revenue,
+                'num_analysts_eps': row.num_analysts_eps
+            })
+        
+        return jsonify(results)
+    
+    except Exception as e:
+        logger.error(f"Error getting analyst estimates for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/ratios-ttm/<ticker>')
+def get_ratios_ttm_data(ticker):
+    """Get TTM ratios for a specific ticker."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        
+        ratios = s.query(RatiosTTM).filter(RatiosTTM.ticker == ticker).first()
+        
+        if not ratios:
+            return jsonify({'error': 'Ratios not found for ticker'}), 404
+        
+        result = {
+            # Profitability
+            'gross_profit_margin': round(ratios.gross_profit_margin * 100, 1) if ratios.gross_profit_margin is not None else None,
+            'operating_profit_margin': round(ratios.operating_profit_margin * 100, 1) if ratios.operating_profit_margin is not None else None,
+            'net_profit_margin': round(ratios.net_profit_margin * 100, 1) if ratios.net_profit_margin is not None else None,
+            # Valuation
+            'pe_ratio': round(ratios.pe_ratio, 1) if ratios.pe_ratio is not None else None,
+            'peg_ratio': round(ratios.peg_ratio, 2) if ratios.peg_ratio is not None else None,
+            'price_to_book': round(ratios.price_to_book, 2) if ratios.price_to_book is not None else None,
+            'price_to_sales': round(ratios.price_to_sales, 2) if ratios.price_to_sales is not None else None,
+            'price_to_free_cash_flow': round(ratios.price_to_free_cash_flow, 1) if ratios.price_to_free_cash_flow is not None else None,
+            # Liquidity
+            'current_ratio': round(ratios.current_ratio, 2) if ratios.current_ratio is not None else None,
+            'quick_ratio': round(ratios.quick_ratio, 2) if ratios.quick_ratio is not None else None,
+            'cash_ratio': round(ratios.cash_ratio, 2) if ratios.cash_ratio is not None else None,
+            # Leverage
+            'debt_to_equity': round(ratios.debt_to_equity, 2) if ratios.debt_to_equity is not None else None,
+            'debt_to_assets': round(ratios.debt_to_assets, 2) if ratios.debt_to_assets is not None else None,
+            # Efficiency
+            'asset_turnover': round(ratios.asset_turnover, 2) if ratios.asset_turnover is not None else None,
+            'inventory_turnover': round(ratios.inventory_turnover, 2) if ratios.inventory_turnover is not None else None,
+            'receivables_turnover': round(ratios.receivables_turnover, 2) if ratios.receivables_turnover is not None else None,
+            # Returns
+            'return_on_assets': round(ratios.return_on_assets * 100, 1) if ratios.return_on_assets is not None else None,
+            'return_on_equity': round(ratios.return_on_equity * 100, 1) if ratios.return_on_equity is not None else None,
+            'updated_at': ratios.updated_at.strftime('%Y-%m-%d %H:%M:%S') if ratios.updated_at else None
+        }
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        logger.error(f"Error getting ratios TTM for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/company-profile/<ticker>')
+def get_company_profile_data(ticker):
+    """Get company profile for a specific ticker."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        
+        profile = s.query(CompanyProfile).filter(CompanyProfile.ticker == ticker).first()
+        
+        if not profile:
+            return jsonify({'error': 'Profile not found for ticker'}), 404
+        
+        result = {
+            'ticker': profile.ticker,
+            'cik': profile.cik,
+            'isin': profile.isin,
+            'cusip': profile.cusip,
+            'description': profile.description,
+            'ceo': profile.ceo,
+            'website': profile.website,
+            'phone': profile.phone,
+            'address': profile.address,
+            'city': profile.city,
+            'state': profile.state,
+            'zip': profile.zip,
+            'full_time_employees': profile.full_time_employees,
+            'ipo_date': profile.ipo_date.strftime('%Y-%m-%d') if profile.ipo_date else None,
+            'image': profile.image,
+            'currency': profile.currency,
+            'vol_avg': profile.vol_avg,
+            'last_div': round(profile.last_div, 2) if profile.last_div is not None else None,
+            'range_52_week': profile.range_52_week,
+            'is_adr': profile.is_adr,
+            'updated_at': profile.updated_at.strftime('%Y-%m-%d %H:%M:%S') if profile.updated_at else None
+        }
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        logger.error(f"Error getting company profile for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

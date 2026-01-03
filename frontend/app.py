@@ -389,5 +389,45 @@ def api_list_stock_preferences(preference_type):
     return jsonify(data), status_code
 
 
+# ============================================================
+# Stock Detail Data Endpoints
+# ============================================================
+
+@app.route('/api/frontend/earnings/<ticker>')
+def api_earnings(ticker):
+    """Proxy endpoint for full earnings history from backend"""
+    data, status_code = make_backend_request(f'/api/earnings/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch earnings data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/analyst-estimates/<ticker>')
+def api_analyst_estimates(ticker):
+    """Proxy endpoint for analyst estimates from backend"""
+    data, status_code = make_backend_request(f'/api/analyst-estimates/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch analyst estimates'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/ratios-ttm/<ticker>')
+def api_ratios_ttm(ticker):
+    """Proxy endpoint for TTM ratios from backend"""
+    data, status_code = make_backend_request(f'/api/ratios-ttm/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch ratios data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/company-profile/<ticker>')
+def api_company_profile(ticker):
+    """Proxy endpoint for company profile from backend"""
+    data, status_code = make_backend_request(f'/api/company-profile/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch company profile'}), status_code
+    return jsonify(data), status_code
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -173,44 +173,37 @@ def compute_and_load_main_view(connection):
             svg.last_event_type,
 
             -- Combined tags
-            ARRAY_TO_STRING(
-                ARRAY(
-                    SELECT DISTINCT tag
-                    FROM UNNEST(ARRAY[
-                        -- High sales growth
-                        CASE WHEN
-                            (COALESCE(sm.rev_growth_t::numeric, sm.rev_growth_t_plus_1::numeric) +
-                             COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t::numeric)) / 2 > 25
-                             OR
-                            (COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t_plus_2::numeric) +
-                             COALESCE(sm.rev_growth_t_plus_2::numeric, sm.rev_growth_t_plus_1::numeric)) / 2 > 25
-                        THEN 'high_sales_growth' END,
+ARRAY_TO_STRING(
+    ARRAY(
+        SELECT DISTINCT tag
+        FROM UNNEST(ARRAY[
+            -- High sales growth
+            CASE WHEN
+                (COALESCE(sm.rev_growth_t::numeric, sm.rev_growth_t_plus_1::numeric) +
+                 COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t::numeric)) / 2 > 25
+                 OR
+                (COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t_plus_2::numeric) +
+                 COALESCE(sm.rev_growth_t_plus_2::numeric, sm.rev_growth_t_plus_1::numeric)) / 2 > 25
+            THEN 'high_sales_growth' END,
 
-                        -- Daily return tags
-                        CASE WHEN sm.dr_5   > 10  THEN 'dr_5 > 10'   END,
-                        CASE WHEN sm.dr_20  > 20  THEN 'dr_20 > 20'  END,
-                        CASE WHEN sm.dr_60  > 50  THEN 'dr_60 > 50'  END,
-                        CASE WHEN sm.dr_120 > 100 THEN 'dr_120 > 100' END,
+            -- Daily return tags
+            CASE WHEN sm.dr_5   > 10  THEN 'dr_5 > 10'   END,
+            CASE WHEN sm.dr_20  > 20  THEN 'dr_20 > 20'  END,
+            CASE WHEN sm.dr_60  > 50  THEN 'dr_60 > 50'  END,
+            CASE WHEN sm.dr_120 > 100 THEN 'dr_120 > 100' END,
 
-                        -- Combined recent event tags (last 60 days)
-                        CASE 
-                            WHEN svg.last_event_date >= CURRENT_DATE - INTERVAL '60 days' THEN
-                                CONCAT(
-                                    CASE WHEN svg.spike_day_count > 0 THEN 'volume_spike' ELSE '' END,
-                                    CASE WHEN svg.gapper_day_count > 0 THEN
-                                         CASE WHEN svg.spike_day_count > 0 THEN ', ' ELSE '' END || 'gapper'
-                                         ELSE '' END,
-                                    CASE WHEN svg.last_event_type IS NOT NULL THEN
-                                         CASE WHEN svg.spike_day_count > 0 OR svg.gapper_day_count > 0 THEN ', ' ELSE '' END ||
-                                         svg.last_event_type || ' (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')'
-                                         ELSE '' END
-                                )
-                        END
-                    ]) AS tag
-                    WHERE tag IS NOT NULL
-                ),
-                ', '
-            ) AS tags,
+            -- Recent spike/gapper tags with date
+            CASE WHEN svg.spike_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '60 days'
+                 THEN 'volume_spike (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')'
+            END,
+            CASE WHEN svg.gapper_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '60 days'
+                 THEN 'gapper (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')'
+            END
+        ]) AS tag
+        WHERE tag IS NOT NULL
+    ),
+    ', '
+) AS tags,
 
             CURRENT_TIMESTAMP AS updated_at
 
