@@ -8,13 +8,21 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__, 
+app = Flask(__name__,
     template_folder='templates',
     static_folder='static'
 )
 
 # Backend API base URL
 BACKEND_URL = os.getenv('BACKEND_URL', 'http://localhost:5001')
+
+# Determine if running in dev environment
+IS_DEV = 'backend-dev' in BACKEND_URL
+
+@app.context_processor
+def inject_global_vars():
+    """Inject global variables into all templates"""
+    return {'is_dev': IS_DEV}
 
 
 def make_backend_request(endpoint, method='GET', json_data=None):
@@ -426,6 +434,15 @@ def api_company_profile(ticker):
     data, status_code = make_backend_request(f'/api/company-profile/{ticker}')
     if data is None:
         return jsonify({'error': 'Failed to fetch company profile'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/latest-date')
+def api_latest_date():
+    """Proxy endpoint for latest OHLC date from backend"""
+    data, status_code = make_backend_request('/api/latest_date')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch latest date'}), status_code
     return jsonify(data), status_code
 
 

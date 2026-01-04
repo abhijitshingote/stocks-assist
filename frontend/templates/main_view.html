@@ -209,6 +209,11 @@
     font-family: 'JetBrains Mono', monospace;
 }
 
+/* Tags Row */
+.tags-row {
+    margin-bottom: 0.25rem;
+}
+
 .tags-container {
     display: flex;
     gap: 0.15rem;
@@ -527,6 +532,18 @@
     font-weight: 500;
     background: rgba(88, 166, 255, 0.15);
     color: var(--accent-blue);
+    white-space: nowrap;
+}
+
+/* Industry Badge */
+.industry-badge {
+    display: inline-block;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: rgba(163, 113, 247, 0.15);
+    color: var(--accent-purple);
     white-space: nowrap;
 }
 
@@ -1031,6 +1048,9 @@ function renderCards(data) {
                 </div>
                 <span class="company-name">${stock.company_name || '—'}${stock.market_cap ? ' <span class="company-market-cap">( $' + formatMarketCap(stock.market_cap) + ' )</span>' : ''}</span>
                 <span class="sector-badge">${stock.sector || '—'}</span>
+                <span class="industry-badge">${stock.industry || '—'}</span>
+            </div>
+            <div class="tags-row">
                 <div class="tags-container">${renderTags(stock.tags)}</div>
             </div>
             <div class="data-sections">

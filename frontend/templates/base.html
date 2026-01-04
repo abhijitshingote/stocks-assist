@@ -66,6 +66,31 @@
             font-weight: 400;
         }
 
+        .dev-indicator {
+            color: var(--text-muted);
+            font-weight: 300;
+            font-size: 0.8em;
+        }
+
+        .logo-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: #4a5568;
+            letter-spacing: 0.5px;
+            margin-top: 0.15rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .data-date.loaded {
+            opacity: 1;
+        }
+
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -152,7 +177,10 @@
 <body>
     <nav>
         <div class="container">
-            <a href="/" class="logo">stocks<span>_assist</span></a>
+            <div class="logo-group">
+                <a href="/" class="logo">stocks<span>_assist</span>{% if is_dev %} <span class="dev-indicator">(dev)</span>{% endif %}</a>
+                <span class="data-date" id="data-date">data thru <span id="latest-date"></span></span>
+            </div>
             <div class="nav-links">
                 <a href="/">Home</a>
                 <a href="/main-view">Main View</a>
@@ -174,6 +202,23 @@
     </main>
 
     {% block extra_scripts %}{% endblock %}
+
+    <script>
+        // Fetch and display latest data date
+        (function() {
+            fetch('/api/frontend/latest-date')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.latest_date) {
+                        const d = new Date(data.latest_date + 'T00:00:00');
+                        const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        document.getElementById('latest-date').textContent = formatted;
+                        document.getElementById('data-date').classList.add('loaded');
+                    }
+                })
+                .catch(() => {});
+        })();
+    </script>
 </body>
 </html>
 

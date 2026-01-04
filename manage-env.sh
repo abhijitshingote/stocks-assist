@@ -109,22 +109,22 @@ case $ACTION in
         echo "Database initialization scripts:"
         echo "=================================="
         scripts=(
-            "initialize_db.py --reset:Reset database tables"
-            "seed_tickers_from_fmp.py:Seed tickers from FMP screener"
-            "seed_earnings_from_fmp.py:Seed earnings data"
-            "seed_analyst_estimates_from_fmp.py:Seed analyst estimates"
-            "seed_index_prices_fmp.py:Seed index/ETF prices"
-            "seed_index_constituents_fmp.py:Seed index constituents"
-            "seed_ohlc_from_fmp.py:Seed OHLC price history"
-            "seed_profiles_from_fmp.py:Seed company profiles"
-            "seed_ratios_from_fmp.py:Seed financial ratios"
-            "stock_metrics_update.py:Compute stock metrics"
-            "historical_rsi_update.py:Compute historical RSI"
-            "rsi_indices_update.py:Compute RSI for indices"
-            "volspike_gapper_update.py:Detect volume spikes/gappers"
-            "main_view_update.py:Update main screener view"
-            "seed_stock_notes.py:Seed user stock notes"
-            "seed_stock_preferences.py:Seed user stock preferences"
+            "db_scripts/initialize_data/initialize_db.py --reset:Reset database tables"
+            "db_scripts/initialize_data/seed_tickers_from_fmp.py:Seed tickers from FMP screener"
+            "db_scripts/initialize_data/seed_earnings_from_fmp.py:Seed earnings data"
+            "db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py:Seed analyst estimates"
+            "db_scripts/initialize_data/seed_index_prices_fmp.py:Seed index/ETF prices"
+            "db_scripts/initialize_data/seed_index_constituents_fmp.py:Seed index constituents"
+            "db_scripts/initialize_data/seed_ohlc_from_fmp.py:Seed OHLC price history"
+            "db_scripts/initialize_data/seed_profiles_from_fmp.py:Seed company profiles"
+            "db_scripts/initialize_data/seed_ratios_from_fmp.py:Seed financial ratios"
+            "db_scripts/update_data/stock_metrics_update.py:Compute stock metrics"
+            "db_scripts/update_data/historical_rsi_update.py:Compute historical RSI"
+            "db_scripts/update_data/rsi_indices_update.py:Compute RSI for indices"
+            "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
+            "db_scripts/update_data/main_view_update.py:Update main screener view"
+            "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
+            "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
         )
 
         total_scripts=${#scripts[@]}
@@ -142,7 +142,7 @@ case $ACTION in
             echo "Started at: $(date '+%H:%M:%S')"
             script_start=$(date +%s)
 
-            if docker-compose -f $COMPOSE_FILE exec $BACKEND_SERVICE python "db_scripts/initialize_data/$script" 2>&1; then
+            if docker-compose -f $COMPOSE_FILE exec $BACKEND_SERVICE python $script 2>&1; then
                 script_end=$(date +%s)
                 duration=$((script_end - script_start))
                 echo "✅ Completed in ${duration}s"
@@ -167,12 +167,12 @@ case $ACTION in
         echo "Database update scripts:"
         echo "========================"
         scripts=(
-            "daily_price_update.py:Update daily stock prices"
-            "daily_indices_update.py:Update daily index prices"
-            "stock_metrics_update.py:Update stock metrics"
-            "historical_rsi_update.py:Update historical RSI"
-            "rsi_indices_update.py:Update RSI for indices"
-            "volspike_gapper_update.py:Update volume spikes/gappers"
+            "db_scripts/update_data/daily_price_update.py:Update daily stock prices"
+            "db_scripts/update_data/daily_indices_update.py:Update daily index prices"
+            "db_scripts/update_data/stock_metrics_update.py:Update stock metrics"
+            "db_scripts/update_data/historical_rsi_update.py:Update historical RSI"
+            "db_scripts/update_data/rsi_indices_update.py:Update RSI for indices"
+            "db_scripts/update_data/volspike_gapper_update.py:Update volume spikes/gappers"
         )
 
         total_scripts=${#scripts[@]}
@@ -190,7 +190,7 @@ case $ACTION in
             echo "Started at: $(date '+%H:%M:%S')"
             script_start=$(date +%s)
 
-            if docker-compose -f $COMPOSE_FILE exec $BACKEND_SERVICE python "db_scripts/update_data/$script" 2>&1; then
+            if docker-compose -f $COMPOSE_FILE exec $BACKEND_SERVICE python $script 2>&1; then
                 script_end=$(date +%s)
                 duration=$((script_end - script_start))
                 echo "✅ Completed in ${duration}s"
