@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper, MainView, StockNotes, StockPreference
+    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat
 )
 import os
 import json
@@ -174,6 +174,11 @@ def get_stock_metrics_data(session, ticker):
         StockVolspikeGapper.ticker == ticker
     ).first()
     
+    # Get shares float data
+    shares_float = session.query(SharesFloat).filter(
+        SharesFloat.ticker == ticker
+    ).first()
+    
     # Parse volspike/gapper date strings back to arrays
     spike_dates = [d for d in (volspike_gapper.volume_spike_days or '').split(',') if d.strip()] if volspike_gapper else []
     gap_dates = [d for d in (volspike_gapper.gap_days or '').split(',') if d.strip()] if volspike_gapper else []
@@ -224,6 +229,10 @@ def get_stock_metrics_data(session, ticker):
         'short_ratio': metrics.short_ratio,
         'short_interest': metrics.short_interest,
         'low_float': metrics.low_float,
+        # Float/Liquidity data
+        'float_shares': shares_float.float_shares if shares_float else None,
+        'outstanding_shares': shares_float.outstanding_shares if shares_float else None,
+        'free_float': round(shares_float.free_float, 2) if shares_float and shares_float.free_float else None,
         'updated_at': metrics.updated_at.strftime('%Y-%m-%d %H:%M:%S') if metrics.updated_at else None,
         # Volspike/Gapper data
         'spike_day_count': volspike_gapper.spike_day_count if volspike_gapper else 0,
@@ -1700,6 +1709,10 @@ def get_main_view_stocks(session, market_cap_category=None):
                 'short_ratio': round(stock.short_ratio, 2) if stock.short_ratio else None,
                 'short_interest': round(stock.short_interest, 2) if stock.short_interest else None,
                 'low_float': stock.low_float,
+                # Float/Liquidity data
+                'float_shares': stock.float_shares,
+                'outstanding_shares': stock.outstanding_shares,
+                'free_float': round(stock.free_float, 2) if stock.free_float else None,
                 'spike_day_count': stock.spike_day_count or 0,
                 'avg_volume_spike': round(stock.avg_volume_spike, 2) if stock.avg_volume_spike else None,
                 'volume_spike_days': spike_dates,

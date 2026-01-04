@@ -36,6 +36,7 @@ def initialize_database(reset=False):
     15. main_view - Combined screener view with metrics, volspike/gapper, and tags
     16. stock_notes - User notes for stocks
     17. stock_preferences - User favorite/dislike status for stocks
+    18. shares_float - Company share float and liquidity data
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
@@ -54,6 +55,7 @@ def initialize_database(reset=False):
             connection.execute(text("DROP TABLE IF EXISTS main_view CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_preferences CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS shares_float CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_volspike_gapper CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS rsi_indices CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS historical_rsi CASCADE;"))
@@ -301,6 +303,9 @@ def initialize_database(reset=False):
                 short_ratio FLOAT,
                 short_interest FLOAT,
                 low_float BOOLEAN,
+                float_shares BIGINT,
+                outstanding_shares BIGINT,
+                free_float FLOAT,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
@@ -397,6 +402,9 @@ def initialize_database(reset=False):
                 short_ratio FLOAT,
                 short_interest FLOAT,
                 low_float BOOLEAN,
+                float_shares BIGINT,
+                outstanding_shares BIGINT,
+                free_float FLOAT,
                 spike_day_count INTEGER,
                 avg_volume_spike FLOAT,
                 volume_spike_days TEXT,
@@ -426,6 +434,19 @@ def initialize_database(reset=False):
             {table_clause} stock_preferences (
                 ticker VARCHAR(20) PRIMARY KEY REFERENCES tickers(ticker),
                 preference VARCHAR(20),
+                created_at TIMESTAMP DEFAULT NOW(),
+                updated_at TIMESTAMP DEFAULT NOW()
+            )
+        """))
+
+        # 18. shares_float - Company share float and liquidity data
+        connection.execute(text(f"""
+            {table_clause} shares_float (
+                ticker VARCHAR(20) PRIMARY KEY REFERENCES tickers(ticker),
+                float_shares BIGINT,
+                outstanding_shares BIGINT,
+                free_float FLOAT,
+                date DATE,
                 created_at TIMESTAMP DEFAULT NOW(),
                 updated_at TIMESTAMP DEFAULT NOW()
             )
@@ -499,6 +520,7 @@ def initialize_database(reset=False):
         logger.info("  - main_view (combined screener view with tags)")
         logger.info("  - stock_notes (user notes for stocks)")
         logger.info("  - stock_preferences (user favorite/dislike status for stocks)")
+        logger.info("  - shares_float (company share float and liquidity data)")
         
         flush_logger(SCRIPT_NAME)
 

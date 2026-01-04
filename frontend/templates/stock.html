@@ -1224,24 +1224,32 @@
         
         <!-- Row 4: Short Interest, Info -->
         <div class="section-group full-row">
-            <!-- Short Interest Section -->
+            <!-- Float & Short Interest Section -->
             <div class="data-section short-section">
-                <div class="section-header">Short Interest</div>
+                <div class="section-header">Float & Short Interest</div>
                 <div class="section-row">
                     <div class="data-cell">
-                        <span class="data-label">Float%</span>
+                        <span class="data-label">Float</span>
+                        <span class="data-value" id="floatShares">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">O/S</span>
+                        <span class="data-value" id="outstandingShares">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">Free%</span>
+                        <span class="data-value" id="freeFloat">--</span>
+                    </div>
+                    <div class="data-cell">
+                        <span class="data-label">Short%</span>
                         <div class="short-bar">
                             <span class="data-value" id="shortFloat">--</span>
                             <div class="short-bar-container"><div class="short-bar-fill" id="shortBarFill" style="width:0%"></div></div>
                         </div>
                     </div>
                     <div class="data-cell">
-                        <span class="data-label">Ratio</span>
+                        <span class="data-label">S.Ratio</span>
                         <span class="data-value" id="shortRatio">--</span>
-                    </div>
-                    <div class="data-cell">
-                        <span class="data-label">Interest</span>
-                        <span class="data-value sm" id="shortInterest">--</span>
                     </div>
                     <div class="data-cell">
                         <span class="data-label">LowFloat</span>
@@ -1606,7 +1614,20 @@ async function loadStockData() {
         setGrowthValue('epsGrowthTPlus1', data.eps_growth_t_plus_1);
         setGrowthValue('epsGrowthTPlus2', data.eps_growth_t_plus_2);
         
-        // === Short Interest Section ===
+        // === Float & Short Interest Section ===
+        // Float data
+        document.getElementById('floatShares').textContent = data.float_shares != null ? formatVolume(data.float_shares) : '--';
+        document.getElementById('outstandingShares').textContent = data.outstanding_shares != null ? formatVolume(data.outstanding_shares) : '--';
+        
+        const freeFloatEl = document.getElementById('freeFloat');
+        if (data.free_float != null) {
+            freeFloatEl.textContent = formatNumber(data.free_float, 1) + '%';
+            if (data.free_float < 20) freeFloatEl.classList.add('highlight');
+        } else {
+            freeFloatEl.textContent = '--';
+        }
+        
+        // Short Interest data
         const shortFloat = data.short_float;
         const shortFloatEl = document.getElementById('shortFloat');
         shortFloatEl.textContent = shortFloat != null ? formatNumber(shortFloat, 1) + '%' : '--';
@@ -1616,7 +1637,6 @@ async function loadStockData() {
         }
         
         document.getElementById('shortRatio').textContent = data.short_ratio != null ? formatNumber(data.short_ratio, 1) : '--';
-        document.getElementById('shortInterest').textContent = data.short_interest != null ? formatLargeNumber(data.short_interest) : '--';
         
         const lowFloatEl = document.getElementById('lowFloat');
         lowFloatEl.textContent = data.low_float ? '✓' : '--';

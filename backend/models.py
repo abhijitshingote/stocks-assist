@@ -327,6 +327,11 @@ class StockMetrics(Base):
     short_interest = Column(Float)
     low_float = Column(Boolean)
     
+    # Float/Liquidity data (from shares_float table)
+    float_shares = Column(BigInteger)         # Number of shares available for trading
+    outstanding_shares = Column(BigInteger)   # Total shares outstanding
+    free_float = Column(Float)                # Percentage of shares available for trading
+    
     updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
@@ -474,6 +479,11 @@ class MainView(Base):
     short_interest = Column(Float)
     low_float = Column(Boolean)
     
+    # Float/Liquidity data (from shares_float table)
+    float_shares = Column(BigInteger)         # Number of shares available for trading
+    outstanding_shares = Column(BigInteger)   # Total shares outstanding
+    free_float = Column(Float)                # Percentage of shares available for trading
+    
     # From stock_volspike_gapper
     spike_day_count = Column(Integer)
     avg_volume_spike = Column(Float)
@@ -521,6 +531,30 @@ class StockPreference(Base):
     
     # Preference status: 'favorite', 'dislike', or None (neutral)
     preference = Column(String(20))
+    
+    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 17. SharesFloat (from /stable/shares-float)
+# Source: https://financialmodelingprep.com/stable/shares-float
+# ------------------------------------------------------------
+class SharesFloat(Base):
+    __tablename__ = "shares_float"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    
+    # Float data
+    float_shares = Column(BigInteger)         # Number of shares available for trading
+    outstanding_shares = Column(BigInteger)   # Total shares outstanding
+    free_float = Column(Float)                # Percentage of shares available for trading
+    
+    # Data timestamp from API
+    date = Column(Date)
     
     created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
     updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
