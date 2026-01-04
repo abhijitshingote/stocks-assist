@@ -118,6 +118,7 @@ case $ACTION in
             "db_scripts/initialize_data/seed_ohlc_from_fmp.py:Seed OHLC price history"
             "db_scripts/initialize_data/seed_profiles_from_fmp.py:Seed company profiles"
             "db_scripts/initialize_data/seed_ratios_from_fmp.py:Seed financial ratios"
+            "db_scripts/initialize_data/seed_shares_float_from_fmp.py:Seed shares float data"
             "db_scripts/update_data/stock_metrics_update.py:Compute stock metrics"
             "db_scripts/update_data/historical_rsi_update.py:Compute historical RSI"
             "db_scripts/update_data/rsi_indices_update.py:Compute RSI for indices"

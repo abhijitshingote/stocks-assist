@@ -318,6 +318,9 @@ def compute_and_load_metrics(connection):
         short_ratio,
         short_interest,
         low_float,
+        float_shares,
+        outstanding_shares,
+        free_float,
         updated_at
     )
     SELECT 
@@ -364,6 +367,9 @@ def compute_and_load_metrics(connection):
         NULL::FLOAT as short_ratio,
         NULL::FLOAT as short_interest,
         NULL::BOOLEAN as low_float,
+        sf.float_shares,
+        sf.outstanding_shares,
+        sf.free_float,
         CURRENT_TIMESTAMP as updated_at
     FROM tickers t
     LEFT JOIN company_profiles cp ON t.ticker = cp.ticker
@@ -372,6 +378,7 @@ def compute_and_load_metrics(connection):
     LEFT JOIN atr20 atr20 ON t.ticker = atr20.ticker
     LEFT JOIN valuation_trajectory vt ON t.ticker = vt.ticker
     LEFT JOIN dynamic_growth dg ON t.ticker = dg.ticker
+    LEFT JOIN shares_float sf ON t.ticker = sf.ticker
     LEFT JOIN (
         SELECT
             ticker,

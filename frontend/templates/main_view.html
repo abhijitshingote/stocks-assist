@@ -167,6 +167,22 @@
     border-color: var(--accent-purple);
 }
 
+/* Serial Number */
+.serial-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.15rem 0.3rem;
+    min-width: 1.8rem;
+    text-align: center;
+    line-height: 1;
+    opacity: 0.7;
+}
+
 /* Card Header Row */
 .card-header {
     display: flex;
@@ -545,6 +561,32 @@
     background: rgba(163, 113, 247, 0.15);
     color: var(--accent-purple);
     white-space: nowrap;
+}
+
+/* Low Float Badge - Prominent */
+.low-float-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    background: linear-gradient(135deg, rgba(248, 81, 73, 0.3) 0%, rgba(255, 121, 198, 0.3) 100%);
+    border: 1px solid rgba(248, 81, 73, 0.6);
+    color: #ff6b6b;
+    animation: lowFloatPulse 2s ease-in-out infinite;
+    text-shadow: 0 0 8px rgba(248, 81, 73, 0.5);
+}
+
+@keyframes lowFloatPulse {
+    0%, 100% { box-shadow: 0 0 4px rgba(248, 81, 73, 0.4); }
+    50% { box-shadow: 0 0 12px rgba(248, 81, 73, 0.7); }
+}
+
+.low-float-badge .icon {
+    font-size: 0.9rem;
 }
 
 /* RSI Bar */
@@ -1010,7 +1052,7 @@ function loadData(marketCap) {
                 showCards();
                 document.getElementById('totalStocks').textContent = data.length;
                 document.getElementById('showingStocks').textContent = data.length;
-                renderCards(data);
+                renderCards(data, currentFilter === 'all' ? null : currentData);
                 
                 // Load notes and preferences for all displayed stocks
                 const tickers = data.map(stock => stock.ticker);
@@ -1025,11 +1067,16 @@ function loadData(marketCap) {
         });
 }
 
-function renderCards(data) {
+function renderCards(data, originalData = null) {
     const container = document.getElementById('stockCards');
-    container.innerHTML = data.map(stock => `
+    container.innerHTML = data.map((stock, index) => {
+        // Calculate serial number - use original data for consistent numbering when filtered
+        const serialNumber = originalData ? originalData.findIndex(s => s.ticker === stock.ticker) + 1 : index + 1;
+
+        return `
         <div class="stock-card" data-ticker="${stock.ticker}">
             <div class="card-header">
+                <span class="serial-number">${serialNumber}</span>
                 <a href="/stock/${stock.ticker}" class="ticker-link">${stock.ticker}</a>
                 <div class="preference-controls">
                     <button class="pref-btn favorite" data-ticker="${stock.ticker}" title="Add to favorites" onclick="togglePreference('${stock.ticker}', 'favorite')">⭐</button>
@@ -1047,6 +1094,7 @@ function renderCards(data) {
                     </div>
                 </div>
                 <span class="company-name">${stock.company_name || '—'}${stock.market_cap ? ' <span class="company-market-cap">( $' + formatMarketCap(stock.market_cap) + ' )</span>' : ''}</span>
+                ${isLowFloat(stock.float_shares) ? '<span class="low-float-badge"><span class="icon">❄️</span>LOW FLOAT ' + formatVolume(stock.float_shares) + '</span>' : ''}
                 <span class="sector-badge">${stock.sector || '—'}</span>
                 <span class="industry-badge">${stock.industry || '—'}</span>
             </div>
@@ -1164,30 +1212,34 @@ function renderCards(data) {
                     </div>
                 </div>
                 
-                <!-- Row 4: Short Interest, Info -->
+                <!-- Row 4: Float & Short Interest, Info -->
                 <div class="section-group full-row">
-                    <!-- Short Interest Section -->
+                    <!-- Float & Short Interest Section -->
                     <div class="data-section short-section">
-                        <div class="section-header">Short Interest</div>
+                        <div class="section-header">Float & Short</div>
                         <div class="section-row">
                             <div class="data-cell">
-                                <span class="data-label">Float%</span>
+                                <span class="data-label">Float</span>
+                                <span class="data-value ${isLowFloat(stock.float_shares) ? 'highlight' : ''}">${stock.float_shares ? formatVolume(stock.float_shares) : '—'}</span>
+                            </div>
+                            <div class="data-cell">
+                                <span class="data-label">O/S</span>
+                                <span class="data-value">${stock.outstanding_shares ? formatVolume(stock.outstanding_shares) : '—'}</span>
+                            </div>
+                            <div class="data-cell">
+                                <span class="data-label">Free%</span>
+                                <span class="data-value ${stock.free_float && stock.free_float < 20 ? 'highlight' : ''}">${stock.free_float ? stock.free_float.toFixed(1) + '%' : '—'}</span>
+                            </div>
+                            <div class="data-cell">
+                                <span class="data-label">Short%</span>
                                 <div class="short-bar">
                                     <span class="data-value ${stock.short_float > 20 ? 'highlight' : ''}">${stock.short_float ? stock.short_float.toFixed(1) + '%' : '—'}</span>
                                     ${stock.short_float ? `<div class="short-bar-container"><div class="short-bar-fill" style="width:${Math.min(stock.short_float * 2, 100)}%"></div></div>` : ''}
                                 </div>
                             </div>
                             <div class="data-cell">
-                                <span class="data-label">Ratio</span>
+                                <span class="data-label">S.Ratio</span>
                                 <span class="data-value">${stock.short_ratio ? stock.short_ratio.toFixed(1) : '—'}</span>
-                            </div>
-                            <div class="data-cell">
-                                <span class="data-label">Interest</span>
-                                <span class="data-value sm">${stock.short_interest ? formatMarketCap(stock.short_interest) : '—'}</span>
-                            </div>
-                            <div class="data-cell">
-                                <span class="data-label">LowFloat</span>
-                                <span class="data-value ${stock.low_float ? 'highlight' : 'muted'}">${stock.low_float ? '✓' : '—'}</span>
                             </div>
                         </div>
                     </div>
@@ -1254,7 +1306,8 @@ function renderCards(data) {
                 ` : ''}
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function renderTags(tagsStr) {
@@ -1334,6 +1387,11 @@ function formatVolume(value) {
     if (value >= 1e6) return (value / 1e6).toFixed(1) + 'M';
     if (value >= 1e3) return (value / 1e3).toFixed(0) + 'K';
     return value.toLocaleString();
+}
+
+function isLowFloat(floatShares) {
+    // Low float = less than 20 million shares
+    return floatShares != null && floatShares < 20000000;
 }
 
 function showLoading() {
