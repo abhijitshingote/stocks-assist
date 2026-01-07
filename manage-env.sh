@@ -174,6 +174,7 @@ case $ACTION in
             "db_scripts/update_data/historical_rsi_update.py:Update historical RSI"
             "db_scripts/update_data/rsi_indices_update.py:Update RSI for indices"
             "db_scripts/update_data/volspike_gapper_update.py:Update volume spikes/gappers"
+            "db_scripts/update_data/main_view_update.py:Update main screener view"
         )
 
         total_scripts=${#scripts[@]}
