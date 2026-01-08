@@ -73,9 +73,7 @@ WITH params AS (
         365  AS gap_lookback_days
 ),
 
-/* -----------------------------------------------------
-   Rank all trading days per ticker
------------------------------------------------------ */
+-- Materialized ranked OHLC with prior close and 20-day avg volume
 ranked_ohlc AS (
     SELECT
         o.ticker,
@@ -83,164 +81,101 @@ ranked_ohlc AS (
         o.close,
         o.low,
         o.volume,
-        ROW_NUMBER() OVER (
-            PARTITION BY o.ticker
-            ORDER BY o.date
-        ) AS rn
+        ROW_NUMBER() OVER (PARTITION BY o.ticker ORDER BY o.date) AS rn,
+        LAG(o.close, 1) OVER (PARTITION BY o.ticker ORDER BY o.date) AS prev_close,
+        AVG(o.volume) OVER (PARTITION BY o.ticker ORDER BY o.date ROWS BETWEEN 20 PRECEDING AND 1 PRECEDING) AS avg_volume_20d
     FROM ohlc o
 ),
 
-/* -----------------------------------------------------
-   Candidate volume spike days
------------------------------------------------------ */
-candidate_spike_days AS (
-    SELECT r.*
-    FROM ranked_ohlc r
-    CROSS JOIN params p
-    WHERE r.date >= (
-        SELECT MAX(date) FROM ohlc
-    ) - (p.vol_spike_lookback_days || ' days')::INTERVAL
+latest_date AS (
+    SELECT MAX(date) AS max_date FROM ohlc
 ),
 
-volume_baseline AS (
-    SELECT
-        cd.ticker,
-        cd.date AS spike_date,
-        cd.rn,
-        cd.volume AS day_volume,
-        cd.close  AS day_close,
-        pc.close  AS prev_close,
-        AVG(prev.volume) AS avg_volume_20d
-    FROM candidate_spike_days cd
-    JOIN ranked_ohlc prev
-      ON prev.ticker = cd.ticker
-     AND prev.rn BETWEEN cd.rn - 20 AND cd.rn - 1
-    JOIN ranked_ohlc pc
-      ON pc.ticker = cd.ticker
-     AND pc.rn = cd.rn - 1
-    GROUP BY
-        cd.ticker,
-        cd.date,
-        cd.rn,
-        cd.volume,
-        cd.close,
-        pc.close
-    HAVING COUNT(*) = 20
-),
-
+-- Candidate volume spike days
 volume_spikes AS (
     SELECT
-        vb.ticker,
-        vb.spike_date,
-        ROUND(vb.day_volume / NULLIF(vb.avg_volume_20d, 0), 2) AS volume_ratio,
-        ROUND(
-            (vb.day_close / NULLIF(vb.prev_close, 0) - 1)::numeric,
-            4
-        ) AS daily_return
-    FROM volume_baseline vb
+        r.ticker,
+        r.date AS spike_date,
+        ROUND(r.volume / NULLIF(r.avg_volume_20d,0),2) AS volume_ratio,
+        ROUND((r.close / NULLIF(r.prev_close,0) - 1)::numeric, 4) AS daily_return
+    FROM ranked_ohlc r
     CROSS JOIN params p
-    WHERE vb.day_volume >= p.spike_mult * vb.avg_volume_20d
-      AND vb.day_close  >= vb.prev_close * (1 + p.min_daily_gain)
+    CROSS JOIN latest_date ld
+    WHERE r.date >= ld.max_date - (p.vol_spike_lookback_days || ' days')::INTERVAL
+      AND r.avg_volume_20d IS NOT NULL
+      AND r.volume >= p.spike_mult * r.avg_volume_20d
+      AND r.close >= r.prev_close * (1 + p.min_daily_gain)
 ),
 
 volume_spikes_agg AS (
     SELECT
         ticker,
         COUNT(*) AS spike_day_count,
-        ROUND(AVG(volume_ratio)::numeric, 2) AS avg_volume_spike,
-        ARRAY_AGG(spike_date ORDER BY spike_date) AS volume_spike_days,
+        ROUND(AVG(volume_ratio)::numeric,2) AS avg_volume_spike,
+        STRING_AGG(spike_date::text, ',' ORDER BY spike_date) AS volume_spike_days,
         MAX(spike_date) AS last_spike_date
     FROM volume_spikes
     GROUP BY ticker
 ),
 
-/* -----------------------------------------------------
-   Candidate gap days (trading-day based)
------------------------------------------------------ */
-candidate_gap_days AS (
-    SELECT r.*
-    FROM ranked_ohlc r
-    CROSS JOIN params p
-    WHERE r.date >= (
-        SELECT MAX(date) FROM ohlc
-    ) - (p.gap_lookback_days || ' days')::INTERVAL
-),
-
+-- Candidate gap days
 gap_days AS (
     SELECT
         r.ticker,
         r.date AS gap_date,
         r.close,
-        prev.close AS prev_close
-    FROM candidate_gap_days r
-    JOIN ranked_ohlc prev
-      ON prev.ticker = r.ticker
-     AND prev.rn = r.rn - 1
+        r.prev_close
+    FROM ranked_ohlc r
     CROSS JOIN params p
-    WHERE prev.close > 0
-      AND (
-            r.low   > prev.close * (1 + p.min_gap_pct)
-         OR r.close / prev.close > 1.15
-      )
+    CROSS JOIN latest_date ld
+    WHERE r.date >= ld.max_date - (p.gap_lookback_days || ' days')::INTERVAL
+      AND r.prev_close > 0
+      AND (r.low > r.prev_close * (1 + p.min_gap_pct)
+           OR r.close / r.prev_close > 1.15)
 ),
 
 gap_returns_agg AS (
     SELECT
         ticker,
         COUNT(*) AS gapper_day_count,
-        ROUND(AVG((close / prev_close - 1)::numeric), 4) AS avg_return_gapper,
-        ARRAY_AGG(gap_date ORDER BY gap_date) AS gap_days,
+        ROUND(AVG((close / prev_close - 1)::numeric),4) AS avg_return_gapper,
+        STRING_AGG(gap_date::text, ',' ORDER BY gap_date) AS gap_days,
         MAX(gap_date) AS last_gap_date
     FROM gap_days
     GROUP BY ticker
 )
 
-    INSERT INTO stock_volspike_gapper (
-        ticker,
-        spike_day_count,
-        avg_volume_spike,
-        volume_spike_days,
-        gapper_day_count,
-        avg_return_gapper,
-        gap_days,
-        updated_at,
-        last_event_date,
-        last_event_type
-    )
+INSERT INTO stock_volspike_gapper (
+    ticker,
+    spike_day_count,
+    avg_volume_spike,
+    volume_spike_days,
+    gapper_day_count,
+    avg_return_gapper,
+    gap_days,
+    updated_at,
+    last_event_date,
+    last_event_type
+)
 SELECT
     sm.ticker,
-
     vsa.spike_day_count,
     vsa.avg_volume_spike,
-    ARRAY_TO_STRING(vsa.volume_spike_days, ',') AS volume_spike_days,
-
+    vsa.volume_spike_days,
     gra.gapper_day_count,
     gra.avg_return_gapper,
-    ARRAY_TO_STRING(gra.gap_days, ',') AS gap_days,
-
+    gra.gap_days,
     CURRENT_TIMESTAMP AS updated_at,
-
-    GREATEST(
-        vsa.last_spike_date,
-        gra.last_gap_date
-    ) AS last_event_date,
-
+    GREATEST(vsa.last_spike_date, gra.last_gap_date) AS last_event_date,
     CASE
-        WHEN vsa.last_spike_date IS NULL
-         AND gra.last_gap_date  IS NULL
-            THEN NULL
-        WHEN vsa.last_spike_date >= gra.last_gap_date
-            THEN 'volume_spike'
+        WHEN vsa.last_spike_date IS NULL AND gra.last_gap_date IS NULL THEN NULL
+        WHEN vsa.last_spike_date >= gra.last_gap_date THEN 'volume_spike'
         ELSE 'gapper'
     END AS last_event_type
-
 FROM stock_metrics sm
-LEFT JOIN volume_spikes_agg vsa
-  ON vsa.ticker = sm.ticker
-LEFT JOIN gap_returns_agg gra
-  ON gra.ticker = sm.ticker
-ORDER BY last_event_date desc nulls last;
-
+LEFT JOIN volume_spikes_agg vsa ON vsa.ticker = sm.ticker
+LEFT JOIN gap_returns_agg gra  ON gra.ticker = sm.ticker
+ORDER BY last_event_date DESC NULLS LAST;
     """
     
     result = connection.execute(text(metrics_query))
