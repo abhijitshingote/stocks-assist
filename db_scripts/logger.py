@@ -24,6 +24,27 @@ from datetime import datetime
 import pytz
 from pathlib import Path
 
+
+def get_test_ticker_limit():
+    """
+    Get the test ticker limit from environment variable.
+    Returns None if not set or in normal mode.
+    
+    Usage in scripts:
+        from db_scripts.logger import get_test_ticker_limit
+        test_limit = get_test_ticker_limit()
+        if test_limit:
+            logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
+            tickers = tickers[:test_limit]
+    """
+    limit = os.getenv('TEST_TICKER_LIMIT')
+    if limit:
+        try:
+            return int(limit)
+        except ValueError:
+            return None
+    return None
+
 # Get the project root directory (parent of db_scripts)
 PROJECT_ROOT = Path(__file__).parent.parent
 LOGS_DETAILED_PATH = PROJECT_ROOT / 'logs_detailed.txt'

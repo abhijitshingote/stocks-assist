@@ -22,7 +22,7 @@ import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Base, Ticker, OHLC
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, get_test_ticker_limit
 
 # Script name for logging
 SCRIPT_NAME = 'daily_price_update'
@@ -72,6 +72,13 @@ def get_existing_tickers(session):
         ).all()
         ticker_list = [t[0] for t in tickers]
         logger.info(f"Found {len(ticker_list)} actively trading tickers in database")
+        
+        # Apply test mode limit if set
+        test_limit = get_test_ticker_limit()
+        if test_limit:
+            ticker_list = ticker_list[:test_limit]
+            logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
+        
         return ticker_list
     except Exception as e:
         logger.error(f"Error fetching existing tickers: {str(e)}")

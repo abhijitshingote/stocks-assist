@@ -26,7 +26,7 @@ import pytz
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, get_test_ticker_limit
 
 # Script name for logging
 SCRIPT_NAME = 'seed_tickers_from_fmp'
@@ -225,6 +225,12 @@ def main():
     parser.add_argument('--batch-size', type=int, default=500,
                         help='Database batch size (default: 500)')
     args = parser.parse_args()
+    
+    # Check for test mode limit
+    test_limit = get_test_ticker_limit()
+    if test_limit:
+        logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
+        args.limit = test_limit
     
     logger.info("=" * 60)
     logger.info("Tickers Table Seeding from FMP Stock Screener API")

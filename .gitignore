@@ -28,6 +28,12 @@ uv-requirements.txt
 # Docker
 .docker
 
+# SSL certificates (keep .gitkeep)
+docker/ssl/*.pem
+docker/ssl/*.key
+docker/ssl/*.crt
+!docker/ssl/.gitkeep
+
 # Database
 *.db
 *.sqlite3

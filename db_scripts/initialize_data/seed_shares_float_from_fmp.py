@@ -22,7 +22,7 @@ import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, SharesFloat, SyncMetadata
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, get_test_ticker_limit
 
 # Script name for logging
 SCRIPT_NAME = 'seed_shares_float_from_fmp'
@@ -117,6 +117,12 @@ def update_sync_metadata(session, key):
 
 def get_tickers(session, limit=None):
     """Get list of tickers to process, ordered by market cap descending"""
+    # Check for test mode limit first
+    test_limit = get_test_ticker_limit()
+    if test_limit:
+        logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
+        limit = test_limit
+    
     query = session.query(Ticker.ticker).filter(
         Ticker.is_actively_trading == True
     ).order_by(Ticker.market_cap.desc().nullslast())

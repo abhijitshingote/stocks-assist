@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+
+{% block title %}Logs - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .logs-container {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 1.5rem;
+        min-height: calc(100vh - 200px);
+    }
+
+    .log-list {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .log-list-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .log-list-items {
+        max-height: calc(100vh - 280px);
+        overflow-y: auto;
+    }
+
+    .log-item {
+        padding: 0.75rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .log-item:hover {
+        background: var(--bg-card-hover);
+    }
+
+    .log-item.active {
+        background: var(--bg-card-hover);
+        border-left: 3px solid var(--accent-green);
+    }
+
+    .log-item-name {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        color: var(--text-primary);
+        word-break: break-all;
+    }
+
+    .log-item-meta {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .log-item-type {
+        display: inline-block;
+        padding: 0.125rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-right: 0.5rem;
+    }
+
+    .log-item-type.init {
+        background: rgba(88, 166, 255, 0.2);
+        color: var(--accent-blue);
+    }
+
+    .log-item-type.update {
+        background: rgba(63, 185, 80, 0.2);
+        color: var(--accent-green);
+    }
+
+    .log-item-type.prod {
+        background: rgba(248, 81, 73, 0.15);
+        color: var(--accent-red);
+    }
+
+    .log-item-type.dev {
+        background: rgba(210, 153, 34, 0.2);
+        color: var(--accent-yellow);
+    }
+
+    .log-viewer {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .log-viewer-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .log-viewer-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+    }
+
+    .log-viewer-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .log-viewer-actions button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .log-viewer-actions button:hover {
+        background: var(--bg-card-hover);
+        color: var(--text-primary);
+        border-color: var(--accent-blue);
+    }
+
+    .log-viewer-actions button.active {
+        background: var(--accent-blue);
+        color: var(--bg-dark);
+        border-color: var(--accent-blue);
+    }
+
+    .log-content {
+        flex: 1;
+        overflow: auto;
+        padding: 1rem;
+        max-height: calc(100vh - 280px);
+    }
+
+    .log-content pre {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+
+    .log-content .line {
+        padding: 0.1rem 0;
+    }
+
+    .log-content .line:hover {
+        background: rgba(88, 166, 255, 0.1);
+    }
+
+    .log-content .line-number {
+        display: inline-block;
+        width: 50px;
+        color: var(--text-muted);
+        user-select: none;
+        text-align: right;
+        padding-right: 1rem;
+        border-right: 1px solid var(--border-color);
+        margin-right: 1rem;
+    }
+
+    .log-content .timestamp {
+        color: var(--text-muted);
+    }
+
+    .log-content .level-info {
+        color: var(--accent-blue);
+    }
+
+    .log-content .level-warning {
+        color: var(--accent-yellow);
+    }
+
+    .log-content .level-error {
+        color: var(--accent-red);
+    }
+
+    .log-content .success {
+        color: var(--accent-green);
+    }
+
+    .log-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-muted);
+        font-size: 1.1rem;
+    }
+
+    .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-muted);
+    }
+
+    .loading::after {
+        content: '';
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border-color);
+        border-top-color: var(--accent-blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 0.5rem;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .refresh-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 0.25rem;
+        transition: color 0.2s;
+    }
+
+    .refresh-btn:hover {
+        color: var(--accent-blue);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-muted);
+    }
+
+    @media (max-width: 900px) {
+        .logs-container {
+            grid-template-columns: 1fr;
+        }
+
+        .log-list-items, .log-content {
+            max-height: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 1.5rem; font-weight: 600;">
+    <span class="mono text-blue">$</span> Logs
+</h1>
+
+<div class="logs-container">
+    <div class="log-list">
+        <div class="log-list-header">
+            <span>Log Files</span>
+            <button class="refresh-btn" onclick="loadLogList()" title="Refresh list">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 4v6h-6M1 20v-6h6"/>
+                    <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                </svg>
+            </button>
+        </div>
+        <div class="log-list-items" id="log-list">
+            <div class="loading">Loading...</div>
+        </div>
+    </div>
+
+    <div class="log-viewer">
+        <div class="log-viewer-header">
+            <span class="log-viewer-title" id="current-log-name">Select a log file</span>
+            <div class="log-viewer-actions">
+                <button id="btn-auto-refresh" onclick="toggleAutoRefresh()">Auto-refresh</button>
+                <button onclick="scrollToBottom()">Scroll to bottom</button>
+                <button onclick="scrollToTop()">Scroll to top</button>
+            </div>
+        </div>
+        <div class="log-content" id="log-content">
+            <div class="log-placeholder">Select a log file from the list to view its contents</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let currentLogFile = null;
+    let autoRefreshInterval = null;
+
+    async function loadLogList() {
+        const listEl = document.getElementById('log-list');
+        listEl.innerHTML = '<div class="loading">Loading...</div>';
+
+        try {
+            const response = await fetch('/api/frontend/logs');
+            const data = await response.json();
+
+            if (data.logs && data.logs.length > 0) {
+                listEl.innerHTML = data.logs.map(log => {
+                    // Parse log name for type badges
+                    const isInit = log.name.includes('_init_');
+                    const isUpdate = log.name.includes('_update_');
+                    const isProd = log.name.startsWith('prod_');
+                    const isDev = log.name.startsWith('dev_');
+
+                    const envBadge = isProd 
+                        ? '<span class="log-item-type prod">prod</span>' 
+                        : isDev 
+                        ? '<span class="log-item-type dev">dev</span>' 
+                        : '';
+
+                    const typeBadge = isInit 
+                        ? '<span class="log-item-type init">init</span>' 
+                        : isUpdate 
+                        ? '<span class="log-item-type update">update</span>' 
+                        : '';
+
+                    const sizeStr = formatBytes(log.size);
+
+                    return `
+                        <div class="log-item${currentLogFile === log.name ? ' active' : ''}" onclick="loadLog('${log.name}')">
+                            <div class="log-item-name">${log.name}</div>
+                            <div class="log-item-meta">
+                                ${envBadge}${typeBadge}
+                                ${sizeStr} • ${log.modified_str}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                listEl.innerHTML = '<div class="empty-state">No log files found</div>';
+            }
+        } catch (error) {
+            listEl.innerHTML = `<div class="empty-state">Error loading logs: ${error.message}</div>`;
+        }
+    }
+
+    async function loadLog(filename) {
+        currentLogFile = filename;
+        const contentEl = document.getElementById('log-content');
+        const nameEl = document.getElementById('current-log-name');
+
+        nameEl.textContent = filename;
+        contentEl.innerHTML = '<div class="loading">Loading...</div>';
+
+        // Update active state in list
+        document.querySelectorAll('.log-item').forEach(el => {
+            el.classList.toggle('active', el.querySelector('.log-item-name').textContent === filename);
+        });
+
+        try {
+            const response = await fetch(`/api/frontend/logs/${filename}`);
+            const data = await response.json();
+
+            if (data.content) {
+                const lines = data.content.split('\n');
+                const formattedLines = lines.map((line, i) => {
+                    const formattedLine = formatLogLine(line);
+                    return `<div class="line"><span class="line-number">${i + 1}</span>${formattedLine}</div>`;
+                }).join('');
+
+                contentEl.innerHTML = `<pre>${formattedLines}</pre>`;
+            } else {
+                contentEl.innerHTML = '<div class="log-placeholder">Log file is empty</div>';
+            }
+        } catch (error) {
+            contentEl.innerHTML = `<div class="log-placeholder">Error loading log: ${error.message}</div>`;
+        }
+    }
+
+    function formatLogLine(line) {
+        // Highlight timestamps
+        line = line.replace(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:,\d{3})?)/g, '<span class="timestamp">$1</span>');
+
+        // Highlight log levels
+        line = line.replace(/- INFO -/g, '- <span class="level-info">INFO</span> -');
+        line = line.replace(/- WARNING -/g, '- <span class="level-warning">WARNING</span> -');
+        line = line.replace(/- ERROR -/g, '- <span class="level-error">ERROR</span> -');
+
+        // Highlight success/fail markers
+        line = line.replace(/(✅|✓)/g, '<span class="success">$1</span>');
+        line = line.replace(/(❌|✗)/g, '<span class="level-error">$1</span>');
+
+        return line;
+    }
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    function scrollToBottom() {
+        const contentEl = document.getElementById('log-content');
+        contentEl.scrollTop = contentEl.scrollHeight;
+    }
+
+    function scrollToTop() {
+        const contentEl = document.getElementById('log-content');
+        contentEl.scrollTop = 0;
+    }
+
+    function toggleAutoRefresh() {
+        const btn = document.getElementById('btn-auto-refresh');
+
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+            btn.classList.remove('active');
+        } else {
+            btn.classList.add('active');
+            autoRefreshInterval = setInterval(() => {
+                if (currentLogFile) {
+                    loadLog(currentLogFile);
+                }
+                loadLogList();
+            }, 3000);
+        }
+    }
+
+    // Initial load
+    loadLogList();
+</script>
+{% endblock %}
+

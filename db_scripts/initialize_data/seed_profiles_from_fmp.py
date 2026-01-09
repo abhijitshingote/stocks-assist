@@ -22,7 +22,7 @@ import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, CompanyProfile
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, get_test_ticker_limit
 
 # Script name for logging
 SCRIPT_NAME = 'seed_profiles_from_fmp'
@@ -115,6 +115,12 @@ def get_tickers_without_profiles(session, limit=None):
     from sqlalchemy import and_, not_, exists
     from sqlalchemy.orm import aliased
     
+    # Check for test mode limit first
+    test_limit = get_test_ticker_limit()
+    if test_limit:
+        logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
+        limit = test_limit
+    
     # Subquery to find tickers with profiles
     subq = session.query(CompanyProfile.ticker)
     
@@ -131,6 +137,12 @@ def get_tickers_without_profiles(session, limit=None):
 
 def get_all_tickers(session, limit=None):
     """Get all tickers ordered by market cap"""
+    # Check for test mode limit first
+    test_limit = get_test_ticker_limit()
+    if test_limit:
+        logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
+        limit = test_limit
+    
     query = session.query(Ticker.ticker).order_by(
         Ticker.market_cap.desc().nullslast()
     )

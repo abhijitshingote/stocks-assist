@@ -61,7 +61,8 @@ docker-compose exec backend bash -c "
  python db_scripts/update_data/stock_metrics_update.py && \
   python db_scripts/update_data/historical_rsi_update.py && \
    python db_scripts/update_data/rsi_indices_update.py && \
-   python db_scripts/update_data/volspike_gapper_update.py
+    python db_scripts/update_data/volspike_gapper_update.py && \
+  python db_scripts/update_data/main_view_update.py
 "
 ```
 ```bash - test full load
@@ -121,11 +122,8 @@ Bitcoin Treasury
 SOlana Treasury
 Ethereum Related
 
-sudo apt update && sudo apt install -y ca-certificates curl gnupg lsb-release && \
-sudo mkdir -p /etc/apt/keyrings && \
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list && \
-sudo apt update && \
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin && \
-sudo systemctl enable --now docker && \
-docker --version && docker compose version
+git clone
+Copy env file
+Do i copy certs?
+./manage-env.sh prod start
+./manage-env.sh prod init --test=5

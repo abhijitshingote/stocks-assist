@@ -446,5 +446,83 @@ def api_latest_date():
     return jsonify(data), status_code
 
 
+# ============================================================
+# Logs Endpoints
+# ============================================================
+
+@app.route('/logs')
+def logs_page():
+    """Logs viewer page"""
+    return render_template('logs.html')
+
+
+@app.route('/api/frontend/logs')
+def api_list_logs():
+    """List available log files"""
+    import glob
+    from pathlib import Path
+    
+    # Look for logs in the project root's logs directory
+    # In Docker, the project is mounted at /app
+    logs_dir = Path('/app/logs')
+    if not logs_dir.exists():
+        logs_dir = Path(__file__).parent.parent / 'logs'
+    
+    log_files = []
+    if logs_dir.exists():
+        for log_file in sorted(logs_dir.glob('*.log'), key=lambda x: x.stat().st_mtime, reverse=True):
+            stat = log_file.stat()
+            log_files.append({
+                'name': log_file.name,
+                'size': stat.st_size,
+                'modified': stat.st_mtime,
+                'modified_str': __import__('datetime').datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M:%S')
+            })
+    
+    return jsonify({'logs': log_files})
+
+
+@app.route('/api/frontend/logs/<filename>')
+def api_get_log(filename):
+    """Get contents of a specific log file"""
+    from pathlib import Path
+    import re
+    
+    # Validate filename to prevent path traversal
+    if not re.match(r'^[\w\-\.]+\.log$', filename):
+        return jsonify({'error': 'Invalid filename'}), 400
+    
+    # Look for logs in the project root's logs directory
+    logs_dir = Path('/app/logs')
+    if not logs_dir.exists():
+        logs_dir = Path(__file__).parent.parent / 'logs'
+    
+    log_path = logs_dir / filename
+    
+    if not log_path.exists():
+        return jsonify({'error': 'Log file not found'}), 404
+    
+    try:
+        # Read last N lines or full file if small
+        max_lines = request.args.get('lines', type=int, default=None)
+        
+        with open(log_path, 'r') as f:
+            if max_lines:
+                # Read last N lines efficiently
+                from collections import deque
+                lines = deque(f, maxlen=max_lines)
+                content = ''.join(lines)
+            else:
+                content = f.read()
+        
+        return jsonify({
+            'filename': filename,
+            'content': content,
+            'size': log_path.stat().st_size
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

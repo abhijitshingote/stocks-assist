@@ -18,7 +18,7 @@ import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, AnalystEstimates, SyncMetadata
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, estimate_processing_time
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, estimate_processing_time, get_test_ticker_limit
 
 # Script name for logging
 SCRIPT_NAME = 'seed_analyst_estimates_from_fmp'
@@ -92,6 +92,12 @@ def upsert_estimates(session, ticker, estimates):
 
 
 def get_tickers(session, limit=None):
+    # Check for test mode limit first
+    test_limit = get_test_ticker_limit()
+    if test_limit:
+        logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
+        limit = test_limit
+    
     q = session.query(Ticker.ticker).filter(Ticker.is_actively_trading == True)
     q = q.order_by(Ticker.market_cap.desc().nullslast())
     if limit: q = q.limit(limit)
