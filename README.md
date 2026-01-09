@@ -122,8 +122,26 @@ Bitcoin Treasury
 SOlana Treasury
 Ethereum Related
 
-git clone
-Copy env file
-Do i copy certs?
+
+######### CLOUD DEPLOY #############
+ssh -i ~/Downloads/ssh-key-2026-01-07.key ubuntu@150.136.244.255
+# install git
+sudo apt update && sudo apt install --no-install-recommends git -y
+sudo apt install --no-install-recommends nano -y
+sudo apt install --no-install-recommends cron -y
+sudo apt install --no-install-recommends docker.io -y
+sudo systemctl enable --now docker
+sudo usermod -aG docker ubuntu
+newgrp docker
+git clone https://github.com/abhijitshingote/stocks-assist.git
+git checkout fmp_env
+git pull origin fmp_env
+cd stocks-assist
+# Copy env file
+chmod +x .env
+./get_compute_instance_ready.sh
+./docker/generate-ssl.sh
+sudo chmod -R 777 logs
 ./manage-env.sh prod start
 ./manage-env.sh prod init --test=5
+# Remember to add 443,80 to inbound ip
