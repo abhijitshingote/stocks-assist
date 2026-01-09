@@ -1,6 +1,10 @@
 """
 Seed analyst_estimates table from FMP API.
 Source: /stable/analyst-estimates?symbol=X&period=annual
+
+OPTIMIZED:
+- Concurrent API calls with rate limiting (290/min)
+- Bulk inserts instead of row-by-row
 """
 
 from datetime import datetime
@@ -19,6 +23,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, AnalystEstimates, SyncMetadata
 from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, estimate_processing_time, get_test_ticker_limit
+from db_scripts.fmp_utils import RateLimiter, bulk_upsert, process_tickers_concurrent
 
 # Script name for logging
 SCRIPT_NAME = 'seed_analyst_estimates_from_fmp'
@@ -35,10 +40,8 @@ def get_api_key():
     return api_key
 
 
-# format_duration is imported from db_scripts.logger
-
-
 def fetch_analyst_estimates(api_key, symbol, limit=10):
+    """Fetch analyst estimates for a symbol (no rate limiting - handled by caller)"""
     url = f'{BASE_URL}/analyst-estimates'
     params = {'symbol': symbol, 'period': 'annual', 'limit': limit, 'apikey': api_key}
     try:
@@ -61,14 +64,17 @@ def parse_date(s):
     except: return None
 
 
-def upsert_estimates(session, ticker, estimates):
-    count = 0
+def process_estimates_data(ticker, estimates):
+    """Convert API response to database records"""
+    records = []
     for e in estimates:
         date = parse_date(e.get('date'))
-        if not date: continue
+        if not date:
+            continue
         
-        data = {
-            'ticker': ticker, 'date': date,
+        records.append({
+            'ticker': ticker,
+            'date': date,
             'revenue_avg': parse_int(e.get('revenueAvg')),
             'revenue_low': parse_int(e.get('revenueLow')),
             'revenue_high': parse_int(e.get('revenueHigh')),
@@ -80,15 +86,8 @@ def upsert_estimates(session, ticker, estimates):
             'eps_high': parse_float(e.get('epsHigh')),
             'num_analysts_revenue': parse_int(e.get('numAnalystsRevenue')),
             'num_analysts_eps': parse_int(e.get('numAnalystsEps'))
-        }
-        try:
-            stmt = insert(AnalystEstimates).values(**data)
-            stmt = stmt.on_conflict_do_update(constraint='uq_analyst_est',
-                set_={k: stmt.excluded[k] for k in data if k not in ['ticker', 'date']})
-            session.execute(stmt)
-            count += 1
-        except: pass
-    return count
+        })
+    return records
 
 
 def get_tickers(session, limit=None):
@@ -108,11 +107,12 @@ def main():
     start_time = time.time()
     parser = argparse.ArgumentParser(description='Seed analyst_estimates from FMP')
     parser.add_argument('--limit', type=int, default=None)
-    parser.add_argument('--delay', type=float, default=0.15)
+    parser.add_argument('--workers', type=int, default=10, help='Concurrent API workers (default: 10)')
+    parser.add_argument('--batch-size', type=int, default=100, help='DB write batch size (default: 100)')
     args = parser.parse_args()
 
     logger.info("=" * 60)
-    logger.info("Analyst Estimates Seeding")
+    logger.info("Analyst Estimates Seeding (Optimized)")
     logger.info("=" * 60)
 
     engine = create_engine(os.getenv('DATABASE_URL'))
@@ -123,37 +123,104 @@ def main():
     try:
         tickers = get_tickers(session, args.limit)
         logger.info(f"Tickers: {len(tickers)}")
+        logger.info(f"Workers: {args.workers}")
+        logger.info(f"Rate limit: 290 calls/min")
 
-        estimated_time = estimate_processing_time(SCRIPT_NAME, len(tickers))
-        logger.info(f"Estimated time: ~{estimated_time:.1f} minutes")
+        # Estimate time based on rate limit
+        estimated_minutes = len(tickers) / 290
+        logger.info(f"Estimated time: ~{estimated_minutes:.1f} minutes")
+        logger.info("-" * 60)
 
-        # Initialize progress tracker
+        # Initialize rate limiter
+        rate_limiter = RateLimiter(calls_per_minute=290)
+        
+        # Progress tracker
         progress = ProgressTracker(len(tickers), logger, update_interval=50, prefix="Estimates:")
+        
+        # Process concurrently
+        all_records = []
+        success_count = 0
+        failed_count = 0
+        processed = 0
+        
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        
+        def worker(ticker):
+            rate_limiter.acquire()
+            data = fetch_analyst_estimates(api_key, ticker)
+            if data:
+                records = process_estimates_data(ticker, data)
+                return (ticker, records, True)
+            return (ticker, [], False)
+        
+        with ThreadPoolExecutor(max_workers=args.workers) as executor:
+            futures = {executor.submit(worker, t): t for t in tickers}
+            
+            for future in as_completed(futures):
+                ticker = futures[future]
+                try:
+                    _, records, success = future.result()
+                    if success and records:
+                        all_records.extend(records)
+                        success_count += 1
+                    elif not success:
+                        failed_count += 1
+                    else:
+                        success_count += 1  # No data but successful call
+                except Exception as e:
+                    failed_count += 1
+                    logger.debug(f"Error processing {ticker}: {e}")
+                
+                processed += 1
+                
+                # Batch write to DB periodically
+                if len(all_records) >= args.batch_size * 10:
+                    count = bulk_upsert(
+                        engine, 'analyst_estimates', all_records,
+                        conflict_constraint='uq_analyst_est',
+                        conflict_columns=['ticker', 'date'],
+                        update_columns=['revenue_avg', 'revenue_low', 'revenue_high', 
+                                       'ebitda_avg', 'ebit_avg', 'net_income_avg',
+                                       'eps_avg', 'eps_low', 'eps_high',
+                                       'num_analysts_revenue', 'num_analysts_eps']
+                    )
+                    all_records = []
+                
+                progress.update(processed, f"| Records: {success_count * 5}")  # ~5 records per ticker
 
-        total = 0
-        for i, ticker in enumerate(tickers):
-            estimates = fetch_analyst_estimates(api_key, ticker)
-            total += upsert_estimates(session, ticker, estimates)
-            if (i + 1) % 50 == 0:
-                session.commit()
-            progress.update(i + 1, f"| Records: {total}")
-            time.sleep(args.delay)
+        # Write remaining records
+        if all_records:
+            bulk_upsert(
+                engine, 'analyst_estimates', all_records,
+                conflict_constraint='uq_analyst_est',
+                conflict_columns=['ticker', 'date'],
+                update_columns=['revenue_avg', 'revenue_low', 'revenue_high', 
+                               'ebitda_avg', 'ebit_avg', 'net_income_avg',
+                               'eps_avg', 'eps_low', 'eps_high',
+                               'num_analysts_revenue', 'num_analysts_eps']
+            )
 
-        session.commit()
-        progress.finish(f"- Total records: {total}")
+        progress.finish(f"- Processed: {success_count}, Failed: {failed_count}")
+
+        # Update sync metadata
         stmt = insert(SyncMetadata).values(key='analyst_estimates_sync', last_synced_at=datetime.utcnow())
         stmt = stmt.on_conflict_do_update(index_elements=['key'], set_={'last_synced_at': datetime.utcnow()})
         session.execute(stmt)
         session.commit()
 
+        total = session.query(AnalystEstimates).count()
         elapsed = time.time() - start_time
+        
         logger.info("=" * 60)
-        logger.info(f"  Records: {total}")
-        logger.info(f"  Total in DB: {session.query(AnalystEstimates).count()}")
+        logger.info(f"  Tickers processed: {success_count}")
+        logger.info(f"  Failed: {failed_count}")
+        logger.info(f"  Total in DB: {total}")
         logger.info(f"  Time taken: {format_duration(elapsed)}")
+        if elapsed > 0:
+            logger.info(f"  Effective rate: {processed / (elapsed / 60):.1f} calls/min")
         logger.info("=" * 60)
         logger.info("✅ Analyst estimates seeding completed!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{len(tickers)} tickers processed', total, duration_seconds=elapsed)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{success_count} tickers processed', total, duration_seconds=elapsed)
 
     except KeyboardInterrupt:
         session.commit()
@@ -172,4 +239,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

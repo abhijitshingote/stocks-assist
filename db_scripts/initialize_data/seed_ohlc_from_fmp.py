@@ -3,6 +3,12 @@ Seed OHLC (price history) table from FMP Historical Price API.
 
 Uses the /stable/historical-price-eod/full endpoint to fetch daily OHLC data.
 
+OPTIMIZATIONS:
+- Concurrent API calls with proper rate limiting (300/min)
+- True bulk upserts using execute_values (not row-by-row)
+- Pre-fetch last dates for all tickers in single query
+- Batch writes: accumulate data from multiple tickers before DB write
+
 Reference: https://site.financialmodelingprep.com/developer/docs
 """
 
@@ -10,9 +16,12 @@ from datetime import datetime, timedelta
 import os
 import sys
 import time
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from collections import deque
 import requests
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
 import argparse
@@ -32,6 +41,40 @@ load_dotenv()
 BASE_URL = 'https://financialmodelingprep.com/stable'
 
 
+class RateLimiter:
+    """
+    Token bucket rate limiter for API calls.
+    Allows bursting while maintaining average rate of calls_per_minute.
+    """
+    def __init__(self, calls_per_minute=300):
+        self.calls_per_minute = calls_per_minute
+        self.min_interval = 60.0 / calls_per_minute  # Minimum seconds between calls
+        self.lock = threading.Lock()
+        self.call_times = deque(maxlen=calls_per_minute)
+    
+    def acquire(self):
+        """Wait until we can make an API call without exceeding rate limit."""
+        with self.lock:
+            now = time.time()
+            
+            # Remove timestamps older than 60 seconds
+            while self.call_times and now - self.call_times[0] > 60:
+                self.call_times.popleft()
+            
+            # If we've made max calls in the last minute, wait
+            if len(self.call_times) >= self.calls_per_minute:
+                # Wait until the oldest call is more than 60 seconds ago
+                sleep_time = 60 - (now - self.call_times[0]) + 0.05  # Add small buffer
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
+                    now = time.time()
+                    # Clean up again after sleeping
+                    while self.call_times and now - self.call_times[0] > 60:
+                        self.call_times.popleft()
+            
+            self.call_times.append(now)
+
+
 def get_api_key():
     api_key = os.getenv('FMP_API_KEY')
     if not api_key:
@@ -39,8 +82,11 @@ def get_api_key():
     return api_key
 
 
-def fetch_historical_prices(api_key, symbol, from_date=None, to_date=None):
+def fetch_historical_prices(api_key, symbol, from_date=None, to_date=None, rate_limiter=None):
     """Fetch historical OHLC data for a symbol"""
+    if rate_limiter:
+        rate_limiter.acquire()
+    
     url = f'{BASE_URL}/historical-price-eod/full'
     params = {
         'symbol': symbol,
@@ -86,25 +132,62 @@ def parse_date(date_str):
         return None
 
 
-def upsert_ohlc_batch(session, ohlc_batch):
-    """Upsert OHLC records"""
-    if not ohlc_batch:
+def bulk_upsert_ohlc(engine, ohlc_records):
+    """
+    True bulk upsert using raw SQL with ON CONFLICT.
+    Much faster than row-by-row inserts.
+    """
+    if not ohlc_records:
         return 0
     
-    try:
-        for data in ohlc_batch:
-            stmt = insert(OHLC).values(**data)
-            stmt = stmt.on_conflict_do_update(
-                constraint='uq_ohlc',
-                set_={k: stmt.excluded[k] for k in data.keys() if k not in ['ticker', 'date']}
-            )
-            session.execute(stmt)
-        session.commit()
-        return len(ohlc_batch)
-    except Exception as e:
-        logger.error(f"Error upserting OHLC: {e}")
-        session.rollback()
-        return 0
+    # Build values for bulk insert
+    # Use raw connection for best performance
+    with engine.connect() as conn:
+        try:
+            # Chunk into batches of 5000 to avoid query size limits
+            chunk_size = 5000
+            total_inserted = 0
+            
+            for i in range(0, len(ohlc_records), chunk_size):
+                chunk = ohlc_records[i:i + chunk_size]
+                
+                # Build the VALUES clause
+                values_list = []
+                params = {}
+                for idx, rec in enumerate(chunk):
+                    values_list.append(
+                        f"(:ticker_{idx}, :date_{idx}, :open_{idx}, :high_{idx}, :low_{idx}, :close_{idx}, :volume_{idx})"
+                    )
+                    params[f'ticker_{idx}'] = rec['ticker']
+                    params[f'date_{idx}'] = rec['date']
+                    params[f'open_{idx}'] = rec['open']
+                    params[f'high_{idx}'] = rec['high']
+                    params[f'low_{idx}'] = rec['low']
+                    params[f'close_{idx}'] = rec['close']
+                    params[f'volume_{idx}'] = rec['volume']
+                
+                sql = f"""
+                    INSERT INTO ohlc (ticker, date, open, high, low, close, volume)
+                    VALUES {', '.join(values_list)}
+                    ON CONFLICT ON CONSTRAINT uq_ohlc 
+                    DO UPDATE SET
+                        open = EXCLUDED.open,
+                        high = EXCLUDED.high,
+                        low = EXCLUDED.low,
+                        close = EXCLUDED.close,
+                        volume = EXCLUDED.volume
+                """
+                
+                conn.execute(text(sql), params)
+                total_inserted += len(chunk)
+            
+            conn.commit()
+            return total_inserted
+            
+        except Exception as e:
+            logger.error(f"Error in bulk upsert: {e}")
+            conn.rollback()
+            return 0
 
 
 def update_sync_metadata(session, key, timestamp=None):
@@ -142,78 +225,153 @@ def get_tickers_for_ohlc(session, limit=None, min_market_cap=None):
     return [t[0] for t in query.all()]
 
 
-def get_last_ohlc_date(session, ticker):
-    """Get the last OHLC date for a ticker"""
-    result = session.query(func.max(OHLC.date)).filter(OHLC.ticker == ticker).scalar()
-    return result
+def get_all_last_ohlc_dates(session, tickers):
+    """
+    Get last OHLC date for ALL tickers in a single query.
+    Returns dict: {ticker: last_date}
+    """
+    if not tickers:
+        return {}
+    
+    # Single query to get max date for all tickers at once
+    result = session.query(
+        OHLC.ticker,
+        func.max(OHLC.date)
+    ).filter(
+        OHLC.ticker.in_(tickers)
+    ).group_by(OHLC.ticker).all()
+    
+    return {ticker: last_date for ticker, last_date in result}
 
 
-def process_ohlc(session, api_key, tickers, days_back=365, delay=0.15, commit_every=10):
-    """Fetch and process OHLC for tickers"""
+def fetch_ticker_data(args):
+    """
+    Worker function for concurrent API calls.
+    Returns (ticker, ohlc_records, success)
+    """
+    ticker, api_key, from_date, to_date, rate_limiter = args
+    
+    prices = fetch_historical_prices(api_key, ticker, from_date, to_date, rate_limiter)
+    
+    if not prices:
+        return (ticker, [], False)
+    
+    # Build OHLC records
+    ohlc_records = []
+    for p in prices:
+        date = parse_date(p.get('date'))
+        if not date:
+            continue
+        
+        ohlc_records.append({
+            'ticker': ticker,
+            'date': date,
+            'open': parse_float(p.get('open')),
+            'high': parse_float(p.get('high')),
+            'low': parse_float(p.get('low')),
+            'close': parse_float(p.get('close')),
+            'volume': parse_int(p.get('volume'))
+        })
+    
+    return (ticker, ohlc_records, True)
 
+
+def process_ohlc_concurrent(engine, session, api_key, tickers, days_back=365, 
+                            max_workers=10, batch_size=50):
+    """
+    Fetch and process OHLC for tickers using concurrent API calls.
+    
+    - max_workers: Number of concurrent API request threads
+    - batch_size: Number of tickers to accumulate before writing to DB
+    """
     records_inserted = 0
     tickers_processed = 0
     tickers_failed = 0
+    tickers_skipped = 0
 
-    # Initialize progress tracker
-    progress = ProgressTracker(len(tickers), logger, update_interval=commit_every, prefix="OHLC:")
+    # Initialize rate limiter: 300 calls per minute, with some safety margin
+    rate_limiter = RateLimiter(calls_per_minute=290)
+
+    # Pre-fetch all last dates in a single query
+    logger.info("Fetching last OHLC dates for all tickers...")
+    last_dates = get_all_last_ohlc_dates(session, tickers)
+    logger.info(f"Found existing data for {len(last_dates)} tickers")
 
     to_date = datetime.now().date()
     default_from_date = to_date - timedelta(days=days_back)
 
-    for i, ticker in enumerate(tickers):
-        # Check last date we have for this ticker
-        last_date = get_last_ohlc_date(session, ticker)
-
+    # Build work items: (ticker, api_key, from_date, to_date, rate_limiter)
+    work_items = []
+    for ticker in tickers:
+        last_date = last_dates.get(ticker)
+        
         if last_date:
-            # Fetch only new data (from day after last date)
             from_date = last_date + timedelta(days=1)
             if from_date >= to_date:
                 # Already up to date
-                tickers_processed += 1
+                tickers_skipped += 1
                 continue
         else:
             from_date = default_from_date
+        
+        work_items.append((ticker, api_key, from_date, to_date, rate_limiter))
 
-        # Fetch prices
-        prices = fetch_historical_prices(api_key, ticker, from_date, to_date)
+    logger.info(f"Tickers already up-to-date (skipped): {tickers_skipped}")
+    logger.info(f"Tickers to fetch: {len(work_items)}")
+    
+    if not work_items:
+        return tickers_skipped, 0, 0
 
-        if not prices:
-            tickers_failed += 1
-            time.sleep(delay)
-            continue
+    # Initialize progress tracker
+    total_to_process = len(work_items)
+    progress = ProgressTracker(total_to_process, logger, update_interval=10, prefix="OHLC:")
 
-        # Build OHLC records
-        ohlc_batch = []
-        for p in prices:
-            date = parse_date(p.get('date'))
-            if not date:
-                continue
+    # Process in batches with concurrent API calls
+    accumulated_records = []
+    processed_count = 0
 
-            ohlc_batch.append({
-                'ticker': ticker,
-                'date': date,
-                'open': parse_float(p.get('open')),
-                'high': parse_float(p.get('high')),
-                'low': parse_float(p.get('low')),
-                'close': parse_float(p.get('close')),
-                'volume': parse_int(p.get('volume'))
-            })
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Submit all work items
+        future_to_ticker = {
+            executor.submit(fetch_ticker_data, item): item[0] 
+            for item in work_items
+        }
+        
+        for future in as_completed(future_to_ticker):
+            ticker = future_to_ticker[future]
+            try:
+                ticker, ohlc_records, success = future.result()
+                
+                if success and ohlc_records:
+                    accumulated_records.extend(ohlc_records)
+                    tickers_processed += 1
+                elif not success:
+                    tickers_failed += 1
+                else:
+                    tickers_processed += 1  # Success but no new data
+                
+                processed_count += 1
+                
+                # Write to DB when batch is full
+                if len(accumulated_records) >= batch_size * 250:  # ~250 records per ticker avg
+                    count = bulk_upsert_ohlc(engine, accumulated_records)
+                    records_inserted += count
+                    accumulated_records = []  # Clear memory
+                
+                progress.update(processed_count, f"| Records: {records_inserted} | Queue: {len(accumulated_records)}")
+                
+            except Exception as e:
+                logger.error(f"Error processing {ticker}: {e}")
+                tickers_failed += 1
+                processed_count += 1
 
-        # Upsert
-        count = upsert_ohlc_batch(session, ohlc_batch)
+    # Write remaining records
+    if accumulated_records:
+        count = bulk_upsert_ohlc(engine, accumulated_records)
         records_inserted += count
-        tickers_processed += 1
-
-        progress.update(i + 1, f"| Records: {records_inserted}")
-
-        time.sleep(delay)
 
     progress.finish(f"- Total records: {records_inserted}")
-    return tickers_processed, records_inserted, tickers_failed
-
-
-# format_duration is imported from db_scripts.logger
+    return tickers_processed + tickers_skipped, records_inserted, tickers_failed
 
 
 def main():
@@ -223,15 +381,17 @@ def main():
     parser.add_argument('--limit', type=int, default=None,
                         help='Max tickers to process (default: all)')
     parser.add_argument('--days', type=int, default=730,
-                        help='Days of history to fetch for new tickers (default: 365)')
-    parser.add_argument('--delay', type=float, default=0.15,
-                        help='Delay between API calls (default: 0.15s)')
+                        help='Days of history to fetch for new tickers (default: 730)')
+    parser.add_argument('--workers', type=int, default=10,
+                        help='Number of concurrent API workers (default: 10)')
+    parser.add_argument('--batch-size', type=int, default=50,
+                        help='Tickers to accumulate before DB write (default: 50)')
     parser.add_argument('--min-market-cap', type=int, default=None,
                         help='Minimum market cap filter (e.g., 1000000000 for $1B)')
     args = parser.parse_args()
     
     logger.info("=" * 60)
-    logger.info("OHLC Seeding from FMP Historical Price API")
+    logger.info("OHLC Seeding from FMP Historical Price API (Optimized)")
     logger.info("=" * 60)
 
     database_url = os.getenv('DATABASE_URL')
@@ -251,18 +411,23 @@ def main():
             logger.info("No tickers to process.")
             return
         
-        logger.info(f"Tickers to process: {len(tickers)}")
+        logger.info(f"Tickers to check: {len(tickers)}")
         logger.info(f"Days of history: {args.days}")
-        logger.info(f"API delay: {args.delay}s")
+        logger.info(f"Concurrent workers: {args.workers}")
+        logger.info(f"Batch size: {args.batch_size} tickers")
+        logger.info(f"Rate limit: 290 calls/min (with safety margin)")
 
-        estimated_time = estimate_processing_time(SCRIPT_NAME, len(tickers))
-        logger.info(f"Estimated time: ~{estimated_time:.1f} minutes")
+        # Estimate based on rate limit: ~290 calls/min with concurrency
+        calls_per_min = 290
+        estimated_minutes = len(tickers) / calls_per_min
+        logger.info(f"Estimated time: ~{estimated_minutes:.1f} minutes (rate-limited)")
         logger.info("-" * 60)
         
-        processed, inserted, failed = process_ohlc(
-            session, api_key, tickers,
+        processed, inserted, failed = process_ohlc_concurrent(
+            engine, session, api_key, tickers,
             days_back=args.days,
-            delay=args.delay
+            max_workers=args.workers,
+            batch_size=args.batch_size
         )
         
         # Update sync metadata
@@ -279,6 +444,12 @@ def main():
         
         elapsed = time.time() - start_time
         logger.info(f"  Time taken: {format_duration(elapsed)}")
+        
+        # Calculate effective API rate
+        if elapsed > 0:
+            effective_rate = (processed - failed) / (elapsed / 60)
+            logger.info(f"  Effective API rate: {effective_rate:.1f} calls/min")
+        
         logger.info("=" * 60)
         logger.info("✅ OHLC seeding completed!")
         write_summary(SCRIPT_NAME, 'SUCCESS', f'{processed} tickers processed, {inserted} records inserted', total_ohlc, duration_seconds=elapsed)
@@ -302,4 +473,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

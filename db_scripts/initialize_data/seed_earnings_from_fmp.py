@@ -1,6 +1,10 @@
 """
 Seed earnings table from FMP API.
 Source: /stable/earnings?symbol=X
+
+OPTIMIZED:
+- Concurrent API calls with rate limiting (290/min)
+- Bulk inserts instead of row-by-row
 """
 
 from datetime import datetime
@@ -12,13 +16,15 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import argparse
 
 # Add db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, Earnings, SyncMetadata
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, estimate_processing_time, get_test_ticker_limit
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, get_test_ticker_limit
+from db_scripts.fmp_utils import RateLimiter, bulk_upsert
 
 # Script name for logging
 SCRIPT_NAME = 'seed_earnings_from_fmp'
@@ -33,9 +39,6 @@ def get_api_key():
     if not api_key:
         raise ValueError("FMP_API_KEY not found")
     return api_key
-
-
-# format_duration is imported from db_scripts.logger
 
 
 def fetch_earnings(api_key, symbol):
@@ -61,31 +64,26 @@ def parse_date(s):
     except: return None
 
 
-def upsert_earnings(session, ticker, earnings_list):
-    count = 0
+def process_earnings_data(ticker, earnings_list):
+    """Convert API response to database records"""
+    records = []
     for e in earnings_list:
         date = parse_date(e.get('date'))
-        if not date: continue
+        if not date:
+            continue
         
-        data = {
-            'ticker': ticker, 'date': date,
+        records.append({
+            'ticker': ticker,
+            'date': date,
             'eps_actual': parse_float(e.get('epsActual')),
             'eps_estimated': parse_float(e.get('epsEstimated')),
             'revenue_actual': parse_int(e.get('revenueActual')),
             'revenue_estimated': parse_int(e.get('revenueEstimated'))
-        }
-        try:
-            stmt = insert(Earnings).values(**data)
-            stmt = stmt.on_conflict_do_update(constraint='uq_earnings',
-                set_={k: stmt.excluded[k] for k in data if k not in ['ticker', 'date']})
-            session.execute(stmt)
-            count += 1
-        except: pass
-    return count
+        })
+    return records
 
 
 def get_tickers(session, limit=None):
-    # Check for test mode limit first
     test_limit = get_test_ticker_limit()
     if test_limit:
         logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
@@ -101,11 +99,12 @@ def main():
     start_time = time.time()
     parser = argparse.ArgumentParser(description='Seed earnings from FMP')
     parser.add_argument('--limit', type=int, default=None)
-    parser.add_argument('--delay', type=float, default=0.15)
+    parser.add_argument('--workers', type=int, default=10, help='Concurrent API workers (default: 10)')
+    parser.add_argument('--batch-size', type=int, default=100, help='DB write batch size (default: 100)')
     args = parser.parse_args()
 
     logger.info("=" * 60)
-    logger.info("Earnings Seeding")
+    logger.info("Earnings Seeding (Optimized)")
     logger.info("=" * 60)
 
     engine = create_engine(os.getenv('DATABASE_URL'))
@@ -116,37 +115,92 @@ def main():
     try:
         tickers = get_tickers(session, args.limit)
         logger.info(f"Tickers: {len(tickers)}")
+        logger.info(f"Workers: {args.workers}")
+        logger.info(f"Rate limit: 290 calls/min")
 
-        estimated_time = estimate_processing_time(SCRIPT_NAME, len(tickers))
-        logger.info(f"Estimated time: ~{estimated_time:.1f} minutes")
+        estimated_minutes = len(tickers) / 290
+        logger.info(f"Estimated time: ~{estimated_minutes:.1f} minutes")
+        logger.info("-" * 60)
 
-        # Initialize progress tracker
+        rate_limiter = RateLimiter(calls_per_minute=290)
         progress = ProgressTracker(len(tickers), logger, update_interval=50, prefix="Earnings:")
+        
+        all_records = []
+        success_count = 0
+        failed_count = 0
+        processed = 0
+        
+        def worker(ticker):
+            rate_limiter.acquire()
+            data = fetch_earnings(api_key, ticker)
+            if data:
+                records = process_earnings_data(ticker, data)
+                return (ticker, records, True)
+            return (ticker, [], False)
+        
+        with ThreadPoolExecutor(max_workers=args.workers) as executor:
+            futures = {executor.submit(worker, t): t for t in tickers}
+            
+            for future in as_completed(futures):
+                ticker = futures[future]
+                try:
+                    _, records, success = future.result()
+                    if success and records:
+                        all_records.extend(records)
+                        success_count += 1
+                    elif not success:
+                        failed_count += 1
+                    else:
+                        success_count += 1
+                except Exception as e:
+                    failed_count += 1
+                    logger.debug(f"Error processing {ticker}: {e}")
+                
+                processed += 1
+                
+                # Batch write to DB
+                if len(all_records) >= args.batch_size * 10:
+                    bulk_upsert(
+                        engine, 'earnings', all_records,
+                        conflict_constraint='uq_earnings',
+                        conflict_columns=['ticker', 'date'],
+                        update_columns=['eps_actual', 'eps_estimated', 
+                                       'revenue_actual', 'revenue_estimated']
+                    )
+                    all_records = []
+                
+                progress.update(processed, f"| Records: {success_count * 8}")
 
-        total = 0
-        for i, ticker in enumerate(tickers):
-            earnings = fetch_earnings(api_key, ticker)
-            total += upsert_earnings(session, ticker, earnings)
-            if (i + 1) % 50 == 0:
-                session.commit()
-            progress.update(i + 1, f"| Records: {total}")
-            time.sleep(args.delay)
+        # Write remaining
+        if all_records:
+            bulk_upsert(
+                engine, 'earnings', all_records,
+                conflict_constraint='uq_earnings',
+                conflict_columns=['ticker', 'date'],
+                update_columns=['eps_actual', 'eps_estimated', 
+                               'revenue_actual', 'revenue_estimated']
+            )
 
-        session.commit()
-        progress.finish(f"- Total records: {total}")
+        progress.finish(f"- Processed: {success_count}, Failed: {failed_count}")
+
         stmt = insert(SyncMetadata).values(key='earnings_sync', last_synced_at=datetime.utcnow())
         stmt = stmt.on_conflict_do_update(index_elements=['key'], set_={'last_synced_at': datetime.utcnow()})
         session.execute(stmt)
         session.commit()
 
+        total = session.query(Earnings).count()
         elapsed = time.time() - start_time
+        
         logger.info("=" * 60)
-        logger.info(f"  Records: {total}")
-        logger.info(f"  Total in DB: {session.query(Earnings).count()}")
+        logger.info(f"  Tickers processed: {success_count}")
+        logger.info(f"  Failed: {failed_count}")
+        logger.info(f"  Total in DB: {total}")
         logger.info(f"  Time taken: {format_duration(elapsed)}")
+        if elapsed > 0:
+            logger.info(f"  Effective rate: {processed / (elapsed / 60):.1f} calls/min")
         logger.info("=" * 60)
         logger.info("✅ Earnings seeding completed!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{len(tickers)} tickers processed', total, duration_seconds=elapsed)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{success_count} tickers processed', total, duration_seconds=elapsed)
 
     except KeyboardInterrupt:
         session.commit()
@@ -165,4 +219,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

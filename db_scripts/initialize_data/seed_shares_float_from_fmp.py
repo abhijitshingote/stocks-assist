@@ -4,6 +4,10 @@ Seed shares_float table from FMP API.
 Uses:
 - /stable/shares-float?symbol=X - for float shares, outstanding shares, free float %
 
+OPTIMIZED:
+- Concurrent API calls with rate limiting (290/min)
+- Bulk inserts instead of row-by-row
+
 Reference: https://site.financialmodelingprep.com/developer/docs/stable/shares-float
 """
 
@@ -16,13 +20,15 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import argparse
 
 # Add db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, SharesFloat, SyncMetadata
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, get_test_ticker_limit
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, get_test_ticker_limit
+from db_scripts.fmp_utils import RateLimiter, bulk_upsert_simple
 
 # Script name for logging
 SCRIPT_NAME = 'seed_shares_float_from_fmp'
@@ -52,8 +58,7 @@ def fetch_shares_float(api_key, symbol):
             if data and len(data) > 0:
                 return data[0]
         return None
-    except Exception as e:
-        logger.debug(f"Error fetching shares float for {symbol}: {e}")
+    except:
         return None
 
 
@@ -72,7 +77,6 @@ def parse_int(value):
 
 
 def parse_date(value):
-    """Parse date string to date object"""
     if not value:
         return None
     try:
@@ -81,12 +85,12 @@ def parse_date(value):
         return None
 
 
-def upsert_shares_float(session, ticker, float_data):
-    """Upsert shares float data"""
+def process_float_data(ticker, float_data):
+    """Convert API response to database record"""
     if not float_data:
-        return False
+        return None
     
-    data = {
+    return {
         'ticker': ticker,
         'float_shares': parse_int(float_data.get('floatShares')),
         'outstanding_shares': parse_int(float_data.get('outstandingShares')),
@@ -94,18 +98,6 @@ def upsert_shares_float(session, ticker, float_data):
         'date': parse_date(float_data.get('date')),
         'updated_at': datetime.utcnow()
     }
-    
-    try:
-        sql = insert(SharesFloat).values(**data)
-        sql = sql.on_conflict_do_update(
-            index_elements=['ticker'],
-            set_={k: sql.excluded[k] for k in data.keys() if k != 'ticker'}
-        )
-        session.execute(sql)
-        return True
-    except Exception as e:
-        logger.error(f"Error inserting shares float for {ticker}: {e}")
-        return False
 
 
 def update_sync_metadata(session, key):
@@ -116,8 +108,6 @@ def update_sync_metadata(session, key):
 
 
 def get_tickers(session, limit=None):
-    """Get list of tickers to process, ordered by market cap descending"""
-    # Check for test mode limit first
     test_limit = get_test_ticker_limit()
     if test_limit:
         logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
@@ -133,39 +123,17 @@ def get_tickers(session, limit=None):
     return [t[0] for t in query.all()]
 
 
-def process_shares_float(session, api_key, tickers, delay=0.15, commit_every=50):
-    """Fetch and process shares float data"""
-    
-    float_count = 0
-    failed = 0
-    
-    for i, ticker in enumerate(tickers):
-        float_data = fetch_shares_float(api_key, ticker)
-        if float_data and upsert_shares_float(session, ticker, float_data):
-            float_count += 1
-        else:
-            failed += 1
-        
-        if (i + 1) % commit_every == 0:
-            session.commit()
-            logger.info(f"  Progress: {i+1}/{len(tickers)} (float records: {float_count})")
-        
-        time.sleep(delay)
-    
-    session.commit()
-    return float_count, failed
-
-
 def main():
     start_time = time.time()
     
     parser = argparse.ArgumentParser(description='Seed shares_float from FMP')
     parser.add_argument('--limit', type=int, default=None, help='Max tickers to process')
-    parser.add_argument('--delay', type=float, default=0.15, help='Delay between API calls (default: 0.15s)')
+    parser.add_argument('--workers', type=int, default=10, help='Concurrent API workers (default: 10)')
+    parser.add_argument('--batch-size', type=int, default=100, help='DB write batch size (default: 100)')
     args = parser.parse_args()
     
     logger.info("=" * 60)
-    logger.info("Shares Float Seeding from FMP API")
+    logger.info("Shares Float Seeding from FMP API (Optimized)")
     logger.info("=" * 60)
 
     database_url = os.getenv('DATABASE_URL')
@@ -185,29 +153,85 @@ def main():
             return
         
         logger.info(f"Tickers to process: {len(tickers)}")
-        logger.info(f"API delay: {args.delay}s")
+        logger.info(f"Workers: {args.workers}")
+        logger.info(f"Rate limit: 290 calls/min")
         
-        estimated = len(tickers) * args.delay / 60
-        logger.info(f"Estimated time: ~{estimated:.1f} minutes")
+        estimated_minutes = len(tickers) / 290
+        logger.info(f"Estimated time: ~{estimated_minutes:.1f} minutes")
         logger.info("-" * 60)
         
-        float_count, failed = process_shares_float(session, api_key, tickers, delay=args.delay)
+        rate_limiter = RateLimiter(calls_per_minute=290)
+        progress = ProgressTracker(len(tickers), logger, update_interval=50, prefix="Float:")
+        
+        all_records = []
+        success_count = 0
+        failed_count = 0
+        processed = 0
+        
+        def worker(ticker):
+            rate_limiter.acquire()
+            float_data = fetch_shares_float(api_key, ticker)
+            if float_data:
+                record = process_float_data(ticker, float_data)
+                return (ticker, record, True)
+            return (ticker, None, False)
+        
+        with ThreadPoolExecutor(max_workers=args.workers) as executor:
+            futures = {executor.submit(worker, t): t for t in tickers}
+            
+            for future in as_completed(futures):
+                ticker = futures[future]
+                try:
+                    _, record, success = future.result()
+                    if success and record:
+                        all_records.append(record)
+                        success_count += 1
+                    elif not success:
+                        failed_count += 1
+                except Exception as e:
+                    failed_count += 1
+                    logger.debug(f"Error processing {ticker}: {e}")
+                
+                processed += 1
+                
+                # Batch write to DB
+                if len(all_records) >= args.batch_size:
+                    bulk_upsert_simple(
+                        engine, 'shares_float', all_records,
+                        primary_key='ticker',
+                        update_columns=['float_shares', 'outstanding_shares', 
+                                       'free_float', 'date', 'updated_at']
+                    )
+                    all_records = []
+                
+                progress.update(processed, f"| Saved: {success_count}")
+
+        # Write remaining
+        if all_records:
+            bulk_upsert_simple(
+                engine, 'shares_float', all_records,
+                primary_key='ticker',
+                update_columns=['float_shares', 'outstanding_shares', 
+                               'free_float', 'date', 'updated_at']
+            )
+
+        progress.finish(f"- Saved: {success_count}, Failed: {failed_count}")
         
         update_sync_metadata(session, 'shares_float_last_sync')
         
-        logger.info("=" * 60)
-        logger.info("Results:")
-        logger.info(f"  Shares float records: {float_count}")
-        logger.info(f"  Failed fetches: {failed}")
-        
         total_float = session.query(SharesFloat).count()
-        logger.info(f"  Total shares float records: {total_float}")
-        
         elapsed = time.time() - start_time
+        
+        logger.info("=" * 60)
+        logger.info(f"  Shares float records: {success_count}")
+        logger.info(f"  Failed fetches: {failed_count}")
+        logger.info(f"  Total shares float records: {total_float}")
         logger.info(f"  Time taken: {format_duration(elapsed)}")
+        if elapsed > 0:
+            logger.info(f"  Effective rate: {processed / (elapsed / 60):.1f} calls/min")
         logger.info("=" * 60)
         logger.info("✅ Shares float seeding completed!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{float_count} float records saved, {failed} failed', total_float, duration_seconds=elapsed)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{success_count} float records saved, {failed_count} failed', total_float, duration_seconds=elapsed)
 
     except KeyboardInterrupt:
         logger.info("\n⚠️ Interrupted. Saving progress...")
@@ -228,4 +252,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

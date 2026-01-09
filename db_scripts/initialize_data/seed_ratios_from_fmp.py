@@ -4,6 +4,10 @@ Seed ratios_ttm table from FMP API.
 Uses:
 - /stable/ratios-ttm?symbol=X - for P/E, ROE, margins, etc.
 
+OPTIMIZED:
+- Concurrent API calls with rate limiting (290/min)
+- Bulk inserts instead of row-by-row
+
 Reference: https://site.financialmodelingprep.com/developer/docs
 """
 
@@ -16,13 +20,15 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import insert
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import argparse
 
 # Add db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, RatiosTTM, SyncMetadata
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, get_test_ticker_limit
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, get_test_ticker_limit
+from db_scripts.fmp_utils import RateLimiter, bulk_upsert_simple
 
 # Script name for logging
 SCRIPT_NAME = 'seed_ratios_from_fmp'
@@ -63,12 +69,12 @@ def parse_float(value):
         return None
 
 
-def upsert_ratios_ttm(session, ticker, ratios):
-    """Upsert TTM ratios"""
+def process_ratios_data(ticker, ratios):
+    """Convert API response to database record"""
     if not ratios:
-        return False
+        return None
     
-    data = {
+    return {
         'ticker': ticker,
         'gross_profit_margin': parse_float(ratios.get('grossProfitMarginTTM')),
         'operating_profit_margin': parse_float(ratios.get('operatingProfitMarginTTM')),
@@ -90,18 +96,6 @@ def upsert_ratios_ttm(session, ticker, ratios):
         'return_on_equity': parse_float(ratios.get('returnOnEquityTTM')),
         'updated_at': datetime.utcnow()
     }
-    
-    try:
-        sql = insert(RatiosTTM).values(**data)
-        sql = sql.on_conflict_do_update(
-            index_elements=['ticker'],
-            set_={k: sql.excluded[k] for k in data.keys() if k != 'ticker'}
-        )
-        session.execute(sql)
-        return True
-    except Exception as e:
-        logger.error(f"Error inserting ratios for {ticker}: {e}")
-        return False
 
 
 def update_sync_metadata(session, key):
@@ -112,7 +106,6 @@ def update_sync_metadata(session, key):
 
 
 def get_tickers(session, limit=None):
-    # Check for test mode limit first
     test_limit = get_test_ticker_limit()
     if test_limit:
         logger.info(f"🧪 TEST MODE: Limiting to {test_limit} tickers")
@@ -128,42 +121,17 @@ def get_tickers(session, limit=None):
     return [t[0] for t in query.all()]
 
 
-def process_ratios(session, api_key, tickers, delay=0.15, commit_every=50):
-    """Fetch and process TTM ratios"""
-    
-    ratios_count = 0
-    failed = 0
-    
-    for i, ticker in enumerate(tickers):
-        ratios = fetch_ratios_ttm(api_key, ticker)
-        if ratios and upsert_ratios_ttm(session, ticker, ratios):
-            ratios_count += 1
-        else:
-            failed += 1
-        
-        if (i + 1) % commit_every == 0:
-            session.commit()
-            logger.info(f"  Progress: {i+1}/{len(tickers)} (ratios: {ratios_count})")
-        
-        time.sleep(delay)
-    
-    session.commit()
-    return ratios_count, failed
-
-
-# format_duration is imported from db_scripts.logger
-
-
 def main():
     start_time = time.time()
     
     parser = argparse.ArgumentParser(description='Seed ratios_ttm from FMP')
     parser.add_argument('--limit', type=int, default=None, help='Max tickers to process')
-    parser.add_argument('--delay', type=float, default=0.15, help='Delay between API calls (default: 0.15s)')
+    parser.add_argument('--workers', type=int, default=10, help='Concurrent API workers (default: 10)')
+    parser.add_argument('--batch-size', type=int, default=100, help='DB write batch size (default: 100)')
     args = parser.parse_args()
     
     logger.info("=" * 60)
-    logger.info("Ratios TTM Seeding from FMP API")
+    logger.info("Ratios TTM Seeding from FMP API (Optimized)")
     logger.info("=" * 60)
 
     database_url = os.getenv('DATABASE_URL')
@@ -183,29 +151,95 @@ def main():
             return
         
         logger.info(f"Tickers to process: {len(tickers)}")
-        logger.info(f"API delay: {args.delay}s")
+        logger.info(f"Workers: {args.workers}")
+        logger.info(f"Rate limit: 290 calls/min")
         
-        estimated = len(tickers) * args.delay / 60
-        logger.info(f"Estimated time: ~{estimated:.1f} minutes")
+        estimated_minutes = len(tickers) / 290
+        logger.info(f"Estimated time: ~{estimated_minutes:.1f} minutes")
         logger.info("-" * 60)
         
-        ratios, failed = process_ratios(session, api_key, tickers, delay=args.delay)
+        rate_limiter = RateLimiter(calls_per_minute=290)
+        progress = ProgressTracker(len(tickers), logger, update_interval=50, prefix="Ratios:")
+        
+        all_records = []
+        success_count = 0
+        failed_count = 0
+        processed = 0
+        
+        def worker(ticker):
+            rate_limiter.acquire()
+            ratios = fetch_ratios_ttm(api_key, ticker)
+            if ratios:
+                record = process_ratios_data(ticker, ratios)
+                return (ticker, record, True)
+            return (ticker, None, False)
+        
+        with ThreadPoolExecutor(max_workers=args.workers) as executor:
+            futures = {executor.submit(worker, t): t for t in tickers}
+            
+            for future in as_completed(futures):
+                ticker = futures[future]
+                try:
+                    _, record, success = future.result()
+                    if success and record:
+                        all_records.append(record)
+                        success_count += 1
+                    elif not success:
+                        failed_count += 1
+                except Exception as e:
+                    failed_count += 1
+                    logger.debug(f"Error processing {ticker}: {e}")
+                
+                processed += 1
+                
+                # Batch write to DB
+                if len(all_records) >= args.batch_size:
+                    bulk_upsert_simple(
+                        engine, 'ratios_ttm', all_records,
+                        primary_key='ticker',
+                        update_columns=['gross_profit_margin', 'operating_profit_margin', 
+                                       'net_profit_margin', 'pe_ratio', 'peg_ratio',
+                                       'price_to_book', 'price_to_sales', 'price_to_free_cash_flow',
+                                       'current_ratio', 'quick_ratio', 'cash_ratio',
+                                       'debt_to_equity', 'debt_to_assets', 'asset_turnover',
+                                       'inventory_turnover', 'receivables_turnover',
+                                       'return_on_assets', 'return_on_equity', 'updated_at']
+                    )
+                    all_records = []
+                
+                progress.update(processed, f"| Saved: {success_count}")
+
+        # Write remaining
+        if all_records:
+            bulk_upsert_simple(
+                engine, 'ratios_ttm', all_records,
+                primary_key='ticker',
+                update_columns=['gross_profit_margin', 'operating_profit_margin', 
+                               'net_profit_margin', 'pe_ratio', 'peg_ratio',
+                               'price_to_book', 'price_to_sales', 'price_to_free_cash_flow',
+                               'current_ratio', 'quick_ratio', 'cash_ratio',
+                               'debt_to_equity', 'debt_to_assets', 'asset_turnover',
+                               'inventory_turnover', 'receivables_turnover',
+                               'return_on_assets', 'return_on_equity', 'updated_at']
+            )
+
+        progress.finish(f"- Saved: {success_count}, Failed: {failed_count}")
         
         update_sync_metadata(session, 'ratios_last_sync')
         
-        logger.info("=" * 60)
-        logger.info("Results:")
-        logger.info(f"  Ratios TTM records: {ratios}")
-        logger.info(f"  Failed fetches: {failed}")
-        
         total_ratios = session.query(RatiosTTM).count()
-        logger.info(f"  Total ratios TTM: {total_ratios}")
-        
         elapsed = time.time() - start_time
+        
+        logger.info("=" * 60)
+        logger.info(f"  Ratios TTM records: {success_count}")
+        logger.info(f"  Failed fetches: {failed_count}")
+        logger.info(f"  Total ratios TTM: {total_ratios}")
         logger.info(f"  Time taken: {format_duration(elapsed)}")
+        if elapsed > 0:
+            logger.info(f"  Effective rate: {processed / (elapsed / 60):.1f} calls/min")
         logger.info("=" * 60)
         logger.info("✅ Ratios seeding completed!")
-        write_summary(SCRIPT_NAME, 'SUCCESS', f'{ratios} ratios saved, {failed} failed', total_ratios, duration_seconds=elapsed)
+        write_summary(SCRIPT_NAME, 'SUCCESS', f'{success_count} ratios saved, {failed_count} failed', total_ratios, duration_seconds=elapsed)
 
     except KeyboardInterrupt:
         logger.info("\n⚠️ Interrupted. Saving progress...")
