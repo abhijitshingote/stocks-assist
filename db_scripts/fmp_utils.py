@@ -92,6 +92,15 @@ def bulk_upsert(engine, table_name, records, conflict_constraint,
     if not records:
         return 0
     
+    # Deduplicate records by conflict columns (keep first occurrence - API returns latest first)
+    # This prevents "ON CONFLICT DO UPDATE command cannot affect row a second time" error
+    seen = {}
+    for rec in records:
+        key = tuple(rec.get(col) for col in conflict_columns)
+        if key not in seen:
+            seen[key] = rec
+    records = list(seen.values())
+    
     # Get all column names from first record
     columns = list(records[0].keys())
     
@@ -156,6 +165,14 @@ def bulk_upsert_simple(engine, table_name, records, primary_key,
     """
     if not records:
         return 0
+    
+    # Deduplicate records by primary key (keep first occurrence - API returns latest first)
+    seen = {}
+    for rec in records:
+        key = rec.get(primary_key)
+        if key not in seen:
+            seen[key] = rec
+    records = list(seen.values())
     
     columns = list(records[0].keys())
     

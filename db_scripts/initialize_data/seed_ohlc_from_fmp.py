@@ -140,6 +140,15 @@ def bulk_upsert_ohlc(engine, ohlc_records):
     if not ohlc_records:
         return 0
     
+    # Deduplicate records by (ticker, date) - keep first occurrence (API returns latest first)
+    # Prevents "ON CONFLICT DO UPDATE command cannot affect row a second time" error
+    seen = {}
+    for rec in ohlc_records:
+        key = (rec['ticker'], rec['date'])
+        if key not in seen:
+            seen[key] = rec
+    ohlc_records = list(seen.values())
+    
     # Build values for bulk insert
     # Use raw connection for best performance
     with engine.connect() as conn:
@@ -304,7 +313,7 @@ def process_ohlc_concurrent(engine, session, api_key, tickers, days_back=365,
     work_items = []
     for ticker in tickers:
         last_date = last_dates.get(ticker)
-        
+
         if last_date:
             from_date = last_date + timedelta(days=1)
             if from_date >= to_date:
@@ -313,7 +322,7 @@ def process_ohlc_concurrent(engine, session, api_key, tickers, days_back=365,
                 continue
         else:
             from_date = default_from_date
-        
+
         work_items.append((ticker, api_key, from_date, to_date, rate_limiter))
 
     logger.info(f"Tickers already up-to-date (skipped): {tickers_skipped}")
@@ -325,6 +334,9 @@ def process_ohlc_concurrent(engine, session, api_key, tickers, days_back=365,
     # Initialize progress tracker
     total_to_process = len(work_items)
     progress = ProgressTracker(total_to_process, logger, update_interval=10, prefix="OHLC:")
+    db_batch_num = 0
+
+    logger.info("📡 Phase 1: Fetching OHLC data from API...")
 
     # Process in batches with concurrent API calls
     accumulated_records = []
@@ -341,7 +353,7 @@ def process_ohlc_concurrent(engine, session, api_key, tickers, days_back=365,
             ticker = future_to_ticker[future]
             try:
                 ticker, ohlc_records, success = future.result()
-                
+
                 if success and ohlc_records:
                     accumulated_records.extend(ohlc_records)
                     tickers_processed += 1
@@ -354,11 +366,14 @@ def process_ohlc_concurrent(engine, session, api_key, tickers, days_back=365,
                 
                 # Write to DB when batch is full
                 if len(accumulated_records) >= batch_size * 250:  # ~250 records per ticker avg
+                    db_batch_num += 1
+                    records_to_write = len(accumulated_records)
                     count = bulk_upsert_ohlc(engine, accumulated_records)
                     records_inserted += count
+                    progress.log_db_write(records_to_write, db_batch_num)
                     accumulated_records = []  # Clear memory
                 
-                progress.update(processed_count, f"| Records: {records_inserted} | Queue: {len(accumulated_records)}")
+                progress.update(processed_count, f"| Fetched: {tickers_processed}, Records: {records_inserted} | Queue: {len(accumulated_records)}")
                 
             except Exception as e:
                 logger.error(f"Error processing {ticker}: {e}")
@@ -367,10 +382,14 @@ def process_ohlc_concurrent(engine, session, api_key, tickers, days_back=365,
 
     # Write remaining records
     if accumulated_records:
+        db_batch_num += 1
+        records_to_write = len(accumulated_records)
+        logger.info("💾 Phase 2: Writing final batch to database...")
         count = bulk_upsert_ohlc(engine, accumulated_records)
         records_inserted += count
+        progress.log_db_write(records_to_write, db_batch_num)
 
-    progress.finish(f"- Total records: {records_inserted}")
+    progress.finish(f"- Fetched: {tickers_processed}, Failed: {tickers_failed}, Total records: {records_inserted}")
     return tickers_processed + tickers_skipped, records_inserted, tickers_failed
 
 

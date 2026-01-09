@@ -146,5 +146,5 @@ sudo chmod -R 777 logs
 ./manage-env.sh prod init --test=5
 # Remember to add 443,80 to inbound ip
 # run detached
- ssh -i ~/Downloads/ssh-key-2026-01-07.key ubuntu@150.136.244.255 \
-"nohup bash -c 'cd stocks-assist && ./manage-env.sh prod init' >/dev/null 2>&1 &"
+ssh -i ~/Downloads/ssh-key-2026-01-07.key ubuntu@150.136.244.255 \
+"nohup bash -c 'cd stocks-assist && ./manage-env.sh prod stop && ./manage-env.sh prod start && ./manage-env.sh prod init ' >/dev/null 2>&1 &" 

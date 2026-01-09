@@ -65,22 +65,30 @@ def parse_date(s):
 
 
 def process_earnings_data(ticker, earnings_list):
-    """Convert API response to database records"""
-    records = []
+    """Convert API response to database records.
+    
+    Note: FMP can return multiple earnings for the same date (e.g., Q4 and Annual 
+    announced on same day). Since our constraint is (ticker, date), we keep only 
+    the first record per date (API returns latest first).
+    """
+    # Use dict to deduplicate by date (keep first occurrence - API sorted latest first)
+    records_by_date = {}
     for e in earnings_list:
         date = parse_date(e.get('date'))
         if not date:
             continue
         
-        records.append({
-            'ticker': ticker,
-            'date': date,
-            'eps_actual': parse_float(e.get('epsActual')),
-            'eps_estimated': parse_float(e.get('epsEstimated')),
-            'revenue_actual': parse_int(e.get('revenueActual')),
-            'revenue_estimated': parse_int(e.get('revenueEstimated'))
-        })
-    return records
+        # Only add if we haven't seen this date yet (keeps first/latest)
+        if date not in records_by_date:
+            records_by_date[date] = {
+                'ticker': ticker,
+                'date': date,
+                'eps_actual': parse_float(e.get('epsActual')),
+                'eps_estimated': parse_float(e.get('epsEstimated')),
+                'revenue_actual': parse_int(e.get('revenueActual')),
+                'revenue_estimated': parse_int(e.get('revenueEstimated'))
+            }
+    return list(records_by_date.values())
 
 
 def get_tickers(session, limit=None):
@@ -124,11 +132,15 @@ def main():
 
         rate_limiter = RateLimiter(calls_per_minute=290)
         progress = ProgressTracker(len(tickers), logger, update_interval=50, prefix="Earnings:")
-        
+
         all_records = []
         success_count = 0
         failed_count = 0
         processed = 0
+        total_records = 0
+        db_batch_num = 0
+        
+        logger.info("📡 Phase 1: Fetching earnings data from API...")
         
         def worker(ticker):
             rate_limiter.acquire()
@@ -160,6 +172,8 @@ def main():
                 
                 # Batch write to DB
                 if len(all_records) >= args.batch_size * 10:
+                    db_batch_num += 1
+                    records_to_write = len(all_records)
                     bulk_upsert(
                         engine, 'earnings', all_records,
                         conflict_constraint='uq_earnings',
@@ -167,12 +181,17 @@ def main():
                         update_columns=['eps_actual', 'eps_estimated', 
                                        'revenue_actual', 'revenue_estimated']
                     )
+                    total_records += records_to_write
+                    progress.log_db_write(records_to_write, db_batch_num)
                     all_records = []
                 
-                progress.update(processed, f"| Records: {success_count * 8}")
+                progress.update(processed, f"| Fetched: {success_count}, Records: {total_records + len(all_records)}")
 
         # Write remaining
         if all_records:
+            db_batch_num += 1
+            records_to_write = len(all_records)
+            logger.info("💾 Phase 2: Writing final batch to database...")
             bulk_upsert(
                 engine, 'earnings', all_records,
                 conflict_constraint='uq_earnings',
@@ -180,8 +199,10 @@ def main():
                 update_columns=['eps_actual', 'eps_estimated', 
                                'revenue_actual', 'revenue_estimated']
             )
+            total_records += records_to_write
+            progress.log_db_write(records_to_write, db_batch_num)
 
-        progress.finish(f"- Processed: {success_count}, Failed: {failed_count}")
+        progress.finish(f"- Fetched: {success_count}, Failed: {failed_count}, Total records: {total_records}")
 
         stmt = insert(SyncMetadata).values(key='earnings_sync', last_synced_at=datetime.utcnow())
         stmt = stmt.on_conflict_do_update(index_elements=['key'], set_={'last_synced_at': datetime.utcnow()})

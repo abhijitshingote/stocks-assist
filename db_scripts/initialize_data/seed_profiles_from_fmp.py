@@ -97,33 +97,33 @@ def process_profile_data(ticker, profile):
         return None
     
     return {
-        'ticker': ticker,
-        'cik': safe_str(profile.get('cik')),
-        'isin': safe_str(profile.get('isin')),
-        'cusip': safe_str(profile.get('cusip')),
-        'description': safe_str(profile.get('description')),
-        'ceo': safe_str(profile.get('ceo')),
-        'website': safe_str(profile.get('website')),
-        'phone': safe_str(profile.get('phone')),
-        'address': safe_str(profile.get('address')),
-        'city': safe_str(profile.get('city')),
-        'state': safe_str(profile.get('state')),
-        'zip': safe_str(profile.get('zip')),
-        'full_time_employees': parse_int(profile.get('fullTimeEmployees')),
-        'ipo_date': parse_date(profile.get('ipoDate')),
-        'image': safe_str(profile.get('image')),
-        'currency': safe_str(profile.get('currency')),
-        'vol_avg': parse_int(profile.get('averageVolume')),
-        'last_div': parse_float(profile.get('lastDividend')),
-        'price': parse_float(profile.get('price')),
-        'range_52_week': safe_str(profile.get('range')),
-        'change': parse_float(profile.get('change')),
-        'change_percentage': parse_float(profile.get('changePercentage')),
-        'is_adr': profile.get('isAdr', False),
-        'default_image': profile.get('defaultImage', False),
-        'updated_at': datetime.utcnow()
-    }
-
+            'ticker': ticker,
+            'cik': safe_str(profile.get('cik')),
+            'isin': safe_str(profile.get('isin')),
+            'cusip': safe_str(profile.get('cusip')),
+            'description': safe_str(profile.get('description')),
+            'ceo': safe_str(profile.get('ceo')),
+            'website': safe_str(profile.get('website')),
+            'phone': safe_str(profile.get('phone')),
+            'address': safe_str(profile.get('address')),
+            'city': safe_str(profile.get('city')),
+            'state': safe_str(profile.get('state')),
+            'zip': safe_str(profile.get('zip')),
+            'full_time_employees': parse_int(profile.get('fullTimeEmployees')),
+            'ipo_date': parse_date(profile.get('ipoDate')),
+            'image': safe_str(profile.get('image')),
+            'currency': safe_str(profile.get('currency')),
+            'vol_avg': parse_int(profile.get('averageVolume')),
+            'last_div': parse_float(profile.get('lastDividend')),
+            'price': parse_float(profile.get('price')),
+            'range_52_week': safe_str(profile.get('range')),
+            'change': parse_float(profile.get('change')),
+            'change_percentage': parse_float(profile.get('changePercentage')),
+            'is_adr': profile.get('isAdr', False),
+            'default_image': profile.get('defaultImage', False),
+            'updated_at': datetime.utcnow()
+        }
+        
 
 def get_tickers_without_profiles(session, limit=None):
     """Get tickers that don't have profiles yet"""
@@ -212,6 +212,10 @@ def main():
         success_count = 0
         failed_count = 0
         processed = 0
+        total_saved = 0
+        db_batch_num = 0
+        
+        logger.info("📡 Phase 1: Fetching company profiles from API...")
         
         def worker(ticker):
             rate_limiter.acquire()
@@ -241,6 +245,8 @@ def main():
                 
                 # Batch write to DB
                 if len(all_records) >= args.batch_size:
+                    db_batch_num += 1
+                    records_to_write = len(all_records)
                     bulk_upsert_simple(
                         engine, 'company_profiles', all_records,
                         primary_key='ticker',
@@ -251,12 +257,17 @@ def main():
                                        'change', 'change_percentage', 'is_adr', 'default_image',
                                        'updated_at']
                     )
+                    total_saved += records_to_write
+                    progress.log_db_write(records_to_write, db_batch_num)
                     all_records = []
                 
-                progress.update(processed, f"| Saved: {success_count}")
+                progress.update(processed, f"| Fetched: {success_count}, Saved: {total_saved}")
 
         # Write remaining
         if all_records:
+            db_batch_num += 1
+            records_to_write = len(all_records)
+            logger.info("💾 Phase 2: Writing final batch to database...")
             bulk_upsert_simple(
                 engine, 'company_profiles', all_records,
                 primary_key='ticker',
@@ -267,8 +278,10 @@ def main():
                                'change', 'change_percentage', 'is_adr', 'default_image',
                                'updated_at']
             )
+            total_saved += records_to_write
+            progress.log_db_write(records_to_write, db_batch_num)
 
-        progress.finish(f"- Saved: {success_count}, Failed: {failed_count}")
+        progress.finish(f"- Fetched: {success_count}, Failed: {failed_count}, Total saved: {total_saved}")
         
         total_profiles = session.query(CompanyProfile).count()
         elapsed = time.time() - start_time

@@ -171,6 +171,8 @@ def fetch_eod_prices_concurrent(tickers, target_date, api_key, max_workers=10):
     logger.info(f"Estimated time: ~{estimated_minutes:.1f} minutes")
     logger.info("-" * 60)
     
+    logger.info("📡 Phase 1: Fetching EOD prices from API...")
+    
     rate_limiter = RateLimiter(calls_per_minute=290)
     progress = ProgressTracker(total, logger, update_interval=100, prefix="Prices:")
     
@@ -200,11 +202,11 @@ def fetch_eod_prices_concurrent(tickers, target_date, api_key, max_workers=10):
                 error_count += 1
             
             processed += 1
-            progress.update(processed, f"| Found: {len(all_prices)}")
+            progress.update(processed, f"| Fetched: {success_count}, Missing: {error_count}")
     
     # Final summary
     total_time = time.time() - start_time
-    progress.finish(f"- Found: {len(all_prices)}, Missing: {error_count}")
+    progress.finish(f"- Fetched: {len(all_prices)}, Missing: {error_count}")
     
     if total_time > 0:
         logger.info(f"Effective rate: {processed / (total_time / 60):.1f} calls/min")
@@ -220,6 +222,15 @@ def bulk_upsert_prices(session, engine, price_records):
     if not price_records:
         logger.warning("No price records to upsert")
         return 0
+    
+    # Deduplicate records by (ticker, date) - keep first occurrence (API returns latest first)
+    # Prevents "ON CONFLICT DO UPDATE command cannot affect row a second time" error
+    seen = {}
+    for rec in price_records:
+        key = (rec['ticker'], rec['date'])
+        if key not in seen:
+            seen[key] = rec
+    price_records = list(seen.values())
     
     logger.info(f"Starting bulk upsert of {len(price_records)} price records...")
     
@@ -284,8 +295,8 @@ def main():
         
         # Step 2: Fetch price data concurrently
         price_records = fetch_eod_prices_concurrent(
-            existing_tickers,
-            target_date,
+            existing_tickers, 
+            target_date, 
             FMP_API_KEY,
             max_workers=args.workers
         )
@@ -293,8 +304,9 @@ def main():
         # Step 3: Bulk upsert the price data
         total_time = time.time() - overall_start
         if price_records:
+            logger.info("💾 Phase 2: Saving prices to database...")
             upserted_count = bulk_upsert_prices(session, engine, price_records)
-            logger.info(f"Updated {upserted_count:,} records for {target_date}")
+            logger.info(f"💾 DB Write: {upserted_count:,} records saved for {target_date}")
             write_summary(SCRIPT_NAME, 'SUCCESS', f'Updated prices for {target_date}', upserted_count, duration_seconds=total_time)
         else:
             logger.warning("No price data fetched")

@@ -65,29 +65,36 @@ def parse_date(s):
 
 
 def process_estimates_data(ticker, estimates):
-    """Convert API response to database records"""
-    records = []
+    """Convert API response to database records.
+    
+    Note: Deduplicate by date since constraint is (ticker, date).
+    API returns latest first, so we keep the first occurrence.
+    """
+    # Use dict to deduplicate by date (keep first occurrence - API sorted latest first)
+    records_by_date = {}
     for e in estimates:
         date = parse_date(e.get('date'))
         if not date:
             continue
         
-        records.append({
-            'ticker': ticker,
-            'date': date,
-            'revenue_avg': parse_int(e.get('revenueAvg')),
-            'revenue_low': parse_int(e.get('revenueLow')),
-            'revenue_high': parse_int(e.get('revenueHigh')),
-            'ebitda_avg': parse_int(e.get('ebitdaAvg')),
-            'ebit_avg': parse_int(e.get('ebitAvg')),
-            'net_income_avg': parse_int(e.get('netIncomeAvg')),
-            'eps_avg': parse_float(e.get('epsAvg')),
-            'eps_low': parse_float(e.get('epsLow')),
-            'eps_high': parse_float(e.get('epsHigh')),
-            'num_analysts_revenue': parse_int(e.get('numAnalystsRevenue')),
-            'num_analysts_eps': parse_int(e.get('numAnalystsEps'))
-        })
-    return records
+        # Only add if we haven't seen this date yet (keeps first/latest)
+        if date not in records_by_date:
+            records_by_date[date] = {
+                'ticker': ticker,
+                'date': date,
+                'revenue_avg': parse_int(e.get('revenueAvg')),
+                'revenue_low': parse_int(e.get('revenueLow')),
+                'revenue_high': parse_int(e.get('revenueHigh')),
+                'ebitda_avg': parse_int(e.get('ebitdaAvg')),
+                'ebit_avg': parse_int(e.get('ebitAvg')),
+                'net_income_avg': parse_int(e.get('netIncomeAvg')),
+                'eps_avg': parse_float(e.get('epsAvg')),
+                'eps_low': parse_float(e.get('epsLow')),
+                'eps_high': parse_float(e.get('epsHigh')),
+                'num_analysts_revenue': parse_int(e.get('numAnalystsRevenue')),
+                'num_analysts_eps': parse_int(e.get('numAnalystsEps'))
+            }
+    return list(records_by_date.values())
 
 
 def get_tickers(session, limit=None):
@@ -136,12 +143,16 @@ def main():
         
         # Progress tracker
         progress = ProgressTracker(len(tickers), logger, update_interval=50, prefix="Estimates:")
-        
+
         # Process concurrently
         all_records = []
         success_count = 0
         failed_count = 0
         processed = 0
+        total_records = 0
+        db_batch_num = 0
+        
+        logger.info("📡 Phase 1: Fetching analyst estimates from API...")
         
         from concurrent.futures import ThreadPoolExecutor, as_completed
         
@@ -175,7 +186,9 @@ def main():
                 
                 # Batch write to DB periodically
                 if len(all_records) >= args.batch_size * 10:
-                    count = bulk_upsert(
+                    db_batch_num += 1
+                    records_to_write = len(all_records)
+                    bulk_upsert(
                         engine, 'analyst_estimates', all_records,
                         conflict_constraint='uq_analyst_est',
                         conflict_columns=['ticker', 'date'],
@@ -184,12 +197,17 @@ def main():
                                        'eps_avg', 'eps_low', 'eps_high',
                                        'num_analysts_revenue', 'num_analysts_eps']
                     )
+                    total_records += records_to_write
+                    progress.log_db_write(records_to_write, db_batch_num)
                     all_records = []
                 
-                progress.update(processed, f"| Records: {success_count * 5}")  # ~5 records per ticker
+                progress.update(processed, f"| Fetched: {success_count}, Records: {total_records + len(all_records)}")
 
         # Write remaining records
         if all_records:
+            db_batch_num += 1
+            records_to_write = len(all_records)
+            logger.info("💾 Phase 2: Writing final batch to database...")
             bulk_upsert(
                 engine, 'analyst_estimates', all_records,
                 conflict_constraint='uq_analyst_est',
@@ -199,8 +217,10 @@ def main():
                                'eps_avg', 'eps_low', 'eps_high',
                                'num_analysts_revenue', 'num_analysts_eps']
             )
+            total_records += records_to_write
+            progress.log_db_write(records_to_write, db_batch_num)
 
-        progress.finish(f"- Processed: {success_count}, Failed: {failed_count}")
+        progress.finish(f"- Fetched: {success_count}, Failed: {failed_count}, Total records: {total_records}")
 
         # Update sync metadata
         stmt = insert(SyncMetadata).values(key='analyst_estimates_sync', last_synced_at=datetime.utcnow())

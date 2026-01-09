@@ -5,35 +5,42 @@
 {% block extra_styles %}
 <style>
     .logs-container {
-        display: grid;
-        grid-template-columns: 300px 1fr;
-        gap: 1.5rem;
-        min-height: calc(100vh - 200px);
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 0.75rem;
+        min-height: calc(100vh - 160px);
+        width: 100%;
     }
 
-    .log-list {
+    .logs-container > .log-list {
+        flex: 0 0 180px !important;
+        width: 180px !important;
+        min-width: 180px !important;
+        max-width: 180px !important;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
     }
 
     .log-list-header {
-        padding: 1rem 1.5rem;
+        padding: 0.5rem 0.75rem;
         border-bottom: 1px solid var(--border-color);
         font-weight: 600;
+        font-size: 0.75rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
     .log-list-items {
-        max-height: calc(100vh - 280px);
+        max-height: calc(100vh - 200px);
         overflow-y: auto;
     }
 
     .log-item {
-        padding: 0.75rem 1.5rem;
+        padding: 0.4rem 0.5rem;
         border-bottom: 1px solid var(--border-color);
         cursor: pointer;
         transition: background 0.2s;
@@ -45,30 +52,31 @@
 
     .log-item.active {
         background: var(--bg-card-hover);
-        border-left: 3px solid var(--accent-green);
+        border-left: 2px solid var(--accent-green);
     }
 
     .log-item-name {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.85rem;
+        font-size: 0.65rem;
         color: var(--text-primary);
         word-break: break-all;
+        line-height: 1.3;
     }
 
     .log-item-meta {
-        font-size: 0.75rem;
+        font-size: 0.6rem;
         color: var(--text-muted);
-        margin-top: 0.25rem;
+        margin-top: 0.15rem;
     }
 
     .log-item-type {
         display: inline-block;
-        padding: 0.125rem 0.4rem;
-        border-radius: 4px;
-        font-size: 0.7rem;
+        padding: 0.05rem 0.25rem;
+        border-radius: 3px;
+        font-size: 0.55rem;
         font-weight: 600;
         text-transform: uppercase;
-        margin-right: 0.5rem;
+        margin-right: 0.25rem;
     }
 
     .log-item-type.init {
@@ -91,42 +99,44 @@
         color: var(--accent-yellow);
     }
 
-    .log-viewer {
+    .logs-container > .log-viewer {
+        flex: 1 1 auto !important;
+        min-width: 0;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
     }
 
     .log-viewer-header {
-        padding: 1rem 1.5rem;
+        padding: 0.5rem 1rem;
         border-bottom: 1px solid var(--border-color);
         font-weight: 600;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 0.5rem;
     }
 
     .log-viewer-title {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .log-viewer-actions {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
 
     .log-viewer-actions button {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
         background: var(--bg-dark);
         border: 1px solid var(--border-color);
-        border-radius: 6px;
+        border-radius: 4px;
         color: var(--text-secondary);
         cursor: pointer;
         transition: all 0.2s;
@@ -147,21 +157,21 @@
     .log-content {
         flex: 1;
         overflow: auto;
-        padding: 1rem;
-        max-height: calc(100vh - 280px);
+        padding: 0.75rem;
+        max-height: calc(100vh - 200px);
     }
 
     .log-content pre {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.8rem;
-        line-height: 1.5;
+        font-size: 0.75rem;
+        line-height: 1.4;
         margin: 0;
         white-space: pre-wrap;
         word-break: break-all;
     }
 
     .log-content .line {
-        padding: 0.1rem 0;
+        padding: 0.05rem 0;
     }
 
     .log-content .line:hover {
@@ -170,13 +180,14 @@
 
     .log-content .line-number {
         display: inline-block;
-        width: 50px;
+        width: 40px;
         color: var(--text-muted);
         user-select: none;
         text-align: right;
-        padding-right: 1rem;
+        padding-right: 0.75rem;
         border-right: 1px solid var(--border-color);
-        margin-right: 1rem;
+        margin-right: 0.75rem;
+        font-size: 0.65rem;
     }
 
     .log-content .timestamp {
@@ -205,7 +216,7 @@
         justify-content: center;
         height: 100%;
         color: var(--text-muted);
-        font-size: 1.1rem;
+        font-size: 0.9rem;
     }
 
     .loading {
@@ -214,12 +225,13 @@
         justify-content: center;
         height: 100%;
         color: var(--text-muted);
+        font-size: 0.8rem;
     }
 
     .loading::after {
         content: '';
-        width: 20px;
-        height: 20px;
+        width: 16px;
+        height: 16px;
         border: 2px solid var(--border-color);
         border-top-color: var(--accent-blue);
         border-radius: 50%;
@@ -236,7 +248,7 @@
         border: none;
         color: var(--text-secondary);
         cursor: pointer;
-        padding: 0.25rem;
+        padding: 0.2rem;
         transition: color 0.2s;
     }
 
@@ -244,35 +256,47 @@
         color: var(--accent-blue);
     }
 
-    .empty-state {
-        text-align: center;
-        padding: 2rem;
-        color: var(--text-muted);
+    .refresh-btn svg {
+        width: 12px;
+        height: 12px;
     }
 
-    @media (max-width: 900px) {
+    .empty-state {
+        text-align: center;
+        padding: 1rem;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
         .logs-container {
-            grid-template-columns: 1fr;
+            flex-direction: column;
+        }
+
+        .log-list {
+            flex: 0 0 auto;
+            min-width: 100%;
+            max-width: 100%;
         }
 
         .log-list-items, .log-content {
-            max-height: 300px;
+            max-height: 250px;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1 style="margin-bottom: 1.5rem; font-weight: 600;">
+<h1 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 1.25rem;">
     <span class="mono text-blue">$</span> Logs
 </h1>
 
-<div class="logs-container">
-    <div class="log-list">
+<div class="logs-container" style="display: flex; flex-direction: row; gap: 0.75rem;">
+    <div class="log-list" style="flex: 0 0 180px; width: 180px;">
         <div class="log-list-header">
-            <span>Log Files</span>
+            <span>Files</span>
             <button class="refresh-btn" onclick="loadLogList()" title="Refresh list">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M23 4v6h-6M1 20v-6h6"/>
                     <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
                 </svg>
@@ -283,7 +307,7 @@
         </div>
     </div>
 
-    <div class="log-viewer">
+    <div class="log-viewer" style="flex: 1;">
         <div class="log-viewer-header">
             <span class="log-viewer-title" id="current-log-name">Select a log file</span>
             <div class="log-viewer-actions">
@@ -377,6 +401,8 @@
                 }).join('');
 
                 contentEl.innerHTML = `<pre>${formattedLines}</pre>`;
+                // Auto-scroll to bottom after loading
+                setTimeout(() => scrollToBottom(), 50);
             } else {
                 contentEl.innerHTML = '<div class="log-placeholder">Log file is empty</div>';
             }

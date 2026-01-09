@@ -167,6 +167,10 @@ def main():
         success_count = 0
         failed_count = 0
         processed = 0
+        total_saved = 0
+        db_batch_num = 0
+        
+        logger.info("📡 Phase 1: Fetching shares float data from API...")
         
         def worker(ticker):
             rate_limiter.acquire()
@@ -196,26 +200,35 @@ def main():
                 
                 # Batch write to DB
                 if len(all_records) >= args.batch_size:
+                    db_batch_num += 1
+                    records_to_write = len(all_records)
                     bulk_upsert_simple(
                         engine, 'shares_float', all_records,
                         primary_key='ticker',
                         update_columns=['float_shares', 'outstanding_shares', 
                                        'free_float', 'date', 'updated_at']
                     )
+                    total_saved += records_to_write
+                    progress.log_db_write(records_to_write, db_batch_num)
                     all_records = []
                 
-                progress.update(processed, f"| Saved: {success_count}")
+                progress.update(processed, f"| Fetched: {success_count}, Saved: {total_saved}")
 
         # Write remaining
         if all_records:
+            db_batch_num += 1
+            records_to_write = len(all_records)
+            logger.info("💾 Phase 2: Writing final batch to database...")
             bulk_upsert_simple(
                 engine, 'shares_float', all_records,
                 primary_key='ticker',
                 update_columns=['float_shares', 'outstanding_shares', 
                                'free_float', 'date', 'updated_at']
             )
+            total_saved += records_to_write
+            progress.log_db_write(records_to_write, db_batch_num)
 
-        progress.finish(f"- Saved: {success_count}, Failed: {failed_count}")
+        progress.finish(f"- Fetched: {success_count}, Failed: {failed_count}, Total saved: {total_saved}")
         
         update_sync_metadata(session, 'shares_float_last_sync')
         

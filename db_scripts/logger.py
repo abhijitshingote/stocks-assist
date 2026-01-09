@@ -270,15 +270,29 @@ class ProgressTracker:
     """
     Track progress and display updates with a progress bar.
     Updates the display less frequently to avoid spam.
+    
+    Shows both terminal progress (via print) and logs progress at regular intervals.
     """
 
-    def __init__(self, total, logger, update_interval=50, prefix="Progress:"):
+    def __init__(self, total, logger, update_interval=50, log_interval=None, prefix="Progress:"):
+        """
+        Args:
+            total: Total number of items to process
+            logger: Logger instance
+            update_interval: How often to update terminal display (items)
+            log_interval: How often to log to file (items). Defaults to 10% of total or every 200 items
+            prefix: Prefix for progress bar
+        """
         self.total = total
         self.logger = logger
         self.update_interval = update_interval
+        # Log every 10% or every 200 items, whichever is smaller
+        self.log_interval = log_interval or min(max(total // 10, 1), 200)
         self.prefix = prefix
         self.last_update = 0
+        self.last_log = 0
         self.start_time = time.time()
+        self.db_writes = 0  # Track DB write batches
 
     def update(self, current, suffix=""):
         """Update progress display if enough items have been processed"""
@@ -295,15 +309,23 @@ class ProgressTracker:
 
             self.last_update = current
 
-            # Log to file only occasionally (every 10 updates or at completion)
-            if current % (self.update_interval * 10) == 0 or current == self.total:
-                self.logger.info(progress_str)
+            # Log to file at regular intervals
+            if current - self.last_log >= self.log_interval or current == self.total:
+                pct = int((current / self.total) * 100) if self.total > 0 else 100
+                self.logger.info(f"📡 API Progress: {current}/{self.total} ({pct}%) {suffix} | ETA: {format_duration(eta) if eta > 0 else 'done'}")
+                self.last_log = current
+
+    def log_db_write(self, records_count, batch_num=None):
+        """Log a database write operation"""
+        self.db_writes += 1
+        batch_info = f"batch {batch_num}" if batch_num else f"batch {self.db_writes}"
+        self.logger.info(f"💾 DB Write: {records_count:,} records ({batch_info})")
 
     def finish(self, suffix=""):
         """Finalize the progress display"""
         print()  # New line after progress bar
         elapsed = time.time() - self.start_time
-        self.logger.info(f"Completed in {format_duration(elapsed)} {suffix}")
+        self.logger.info(f"✅ Completed in {format_duration(elapsed)} {suffix}")
 
 
 def estimate_processing_time(script_name, item_count, processing_rate_per_minute=None):
