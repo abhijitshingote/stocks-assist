@@ -107,6 +107,8 @@ case $ACTION in
     # Parse additional flags
     TEST_MODE=""
     TEST_LIMIT=10
+    WORKERS=10
+    BATCH_SIZE=100
     for arg in "${@:3}"; do
         case $arg in
             --test)
@@ -115,6 +117,12 @@ case $ACTION in
             --test=*)
                 TEST_MODE="true"
                 TEST_LIMIT="${arg#*=}"
+                ;;
+            --workers=*)
+                WORKERS="${arg#*=}"
+                ;;
+            --batch-size=*)
+                BATCH_SIZE="${arg#*=}"
                 ;;
         esac
     done
@@ -127,9 +135,11 @@ case $ACTION in
     if [ "$TEST_MODE" = "true" ]; then
         echo "🧪 TEST MODE: Limiting to $TEST_LIMIT tickers" >> $LOG_FILE
     fi
+    echo "⚡ Workers: $WORKERS, Batch size: $BATCH_SIZE" >> $LOG_FILE
 
     echo "Initializing $ENV database..."
     echo "Log file: $LOG_FILE"
+    echo "⚡ Workers: $WORKERS, Batch size: $BATCH_SIZE"
 
     scripts=(
         "db_scripts/initialize_data/initialize_db.py --reset:Reset database tables"
@@ -170,11 +180,18 @@ case $ACTION in
 
         script_start=$(date +%s)
 
-        # Build command
+        # Build command with optimization flags for scripts that support them
+        EXTRA_ARGS=""
+        case $script in
+            *seed_ohlc*|*seed_analyst*|*seed_earnings*|*seed_profiles*|*seed_ratios*|*seed_shares_float*|*daily_price*)
+                EXTRA_ARGS="--workers=$WORKERS --batch-size=$BATCH_SIZE"
+                ;;
+        esac
+
         if [ "$TEST_MODE" = "true" ]; then
-            CMD="TEST_TICKER_LIMIT=$TEST_LIMIT python $script"
+            CMD="TEST_TICKER_LIMIT=$TEST_LIMIT python $script $EXTRA_ARGS"
         else
-            CMD="python $script"
+            CMD="python $script $EXTRA_ARGS"
         fi
 
         # Run in Docker, disable TTY, append output only to log
@@ -203,6 +220,8 @@ case $ACTION in
         # Parse additional flags
         TEST_MODE=""
         TEST_LIMIT=10
+        WORKERS=10
+        BATCH_SIZE=100
         for arg in "${@:3}"; do
             case $arg in
                 --test)
@@ -211,6 +230,12 @@ case $ACTION in
                 --test=*)
                     TEST_MODE="true"
                     TEST_LIMIT="${arg#*=}"
+                    ;;
+                --workers=*)
+                    WORKERS="${arg#*=}"
+                    ;;
+                --batch-size=*)
+                    BATCH_SIZE="${arg#*=}"
                     ;;
             esac
         done
@@ -224,6 +249,8 @@ case $ACTION in
             echo "🧪 TEST MODE: Limiting to $TEST_LIMIT tickers"
             echo "🧪 TEST MODE: Limiting to $TEST_LIMIT tickers" >> $LOG_FILE
         fi
+        echo "⚡ Workers: $WORKERS, Batch size: $BATCH_SIZE"
+        echo "⚡ Workers: $WORKERS, Batch size: $BATCH_SIZE" >> $LOG_FILE
 
         echo "Updating $ENV database..."
         echo "Log file: $LOG_FILE"
@@ -265,11 +292,18 @@ case $ACTION in
 
             script_start=$(date +%s)
 
-            # Build command with test mode env var if enabled
+            # Build command with optimization flags for scripts that support them
+            EXTRA_ARGS=""
+            case $script in
+                *daily_price*)
+                    EXTRA_ARGS="--workers=$WORKERS"
+                    ;;
+            esac
+
             if [ "$TEST_MODE" = "true" ]; then
-                CMD="TEST_TICKER_LIMIT=$TEST_LIMIT python $script"
+                CMD="TEST_TICKER_LIMIT=$TEST_LIMIT python $script $EXTRA_ARGS"
             else
-                CMD="python $script"
+                CMD="python $script $EXTRA_ARGS"
             fi
 
             if docker-compose -f $COMPOSE_FILE exec -e TEST_TICKER_LIMIT=${TEST_MODE:+$TEST_LIMIT} $BACKEND_SERVICE sh -c "$CMD" 2>&1 | tee -a $LOG_FILE; then
@@ -318,6 +352,8 @@ case $ACTION in
         echo "  $0 dev update                    # Update dev database"
         echo "  $0 prod init --test              # Initialize with 10 test tickers"
         echo "  $0 dev update --test=5           # Update with 5 test tickers"
+        echo "  $0 prod init --workers=15        # Initialize with 15 concurrent API workers"
+        echo "  $0 dev update --workers=5 --batch-size=50  # Custom workers and batch size"
         echo "  $0 prod list-logs                # List available log files"
         echo "  $0 clean                         # Clean up unused Docker resources"
         ;;
