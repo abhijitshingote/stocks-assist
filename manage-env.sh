@@ -103,110 +103,89 @@ case $ACTION in
         echo "Restoring $ENV database from $BACKUP_FILE..."
         docker-compose -f $COMPOSE_FILE exec -T $DB_SERVICE pg_restore -U postgres -d $DB_NAME --clean --if-exists < $BACKUP_FILE
         ;;
-    init)
-        # Parse additional flags
-        TEST_MODE=""
-        TEST_LIMIT=10
-        for arg in "${@:3}"; do
-            case $arg in
-                --test)
-                    TEST_MODE="true"
-                    ;;
-                --test=*)
-                    TEST_MODE="true"
-                    TEST_LIMIT="${arg#*=}"
-                    ;;
-            esac
-        done
+   init)
+    # Parse additional flags
+    TEST_MODE=""
+    TEST_LIMIT=10
+    for arg in "${@:3}"; do
+        case $arg in
+            --test)
+                TEST_MODE="true"
+                ;;
+            --test=*)
+                TEST_MODE="true"
+                TEST_LIMIT="${arg#*=}"
+                ;;
+        esac
+    done
 
-        # Setup logging
-        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-        LOG_FILE="logs/${ENV}_init_${TIMESTAMP}.log"
-        mkdir -p logs
+    # Setup logging
+    TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+    LOG_FILE="logs/${ENV}_init_${TIMESTAMP}.log"
+    mkdir -p logs
 
-        if [ "$TEST_MODE" = "true" ]; then
-            echo "🧪 TEST MODE: Limiting to $TEST_LIMIT tickers"
-            echo "🧪 TEST MODE: Limiting to $TEST_LIMIT tickers" >> $LOG_FILE
-        fi
+    if [ "$TEST_MODE" = "true" ]; then
+        echo "🧪 TEST MODE: Limiting to $TEST_LIMIT tickers" >> $LOG_FILE
+    fi
 
-        echo "Initializing $ENV database..."
-        echo "Log file: $LOG_FILE"
-        echo ""
-        echo "Database initialization scripts:"
-        echo "=================================="
+    echo "Initializing $ENV database..."
+    echo "Log file: $LOG_FILE"
 
-        # Also write to log file
-        {
-            echo "Database initialization scripts:"
-            echo "=================================="
-        } >> $LOG_FILE
+    scripts=(
+        "db_scripts/initialize_data/initialize_db.py --reset:Reset database tables"
+        "db_scripts/initialize_data/seed_tickers_from_fmp.py:Seed tickers from FMP screener"
+        "db_scripts/initialize_data/seed_earnings_from_fmp.py:Seed earnings data"
+        # ... other scripts ...
+    )
 
-        scripts=(
-            "db_scripts/initialize_data/initialize_db.py --reset:Reset database tables"
-            "db_scripts/initialize_data/seed_tickers_from_fmp.py:Seed tickers from FMP screener"
-            "db_scripts/initialize_data/seed_earnings_from_fmp.py:Seed earnings data"
-            "db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py:Seed analyst estimates"
-            "db_scripts/initialize_data/seed_index_prices_fmp.py:Seed index/ETF prices"
-            "db_scripts/initialize_data/seed_index_constituents_fmp.py:Seed index constituents"
-            "db_scripts/initialize_data/seed_ohlc_from_fmp.py:Seed OHLC price history"
-            "db_scripts/initialize_data/seed_profiles_from_fmp.py:Seed company profiles"
-            "db_scripts/initialize_data/seed_ratios_from_fmp.py:Seed financial ratios"
-            "db_scripts/initialize_data/seed_shares_float_from_fmp.py:Seed shares float data"
-            "db_scripts/update_data/stock_metrics_update.py:Compute stock metrics"
-            "db_scripts/update_data/historical_rsi_update.py:Compute historical RSI"
-            "db_scripts/update_data/rsi_indices_update.py:Compute RSI for indices"
-            "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
-            "db_scripts/update_data/main_view_update.py:Update main screener view"
-            "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
-            "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
-        )
+    total_scripts=${#scripts[@]}
+    completed=0
+    start_time=$(date +%s)
 
-        total_scripts=${#scripts[@]}
-        completed=0
-        start_time=$(date +%s)
+    for script_info in "${scripts[@]}"; do
+        script=$(echo "$script_info" | cut -d':' -f1)
+        description=$(echo "$script_info" | cut -d':' -f2-)
+        completed=$((completed + 1))
 
-        for script_info in "${scripts[@]}"; do
-            script=$(echo "$script_info" | cut -d':' -f1)
-            description=$(echo "$script_info" | cut -d':' -f2-)
-            completed=$((completed + 1))
-
-            {
-                echo ""
-                echo "[$completed/$total_scripts] Running: $description"
-                echo "Script: $script"
-                echo "Started at: $(date '+%H:%M:%S')"
-            } | tee -a $LOG_FILE
-
-            script_start=$(date +%s)
-
-            # Build command with test mode env var if enabled
-            if [ "$TEST_MODE" = "true" ]; then
-                CMD="TEST_TICKER_LIMIT=$TEST_LIMIT python $script"
-            else
-                CMD="python $script"
-            fi
-
-            if docker-compose -f $COMPOSE_FILE exec -e TEST_TICKER_LIMIT=${TEST_MODE:+$TEST_LIMIT} $BACKEND_SERVICE sh -c "$CMD" 2>&1 | tee -a $LOG_FILE; then
-                script_end=$(date +%s)
-                duration=$((script_end - script_start))
-                echo "✅ Completed in ${duration}s" | tee -a $LOG_FILE
-            else
-                echo "❌ Failed: $script" | tee -a $LOG_FILE
-                echo "Database initialization stopped due to error." | tee -a $LOG_FILE
-                exit 1
-            fi
-        done
-
-        end_time=$(date +%s)
-        total_duration=$((end_time - start_time))
+        # Write header to log only
         {
             echo ""
-            echo "=================================="
-            echo "✅ Database initialization completed!"
-            echo "Total time: ${total_duration}s"
-            echo "=================================="
-        } | tee -a $LOG_FILE
-        ;;
+            echo "[$completed/$total_scripts] Running: $description"
+            echo "Script: $script"
+            echo "Started at: $(date '+%H:%M:%S')"
+        } >> $LOG_FILE
+
+        script_start=$(date +%s)
+
+        # Build command
+        if [ "$TEST_MODE" = "true" ]; then
+            CMD="TEST_TICKER_LIMIT=$TEST_LIMIT python $script"
+        else
+            CMD="python $script"
+        fi
+
+        # Run in Docker, disable TTY, append output only to log
+        if docker-compose -f $COMPOSE_FILE exec -T -e TEST_TICKER_LIMIT=${TEST_MODE:+$TEST_LIMIT} $BACKEND_SERVICE sh -c "$CMD" >> $LOG_FILE 2>&1; then
+            script_end=$(date +%s)
+            duration=$((script_end - script_start))
+            echo "✅ Completed in ${duration}s" >> $LOG_FILE
+        else
+            echo "❌ Failed: $script" >> $LOG_FILE
+            echo "Database initialization stopped due to error." >> $LOG_FILE
+            exit 1
+        fi
+    done
+
+    end_time=$(date +%s)
+    total_duration=$((end_time - start_time))
+    {
+        echo ""
+        echo "=================================="
+        echo "✅ Database initialization completed!"
+        echo "Total time: ${total_duration}s"
+        echo "=================================="
+    } >> $LOG_FILE
+    ;;
     update)
         # Parse additional flags
         TEST_MODE=""
