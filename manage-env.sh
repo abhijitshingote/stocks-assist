@@ -135,7 +135,20 @@ case $ACTION in
         "db_scripts/initialize_data/initialize_db.py --reset:Reset database tables"
         "db_scripts/initialize_data/seed_tickers_from_fmp.py:Seed tickers from FMP screener"
         "db_scripts/initialize_data/seed_earnings_from_fmp.py:Seed earnings data"
-        # ... other scripts ...
+        "db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py:Seed analyst estimates"
+        "db_scripts/initialize_data/seed_index_prices_fmp.py:Seed index/ETF prices"
+        "db_scripts/initialize_data/seed_index_constituents_fmp.py:Seed index constituents"
+        "db_scripts/initialize_data/seed_ohlc_from_fmp.py:Seed OHLC price history"
+        "db_scripts/initialize_data/seed_profiles_from_fmp.py:Seed company profiles"
+        "db_scripts/initialize_data/seed_ratios_from_fmp.py:Seed financial ratios"
+        "db_scripts/initialize_data/seed_shares_float_from_fmp.py:Seed shares float data"
+        "db_scripts/update_data/stock_metrics_update.py:Compute stock metrics"
+        "db_scripts/update_data/historical_rsi_update.py:Compute historical RSI"
+        "db_scripts/update_data/rsi_indices_update.py:Compute RSI for indices"
+        "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
+        "db_scripts/update_data/main_view_update.py:Update main screener view"
+        "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
+        "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
     )
 
     total_scripts=${#scripts[@]}
