@@ -30,7 +30,7 @@ import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import Ticker, OHLC, SyncMetadata
-from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, estimate_processing_time, get_test_ticker_limit
+from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, estimate_processing_time, get_test_ticker_limit, is_low_memory_mode
 
 # Script name for logging
 SCRIPT_NAME = 'seed_ohlc_from_fmp'
@@ -292,11 +292,22 @@ def process_ohlc_concurrent(engine, session, api_key, tickers, days_back=365,
     
     - max_workers: Number of concurrent API request threads
     - batch_size: Number of tickers to accumulate before writing to DB
+    
+    In LOW_MEMORY_MODE, reduces record accumulation threshold significantly.
     """
     records_inserted = 0
     tickers_processed = 0
     tickers_failed = 0
     tickers_skipped = 0
+    
+    # Low-memory mode: smaller accumulation threshold
+    low_mem = is_low_memory_mode()
+    if low_mem:
+        # In low-memory mode, write to DB more frequently
+        accumulation_multiplier = 25  # ~25 records per ticker average for more frequent writes
+        logger.info("🔧 LOW_MEMORY_MODE: Using smaller batch accumulation (25 records/ticker)")
+    else:
+        accumulation_multiplier = 250  # Default: ~250 records per ticker
 
     # Initialize rate limiter: 300 calls per minute, with some safety margin
     rate_limiter = RateLimiter(calls_per_minute=290)
@@ -365,7 +376,7 @@ def process_ohlc_concurrent(engine, session, api_key, tickers, days_back=365,
                 processed_count += 1
                 
                 # Write to DB when batch is full
-                if len(accumulated_records) >= batch_size * 250:  # ~250 records per ticker avg
+                if len(accumulated_records) >= batch_size * accumulation_multiplier:
                     db_batch_num += 1
                     records_to_write = len(accumulated_records)
                     count = bulk_upsert_ohlc(engine, accumulated_records)

@@ -45,6 +45,23 @@ def get_test_ticker_limit():
             return None
     return None
 
+
+def is_low_memory_mode():
+    """
+    Check if running in low-memory mode.
+    Returns True if LOW_MEMORY_MODE environment variable is set.
+    
+    Low-memory mode is designed for resource-constrained environments like
+    Oracle Cloud Free Tier (1 OCPU / 1GB RAM).
+    
+    Usage in scripts:
+        from db_scripts.logger import is_low_memory_mode
+        if is_low_memory_mode():
+            batch_size = 10  # Use smaller batches
+            logger.info("🔧 LOW_MEMORY_MODE: Using smaller batches")
+    """
+    return os.getenv('LOW_MEMORY_MODE', '').lower() in ('true', '1', 'yes')
+
 # Get the project root directory (parent of db_scripts)
 PROJECT_ROOT = Path(__file__).parent.parent
 LOGS_DETAILED_PATH = PROJECT_ROOT / 'logs_detailed.txt'

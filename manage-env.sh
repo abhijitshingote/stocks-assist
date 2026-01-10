@@ -1,7 +1,12 @@
 #!/bin/bash
 
 # Environment management script for stocks-assist
-# Usage: ./manage-env.sh [prod|dev] [start|stop [--volumes]|restart|logs|shell|backup|restore]
+# Usage: ./manage-env.sh [prod|dev|oracle] [start|stop [--volumes]|restart|logs|shell|backup|restore]
+#
+# Oracle mode: Optimized for Oracle Cloud Free Tier (1 OCPU / 1GB RAM)
+#   - Uses docker-compose.oracle.yml overlay with memory limits
+#   - Defaults to low-memory settings: workers=1, batch-size=10
+#   - PostgreSQL configured for minimal memory usage
 
 if [ "$1" = "clean" ]; then
     ACTION="clean"
@@ -11,8 +16,20 @@ else
     ACTION=${2:-start}
 fi
 
+# Detect oracle mode (use prod with oracle overlay)
+ORACLE_MODE=""
 COMPOSE_FILE=""
-if [ "$ENV" = "prod" ]; then
+if [ "$ENV" = "oracle" ]; then
+    ORACLE_MODE="true"
+    COMPOSE_FILE="docker-compose.yml -f docker-compose.oracle.yml"
+    DB_SERVICE="db"
+    BACKEND_SERVICE="backend"
+    FRONTEND_SERVICE="frontend"
+    DB_NAME="stocks_db"
+    DB_PORT="5432"
+    BACKEND_PORT="5001"
+    FRONTEND_PORT="5002"
+elif [ "$ENV" = "prod" ]; then
     COMPOSE_FILE="docker-compose.yml"
     DB_SERVICE="db"
     BACKEND_SERVICE="backend"
@@ -31,7 +48,7 @@ elif [ "$ENV" = "dev" ]; then
     BACKEND_PORT="5003"
     FRONTEND_PORT="5004"
 elif [ -n "$ENV" ]; then
-    echo "Usage: $0 [prod|dev] [start|stop [--volumes]|restart|logs|shell|backup|restore|init|update|status|list-logs] | $0 clean"
+    echo "Usage: $0 [prod|dev|oracle] [start|stop [--volumes]|restart|logs|shell|backup|restore|init|update|status|list-logs] | $0 clean"
     exit 1
 fi
 
@@ -107,8 +124,20 @@ case $ACTION in
     # Parse additional flags
     TEST_MODE=""
     TEST_LIMIT=10
-    WORKERS=10
-    BATCH_SIZE=100
+    LOW_MEMORY=""
+    
+    # Set defaults based on environment
+    if [ "$ORACLE_MODE" = "true" ]; then
+        # Oracle free tier defaults: very conservative
+        WORKERS=1
+        BATCH_SIZE=10
+        LOW_MEMORY="true"
+        echo "🔧 Oracle mode: Using low-memory defaults (workers=1, batch-size=10)"
+    else
+        WORKERS=10
+        BATCH_SIZE=100
+    fi
+    
     for arg in "${@:3}"; do
         case $arg in
             --test)
@@ -123,6 +152,12 @@ case $ACTION in
                 ;;
             --batch-size=*)
                 BATCH_SIZE="${arg#*=}"
+                ;;
+            --low-memory)
+                LOW_MEMORY="true"
+                WORKERS=1
+                BATCH_SIZE=10
+                echo "🔧 Low-memory mode enabled (workers=1, batch-size=10)"
                 ;;
         esac
     done
@@ -195,7 +230,7 @@ case $ACTION in
         fi
 
         # Run in Docker, disable TTY, append output only to log
-        if docker-compose -f $COMPOSE_FILE exec -T -e TEST_TICKER_LIMIT=${TEST_MODE:+$TEST_LIMIT} $BACKEND_SERVICE sh -c "$CMD" >> $LOG_FILE 2>&1; then
+        if docker-compose -f $COMPOSE_FILE exec -T -e TEST_TICKER_LIMIT=${TEST_MODE:+$TEST_LIMIT} -e LOW_MEMORY_MODE=${LOW_MEMORY:+true} $BACKEND_SERVICE sh -c "$CMD" >> $LOG_FILE 2>&1; then
             script_end=$(date +%s)
             duration=$((script_end - script_start))
             echo "✅ Completed in ${duration}s" >> $LOG_FILE
@@ -220,8 +255,20 @@ case $ACTION in
         # Parse additional flags
         TEST_MODE=""
         TEST_LIMIT=10
-        WORKERS=10
-        BATCH_SIZE=100
+        LOW_MEMORY=""
+        
+        # Set defaults based on environment
+        if [ "$ORACLE_MODE" = "true" ]; then
+            # Oracle free tier defaults: very conservative
+            WORKERS=1
+            BATCH_SIZE=10
+            LOW_MEMORY="true"
+            echo "🔧 Oracle mode: Using low-memory defaults (workers=1, batch-size=10)"
+        else
+            WORKERS=10
+            BATCH_SIZE=100
+        fi
+        
         for arg in "${@:3}"; do
             case $arg in
                 --test)
@@ -236,6 +283,12 @@ case $ACTION in
                     ;;
                 --batch-size=*)
                     BATCH_SIZE="${arg#*=}"
+                    ;;
+                --low-memory)
+                    LOW_MEMORY="true"
+                    WORKERS=1
+                    BATCH_SIZE=10
+                    echo "🔧 Low-memory mode enabled (workers=1, batch-size=10)"
                     ;;
             esac
         done
@@ -306,7 +359,7 @@ case $ACTION in
                 CMD="python $script $EXTRA_ARGS"
             fi
 
-            if docker-compose -f $COMPOSE_FILE exec -e TEST_TICKER_LIMIT=${TEST_MODE:+$TEST_LIMIT} $BACKEND_SERVICE sh -c "$CMD" 2>&1 | tee -a $LOG_FILE; then
+            if docker-compose -f $COMPOSE_FILE exec -e TEST_TICKER_LIMIT=${TEST_MODE:+$TEST_LIMIT} -e LOW_MEMORY_MODE=${LOW_MEMORY:+true} $BACKEND_SERVICE sh -c "$CMD" 2>&1 | tee -a $LOG_FILE; then
                 script_end=$(date +%s)
                 duration=$((script_end - script_start))
                 echo "✅ Completed in ${duration}s" | tee -a $LOG_FILE
@@ -337,11 +390,17 @@ case $ACTION in
         ls -la logs/${ENV}_*.log 2>/dev/null || echo "No log files found for $ENV environment."
         ;;
     *)
-        echo "Usage: $0 [prod|dev] [start|stop [--volumes]|restart|logs|shell|backup|restore|init|update|status|list-logs] | $0 clean"
+        echo "Usage: $0 [prod|dev|oracle] [start|stop [--volumes]|restart|logs|shell|backup|restore|init|update|status|list-logs] | $0 clean"
+        echo ""
+        echo "Environments:"
+        echo "  prod   - Production environment (standard resources)"
+        echo "  dev    - Development environment (separate DB)"
+        echo "  oracle - Oracle Cloud Free Tier (1GB RAM, optimized for low memory)"
         echo ""
         echo "Examples:"
         echo "  $0 prod start                    # Start production environment"
         echo "  $0 dev start                     # Start development environment"
+        echo "  $0 oracle start                  # Start with Oracle free tier memory limits"
         echo "  $0 prod stop --volumes           # Stop production and remove data volumes"
         echo "  $0 dev stop                      # Stop development (keep data)"
         echo "  $0 prod logs backend             # View backend logs"
@@ -349,10 +408,12 @@ case $ACTION in
         echo "  $0 prod backup                   # Create production backup"
         echo "  $0 dev restore backup_file.dump  # Restore dev from backup"
         echo "  $0 prod init                     # Initialize production database"
+        echo "  $0 oracle init                   # Initialize with low-memory defaults (workers=1)"
         echo "  $0 dev update                    # Update dev database"
         echo "  $0 prod init --test              # Initialize with 10 test tickers"
         echo "  $0 dev update --test=5           # Update with 5 test tickers"
         echo "  $0 prod init --workers=15        # Initialize with 15 concurrent API workers"
+        echo "  $0 prod init --low-memory        # Initialize with minimal memory usage"
         echo "  $0 dev update --workers=5 --batch-size=50  # Custom workers and batch size"
         echo "  $0 prod list-logs                # List available log files"
         echo "  $0 clean                         # Clean up unused Docker resources"

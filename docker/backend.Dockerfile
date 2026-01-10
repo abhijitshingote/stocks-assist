@@ -2,20 +2,12 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install system dependencies including cron, timezone data, and WeasyPrint dependencies
+# Install system dependencies including cron and timezone data
 RUN apt-get update && apt-get install -y \
     gcc \
     postgresql-client \
     cron \
     tzdata \
-    wget \
-    gnupg \
-    libcairo2 \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libgdk-pixbuf-2.0-0 \
-    libffi-dev \
-    shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
 # Set timezone to Eastern Time
@@ -27,10 +19,6 @@ COPY backend ./backend
 COPY db_scripts ./db_scripts
 COPY docker ./docker
 RUN pip install --no-cache-dir -r backend/requirements.txt
-
-# Install Playwright browsers and system dependencies
-# RUN playwright install chromium
-# RUN playwright install-deps
 
 # Copy application code
 
