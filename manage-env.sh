@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# When running update the only fields not current are 
+# ipo_date(inconsequential), market cap, 52 week range
 # Environment management script for stocks-assist
 # Usage: ./manage-env.sh [prod|dev] [start|stop [--volumes]|restart|logs|shell|backup|restore]
 

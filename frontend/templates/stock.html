@@ -1322,6 +1322,14 @@
                 <span>Bearish</span>
             </div>
             <div class="legend-item">
+                <div class="legend-dot" style="background: #ffffff;"></div>
+                <span>10 EMA</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #ffa500;"></div>
+                <span>20 EMA</span>
+            </div>
+            <div class="legend-item">
                 <div class="legend-dot" style="background: #00ff00;"></div>
                 <span>50 DMA</span>
             </div>
@@ -1417,6 +1425,8 @@ let candlestickSeries = null;
 let volumeSeries = null;
 let dma50Series = null;
 let dma200Series = null;
+let ema10Series = null;
+let ema20Series = null;
 let rsiSeries = null;
 let allOhlcData = [];
 let allEarningsData = [];
@@ -1425,6 +1435,29 @@ let currentTimeframe = 365;
 function formatNumber(num, decimals = 2) {
     if (num == null) return '--';
     return Number(num).toFixed(decimals);
+}
+
+function calculateEMA(data, period) {
+    if (data.length < period) return [];
+    
+    const k = 2 / (period + 1);
+    const emaData = [];
+    
+    // Calculate initial SMA for first EMA value
+    let sum = 0;
+    for (let i = 0; i < period; i++) {
+        sum += data[i].close;
+    }
+    let ema = sum / period;
+    emaData.push({ time: data[period - 1].time, value: ema });
+    
+    // Calculate EMA for remaining values
+    for (let i = period; i < data.length; i++) {
+        ema = (data[i].close - ema) * k + ema;
+        emaData.push({ time: data[i].time, value: ema });
+    }
+    
+    return emaData;
 }
 
 function formatLargeNumber(num) {
@@ -1844,6 +1877,24 @@ function initChart() {
         lastValueVisible: false,
         crosshairMarkerVisible: false,
     });
+
+    ema10Series = chart.addLineSeries({
+        color: '#ffffff',
+        lineWidth: 1,
+        lineStyle: LightweightCharts.LineStyle.Solid,
+        priceLineVisible: false,
+        lastValueVisible: false,
+        crosshairMarkerVisible: false,
+    });
+
+    ema20Series = chart.addLineSeries({
+        color: '#ffa500',
+        lineWidth: 1,
+        lineStyle: LightweightCharts.LineStyle.Solid,
+        priceLineVisible: false,
+        lastValueVisible: false,
+        crosshairMarkerVisible: false,
+    });
     
     volumeSeries = chart.addHistogramSeries({
         color: '#26a69a',
@@ -1981,6 +2032,13 @@ function setChartData(data) {
             value: d.dma_200,
         }));
     dma200Series.setData(dma200Data);
+
+    // Calculate and set EMA data
+    const ema10Data = calculateEMA(data, 10);
+    ema10Series.setData(ema10Data);
+    
+    const ema20Data = calculateEMA(data, 20);
+    ema20Series.setData(ema20Data);
     
     const volumeData = data.map(d => ({
         time: d.time,
