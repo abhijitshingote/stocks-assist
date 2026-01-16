@@ -216,6 +216,7 @@ case $ACTION in
         echo "Total time: ${total_duration}s"
         echo "=================================="
     } >> $LOG_FILE
+    exit 0
     ;;
     update)
         # Parse additional flags
@@ -327,6 +328,7 @@ case $ACTION in
             echo "Total time: ${total_duration}s"
             echo "========================"
         } | tee -a $LOG_FILE
+        exit 0
         ;;
     status)
         echo "Status of $ENV environment:"

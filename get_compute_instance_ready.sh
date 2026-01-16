@@ -17,9 +17,9 @@ echo "=================================================="
 echo ""
 
 # -----------------------------------------------------------------------------
-# 1. Install legacy docker-compose binary (self-contained, no Python)
+# 1. Install Docker Compose v2 plugin and create docker-compose shim for scripts
 # -----------------------------------------------------------------------------
-echo "[1/4] Installing docker-compose binary..."
+echo "[1/4] Installing Docker Compose v2 plugin and docker-compose shim..."
 
 # Ensure curl is available
 if ! command -v curl &> /dev/null; then
@@ -28,13 +28,36 @@ if ! command -v curl &> /dev/null; then
     sudo apt install -y curl
 fi
 
-if command -v docker-compose &> /dev/null; then
-    echo "  ✓ docker-compose already installed: $(docker-compose --version)"
+# Install Docker Compose v2 plugin (official ARM64 binary)
+DOCKER_COMPOSE_PLUGIN="/usr/libexec/docker/cli-plugins/docker-compose"
+if [ -f "$DOCKER_COMPOSE_PLUGIN" ]; then
+    echo "  ✓ Docker Compose v2 plugin already installed: $(docker compose version 2>/dev/null || echo 'not yet available')"
 else
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    echo "  ✓ docker-compose installed: $(docker-compose --version)"
+    echo "  Installing Docker Compose v2 plugin..."
+    sudo mkdir -p /usr/libexec/docker/cli-plugins
+    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-aarch64" \
+        -o "$DOCKER_COMPOSE_PLUGIN"
+    sudo chmod +x "$DOCKER_COMPOSE_PLUGIN"
+    echo "  ✓ Docker Compose v2 plugin installed"
 fi
+
+# Create docker-compose shim for legacy scripts
+SHIM="/usr/local/bin/docker-compose"
+if [ -f "$SHIM" ]; then
+    echo "  ✓ docker-compose shim already exists"
+else
+    echo "  Creating docker-compose shim..."
+    sudo tee "$SHIM" > /dev/null <<'EOF'
+#!/bin/bash
+docker compose "$@"
+EOF
+    sudo chmod +x "$SHIM"
+    echo "  ✓ docker-compose shim created"
+fi
+
+# Verify installation
+echo "  Verifying docker-compose..."
+docker-compose version
 
 # -----------------------------------------------------------------------------
 # 2. Configure iptables to allow TCP port 80
