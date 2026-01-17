@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat
+    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat, AbiNotes
 )
 import os
 import json
@@ -18,6 +18,8 @@ from datetime import date
 STOCK_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_notes.json')
 # Path to persist stock preferences (survives database resets)
 STOCK_PREFERENCES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_preferences.json')
+# Path to persist abi notes (survives database resets)
+ABI_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_notes.json')
 
 app = Flask(__name__)
 CORS(app)
@@ -2248,6 +2250,255 @@ def get_company_profile_data(ticker):
     except Exception as e:
         logger.error(f"Error getting company profile for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+# ============================================================
+# Abi Notes API Endpoints (date-based personal notes)
+# ============================================================
+
+def export_all_abi_notes_to_file():
+    """Export all abi notes to JSON file for persistence across database resets."""
+    s = Session()
+    try:
+        notes = s.query(AbiNotes).order_by(AbiNotes.note_date.desc(), AbiNotes.id.desc()).all()
+        
+        data = []
+        for note in notes:
+            data.append({
+                'id': note.id,
+                'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
+                'title': note.title,
+                'content': note.content,
+                'tags': note.tags,
+                'created_at': note.created_at.isoformat() if note.created_at else None,
+                'updated_at': note.updated_at.isoformat() if note.updated_at else None
+            })
+        
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(ABI_NOTES_FILE), exist_ok=True)
+        
+        with open(ABI_NOTES_FILE, 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        logger.info(f"Exported {len(data)} abi notes to {ABI_NOTES_FILE}")
+    except Exception as e:
+        logger.error(f"Error exporting abi notes: {str(e)}")
+    finally:
+        s.close()
+
+
+@app.route('/api/abi-notes', methods=['GET'])
+def get_abi_notes():
+    """Get all abi notes, optionally filtered by date range or search query."""
+    s = Session()
+    try:
+        query = s.query(AbiNotes)
+        
+        # Optional date filtering
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        search = request.args.get('search')
+        tag = request.args.get('tag')
+        
+        if start_date:
+            query = query.filter(AbiNotes.note_date >= start_date)
+        if end_date:
+            query = query.filter(AbiNotes.note_date <= end_date)
+        if search:
+            search_term = f'%{search}%'
+            query = query.filter(
+                or_(
+                    AbiNotes.title.ilike(search_term),
+                    AbiNotes.content.ilike(search_term)
+                )
+            )
+        if tag:
+            query = query.filter(AbiNotes.tags.ilike(f'%{tag}%'))
+        
+        notes = query.order_by(AbiNotes.note_date.desc(), AbiNotes.id.desc()).all()
+        
+        results = []
+        for note in notes:
+            results.append({
+                'id': note.id,
+                'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
+                'title': note.title,
+                'content': note.content,
+                'tags': note.tags,
+                'created_at': note.created_at.isoformat() if note.created_at else None,
+                'updated_at': note.updated_at.isoformat() if note.updated_at else None
+            })
+        
+        return jsonify(results)
+    finally:
+        s.close()
+
+
+@app.route('/api/abi-notes/<int:note_id>', methods=['GET'])
+def get_abi_note(note_id):
+    """Get a specific abi note by ID."""
+    s = Session()
+    try:
+        note = s.query(AbiNotes).filter(AbiNotes.id == note_id).first()
+        
+        if not note:
+            return jsonify({'error': 'Note not found'}), 404
+        
+        return jsonify({
+            'id': note.id,
+            'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
+            'title': note.title,
+            'content': note.content,
+            'tags': note.tags,
+            'created_at': note.created_at.isoformat() if note.created_at else None,
+            'updated_at': note.updated_at.isoformat() if note.updated_at else None
+        })
+    finally:
+        s.close()
+
+
+@app.route('/api/abi-notes', methods=['POST'])
+def create_abi_note():
+    """Create a new abi note."""
+    s = Session()
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'error': 'Request body is required'}), 400
+        
+        # note_date defaults to today if not provided
+        note_date_str = data.get('note_date')
+        if note_date_str:
+            from datetime import datetime
+            note_date = datetime.strptime(note_date_str, '%Y-%m-%d').date()
+        else:
+            note_date = date.today()
+        
+        new_note = AbiNotes(
+            note_date=note_date,
+            title=data.get('title'),
+            content=data.get('content'),
+            tags=data.get('tags')
+        )
+        
+        s.add(new_note)
+        s.commit()
+        
+        # Export all notes to file for persistence
+        export_all_abi_notes_to_file()
+        
+        return jsonify({
+            'id': new_note.id,
+            'note_date': new_note.note_date.strftime('%Y-%m-%d') if new_note.note_date else None,
+            'title': new_note.title,
+            'content': new_note.content,
+            'tags': new_note.tags,
+            'created_at': new_note.created_at.isoformat() if new_note.created_at else None,
+            'updated_at': new_note.updated_at.isoformat() if new_note.updated_at else None,
+            'message': 'Note created successfully'
+        }), 201
+    except Exception as e:
+        s.rollback()
+        logger.error(f"Error creating abi note: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/abi-notes/<int:note_id>', methods=['PUT'])
+def update_abi_note(note_id):
+    """Update an existing abi note."""
+    s = Session()
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'error': 'Request body is required'}), 400
+        
+        note = s.query(AbiNotes).filter(AbiNotes.id == note_id).first()
+        
+        if not note:
+            return jsonify({'error': 'Note not found'}), 404
+        
+        # Update fields if provided
+        if 'note_date' in data:
+            from datetime import datetime
+            note.note_date = datetime.strptime(data['note_date'], '%Y-%m-%d').date()
+        if 'title' in data:
+            note.title = data['title']
+        if 'content' in data:
+            note.content = data['content']
+        if 'tags' in data:
+            note.tags = data['tags']
+        
+        s.commit()
+        
+        # Export all notes to file for persistence
+        export_all_abi_notes_to_file()
+        
+        return jsonify({
+            'id': note.id,
+            'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
+            'title': note.title,
+            'content': note.content,
+            'tags': note.tags,
+            'created_at': note.created_at.isoformat() if note.created_at else None,
+            'updated_at': note.updated_at.isoformat() if note.updated_at else None,
+            'message': 'Note updated successfully'
+        })
+    except Exception as e:
+        s.rollback()
+        logger.error(f"Error updating abi note {note_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/abi-notes/<int:note_id>', methods=['DELETE'])
+def delete_abi_note(note_id):
+    """Delete an abi note."""
+    s = Session()
+    try:
+        note = s.query(AbiNotes).filter(AbiNotes.id == note_id).first()
+        
+        if not note:
+            return jsonify({'error': 'Note not found'}), 404
+        
+        s.delete(note)
+        s.commit()
+        
+        # Export all notes to file for persistence
+        export_all_abi_notes_to_file()
+        
+        return jsonify({'message': 'Note deleted successfully', 'id': note_id})
+    except Exception as e:
+        s.rollback()
+        logger.error(f"Error deleting abi note {note_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/abi-notes/tags', methods=['GET'])
+def get_abi_notes_tags():
+    """Get all unique tags used in abi notes."""
+    s = Session()
+    try:
+        notes = s.query(AbiNotes.tags).filter(AbiNotes.tags.isnot(None), AbiNotes.tags != '').all()
+        
+        # Extract unique tags
+        all_tags = set()
+        for (tags,) in notes:
+            if tags:
+                for tag in tags.split(','):
+                    tag = tag.strip()
+                    if tag:
+                        all_tags.add(tag)
+        
+        return jsonify({'tags': sorted(list(all_tags))})
     finally:
         s.close()
 

@@ -37,6 +37,7 @@ def initialize_database(reset=False):
     16. stock_notes - User notes for stocks
     17. stock_preferences - User favorite/dislike status for stocks
     18. shares_float - Company share float and liquidity data
+    19. abi_notes - User personal notes by date
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
@@ -52,6 +53,7 @@ def initialize_database(reset=False):
         if reset:
             logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
+            connection.execute(text("DROP TABLE IF EXISTS abi_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS main_view CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_preferences CASCADE;"))
@@ -452,6 +454,19 @@ def initialize_database(reset=False):
             )
         """))
 
+        # 19. abi_notes - User personal notes by date
+        connection.execute(text(f"""
+            {table_clause} abi_notes (
+                id SERIAL PRIMARY KEY,
+                note_date DATE NOT NULL,
+                title VARCHAR(255),
+                content TEXT,
+                tags VARCHAR(500),
+                created_at TIMESTAMP DEFAULT NOW(),
+                updated_at TIMESTAMP DEFAULT NOW()
+            )
+        """))
+
         # Create indexes for better query performance
         idx_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
         connection.execute(text(f"""
@@ -490,6 +505,7 @@ def initialize_database(reset=False):
             {idx_clause} idx_main_view_dr_20 ON main_view(dr_20);
             {idx_clause} idx_main_view_dr_60 ON main_view(dr_60);
             {idx_clause} idx_main_view_dr_120 ON main_view(dr_120);
+            {idx_clause} idx_abi_notes_note_date ON abi_notes(note_date);
         """))
         
         connection.commit()
@@ -521,6 +537,7 @@ def initialize_database(reset=False):
         logger.info("  - stock_notes (user notes for stocks)")
         logger.info("  - stock_preferences (user favorite/dislike status for stocks)")
         logger.info("  - shares_float (company share float and liquidity data)")
+        logger.info("  - abi_notes (user personal notes by date)")
         
         flush_logger(SCRIPT_NAME)
 

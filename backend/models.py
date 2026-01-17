@@ -561,3 +561,28 @@ class SharesFloat(Base):
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
     ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 18. AbiNotes (user-entered free-form notes by date)
+# ------------------------------------------------------------
+class AbiNotes(Base):
+    __tablename__ = "abi_notes"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    
+    # Date the note is associated with (not necessarily when created)
+    note_date = Column(Date, nullable=False)
+    
+    # Optional title/summary for the note
+    title = Column(String(255))
+    
+    # Long-form notes content (markdown supported)
+    content = Column(Text)
+    
+    # Optional tags for categorization (comma-separated)
+    tags = Column(String(500))
+    
+    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))

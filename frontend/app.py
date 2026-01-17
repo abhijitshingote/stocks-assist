@@ -36,6 +36,8 @@ def make_backend_request(endpoint, method='GET', json_data=None):
             response = requests.put(url, json=json_data)
         elif method == 'POST':
             response = requests.post(url, json=json_data)
+        elif method == 'DELETE':
+            response = requests.delete(url, json=json_data)
         else:
             return None, 400
         
@@ -394,6 +396,76 @@ def api_list_stock_preferences(preference_type):
     data, status_code = make_backend_request(f'/api/stock-preferences/list/{preference_type}')
     if data is None:
         return jsonify({'error': 'Failed to fetch stock preferences list'}), status_code
+    return jsonify(data), status_code
+
+
+# ============================================================
+# Abi Notes Endpoints
+# ============================================================
+
+@app.route('/abi-notes')
+def abi_notes_page():
+    """Abi Notes page - personal date-based notes"""
+    return render_template('abi_notes.html')
+
+
+@app.route('/api/frontend/abi-notes', methods=['GET'])
+def api_get_abi_notes():
+    """Proxy endpoint to get all abi notes"""
+    # Pass through query parameters
+    params = request.args.to_dict()
+    query_string = '&'.join(f'{k}={v}' for k, v in params.items())
+    endpoint = f'/api/abi-notes?{query_string}' if query_string else '/api/abi-notes'
+    data, status_code = make_backend_request(endpoint)
+    if data is None:
+        return jsonify({'error': 'Failed to fetch abi notes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-notes', methods=['POST'])
+def api_create_abi_note():
+    """Proxy endpoint to create a new abi note"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/abi-notes', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to create abi note'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-notes/<int:note_id>', methods=['GET'])
+def api_get_abi_note(note_id):
+    """Proxy endpoint to get a specific abi note"""
+    data, status_code = make_backend_request(f'/api/abi-notes/{note_id}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch abi note'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-notes/<int:note_id>', methods=['PUT'])
+def api_update_abi_note(note_id):
+    """Proxy endpoint to update an abi note"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request(f'/api/abi-notes/{note_id}', method='PUT', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to update abi note'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-notes/<int:note_id>', methods=['DELETE'])
+def api_delete_abi_note(note_id):
+    """Proxy endpoint to delete an abi note"""
+    data, status_code = make_backend_request(f'/api/abi-notes/{note_id}', method='DELETE', json_data={})
+    if data is None:
+        return jsonify({'error': 'Failed to delete abi note'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-notes/tags', methods=['GET'])
+def api_get_abi_notes_tags():
+    """Proxy endpoint to get all unique tags"""
+    data, status_code = make_backend_request('/api/abi-notes/tags')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch abi notes tags'}), status_code
     return jsonify(data), status_code
 
 

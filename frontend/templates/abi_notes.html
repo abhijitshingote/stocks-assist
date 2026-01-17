@@ -1,0 +1,795 @@
+{% extends "base.html" %}
+
+{% block title %}Abi Notes - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .notes-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 0.75rem;
+        min-height: calc(100vh - 160px);
+        width: 100%;
+    }
+
+    .notes-container > .notes-sidebar {
+        flex: 0 0 260px !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        max-width: 260px !important;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar-header {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 600;
+        font-size: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .new-note-btn {
+        background: var(--accent-green);
+        color: var(--bg-dark);
+        border: none;
+        padding: 0.35rem 0.7rem;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.7rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .new-note-btn:hover {
+        background: #4eca5f;
+    }
+
+    /* Filters */
+    .filters-section {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .search-box {
+        width: 100%;
+        padding: 0.4rem 0.6rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-primary);
+        font-size: 0.75rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .search-box:focus {
+        outline: none;
+        border-color: var(--accent-blue);
+    }
+
+    .search-box::placeholder {
+        color: var(--text-muted);
+    }
+
+    .date-filter {
+        display: flex;
+        gap: 0.4rem;
+    }
+
+    .date-filter input {
+        flex: 1;
+        padding: 0.35rem 0.5rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-primary);
+        font-size: 0.65rem;
+    }
+
+    .date-filter input:focus {
+        outline: none;
+        border-color: var(--accent-blue);
+    }
+
+    /* Tags filter */
+    .tags-filter {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        margin-top: 0.4rem;
+    }
+
+    .tag-chip {
+        padding: 0.15rem 0.4rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        font-size: 0.6rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .tag-chip:hover, .tag-chip.active {
+        background: var(--accent-purple);
+        color: var(--bg-dark);
+        border-color: var(--accent-purple);
+    }
+
+    /* Notes list */
+    .notes-list {
+        flex: 1;
+        overflow-y: auto;
+        max-height: calc(100vh - 320px);
+    }
+
+    .note-item {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .note-item:hover {
+        background: var(--bg-card-hover);
+    }
+
+    .note-item.active {
+        background: var(--bg-card-hover);
+        border-left: 2px solid var(--accent-green);
+    }
+
+    .note-item-date {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.6rem;
+        color: var(--accent-blue);
+        margin-bottom: 0.15rem;
+    }
+
+    .note-item-title {
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--text-primary);
+        margin-bottom: 0.15rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .note-item-preview {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.3;
+    }
+
+    .note-item-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.2rem;
+        margin-top: 0.3rem;
+    }
+
+    .note-item-tag {
+        padding: 0.1rem 0.3rem;
+        background: rgba(163, 113, 247, 0.15);
+        color: var(--accent-purple);
+        border-radius: 3px;
+        font-size: 0.55rem;
+        font-weight: 500;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+        padding: 0.4rem 0.75rem;
+        border-top: 1px solid var(--border-color);
+        font-size: 0.65rem;
+        color: var(--text-muted);
+    }
+
+    /* Main content */
+    .notes-container > .notes-main {
+        flex: 1 1 auto !important;
+        min-width: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .note-editor-header {
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .note-editor-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+    }
+
+    .note-actions {
+        display: flex;
+        gap: 0.4rem;
+    }
+
+    .note-actions button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .note-actions button:hover {
+        background: var(--bg-card-hover);
+        color: var(--text-primary);
+        border-color: var(--accent-blue);
+    }
+
+    .note-actions button.btn-save {
+        background: var(--accent-green);
+        color: var(--bg-dark);
+        border-color: var(--accent-green);
+    }
+
+    .note-actions button.btn-save:hover:not(:disabled) {
+        background: #4eca5f;
+    }
+
+    .note-actions button.btn-save:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .note-actions button.btn-delete {
+        color: var(--accent-red);
+        border-color: var(--accent-red);
+    }
+
+    .note-actions button.btn-delete:hover {
+        background: rgba(248, 81, 73, 0.1);
+    }
+
+    /* Form content */
+    .note-form-content {
+        flex: 1;
+        overflow: auto;
+        padding: 0.75rem;
+        max-height: calc(100vh - 200px);
+    }
+
+    .form-row {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .form-group.flex-1 {
+        flex: 1;
+    }
+
+    .form-group label {
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 0.5rem 0.6rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-primary);
+        font-size: 0.8rem;
+        font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--accent-blue);
+    }
+
+    .form-group input[type="date"] {
+        width: 150px;
+    }
+
+    .form-group textarea {
+        min-height: 350px;
+        resize: vertical;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    /* Empty/placeholder state */
+    .placeholder-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 1rem;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+    }
+
+    /* Loading spinner */
+    .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    .loading::after {
+        content: '';
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--border-color);
+        border-top-color: var(--accent-blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 0.5rem;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Toast notification */
+    .toast {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        padding: 0.75rem 1.25rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-primary);
+        font-size: 0.85rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .toast.success {
+        border-color: var(--accent-green);
+    }
+
+    .toast.error {
+        border-color: var(--accent-red);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .notes-container {
+            flex-direction: column;
+        }
+
+        .notes-container > .notes-sidebar {
+            flex: 0 0 auto;
+            min-width: 100%;
+            max-width: 100%;
+        }
+
+        .notes-list, .note-form-content {
+            max-height: 250px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 1.25rem;">
+    <span class="mono text-purple">📝</span> Abi Notes
+</h1>
+
+<div class="notes-container" style="display: flex; flex-direction: row; gap: 0.75rem;">
+    <div class="notes-sidebar" style="flex: 0 0 260px; width: 260px;">
+        <div class="sidebar-header">
+            <span>Notes</span>
+            <button class="new-note-btn" onclick="createNewNote()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                New
+            </button>
+        </div>
+
+        <div class="filters-section">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search notes..." oninput="debounceSearch()">
+            <div class="date-filter">
+                <input type="date" id="startDate" title="From date" onchange="loadNotes()">
+                <input type="date" id="endDate" title="To date" onchange="loadNotes()">
+            </div>
+            <div class="tags-filter" id="tagsFilter"></div>
+        </div>
+
+        <div class="notes-list" id="notesList">
+            <div class="loading">Loading...</div>
+        </div>
+
+        <div class="stats-bar">
+            <span id="notesCount">0 notes</span>
+        </div>
+    </div>
+
+    <div class="notes-main" style="flex: 1;">
+        <div class="note-editor-header">
+            <span class="note-editor-title" id="editorTitle">Select a note</span>
+            <div class="note-actions" id="noteActions" style="display: none;">
+                <button onclick="cancelEdit()">Cancel</button>
+                <button class="btn-delete" onclick="deleteNote()" id="deleteBtn" style="display: none;">Delete</button>
+                <button class="btn-save" onclick="saveNote()" id="saveBtn">Save</button>
+            </div>
+        </div>
+        <div class="note-form-content" id="noteContent">
+            <div class="placeholder-content">Select a note from the list or create a new one</div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let allNotes = [];
+    let currentNoteId = null;
+    let isEditing = false;
+    let searchTimeout = null;
+    let activeTag = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        loadNotes();
+        loadTags();
+    });
+
+    function debounceSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(loadNotes, 300);
+    }
+
+    async function loadNotes() {
+        const listEl = document.getElementById('notesList');
+        listEl.innerHTML = '<div class="loading">Loading...</div>';
+        
+        // Build query params
+        const params = new URLSearchParams();
+        const search = document.getElementById('searchBox').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        if (search) params.append('search', search);
+        if (startDate) params.append('start_date', startDate);
+        if (endDate) params.append('end_date', endDate);
+        if (activeTag) params.append('tag', activeTag);
+        
+        try {
+            const response = await fetch(`/api/frontend/abi-notes?${params.toString()}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Check if it's an error response
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            allNotes = Array.isArray(data) ? data : [];
+            renderNotesList();
+            document.getElementById('notesCount').textContent = `${allNotes.length} note${allNotes.length !== 1 ? 's' : ''}`;
+        } catch (error) {
+            console.error('Error loading notes:', error);
+            listEl.innerHTML = '<div class="empty-state">No notes yet. Click "New" to create one!</div>';
+            allNotes = [];
+            document.getElementById('notesCount').textContent = '0 notes';
+        }
+    }
+
+    async function loadTags() {
+        try {
+            const response = await fetch('/api/frontend/abi-notes/tags');
+            if (!response.ok) return;
+            
+            const data = await response.json();
+            
+            const tagsEl = document.getElementById('tagsFilter');
+            if (data.tags && data.tags.length > 0) {
+                tagsEl.innerHTML = data.tags.map(tag => 
+                    `<span class="tag-chip${activeTag === tag ? ' active' : ''}" onclick="toggleTag('${escapeHtml(tag)}')">${escapeHtml(tag)}</span>`
+                ).join('');
+            } else {
+                tagsEl.innerHTML = '';
+            }
+        } catch (error) {
+            console.error('Error loading tags:', error);
+        }
+    }
+
+    function toggleTag(tag) {
+        activeTag = activeTag === tag ? null : tag;
+        loadNotes();
+        loadTags();
+    }
+
+    function renderNotesList() {
+        const listEl = document.getElementById('notesList');
+        
+        if (allNotes.length === 0) {
+            listEl.innerHTML = '<div class="empty-state">No notes yet. Click "New" to create one!</div>';
+            return;
+        }
+        
+        listEl.innerHTML = allNotes.map(note => {
+            const tags = note.tags ? note.tags.split(',').map(t => t.trim()).filter(t => t) : [];
+            const tagsHtml = tags.map(t => `<span class="note-item-tag">${escapeHtml(t)}</span>`).join('');
+            
+            return `
+                <div class="note-item${currentNoteId === note.id ? ' active' : ''}" onclick="selectNote(${note.id})">
+                    <div class="note-item-date">${formatDate(note.note_date)}</div>
+                    <div class="note-item-title">${escapeHtml(note.title) || 'Untitled'}</div>
+                    <div class="note-item-preview">${escapeHtml(note.content?.substring(0, 100)) || 'No content'}</div>
+                    ${tags.length > 0 ? `<div class="note-item-tags">${tagsHtml}</div>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function selectNote(noteId) {
+        const note = allNotes.find(n => n.id === noteId);
+        if (!note) return;
+        
+        currentNoteId = noteId;
+        isEditing = true;
+        renderNotesList();
+        showNoteEditor(note);
+    }
+
+    function createNewNote() {
+        currentNoteId = null;
+        isEditing = true;
+        renderNotesList();
+        
+        const today = new Date().toISOString().split('T')[0];
+        showNoteEditor({
+            note_date: today,
+            title: '',
+            content: '',
+            tags: ''
+        });
+        
+        document.getElementById('editorTitle').textContent = 'New Note';
+        document.getElementById('deleteBtn').style.display = 'none';
+    }
+
+    function showNoteEditor(note) {
+        document.getElementById('noteContent').innerHTML = `
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="noteDate">Date</label>
+                    <input type="date" id="noteDate" value="${note.note_date || ''}" required>
+                </div>
+                <div class="form-group flex-1">
+                    <label for="noteTitle">Title</label>
+                    <input type="text" id="noteTitle" value="${escapeHtml(note.title) || ''}" placeholder="Note title...">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label for="noteTags">Tags (comma-separated)</label>
+                    <input type="text" id="noteTags" value="${escapeHtml(note.tags) || ''}" placeholder="market, idea, earnings...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="noteContentInput">Content</label>
+                <textarea id="noteContentInput" placeholder="Write your thoughts...">${escapeHtml(note.content) || ''}</textarea>
+            </div>
+        `;
+        
+        document.getElementById('editorTitle').textContent = currentNoteId ? 'Edit Note' : 'New Note';
+        document.getElementById('noteActions').style.display = 'flex';
+        document.getElementById('deleteBtn').style.display = currentNoteId ? 'inline-block' : 'none';
+        
+        // Focus on title for new notes
+        if (!currentNoteId) {
+            setTimeout(() => document.getElementById('noteTitle').focus(), 100);
+        }
+    }
+
+    async function saveNote() {
+        const noteDate = document.getElementById('noteDate').value;
+        const title = document.getElementById('noteTitle').value;
+        const content = document.getElementById('noteContentInput').value;
+        const tags = document.getElementById('noteTags').value;
+        
+        if (!noteDate) {
+            showToast('Date is required', 'error');
+            return;
+        }
+        
+        const data = {
+            note_date: noteDate,
+            title: title || null,
+            content: content || null,
+            tags: tags || null
+        };
+        
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+        
+        try {
+            let response;
+            if (currentNoteId) {
+                response = await fetch(`/api/frontend/abi-notes/${currentNoteId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } else {
+                response = await fetch('/api/frontend/abi-notes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            }
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                showToast(currentNoteId ? 'Note updated!' : 'Note created!', 'success');
+                currentNoteId = result.id;
+                await loadNotes();
+                await loadTags();
+                selectNote(currentNoteId);
+            } else {
+                showToast(result.error || 'Error saving note', 'error');
+            }
+        } catch (error) {
+            console.error('Error saving note:', error);
+            showToast('Error saving note: ' + error.message, 'error');
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save';
+        }
+    }
+
+    async function deleteNote() {
+        if (!currentNoteId) return;
+        
+        if (!confirm('Are you sure you want to delete this note?')) return;
+        
+        try {
+            const response = await fetch(`/api/frontend/abi-notes/${currentNoteId}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                showToast('Note deleted', 'success');
+                currentNoteId = null;
+                isEditing = false;
+                cancelEdit();
+                await loadNotes();
+                await loadTags();
+            } else {
+                const result = await response.json();
+                showToast(result.error || 'Error deleting note', 'error');
+            }
+        } catch (error) {
+            showToast('Error deleting note', 'error');
+        }
+    }
+
+    function cancelEdit() {
+        currentNoteId = null;
+        isEditing = false;
+        renderNotesList();
+        
+        document.getElementById('noteContent').innerHTML = `
+            <div class="placeholder-content">Select a note from the list or create a new one</div>
+        `;
+        
+        document.getElementById('editorTitle').textContent = 'Select a note';
+        document.getElementById('noteActions').style.display = 'none';
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const date = new Date(dateStr + 'T00:00:00');
+        return date.toLocaleDateString('en-US', { 
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric',
+            year: 'numeric'
+        });
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type} show`;
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        // Ctrl+S to save
+        if ((e.ctrlKey || e.metaKey) && e.key === 's' && isEditing) {
+            e.preventDefault();
+            saveNote();
+        }
+        // Ctrl+N for new note
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+            e.preventDefault();
+            createNewNote();
+        }
+        // Escape to cancel
+        if (e.key === 'Escape' && isEditing) {
+            cancelEdit();
+        }
+    });
+</script>
+{% endblock %}
