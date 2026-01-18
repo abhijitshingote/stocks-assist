@@ -72,6 +72,12 @@ def sector_rsi_page():
     return render_template('sector_rsi.html')
 
 
+@app.route('/sector-performance')
+def sector_performance_page():
+    """Sector Performance page - Index/ETF performance across timeframes"""
+    return render_template('sector_performance.html')
+
+
 @app.route('/rsi-mktcap')
 def rsi_mktcap_page():
     """RSI Market Cap page - RSI percentile within market cap bucket"""
@@ -172,6 +178,15 @@ def api_earnings_eps(ticker):
     data, status_code = make_backend_request(f'/api/earnings-eps/{ticker}')
     if data is None:
         return jsonify({'error': 'Failed to fetch earnings EPS data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/volspike-events/<ticker>')
+def api_volspike_events(ticker):
+    """Proxy endpoint for volume spike and gap events from backend (for chart markers)"""
+    data, status_code = make_backend_request(f'/api/volspike-events/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch volspike events'}), status_code
     return jsonify(data), status_code
 
 
@@ -515,6 +530,24 @@ def api_latest_date():
     data, status_code = make_backend_request('/api/latest_date')
     if data is None:
         return jsonify({'error': 'Failed to fetch latest date'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/sector-performance')
+def api_sector_performance():
+    """Proxy endpoint for sector/index performance from backend"""
+    data, status_code = make_backend_request('/api/sector-performance')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch sector performance data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/index-ohlc/<symbol>')
+def api_index_ohlc(symbol):
+    """Proxy endpoint for index/ETF OHLC data from backend"""
+    data, status_code = make_backend_request(f'/api/index-ohlc/{symbol}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch index OHLC data'}), status_code
     return jsonify(data), status_code
 
 

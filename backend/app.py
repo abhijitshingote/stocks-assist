@@ -794,6 +794,46 @@ def get_earnings_eps(ticker):
 
 
 # ============================================================================
+# Volume Spike Events Endpoint (for chart annotations)
+# ============================================================================
+
+@app.route('/api/volspike-events/<ticker>')
+def get_volspike_events(ticker):
+    """Get volume spike and gap dates for a specific ticker (for chart markers)."""
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        
+        # Get volspike/gapper data from the table
+        volspike_data = s.query(StockVolspikeGapper).filter(
+            StockVolspikeGapper.ticker == ticker
+        ).first()
+        
+        if not volspike_data:
+            return jsonify({
+                'ticker': ticker,
+                'spike_days': [],
+                'gap_days': []
+            })
+        
+        # Parse date strings back to arrays
+        spike_dates = [d.strip() for d in (volspike_data.volume_spike_days or '').split(',') if d.strip()]
+        gap_dates = [d.strip() for d in (volspike_data.gap_days or '').split(',') if d.strip()]
+        
+        return jsonify({
+            'ticker': ticker,
+            'spike_days': spike_dates,
+            'gap_days': gap_dates
+        })
+    
+    except Exception as e:
+        logger.error(f"Error getting volspike events for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+# ============================================================================
 # Sector RSI Endpoint
 # ============================================================================
 
@@ -2499,6 +2539,240 @@ def get_abi_notes_tags():
                         all_tags.add(tag)
         
         return jsonify({'tags': sorted(list(all_tags))})
+    finally:
+        s.close()
+
+
+# ============================================================================
+# Sector/Index Performance Endpoint
+# ============================================================================
+
+# Import IndexPrice model
+from models import IndexPrice
+
+# ETF metadata for display names and categorization
+ETF_METADATA = {
+    # Main Indices (will be shown in top section)
+    'SPY': {'name': 'S&P 500', 'category': 'main'},
+    'QQQ': {'name': 'Nasdaq 100', 'category': 'main'},
+    'IWM': {'name': 'Russell 2000', 'category': 'main'},
+    # Tech / Growth
+    'IGM': {'name': 'Tech Expanded', 'category': 'tech'},
+    'SOXX': {'name': 'Semiconductors', 'category': 'tech'},
+    'IGV': {'name': 'Software', 'category': 'tech'},
+    'ARTY': {'name': 'AI & Robotics', 'category': 'tech'},
+    'BAI': {'name': 'AI Infrastructure', 'category': 'tech'},
+    'IDGT': {'name': 'Digital Infrastructure', 'category': 'tech'},
+    'ILIT': {'name': 'Lithium & Battery', 'category': 'tech'},
+    # Healthcare
+    'IBB': {'name': 'Biotech', 'category': 'healthcare'},
+    'IHF': {'name': 'Healthcare Providers', 'category': 'healthcare'},
+    'IHI': {'name': 'Medical Devices', 'category': 'healthcare'},
+    'IHE': {'name': 'Pharmaceuticals', 'category': 'healthcare'},
+    'IDNA': {'name': 'Genomics', 'category': 'healthcare'},
+    # Energy / Materials
+    'IEZ': {'name': 'Oil Equipment', 'category': 'energy'},
+    'IEO': {'name': 'Oil Exploration', 'category': 'energy'},
+    'FILL': {'name': 'Global Energy', 'category': 'energy'},
+    'ICOP': {'name': 'Copper Miners', 'category': 'materials'},
+    'RING': {'name': 'Gold Miners', 'category': 'materials'},
+    'PICK': {'name': 'Metals & Mining', 'category': 'materials'},
+    'SLVP': {'name': 'Silver Miners', 'category': 'materials'},
+    'WOOD': {'name': 'Timber & Forestry', 'category': 'materials'},
+    # Industrials / Defense
+    'ITA': {'name': 'Aerospace & Defense', 'category': 'industrials'},
+    'IYT': {'name': 'Transportation', 'category': 'industrials'},
+    # Financials
+    'IAI': {'name': 'Broker-Dealers', 'category': 'financials'},
+    'IYG': {'name': 'Financial Services', 'category': 'financials'},
+    'IAK': {'name': 'Insurance', 'category': 'financials'},
+    'IAT': {'name': 'Regional Banks', 'category': 'financials'},
+    # Real Estate
+    'REM': {'name': 'Mortgage REITs', 'category': 'realestate'},
+    'REZ': {'name': 'Residential REITs', 'category': 'realestate'},
+    # Construction
+    'ITB': {'name': 'Home Construction', 'category': 'construction'},
+}
+
+
+def get_sector_performance_data(connection):
+    """
+    Calculate 1D, 5D, 20D, 60D performance for all ETFs/indices from index_prices table.
+    """
+    try:
+        query = """
+        WITH trading_dates AS (
+            SELECT DISTINCT date
+            FROM index_prices
+            ORDER BY date DESC
+            LIMIT 61
+        ),
+        latest_date AS (
+            SELECT MAX(date) as max_date FROM trading_dates
+        ),
+        date_1d_ago AS (
+            SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 1
+        ),
+        date_5d_ago AS (
+            SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 5
+        ),
+        date_20d_ago AS (
+            SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 20
+        ),
+        date_60d_ago AS (
+            SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 60
+        )
+        SELECT 
+            ip_today.symbol,
+            ip_today.close_price as current_price,
+            ip_1d.close_price as price_1d_ago,
+            ip_5d.close_price as price_5d_ago,
+            ip_20d.close_price as price_20d_ago,
+            ip_60d.close_price as price_60d_ago,
+            CASE WHEN ip_1d.close_price > 0 THEN 
+                ((ip_today.close_price - ip_1d.close_price) / ip_1d.close_price * 100) 
+            END as dr_1,
+            CASE WHEN ip_5d.close_price > 0 THEN 
+                ((ip_today.close_price - ip_5d.close_price) / ip_5d.close_price * 100) 
+            END as dr_5,
+            CASE WHEN ip_20d.close_price > 0 THEN 
+                ((ip_today.close_price - ip_20d.close_price) / ip_20d.close_price * 100) 
+            END as dr_20,
+            CASE WHEN ip_60d.close_price > 0 THEN 
+                ((ip_today.close_price - ip_60d.close_price) / ip_60d.close_price * 100) 
+            END as dr_60,
+            ld.max_date as latest_date
+        FROM index_prices ip_today
+        CROSS JOIN latest_date ld
+        LEFT JOIN index_prices ip_1d 
+            ON ip_today.symbol = ip_1d.symbol 
+            AND ip_1d.date = (SELECT d FROM date_1d_ago)
+        LEFT JOIN index_prices ip_5d 
+            ON ip_today.symbol = ip_5d.symbol 
+            AND ip_5d.date = (SELECT d FROM date_5d_ago)
+        LEFT JOIN index_prices ip_20d 
+            ON ip_today.symbol = ip_20d.symbol 
+            AND ip_20d.date = (SELECT d FROM date_20d_ago)
+        LEFT JOIN index_prices ip_60d 
+            ON ip_today.symbol = ip_60d.symbol 
+            AND ip_60d.date = (SELECT d FROM date_60d_ago)
+        WHERE ip_today.date = ld.max_date
+        ORDER BY ip_today.symbol
+        """
+        
+        result = connection.execute(text(query))
+        rows = result.fetchall()
+        
+        main_indices = []
+        sectors = []
+        latest_date = None
+        
+        for row in rows:
+            symbol = row[0]
+            current_price = float(row[1]) if row[1] else None
+            dr_1 = round(float(row[6]), 2) if row[6] is not None else None
+            dr_5 = round(float(row[7]), 2) if row[7] is not None else None
+            dr_20 = round(float(row[8]), 2) if row[8] is not None else None
+            dr_60 = round(float(row[9]), 2) if row[9] is not None else None
+            latest_date = row[10].strftime('%Y-%m-%d') if row[10] else None
+            
+            metadata = ETF_METADATA.get(symbol, {'name': symbol, 'category': 'other'})
+            
+            entry = {
+                'symbol': symbol,
+                'name': metadata['name'],
+                'category': metadata['category'],
+                'current_price': round(current_price, 2) if current_price else None,
+                'dr_1': dr_1,
+                'dr_5': dr_5,
+                'dr_20': dr_20,
+                'dr_60': dr_60,
+            }
+            
+            if metadata['category'] == 'main':
+                main_indices.append(entry)
+            else:
+                sectors.append(entry)
+        
+        # Sort sectors by 1D performance descending
+        sectors.sort(key=lambda x: x['dr_1'] if x['dr_1'] is not None else -999, reverse=True)
+        
+        return {
+            'latest_date': latest_date,
+            'main_indices': main_indices,
+            'sectors': sectors
+        }
+    
+    except Exception as e:
+        logger.error(f"Error getting sector performance data: {str(e)}")
+        return {'main_indices': [], 'sectors': [], 'latest_date': None}
+
+
+@app.route('/api/sector-performance')
+def get_sector_performance():
+    """Get performance data for all indices/ETFs."""
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_sector_performance_data(conn))
+    except Exception as e:
+        logger.error(f"Error in sector performance endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/index-ohlc/<symbol>')
+def get_index_ohlc_data(symbol):
+    """Get OHLC data for a specific index/ETF from index_prices table (for charts)."""
+    s = Session()
+    try:
+        symbol = symbol.upper()
+        
+        from datetime import timedelta
+        
+        # Get latest date from index_prices
+        latest_date = s.query(func.max(IndexPrice.date)).scalar()
+        if not latest_date:
+            return jsonify({'error': 'No index price data available'}), 404
+        
+        # Fetch 800 calendar days to ensure 200 SMA has values for entire 1Y view
+        # (365 days visible + 200 days for SMA calculation + buffer for weekends/holidays)
+        start_date = latest_date - timedelta(days=800)
+        
+        # Get OHLC data
+        ohlc_data = s.query(
+            IndexPrice.date,
+            IndexPrice.open_price,
+            IndexPrice.high_price,
+            IndexPrice.low_price,
+            IndexPrice.close_price,
+            IndexPrice.volume
+        ).filter(
+            IndexPrice.symbol == symbol,
+            IndexPrice.date >= start_date,
+            IndexPrice.date <= latest_date
+        ).order_by(IndexPrice.date.asc()).all()
+        
+        if not ohlc_data:
+            return jsonify({'error': f'No OHLC data found for {symbol}'}), 404
+        
+        results = []
+        for row in ohlc_data:
+            results.append({
+                'time': row.date.strftime('%Y-%m-%d'),
+                'open': round(row.open_price, 2) if row.open_price else None,
+                'high': round(row.high_price, 2) if row.high_price else None,
+                'low': round(row.low_price, 2) if row.low_price else None,
+                'close': round(row.close_price, 2) if row.close_price else None,
+                'volume': row.volume,
+            })
+        
+        return jsonify(results)
+    
+    except Exception as e:
+        logger.error(f"Error getting index OHLC data for {symbol}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
     finally:
         s.close()
 

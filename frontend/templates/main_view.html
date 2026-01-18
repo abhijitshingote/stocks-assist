@@ -914,6 +914,153 @@
 .stock-card.hidden-by-filter {
     display: none;
 }
+
+/* Inline Chart Styles */
+.stock-card.chart-open {
+    border-color: var(--accent-blue);
+}
+
+.inline-chart-container {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+    display: none;
+}
+
+.stock-card.chart-open .inline-chart-container {
+    display: block;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.chart-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chart-timeframe {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.timeframe-btn {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+}
+
+.timeframe-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.timeframe-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: #fff;
+}
+
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 390px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.chart-loading .spinner {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 0.5rem;
+}
+
+.stock-chart-wrapper {
+    height: 390px;
+    width: 100%;
+}
+
+.chart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.chart-legend {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 8px;
+    height: 2px;
+    border-radius: 1px;
+}
+
+.chart-stats {
+    display: flex;
+    gap: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+}
+
+.chart-stat {
+    color: var(--text-secondary);
+}
+
+.chart-stat span {
+    color: var(--text-primary);
+    margin-left: 0.15rem;
+}
+
+.chart-toggle-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+    margin-left: 0.5rem;
+}
+
+.chart-toggle-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.stock-card.chart-open .chart-toggle-btn {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: #fff;
+}
 {% endblock %}
 
 {% block content %}
@@ -996,6 +1143,10 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<!-- Lightweight Charts by TradingView -->
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<!-- Shared Chart Module -->
+<script src="/static/js/stock-chart.js"></script>
 <script>
 let currentData = [];
 let currentFilter = 'all'; // 'all', 'favorite', 'dislike'
@@ -1078,6 +1229,7 @@ function renderCards(data, originalData = null) {
             <div class="card-header">
                 <span class="serial-number">${serialNumber}</span>
                 <a href="/stock/${stock.ticker}" class="ticker-link">${stock.ticker}</a>
+                <button class="chart-toggle-btn" onclick="event.stopPropagation(); toggleStockChart('${stock.ticker}')">📈</button>
                 <div class="preference-controls">
                     <button class="pref-btn favorite" data-ticker="${stock.ticker}" title="Add to favorites" onclick="togglePreference('${stock.ticker}', 'favorite')">⭐</button>
                     <button class="pref-btn dislike" data-ticker="${stock.ticker}" title="Mark as dislike" onclick="togglePreference('${stock.ticker}', 'dislike')">👎</button>
@@ -1304,6 +1456,33 @@ function renderCards(data, originalData = null) {
                     </div>
                 </div>
                 ` : ''}
+            </div>
+            <!-- Inline Chart Container -->
+            <div class="inline-chart-container" id="chart-container-${stock.ticker}">
+                <div class="chart-header">
+                    <div class="chart-controls">
+                        <div class="chart-timeframe" data-ticker="${stock.ticker}">
+                            <button class="timeframe-btn" data-days="30">1M</button>
+                            <button class="timeframe-btn" data-days="90">3M</button>
+                            <button class="timeframe-btn" data-days="180">6M</button>
+                            <button class="timeframe-btn active" data-days="365">1Y</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-loading" id="chart-loading-${stock.ticker}">
+                    <div class="spinner"></div>
+                    <span>Loading chart...</span>
+                </div>
+                <div class="stock-chart-wrapper" id="chart-wrapper-${stock.ticker}" style="display: none;"></div>
+                <div class="chart-footer" style="display: none;" id="chart-footer-${stock.ticker}">
+                        <div class="chart-legend">
+                            <div class="legend-item"><span class="legend-dot" style="background: #ffffff;"></span>10 EMA</div>
+                            <div class="legend-item"><span class="legend-dot" style="background: #ffa500;"></span>20 EMA</div>
+                            <div class="legend-item"><span class="legend-dot" style="background: #00ff00;"></span>50 DMA</div>
+                            <div class="legend-item"><span class="legend-dot" style="background: #ff0000;"></span>200 DMA</div>
+                        </div>
+                    <div class="chart-stats" id="chart-stats-${stock.ticker}"></div>
+                </div>
             </div>
         </div>
         `;
@@ -1604,6 +1783,98 @@ function applyPreferenceFilter() {
             'No stocks match the criteria for this market cap category.';
     } else {
         document.getElementById('emptyState').style.display = 'none';
+    }
+}
+
+// ============================================
+// Chart Functions (using shared module)
+// ============================================
+
+const DEFAULT_TIMEFRAME = 365;
+let activeChartTicker = null;
+
+function toggleStockChart(ticker) {
+    const card = document.querySelector(`.stock-card[data-ticker="${ticker}"]`);
+    
+    if (card.classList.contains('chart-open')) {
+        // Close chart
+        card.classList.remove('chart-open');
+        ChartManager.destroy(ticker);
+        activeChartTicker = null;
+    } else {
+        // Close any other open charts first
+        document.querySelectorAll('.stock-card.chart-open').forEach(openCard => {
+            const openTicker = openCard.dataset.ticker;
+            openCard.classList.remove('chart-open');
+            ChartManager.destroy(openTicker);
+        });
+        
+        // Open this chart
+        card.classList.add('chart-open');
+        activeChartTicker = ticker;
+        
+        // Load chart data
+        loadStockChartData(ticker);
+    }
+}
+
+async function loadStockChartData(ticker) {
+    const loading = document.getElementById(`chart-loading-${ticker}`);
+    const wrapper = document.getElementById(`chart-wrapper-${ticker}`);
+    const footer = document.getElementById(`chart-footer-${ticker}`);
+    
+    loading.style.display = 'flex';
+    footer.style.display = 'none';
+    
+    // IMPORTANT: Show wrapper BEFORE creating chart so it has dimensions
+    wrapper.style.display = 'block';
+    wrapper.style.visibility = 'hidden';
+    
+    try {
+        // Use shared chart module
+        const chart = await ChartManager.create(ticker, `chart-wrapper-${ticker}`, {
+            height: 390,
+        });
+        
+        loading.style.display = 'none';
+        wrapper.style.visibility = 'visible';
+        footer.style.display = 'flex';
+        
+        // Update stats
+        updateChartStats(ticker);
+        
+        // Setup timeframe buttons
+        document.querySelectorAll(`.chart-timeframe[data-ticker="${ticker}"] .timeframe-btn`).forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll(`.chart-timeframe[data-ticker="${ticker}"] .timeframe-btn`).forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const chartInstance = ChartManager.get(ticker);
+                if (chartInstance) {
+                    chartInstance.setTimeframe(parseInt(this.dataset.days));
+                    updateChartStats(ticker);
+                }
+            });
+        });
+        
+    } catch (error) {
+        console.error(`Error loading chart for ${ticker}:`, error);
+        wrapper.style.display = 'none';
+        loading.innerHTML = `<span style="color: var(--text-muted);">No chart data for ${ticker}</span>`;
+    }
+}
+
+function updateChartStats(ticker) {
+    const chart = ChartManager.get(ticker);
+    if (!chart) return;
+    
+    const stats = chart.getStats();
+    const statsEl = document.getElementById(`chart-stats-${ticker}`);
+    if (statsEl && stats.change) {
+        statsEl.innerHTML = `
+            <div class="chart-stat">Chg:<span style="color: ${stats.change >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}">${stats.change >= 0 ? '+' : ''}${stats.change}%</span></div>
+            <div class="chart-stat">H:<span>$${stats.high}</span></div>
+            <div class="chart-stat">L:<span>$${stats.low}</span></div>
+        `;
     }
 }
 </script>

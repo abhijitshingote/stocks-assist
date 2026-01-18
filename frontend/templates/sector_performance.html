@@ -1,0 +1,1397 @@
+{% extends "base.html" %}
+
+{% block title %}Sector Performance - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #00d4aa 0%, #00b4d8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Inline Chart Row */
+.chart-row {
+    display: none;
+}
+
+.chart-row.visible {
+    display: table-row;
+}
+
+.chart-row td {
+    padding: 0 !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.inline-chart-container {
+    padding: 1rem 1.25rem;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.chart-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.chart-title h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.chart-title span {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.chart-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.chart-timeframe {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.timeframe-btn {
+    padding: 0.3rem 0.5rem;
+    border-radius: 5px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+}
+
+.timeframe-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.timeframe-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--bg-dark);
+}
+
+
+.etf-chart-wrapper {
+    width: 100%;
+    height: 350px;
+    position: relative;
+}
+
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 350px;
+    color: var(--text-muted);
+}
+
+.chart-loading .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 0.5rem;
+}
+
+.chart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.chart-legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.7rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 10px;
+    height: 3px;
+    border-radius: 1px;
+}
+
+.chart-stats {
+    display: flex;
+    gap: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+}
+
+.chart-stat {
+    color: var(--text-secondary);
+}
+
+.chart-stat span {
+    color: var(--text-primary);
+    margin-left: 0.2rem;
+}
+
+/* Clickable ticker in table */
+.sector-symbol {
+    transition: color 0.2s;
+}
+
+.sector-symbol.active {
+    color: var(--accent-green);
+}
+
+/* Row highlight when chart is open */
+.sectors-table tbody tr.chart-open {
+    background: rgba(88, 166, 255, 0.08);
+}
+
+.sectors-table tbody tr.chart-open td:first-child {
+    border-left: 2px solid var(--accent-blue);
+}
+
+/* Main index card chart open state */
+.index-card.chart-open {
+    border-color: var(--accent-blue);
+    background: linear-gradient(145deg, rgba(88, 166, 255, 0.05) 0%, var(--bg-card) 100%);
+}
+
+.index-card .index-symbol:hover {
+    color: var(--accent-purple);
+}
+
+.main-index-chart-row {
+    border-top: 1px solid var(--border-color);
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+}
+
+.main-index-chart-row .etf-chart-wrapper {
+    height: 300px;
+}
+
+.main-index-chart-row .chart-loading {
+    height: 300px;
+}
+
+/* Main Indices Section */
+.main-indices {
+    margin-bottom: 2.5rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.indices-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+    .indices-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Index Card */
+.index-card {
+    background: linear-gradient(145deg, var(--bg-card) 0%, rgba(22, 27, 34, 0.8) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.index-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--card-accent, var(--accent-blue)), transparent);
+}
+
+.index-card.spy { --card-accent: #00d4aa; }
+.index-card.qqq { --card-accent: #a371f7; }
+.index-card.iwm { --card-accent: #58a6ff; }
+
+.index-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+}
+
+.index-symbol {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.index-name {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.index-price {
+    text-align: right;
+}
+
+.index-price .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.index-price .label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.index-returns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.return-cell {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.return-cell .label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+}
+
+.return-cell .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.return-positive { color: var(--accent-green); }
+.return-negative { color: var(--accent-red); }
+
+/* Sectors Table Section */
+.sectors-section {
+    margin-top: 2rem;
+}
+
+.table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.sort-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sort-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sort-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.sort-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--bg-dark);
+}
+
+.category-filter {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-secondary);
+}
+
+.filter-btn.active {
+    background: var(--text-muted);
+    border-color: var(--text-muted);
+    color: var(--bg-dark);
+}
+
+/* Sectors Table */
+.sectors-table-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.sectors-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sectors-table th {
+    text-align: left;
+    padding: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: color 0.2s;
+    user-select: none;
+}
+
+.sectors-table th:hover {
+    color: var(--text-primary);
+}
+
+.sectors-table th.sortable::after {
+    content: ' ↕';
+    opacity: 0.3;
+}
+
+.sectors-table th.sort-asc::after {
+    content: ' ↑';
+    opacity: 1;
+    color: var(--accent-blue);
+}
+
+.sectors-table th.sort-desc::after {
+    content: ' ↓';
+    opacity: 1;
+    color: var(--accent-blue);
+}
+
+.sectors-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.sectors-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.sectors-table tbody tr:not(.chart-row) {
+    transition: background 0.15s;
+    cursor: pointer;
+}
+
+.sectors-table tbody tr:not(.chart-row):hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.sector-symbol {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--accent-blue);
+}
+
+.sector-name {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.sector-category {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.cat-tech { background: rgba(163, 113, 247, 0.15); color: #a371f7; }
+.cat-healthcare { background: rgba(63, 185, 80, 0.15); color: #3fb950; }
+.cat-energy { background: rgba(248, 81, 73, 0.15); color: #f85149; }
+.cat-materials { background: rgba(210, 153, 34, 0.15); color: #d29922; }
+.cat-industrials { background: rgba(88, 166, 255, 0.15); color: #58a6ff; }
+.cat-financials { background: rgba(0, 212, 170, 0.15); color: #00d4aa; }
+.cat-realestate { background: rgba(255, 166, 87, 0.15); color: #ffa657; }
+.cat-construction { background: rgba(139, 148, 158, 0.15); color: #8b949e; }
+.cat-other { background: rgba(110, 118, 129, 0.15); color: #6e7681; }
+
+.return-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+}
+
+.return-value.positive { color: var(--accent-green); }
+.return-value.negative { color: var(--accent-red); }
+.return-value.neutral { color: var(--text-muted); }
+
+/* Performance Bar */
+.perf-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.perf-bar {
+    width: 60px;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.perf-bar-fill {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.perf-bar-fill.positive {
+    left: 50%;
+    background: var(--accent-green);
+}
+
+.perf-bar-fill.negative {
+    right: 50%;
+    background: var(--accent-red);
+}
+
+.perf-bar-center {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--text-muted);
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border-color);
+    border-top-color: #00d4aa;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+}
+
+/* Heatmap colors for strong moves */
+.hot-green { 
+    background: rgba(63, 185, 80, 0.15); 
+}
+.hot-red { 
+    background: rgba(248, 81, 73, 0.15); 
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Sector Performance</h1>
+    <p>Index & sector ETF performance across timeframes</p>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" id="loadingState">
+    <div class="spinner"></div>
+    <span>Loading performance data...</span>
+</div>
+
+<!-- Empty State -->
+<div class="empty-state" id="emptyState" style="display: none;">
+    <h3>No performance data available</h3>
+    <p>Index price data not found.</p>
+</div>
+
+<!-- Main Content -->
+<div id="mainContent" style="display: none;">
+    <!-- Main Indices Section -->
+    <div class="main-indices">
+        <div class="section-title">Main Indices</div>
+        <div class="indices-grid" id="indicesGrid"></div>
+    </div>
+
+    <!-- Sectors Table Section -->
+    <div class="sectors-section">
+        <div class="section-title">Sector ETFs</div>
+        
+        <div class="table-controls">
+            <div class="sort-buttons">
+                <button class="sort-btn active" data-sort="dr_1">Sort by 1D</button>
+                <button class="sort-btn" data-sort="dr_5">Sort by 5D</button>
+                <button class="sort-btn" data-sort="dr_20">Sort by 20D</button>
+                <button class="sort-btn" data-sort="dr_60">Sort by 60D</button>
+            </div>
+            <div class="category-filter">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="tech">Tech</button>
+                <button class="filter-btn" data-filter="healthcare">Healthcare</button>
+                <button class="filter-btn" data-filter="energy">Energy</button>
+                <button class="filter-btn" data-filter="materials">Materials</button>
+                <button class="filter-btn" data-filter="financials">Financials</button>
+                <button class="filter-btn" data-filter="industrials">Industrials</button>
+            </div>
+        </div>
+
+        <div class="sectors-table-wrapper">
+            <table class="sectors-table">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th class="sortable sort-desc" data-sort="dr_1">1D</th>
+                        <th class="sortable" data-sort="dr_5">5D</th>
+                        <th class="sortable" data-sort="dr_20">20D</th>
+                        <th class="sortable" data-sort="dr_60">60D</th>
+                    </tr>
+                </thead>
+                <tbody id="sectorsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Lightweight Charts by TradingView -->
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+let sectorData = { main_indices: [], sectors: [] };
+let currentSort = 'dr_1';
+let sortDirection = 'desc';
+let currentFilter = 'all';
+
+// Chart state - stores chart instances and data for each symbol
+let chartInstances = {};  // { symbol: { chart, series, data, timeframe } }
+let activeChartSymbol = null;
+const DEFAULT_TIMEFRAME = 365;  // Default to 1Y
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadSectorPerformance();
+    setupEventListeners();
+});
+
+function setupEventListeners() {
+    // Sort buttons
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentSort = this.dataset.sort;
+            sortDirection = 'desc';
+            updateTableHeaders();
+            renderSectorsTable();
+        });
+    });
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            renderSectorsTable();
+        });
+    });
+
+    // Table header sorting
+    document.querySelectorAll('.sectors-table th.sortable').forEach(th => {
+        th.addEventListener('click', function() {
+            const sortKey = this.dataset.sort;
+            if (currentSort === sortKey) {
+                sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
+            } else {
+                currentSort = sortKey;
+                sortDirection = 'desc';
+            }
+            updateTableHeaders();
+            renderSectorsTable();
+        });
+    });
+
+}
+
+function updateTableHeaders() {
+    document.querySelectorAll('.sectors-table th.sortable').forEach(th => {
+        th.classList.remove('sort-asc', 'sort-desc');
+        if (th.dataset.sort === currentSort) {
+            th.classList.add(sortDirection === 'desc' ? 'sort-desc' : 'sort-asc');
+        }
+    });
+}
+
+async function loadSectorPerformance() {
+    try {
+        const response = await fetch('/api/frontend/sector-performance');
+        const data = await response.json();
+        
+        if (data.error || (!data.main_indices?.length && !data.sectors?.length)) {
+            showEmpty();
+            return;
+        }
+        
+        sectorData = data;
+        hideLoading();
+        renderMainIndices(data.main_indices);
+        renderSectorsTable();
+        
+    } catch (error) {
+        console.error('Error loading sector performance:', error);
+        showEmpty();
+    }
+}
+
+function renderMainIndices(indices) {
+    const grid = document.getElementById('indicesGrid');
+    
+    grid.innerHTML = indices.map(idx => {
+        const symbolClass = idx.symbol.toLowerCase();
+        return `
+            <div class="index-card ${symbolClass}" data-symbol="${idx.symbol}" data-name="${idx.name}" onclick="toggleMainIndexChart('${idx.symbol}', '${idx.name}')" style="cursor: pointer;">
+                <div class="index-header">
+                    <div>
+                        <div class="index-symbol">${idx.symbol}</div>
+                        <div class="index-name">${idx.name}</div>
+                    </div>
+                    <div class="index-price">
+                        <div class="value">$${idx.current_price?.toFixed(2) || '—'}</div>
+                        <div class="label">Price</div>
+                    </div>
+                </div>
+                <div class="index-returns">
+                    <div class="return-cell">
+                        <div class="label">1D</div>
+                        <div class="value ${getReturnClass(idx.dr_1)}">${formatReturn(idx.dr_1)}</div>
+                    </div>
+                    <div class="return-cell">
+                        <div class="label">5D</div>
+                        <div class="value ${getReturnClass(idx.dr_5)}">${formatReturn(idx.dr_5)}</div>
+                    </div>
+                    <div class="return-cell">
+                        <div class="label">20D</div>
+                        <div class="value ${getReturnClass(idx.dr_20)}">${formatReturn(idx.dr_20)}</div>
+                    </div>
+                    <div class="return-cell">
+                        <div class="label">60D</div>
+                        <div class="value ${getReturnClass(idx.dr_60)}">${formatReturn(idx.dr_60)}</div>
+                    </div>
+                </div>
+                <div class="main-index-chart-row" id="main-chart-row-${idx.symbol}" style="display: none;" onclick="event.stopPropagation()">
+                    <div class="inline-chart-container" style="margin-top: 1rem; border-radius: 8px;">
+                        <div class="chart-header">
+                            <div class="chart-controls" style="width: 100%;">
+                                <div class="chart-timeframe" data-symbol="${idx.symbol}">
+                                    <button class="timeframe-btn main-tf-btn" data-days="30" data-symbol="${idx.symbol}">1M</button>
+                                    <button class="timeframe-btn main-tf-btn" data-days="90" data-symbol="${idx.symbol}">3M</button>
+                                    <button class="timeframe-btn main-tf-btn" data-days="180" data-symbol="${idx.symbol}">6M</button>
+                                    <button class="timeframe-btn main-tf-btn active" data-days="365" data-symbol="${idx.symbol}">1Y</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-loading" id="main-chart-loading-${idx.symbol}">
+                            <div class="spinner"></div>
+                            <span>Loading chart...</span>
+                        </div>
+                        <div class="etf-chart-wrapper" id="main-chart-container-${idx.symbol}"></div>
+                        <div class="chart-footer">
+                            <div class="chart-legend">
+                                <div class="legend-item"><div class="legend-dot" style="background: #3fb950;"></div><span>Bull</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #f85149;"></div><span>Bear</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #ffffff;"></div><span>10E</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #ffa500;"></div><span>20E</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #00ff00;"></div><span>50S</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #ff0000;"></div><span>200S</span></div>
+                            </div>
+                            <div class="chart-stats" id="main-chart-stats-${idx.symbol}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    // Add event listeners for main index timeframe buttons
+    document.querySelectorAll('.main-tf-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const symbol = this.dataset.symbol;
+            // Update active state for this symbol's buttons only
+            document.querySelectorAll(`.main-tf-btn[data-symbol="${symbol}"]`).forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const days = parseInt(this.dataset.days);
+            updateInlineChart(symbol, days);
+        });
+    });
+}
+
+function renderSectorsTable() {
+    const tbody = document.getElementById('sectorsTableBody');
+    
+    // Filter data
+    let filteredData = sectorData.sectors;
+    if (currentFilter !== 'all') {
+        filteredData = filteredData.filter(s => s.category === currentFilter);
+    }
+    
+    // Sort data
+    filteredData.sort((a, b) => {
+        const aVal = a[currentSort] ?? -999;
+        const bVal = b[currentSort] ?? -999;
+        return sortDirection === 'desc' ? bVal - aVal : aVal - bVal;
+    });
+    
+    tbody.innerHTML = filteredData.map(sector => {
+        const catClass = `cat-${sector.category}`;
+        const dr1Hot = getHotClass(sector.dr_1);
+        const dr5Hot = getHotClass(sector.dr_5);
+        const dr20Hot = getHotClass(sector.dr_20);
+        const dr60Hot = getHotClass(sector.dr_60);
+        
+        return `
+            <tr data-symbol="${sector.symbol}" data-name="${sector.name}" class="clickable-row" onclick="toggleInlineChart('${sector.symbol}', '${sector.name}')">
+                <td><span class="sector-symbol">${sector.symbol}</span></td>
+                <td><span class="sector-name">${sector.name}</span></td>
+                <td><span class="sector-category ${catClass}">${sector.category}</span></td>
+                <td class="${dr1Hot}">
+                    <div class="perf-bar-container">
+                        <span class="return-value ${getReturnClass(sector.dr_1)}">${formatReturn(sector.dr_1)}</span>
+                        ${renderPerfBar(sector.dr_1, 5)}
+                    </div>
+                </td>
+                <td class="${dr5Hot}">
+                    <div class="perf-bar-container">
+                        <span class="return-value ${getReturnClass(sector.dr_5)}">${formatReturn(sector.dr_5)}</span>
+                        ${renderPerfBar(sector.dr_5, 10)}
+                    </div>
+                </td>
+                <td class="${dr20Hot}">
+                    <div class="perf-bar-container">
+                        <span class="return-value ${getReturnClass(sector.dr_20)}">${formatReturn(sector.dr_20)}</span>
+                        ${renderPerfBar(sector.dr_20, 15)}
+                    </div>
+                </td>
+                <td class="${dr60Hot}">
+                    <div class="perf-bar-container">
+                        <span class="return-value ${getReturnClass(sector.dr_60)}">${formatReturn(sector.dr_60)}</span>
+                        ${renderPerfBar(sector.dr_60, 25)}
+                    </div>
+                </td>
+            </tr>
+            <tr class="chart-row" id="chart-row-${sector.symbol}" onclick="event.stopPropagation()">
+                <td colspan="7">
+                    <div class="inline-chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">
+                                <h3>${sector.symbol}</h3>
+                                <span>${sector.name}</span>
+                            </div>
+                            <div class="chart-controls">
+                                <div class="chart-timeframe" data-symbol="${sector.symbol}">
+                                    <button class="timeframe-btn" data-days="30">1M</button>
+                                    <button class="timeframe-btn" data-days="90">3M</button>
+                                    <button class="timeframe-btn" data-days="180">6M</button>
+                                    <button class="timeframe-btn active" data-days="365">1Y</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-loading" id="chart-loading-${sector.symbol}">
+                            <div class="spinner"></div>
+                            <span>Loading chart...</span>
+                        </div>
+                        <div class="etf-chart-wrapper" id="chart-container-${sector.symbol}"></div>
+                        <div class="chart-footer">
+                            <div class="chart-legend">
+                                <div class="legend-item"><div class="legend-dot" style="background: #3fb950;"></div><span>Bull</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #f85149;"></div><span>Bear</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #ffffff;"></div><span>10 EMA</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #ffa500;"></div><span>20 EMA</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #00ff00;"></div><span>50 SMA</span></div>
+                                <div class="legend-item"><div class="legend-dot" style="background: #ff0000;"></div><span>200 SMA</span></div>
+                            </div>
+                            <div class="chart-stats" id="chart-stats-${sector.symbol}"></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+    
+    // Add event listeners for timeframe buttons in all chart rows
+    document.querySelectorAll('.chart-timeframe').forEach(container => {
+        container.querySelectorAll('.timeframe-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const symbol = container.dataset.symbol;
+                container.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const days = parseInt(this.dataset.days);
+                updateInlineChart(symbol, days);
+            });
+        });
+    });
+}
+
+function renderPerfBar(value, maxValue) {
+    if (value === null || value === undefined) return '';
+    
+    const width = Math.min(Math.abs(value) / maxValue * 50, 50);
+    const direction = value >= 0 ? 'positive' : 'negative';
+    
+    return `
+        <div class="perf-bar">
+            <div class="perf-bar-center"></div>
+            <div class="perf-bar-fill ${direction}" style="width: ${width}%"></div>
+        </div>
+    `;
+}
+
+function getReturnClass(value) {
+    if (value === null || value === undefined) return 'neutral';
+    return value >= 0 ? 'return-positive' : 'return-negative';
+}
+
+function getHotClass(value) {
+    if (value === null || value === undefined) return '';
+    if (value >= 3) return 'hot-green';
+    if (value <= -3) return 'hot-red';
+    return '';
+}
+
+function formatReturn(value) {
+    if (value === null || value === undefined) return '—';
+    const sign = value >= 0 ? '+' : '';
+    return sign + value.toFixed(2) + '%';
+}
+
+function hideLoading() {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+}
+
+function showEmpty() {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+}
+
+// ============================================
+// Inline Chart Functions
+// ============================================
+
+function toggleMainIndexChart(symbol, name) {
+    const chartRow = document.getElementById(`main-chart-row-${symbol}`);
+    const card = document.querySelector(`.index-card[data-symbol="${symbol}"]`);
+    
+    // If already open, close it
+    if (chartRow.style.display !== 'none') {
+        closeMainIndexChart(symbol);
+        return;
+    }
+    
+    // Close any other open main index charts
+    document.querySelectorAll('.main-index-chart-row').forEach(row => {
+        row.style.display = 'none';
+    });
+    document.querySelectorAll('.index-card').forEach(c => {
+        c.classList.remove('chart-open');
+    });
+    
+    // Open this chart
+    chartRow.style.display = 'block';
+    card.classList.add('chart-open');
+    
+    // Load chart data if not already loaded
+    if (!chartInstances[symbol]) {
+        loadMainIndexChartData(symbol);
+    } else {
+        const instance = chartInstances[symbol];
+        if (instance.chart) {
+            instance.chart.timeScale().fitContent();
+        }
+    }
+}
+
+function closeMainIndexChart(symbol) {
+    const chartRow = document.getElementById(`main-chart-row-${symbol}`);
+    const card = document.querySelector(`.index-card[data-symbol="${symbol}"]`);
+    
+    if (chartRow) chartRow.style.display = 'none';
+    if (card) card.classList.remove('chart-open');
+}
+
+async function loadMainIndexChartData(symbol) {
+    const loading = document.getElementById(`main-chart-loading-${symbol}`);
+    const container = document.getElementById(`main-chart-container-${symbol}`);
+    
+    loading.style.display = 'flex';
+    container.style.display = 'none';
+    
+    try {
+        const response = await fetch(`/api/frontend/index-ohlc/${symbol}`);
+        const data = await response.json();
+        
+        if (data.error || !Array.isArray(data) || data.length === 0) {
+            loading.innerHTML = `<span style="color: var(--text-muted);">No chart data for ${symbol}</span>`;
+            return;
+        }
+        
+        loading.style.display = 'none';
+        container.style.display = 'block';
+        
+        // Initialize chart for this symbol (reusing the same init function)
+        initMainIndexChart(symbol, data);
+        
+    } catch (error) {
+        console.error(`Error loading chart for ${symbol}:`, error);
+        loading.innerHTML = '<span style="color: var(--text-muted);">Failed to load chart</span>';
+    }
+}
+
+function initMainIndexChart(symbol, data) {
+    const container = document.getElementById(`main-chart-container-${symbol}`);
+    
+    const chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: 300,
+        layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#8b949e',
+            fontFamily: "'JetBrains Mono', monospace",
+        },
+        grid: {
+            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
+        },
+        crosshair: {
+            mode: LightweightCharts.CrosshairMode.Normal,
+            vertLine: { width: 1, color: 'rgba(88, 166, 255, 0.5)', style: LightweightCharts.LineStyle.Dashed },
+            horzLine: { width: 1, color: 'rgba(88, 166, 255, 0.5)', style: LightweightCharts.LineStyle.Dashed },
+        },
+        rightPriceScale: {
+            borderColor: '#30363d',
+            scaleMargins: { top: 0.05, bottom: 0.15 },
+        },
+        timeScale: {
+            borderColor: '#30363d',
+            timeVisible: true,
+            secondsVisible: false,
+        },
+        handleScroll: false,
+        handleScale: false,
+    });
+    
+    const candlestickSeries = chart.addCandlestickSeries({
+        upColor: '#3fb950',
+        downColor: '#f85149',
+        borderDownColor: '#f85149',
+        borderUpColor: '#3fb950',
+        wickDownColor: '#f85149',
+        wickUpColor: '#3fb950',
+    });
+    
+    const ema10Series = chart.addLineSeries({ color: '#ffffff', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+    const ema20Series = chart.addLineSeries({ color: '#ffa500', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+    const sma50Series = chart.addLineSeries({ color: '#00ff00', lineWidth: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+    const sma200Series = chart.addLineSeries({ color: '#ff0000', lineWidth: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+    
+    const volumeSeries = chart.addHistogramSeries({
+        color: '#26a69a',
+        priceFormat: { type: 'volume' },
+        priceScaleId: '',
+        scaleMargins: { top: 0.88, bottom: 0 },
+    });
+    
+    // Store instance with 'main-' prefix to differentiate stats element
+    chartInstances[symbol] = {
+        chart,
+        series: { candlestickSeries, ema10Series, ema20Series, sma50Series, sma200Series, volumeSeries },
+        data,
+        timeframe: DEFAULT_TIMEFRAME,
+        isMain: true
+    };
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+        if (chartInstances[symbol]?.chart) {
+            chartInstances[symbol].chart.applyOptions({ width: container.clientWidth });
+        }
+    });
+    
+    // Initial render
+    updateInlineChart(symbol, DEFAULT_TIMEFRAME);
+}
+
+function toggleInlineChart(symbol, name) {
+    const chartRow = document.getElementById(`chart-row-${symbol}`);
+    const dataRow = document.querySelector(`tr[data-symbol="${symbol}"]`);
+    
+    // If clicking on same symbol that's already open, close it
+    if (activeChartSymbol === symbol) {
+        closeInlineChart(symbol);
+        return;
+    }
+    
+    // Close any currently open chart
+    if (activeChartSymbol) {
+        closeInlineChart(activeChartSymbol);
+    }
+    
+    // Open the new chart
+    activeChartSymbol = symbol;
+    chartRow.classList.add('visible');
+    dataRow.classList.add('chart-open');
+    dataRow.querySelector('.sector-symbol').classList.add('active');
+    
+    // Load chart data if not already loaded
+    if (!chartInstances[symbol]) {
+        loadInlineChartData(symbol);
+    } else {
+        // Chart already exists, just show it
+        const instance = chartInstances[symbol];
+        if (instance.chart) {
+            instance.chart.timeScale().fitContent();
+        }
+    }
+}
+
+function closeInlineChart(symbol) {
+    const chartRow = document.getElementById(`chart-row-${symbol}`);
+    const dataRow = document.querySelector(`tr[data-symbol="${symbol}"]`);
+    
+    if (chartRow) chartRow.classList.remove('visible');
+    if (dataRow) {
+        dataRow.classList.remove('chart-open');
+        dataRow.querySelector('.sector-symbol')?.classList.remove('active');
+    }
+    
+    activeChartSymbol = null;
+}
+
+async function loadInlineChartData(symbol) {
+    const loading = document.getElementById(`chart-loading-${symbol}`);
+    const container = document.getElementById(`chart-container-${symbol}`);
+    
+    loading.style.display = 'flex';
+    container.style.display = 'none';
+    
+    try {
+        const response = await fetch(`/api/frontend/index-ohlc/${symbol}`);
+        const data = await response.json();
+        
+        if (data.error || !Array.isArray(data) || data.length === 0) {
+            loading.innerHTML = `<span style="color: var(--text-muted);">No chart data for ${symbol}</span>`;
+            return;
+        }
+        
+        loading.style.display = 'none';
+        container.style.display = 'block';
+        
+        // Initialize chart for this symbol
+        initInlineChart(symbol, data);
+        
+    } catch (error) {
+        console.error(`Error loading chart for ${symbol}:`, error);
+        loading.innerHTML = '<span style="color: var(--text-muted);">Failed to load chart</span>';
+    }
+}
+
+function initInlineChart(symbol, data) {
+    const container = document.getElementById(`chart-container-${symbol}`);
+    
+    const chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: 350,
+        layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#8b949e',
+            fontFamily: "'JetBrains Mono', monospace",
+        },
+        grid: {
+            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
+        },
+        crosshair: {
+            mode: LightweightCharts.CrosshairMode.Normal,
+            vertLine: { width: 1, color: 'rgba(88, 166, 255, 0.5)', style: LightweightCharts.LineStyle.Dashed },
+            horzLine: { width: 1, color: 'rgba(88, 166, 255, 0.5)', style: LightweightCharts.LineStyle.Dashed },
+        },
+        rightPriceScale: {
+            borderColor: '#30363d',
+            scaleMargins: { top: 0.05, bottom: 0.15 },
+        },
+        timeScale: {
+            borderColor: '#30363d',
+            timeVisible: true,
+            secondsVisible: false,
+        },
+        handleScroll: false,
+        handleScale: false,
+    });
+    
+    const candlestickSeries = chart.addCandlestickSeries({
+        upColor: '#3fb950',
+        downColor: '#f85149',
+        borderDownColor: '#f85149',
+        borderUpColor: '#3fb950',
+        wickDownColor: '#f85149',
+        wickUpColor: '#3fb950',
+    });
+    
+    const ema10Series = chart.addLineSeries({ color: '#ffffff', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+    const ema20Series = chart.addLineSeries({ color: '#ffa500', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+    const sma50Series = chart.addLineSeries({ color: '#00ff00', lineWidth: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+    const sma200Series = chart.addLineSeries({ color: '#ff0000', lineWidth: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+    
+    const volumeSeries = chart.addHistogramSeries({
+        color: '#26a69a',
+        priceFormat: { type: 'volume' },
+        priceScaleId: '',
+        scaleMargins: { top: 0.88, bottom: 0 },
+    });
+    
+    // Store instance
+    chartInstances[symbol] = {
+        chart,
+        series: { candlestickSeries, ema10Series, ema20Series, sma50Series, sma200Series, volumeSeries },
+        data,
+        timeframe: DEFAULT_TIMEFRAME
+    };
+    
+    // Handle resize
+    const resizeHandler = () => {
+        if (chartInstances[symbol]?.chart) {
+            chartInstances[symbol].chart.applyOptions({ width: container.clientWidth });
+        }
+    };
+    window.addEventListener('resize', resizeHandler);
+    
+    // Initial render
+    updateInlineChart(symbol, DEFAULT_TIMEFRAME);
+}
+
+function updateInlineChart(symbol, days) {
+    const instance = chartInstances[symbol];
+    if (!instance) return;
+    
+    const { data, series } = instance;
+    instance.timeframe = days;
+    
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    const cutoffStr = cutoffDate.toISOString().split('T')[0];
+    
+    // Calculate moving averages on FULL dataset first
+    const ema10Full = calculateEMA(data, 10);
+    const ema20Full = calculateEMA(data, 20);
+    const sma50Full = calculateSMA(data, 50);
+    const sma200Full = calculateSMA(data, 200);
+    
+    // Filter to visible timeframe
+    const filteredCandles = data.filter(d => d.time >= cutoffStr);
+    const filteredEma10 = ema10Full.filter(d => d.time >= cutoffStr);
+    const filteredEma20 = ema20Full.filter(d => d.time >= cutoffStr);
+    const filteredSma50 = sma50Full.filter(d => d.time >= cutoffStr);
+    const filteredSma200 = sma200Full.filter(d => d.time >= cutoffStr);
+    
+    const dataToUse = filteredCandles.length > 0 ? filteredCandles : data;
+    
+    // Set data
+    const candleData = dataToUse.map(d => ({ time: d.time, open: d.open, high: d.high, low: d.low, close: d.close }));
+    series.candlestickSeries.setData(candleData);
+    series.ema10Series.setData(filteredEma10);
+    series.ema20Series.setData(filteredEma20);
+    series.sma50Series.setData(filteredSma50);
+    series.sma200Series.setData(filteredSma200);
+    
+    const volumeData = dataToUse.map(d => ({
+        time: d.time,
+        value: d.volume,
+        color: d.close >= d.open ? 'rgba(63, 185, 80, 0.3)' : 'rgba(248, 81, 73, 0.3)',
+    }));
+    series.volumeSeries.setData(volumeData);
+    
+    instance.chart.timeScale().fitContent();
+    updateInlineChartStats(symbol, dataToUse);
+}
+
+function calculateEMA(data, period) {
+    if (data.length < period) return [];
+    
+    const k = 2 / (period + 1);
+    const emaData = [];
+    
+    // Calculate initial SMA for first EMA value
+    let sum = 0;
+    for (let i = 0; i < period; i++) {
+        sum += data[i].close;
+    }
+    let ema = sum / period;
+    emaData.push({ time: data[period - 1].time, value: ema });
+    
+    // Calculate EMA for remaining values
+    for (let i = period; i < data.length; i++) {
+        ema = (data[i].close - ema) * k + ema;
+        emaData.push({ time: data[i].time, value: ema });
+    }
+    
+    return emaData;
+}
+
+function calculateSMA(data, period) {
+    if (data.length < period) return [];
+    
+    const smaData = [];
+    
+    for (let i = period - 1; i < data.length; i++) {
+        let sum = 0;
+        for (let j = 0; j < period; j++) {
+            sum += data[i - j].close;
+        }
+        smaData.push({ time: data[i].time, value: sum / period });
+    }
+    
+    return smaData;
+}
+
+function updateInlineChartStats(symbol, data) {
+    if (!data || data.length === 0) return;
+    
+    const firstPrice = data[0].close;
+    const lastPrice = data[data.length - 1].close;
+    const changePercent = ((lastPrice - firstPrice) / firstPrice * 100).toFixed(2);
+    const highest = Math.max(...data.map(d => d.high));
+    const lowest = Math.min(...data.map(d => d.low));
+    
+    const statsHtml = `
+        <div class="chart-stat">Chg: <span class="${changePercent >= 0 ? 'text-green' : 'text-red'}">${changePercent >= 0 ? '+' : ''}${changePercent}%</span></div>
+        <div class="chart-stat">High: <span>$${highest.toFixed(2)}</span></div>
+        <div class="chart-stat">Low: <span>$${lowest.toFixed(2)}</span></div>
+        <div class="chart-stat">Last: <span>$${lastPrice.toFixed(2)}</span></div>
+    `;
+    
+    // Try both possible element IDs (main index vs sector table)
+    let statsEl = document.getElementById(`chart-stats-${symbol}`);
+    if (!statsEl) statsEl = document.getElementById(`main-chart-stats-${symbol}`);
+    if (statsEl) statsEl.innerHTML = statsHtml;
+}
+</script>
+{% endblock %}
+

@@ -1417,47 +1417,16 @@
 {% block extra_scripts %}
 <!-- Lightweight Charts by TradingView -->
 <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<!-- Shared Chart Module -->
+<script src="/static/js/stock-chart.js"></script>
 <script>
 const ticker = '{{ ticker }}';
-let chart = null;
-let rsiChart = null;
-let candlestickSeries = null;
-let volumeSeries = null;
-let dma50Series = null;
-let dma200Series = null;
-let ema10Series = null;
-let ema20Series = null;
-let rsiSeries = null;
-let allOhlcData = [];
-let allEarningsData = [];
+let stockChart = null;
 let currentTimeframe = 365;
 
 function formatNumber(num, decimals = 2) {
     if (num == null) return '--';
     return Number(num).toFixed(decimals);
-}
-
-function calculateEMA(data, period) {
-    if (data.length < period) return [];
-    
-    const k = 2 / (period + 1);
-    const emaData = [];
-    
-    // Calculate initial SMA for first EMA value
-    let sum = 0;
-    for (let i = 0; i < period; i++) {
-        sum += data[i].close;
-    }
-    let ema = sum / period;
-    emaData.push({ time: data[period - 1].time, value: ema });
-    
-    // Calculate EMA for remaining values
-    for (let i = period; i < data.length; i++) {
-        ema = (data[i].close - ema) * k + ema;
-        emaData.push({ time: data[i].time, value: ema });
-    }
-    
-    return emaData;
 }
 
 function formatLargeNumber(num) {
@@ -1765,331 +1734,38 @@ async function loadStockData() {
 }
 
 // ============================================
-// Chart Functions
+// Chart Functions (using shared module)
 // ============================================
 
 async function loadChartData() {
     try {
-        const [ohlcResponse, earningsResponse] = await Promise.all([
-            fetch(`/api/frontend/ohlc/${ticker}`),
-            fetch(`/api/frontend/earnings-eps/${ticker}`)
-        ]);
+        document.getElementById('chartLoading').style.display = 'flex';
         
-        const data = await ohlcResponse.json();
-        const earningsData = await earningsResponse.json();
+        // Use shared chart module with RSI sub-chart
+        stockChart = new StockChart('chartContainer', {
+            height: 450,
+            showRSI: true,
+            rsiContainerId: 'rsiChartContainer',
+        });
         
-        if (data.error || !Array.isArray(data) || data.length === 0) {
-            document.getElementById('chartLoading').innerHTML = '<span style="color: var(--text-muted);">No chart data available</span>';
-            return;
-        }
+        await stockChart.load(ticker);
         
-        allOhlcData = data;
-        allEarningsData = Array.isArray(earningsData) ? earningsData : [];
+        document.getElementById('chartLoading').style.display = 'none';
         
-        initChart();
-        updateChart(currentTimeframe);
-        setupTimeframeButtons();
-        
-        if (data.length > 0) {
-            const latestData = data[data.length - 1];
+        // Update price display
+        if (stockChart.allData.length > 0) {
+            const latestData = stockChart.allData[stockChart.allData.length - 1];
             if (latestData.close != null) {
-                const priceElement = document.getElementById('currentPrice');
-                priceElement.textContent = '$' + formatNumber(latestData.close, 2);
+                document.getElementById('currentPrice').textContent = '$' + formatNumber(latestData.close, 2);
             }
         }
+        
+        setupTimeframeButtons();
+        updateChartStats();
         
     } catch (error) {
         console.error('Error loading chart data:', error);
         document.getElementById('chartLoading').innerHTML = '<span style="color: var(--text-muted);">Failed to load chart</span>';
-    }
-}
-
-function initChart() {
-    document.getElementById('chartLoading').style.display = 'none';
-    
-    const container = document.getElementById('chartContainer');
-    const rsiContainer = document.getElementById('rsiChartContainer');
-    
-    chart = LightweightCharts.createChart(container, {
-        width: container.clientWidth,
-        height: 450,
-        layout: {
-            background: { type: 'solid', color: 'transparent' },
-            textColor: '#8b949e',
-            fontFamily: "'JetBrains Mono', monospace",
-        },
-        grid: {
-            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
-            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
-        },
-        crosshair: {
-            mode: LightweightCharts.CrosshairMode.Normal,
-            vertLine: {
-                width: 1,
-                color: 'rgba(88, 166, 255, 0.5)',
-                style: LightweightCharts.LineStyle.Dashed,
-            },
-            horzLine: {
-                width: 1,
-                color: 'rgba(88, 166, 255, 0.5)',
-                style: LightweightCharts.LineStyle.Dashed,
-            },
-        },
-        rightPriceScale: {
-            borderColor: '#30363d',
-            scaleMargins: {
-                top: 0.05,
-                bottom: 0.15,
-            },
-        },
-        timeScale: {
-            borderColor: '#30363d',
-            timeVisible: true,
-            secondsVisible: false,
-        },
-        handleScroll: false,
-        handleScale: false,
-    });
-    
-    candlestickSeries = chart.addCandlestickSeries({
-        upColor: '#3fb950',
-        downColor: '#f85149',
-        borderDownColor: '#f85149',
-        borderUpColor: '#3fb950',
-        wickDownColor: '#f85149',
-        wickUpColor: '#3fb950',
-    });
-    
-    dma50Series = chart.addLineSeries({
-        color: '#00ff00',
-        lineWidth: 2,
-        lineStyle: LightweightCharts.LineStyle.Solid,
-        priceLineVisible: false,
-        lastValueVisible: false,
-        crosshairMarkerVisible: false,
-    });
-
-    dma200Series = chart.addLineSeries({
-        color: '#ff0000',
-        lineWidth: 2,
-        lineStyle: LightweightCharts.LineStyle.Solid,
-        priceLineVisible: false,
-        lastValueVisible: false,
-        crosshairMarkerVisible: false,
-    });
-
-    ema10Series = chart.addLineSeries({
-        color: '#ffffff',
-        lineWidth: 1,
-        lineStyle: LightweightCharts.LineStyle.Solid,
-        priceLineVisible: false,
-        lastValueVisible: false,
-        crosshairMarkerVisible: false,
-    });
-
-    ema20Series = chart.addLineSeries({
-        color: '#ffa500',
-        lineWidth: 1,
-        lineStyle: LightweightCharts.LineStyle.Solid,
-        priceLineVisible: false,
-        lastValueVisible: false,
-        crosshairMarkerVisible: false,
-    });
-    
-    volumeSeries = chart.addHistogramSeries({
-        color: '#26a69a',
-        priceFormat: {
-            type: 'volume',
-        },
-        priceScaleId: '',
-        scaleMargins: {
-            top: 0.88,
-            bottom: 0,
-        },
-    });
-    
-    rsiChart = LightweightCharts.createChart(rsiContainer, {
-        width: rsiContainer.clientWidth,
-        height: 120,
-        layout: {
-            background: { type: 'solid', color: 'transparent' },
-            textColor: '#8b949e',
-            fontFamily: "'JetBrains Mono', monospace",
-        },
-        grid: {
-            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
-            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
-        },
-        crosshair: {
-            mode: LightweightCharts.CrosshairMode.Normal,
-            vertLine: {
-                width: 1,
-                color: 'rgba(88, 166, 255, 0.5)',
-                style: LightweightCharts.LineStyle.Dashed,
-            },
-            horzLine: {
-                width: 1,
-                color: 'rgba(88, 166, 255, 0.5)',
-                style: LightweightCharts.LineStyle.Dashed,
-            },
-        },
-        rightPriceScale: {
-            borderColor: '#30363d',
-            scaleMargins: {
-                top: 0.1,
-                bottom: 0.1,
-            },
-            autoScale: true,
-            minValue: 0,
-            maxValue: 100,
-        },
-        timeScale: {
-            borderColor: '#30363d',
-            timeVisible: true,
-            secondsVisible: false,
-            visible: false,
-        },
-        handleScroll: false,
-        handleScale: false,
-    });
-    
-    rsiSeries = rsiChart.addAreaSeries({
-        lineColor: '#00bcd4',
-        topColor: 'rgba(0, 188, 212, 0.4)',
-        bottomColor: 'rgba(0, 188, 212, 0.05)',
-        lineWidth: 2,
-        priceLineVisible: false,
-        lastValueVisible: true,
-        crosshairMarkerVisible: true,
-    });
-    
-    window.addEventListener('resize', () => {
-        if (chart) {
-            chart.applyOptions({ width: container.clientWidth });
-        }
-        if (rsiChart) {
-            rsiChart.applyOptions({ width: rsiContainer.clientWidth });
-        }
-    });
-    
-    chart.subscribeCrosshairMove(param => {
-        if (param.time && rsiChart) {
-            rsiChart.setCrosshairPosition(param.point?.y || 0, param.time, rsiSeries);
-        }
-    });
-    
-    rsiChart.subscribeCrosshairMove(param => {
-        if (param.time && chart) {
-            chart.setCrosshairPosition(param.point?.y || 0, param.time, candlestickSeries);
-        }
-    });
-}
-
-function updateChart(days) {
-    if (!allOhlcData.length) return;
-    
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - days);
-    const cutoffStr = cutoffDate.toISOString().split('T')[0];
-    
-    const filteredData = allOhlcData.filter(d => d.time >= cutoffStr);
-    
-    if (filteredData.length === 0) {
-        setChartData(allOhlcData);
-    } else {
-        setChartData(filteredData);
-    }
-    
-    chart.timeScale().fitContent();
-    if (rsiChart) {
-        rsiChart.timeScale().fitContent();
-    }
-    updateChartStats(filteredData.length > 0 ? filteredData : allOhlcData);
-}
-
-function setChartData(data) {
-    const candleData = data.map(d => ({
-        time: d.time,
-        open: d.open,
-        high: d.high,
-        low: d.low,
-        close: d.close,
-    }));
-    candlestickSeries.setData(candleData);
-    
-    const dma50Data = data
-        .filter(d => d.dma_50 != null)
-        .map(d => ({
-            time: d.time,
-            value: d.dma_50,
-        }));
-    dma50Series.setData(dma50Data);
-    
-    const dma200Data = data
-        .filter(d => d.dma_200 != null)
-        .map(d => ({
-            time: d.time,
-            value: d.dma_200,
-        }));
-    dma200Series.setData(dma200Data);
-
-    // Calculate and set EMA data
-    const ema10Data = calculateEMA(data, 10);
-    ema10Series.setData(ema10Data);
-    
-    const ema20Data = calculateEMA(data, 20);
-    ema20Series.setData(ema20Data);
-    
-    const volumeData = data.map(d => ({
-        time: d.time,
-        value: d.volume,
-        color: d.close >= d.open ? 'rgba(63, 185, 80, 0.3)' : 'rgba(248, 81, 73, 0.3)',
-    }));
-    volumeSeries.setData(volumeData);
-    
-    const rsiData = data
-        .filter(d => d.rsi_mktcap != null)
-        .map(d => ({
-            time: d.time,
-            value: d.rsi_mktcap,
-        }));
-    rsiSeries.setData(rsiData);
-    
-    const dataTimeSet = new Set(data.map(d => d.time));
-    const filteredEarnings = allEarningsData.filter(e => dataTimeSet.has(e.time));
-    
-    if (filteredEarnings.length > 0) {
-        const markers = filteredEarnings.map(earning => {
-            const actualText = earning.eps_actual != null ? `A: $${earning.eps_actual}` : '';
-            const estText = earning.eps_estimated != null ? `E: $${earning.eps_estimated}` : '';
-            let labelText = '';
-            if (actualText && estText) {
-                labelText = `${actualText} | ${estText}`;
-            } else {
-                labelText = actualText || estText || 'EPS';
-            }
-            
-            let color = '#f5f5dc';
-            if (earning.eps_actual != null && earning.eps_estimated != null) {
-                color = earning.eps_actual >= earning.eps_estimated ? '#90EE90' : '#FFB6C1';
-            }
-            
-            return {
-                time: earning.time,
-                position: 'belowBar',
-                color: color,
-                shape: 'arrowUp',
-                text: labelText,
-            };
-        });
-        
-        candlestickSeries.setMarkers(markers);
-    } else {
-        candlestickSeries.setMarkers([]);
-    }
-    
-    if (rsiChart && chart) {
-        rsiChart.timeScale().fitContent();
     }
 }
 
@@ -2099,25 +1775,25 @@ function setupTimeframeButtons() {
             document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             currentTimeframe = parseInt(this.dataset.days);
-            updateChart(currentTimeframe);
+            if (stockChart) {
+                stockChart.setTimeframe(currentTimeframe);
+                updateChartStats();
+            }
         });
     });
 }
 
-function updateChartStats(data) {
-    if (!data || data.length === 0) return;
+function updateChartStats() {
+    if (!stockChart) return;
     
-    const firstPrice = data[0].close;
-    const lastPrice = data[data.length - 1].close;
-    const changePercent = ((lastPrice - firstPrice) / firstPrice * 100).toFixed(2);
-    const highest = Math.max(...data.map(d => d.high));
-    const lowest = Math.min(...data.map(d => d.low));
+    const stats = stockChart.getStats();
+    if (!stats.change) return;
     
     const statsHtml = `
-        <div class="chart-stat">Change: <span class="${changePercent >= 0 ? 'text-green' : 'text-red'}">${changePercent >= 0 ? '+' : ''}${changePercent}%</span></div>
-        <div class="chart-stat">High: <span>$${highest.toFixed(2)}</span></div>
-        <div class="chart-stat">Low: <span>$${lowest.toFixed(2)}</span></div>
-        <div class="chart-stat">Range: <span>$${(highest - lowest).toFixed(2)}</span></div>
+        <div class="chart-stat">Change: <span class="${stats.change >= 0 ? 'text-green' : 'text-red'}">${stats.change >= 0 ? '+' : ''}${stats.change}%</span></div>
+        <div class="chart-stat">High: <span>$${stats.high}</span></div>
+        <div class="chart-stat">Low: <span>$${stats.low}</span></div>
+        <div class="chart-stat">Range: <span>$${(stats.high - stats.low).toFixed(2)}</span></div>
     `;
     document.getElementById('chartStats').innerHTML = statsHtml;
 }

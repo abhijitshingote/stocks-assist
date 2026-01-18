@@ -343,6 +343,163 @@
 .info-box strong {
     color: var(--accent-green);
 }
+
+/* Clickable row styling */
+.top-table tbody tr.data-row {
+    cursor: pointer;
+}
+
+.top-table tbody tr.data-row.chart-open {
+    background: rgba(63, 185, 80, 0.08);
+}
+
+.top-table tbody tr.data-row.chart-open td:first-child {
+    border-left: 2px solid var(--accent-green);
+}
+
+/* Chart row styling */
+.chart-row {
+    display: none;
+}
+
+.chart-row.visible {
+    display: table-row;
+}
+
+.chart-row td {
+    padding: 0 !important;
+    background: rgba(30, 35, 42, 0.5);
+}
+
+.inline-chart-container {
+    padding: 1rem;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.chart-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.chart-title h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-green);
+    margin: 0;
+}
+
+.chart-title span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.chart-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chart-timeframe {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.timeframe-btn {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+}
+
+.timeframe-btn:hover {
+    border-color: var(--accent-green);
+    color: var(--text-primary);
+}
+
+.timeframe-btn.active {
+    background: var(--accent-green);
+    border-color: var(--accent-green);
+    color: #fff;
+}
+
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 390px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.chart-loading .spinner {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0.5rem;
+}
+
+.stock-chart-wrapper {
+    height: 390px;
+    width: 100%;
+}
+
+.chart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.chart-legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.7rem;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 10px;
+    height: 3px;
+    border-radius: 1px;
+}
+
+.chart-stats {
+    display: flex;
+    gap: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+}
+
+.chart-stat {
+    color: var(--text-secondary);
+}
+
+.chart-stat span {
+    color: var(--text-primary);
+    margin-left: 0.2rem;
+}
 {% endblock %}
 
 {% block content %}
@@ -449,6 +606,10 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<!-- Lightweight Charts by TradingView -->
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<!-- Shared Chart Module -->
+<script src="/static/js/stock-chart.js"></script>
 <script>
 let currentData = [];
 let sortColumn = 'dr_1';
@@ -558,8 +719,8 @@ function updateSortIcons() {
 function renderTable(data) {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = data.map(stock => `
-        <tr>
-            <td><a href="/stock/${stock.ticker}" class="ticker-link">${stock.ticker}</a></td>
+        <tr class="data-row" data-ticker="${stock.ticker}" onclick="toggleStockChart('${stock.ticker}', '${(stock.company_name || '').replace(/'/g, "\\'")}')">
+            <td><a href="/stock/${stock.ticker}" class="ticker-link" onclick="event.stopPropagation()">${stock.ticker}</a></td>
             <td class="company-name" title="${stock.company_name || ''}">${stock.company_name || '—'}</td>
             <td>${stock.sector ? `<span class="sector-badge">${stock.sector}</span>` : '—'}</td>
             <td>
@@ -581,6 +742,40 @@ function renderTable(data) {
             <td class="${getReturnClass(stock.vol_vs_10d_avg)}">${stock.vol_vs_10d_avg ? stock.vol_vs_10d_avg.toFixed(2) : '—'}</td>
             <td class="${getReturnClass(stock.atr20)}">${stock.atr20 ? stock.atr20.toFixed(2) + '%' : '—'}</td>
             <td class="market-cap">${formatMarketCap(stock.market_cap)}</td>
+        </tr>
+        <tr class="chart-row" id="chart-row-${stock.ticker}" onclick="event.stopPropagation()">
+            <td colspan="15">
+                <div class="inline-chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <h3>${stock.ticker}</h3>
+                            <span>${stock.company_name || ''}</span>
+                        </div>
+                        <div class="chart-controls">
+                            <div class="chart-timeframe" data-ticker="${stock.ticker}">
+                                <button class="timeframe-btn" data-days="30">1M</button>
+                                <button class="timeframe-btn" data-days="90">3M</button>
+                                <button class="timeframe-btn" data-days="180">6M</button>
+                                <button class="timeframe-btn active" data-days="365">1Y</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-loading" id="chart-loading-${stock.ticker}">
+                        <div class="spinner"></div>
+                        <span>Loading chart...</span>
+                    </div>
+                    <div class="stock-chart-wrapper" id="chart-wrapper-${stock.ticker}" style="display: none;"></div>
+                    <div class="chart-footer" style="display: none;" id="chart-footer-${stock.ticker}">
+                        <div class="chart-legend">
+                            <div class="legend-item"><span class="legend-dot" style="background: #ffffff;"></span>10 EMA</div>
+                            <div class="legend-item"><span class="legend-dot" style="background: #ffa500;"></span>20 EMA</div>
+                            <div class="legend-item"><span class="legend-dot" style="background: #00ff00;"></span>50 DMA</div>
+                            <div class="legend-item"><span class="legend-dot" style="background: #ff0000;"></span>200 DMA</div>
+                        </div>
+                        <div class="chart-stats" id="chart-stats-${stock.ticker}"></div>
+                    </div>
+                </div>
+            </td>
         </tr>
     `).join('');
 }
@@ -665,6 +860,102 @@ function showTable() {
 function showEmpty() {
     document.getElementById('emptyState').style.display = 'block';
     document.getElementById('tableContainer').style.display = 'none';
+}
+
+// ============================================
+// Chart Functions (using shared module)
+// ============================================
+
+const DEFAULT_TIMEFRAME = 365;
+let activeChartTicker = null;
+
+function toggleStockChart(ticker, companyName) {
+    const chartRow = document.getElementById(`chart-row-${ticker}`);
+    const dataRow = document.querySelector(`tr.data-row[data-ticker="${ticker}"]`);
+    
+    if (activeChartTicker === ticker) {
+        // Close chart
+        chartRow.classList.remove('visible');
+        dataRow.classList.remove('chart-open');
+        ChartManager.destroy(ticker);
+        activeChartTicker = null;
+    } else {
+        // Close any open chart first
+        if (activeChartTicker) {
+            const prevRow = document.getElementById(`chart-row-${activeChartTicker}`);
+            const prevDataRow = document.querySelector(`tr.data-row[data-ticker="${activeChartTicker}"]`);
+            if (prevRow) prevRow.classList.remove('visible');
+            if (prevDataRow) prevDataRow.classList.remove('chart-open');
+            ChartManager.destroy(activeChartTicker);
+        }
+        
+        // Open this chart
+        chartRow.classList.add('visible');
+        dataRow.classList.add('chart-open');
+        activeChartTicker = ticker;
+        
+        loadStockChartData(ticker);
+    }
+}
+
+async function loadStockChartData(ticker) {
+    const loading = document.getElementById(`chart-loading-${ticker}`);
+    const wrapper = document.getElementById(`chart-wrapper-${ticker}`);
+    const footer = document.getElementById(`chart-footer-${ticker}`);
+    
+    loading.style.display = 'flex';
+    footer.style.display = 'none';
+    
+    // IMPORTANT: Show wrapper BEFORE creating chart so it has dimensions
+    wrapper.style.display = 'block';
+    wrapper.style.visibility = 'hidden';
+    
+    try {
+        // Use shared chart module
+        const chart = await ChartManager.create(ticker, `chart-wrapper-${ticker}`, {
+            height: 390,
+        });
+        
+        loading.style.display = 'none';
+        wrapper.style.visibility = 'visible';
+        footer.style.display = 'flex';
+        
+        // Update stats
+        updateChartStats(ticker);
+        
+        document.querySelectorAll(`.chart-timeframe[data-ticker="${ticker}"] .timeframe-btn`).forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.querySelectorAll(`.chart-timeframe[data-ticker="${ticker}"] .timeframe-btn`).forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const chartInstance = ChartManager.get(ticker);
+                if (chartInstance) {
+                    chartInstance.setTimeframe(parseInt(this.dataset.days));
+                    updateChartStats(ticker);
+                }
+            });
+        });
+        
+    } catch (error) {
+        console.error(`Error loading chart for ${ticker}:`, error);
+        wrapper.style.display = 'none';
+        loading.innerHTML = `<span style="color: var(--text-muted);">No chart data for ${ticker}</span>`;
+    }
+}
+
+function updateChartStats(ticker) {
+    const chart = ChartManager.get(ticker);
+    if (!chart) return;
+    
+    const stats = chart.getStats();
+    const statsEl = document.getElementById(`chart-stats-${ticker}`);
+    if (statsEl && stats.change) {
+        statsEl.innerHTML = `
+            <div class="chart-stat">Chg:<span style="color: ${stats.change >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}">${stats.change >= 0 ? '+' : ''}${stats.change}%</span></div>
+            <div class="chart-stat">H:<span>$${stats.high}</span></div>
+            <div class="chart-stat">L:<span>$${stats.low}</span></div>
+        `;
+    }
 }
 </script>
 {% endblock %}
