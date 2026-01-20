@@ -72,6 +72,27 @@ def compute_and_load_metrics(connection):
     WITH latest_date AS (
         SELECT MAX(date) as max_date FROM ohlc
     ),
+     -- TI65
+    close_avgs AS (
+        SELECT
+            o.ticker,
+            AVG(CASE WHEN rn <= 7  THEN o.close END)  AS avg_close_7d,
+            AVG(CASE WHEN rn <= 65 THEN o.close END)  AS avg_close_65d
+        FROM (
+            SELECT
+                o.ticker,
+                o.close,
+                ROW_NUMBER() OVER (
+                    PARTITION BY o.ticker
+                    ORDER BY o.date DESC
+                ) AS rn
+            FROM ohlc o
+            CROSS JOIN latest_date ld
+            WHERE o.date <= ld.max_date
+        ) o
+        WHERE rn <= 65
+        GROUP BY o.ticker
+    ),
     -- Parameters for YoY growth calculations
     params AS (
         SELECT EXTRACT(YEAR FROM CURRENT_DATE)::int AS current_year
@@ -290,6 +311,7 @@ def compute_and_load_metrics(connection):
         dollar_volume,
         avg_vol_10d,
         vol_vs_10d_avg,
+        TI65,
         dr_1,
         dr_5,
         dr_20,
@@ -337,6 +359,7 @@ def compute_and_load_metrics(connection):
         ROUND((pc.current_close::numeric * pc.today_volume::numeric), 0) as dollar_volume,
         ROUND(va.avg_vol_10d::numeric, 2) as avg_vol_10d,
         ROUND((pc.today_volume::numeric / NULLIF(va.avg_vol_10d::numeric, 0)), 2) as vol_vs_10d_avg,
+        ROUND((ca.avg_close_7d::numeric / NULLIF(ca.avg_close_65d::numeric, 0)), 2) AS TI65,
         pc.dr_1,
         pc.dr_5,
         pc.dr_20,
@@ -379,6 +402,7 @@ def compute_and_load_metrics(connection):
     LEFT JOIN valuation_trajectory vt ON t.ticker = vt.ticker
     LEFT JOIN dynamic_growth dg ON t.ticker = dg.ticker
     LEFT JOIN shares_float sf ON t.ticker = sf.ticker
+    LEFT JOIN close_avgs ca ON t.ticker = ca.ticker
     LEFT JOIN (
         SELECT
             ticker,

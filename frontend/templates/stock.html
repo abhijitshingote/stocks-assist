@@ -710,13 +710,151 @@
     font-size: 0.9rem;
     line-height: 1.6;
     color: var(--text-primary);
-    white-space: pre-wrap;
     word-wrap: break-word;
 }
 
 .notes-display.empty {
     color: var(--text-muted);
     font-style: italic;
+    white-space: pre-wrap;
+}
+
+/* Markdown Rendered Content Styles */
+.notes-display h1,
+.notes-display h2,
+.notes-display h3,
+.notes-display h4 {
+    color: var(--text-primary);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.notes-display h1 { font-size: 1.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+.notes-display h2 { font-size: 1.2rem; color: var(--accent-blue); }
+.notes-display h3 { font-size: 1.05rem; color: var(--accent-purple); }
+.notes-display h4 { font-size: 0.95rem; }
+
+.notes-display p {
+    margin: 0.75rem 0;
+}
+
+.notes-display ul,
+.notes-display ol {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+}
+
+.notes-display li {
+    margin: 0.4rem 0;
+}
+
+.notes-display hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 1.5rem 0;
+}
+
+.notes-display strong {
+    color: var(--accent-yellow);
+    font-weight: 600;
+}
+
+.notes-display em {
+    color: var(--text-secondary);
+}
+
+.notes-display a {
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+.notes-display a:hover {
+    text-decoration: underline;
+}
+
+.notes-display code {
+    background: rgba(110, 118, 129, 0.2);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    color: var(--accent-green);
+}
+
+.notes-display pre {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.notes-display pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.85rem;
+}
+
+.notes-display blockquote {
+    border-left: 3px solid var(--accent-purple);
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    background: rgba(163, 113, 247, 0.1);
+    color: var(--text-secondary);
+}
+
+/* Markdown Tables */
+.notes-display table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.notes-display table th,
+.notes-display table td {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+}
+
+.notes-display table th {
+    background: rgba(48, 54, 61, 0.5);
+    color: var(--accent-blue);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.notes-display table tr:nth-child(even) {
+    background: rgba(48, 54, 61, 0.2);
+}
+
+.notes-display table tr:hover {
+    background: rgba(88, 166, 255, 0.1);
+}
+
+/* Make table scrollable on mobile */
+.notes-display .table-wrapper {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .notes-display table {
+        font-size: 0.7rem;
+    }
+    
+    .notes-display table th,
+    .notes-display table td {
+        padding: 0.35rem 0.5rem;
+    }
 }
 
 .notes-textarea {
@@ -768,6 +906,313 @@
 
 .notes-save-status.error {
     color: var(--accent-red);
+}
+
+/* AI Notes Button */
+.notes-btn.ai {
+    background: linear-gradient(135deg, #a371f7, #58a6ff);
+    border-color: transparent;
+    color: #fff;
+}
+
+.notes-btn.ai:hover {
+    background: linear-gradient(135deg, #b87fff, #79b8ff);
+    box-shadow: 0 0 12px rgba(163, 113, 247, 0.4);
+}
+
+.notes-btn.ai:disabled {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.notes-btn.ai .spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid transparent;
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 0.3rem;
+}
+
+/* AI Config Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-overlay.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-header h3 .icon {
+    font-size: 1.2rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--accent-red);
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group .hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: normal;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-top: -0.2rem;
+}
+
+.model-selector {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.model-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.9rem 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-dark);
+}
+
+.model-option:hover {
+    border-color: var(--accent-purple);
+}
+
+.model-option.selected {
+    border-color: var(--accent-purple);
+    background: rgba(163, 113, 247, 0.1);
+}
+
+.model-option input {
+    display: none;
+}
+
+.model-option .model-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.model-option .model-desc {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.model-option .model-cost {
+    font-size: 0.65rem;
+    color: var(--accent-yellow);
+    margin-top: 0.35rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.prompt-textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+.prompt-textarea:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+}
+
+.prompt-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.prompt-actions button {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.prompt-actions button:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.modal-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-btn.secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.modal-btn.secondary:hover {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+}
+
+.modal-btn.primary {
+    background: linear-gradient(135deg, #a371f7, #58a6ff);
+    border: none;
+    color: #fff;
+}
+
+.modal-btn.primary:hover {
+    background: linear-gradient(135deg, #b87fff, #79b8ff);
+    box-shadow: 0 0 12px rgba(163, 113, 247, 0.4);
+}
+
+.modal-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* AI Status Messages */
+.ai-status {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    display: none;
+}
+
+.ai-status.active {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ai-status.loading {
+    background: rgba(210, 153, 34, 0.15);
+    border: 1px solid rgba(210, 153, 34, 0.3);
+    color: var(--accent-yellow);
+}
+
+.ai-status.success {
+    background: rgba(52, 211, 153, 0.15);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    color: var(--accent-green);
+}
+
+.ai-status.error {
+    background: rgba(248, 81, 73, 0.15);
+    border: 1px solid rgba(248, 81, 73, 0.3);
+    color: var(--accent-red);
+}
+
+.ai-status .status-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
 }
 
 /* Preference Controls */
@@ -1301,7 +1746,7 @@
                 <button class="timeframe-btn" data-days="30">1M</button>
                 <button class="timeframe-btn" data-days="90">3M</button>
                 <button class="timeframe-btn" data-days="180">6M</button>
-                <button class="timeframe-btn active" data-days="365">1Y</button>
+                <button class="timeframe-btn" data-days="365">1Y</button>
             </div>
         </div>
         <div id="chartLoading" class="chart-loading">
@@ -1397,6 +1842,9 @@
         <div class="notes-header">
             <h2><span class="notes-icon">📝</span> Notes</h2>
             <div class="notes-actions">
+                <button class="notes-btn ai" id="aiNotesBtn" onclick="openAiModal()">
+                    🤖 Get AI Notes
+                </button>
                 <button class="notes-btn" id="editNotesBtn" onclick="toggleEditMode()">Edit</button>
                 <button class="notes-btn primary" id="saveNotesBtn" onclick="saveNotes()" style="display: none;">Save</button>
                 <button class="notes-btn" id="cancelNotesBtn" onclick="cancelEdit()" style="display: none;">Cancel</button>
@@ -1410,6 +1858,78 @@
         <div class="notes-meta" id="notesMeta"></div>
     </div>
 
+    <!-- AI Notes Configuration Modal -->
+    <div class="modal-overlay" id="aiModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><span class="icon">🤖</span> AI Stock Research</h3>
+                <button class="modal-close" onclick="closeAiModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Status Message -->
+                <div class="ai-status" id="aiStatus"></div>
+                
+                <!-- Model Selection -->
+                <div class="form-group">
+                    <label>Select Model</label>
+                    <div class="model-selector">
+                        <label class="model-option" id="modelSonar">
+                            <input type="radio" name="ai-model" value="sonar">
+                            <span class="model-name">Sonar</span>
+                            <span class="model-desc">Fast, cost-effective</span>
+                            <span class="model-cost">~$0.01/request</span>
+                        </label>
+                        <label class="model-option" id="modelSonarPro">
+                            <input type="radio" name="ai-model" value="sonar-pro">
+                            <span class="model-name">Sonar Pro</span>
+                            <span class="model-desc">More detailed analysis</span>
+                            <span class="model-cost">~$0.05/request</span>
+                        </label>
+                        <label class="model-option selected" id="modelClaude">
+                            <input type="radio" name="ai-model" value="claude-web-search" checked>
+                            <span class="model-name">Claude Web Search</span>
+                            <span class="model-desc">Real-time web search for stock news</span>
+                            <span class="model-cost">~$0.10/request</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Custom Prompt (for Perplexity models) -->
+                <div class="form-group" id="promptSection" style="display: none;">
+                    <label>
+                        Prompt Template
+                        <span class="hint">(Uses [company_name], [ticker] placeholders)</span>
+                    </label>
+                    <textarea class="prompt-textarea" id="aiPromptInput" placeholder="Loading prompt template..."></textarea>
+                    <div class="prompt-actions">
+                        <button onclick="loadDefaultPrompt()">↻ Reset to Default</button>
+                        <button onclick="savePromptTemplate()">💾 Save as Default</button>
+                    </div>
+                </div>
+                
+                <!-- Claude Info (shown when Claude is selected) -->
+                <div class="form-group" id="claudeInfoSection">
+                    <div class="claude-info" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 12px; font-size: 13px; color: #a5b4fc;">
+                        <strong>🔍 Claude Web Search</strong><br>
+                        Searches the web for stock-moving news from the last 12 months including:
+                        <ul style="margin: 8px 0 0 16px; padding: 0;">
+                            <li>Earnings reports & financial results</li>
+                            <li>Contracts, partnerships, acquisitions</li>
+                            <li>Product launches & regulatory approvals</li>
+                            <li>Management changes & analyst ratings</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" onclick="closeAiModal()">Cancel</button>
+                <button class="modal-btn primary" id="generateAiBtn" onclick="generateAiResearch()">
+                    🚀 Generate Research
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="updated-at" id="updatedAt"></div>
 </div>
 {% endblock %}
@@ -1417,12 +1937,14 @@
 {% block extra_scripts %}
 <!-- Lightweight Charts by TradingView -->
 <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<!-- Markdown Parser -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <!-- Shared Chart Module -->
 <script src="/static/js/stock-chart.js"></script>
 <script>
 const ticker = '{{ ticker }}';
 let stockChart = null;
-let currentTimeframe = 365;
+let currentTimeframe = typeof getStoredTimeframe === 'function' ? getStoredTimeframe() : 365;
 
 function formatNumber(num, decimals = 2) {
     if (num == null) return '--';
@@ -1771,6 +2293,11 @@ async function loadChartData() {
 
 function setupTimeframeButtons() {
     document.querySelectorAll('.timeframe-btn').forEach(btn => {
+        // Set initial active state based on stored timeframe
+        if (parseInt(btn.dataset.days) === currentTimeframe) {
+            btn.classList.add('active');
+        }
+        
         btn.addEventListener('click', function() {
             document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
@@ -1829,7 +2356,16 @@ async function loadNotes() {
 function updateNotesDisplay() {
     const display = document.getElementById('notesDisplay');
     if (currentNotes && currentNotes.trim()) {
-        display.textContent = currentNotes;
+        // Configure marked for better rendering
+        marked.setOptions({
+            breaks: true,      // Convert \n to <br>
+            gfm: true,         // GitHub Flavored Markdown (tables, etc.)
+            headerIds: false,  // Don't add IDs to headers
+            mangle: false      // Don't mangle email links
+        });
+        
+        // Render markdown to HTML
+        display.innerHTML = marked.parse(currentNotes);
         display.classList.remove('empty');
     } else {
         display.textContent = 'No notes yet. Click Edit to add your analysis.';
@@ -1983,6 +2519,253 @@ async function togglePreference(prefType) {
         prefStatus.className = 'pref-status';
     }
 }
+
+// ============================================
+// AI Notes Functions
+// ============================================
+
+let defaultPromptTemplate = '';
+let currentPromptTemplate = '';
+
+async function loadPromptTemplate() {
+    try {
+        const response = await fetch('/api/frontend/stock-notes/ai-prompt');
+        const data = await response.json();
+        
+        if (data.prompt) {
+            defaultPromptTemplate = data.prompt;
+            currentPromptTemplate = data.prompt;
+            document.getElementById('aiPromptInput').value = data.prompt;
+        }
+    } catch (error) {
+        console.error('Error loading prompt template:', error);
+    }
+}
+
+function openAiModal() {
+    document.getElementById('aiModal').classList.add('active');
+    // Load prompt template if not loaded
+    if (!currentPromptTemplate) {
+        loadPromptTemplate();
+    } else {
+        document.getElementById('aiPromptInput').value = currentPromptTemplate;
+    }
+    // Reset status
+    hideAiStatus();
+}
+
+function closeAiModal() {
+    document.getElementById('aiModal').classList.remove('active');
+}
+
+function showAiStatus(message, type) {
+    const status = document.getElementById('aiStatus');
+    status.className = 'ai-status active ' + type;
+    
+    if (type === 'loading') {
+        status.innerHTML = '<span class="status-spinner"></span> ' + message;
+    } else {
+        status.textContent = message;
+    }
+}
+
+function hideAiStatus() {
+    const status = document.getElementById('aiStatus');
+    status.className = 'ai-status';
+    status.textContent = '';
+}
+
+function getSelectedModel() {
+    const selected = document.querySelector('input[name="ai-model"]:checked');
+    return selected ? selected.value : 'sonar';
+}
+
+function initModelSelector() {
+    // Model selection UI
+    document.querySelectorAll('.model-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.model-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input').checked = true;
+            
+            // Toggle prompt section visibility based on model
+            updatePromptSectionVisibility();
+        });
+    });
+    
+    // Set initial visibility
+    updatePromptSectionVisibility();
+}
+
+function updatePromptSectionVisibility() {
+    const model = getSelectedModel();
+    const promptSection = document.getElementById('promptSection');
+    const claudeInfoSection = document.getElementById('claudeInfoSection');
+    
+    if (model === 'claude-web-search') {
+        // Hide prompt, show Claude info
+        promptSection.style.display = 'none';
+        claudeInfoSection.style.display = 'block';
+    } else {
+        // Show prompt, hide Claude info
+        promptSection.style.display = 'block';
+        claudeInfoSection.style.display = 'none';
+    }
+}
+
+async function loadDefaultPrompt() {
+    try {
+        const response = await fetch('/api/frontend/stock-notes/ai-prompt');
+        const data = await response.json();
+        
+        if (data.prompt) {
+            defaultPromptTemplate = data.prompt;
+            document.getElementById('aiPromptInput').value = data.prompt;
+            showAiStatus('Prompt reset to default', 'success');
+            setTimeout(hideAiStatus, 2000);
+        }
+    } catch (error) {
+        showAiStatus('Failed to load default prompt', 'error');
+    }
+}
+
+async function savePromptTemplate() {
+    const prompt = document.getElementById('aiPromptInput').value;
+    
+    if (!prompt.trim()) {
+        showAiStatus('Prompt cannot be empty', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/frontend/stock-notes/ai-prompt', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: prompt })
+        });
+        
+        if (response.ok) {
+            defaultPromptTemplate = prompt;
+            showAiStatus('Prompt saved as default', 'success');
+            setTimeout(hideAiStatus, 2000);
+        } else {
+            showAiStatus('Failed to save prompt', 'error');
+        }
+    } catch (error) {
+        showAiStatus('Error saving prompt: ' + error.message, 'error');
+    }
+}
+
+async function generateAiResearch() {
+    const model = getSelectedModel();
+    const customPrompt = document.getElementById('aiPromptInput').value;
+    
+    const aiBtn = document.getElementById('aiNotesBtn');
+    const generateBtn = document.getElementById('generateAiBtn');
+    
+    // Disable buttons and show loading
+    aiBtn.disabled = true;
+    aiBtn.innerHTML = '<span class="spinner"></span> Generating...';
+    generateBtn.disabled = true;
+    generateBtn.textContent = '⏳ Generating...';
+    
+    // Claude web search may take longer due to multiple web searches
+    const waitMessage = model === 'claude-web-search' 
+        ? 'Searching the web for stock news... This may take 60-90 seconds.'
+        : 'Generating AI research notes... This may take 30-60 seconds.';
+    showAiStatus(waitMessage, 'loading');
+    
+    try {
+        let response;
+        
+        if (model === 'claude-web-search') {
+            // Use Claude endpoint (no custom prompt - uses built-in web search prompt)
+            response = await fetch(`/api/frontend/stock-notes/ai-research-claude/${ticker}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ months: 12 })
+            });
+        } else {
+            // Use Perplexity endpoint
+            const requestBody = { model };
+            
+            // Only send custom prompt if it's been modified from the default
+            if (customPrompt && customPrompt !== defaultPromptTemplate) {
+                // Replace placeholders with actual values
+                const companyName = document.getElementById('companyName').textContent.split('(')[0].trim();
+                
+                requestBody.custom_prompt = customPrompt
+                    .replace(/\[company_name\]/g, companyName)
+                    .replace(/\[ticker\]/g, ticker);
+            }
+            
+            response = await fetch(`/api/frontend/stock-notes/ai-research/${ticker}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+        }
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Update notes display with new content
+            currentNotes = data.notes;
+            updateNotesDisplay();
+            
+            // Update timestamp
+            if (data.updated_at) {
+                const date = new Date(data.updated_at);
+                document.getElementById('notesMeta').textContent = 
+                    `Last updated: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
+            
+            showAiStatus(`✓ AI research generated successfully using ${data.model_used}`, 'success');
+            
+            // Close modal after short delay
+            setTimeout(() => {
+                closeAiModal();
+                hideAiStatus();
+            }, 2000);
+            
+        } else {
+            // Handle specific error types
+            let errorMessage = data.error || 'Failed to generate AI research';
+            
+            if (data.error_type === 'INSUFFICIENT_CREDITS') {
+                errorMessage = '⚠️ Insufficient API credits. Please add credits to your account.';
+            } else if (data.error_type === 'RATE_LIMITED') {
+                errorMessage = '⚠️ Rate limited. Please wait a few minutes and try again.';
+            }
+            
+            showAiStatus(errorMessage, 'error');
+        }
+        
+    } catch (error) {
+        console.error('Error generating AI research:', error);
+        showAiStatus('Network error: ' + error.message, 'error');
+    } finally {
+        // Re-enable buttons
+        aiBtn.disabled = false;
+        aiBtn.innerHTML = '🤖 Get AI Notes';
+        generateBtn.disabled = false;
+        generateBtn.textContent = '🚀 Generate Research';
+    }
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeAiModal();
+    }
+});
+
+// Close modal on backdrop click
+document.getElementById('aiModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeAiModal();
+    }
+});
 
 // ============================================
 // Earnings Data Functions
@@ -2283,6 +3066,9 @@ document.addEventListener('DOMContentLoaded', function() {
     loadEstimatesData();
     loadRatiosData();
     loadProfileData();
+    // Initialize AI notes modal
+    initModelSelector();
+    loadPromptTemplate();
 });
 </script>
 {% endblock %}

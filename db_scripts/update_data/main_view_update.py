@@ -80,6 +80,7 @@ def compute_and_load_main_view(connection):
         dollar_volume,
         avg_vol_10d,
         vol_vs_10d_avg,
+        TI65,
         dr_1,
         dr_5,
         dr_20,
@@ -138,6 +139,7 @@ def compute_and_load_main_view(connection):
             sm.dollar_volume,
             sm.avg_vol_10d,
             sm.vol_vs_10d_avg,
+            sm.TI65,
             sm.dr_1,
             sm.dr_5,
             sm.dr_20,
@@ -192,11 +194,8 @@ ARRAY_TO_STRING(
                  COALESCE(sm.rev_growth_t_plus_2::numeric, sm.rev_growth_t_plus_1::numeric)) / 2 > 25
             THEN 'high_sales_growth' END,
 
-            -- Daily return tags
-            CASE WHEN sm.dr_5   > 10  THEN 'dr_5 > 10'   END,
-            CASE WHEN sm.dr_20  > 20  THEN 'dr_20 > 20'  END,
-            CASE WHEN sm.dr_60  > 50  THEN 'dr_60 > 50'  END,
-            CASE WHEN sm.dr_120 > 100 THEN 'dr_120 > 100' END,
+            --TI65 tags
+            CASE WHEN sm.TI65 > 1.05 THEN 'TI65' END,
 
             -- Recent spike/gapper tags with date
             CASE WHEN svg.spike_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '60 days'
@@ -238,7 +237,7 @@ ARRAY_TO_STRING(
 
     ) AS tt
     WHERE tt.tags <> ''
-    order by dr_20 desc
+    order by TI65 desc
     """
     
     result = connection.execute(text(main_view_query))

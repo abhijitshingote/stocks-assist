@@ -271,6 +271,14 @@
     color: var(--accent-purple);
 }
 
+.tag-pill.ti65-tag {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(124, 58, 237, 0.3) 100%);
+    color: #00d4ff;
+    font-weight: 700;
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.4);
+}
+
 /* Data Sections Container */
 .data-sections {
     display: flex;
@@ -561,6 +569,37 @@
     background: rgba(163, 113, 247, 0.15);
     color: var(--accent-purple);
     white-space: nowrap;
+}
+
+/* TI65 Badge */
+.ti65-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+    white-space: nowrap;
+}
+
+.ti65-badge .ti65-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.ti65-badge .ti65-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.ti65-badge.hot {
+    background: rgba(255, 167, 38, 0.2);
+    color: var(--accent-yellow);
 }
 
 /* Low Float Badge - Prominent */
@@ -1229,6 +1268,7 @@ function renderCards(data, originalData = null) {
             <div class="card-header">
                 <span class="serial-number">${serialNumber}</span>
                 <a href="/stock/${stock.ticker}" class="ticker-link">${stock.ticker}</a>
+                ${stock.ti65 ? `<span class="ti65-badge ${stock.ti65 > 1.1 ? 'hot' : ''}"><span class="ti65-label">TI65</span><span class="ti65-value">${stock.ti65.toFixed(2)}</span></span>` : ''}
                 <button class="chart-toggle-btn" onclick="event.stopPropagation(); toggleStockChart('${stock.ticker}')">📈</button>
                 <div class="preference-controls">
                     <button class="pref-btn favorite" data-ticker="${stock.ticker}" title="Add to favorites" onclick="togglePreference('${stock.ticker}', 'favorite')">⭐</button>
@@ -1465,7 +1505,7 @@ function renderCards(data, originalData = null) {
                             <button class="timeframe-btn" data-days="30">1M</button>
                             <button class="timeframe-btn" data-days="90">3M</button>
                             <button class="timeframe-btn" data-days="180">6M</button>
-                            <button class="timeframe-btn active" data-days="365">1Y</button>
+                            <button class="timeframe-btn" data-days="365">1Y</button>
                         </div>
                     </div>
                 </div>
@@ -1494,7 +1534,8 @@ function renderTags(tagsStr) {
     const tags = tagsStr.split(', ').filter(t => t.trim());
     return tags.map(tag => {
         let tagClass = 'event';
-        if (tag === 'high_growth') tagClass = 'high-growth';
+        if (tag === 'high_sales_growth') tagClass = 'high-growth';
+        else if (tag === 'TI65') tagClass = 'ti65-tag';
         else if (tag.includes('dr_')) tagClass = 'return';
         else if (tag.includes('volume_spike') || tag === 'volume_spike') tagClass = 'spike';
         else if (tag.includes('gapper') || tag === 'gapper') tagClass = 'gapper';
@@ -1843,8 +1884,14 @@ async function loadStockChartData(ticker) {
         // Update stats
         updateChartStats(ticker);
         
-        // Setup timeframe buttons
+        // Setup timeframe buttons and highlight the current one
+        const currentTimeframe = chart.currentTimeframe;
         document.querySelectorAll(`.chart-timeframe[data-ticker="${ticker}"] .timeframe-btn`).forEach(btn => {
+            // Set active state based on stored timeframe
+            if (parseInt(btn.dataset.days) === currentTimeframe) {
+                btn.classList.add('active');
+            }
+            
             btn.addEventListener('click', function() {
                 document.querySelectorAll(`.chart-timeframe[data-ticker="${ticker}"] .timeframe-btn`).forEach(b => b.classList.remove('active'));
                 this.classList.add('active');

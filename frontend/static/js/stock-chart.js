@@ -60,6 +60,35 @@ const CHART_CONFIG = {
 };
 
 // ============================================================================
+// Timeframe Preference (persists across charts and page loads)
+// ============================================================================
+
+const TIMEFRAME_STORAGE_KEY = 'stockChartTimeframe';
+
+function getStoredTimeframe() {
+    try {
+        const stored = localStorage.getItem(TIMEFRAME_STORAGE_KEY);
+        if (stored) {
+            const days = parseInt(stored, 10);
+            if (!isNaN(days) && days > 0) {
+                return days;
+            }
+        }
+    } catch (e) {
+        // localStorage not available
+    }
+    return CHART_CONFIG.defaultTimeframe;
+}
+
+function setStoredTimeframe(days) {
+    try {
+        localStorage.setItem(TIMEFRAME_STORAGE_KEY, days.toString());
+    } catch (e) {
+        // localStorage not available
+    }
+}
+
+// ============================================================================
 // Helper Functions
 // ============================================================================
 
@@ -173,7 +202,7 @@ class StockChart {
         this.earningsData = [];
         this.spikeDays = [];
         this.gapDays = [];
-        this.currentTimeframe = CHART_CONFIG.defaultTimeframe;
+        this.currentTimeframe = getStoredTimeframe();
         this.ticker = null;
         this.resizeHandler = null;
         
@@ -232,6 +261,7 @@ class StockChart {
      */
     setTimeframe(days) {
         this.currentTimeframe = days;
+        setStoredTimeframe(days); // Persist for next chart
         this._updateChartData();
         
         // Fit content on all charts

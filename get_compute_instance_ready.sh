@@ -155,7 +155,7 @@ echo "[4/4] Setting up cron jobs..."
 CRON_10AM="0 10 * * * cd $PROJECT_DIR && ./manage-env.sh prod update >> $PROJECT_DIR/logs/cron_update.log 2>&1"
 CRON_410PM="10 16 * * * cd $PROJECT_DIR && ./manage-env.sh prod update >> $PROJECT_DIR/logs/cron_update.log 2>&1"
 CRON_AUTOCOMMIT="59 23 * * * $PROJECT_DIR/auto_commit.sh >> $PROJECT_DIR/logs/cron_autocommit.log 2>&1"
-CRON_RESTART="15 23 * * * cd $PROJECT_DIR && ./manage-env.sh prod stop && ./manage-env.sh prod start && ./manage-env.sh prod init >> $PROJECT_DIR/logs/cron_restart.log 2>&1"
+CRON_RESTART="15 21 * * * cd $PROJECT_DIR && ./manage-env.sh prod stop && ./manage-env.sh prod start && ./manage-env.sh prod init >> $PROJECT_DIR/logs/cron_restart.log 2>&1"
 
 # Get existing crontab (or empty if none)
 CURRENT_CRONTAB=$(crontab -l 2>/dev/null || true)

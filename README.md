@@ -124,27 +124,58 @@ Ethereum Related
 
 
 ######### CLOUD DEPLOY #############
-ssh -i ~/Downloads/ssh-key-2026-01-07.key ubuntu@150.136.244.255
-# install git
-sudo apt update && sudo apt install --no-install-recommends git -y
-sudo apt install --no-install-recommends nano -y
-sudo apt install --no-install-recommends cron -y
-sudo apt install --no-install-recommends docker.io -y
-sudo systemctl enable --now docker
-sudo usermod -aG docker ubuntu
-newgrp docker
-git clone https://github.com/abhijitshingote/stocks-assist.git
-git checkout fmp_env
-git pull origin fmp_env
-cd stocks-assist
-# Copy env file
-chmod +x .env
-./get_compute_instance_ready.sh
-./docker/generate-ssl.sh
+
+## Oracle Cloud Free Tier (VM.Standard.E2.1.Micro - 1GB RAM)
+
+The `oracle` environment is optimized for Oracle Cloud Free Tier's limited resources:
+- **1 OCPU / 1GB RAM** requires special handling
+- Uses `docker-compose.oracle.yml` overlay with memory limits
+- PostgreSQL configured for minimal memory (64MB shared_buffers)
+- Default workers=1, batch-size=10 for init/update scripts
+
+### Oracle Free Tier Quick Start
+```bash
+# Use 'oracle' instead of 'prod' for all commands
+./manage-env.sh oracle start
+./manage-env.sh oracle init
+
+# Or with prod/dev and --low-memory flag
+./manage-env.sh prod init --low-memory
+```
+
+### Memory Limits (docker-compose.oracle.yml)
+- PostgreSQL: 256MB limit (64MB shared_buffers)
+- Backend: 384MB limit  
+- Frontend: 192MB limit
+- Nginx: 64MB limit
+
+### Troubleshooting OOM Kills
+If processes still crash with OOM:
+1. Enable swap: `sudo fallocate -l 1G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile`
+2. Reduce workers further: `./manage-env.sh oracle init --workers=1 --batch-size=5`
+3. Run scripts one at a time manually via shell
+
+---
+sudo apt update && \
+sudo apt install --no-install-recommends git -y && \
+sudo apt install --no-install-recommends nano -y && \
+sudo apt install --no-install-recommends cron -y && \
+sudo apt install --no-install-recommends docker.io -y && \
+sudo systemctl enable --now docker && \
+sudo usermod -aG docker ubuntu && \
+newgrp docker && \
+git clone https://github.com/abhijitshingote/stocks-assist.git && \
+cd stocks-assist && \
+git checkout fmp_optimized_seeder_w_env && \
+git pull origin fmp_optimized_seeder_w_env 
+## ADD ENV FILE 
+chmod +x .env && \
+./get_compute_instance_ready.sh && \
+./docker/generate-ssl.sh && \
+mkdir logs && \
 sudo chmod -R 777 logs
+
 ./manage-env.sh prod start
-./manage-env.sh prod init --test=5
-# Remember to add 443,80 to inbound ip
-# run detached
+
 ssh -i ~/Downloads/ssh-key-2026-01-07.key ubuntu@150.136.244.255 \
-"nohup bash -c 'cd stocks-assist && ./manage-env.sh prod stop && ./manage-env.sh prod start && ./manage-env.sh prod init ' >/dev/null 2>&1 &" 
+"nohup bash -c 'cd stocks-assist && ./manage-env.sh prod stop --volumes && ./manage-env.sh prod start && ./manage-env.sh prod init --workers=10 --batch-size=100 ' >/dev/null 2>&1 &"

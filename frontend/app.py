@@ -373,6 +373,49 @@ def api_get_stock_notes_batch():
 
 
 # ============================================================
+# AI Stock Research Endpoints
+# ============================================================
+
+@app.route('/api/frontend/stock-notes/ai-research/<ticker>', methods=['POST'])
+def api_generate_ai_research(ticker):
+    """Proxy endpoint to generate AI stock research notes using Perplexity API"""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(f'/api/stock-notes/ai-research/{ticker}', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to generate AI research'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/stock-notes/ai-research-claude/<ticker>', methods=['POST'])
+def api_generate_ai_research_claude(ticker):
+    """Proxy endpoint to generate AI stock research notes using Claude API with web search"""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(f'/api/stock-notes/ai-research-claude/{ticker}', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to generate AI research'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/stock-notes/ai-prompt', methods=['GET'])
+def api_get_ai_prompt():
+    """Proxy endpoint to get the AI prompt template"""
+    data, status_code = make_backend_request('/api/stock-notes/ai-prompt')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch AI prompt template'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/stock-notes/ai-prompt', methods=['PUT'])
+def api_update_ai_prompt():
+    """Proxy endpoint to update the AI prompt template"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/stock-notes/ai-prompt', method='PUT', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to update AI prompt template'}), status_code
+    return jsonify(data), status_code
+
+
+# ============================================================
 # Stock Preferences Endpoints
 # ============================================================
 
