@@ -12,7 +12,12 @@ from models import (
 import os
 import json
 import logging
+import time
 from datetime import date
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Path to persist stock notes (survives database resets)
 STOCK_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_notes.json')
@@ -1721,6 +1726,7 @@ def get_main_view_stocks(session, market_cap_category=None):
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
                 'vol_vs_10d_avg': float(stock.vol_vs_10d_avg) if stock.vol_vs_10d_avg else None,
+                'ti65': round(stock.ti65, 2) if stock.ti65 else None,
                 'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
                 'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
                 'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
@@ -1954,6 +1960,477 @@ def get_stock_notes_batch():
         return jsonify(result)
     finally:
         s.close()
+
+
+# ============================================================
+# AI Stock Research (Perplexity API) Endpoints
+# ============================================================
+
+# Path to AI prompt templates
+AI_PROMPT_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'ai_prompts', 'stock_research_prompt.txt')
+CLAUDE_PROMPT_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'ai_prompts', 'claude_stock_research_prompt.txt')
+
+
+def get_company_name_for_ticker(session, ticker):
+    """Get company name for a ticker from the database."""
+    ticker_obj = session.query(Ticker).filter(Ticker.ticker == ticker.upper()).first()
+    if ticker_obj and ticker_obj.company_name:
+        return ticker_obj.company_name
+    return ticker.upper()
+
+
+def load_ai_prompt_template():
+    """Load the AI prompt template from file."""
+    try:
+        if os.path.exists(AI_PROMPT_FILE):
+            with open(AI_PROMPT_FILE, 'r') as f:
+                return f.read()
+        else:
+            logger.warning(f"AI prompt file not found at {AI_PROMPT_FILE}, using default prompt")
+            return None
+    except Exception as e:
+        logger.error(f"Error loading AI prompt template: {str(e)}")
+        return None
+
+
+def load_claude_prompt_template():
+    """Load the Claude AI prompt template from file."""
+    try:
+        if os.path.exists(CLAUDE_PROMPT_FILE):
+            with open(CLAUDE_PROMPT_FILE, 'r') as f:
+                return f.read()
+        else:
+            logger.warning(f"Claude prompt file not found at {CLAUDE_PROMPT_FILE}")
+            return None
+    except Exception as e:
+        logger.error(f"Error loading Claude prompt template: {str(e)}")
+        return None
+
+
+def call_perplexity_api(prompt, model='sonar'):
+    """
+    Call the Perplexity API with the given prompt.
+    
+    Args:
+        prompt: The prompt text to send
+        model: 'sonar' or 'sonar-pro'
+    
+    Returns:
+        Tuple of (response_text, error_message)
+        - On success: (response_text, None)
+        - On API credit failure: (None, 'INSUFFICIENT_CREDITS')
+        - On other errors: (None, error_message)
+    """
+    import requests
+    
+    api_key = os.getenv('PERPLEXITY_API_KEY')
+    if not api_key:
+        return None, 'PERPLEXITY_API_KEY not configured'
+    
+    # Map model names to Perplexity API model identifiers
+    model_map = {
+        'sonar': 'sonar',
+        'sonar-pro': 'sonar-pro'
+    }
+    api_model = model_map.get(model, 'sonar')
+    
+    url = "https://api.perplexity.ai/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "model": api_model,
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "max_tokens": 20000,
+        "temperature": 0.1,
+        "return_citations": False
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, json=payload, timeout=120)
+        
+        # Check for API credit issues
+        if response.status_code == 402:
+            return None, 'INSUFFICIENT_CREDITS'
+        
+        if response.status_code == 429:
+            return None, 'RATE_LIMITED'
+        
+        if response.status_code != 200:
+            error_detail = response.text[:500] if response.text else 'Unknown error'
+            logger.error(f"Perplexity API error {response.status_code}: {error_detail}")
+            return None, f'API error: {response.status_code}'
+        
+        data = response.json()
+        
+        if 'choices' in data and len(data['choices']) > 0:
+            content = data['choices'][0].get('message', {}).get('content', '')
+            return content, None
+        else:
+            return None, 'No response content from API'
+            
+    except requests.exceptions.Timeout:
+        return None, 'API request timed out (120s)'
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Perplexity API request error: {str(e)}")
+        return None, f'Request error: {str(e)}'
+    except Exception as e:
+        logger.error(f"Unexpected error calling Perplexity API: {str(e)}")
+        return None, f'Unexpected error: {str(e)}'
+
+
+def call_claude_api_with_web_search(ticker: str, company_name: str, months: int = 12):
+    """
+    Call Claude API with web search to get stock news summary.
+    
+    Args:
+        ticker: Stock ticker symbol
+        company_name: Full company name
+        months: How many months back to search
+    
+    Returns:
+        Tuple of (response_text, error_message)
+        - On success: (response_text, None)
+        - On rate limit: (None, 'RATE_LIMITED')
+        - On other errors: (None, error_message)
+    """
+    try:
+        from anthropic import Anthropic
+    except ImportError:
+        return None, 'anthropic package not installed. Run: pip install anthropic'
+    
+    api_key = os.getenv('ANTHROPIC_API_KEY')
+    if not api_key:
+        return None, 'ANTHROPIC_API_KEY not configured'
+    
+    client = Anthropic(api_key=api_key)
+    
+    # Load prompt from file
+    template = load_claude_prompt_template()
+    if not template:
+        return None, f'Claude prompt template not found at {CLAUDE_PROMPT_FILE}'
+    
+    # Replace placeholders
+    prompt = template.replace('[company_name]', company_name)
+    prompt = prompt.replace('[ticker]', ticker)
+    prompt = prompt.replace('[months]', str(months))
+
+    # Retry logic for rate limits
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            response = client.messages.create(
+                model="claude-sonnet-4-5-20250929",
+                max_tokens=4096,
+                system="You are a financial analyst. Use web search to find current, accurate information about stock-moving events. Be thorough and factual.",
+                tools=[{
+                    "type": "web_search_20250305",
+                    "name": "web_search"
+                }],
+                messages=[{"role": "user", "content": prompt}]
+            )
+            
+            # Extract all text from response blocks
+            text_parts = []
+            for block in response.content:
+                if hasattr(block, 'type') and block.type == "text":
+                    text_parts.append(block.text)
+            
+            summary = "\n".join(text_parts)
+            return summary, None
+            
+        except Exception as e:
+            error_msg = str(e)
+            
+            # Rate limit - wait and retry
+            if "429" in error_msg or "rate_limit" in error_msg:
+                if attempt < max_retries - 1:
+                    wait_time = 60 * (attempt + 1)
+                    logger.info(f"Claude rate limit hit. Waiting {wait_time}s before retry...")
+                    time.sleep(wait_time)
+                    continue
+                return None, 'RATE_LIMITED'
+            
+            logger.error(f"Claude API error: {error_msg}")
+            return None, f'API error: {error_msg}'
+    
+    return None, 'Max retries exceeded'
+
+
+@app.route('/api/stock-notes/ai-research/<ticker>', methods=['POST'])
+def generate_ai_stock_research(ticker):
+    """
+    Generate AI stock research notes using Perplexity API.
+    Appends the generated notes to existing notes and saves to DB.
+    
+    Request body (optional):
+    {
+        "model": "sonar" or "sonar-pro" (default: "sonar"),
+        "custom_prompt": "Optional custom prompt override"
+    }
+    
+    Returns:
+    {
+        "ticker": "AAPL",
+        "ai_notes": "Generated AI research notes...",
+        "notes": "Full combined notes (existing + AI)",
+        "updated_at": "2024-01-20T...",
+        "model_used": "sonar",
+        "message": "success"
+    }
+    
+    Error responses:
+    - 402: Insufficient API credits
+    - 429: Rate limited
+    - 500: Other errors
+    """
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        data = request.get_json() or {}
+        
+        model = data.get('model', 'sonar')
+        custom_prompt = data.get('custom_prompt')
+        
+        # Validate model
+        if model not in ['sonar', 'sonar-pro']:
+            return jsonify({'error': 'model must be "sonar" or "sonar-pro"'}), 400
+        
+        # Get company name
+        company_name = get_company_name_for_ticker(s, ticker)
+        
+        # Build prompt from template file
+        if custom_prompt:
+            prompt = custom_prompt
+        else:
+            template = load_ai_prompt_template()
+            if not template:
+                return jsonify({
+                    'error': 'AI prompt template file not found. Please create the template at user_data/ai_prompts/stock_research_prompt.txt',
+                    'error_type': 'MISSING_TEMPLATE'
+                }), 500
+            
+            # Replace placeholders in template
+            # Supports both [placeholder] and {placeholder} formats
+            prompt = template.replace('[company_name]', company_name)
+            prompt = prompt.replace('[ticker]', ticker)
+        
+        # Call Perplexity API
+        logger.info(f"Calling Perplexity API for {ticker} with model {model}")
+        ai_response, error = call_perplexity_api(prompt, model)
+        
+        if error:
+            # Handle specific error types
+            if error == 'INSUFFICIENT_CREDITS':
+                return jsonify({
+                    'error': 'Insufficient Perplexity API credits. Please add credits to your account.',
+                    'error_type': 'INSUFFICIENT_CREDITS'
+                }), 402
+            elif error == 'RATE_LIMITED':
+                return jsonify({
+                    'error': 'Perplexity API rate limited. Please try again in a few minutes.',
+                    'error_type': 'RATE_LIMITED'
+                }), 429
+            else:
+                return jsonify({
+                    'error': f'Failed to generate AI research: {error}',
+                    'error_type': 'API_ERROR'
+                }), 500
+        
+        # Format AI notes with timestamp
+        from datetime import datetime
+        import pytz
+        eastern = pytz.timezone('US/Eastern')
+        now = datetime.now(eastern)
+        timestamp = now.strftime('%Y-%m-%d %H:%M:%S %Z')
+        
+        ai_notes_formatted = f"\n\n---\n\n## AI Research ({model}) - {timestamp}\n\n{ai_response}"
+        
+        # Get existing notes
+        existing = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
+        current_notes = existing.notes if existing and existing.notes else ''
+        
+        # Combine notes
+        combined_notes = current_notes + ai_notes_formatted
+        
+        # Save to database
+        if existing:
+            existing.notes = combined_notes
+        else:
+            new_note = StockNotes(ticker=ticker, notes=combined_notes)
+            s.add(new_note)
+        
+        s.commit()
+        
+        # Export all notes to file for persistence
+        export_all_notes_to_file()
+        
+        # Get updated timestamp
+        updated_note = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
+        
+        return jsonify({
+            'ticker': ticker,
+            'ai_notes': ai_response,
+            'notes': combined_notes,
+            'updated_at': updated_note.updated_at.isoformat() if updated_note and updated_note.updated_at else None,
+            'model_used': model,
+            'message': 'AI research notes generated and saved successfully'
+        })
+        
+    except Exception as e:
+        s.rollback()
+        logger.error(f"Error generating AI research for {ticker}: {str(e)}")
+        return jsonify({
+            'error': f'Unexpected error: {str(e)}',
+            'error_type': 'INTERNAL_ERROR'
+        }), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/stock-notes/ai-research-claude/<ticker>', methods=['POST'])
+def generate_ai_stock_research_claude(ticker):
+    """
+    Generate AI stock research notes using Claude API with web search.
+    Appends the generated notes to existing notes and saves to DB.
+    
+    Request body (optional):
+    {
+        "months": 12  (default: 12 months of news)
+    }
+    
+    Returns:
+    {
+        "ticker": "AAPL",
+        "ai_notes": "Generated AI research notes...",
+        "notes": "Full combined notes (existing + AI)",
+        "updated_at": "2024-01-20T...",
+        "model_used": "claude-web-search",
+        "message": "success"
+    }
+    """
+    s = Session()
+    try:
+        ticker = ticker.upper()
+        data = request.get_json() or {}
+        
+        months = data.get('months', 12)
+        
+        # Get company name
+        company_name = get_company_name_for_ticker(s, ticker)
+        
+        # Call Claude API with web search
+        logger.info(f"Calling Claude API with web search for {ticker}")
+        ai_response, error = call_claude_api_with_web_search(ticker, company_name, months)
+        
+        if error:
+            if error == 'RATE_LIMITED':
+                return jsonify({
+                    'error': 'Claude API rate limited. Please try again in a few minutes.',
+                    'error_type': 'RATE_LIMITED'
+                }), 429
+            else:
+                return jsonify({
+                    'error': f'Failed to generate AI research: {error}',
+                    'error_type': 'API_ERROR'
+                }), 500
+        
+        # Format AI notes with timestamp
+        from datetime import datetime
+        import pytz
+        eastern = pytz.timezone('US/Eastern')
+        now = datetime.now(eastern)
+        timestamp = now.strftime('%Y-%m-%d %H:%M:%S %Z')
+        
+        ai_notes_formatted = f"\n\n---\n\n## AI Research (Claude Web Search) - {timestamp}\n\n{ai_response}"
+        
+        # Get existing notes
+        existing = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
+        current_notes = existing.notes if existing and existing.notes else ''
+        
+        # Combine notes
+        combined_notes = current_notes + ai_notes_formatted
+        
+        # Save to database
+        if existing:
+            existing.notes = combined_notes
+        else:
+            new_note = StockNotes(ticker=ticker, notes=combined_notes)
+            s.add(new_note)
+        
+        s.commit()
+        
+        # Export all notes to file for persistence
+        export_all_notes_to_file()
+        
+        # Get updated timestamp
+        updated_note = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
+        
+        return jsonify({
+            'ticker': ticker,
+            'ai_notes': ai_response,
+            'notes': combined_notes,
+            'updated_at': updated_note.updated_at.isoformat() if updated_note and updated_note.updated_at else None,
+            'model_used': 'claude-web-search',
+            'message': 'AI research notes generated and saved successfully'
+        })
+        
+    except Exception as e:
+        s.rollback()
+        logger.error(f"Error generating Claude AI research for {ticker}: {str(e)}")
+        return jsonify({
+            'error': f'Unexpected error: {str(e)}',
+            'error_type': 'INTERNAL_ERROR'
+        }), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/stock-notes/ai-prompt', methods=['GET'])
+def get_ai_prompt_template():
+    """Get the current AI prompt template."""
+    template = load_ai_prompt_template()
+    if template:
+        return jsonify({
+            'prompt': template,
+            'path': AI_PROMPT_FILE
+        })
+    return jsonify({
+        'prompt': None,
+        'error': 'Prompt template not found',
+        'path': AI_PROMPT_FILE
+    }), 404
+
+
+@app.route('/api/stock-notes/ai-prompt', methods=['PUT'])
+def update_ai_prompt_template():
+    """Update the AI prompt template."""
+    data = request.get_json()
+    
+    if not data or 'prompt' not in data:
+        return jsonify({'error': 'prompt field is required'}), 400
+    
+    try:
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(AI_PROMPT_FILE), exist_ok=True)
+        
+        with open(AI_PROMPT_FILE, 'w') as f:
+            f.write(data['prompt'])
+        
+        return jsonify({
+            'message': 'Prompt template updated successfully',
+            'path': AI_PROMPT_FILE
+        })
+    except Exception as e:
+        logger.error(f"Error updating AI prompt template: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 
 # ============================================================

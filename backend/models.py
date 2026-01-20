@@ -281,6 +281,9 @@ class StockMetrics(Base):
     avg_vol_10d = Column(Float)
     vol_vs_10d_avg = Column(Float)
     
+    # TI65 metric
+    ti65 = Column(Float)
+    
     # Price change percentages
     dr_1 = Column(Float)   # 1-day return
     dr_5 = Column(Float)   # 5-day return
@@ -436,6 +439,9 @@ class MainView(Base):
     dollar_volume = Column(Float)
     avg_vol_10d = Column(Float)
     vol_vs_10d_avg = Column(Float)
+    
+    # TI65 metric
+    ti65 = Column(Float)
     
     # Price returns
     dr_1 = Column(Float)
