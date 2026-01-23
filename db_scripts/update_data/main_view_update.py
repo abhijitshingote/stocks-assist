@@ -225,7 +225,7 @@ ARRAY_TO_STRING(
                 SELECT AVG(close)
                 FROM (
                     SELECT o.close
-                    FROM public.ohlc o
+                    FROM ohlc o
                     WHERE o.ticker = sm.ticker
                     ORDER BY o."date" DESC
                     LIMIT 10
