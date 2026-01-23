@@ -357,9 +357,13 @@ class HistoricalRSI(Base):
     # RSI percentile rank (1-100) within market cap bucket for this date
     rsi_mktcap = Column(Integer)
     
-    # Daily Moving Averages
+    # Daily Moving Averages (SMA)
     dma_50 = Column(Float)   # 50-day simple moving average
     dma_200 = Column(Float)  # 200-day simple moving average
+    
+    # Exponential Moving Averages
+    ema_10 = Column(Float)   # 10-day exponential moving average
+    ema_20 = Column(Float)   # 20-day exponential moving average
 
     __table_args__ = (UniqueConstraint("ticker", "date", name="uq_historical_rsi"),)
 

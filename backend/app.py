@@ -705,7 +705,7 @@ def get_ohlc_data(ticker):
         # Fetch 400 calendar days (enough for 1Y display with buffer)
         start_date = end_date - timedelta(days=400)
         
-        # Get OHLC data with historical RSI and DMAs
+        # Get OHLC data with historical RSI, DMAs, and EMAs
         ohlc_data = s.query(
             OHLC.date,
             OHLC.open,
@@ -715,7 +715,9 @@ def get_ohlc_data(ticker):
             OHLC.volume,
             HistoricalRSI.rsi_mktcap,
             HistoricalRSI.dma_50,
-            HistoricalRSI.dma_200
+            HistoricalRSI.dma_200,
+            HistoricalRSI.ema_10,
+            HistoricalRSI.ema_20
         ).outerjoin(
             HistoricalRSI,
             (OHLC.ticker == HistoricalRSI.ticker) & (OHLC.date == HistoricalRSI.date)
@@ -739,6 +741,8 @@ def get_ohlc_data(ticker):
                 'volume': row.volume,
                 'dma_50': float(row.dma_50) if row.dma_50 else None,
                 'dma_200': float(row.dma_200) if row.dma_200 else None,
+                'ema_10': float(row.ema_10) if row.ema_10 else None,
+                'ema_20': float(row.ema_20) if row.ema_20 else None,
                 'rsi_mktcap': row.rsi_mktcap
             })
         

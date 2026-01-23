@@ -14,7 +14,7 @@ load_dotenv()
 SCRIPT_NAME = 'initialize_db'
 logger = get_logger(SCRIPT_NAME)
 
-def initialize_database(reset=False):
+def initialize_database(reset=False, schema='public'):
     """
     Initialize the database with proper table structure based on backend/models.py.
     
@@ -41,6 +41,8 @@ def initialize_database(reset=False):
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
+        schema (str): Target schema name (default: 'public'). 
+                      Use 'staging' for zero-downtime deployments.
     """
     start_time = time.time()
     database_url = os.getenv('DATABASE_URL')
@@ -48,8 +50,16 @@ def initialize_database(reset=False):
         raise ValueError("DATABASE_URL environment variable is not set")
 
     engine = create_engine(database_url)
+    
+    logger.info(f"Initializing database in schema: {schema}")
 
     with engine.connect() as connection:
+        # Set the search_path to target the specified schema
+        connection.execute(text(f"SET search_path TO {schema}"))
+        
+        # Create schema if it doesn't exist (for staging)
+        if schema != 'public':
+            connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {schema}"))
         if reset:
             logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
@@ -324,6 +334,8 @@ def initialize_database(reset=False):
                 rsi_mktcap INTEGER,
                 dma_50 FLOAT,
                 dma_200 FLOAT,
+                ema_10 FLOAT,
+                ema_20 FLOAT,
                 CONSTRAINT uq_historical_rsi UNIQUE (ticker, date),
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
@@ -545,5 +557,12 @@ def initialize_database(reset=False):
 
 
 if __name__ == "__main__":
-    reset_mode = "--reset" in sys.argv
-    initialize_database(reset=reset_mode)
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Initialize database tables')
+    parser.add_argument('--reset', action='store_true', help='Drop and recreate all tables')
+    parser.add_argument('--schema', type=str, default='public', 
+                        help='Target schema (default: public, use "staging" for zero-downtime)')
+    args = parser.parse_args()
+    
+    initialize_database(reset=args.reset, schema=args.schema)

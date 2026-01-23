@@ -94,7 +94,8 @@ function setStoredTimeframe(days) {
 
 /**
  * Calculate EMA (Exponential Moving Average) from OHLC data
- * Server provides DMA (50/200), but not EMA (10/20), so we calculate client-side
+ * Fallback for when server-provided EMA is not available
+ * Server now provides EMA (10/20) along with DMA (50/200)
  */
 function calculateEMA(data, period) {
     if (!data || data.length < period) return [];
@@ -754,21 +755,32 @@ class StockChart {
         }));
         this.series.candlestick.setData(candleData);
         
-        // Calculate EMAs from full dataset, then filter to visible range
-        const ema10Full = calculateEMA(this.allData, 10);
-        const ema20Full = calculateEMA(this.allData, 20);
+        // Use server-provided EMA values (with fallback to client-side calculation)
+        let ema10Data = filteredData
+            .filter(d => d.ema_10 != null)
+            .map(d => ({ time: d.time, value: d.ema_10 }));
+        let ema20Data = filteredData
+            .filter(d => d.ema_20 != null)
+            .map(d => ({ time: d.time, value: d.ema_20 }));
         
-        const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - this.currentTimeframe);
-        const cutoffStr = cutoffDate.toISOString().split('T')[0];
+        // Fallback to client-side calculation if server EMAs not available
+        if (ema10Data.length === 0) {
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - this.currentTimeframe);
+            const cutoffStr = cutoffDate.toISOString().split('T')[0];
+            ema10Data = calculateEMA(this.allData, 10).filter(d => d.time >= cutoffStr);
+        }
+        if (ema20Data.length === 0) {
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - this.currentTimeframe);
+            const cutoffStr = cutoffDate.toISOString().split('T')[0];
+            ema20Data = calculateEMA(this.allData, 20).filter(d => d.time >= cutoffStr);
+        }
         
-        const ema10Filtered = ema10Full.filter(d => d.time >= cutoffStr);
-        const ema20Filtered = ema20Full.filter(d => d.time >= cutoffStr);
+        this.series.ema10.setData(ema10Data);
+        this.series.ema20.setData(ema20Data);
         
-        this.series.ema10.setData(ema10Filtered);
-        this.series.ema20.setData(ema20Filtered);
-        
-        // Use server-provided DMA values (not calculated client-side)
+        // Use server-provided DMA values
         const dma50Data = filteredData
             .filter(d => d.dma_50 != null)
             .map(d => ({ time: d.time, value: d.dma_50 }));
