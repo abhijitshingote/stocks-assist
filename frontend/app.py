@@ -339,6 +339,33 @@ def api_main_view(market_cap):
     return jsonify(data), status_code
 
 
+@app.route('/high-sales-growth')
+def high_sales_growth_page():
+    """High Sales Growth page - Stocks with high revenue growth"""
+    return render_template('high_sales_growth.html')
+
+
+@app.route('/api/frontend/high-sales-growth/<market_cap>')
+def api_high_sales_growth(market_cap):
+    """Proxy endpoint for High Sales Growth data from backend"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+    
+    data, status_code = make_backend_request(f'/api/HighSalesGrowth-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch High Sales Growth data'}), status_code
+    return jsonify(data), status_code
+
+
 # ============================================================
 # Stock Notes Endpoints
 # ============================================================

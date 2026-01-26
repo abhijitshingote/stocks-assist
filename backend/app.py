@@ -1833,6 +1833,149 @@ def get_main_view_mega():
         s.close()
 
 
+# ============================================================================
+# High Sales Growth Endpoints (filter MainView by high_sales_growth tag)
+# ============================================================================
+
+def get_high_sales_growth_stocks(session, market_cap_category=None):
+    """
+    Get stocks from main_view table that have the high_sales_growth tag.
+    """
+    try:
+        query = session.query(MainView).filter(MainView.tags.like('%high_sales_growth%'))
+
+        # Apply market cap filter
+        if market_cap_category:
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                query = query.filter(MainView.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(MainView.market_cap < category['max'])
+
+        # Order by revenue growth (average of t and t+1)
+        query = query.order_by(desc(MainView.rev_growth_t_plus_1))
+
+        stocks = query.all()
+
+        results = []
+        for stock in stocks:
+            spike_dates = [d for d in (stock.volume_spike_days or '').split(',') if d.strip()]
+            gap_dates = [d for d in (stock.gap_days or '').split(',') if d.strip()]
+            
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'country': stock.country,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'range_52_week': stock.range_52_week,
+                'volume': int(stock.volume) if stock.volume else None,
+                'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
+                'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
+                'vol_vs_10d_avg': float(stock.vol_vs_10d_avg) if stock.vol_vs_10d_avg else None,
+                'ti65': round(stock.ti65, 2) if stock.ti65 else None,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'dr_60': round(stock.dr_60, 2) if stock.dr_60 else None,
+                'dr_120': round(stock.dr_120, 2) if stock.dr_120 else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
+                'pe_t_minus_1': round(stock.pe_t_minus_1, 2) if stock.pe_t_minus_1 else None,
+                'pe_t': round(stock.pe_t, 2) if stock.pe_t else None,
+                'pe_t_plus_1': round(stock.pe_t_plus_1, 2) if stock.pe_t_plus_1 else None,
+                'pe_t_plus_2': round(stock.pe_t_plus_2, 2) if stock.pe_t_plus_2 else None,
+                'ps_t_minus_1': round(stock.ps_t_minus_1, 2) if stock.ps_t_minus_1 else None,
+                'ps_t': round(stock.ps_t, 2) if stock.ps_t else None,
+                'ps_t_plus_1': round(stock.ps_t_plus_1, 2) if stock.ps_t_plus_1 else None,
+                'ps_t_plus_2': round(stock.ps_t_plus_2, 2) if stock.ps_t_plus_2 else None,
+                'rev_growth_t_minus_1': round(stock.rev_growth_t_minus_1, 2) if stock.rev_growth_t_minus_1 else None,
+                'rev_growth_t': round(stock.rev_growth_t, 2) if stock.rev_growth_t else None,
+                'rev_growth_t_plus_1': round(stock.rev_growth_t_plus_1, 2) if stock.rev_growth_t_plus_1 else None,
+                'rev_growth_t_plus_2': round(stock.rev_growth_t_plus_2, 2) if stock.rev_growth_t_plus_2 else None,
+                'eps_growth_t_minus_1': round(stock.eps_growth_t_minus_1, 2) if stock.eps_growth_t_minus_1 else None,
+                'eps_growth_t': round(stock.eps_growth_t, 2) if stock.eps_growth_t else None,
+                'eps_growth_t_plus_1': round(stock.eps_growth_t_plus_1, 2) if stock.eps_growth_t_plus_1 else None,
+                'eps_growth_t_plus_2': round(stock.eps_growth_t_plus_2, 2) if stock.eps_growth_t_plus_2 else None,
+                'rsi': stock.rsi,
+                'rsi_mktcap': stock.rsi_mktcap,
+                'short_float': round(stock.short_float, 2) if stock.short_float else None,
+                'short_ratio': round(stock.short_ratio, 2) if stock.short_ratio else None,
+                'short_interest': round(stock.short_interest, 2) if stock.short_interest else None,
+                'low_float': stock.low_float,
+                'float_shares': stock.float_shares,
+                'outstanding_shares': stock.outstanding_shares,
+                'free_float': round(stock.free_float, 2) if stock.free_float else None,
+                'spike_day_count': stock.spike_day_count or 0,
+                'avg_volume_spike': round(stock.avg_volume_spike, 2) if stock.avg_volume_spike else None,
+                'volume_spike_days': spike_dates,
+                'gapper_day_count': stock.gapper_day_count or 0,
+                'avg_return_gapper': round(stock.avg_return_gapper, 4) if stock.avg_return_gapper else None,
+                'gap_days': gap_dates,
+                'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
+                'last_event_type': stock.last_event_type,
+                'tags': stock.tags,
+                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
+            })
+
+        return results
+
+    except Exception as e:
+        logger.error(f"Error getting high_sales_growth stocks for {market_cap_category}: {str(e)}")
+        return []
+
+
+@app.route('/api/HighSalesGrowth-All')
+def get_high_sales_growth_all():
+    s = Session()
+    try:
+        return jsonify(get_high_sales_growth_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
+@app.route('/api/HighSalesGrowth-MicroCap')
+def get_high_sales_growth_micro():
+    s = Session()
+    try:
+        return jsonify(get_high_sales_growth_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/HighSalesGrowth-SmallCap')
+def get_high_sales_growth_small():
+    s = Session()
+    try:
+        return jsonify(get_high_sales_growth_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/HighSalesGrowth-MidCap')
+def get_high_sales_growth_mid():
+    s = Session()
+    try:
+        return jsonify(get_high_sales_growth_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/HighSalesGrowth-LargeCap')
+def get_high_sales_growth_large():
+    s = Session()
+    try:
+        return jsonify(get_high_sales_growth_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/HighSalesGrowth-MegaCap')
+def get_high_sales_growth_mega():
+    s = Session()
+    try:
+        return jsonify(get_high_sales_growth_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
 # ============================================================
 # Stock Notes API Endpoints
 # ============================================================

@@ -178,4 +178,4 @@ sudo chmod -R 777 logs
 ./manage-env.sh prod start
 
 ssh -i ~/Downloads/ssh-key-2026-01-07.key ubuntu@150.136.244.255 \
-"nohup bash -c 'cd stocks-assist && ./manage-env.sh prod stop --volumes && ./manage-env.sh prod start && ./manage-env.sh prod init --workers=10 --batch-size=100 ' >/dev/null 2>&1 &"
+"nohup bash -c 'cd stocks-assist && ./manage-env.sh prod stop --volumes && ./manage-env.sh prod start && ./manage-env.sh prod init-zd --workers=10 --batch-size=100 ' >/dev/null 2>&1 &"

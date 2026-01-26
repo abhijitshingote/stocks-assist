@@ -1,0 +1,753 @@
+{% extends "base.html" %}
+
+{% block title %}High Sales Growth - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+.page-header {
+    margin-bottom: 0.5rem;
+}
+
+.page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+    background: linear-gradient(135deg, #3fb950 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-header p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.page-header .subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
+/* Market Cap Tabs */
+.cap-tabs {
+    display: flex;
+    gap: 0.2rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.cap-tab {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.cap-tab:hover {
+    border-color: var(--accent-green);
+    color: var(--text-primary);
+}
+
+.cap-tab.active {
+    background: linear-gradient(135deg, rgba(63, 185, 80, 0.2) 0%, rgba(88, 166, 255, 0.2) 100%);
+    border-color: var(--accent-green);
+    color: var(--text-primary);
+}
+
+.cap-tab .cap-label {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0;
+    font-weight: 400;
+}
+
+.cap-tab.active .cap-label {
+    color: var(--text-secondary);
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-primary);
+}
+
+.stat-value.green {
+    color: var(--accent-green);
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    color: var(--text-muted);
+}
+
+.spinner {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 0.4rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    color: var(--text-muted);
+}
+
+.empty-state h3 {
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+    color: var(--text-secondary);
+}
+
+/* Stock Cards Container */
+.stock-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* Individual Stock Card */
+.stock-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.5rem 0.6rem;
+    transition: border-color 0.2s;
+}
+
+.stock-card:hover {
+    border-color: var(--accent-green);
+}
+
+/* Serial Number */
+.serial-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.15rem 0.3rem;
+    min-width: 1.8rem;
+    text-align: center;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+/* Card Header Row */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.ticker-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+.ticker-link:hover {
+    color: var(--accent-green);
+    text-decoration: underline;
+}
+
+.company-name {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.85rem;
+    flex: 1;
+    min-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+}
+
+.company-market-cap {
+    color: var(--accent-yellow);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-left: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Data Sections Container */
+.data-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: 0.15rem;
+}
+
+/* Section Wrapper */
+.section-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: stretch;
+}
+
+/* Individual Section */
+.data-section {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 5px;
+    padding: 0.35rem 0.5rem;
+    border-left: 3px solid var(--border-color);
+    flex: 1 1 auto;
+    min-width: fit-content;
+}
+
+.data-section.growth-section {
+    border-left-color: var(--accent-green);
+    flex: 1;
+}
+
+.data-section.valuation-section {
+    border-left-color: var(--accent-yellow);
+    flex: 1;
+}
+
+.data-section.returns-section {
+    border-left-color: var(--accent-blue);
+    flex: 1.5;
+}
+
+.data-section.price-section {
+    border-left-color: var(--accent-purple);
+    flex: 1;
+}
+
+/* Full-width row layout */
+.section-group.full-row {
+    flex-wrap: nowrap;
+}
+
+.section-header {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+    opacity: 0.7;
+    line-height: 1;
+}
+
+.section-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.section-row .data-cell {
+    flex: 1 1 auto;
+}
+
+.data-cell {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1;
+}
+
+.data-label {
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+.data-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.data-value.lg {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.data-value.sm {
+    font-size: 0.8rem;
+}
+
+.data-value.positive {
+    color: var(--accent-green);
+}
+
+.data-value.negative {
+    color: var(--accent-red);
+}
+
+.data-value.muted {
+    color: var(--text-muted);
+}
+
+.data-value.highlight {
+    color: var(--accent-purple);
+    font-weight: 600;
+}
+
+/* Compact return display */
+.returns-inline {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.return-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 36px;
+    flex: 1;
+}
+
+.return-item .data-label {
+    font-size: 0.52rem;
+}
+
+.return-item .data-value {
+    font-size: 0.88rem;
+}
+
+/* Growth timeline display */
+.growth-timeline {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    flex: 1;
+}
+
+.growth-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.08rem 0.2rem;
+    border-radius: 3px;
+    min-width: 40px;
+    flex: 1;
+}
+
+.growth-item .data-label {
+    font-size: 0.5rem;
+}
+
+.growth-item .data-value {
+    font-size: 0.82rem;
+}
+
+.growth-item.past {
+    opacity: 0.7;
+}
+
+.growth-item.current {
+    background: rgba(63, 185, 80, 0.15);
+}
+
+.growth-item.future {
+    background: rgba(88, 166, 255, 0.1);
+}
+
+/* Sector Badge */
+.sector-badge {
+    display: inline-block;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent-blue);
+    white-space: nowrap;
+}
+
+/* Industry Badge */
+.industry-badge {
+    display: inline-block;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: rgba(163, 113, 247, 0.15);
+    color: var(--accent-purple);
+    white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .section-group.full-row {
+        flex-wrap: wrap;
+    }
+    
+    .section-group .data-section {
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .section-group {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .data-section {
+        width: 100%;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.15rem;
+    }
+    
+    .returns-inline,
+    .growth-timeline {
+        flex-wrap: wrap;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📈 High Sales Growth</h1>
+    <p>Stocks with projected revenue growth &gt; 25%</p>
+    <div class="subtitle">Average of current + next year revenue growth estimates (excludes Biotechnology)</div>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+    <div class="stat-item">
+        <span class="stat-label">Total Stocks</span>
+        <span class="stat-value green" id="totalStocks">—</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">Showing</span>
+        <span class="stat-value" id="showingStocks">—</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">Category</span>
+        <span class="stat-value" id="currentCategory">All</span>
+    </div>
+</div>
+
+<!-- Market Cap Tabs -->
+<div class="cap-tabs">
+    <button class="cap-tab active" data-cap="all">
+        All
+        <span class="cap-label">No Filter</span>
+    </button>
+    <button class="cap-tab" data-cap="mega">
+        Mega
+        <span class="cap-label">&gt;$100B</span>
+    </button>
+    <button class="cap-tab" data-cap="large">
+        Large
+        <span class="cap-label">$20B–$100B</span>
+    </button>
+    <button class="cap-tab" data-cap="mid">
+        Mid
+        <span class="cap-label">$2B–$20B</span>
+    </button>
+    <button class="cap-tab" data-cap="small">
+        Small
+        <span class="cap-label">$200M–$2B</span>
+    </button>
+    <button class="cap-tab" data-cap="micro">
+        Micro
+        <span class="cap-label">&lt;$200M</span>
+    </button>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" id="loadingState">
+    <div class="spinner"></div>
+    <span>Loading High Sales Growth data...</span>
+</div>
+
+<!-- Empty State -->
+<div class="empty-state" id="emptyState" style="display: none;">
+    <h3>No stocks found</h3>
+    <p>No high sales growth stocks match the criteria for this market cap category.</p>
+</div>
+
+<!-- Stock Cards -->
+<div class="stock-cards" id="stockCards" style="display: none;">
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let currentData = [];
+
+const capLabels = {
+    'all': 'All',
+    'mega': 'Mega Cap',
+    'large': 'Large Cap',
+    'mid': 'Mid Cap',
+    'small': 'Small Cap',
+    'micro': 'Micro Cap'
+};
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadData('all');
+    
+    // Tab click handlers
+    document.querySelectorAll('.cap-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.cap-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            const cap = this.dataset.cap;
+            document.getElementById('currentCategory').textContent = capLabels[cap];
+            loadData(cap);
+        });
+    });
+});
+
+function loadData(marketCap) {
+    showLoading();
+    
+    fetch(`/api/frontend/high-sales-growth/${marketCap}`)
+        .then(response => response.json())
+        .then(data => {
+            currentData = data;
+            hideLoading();
+            
+            if (data.length === 0) {
+                showEmpty();
+                document.getElementById('totalStocks').textContent = '0';
+                document.getElementById('showingStocks').textContent = '0';
+            } else {
+                showCards();
+                document.getElementById('totalStocks').textContent = data.length;
+                document.getElementById('showingStocks').textContent = data.length;
+                renderCards(data);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading High Sales Growth data:', error);
+            hideLoading();
+            showEmpty();
+        });
+}
+
+function renderCards(data) {
+    const container = document.getElementById('stockCards');
+    container.innerHTML = data.map((stock, index) => {
+        return `
+        <div class="stock-card" data-ticker="${stock.ticker}">
+            <div class="card-header">
+                <span class="serial-number">${index + 1}</span>
+                <a href="/stock/${stock.ticker}" class="ticker-link">${stock.ticker}</a>
+                <span class="company-name">${stock.company_name || '—'}${stock.market_cap ? ' <span class="company-market-cap">( $' + formatMarketCap(stock.market_cap) + ' )</span>' : ''}</span>
+                <span class="sector-badge">${stock.sector || '—'}</span>
+                <span class="industry-badge">${stock.industry || '—'}</span>
+            </div>
+            <div class="data-sections">
+                <!-- Row 1: Revenue Growth, EPS Growth -->
+                <div class="section-group full-row">
+                    <!-- Revenue Growth Section -->
+                    <div class="data-section growth-section">
+                        <div class="section-header">Revenue Growth</div>
+                        <div class="growth-timeline">
+                            <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value ${getReturnClass(stock.rev_growth_t_minus_1)}">${formatReturn(stock.rev_growth_t_minus_1)}</span></div>
+                            <div class="growth-item current"><span class="data-label">T</span><span class="data-value ${getReturnClass(stock.rev_growth_t)}">${formatReturn(stock.rev_growth_t)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value ${getReturnClass(stock.rev_growth_t_plus_1)}">${formatReturn(stock.rev_growth_t_plus_1)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value ${getReturnClass(stock.rev_growth_t_plus_2)}">${formatReturn(stock.rev_growth_t_plus_2)}</span></div>
+                        </div>
+                    </div>
+                    
+                    <!-- EPS Growth Section -->
+                    <div class="data-section growth-section">
+                        <div class="section-header">EPS Growth</div>
+                        <div class="growth-timeline">
+                            <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value ${getReturnClass(stock.eps_growth_t_minus_1)}">${formatReturn(stock.eps_growth_t_minus_1)}</span></div>
+                            <div class="growth-item current"><span class="data-label">T</span><span class="data-value ${getReturnClass(stock.eps_growth_t)}">${formatReturn(stock.eps_growth_t)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value ${getReturnClass(stock.eps_growth_t_plus_1)}">${formatReturn(stock.eps_growth_t_plus_1)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value ${getReturnClass(stock.eps_growth_t_plus_2)}">${formatReturn(stock.eps_growth_t_plus_2)}</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 2: P/S, P/E, Returns -->
+                <div class="section-group full-row">
+                    <!-- P/S Ratio Section -->
+                    <div class="data-section valuation-section">
+                        <div class="section-header">P/S Ratio</div>
+                        <div class="growth-timeline">
+                            <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value">${formatValuation(stock.ps_t_minus_1, 1)}</span></div>
+                            <div class="growth-item current"><span class="data-label">T</span><span class="data-value">${formatValuation(stock.ps_t, 1)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value">${formatValuation(stock.ps_t_plus_1, 1)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value">${formatValuation(stock.ps_t_plus_2, 1)}</span></div>
+                        </div>
+                    </div>
+                    
+                    <!-- P/E Ratio Section -->
+                    <div class="data-section valuation-section">
+                        <div class="section-header">P/E Ratio</div>
+                        <div class="growth-timeline">
+                            <div class="growth-item past"><span class="data-label">T-1</span><span class="data-value">${formatValuation(stock.pe_t_minus_1, 0)}</span></div>
+                            <div class="growth-item current"><span class="data-label">T</span><span class="data-value">${formatValuation(stock.pe_t, 0)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+1</span><span class="data-value">${formatValuation(stock.pe_t_plus_1, 0)}</span></div>
+                            <div class="growth-item future"><span class="data-label">T+2</span><span class="data-value">${formatValuation(stock.pe_t_plus_2, 0)}</span></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Returns Section -->
+                    <div class="data-section returns-section">
+                        <div class="section-header">Returns</div>
+                        <div class="returns-inline">
+                            <div class="return-item"><span class="data-label">1D</span><span class="data-value ${getReturnClass(stock.dr_1)}">${formatReturn(stock.dr_1)}</span></div>
+                            <div class="return-item"><span class="data-label">5D</span><span class="data-value ${getReturnClass(stock.dr_5)}">${formatReturn(stock.dr_5)}</span></div>
+                            <div class="return-item"><span class="data-label">20D</span><span class="data-value ${getReturnClass(stock.dr_20)}">${formatReturn(stock.dr_20)}</span></div>
+                            <div class="return-item"><span class="data-label">60D</span><span class="data-value ${getReturnClass(stock.dr_60)}">${formatReturn(stock.dr_60)}</span></div>
+                            <div class="return-item"><span class="data-label">120D</span><span class="data-value ${getReturnClass(stock.dr_120)}">${formatReturn(stock.dr_120)}</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 3: Price Info -->
+                <div class="section-group full-row">
+                    <div class="data-section price-section">
+                        <div class="section-header">Price & Market</div>
+                        <div class="section-row">
+                            <div class="data-cell">
+                                <span class="data-label">Price</span>
+                                <span class="data-value lg">${stock.current_price ? '$' + stock.current_price.toFixed(2) : '—'}</span>
+                            </div>
+                            <div class="data-cell">
+                                <span class="data-label">MktCap</span>
+                                <span class="data-value">${formatMarketCap(stock.market_cap)}</span>
+                            </div>
+                            <div class="data-cell">
+                                <span class="data-label">RSI</span>
+                                <span class="data-value">${stock.rsi_mktcap || '—'}</span>
+                            </div>
+                            <div class="data-cell">
+                                <span class="data-label">Vol/Avg</span>
+                                <span class="data-value ${stock.vol_vs_10d_avg > 1.5 ? 'highlight' : ''}">${stock.vol_vs_10d_avg ? stock.vol_vs_10d_avg.toFixed(1) + 'x' : '—'}</span>
+                            </div>
+                            <div class="data-cell">
+                                <span class="data-label">Country</span>
+                                <span class="data-value muted sm">${stock.country || '—'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
+function getReturnClass(value) {
+    if (value == null) return 'muted';
+    return value >= 0 ? 'positive' : 'negative';
+}
+
+function formatReturn(value) {
+    if (value == null) return '—';
+    const sign = value >= 0 ? '+' : '';
+    return sign + value.toFixed(0) + '%';
+}
+
+function formatValuation(value, decimals = 1) {
+    if (value == null || value <= 0) return '—';
+    return value.toFixed(decimals);
+}
+
+function formatMarketCap(value) {
+    if (value == null) return '—';
+    if (value >= 1e12) return (value / 1e12).toFixed(1) + 'T';
+    if (value >= 1e9) return (value / 1e9).toFixed(0) + 'B';
+    if (value >= 1e6) return (value / 1e6).toFixed(0) + 'M';
+    return value.toLocaleString();
+}
+
+function showLoading() {
+    document.getElementById('loadingState').style.display = 'flex';
+    document.getElementById('stockCards').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'none';
+}
+
+function hideLoading() {
+    document.getElementById('loadingState').style.display = 'none';
+}
+
+function showCards() {
+    document.getElementById('stockCards').style.display = 'flex';
+    document.getElementById('emptyState').style.display = 'none';
+}
+
+function showEmpty() {
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('stockCards').style.display = 'none';
+}
+</script>
+{% endblock %}
+
+
