@@ -3,192 +3,416 @@
 {% block title %}Stocks Assist - Home{% endblock %}
 
 {% block extra_styles %}
-.hero {
-    text-align: center;
-    padding: 4rem 2rem;
-    margin-bottom: 2rem;
-}
-
-.hero h1 {
-    font-size: 3.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.hero p {
-    font-size: 1.25rem;
-    color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto 2rem;
-}
-
-.search-container {
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.search-box {
+/* Compact Search */
+.search-bar {
     display: flex;
     gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
 }
 
-.search-input {
+.search-bar input {
     flex: 1;
-    padding: 1rem 1.5rem;
-    font-size: 1.1rem;
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
-    background: var(--bg-card);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-dark);
     color: var(--text-primary);
     font-family: 'JetBrains Mono', monospace;
     text-transform: uppercase;
+    min-width: 0;
 }
 
-.search-input::placeholder {
-    color: var(--text-muted);
+.search-bar input::placeholder {
     text-transform: none;
+    color: var(--text-muted);
 }
 
-.search-input:focus {
+.search-bar input:focus {
     outline: none;
     border-color: var(--accent-green);
 }
 
-.features {
+.search-bar button {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* Main Indices Row */
+.indices-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 3rem;
-}
-
-.feature-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 2rem;
-    transition: all 0.3s;
-}
-
-.feature-card:hover {
-    border-color: var(--accent-green);
-    transform: translateY(-4px);
-}
-
-.feature-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.feature-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
-    color: var(--text-primary);
-}
-
-.feature-card p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-}
-
-.terminal-box {
-    background: #000;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-top: 3rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
-}
-
-.terminal-header {
-    display: flex;
+    grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
     margin-bottom: 1rem;
 }
 
-.terminal-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+@media (max-width: 768px) {
+    .indices-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-.terminal-dot.red { background: #ff5f56; }
-.terminal-dot.yellow { background: #ffbd2e; }
-.terminal-dot.green { background: #27c93f; }
+@media (max-width: 480px) {
+    .indices-row {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+}
 
-.terminal-line {
+.index-pill {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.index-pill:hover {
+    border-color: var(--accent-blue);
+}
+
+.index-pill .symbol {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.index-pill .price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
     color: var(--text-secondary);
-    margin-bottom: 0.5rem;
 }
 
-.terminal-line .prompt {
-    color: var(--accent-green);
+.index-pill .returns {
+    display: flex;
+    gap: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
 }
 
-.terminal-line .command {
+.index-pill .ret {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.index-pill .ret-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.index-pill .ret-val {
+    font-weight: 500;
+}
+
+.ret-pos { color: var(--accent-green); }
+.ret-neg { color: var(--accent-red); }
+
+/* Sector Grid */
+.sector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.5rem;
+}
+
+@media (max-width: 400px) {
+    .sector-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.sector-tile {
+    padding: 0.6rem 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sector-tile:hover {
+    border-color: var(--accent-blue);
+    background: var(--bg-card-hover);
+}
+
+.sector-tile .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+.sector-tile .sym {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.85rem;
     color: var(--accent-blue);
+}
+
+.sector-tile .d1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.sector-tile .name {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.4rem;
+}
+
+.sector-tile .returns-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+}
+
+.sector-tile .r-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sector-tile .r-label {
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+/* Section Header */
+.section-header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Loading */
+.loading-msg {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+.loading-msg .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Hot coloring */
+.tile-hot-green { background: rgba(63, 185, 80, 0.1) !important; }
+.tile-hot-red { background: rgba(248, 81, 73, 0.1) !important; }
+
+/* Sort controls */
+.sort-row {
+    display: flex;
+    gap: 0.3rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.sort-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.sort-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-secondary);
+}
+
+.sort-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--bg-dark);
 }
 {% endblock %}
 
 {% block content %}
-<div class="hero">
-    <h1>Stock Metrics Dashboard</h1>
-    <p>Look up detailed metrics for any stock in our database. Enter a ticker symbol to get started.</p>
-    
-    <div class="search-container">
-        <form class="search-box" onsubmit="goToStock(event)">
-            <input type="text" 
-                   class="search-input" 
-                   id="tickerInput" 
-                   placeholder="Enter ticker symbol..." 
-                   autocomplete="off"
-                   maxlength="10">
-            <button type="submit" class="btn btn-primary">Look Up</button>
-        </form>
-    </div>
+<!-- Search Bar -->
+<form class="search-bar" onsubmit="goToStock(event)">
+    <input type="text" id="tickerInput" placeholder="Ticker lookup..." autocomplete="off" maxlength="10">
+    <button type="submit" class="btn btn-primary">Go</button>
+</form>
+
+<!-- Main Indices -->
+<div class="section-header">Market Indices</div>
+<div class="indices-row" id="indicesRow">
+    <div class="loading-msg"><div class="spinner"></div>Loading...</div>
 </div>
 
-<div class="features">
-    <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3>Price Returns</h3>
-        <p>View 1-day, 5-day, 20-day, 60-day, and 120-day returns at a glance.</p>
-    </div>
-    
-    <div class="feature-card">
-        <div class="feature-icon">📈</div>
-        <h3>Valuation Metrics</h3>
-        <p>P/E ratio, Price-to-Sales, Forward P/E, and more valuation data.</p>
-    </div>
-    
-    <div class="feature-card">
-        <div class="feature-icon">📉</div>
-        <h3>Technical Indicators</h3>
-        <p>RSI, ATR, volume analysis, and volatility metrics.</p>
-    </div>
+<!-- Sectors -->
+<div class="section-header" style="margin-top: 1rem;">Sector ETFs</div>
+<div class="sort-row">
+    <button class="sort-btn active" data-sort="dr_1">1D</button>
+    <button class="sort-btn" data-sort="dr_5">5D</button>
+    <button class="sort-btn" data-sort="dr_20">20D</button>
+    <button class="sort-btn" data-sort="dr_60">60D</button>
 </div>
-
-<div class="terminal-box">
-    <div class="terminal-header">
-        <div class="terminal-dot red"></div>
-        <div class="terminal-dot yellow"></div>
-        <div class="terminal-dot green"></div>
-    </div>
-    <div class="terminal-line">
-        <span class="prompt">$</span> <span class="command">curl</span> /api/stock/AAPL
-    </div>
-    <div class="terminal-line text-muted">
-        # Returns all stock_metrics fields for the given ticker
-    </div>
+<div class="sector-grid" id="sectorGrid">
+    <div class="loading-msg" style="grid-column: 1/-1;"><div class="spinner"></div>Loading...</div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
+let sectorData = { main_indices: [], sectors: [] };
+let currentSort = 'dr_1';
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadData();
+    setupSortButtons();
+});
+
+function setupSortButtons() {
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentSort = this.dataset.sort;
+            renderSectors();
+        });
+    });
+}
+
+async function loadData() {
+    try {
+        const response = await fetch('/api/frontend/sector-performance');
+        const data = await response.json();
+        
+        if (data.error) {
+            document.getElementById('indicesRow').innerHTML = '<div class="loading-msg">Data unavailable</div>';
+            document.getElementById('sectorGrid').innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Data unavailable</div>';
+            return;
+        }
+        
+        sectorData = data;
+        renderIndices();
+        renderSectors();
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('indicesRow').innerHTML = '<div class="loading-msg">Failed to load</div>';
+        document.getElementById('sectorGrid').innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Failed to load</div>';
+    }
+}
+
+function renderIndices() {
+    const container = document.getElementById('indicesRow');
+    
+    container.innerHTML = sectorData.main_indices.map(idx => `
+        <div class="index-pill" onclick="window.location.href='/stock/${idx.symbol}'">
+            <div>
+                <div class="symbol">${idx.symbol}</div>
+                <div class="price">$${idx.current_price?.toFixed(2) || '—'}</div>
+            </div>
+            <div class="returns">
+                <div class="ret">
+                    <span class="ret-label">1D</span>
+                    <span class="ret-val ${retClass(idx.dr_1)}">${fmtRet(idx.dr_1)}</span>
+                </div>
+                <div class="ret">
+                    <span class="ret-label">5D</span>
+                    <span class="ret-val ${retClass(idx.dr_5)}">${fmtRet(idx.dr_5)}</span>
+                </div>
+                <div class="ret">
+                    <span class="ret-label">20D</span>
+                    <span class="ret-val ${retClass(idx.dr_20)}">${fmtRet(idx.dr_20)}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderSectors() {
+    const container = document.getElementById('sectorGrid');
+    
+    const sorted = [...sectorData.sectors].sort((a, b) => {
+        const aVal = a[currentSort] ?? -999;
+        const bVal = b[currentSort] ?? -999;
+        return bVal - aVal;
+    });
+    
+    container.innerHTML = sorted.map(s => {
+        const hotClass = getHotClass(s.dr_1);
+        return `
+            <div class="sector-tile ${hotClass}" onclick="window.location.href='/stock/${s.symbol}'">
+                <div class="header">
+                    <span class="sym">${s.symbol}</span>
+                    <span class="d1 ${retClass(s.dr_1)}">${fmtRet(s.dr_1)}</span>
+                </div>
+                <div class="name">${s.name}</div>
+                <div class="returns-row">
+                    <div class="r-item">
+                        <span class="r-label">5D</span>
+                        <span class="${retClass(s.dr_5)}">${fmtRet(s.dr_5)}</span>
+                    </div>
+                    <div class="r-item">
+                        <span class="r-label">20D</span>
+                        <span class="${retClass(s.dr_20)}">${fmtRet(s.dr_20)}</span>
+                    </div>
+                    <div class="r-item">
+                        <span class="r-label">60D</span>
+                        <span class="${retClass(s.dr_60)}">${fmtRet(s.dr_60)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function retClass(val) {
+    if (val === null || val === undefined) return '';
+    return val >= 0 ? 'ret-pos' : 'ret-neg';
+}
+
+function fmtRet(val) {
+    if (val === null || val === undefined) return '—';
+    const sign = val >= 0 ? '+' : '';
+    return sign + val.toFixed(1) + '%';
+}
+
+function getHotClass(val) {
+    if (val === null || val === undefined) return '';
+    if (val >= 2) return 'tile-hot-green';
+    if (val <= -2) return 'tile-hot-red';
+    return '';
+}
+
 function goToStock(event) {
     event.preventDefault();
     const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
@@ -197,7 +421,6 @@ function goToStock(event) {
     }
 }
 
-// Allow pressing Enter to submit
 document.getElementById('tickerInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         goToStock(e);
@@ -205,4 +428,3 @@ document.getElementById('tickerInput').addEventListener('keypress', function(e) 
 });
 </script>
 {% endblock %}
-
