@@ -3180,6 +3180,7 @@ ETF_METADATA = {
     'SPY': {'name': 'S&P 500', 'category': 'main'},
     'QQQ': {'name': 'Nasdaq 100', 'category': 'main'},
     'IWM': {'name': 'Russell 2000', 'category': 'main'},
+    '^VIX': {'name': 'Volatility Index', 'category': 'main'},
     # Tech / Growth
     'IGM': {'name': 'Tech Expanded', 'category': 'tech'},
     'SOXX': {'name': 'Semiconductors', 'category': 'tech'},

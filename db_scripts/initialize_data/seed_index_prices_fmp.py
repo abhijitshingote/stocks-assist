@@ -38,7 +38,7 @@ load_dotenv()
 BASE_URL = 'https://financialmodelingprep.com/stable'
 
 # ETFs to track
-ETFS = ['SPY', 'QQQ', 'IWM', 'IGM', 'SOXX', 'IGV', 'ARTY', 'BAI', 'IBB', 'IHF', 'IHI', 'IHE', 'IDNA', 'IEZ', 'IEO', 'FILL', 'ITA', 'IYT', 'ICOP', 'RING', 'ILIT', 'PICK', 'SLVP', 'WOOD', 'IAI', 'IYG', 'IAK', 'IAT', 'REM', 'REZ', 'IDGT', 'ITB']
+ETFS = ['SPY', 'QQQ', 'IWM', 'IGM', 'SOXX', 'IGV', 'ARTY', 'BAI', 'IBB', 'IHF', 'IHI', 'IHE', 'IDNA', 'IEZ', 'IEO', 'FILL', 'ITA', 'IYT', 'ICOP', 'RING', 'ILIT', 'PICK', 'SLVP', 'WOOD', 'IAI', 'IYG', 'IAK', 'IAT', 'REM', 'REZ', 'IDGT', 'ITB','^VIX']
 
 
 def get_eastern_now():
