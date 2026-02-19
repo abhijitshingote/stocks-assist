@@ -1,0 +1,1 @@
+1. plot swing hihghs and lows and then build a signal for reversal and screen 

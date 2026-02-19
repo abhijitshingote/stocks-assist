@@ -3,137 +3,260 @@
 {% block title %}Stocks Assist - Home{% endblock %}
 
 {% block extra_styles %}
-/* Compact Search */
-.search-bar {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    padding: 0.75rem;
-    background: var(--bg-card);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-.search-bar input {
-    flex: 1;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background: var(--bg-dark);
-    color: var(--text-primary);
-    font-family: 'JetBrains Mono', monospace;
-    text-transform: uppercase;
-    min-width: 0;
-}
-
-.search-bar input::placeholder {
-    text-transform: none;
+/* Section Headers */
+.section-header {
+    font-size: 0.75rem;
+    font-weight: 600;
     color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.search-bar input:focus {
-    outline: none;
-    border-color: var(--accent-green);
+.section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
 }
 
-.search-bar button {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-    white-space: nowrap;
-}
-
-/* Main Indices Row */
-.indices-row {
+/* Indices Grid */
+.indices-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
-@media (max-width: 768px) {
-    .indices-row {
+@media (max-width: 900px) {
+    .indices-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 480px) {
-    .indices-row {
+@media (max-width: 500px) {
+    .indices-grid {
         grid-template-columns: 1fr;
-        gap: 0.4rem;
     }
 }
 
-.index-pill {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.6rem 0.75rem;
+/* Index Card */
+.index-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 10px;
+    padding: 0.85rem;
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
+    position: relative;
 }
 
-.index-pill:hover {
+.index-card:hover {
     border-color: var(--accent-blue);
+    background: var(--bg-card-hover);
 }
 
-.index-pill .symbol {
+.index-card.chart-open {
+    border-color: var(--accent-green);
+    background: rgba(63, 185, 80, 0.05);
+}
+
+.index-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.6rem;
+}
+
+.index-symbol {
     font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--text-primary);
 }
 
-.index-pill .price {
+.index-name {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
+.index-price {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: right;
 }
 
-.index-pill .returns {
-    display: flex;
-    gap: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+/* Returns Grid */
+.returns-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
 }
 
-.index-pill .ret {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.return-cell {
+    text-align: center;
+    padding: 0.35rem 0.2rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
 }
 
-.index-pill .ret-label {
-    font-size: 0.6rem;
+.return-cell .label {
+    font-size: 0.55rem;
     color: var(--text-muted);
     text-transform: uppercase;
+    margin-bottom: 0.15rem;
 }
 
-.index-pill .ret-val {
-    font-weight: 500;
+.return-cell .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
 }
 
 .ret-pos { color: var(--accent-green); }
 .ret-neg { color: var(--accent-red); }
+.ret-neutral { color: var(--text-muted); }
 
-/* Sector Grid */
+/* DMA Indicators */
+.dma-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.dma-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+.dma-above {
+    background: rgba(63, 185, 80, 0.2);
+    color: var(--accent-green);
+}
+
+.dma-below {
+    background: rgba(248, 81, 73, 0.2);
+    color: var(--accent-red);
+}
+
+/* Chart Loading */
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--text-muted);
+}
+
+.chart-loading .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.chart-timeframe {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.tf-btn {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.tf-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-secondary);
+}
+
+.tf-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--bg-dark);
+}
+
+/* Expanded Chart Container (full width below grid) */
+.expanded-chart-container {
+    display: none;
+    background: var(--bg-card);
+    border: 1px solid var(--accent-green);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    margin-top: -0.75rem;
+}
+
+.expanded-chart-container.visible {
+    display: block;
+}
+
+.expanded-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.expanded-chart-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.expanded-chart-wrapper {
+    width: 100%;
+    height: 300px;
+    position: relative;
+}
+
+/* Sector Section */
+.sector-section {
+    margin-bottom: 1.5rem;
+}
+
 .sector-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 0.5rem;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 500px) {
     .sector-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 .sector-tile {
-    padding: 0.6rem 0.75rem;
+    padding: 0.6rem;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -146,28 +269,34 @@
     background: var(--bg-card-hover);
 }
 
+.sector-tile.chart-open {
+    border-color: var(--accent-green);
+    background: rgba(63, 185, 80, 0.05);
+}
+
 .sector-tile .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.4rem;
+    align-items: flex-start;
+    margin-bottom: 0.2rem;
 }
 
 .sector-tile .sym {
     font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.85rem;
-    color: var(--accent-blue);
+    color: var(--text-primary);
 }
 
-.sector-tile .d1 {
+.sector-tile .primary-return {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .sector-tile .name {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     color: var(--text-muted);
     white-space: nowrap;
     overflow: hidden;
@@ -175,73 +304,61 @@
     margin-bottom: 0.4rem;
 }
 
-.sector-tile .returns-row {
+.sector-tile .dma-mini {
     display: flex;
-    justify-content: space-between;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
+    gap: 0.25rem;
+    justify-content: center;
 }
 
-.sector-tile .r-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.sector-tile .r-label {
-    font-size: 0.55rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-}
-
-/* Section Header */
-.section-header {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.3rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-/* Loading */
-.loading-msg {
-    text-align: center;
-    padding: 2rem;
-    color: var(--text-muted);
-}
-
-.loading-msg .spinner {
-    width: 24px;
-    height: 24px;
-    border: 2px solid var(--border-color);
-    border-top-color: var(--accent-green);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 0.5rem;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.sector-tile .dma-mini .dma-badge {
+    font-size: 0.5rem;
+    padding: 0.1rem 0.25rem;
 }
 
 /* Hot coloring */
 .tile-hot-green { background: rgba(63, 185, 80, 0.1) !important; }
 .tile-hot-red { background: rgba(248, 81, 73, 0.1) !important; }
 
+/* Sector section header with controls */
+.section-header-with-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sector-subsection {
+    margin-bottom: 1rem;
+}
+
+.sector-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
 /* Sort controls */
 .sort-row {
     display: flex;
     gap: 0.3rem;
-    margin-bottom: 0.75rem;
     flex-wrap: wrap;
 }
 
 .sort-btn {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.65rem;
     font-weight: 500;
     background: transparent;
     border: 1px solid var(--border-color);
@@ -261,146 +378,690 @@
     border-color: var(--accent-blue);
     color: var(--bg-dark);
 }
+
+/* Loading State */
+.loading-msg {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+.loading-msg .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 0.5rem;
+}
+
+/* Breadth Section */
+.breadth-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+
+.breadth-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 700px) {
+    .breadth-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.breadth-stat {
+    text-align: center;
+    padding: 0.6rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+
+.breadth-stat .label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+}
+
+.breadth-stat .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.breadth-stat .subvalue {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.breadth-chart-container {
+    height: 250px;
+    margin-top: 0.5rem;
+}
+
+.breadth-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.breadth-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.breadth-legend-dot {
+    width: 12px;
+    height: 3px;
+    border-radius: 1px;
+}
+
+.breadth-charts {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.breadth-chart-box {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+.breadth-chart-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.movers-tooltip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 400;
+    text-transform: none;
+}
+
+/* Sector chart row (under tile) */
+.sector-chart-row {
+    grid-column: 1 / -1;
+    display: none;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.sector-chart-row.visible {
+    display: block;
+}
+
+.sector-chart-wrapper {
+    height: 250px;
+}
 {% endblock %}
 
 {% block content %}
-<!-- Search Bar -->
-<form class="search-bar" onsubmit="goToStock(event)">
-    <input type="text" id="tickerInput" placeholder="Ticker lookup..." autocomplete="off" maxlength="10">
-    <button type="submit" class="btn btn-primary">Go</button>
-</form>
-
-<!-- Main Indices -->
-<div class="section-header">Market Indices</div>
-<div class="indices-row" id="indicesRow">
+<!-- Main Indices (Row 1) -->
+<div class="indices-grid" id="mainIndicesGrid">
     <div class="loading-msg"><div class="spinner"></div>Loading...</div>
 </div>
-
-<!-- Sectors -->
-<div class="section-header" style="margin-top: 1rem;">Sector ETFs</div>
-<div class="sort-row">
-    <button class="sort-btn active" data-sort="dr_1">1D</button>
-    <button class="sort-btn" data-sort="dr_5">5D</button>
-    <button class="sort-btn" data-sort="dr_20">20D</button>
-    <button class="sort-btn" data-sort="dr_60">60D</button>
+<div class="expanded-chart-container" id="mainIndicesChartContainer">
+    <div class="expanded-chart-header">
+        <span class="expanded-chart-title" id="mainIndicesChartTitle"></span>
+        <div class="chart-timeframe" id="mainIndicesTimeframe">
+            <button class="tf-btn" data-days="30">1M</button>
+            <button class="tf-btn" data-days="90">3M</button>
+            <button class="tf-btn" data-days="180">6M</button>
+            <button class="tf-btn active" data-days="365">1Y</button>
+        </div>
+    </div>
+    <div class="expanded-chart-wrapper" id="mainIndicesChartWrapper"></div>
 </div>
-<div class="sector-grid" id="sectorGrid">
-    <div class="loading-msg" style="grid-column: 1/-1;"><div class="spinner"></div>Loading...</div>
+
+<!-- Commodities (Row 2) -->
+<div class="section-header">Commodities & Rates</div>
+<div class="indices-grid" id="commoditiesGrid">
+    <div class="loading-msg"><div class="spinner"></div>Loading...</div>
+</div>
+<div class="expanded-chart-container" id="commoditiesChartContainer">
+    <div class="expanded-chart-header">
+        <span class="expanded-chart-title" id="commoditiesChartTitle"></span>
+        <div class="chart-timeframe" id="commoditiesTimeframe">
+            <button class="tf-btn" data-days="30">1M</button>
+            <button class="tf-btn" data-days="90">3M</button>
+            <button class="tf-btn" data-days="180">6M</button>
+            <button class="tf-btn active" data-days="365">1Y</button>
+        </div>
+    </div>
+    <div class="expanded-chart-wrapper" id="commoditiesChartWrapper"></div>
+</div>
+
+<!-- Sector ETFs -->
+<div class="sector-section">
+    <div class="section-header-with-controls">
+        <span class="section-title">Sector ETFs</span>
+        <div class="sort-row" id="sectorSort">
+            <button class="sort-btn active" data-sort="dr_1">1D</button>
+            <button class="sort-btn" data-sort="dr_5">5D</button>
+            <button class="sort-btn" data-sort="dr_20">20D</button>
+            <button class="sort-btn" data-sort="dr_60">60D</button>
+        </div>
+    </div>
+    
+    <div class="sector-subsection">
+        <div class="sector-label">Risk On</div>
+        <div class="sector-grid" id="riskOnGrid">
+            <div class="loading-msg" style="grid-column: 1/-1;"><div class="spinner"></div>Loading...</div>
+        </div>
+    </div>
+    
+    <div class="sector-subsection">
+        <div class="sector-label">Risk Off</div>
+        <div class="sector-grid" id="riskOffGrid">
+            <div class="loading-msg" style="grid-column: 1/-1;"><div class="spinner"></div>Loading...</div>
+        </div>
+    </div>
+    
+    <div class="expanded-chart-container" id="sectorsChartContainer">
+        <div class="expanded-chart-header">
+            <span class="expanded-chart-title" id="sectorsChartTitle"></span>
+            <div class="chart-timeframe" id="sectorsTimeframe">
+                <button class="tf-btn" data-days="30">1M</button>
+                <button class="tf-btn" data-days="90">3M</button>
+                <button class="tf-btn" data-days="180">6M</button>
+                <button class="tf-btn active" data-days="365">1Y</button>
+            </div>
+        </div>
+        <div class="expanded-chart-wrapper" id="sectorsChartWrapper"></div>
+    </div>
+</div>
+
+<!-- Breadth Section -->
+<div class="breadth-section">
+    <div class="section-header">Market Breadth</div>
+    
+    <div class="breadth-stats" id="breadthStats">
+        <div class="breadth-stat">
+            <div class="label">Above 50 DMA</div>
+            <div class="value ret-pos" id="above50dma">—</div>
+            <div class="subvalue" id="above50dmaPct">—</div>
+        </div>
+        <div class="breadth-stat">
+            <div class="label">Above 200 DMA</div>
+            <div class="value ret-pos" id="above200dma">—</div>
+            <div class="subvalue" id="above200dmaPct">—</div>
+        </div>
+        <div class="breadth-stat">
+            <div class="label">Up 4%+ Today</div>
+            <div class="value ret-pos" id="up4pct">—</div>
+        </div>
+        <div class="breadth-stat">
+            <div class="label">Down 4%+ Today</div>
+            <div class="value ret-neg" id="down4pct">—</div>
+        </div>
+    </div>
+    
+    <div class="breadth-charts">
+        <div class="breadth-chart-box">
+            <div class="breadth-chart-title">SPY (S&P 500)</div>
+            <div class="breadth-chart-container" id="spyChartContainer"></div>
+        </div>
+        <div class="breadth-chart-box">
+            <div class="breadth-chart-title">% Stocks Above Moving Averages</div>
+            <div class="breadth-chart-container" id="dmaChartContainer"></div>
+            <div class="breadth-legend">
+                <div class="breadth-legend-item">
+                    <div class="breadth-legend-dot" style="background: #3fb950;"></div>
+                    <span>Above 50 DMA</span>
+                </div>
+                <div class="breadth-legend-item">
+                    <div class="breadth-legend-dot" style="background: #58a6ff;"></div>
+                    <span>Above 200 DMA</span>
+                </div>
+            </div>
+        </div>
+        <div class="breadth-chart-box">
+            <div class="breadth-chart-title">Daily 4%+ Movers <span class="movers-tooltip" id="moversTooltip"></span></div>
+            <div class="breadth-chart-container" id="moversChartContainer"></div>
+            <div class="breadth-legend">
+                <div class="breadth-legend-item">
+                    <div class="breadth-legend-dot" style="background: #3fb950;"></div>
+                    <span>Up 4%+</span>
+                </div>
+                <div class="breadth-legend-item">
+                    <div class="breadth-legend-dot" style="background: #f85149;"></div>
+                    <span>Down 4%+</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
 <script>
-let sectorData = { main_indices: [], sectors: [] };
-let currentSort = 'dr_1';
+let homeData = { main_indices: [], commodities: [], risk_on_sectors: [], risk_off_sectors: [] };
+let breadthData = { history: [], latest: {} };
+let spyData = [];
+let chartInstances = {};
+let spyChart = null;
+let spySeries = {};
+let dmaChart = null;
+let moversChart = null;
+let dmaSeries = {};
+let moversSeries = {};
+let activeChart = null;
+let sectorTimeframe = 'dr_1';
 
 document.addEventListener('DOMContentLoaded', function() {
-    loadData();
+    loadHomepageData();
+    loadBreadthData();
     setupSortButtons();
+    setupSectorsChartListeners();
 });
 
-function setupSortButtons() {
-    document.querySelectorAll('.sort-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+function setupSectorsChartListeners() {
+    const chartContainer = document.getElementById('sectorsChartContainer');
+    chartContainer.querySelectorAll('.tf-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const days = parseInt(this.dataset.days);
+            
+            // Update active state
+            this.closest('.chart-timeframe').querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            currentSort = this.dataset.sort;
-            renderSectors();
+            
+            if (activeChart) {
+                updateChart(activeChart, days);
+            }
         });
     });
 }
 
-async function loadData() {
+function setupSortButtons() {
+    document.querySelectorAll('#sectorSort .sort-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const sortKey = this.dataset.sort;
+            
+            // Update active state
+            document.querySelectorAll('#sectorSort .sort-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update both grids
+            sectorTimeframe = sortKey;
+            renderSectorGrid('riskOnGrid', homeData.risk_on_sectors, sortKey);
+            renderSectorGrid('riskOffGrid', homeData.risk_off_sectors, sortKey);
+        });
+    });
+}
+
+async function loadHomepageData() {
     try {
-        const response = await fetch('/api/frontend/sector-performance');
+        const response = await fetch('/api/frontend/homepage');
         const data = await response.json();
         
         if (data.error) {
-            document.getElementById('indicesRow').innerHTML = '<div class="loading-msg">Data unavailable</div>';
-            document.getElementById('sectorGrid').innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Data unavailable</div>';
+            showError();
             return;
         }
         
-        sectorData = data;
-        renderIndices();
-        renderSectors();
+        homeData = data;
+        renderMainIndices();
+        renderCommodities();
+        renderSectorGrid('riskOnGrid', data.risk_on_sectors, 'dr_1');
+        renderSectorGrid('riskOffGrid', data.risk_off_sectors, 'dr_1');
     } catch (error) {
         console.error('Error:', error);
-        document.getElementById('indicesRow').innerHTML = '<div class="loading-msg">Failed to load</div>';
-        document.getElementById('sectorGrid').innerHTML = '<div class="loading-msg" style="grid-column:1/-1;">Failed to load</div>';
+        showError();
     }
 }
 
-function renderIndices() {
-    const container = document.getElementById('indicesRow');
-    
-    container.innerHTML = sectorData.main_indices.map(idx => `
-        <div class="index-pill" onclick="window.location.href='/stock/${idx.symbol}'">
-            <div>
-                <div class="symbol">${idx.symbol}</div>
-                <div class="price">$${idx.current_price?.toFixed(2) || '—'}</div>
-            </div>
-            <div class="returns">
-                <div class="ret">
-                    <span class="ret-label">1D</span>
-                    <span class="ret-val ${retClass(idx.dr_1)}">${fmtRet(idx.dr_1)}</span>
-                </div>
-                <div class="ret">
-                    <span class="ret-label">5D</span>
-                    <span class="ret-val ${retClass(idx.dr_5)}">${fmtRet(idx.dr_5)}</span>
-                </div>
-                <div class="ret">
-                    <span class="ret-label">20D</span>
-                    <span class="ret-val ${retClass(idx.dr_20)}">${fmtRet(idx.dr_20)}</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
+function showError() {
+    ['mainIndicesGrid', 'commoditiesGrid', 'riskOnGrid', 'riskOffGrid'].forEach(id => {
+        document.getElementById(id).innerHTML = '<div class="loading-msg">Data unavailable</div>';
+    });
 }
 
-function renderSectors() {
-    const container = document.getElementById('sectorGrid');
+function renderMainIndices() {
+    const container = document.getElementById('mainIndicesGrid');
+    container.innerHTML = homeData.main_indices.map(idx => renderIndexCard(idx)).join('');
+    attachCardListeners(container, 'mainIndices');
+}
+
+function renderCommodities() {
+    const container = document.getElementById('commoditiesGrid');
+    container.innerHTML = homeData.commodities.map(idx => renderIndexCard(idx)).join('');
+    attachCardListeners(container, 'commodities');
+}
+
+function renderIndexCard(idx) {
+    const isVix = idx.symbol === '^VIX';
+    return `
+        <div class="index-card" data-symbol="${idx.symbol}" data-name="${idx.name}">
+            <div class="index-card-header">
+                <div>
+                    <div class="index-symbol">${idx.symbol.replace('^', '')}</div>
+                    <div class="index-name">${idx.name}</div>
+                </div>
+                <div class="index-price">$${idx.current_price?.toFixed(2) || '—'}</div>
+            </div>
+            <div class="returns-grid">
+                <div class="return-cell">
+                    <div class="label">1D</div>
+                    <div class="value ${retClass(idx.dr_1, isVix)}">${fmtRet(idx.dr_1)}</div>
+                </div>
+                <div class="return-cell">
+                    <div class="label">5D</div>
+                    <div class="value ${retClass(idx.dr_5, isVix)}">${fmtRet(idx.dr_5)}</div>
+                </div>
+                <div class="return-cell">
+                    <div class="label">20D</div>
+                    <div class="value ${retClass(idx.dr_20, isVix)}">${fmtRet(idx.dr_20)}</div>
+                </div>
+                <div class="return-cell">
+                    <div class="label">60D</div>
+                    <div class="value ${retClass(idx.dr_60, isVix)}">${fmtRet(idx.dr_60)}</div>
+                </div>
+            </div>
+            ${!isVix ? `
+            <div class="dma-row">
+                <span class="dma-badge ${idx.pct_from_50dma >= 0 ? 'dma-above' : 'dma-below'}">
+                    50D: ${fmtDma(idx.pct_from_50dma)}
+                </span>
+                <span class="dma-badge ${idx.pct_from_200dma >= 0 ? 'dma-above' : 'dma-below'}">
+                    200D: ${fmtDma(idx.pct_from_200dma)}
+                </span>
+            </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+function renderSectorGrid(containerId, sectors, sortKey) {
+    const container = document.getElementById(containerId);
     
-    const sorted = [...sectorData.sectors].sort((a, b) => {
-        const aVal = a[currentSort] ?? -999;
-        const bVal = b[currentSort] ?? -999;
+    const sorted = [...sectors].sort((a, b) => {
+        const aVal = a[sortKey] ?? -999;
+        const bVal = b[sortKey] ?? -999;
         return bVal - aVal;
     });
     
     container.innerHTML = sorted.map(s => {
-        const hotClass = getHotClass(s.dr_1);
+        const returnVal = s[sortKey];
+        const hotClass = getHotClass(returnVal);
         return `
-            <div class="sector-tile ${hotClass}" onclick="window.location.href='/stock/${s.symbol}'">
+            <div class="sector-tile ${hotClass}" data-symbol="${s.symbol}" data-name="${s.name}">
                 <div class="header">
                     <span class="sym">${s.symbol}</span>
-                    <span class="d1 ${retClass(s.dr_1)}">${fmtRet(s.dr_1)}</span>
+                    <span class="primary-return ${retClass(returnVal)}">${fmtRet(returnVal)}</span>
                 </div>
                 <div class="name">${s.name}</div>
-                <div class="returns-row">
-                    <div class="r-item">
-                        <span class="r-label">5D</span>
-                        <span class="${retClass(s.dr_5)}">${fmtRet(s.dr_5)}</span>
-                    </div>
-                    <div class="r-item">
-                        <span class="r-label">20D</span>
-                        <span class="${retClass(s.dr_20)}">${fmtRet(s.dr_20)}</span>
-                    </div>
-                    <div class="r-item">
-                        <span class="r-label">60D</span>
-                        <span class="${retClass(s.dr_60)}">${fmtRet(s.dr_60)}</span>
-                    </div>
+                <div class="dma-mini">
+                    <span class="dma-badge ${s.pct_from_50dma >= 0 ? 'dma-above' : 'dma-below'}">
+                        50: ${fmtDma(s.pct_from_50dma)}
+                    </span>
+                    <span class="dma-badge ${s.pct_from_200dma >= 0 ? 'dma-above' : 'dma-below'}">
+                        200: ${fmtDma(s.pct_from_200dma)}
+                    </span>
                 </div>
             </div>
         `;
     }).join('');
+    
+    // Add click listeners for sector tiles - show expanded chart
+    container.querySelectorAll('.sector-tile').forEach(tile => {
+        tile.addEventListener('click', () => {
+            const symbol = tile.dataset.symbol;
+            const name = tile.dataset.name;
+            toggleExpandedChart(symbol, name, 'sectors', tile);
+        });
+    });
 }
 
-function retClass(val) {
-    if (val === null || val === undefined) return '';
+function attachCardListeners(container, section) {
+    container.querySelectorAll('.index-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const symbol = this.dataset.symbol;
+            const name = this.dataset.name;
+            toggleExpandedChart(symbol, name, section, this);
+        });
+    });
+    
+    // Timeframe button listeners for expanded chart
+    const chartContainer = document.getElementById(`${section}ChartContainer`);
+    chartContainer.querySelectorAll('.tf-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const days = parseInt(this.dataset.days);
+            
+            // Update active state
+            this.closest('.chart-timeframe').querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            if (activeChart) {
+                updateChart(activeChart, days);
+            }
+        });
+    });
+}
+
+let activeSection = null;
+
+function toggleExpandedChart(symbol, name, section, cardElement) {
+    const chartContainer = document.getElementById(`${section}ChartContainer`);
+    const titleEl = document.getElementById(`${section}ChartTitle`);
+    
+    // If same chart is open, close it
+    if (activeChart === symbol && activeSection === section) {
+        chartContainer.classList.remove('visible');
+        cardElement.classList.remove('chart-open');
+        activeChart = null;
+        activeSection = null;
+        return;
+    }
+    
+    // Close any previously open chart in any section
+    document.querySelectorAll('.expanded-chart-container.visible').forEach(c => c.classList.remove('visible'));
+    document.querySelectorAll('.index-card.chart-open, .sector-tile.chart-open').forEach(c => c.classList.remove('chart-open'));
+    
+    // Open the new chart
+    activeChart = symbol;
+    activeSection = section;
+    chartContainer.classList.add('visible');
+    cardElement.classList.add('chart-open');
+    titleEl.textContent = `${symbol.replace('^', '')} - ${name}`;
+    
+    // Reset timeframe buttons to 1Y
+    chartContainer.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+    chartContainer.querySelector('.tf-btn[data-days="365"]').classList.add('active');
+    
+    // Load chart
+    loadExpandedChart(symbol, section);
+}
+
+async function loadExpandedChart(symbol, section) {
+    const wrapper = document.getElementById(`${section}ChartWrapper`);
+    wrapper.innerHTML = '<div class="chart-loading"><div class="spinner"></div><span>Loading chart...</span></div>';
+    
+    try {
+        const response = await fetch(`/api/frontend/index-ohlc/${symbol}`);
+        const data = await response.json();
+        
+        if (data.error || !Array.isArray(data) || data.length === 0) {
+            wrapper.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:2rem;">No chart data</div>';
+            return;
+        }
+        
+        wrapper.innerHTML = '';
+        initExpandedChart(symbol, section, data);
+    } catch (error) {
+        console.error(`Error loading chart for ${symbol}:`, error);
+        wrapper.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:2rem;">Failed to load</div>';
+    }
+}
+
+function initExpandedChart(symbol, section, data) {
+    const container = document.getElementById(`${section}ChartWrapper`);
+    
+    // Destroy old chart if exists
+    if (chartInstances[symbol]?.chart) {
+        chartInstances[symbol].chart.remove();
+    }
+    
+    const chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: 300,
+        layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#8b949e',
+            fontFamily: "'JetBrains Mono', monospace",
+        },
+        grid: {
+            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
+        },
+        crosshair: {
+            mode: LightweightCharts.CrosshairMode.Normal,
+        },
+        rightPriceScale: {
+            borderColor: '#30363d',
+            scaleMargins: { top: 0.1, bottom: 0.1 },
+        },
+        timeScale: {
+            borderColor: '#30363d',
+            timeVisible: true,
+        },
+        handleScroll: false,
+        handleScale: false,
+    });
+    
+    const candleSeries = chart.addCandlestickSeries({
+        upColor: '#3fb950',
+        downColor: '#f85149',
+        borderDownColor: '#f85149',
+        borderUpColor: '#3fb950',
+        wickDownColor: '#f85149',
+        wickUpColor: '#3fb950',
+    });
+    
+    const sma50Series = chart.addLineSeries({ 
+        color: '#00ff00', 
+        lineWidth: 1, 
+        priceLineVisible: false, 
+        lastValueVisible: false 
+    });
+    
+    const sma200Series = chart.addLineSeries({ 
+        color: '#ff0000', 
+        lineWidth: 1, 
+        priceLineVisible: false, 
+        lastValueVisible: false 
+    });
+    
+    chartInstances[symbol] = {
+        chart,
+        series: { candleSeries, sma50Series, sma200Series },
+        data,
+        timeframe: 365,
+        section
+    };
+    
+    // Handle resize
+    const resizeObserver = new ResizeObserver(() => {
+        if (chartInstances[symbol]?.chart) {
+            chartInstances[symbol].chart.applyOptions({ width: container.clientWidth });
+        }
+    });
+    resizeObserver.observe(container);
+    
+    updateChart(symbol, 365);
+}
+
+function updateChart(symbol, days) {
+    const instance = chartInstances[symbol];
+    if (!instance) return;
+    
+    const { data, series } = instance;
+    instance.timeframe = days;
+    
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    const cutoffStr = cutoffDate.toISOString().split('T')[0];
+    
+    // Calculate SMAs on full data first
+    const sma50Full = calculateSMA(data, 50);
+    const sma200Full = calculateSMA(data, 200);
+    
+    // Filter to visible timeframe
+    const filtered = data.filter(d => d.time >= cutoffStr);
+    const filteredSma50 = sma50Full.filter(d => d.time >= cutoffStr);
+    const filteredSma200 = sma200Full.filter(d => d.time >= cutoffStr);
+    
+    const candles = filtered.map(d => ({ 
+        time: d.time, 
+        open: d.open, 
+        high: d.high, 
+        low: d.low, 
+        close: d.close 
+    }));
+    
+    series.candleSeries.setData(candles);
+    series.sma50Series.setData(filteredSma50);
+    series.sma200Series.setData(filteredSma200);
+    
+    instance.chart.timeScale().fitContent();
+}
+
+function calculateSMA(data, period) {
+    if (data.length < period) return [];
+    
+    const smaData = [];
+    for (let i = period - 1; i < data.length; i++) {
+        let sum = 0;
+        for (let j = 0; j < period; j++) {
+            sum += data[i - j].close;
+        }
+        smaData.push({ time: data[i].time, value: sum / period });
+    }
+    return smaData;
+}
+
+function retClass(val, invertForVix = false) {
+    if (val === null || val === undefined) return 'ret-neutral';
+    if (invertForVix) {
+        return val >= 0 ? 'ret-neg' : 'ret-pos';
+    }
     return val >= 0 ? 'ret-pos' : 'ret-neg';
 }
 
 function fmtRet(val) {
+    if (val === null || val === undefined) return '—';
+    const sign = val >= 0 ? '+' : '';
+    return sign + val.toFixed(1) + '%';
+}
+
+function fmtDma(val) {
     if (val === null || val === undefined) return '—';
     const sign = val >= 0 ? '+' : '';
     return sign + val.toFixed(1) + '%';
@@ -413,18 +1074,326 @@ function getHotClass(val) {
     return '';
 }
 
-function goToStock(event) {
-    event.preventDefault();
-    const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
-    if (ticker) {
-        window.location.href = '/stock/' + ticker;
+// ============================================
+// Breadth Chart Functions
+// ============================================
+
+async function loadBreadthData() {
+    try {
+        const response = await fetch('/api/frontend/market-breadth');
+        const data = await response.json();
+        
+        if (data.error || !data.history || data.history.length === 0) {
+            document.getElementById('dmaChartContainer').innerHTML = 
+                '<div style="text-align:center;color:var(--text-muted);padding:2rem;">Breadth data not available</div>';
+            document.getElementById('moversChartContainer').innerHTML = 
+                '<div style="text-align:center;color:var(--text-muted);padding:2rem;">Breadth data not available</div>';
+            return;
+        }
+        
+        breadthData = data;
+        updateBreadthStats(data.latest);
+        initBreadthCharts();
+    } catch (error) {
+        console.error('Error loading breadth data:', error);
+        document.getElementById('dmaChartContainer').innerHTML = 
+            '<div style="text-align:center;color:var(--text-muted);padding:2rem;">Failed to load breadth data</div>';
+        document.getElementById('moversChartContainer').innerHTML = 
+            '<div style="text-align:center;color:var(--text-muted);padding:2rem;">Failed to load breadth data</div>';
     }
 }
 
-document.getElementById('tickerInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        goToStock(e);
+function updateBreadthStats(latest) {
+    if (!latest) return;
+    
+    document.getElementById('above50dma').textContent = latest.above_50dma?.toLocaleString() || '—';
+    document.getElementById('above50dmaPct').textContent = latest.pct_above_50dma ? `${latest.pct_above_50dma}%` : '—';
+    document.getElementById('above200dma').textContent = latest.above_200dma?.toLocaleString() || '—';
+    document.getElementById('above200dmaPct').textContent = latest.pct_above_200dma ? `${latest.pct_above_200dma}%` : '—';
+    document.getElementById('up4pct').textContent = latest.up_4pct?.toLocaleString() || '0';
+    document.getElementById('down4pct').textContent = latest.down_4pct?.toLocaleString() || '0';
+}
+
+function initBreadthCharts() {
+    initSpyChart();
+    initDmaChart();
+    initMoversChart();
+    
+    // After all charts initialized, sync their time ranges
+    setTimeout(syncAllBreadthCharts, 100);
+}
+
+function syncAllBreadthCharts() {
+    if (!breadthData.history || breadthData.history.length === 0) return;
+    
+    // Use breadth data date range as the canonical range
+    const startDate = breadthData.history[0].date;
+    const endDate = breadthData.history[breadthData.history.length - 1].date;
+    
+    const timeRange = { from: startDate, to: endDate };
+    
+    [spyChart, dmaChart, moversChart].forEach(chart => {
+        if (chart && chart.timeScale()) {
+            chart.timeScale().setVisibleRange(timeRange);
+        }
+    });
+}
+
+async function initSpyChart() {
+    const container = document.getElementById('spyChartContainer');
+    
+    // Fetch SPY data
+    try {
+        const response = await fetch('/api/frontend/index-ohlc/SPY');
+        const data = await response.json();
+        
+        if (data.error || !Array.isArray(data) || data.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:2rem;">SPY data not available</div>';
+            return;
+        }
+        
+        // Filter SPY to match breadth data date range
+        if (breadthData.history && breadthData.history.length > 0) {
+            const breadthStartDate = breadthData.history[0].date;
+            spyData = data.filter(d => d.time >= breadthStartDate);
+        } else {
+            // Fallback to 1 year
+            const cutoffDate = new Date();
+            cutoffDate.setFullYear(cutoffDate.getFullYear() - 1);
+            const cutoffStr = cutoffDate.toISOString().split('T')[0];
+            spyData = data.filter(d => d.time >= cutoffStr);
+        }
+        
+    } catch (error) {
+        console.error('Error loading SPY data:', error);
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:2rem;">Failed to load SPY data</div>';
+        return;
     }
-});
+    
+    spyChart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: 200,
+        layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#8b949e',
+            fontFamily: "'JetBrains Mono', monospace",
+        },
+        grid: {
+            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
+        },
+        rightPriceScale: {
+            borderColor: '#30363d',
+            scaleMargins: { top: 0.1, bottom: 0.1 },
+        },
+        timeScale: {
+            borderColor: '#30363d',
+            timeVisible: true,
+        },
+        handleScroll: false,
+        handleScale: false,
+    });
+    
+    spySeries.candles = spyChart.addCandlestickSeries({
+        upColor: '#3fb950',
+        downColor: '#f85149',
+        borderDownColor: '#f85149',
+        borderUpColor: '#3fb950',
+        wickDownColor: '#f85149',
+        wickUpColor: '#3fb950',
+    });
+    
+    // Handle resize
+    const resizeObserver = new ResizeObserver(() => {
+        if (spyChart) {
+            spyChart.applyOptions({ width: container.clientWidth });
+        }
+    });
+    resizeObserver.observe(container);
+    
+    renderSpyChart();
+}
+
+function renderSpyChart() {
+    if (!spyChart || spyData.length === 0) return;
+    
+    const candles = spyData.map(d => ({ 
+        time: d.time, 
+        open: d.open, 
+        high: d.high, 
+        low: d.low, 
+        close: d.close 
+    }));
+    
+    spySeries.candles.setData(candles);
+    spyChart.timeScale().fitContent();
+    
+    // Sync time range with other charts
+    spyChart.timeScale().subscribeVisibleTimeRangeChange(syncTimeRange);
+}
+
+let isSyncing = false;
+function syncTimeRange(timeRange) {
+    if (isSyncing || !timeRange) return;
+    isSyncing = true;
+    
+    const charts = [spyChart, dmaChart, moversChart].filter(c => c);
+    charts.forEach(chart => {
+        if (chart && chart.timeScale()) {
+            chart.timeScale().setVisibleRange(timeRange);
+        }
+    });
+    
+    setTimeout(() => { isSyncing = false; }, 50);
+}
+
+function initDmaChart() {
+    const container = document.getElementById('dmaChartContainer');
+    
+    dmaChart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: 200,
+        layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#8b949e',
+            fontFamily: "'JetBrains Mono', monospace",
+        },
+        grid: {
+            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
+        },
+        rightPriceScale: {
+            borderColor: '#30363d',
+            scaleMargins: { top: 0.1, bottom: 0.1 },
+        },
+        timeScale: {
+            borderColor: '#30363d',
+            timeVisible: true,
+        },
+        handleScroll: false,
+        handleScale: false,
+    });
+    
+    dmaSeries.above50dma = dmaChart.addLineSeries({
+        color: '#3fb950',
+        lineWidth: 2,
+        priceLineVisible: false,
+        lastValueVisible: false,
+    });
+    
+    dmaSeries.above200dma = dmaChart.addLineSeries({
+        color: '#58a6ff',
+        lineWidth: 2,
+        priceLineVisible: false,
+        lastValueVisible: false,
+    });
+    
+    // Handle resize
+    const resizeObserver = new ResizeObserver(() => {
+        if (dmaChart) {
+            dmaChart.applyOptions({ width: container.clientWidth });
+        }
+    });
+    resizeObserver.observe(container);
+    
+    renderDmaChart();
+}
+
+function initMoversChart() {
+    const container = document.getElementById('moversChartContainer');
+    
+    moversChart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: 200,
+        layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#8b949e',
+            fontFamily: "'JetBrains Mono', monospace",
+        },
+        grid: {
+            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
+        },
+        rightPriceScale: {
+            borderColor: '#30363d',
+            scaleMargins: { top: 0.1, bottom: 0.1 },
+        },
+        timeScale: {
+            borderColor: '#30363d',
+            timeVisible: true,
+        },
+        handleScroll: false,
+        handleScale: false,
+    });
+    
+    moversSeries.up4pct = moversChart.addHistogramSeries({
+        color: '#3fb950',
+        priceFormat: { type: 'volume' },
+    });
+    
+    moversSeries.down4pct = moversChart.addHistogramSeries({
+        color: '#f85149',
+        priceFormat: { type: 'volume' },
+    });
+    
+    // Handle resize
+    const resizeObserver = new ResizeObserver(() => {
+        if (moversChart) {
+            moversChart.applyOptions({ width: container.clientWidth });
+        }
+    });
+    resizeObserver.observe(container);
+    
+    renderMoversChart();
+}
+
+function renderDmaChart() {
+    if (!dmaChart || !breadthData.history || breadthData.history.length === 0) return;
+    
+    const history = breadthData.history;
+    const above50Data = history.map(d => ({ time: d.date, value: d.pct_above_50dma || 0 }));
+    const above200Data = history.map(d => ({ time: d.date, value: d.pct_above_200dma || 0 }));
+    
+    dmaSeries.above50dma.setData(above50Data);
+    dmaSeries.above200dma.setData(above200Data);
+    
+    dmaChart.timeScale().fitContent();
+    dmaChart.timeScale().subscribeVisibleTimeRangeChange(syncTimeRange);
+}
+
+function renderMoversChart() {
+    if (!moversChart || !breadthData.history || breadthData.history.length === 0) return;
+    
+    const history = breadthData.history;
+    const upData = history.map(d => ({ time: d.date, value: d.up_4pct || 0, color: '#3fb950' }));
+    const downData = history.map(d => ({ time: d.date, value: -(d.down_4pct || 0), color: '#f85149' }));
+    
+    moversSeries.up4pct.setData(upData);
+    moversSeries.down4pct.setData(downData);
+    
+    moversChart.timeScale().fitContent();
+    moversChart.timeScale().subscribeVisibleTimeRangeChange(syncTimeRange);
+    
+    // Create a lookup map for quick access
+    const moversLookup = {};
+    history.forEach(d => {
+        moversLookup[d.date] = { up: d.up_4pct || 0, down: d.down_4pct || 0 };
+    });
+    
+    // Subscribe to crosshair move for tooltip
+    moversChart.subscribeCrosshairMove(param => {
+        const tooltip = document.getElementById('moversTooltip');
+        if (!param || !param.time || param.point === undefined) {
+            tooltip.innerHTML = '';
+            return;
+        }
+        
+        const dateStr = param.time;
+        const data = moversLookup[dateStr];
+        if (data) {
+            tooltip.innerHTML = `<span style="color:#3fb950">▲ ${data.up}</span> &nbsp; <span style="color:#f85149">▼ ${data.down}</span>`;
+        }
+    });
+}
 </script>
 {% endblock %}

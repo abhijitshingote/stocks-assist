@@ -5,9 +5,9 @@ from flask_cors import CORS
 from sqlalchemy import create_engine, func, desc, text, or_
 from sqlalchemy.orm import sessionmaker
 from models import (
-    Ticker, CompanyProfile, OHLC, Index, IndexComponents,
+    Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat, AbiNotes
+    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat, AbiNotes, MarketBreadth
 )
 import os
 import json
@@ -3171,16 +3171,31 @@ def get_abi_notes_tags():
 # Sector/Index Performance Endpoint
 # ============================================================================
 
-# Import IndexPrice model
-from models import IndexPrice
-
 # ETF metadata for display names and categorization
 ETF_METADATA = {
-    # Main Indices (will be shown in top section)
+    # Main Indices (Row 1 - will be shown in top section)
     'SPY': {'name': 'S&P 500', 'category': 'main'},
     'QQQ': {'name': 'Nasdaq 100', 'category': 'main'},
     'IWM': {'name': 'Russell 2000', 'category': 'main'},
-    '^VIX': {'name': 'Volatility Index', 'category': 'main'},
+    '^VIX': {'name': 'VIX', 'category': 'main'},
+    # Commodities / Rates (Row 2)
+    'GLD': {'name': 'Gold', 'category': 'commodity'},
+    'SLV': {'name': 'Silver', 'category': 'commodity'},
+    'USO': {'name': 'Oil', 'category': 'commodity'},
+    'TLT': {'name': '20Y Treasury', 'category': 'commodity'},
+    # Sector ETFs - Risk On
+    'XLB': {'name': 'Materials', 'category': 'risk_on'},
+    'XLC': {'name': 'Communication Services', 'category': 'risk_on'},
+    'XLY': {'name': 'Consumer Discretionary', 'category': 'risk_on'},
+    'XLE': {'name': 'Energy', 'category': 'risk_on'},
+    'XLF': {'name': 'Financials', 'category': 'risk_on'},
+    'XLV': {'name': 'Health Care', 'category': 'risk_on'},
+    'XLI': {'name': 'Industrials', 'category': 'risk_on'},
+    'XLK': {'name': 'Technology', 'category': 'risk_on'},
+    # Sector ETFs - Risk Off
+    'XLP': {'name': 'Consumer Staples', 'category': 'risk_off'},
+    'XLRE': {'name': 'Real Estate', 'category': 'risk_off'},
+    'XLU': {'name': 'Utilities', 'category': 'risk_off'},
     # Tech / Growth
     'IGM': {'name': 'Tech Expanded', 'category': 'tech'},
     'SOXX': {'name': 'Semiconductors', 'category': 'tech'},
@@ -3342,6 +3357,243 @@ def get_sector_performance():
             return jsonify(get_sector_performance_data(conn))
     except Exception as e:
         logger.error(f"Error in sector performance endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+def get_homepage_data(connection):
+    """
+    Get homepage data: main indices, commodities, and sector ETFs with DMA calculations.
+    """
+    try:
+        query = """
+        WITH trading_dates AS (
+            SELECT DISTINCT date
+            FROM index_prices
+            ORDER BY date DESC
+            LIMIT 201
+        ),
+        latest_date AS (
+            SELECT MAX(date) as max_date FROM trading_dates
+        ),
+        date_1d_ago AS (
+            SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 1
+        ),
+        date_5d_ago AS (
+            SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 5
+        ),
+        date_20d_ago AS (
+            SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 20
+        ),
+        date_60d_ago AS (
+            SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 60
+        ),
+        sma_50 AS (
+            SELECT 
+                ip.symbol,
+                AVG(ip.close_price) as sma_50
+            FROM index_prices ip
+            WHERE ip.date IN (SELECT date FROM trading_dates ORDER BY date DESC LIMIT 50)
+            GROUP BY ip.symbol
+        ),
+        sma_200 AS (
+            SELECT 
+                ip.symbol,
+                AVG(ip.close_price) as sma_200
+            FROM index_prices ip
+            WHERE ip.date IN (SELECT date FROM trading_dates ORDER BY date DESC LIMIT 200)
+            GROUP BY ip.symbol
+        )
+        SELECT 
+            ip_today.symbol,
+            ip_today.close_price as current_price,
+            CASE WHEN ip_1d.close_price > 0 THEN 
+                ((ip_today.close_price - ip_1d.close_price) / ip_1d.close_price * 100) 
+            END as dr_1,
+            CASE WHEN ip_5d.close_price > 0 THEN 
+                ((ip_today.close_price - ip_5d.close_price) / ip_5d.close_price * 100) 
+            END as dr_5,
+            CASE WHEN ip_20d.close_price > 0 THEN 
+                ((ip_today.close_price - ip_20d.close_price) / ip_20d.close_price * 100) 
+            END as dr_20,
+            CASE WHEN ip_60d.close_price > 0 THEN 
+                ((ip_today.close_price - ip_60d.close_price) / ip_60d.close_price * 100) 
+            END as dr_60,
+            s50.sma_50,
+            s200.sma_200,
+            CASE WHEN s50.sma_50 > 0 THEN 
+                ((ip_today.close_price - s50.sma_50) / s50.sma_50 * 100) 
+            END as pct_from_50dma,
+            CASE WHEN s200.sma_200 > 0 THEN 
+                ((ip_today.close_price - s200.sma_200) / s200.sma_200 * 100) 
+            END as pct_from_200dma,
+            ld.max_date as latest_date
+        FROM index_prices ip_today
+        CROSS JOIN latest_date ld
+        LEFT JOIN index_prices ip_1d 
+            ON ip_today.symbol = ip_1d.symbol 
+            AND ip_1d.date = (SELECT d FROM date_1d_ago)
+        LEFT JOIN index_prices ip_5d 
+            ON ip_today.symbol = ip_5d.symbol 
+            AND ip_5d.date = (SELECT d FROM date_5d_ago)
+        LEFT JOIN index_prices ip_20d 
+            ON ip_today.symbol = ip_20d.symbol 
+            AND ip_20d.date = (SELECT d FROM date_20d_ago)
+        LEFT JOIN index_prices ip_60d 
+            ON ip_today.symbol = ip_60d.symbol 
+            AND ip_60d.date = (SELECT d FROM date_60d_ago)
+        LEFT JOIN sma_50 s50 ON ip_today.symbol = s50.symbol
+        LEFT JOIN sma_200 s200 ON ip_today.symbol = s200.symbol
+        WHERE ip_today.date = ld.max_date
+        ORDER BY ip_today.symbol
+        """
+        
+        result = connection.execute(text(query))
+        rows = result.fetchall()
+        
+        main_indices = []
+        commodities = []
+        risk_on_sectors = []
+        risk_off_sectors = []
+        latest_date = None
+        
+        for row in rows:
+            symbol = row[0]
+            current_price = float(row[1]) if row[1] else None
+            dr_1 = round(float(row[2]), 2) if row[2] is not None else None
+            dr_5 = round(float(row[3]), 2) if row[3] is not None else None
+            dr_20 = round(float(row[4]), 2) if row[4] is not None else None
+            dr_60 = round(float(row[5]), 2) if row[5] is not None else None
+            sma_50 = round(float(row[6]), 2) if row[6] is not None else None
+            sma_200 = round(float(row[7]), 2) if row[7] is not None else None
+            pct_from_50dma = round(float(row[8]), 2) if row[8] is not None else None
+            pct_from_200dma = round(float(row[9]), 2) if row[9] is not None else None
+            latest_date = row[10].strftime('%Y-%m-%d') if row[10] else None
+            
+            metadata = ETF_METADATA.get(symbol, {'name': symbol, 'category': 'other'})
+            
+            entry = {
+                'symbol': symbol,
+                'name': metadata['name'],
+                'category': metadata['category'],
+                'current_price': round(current_price, 2) if current_price else None,
+                'dr_1': dr_1,
+                'dr_5': dr_5,
+                'dr_20': dr_20,
+                'dr_60': dr_60,
+                'sma_50': sma_50,
+                'sma_200': sma_200,
+                'pct_from_50dma': pct_from_50dma,
+                'pct_from_200dma': pct_from_200dma,
+            }
+            
+            if metadata['category'] == 'main':
+                main_indices.append(entry)
+            elif metadata['category'] == 'commodity':
+                commodities.append(entry)
+            elif metadata['category'] == 'risk_on':
+                risk_on_sectors.append(entry)
+            elif metadata['category'] == 'risk_off':
+                risk_off_sectors.append(entry)
+        
+        # Sort by symbol for consistent ordering
+        main_indices_order = ['SPY', 'QQQ', 'IWM', '^VIX']
+        main_indices.sort(key=lambda x: main_indices_order.index(x['symbol']) if x['symbol'] in main_indices_order else 99)
+        
+        commodities_order = ['GLD', 'SLV', 'USO', 'TLT']
+        commodities.sort(key=lambda x: commodities_order.index(x['symbol']) if x['symbol'] in commodities_order else 99)
+        
+        # Sort sectors by 1D performance descending
+        risk_on_sectors.sort(key=lambda x: x['dr_1'] if x['dr_1'] is not None else -999, reverse=True)
+        risk_off_sectors.sort(key=lambda x: x['dr_1'] if x['dr_1'] is not None else -999, reverse=True)
+        
+        return {
+            'latest_date': latest_date,
+            'main_indices': main_indices,
+            'commodities': commodities,
+            'risk_on_sectors': risk_on_sectors,
+            'risk_off_sectors': risk_off_sectors,
+        }
+    
+    except Exception as e:
+        logger.error(f"Error getting homepage data: {str(e)}")
+        return {'main_indices': [], 'commodities': [], 'risk_on_sectors': [], 'risk_off_sectors': [], 'latest_date': None}
+
+
+@app.route('/api/homepage')
+def get_homepage():
+    """Get homepage data: main indices, commodities, and sector ETFs with DMA calculations."""
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_homepage_data(conn))
+    except Exception as e:
+        logger.error(f"Error in homepage endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/market-breadth')
+def get_market_breadth():
+    """Get market breadth data for the last year (for charting)."""
+    s = Session()
+    try:
+        from datetime import timedelta
+        
+        # Get latest date
+        latest_date = s.query(func.max(MarketBreadth.date)).scalar()
+        if not latest_date:
+            return jsonify({'error': 'No market breadth data available'}), 404
+        
+        # Get 1 year of data
+        start_date = latest_date - timedelta(days=365)
+        
+        breadth_data = s.query(
+            MarketBreadth.date,
+            MarketBreadth.above_50dma,
+            MarketBreadth.below_50dma,
+            MarketBreadth.above_200dma,
+            MarketBreadth.below_200dma,
+            MarketBreadth.up_4pct,
+            MarketBreadth.down_4pct,
+            MarketBreadth.total_stocks
+        ).filter(
+            MarketBreadth.date >= start_date,
+            MarketBreadth.date <= latest_date
+        ).order_by(MarketBreadth.date.asc()).all()
+        
+        if not breadth_data:
+            return jsonify({'error': 'No market breadth data found'}), 404
+        
+        results = []
+        for row in breadth_data:
+            total = row.total_stocks or 1
+            results.append({
+                'date': row.date.strftime('%Y-%m-%d'),
+                'above_50dma': row.above_50dma,
+                'below_50dma': row.below_50dma,
+                'above_200dma': row.above_200dma,
+                'below_200dma': row.below_200dma,
+                'up_4pct': row.up_4pct,
+                'down_4pct': row.down_4pct,
+                'total_stocks': row.total_stocks,
+                'pct_above_50dma': round((row.above_50dma / total) * 100, 1) if row.above_50dma else 0,
+                'pct_above_200dma': round((row.above_200dma / total) * 100, 1) if row.above_200dma else 0,
+            })
+        
+        # Get latest values for display
+        latest = results[-1] if results else {}
+        
+        return jsonify({
+            'latest_date': latest_date.strftime('%Y-%m-%d'),
+            'latest': latest,
+            'history': results
+        })
+    
+    except Exception as e:
+        logger.error(f"Error getting market breadth data: {str(e)}")
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()

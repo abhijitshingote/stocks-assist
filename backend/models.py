@@ -596,3 +596,31 @@ class AbiNotes(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
     updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+
+# ------------------------------------------------------------
+# 19. MarketBreadth (daily market breadth metrics)
+# ------------------------------------------------------------
+class MarketBreadth(Base):
+    __tablename__ = "market_breadth"
+
+    date = Column(Date, primary_key=True)
+    
+    # Stocks above/below 50DMA
+    above_50dma = Column(Integer)
+    below_50dma = Column(Integer)
+    
+    # Stocks above/below 200DMA
+    above_200dma = Column(Integer)
+    below_200dma = Column(Integer)
+    
+    # Stocks with 4%+ daily moves
+    up_4pct = Column(Integer)
+    down_4pct = Column(Integer)
+    
+    # Total stocks counted (for percentage calculations)
+    total_stocks = Column(Integer)
+    
+    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))

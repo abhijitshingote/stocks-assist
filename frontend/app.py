@@ -612,6 +612,24 @@ def api_sector_performance():
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/homepage')
+def api_homepage():
+    """Proxy endpoint for homepage data (indices, commodities, sectors with DMA)"""
+    data, status_code = make_backend_request('/api/homepage')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch homepage data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-breadth')
+def api_market_breadth():
+    """Proxy endpoint for market breadth data (1 year history for charting)"""
+    data, status_code = make_backend_request('/api/market-breadth')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch market breadth data'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/index-ohlc/<symbol>')
 def api_index_ohlc(symbol):
     """Proxy endpoint for index/ETF OHLC data from backend"""

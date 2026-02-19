@@ -38,8 +38,17 @@ load_dotenv()
 BASE_URL = 'https://financialmodelingprep.com/stable'
 
 # ETFs to track
-ETFS = ['SPY', 'QQQ', 'IWM', 'IGM', 'SOXX', 'IGV', 'ARTY', 'BAI', 'IBB', 'IHF', 'IHI', 'IHE', 'IDNA', 'IEZ', 'IEO', 'FILL', 'ITA', 'IYT', 'ICOP', 'RING', 'ILIT', 'PICK', 'SLVP', 'WOOD', 'IAI', 'IYG', 'IAK', 'IAT', 'REM', 'REZ', 'IDGT', 'ITB','^VIX']
-
+ETFS = ['SPY', 'QQQ', 'IWM', '^VIX',
+        # Commodities & Rates  
+        'GLD', 'SLV', 'USO', 'TLT',
+        # Sector ETFs - Risk On
+        'XLB', 'XLC', 'XLY', 'XLE', 'XLF', 'XLV', 'XLI', 'XLK',
+        # Sector ETFs - Risk Off
+        'XLP', 'XLRE', 'XLU',
+        # Tech / Growth
+        'IGM', 'SOXX', 'IGV', 'ARTY', 'BAI', 'IBB', 'IHF', 'IHI', 'IHE', 
+        'IDNA', 'IEZ', 'IEO', 'FILL', 'ITA', 'IYT', 'ICOP', 'RING', 'ILIT', 'PICK', 'SLVP',
+        'WOOD', 'IAI', 'IYG', 'IAK', 'IAT', 'REM', 'REZ', 'IDGT', 'ITB']
 
 def get_eastern_now():
     """Get current datetime in US/Eastern timezone"""

@@ -91,6 +91,36 @@
             opacity: 1;
         }
 
+        .nav-search {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+
+        .nav-search input {
+            width: 120px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .nav-search input::placeholder {
+            text-transform: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .nav-search input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
         .nav-links {
             display: flex;
             flex-direction: column;
@@ -101,20 +131,51 @@
         .nav-row {
             display: flex;
             gap: 1rem;
-            justify-content: space-between;
+            justify-content: flex-start;
+            flex-wrap: wrap;
         }
 
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: color 0.2s;
             white-space: nowrap;
         }
 
+        .nav-links a.nav-highlight {
+            color: rgba(195, 9, 46, 1);
+        }
+
         .nav-links a:hover {
             color: var(--text-primary);
+        }
+
+        @media (max-width: 900px) {
+            nav .container {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+            
+            .nav-search {
+                order: 3;
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            .nav-search input {
+                width: 100%;
+            }
+            
+            .nav-links {
+                order: 2;
+                width: 100%;
+            }
+            
+            .nav-row {
+                gap: 0.5rem 1rem;
+            }
         }
 
         main {
@@ -191,24 +252,17 @@
                 <a href="/" class="logo">stocks<span>_assist</span>{% if is_dev %} <span class="dev-indicator">(dev)</span>{% endif %}</a>
                 <span class="data-date" id="data-date">data thru <span id="latest-date"></span></span>
             </div>
+            <div class="nav-search">
+                <input type="text" id="navTickerInput" placeholder="Ticker..." maxlength="10" onkeypress="navGoToStock(event)">
+            </div>
             <div class="nav-links">
                 <div class="nav-row">
-                    <a href="/main-view">Main View</a>
                     <a href="/high-sales-growth">High Growth</a>
-                    <a href="/top-performance">Top Stocks</a>
-                    <a href="/volspike-gapper">Spikes & Gaps</a>
-                    <a href="/sector-performance">Sector Perf</a>
-                    <a href="/abi-notes">Abi Notes</a>
+                    <a href="/volspike-gapper" class="nav-highlight">Vol Spike & Gaps</a>
+                    <a href="/top-performance">Top Returns</a>
+                    <a href="/rsi">Relative Strength</a>
+                    <a href="/main-view">Main View</a>
                     <a href="/logs">Logs</a>
-                </div>
-                <div class="nav-row">
-                    <a href="/rsi">RSI</a>
-                    <a href="/rsi-mktcap">RSI MktCap</a>
-                    <a href="/rsi-momentum">RSI Momentum</a>
-                    <a href="/rsi-spx">RSI SPX</a>
-                    <a href="/rsi-ndx">RSI NDX</a>
-                    <a href="/rsi-dji">RSI DJI</a>
-                    <a href="/sector-rsi">Sector RSI</a>
                 </div>
             </div>
         </div>
@@ -235,6 +289,16 @@
                 })
                 .catch(() => {});
         })();
+
+        // Navbar ticker search
+        function navGoToStock(event) {
+            if (event.key === 'Enter') {
+                const ticker = document.getElementById('navTickerInput').value.trim().toUpperCase();
+                if (ticker) {
+                    window.location.href = '/stock/' + ticker;
+                }
+            }
+        }
     </script>
 </body>
 </html>

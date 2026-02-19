@@ -1,7 +1,7 @@
 stocks_db_backup_*.dump
 tmp
 # Python
-__pycache__/
+__pycache__
 *.py[cod]
 *$py.class
 *.so
