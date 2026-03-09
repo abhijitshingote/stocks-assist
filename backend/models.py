@@ -624,3 +624,37 @@ class MarketBreadth(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
     updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+
+# ------------------------------------------------------------
+# 20. RsScreener (multi-timeframe relative strength vs SPY)
+# ------------------------------------------------------------
+class RsScreener(Base):
+    __tablename__ = "rs_screener"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+    
+    company_name = Column(String(255))
+    sector = Column(String(100))
+    industry = Column(String(100))
+    market_cap = Column(BigInteger)
+    current_price = Column(Float)
+    
+    # Raw relative strength (excess return vs SPY)
+    rs_2d = Column(Float)
+    rs_5d = Column(Float)
+    rs_10d = Column(Float)
+    rs_20d = Column(Float)
+    rs_60d = Column(Float)
+    
+    # Percentile ranks within market cap bucket (1-100)
+    rs_2d_rank = Column(Integer)
+    rs_5d_rank = Column(Integer)
+    rs_10d_rank = Column(Integer)
+    rs_20d_rank = Column(Integer)
+    rs_60d_rank = Column(Integer)
+    
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")

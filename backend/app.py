@@ -7,7 +7,8 @@ from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat, AbiNotes, MarketBreadth
+    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat, AbiNotes, MarketBreadth,
+    RsScreener
 )
 import os
 import json
@@ -3649,6 +3650,74 @@ def get_index_ohlc_data(symbol):
     
     except Exception as e:
         logger.error(f"Error getting index OHLC data for {symbol}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+# ============================================================================
+# RS Screener Endpoints (multi-timeframe relative strength)
+# ============================================================================
+
+@app.route('/api/rs-screener')
+@app.route('/api/rs-screener/<market_cap>')
+def get_rs_screener(market_cap=None):
+    """Get RS screener data, optionally filtered by market cap category."""
+    s = Session()
+    try:
+        query = s.query(RsScreener).filter(
+            RsScreener.market_cap.isnot(None),
+            RsScreener.rs_2d_rank.isnot(None),
+        )
+
+        if market_cap and market_cap.lower() != 'all':
+            category = MARKET_CAP_CATEGORIES.get(market_cap.lower())
+            if category:
+                query = query.filter(RsScreener.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(RsScreener.market_cap < category['max'])
+
+        # Apply liquidity filters using stock_metrics join
+        avg_vol_min = GLOBAL_LIQUIDITY_FILTERS.get('avg_vol_10d_min')
+        dollar_vol_min = GLOBAL_LIQUIDITY_FILTERS.get('dollar_volume_min')
+        price_min = GLOBAL_LIQUIDITY_FILTERS.get('price_min')
+
+        if avg_vol_min or dollar_vol_min or price_min:
+            query = query.join(StockMetrics, RsScreener.ticker == StockMetrics.ticker)
+            if avg_vol_min:
+                query = query.filter(StockMetrics.avg_vol_10d >= avg_vol_min)
+            if dollar_vol_min:
+                query = query.filter(StockMetrics.dollar_volume >= dollar_vol_min)
+            if price_min:
+                query = query.filter(StockMetrics.current_price >= price_min)
+
+        stocks = query.all()
+
+        results = []
+        for stock in stocks:
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'rs_2d': float(stock.rs_2d) if stock.rs_2d is not None else None,
+                'rs_5d': float(stock.rs_5d) if stock.rs_5d is not None else None,
+                'rs_10d': float(stock.rs_10d) if stock.rs_10d is not None else None,
+                'rs_20d': float(stock.rs_20d) if stock.rs_20d is not None else None,
+                'rs_60d': float(stock.rs_60d) if stock.rs_60d is not None else None,
+                'rs_2d_rank': stock.rs_2d_rank,
+                'rs_5d_rank': stock.rs_5d_rank,
+                'rs_10d_rank': stock.rs_10d_rank,
+                'rs_20d_rank': stock.rs_20d_rank,
+                'rs_60d_rank': stock.rs_60d_rank,
+            })
+
+        return jsonify(results)
+
+    except Exception as e:
+        logger.error(f"Error getting RS screener data: {str(e)}")
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()

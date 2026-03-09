@@ -108,6 +108,12 @@ def rsi_dji_page():
     return render_template('rsi_dji.html')
 
 
+@app.route('/rs-screener')
+def rs_screener_page():
+    """RS Screener page - Multi-timeframe relative strength with adjustable weights"""
+    return render_template('rs_screener.html')
+
+
 @app.route('/top-performance')
 def top_performance_page():
     """Top Performance page - Union of top stocks by 1D, 5D, 20D returns"""
@@ -636,6 +642,15 @@ def api_index_ohlc(symbol):
     data, status_code = make_backend_request(f'/api/index-ohlc/{symbol}')
     if data is None:
         return jsonify({'error': 'Failed to fetch index OHLC data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/rs-screener/<market_cap>')
+def api_rs_screener(market_cap):
+    """Proxy endpoint for RS Screener data from backend"""
+    data, status_code = make_backend_request(f'/api/rs-screener/{market_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch RS screener data'}), status_code
     return jsonify(data), status_code
 
 

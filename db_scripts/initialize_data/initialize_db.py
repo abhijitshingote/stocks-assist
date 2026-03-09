@@ -38,6 +38,7 @@ def initialize_database(reset=False, schema='public'):
     17. stock_preferences - User favorite/dislike status for stocks
     18. shares_float - Company share float and liquidity data
     19. abi_notes - User personal notes by date
+    20. rs_screener - Multi-timeframe relative strength vs SPY
     
     Args:
         reset (bool): If True, drop existing tables and recreate them.
@@ -63,6 +64,7 @@ def initialize_database(reset=False, schema='public'):
         if reset:
             logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
+            connection.execute(text("DROP TABLE IF EXISTS rs_screener CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS abi_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS main_view CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_notes CASCADE;"))
@@ -481,6 +483,29 @@ def initialize_database(reset=False, schema='public'):
             )
         """))
 
+        # 20. rs_screener - Multi-timeframe relative strength vs SPY
+        connection.execute(text(f"""
+            {table_clause} rs_screener (
+                ticker VARCHAR(20) PRIMARY KEY REFERENCES tickers(ticker),
+                company_name VARCHAR(255),
+                sector VARCHAR(100),
+                industry VARCHAR(100),
+                market_cap BIGINT,
+                current_price FLOAT,
+                rs_2d FLOAT,
+                rs_5d FLOAT,
+                rs_10d FLOAT,
+                rs_20d FLOAT,
+                rs_60d FLOAT,
+                rs_2d_rank INTEGER,
+                rs_5d_rank INTEGER,
+                rs_10d_rank INTEGER,
+                rs_20d_rank INTEGER,
+                rs_60d_rank INTEGER,
+                updated_at TIMESTAMP DEFAULT NOW()
+            )
+        """))
+
         # Create indexes for better query performance
         idx_clause = "CREATE INDEX" if reset else "CREATE INDEX IF NOT EXISTS"
         connection.execute(text(f"""
@@ -520,6 +545,7 @@ def initialize_database(reset=False, schema='public'):
             {idx_clause} idx_main_view_dr_60 ON main_view(dr_60);
             {idx_clause} idx_main_view_dr_120 ON main_view(dr_120);
             {idx_clause} idx_abi_notes_note_date ON abi_notes(note_date);
+            {idx_clause} idx_rs_screener_market_cap ON rs_screener(market_cap);
         """))
         
         connection.commit()
@@ -552,6 +578,7 @@ def initialize_database(reset=False, schema='public'):
         logger.info("  - stock_preferences (user favorite/dislike status for stocks)")
         logger.info("  - shares_float (company share float and liquidity data)")
         logger.info("  - abi_notes (user personal notes by date)")
+        logger.info("  - rs_screener (multi-timeframe relative strength vs SPY)")
         
         flush_logger(SCRIPT_NAME)
 
