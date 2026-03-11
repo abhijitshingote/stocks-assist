@@ -159,6 +159,7 @@ case $ACTION in
         "db_scripts/update_data/rsi_indices_update.py:Compute RSI for indices"
         "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
         "db_scripts/update_data/main_view_update.py:Update main screener view"
+        "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
         "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
         "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
         "db_scripts/initialize_data/seed_abi_notes.py:Seed user abi notes"
@@ -277,6 +278,7 @@ case $ACTION in
             "db_scripts/update_data/rsi_indices_update.py:Update RSI for indices"
             "db_scripts/update_data/volspike_gapper_update.py:Update volume spikes/gappers"
             "db_scripts/update_data/main_view_update.py:Update main screener view"
+            "db_scripts/update_data/rs_screener_update.py:Update relative strength screener"
         )
 
         total_scripts=${#scripts[@]}
@@ -424,6 +426,7 @@ case $ACTION in
             "db_scripts/update_data/rsi_indices_update.py:Compute RSI for indices"
             "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
             "db_scripts/update_data/main_view_update.py:Update main screener view"
+            "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
             "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
             "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
             "db_scripts/initialize_data/seed_abi_notes.py:Seed user abi notes"
