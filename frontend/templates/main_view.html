@@ -408,7 +408,7 @@
         letter-spacing: 0.5px;
     }
 
-    .spy-collapse-btn {
+    .chart-collapse-btn {
         background: transparent;
         border: 1px solid var(--border-color);
         border-radius: 4px;
@@ -423,20 +423,20 @@
         gap: 0.2rem;
     }
 
-    .spy-collapse-btn:hover {
+    .chart-collapse-btn:hover {
         border-color: var(--accent-purple);
         color: var(--text-primary);
     }
 
-    #spyPanel.collapsed #spyChartContainer {
+    .chart-panel.collapsed .chart-panel-body {
         display: none;
     }
 
-    #spyPanel.collapsed {
+    .chart-panel.collapsed {
         padding-bottom: 0.2rem;
     }
 
-    #spyPanel.collapsed .chart-panel-header {
+    .chart-panel.collapsed .chart-panel-header {
         padding-bottom: 0;
     }
 
@@ -528,13 +528,6 @@
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .subchart-label {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.55rem;
-        color: var(--text-muted);
-        padding: 0.1rem 0.4rem 0;
-    }
 
     /* Preference controls inside right panel header */
     .detail-actions {
@@ -805,11 +798,11 @@
             <div class="chart-panel collapsed" id="spyPanel">
                 <div class="chart-panel-header">
                     <span class="chart-panel-title">SPY</span>
-                    <button class="spy-collapse-btn" id="spyCollapseBtn" title="Toggle SPY chart">
+                    <button class="chart-collapse-btn" id="spyCollapseBtn" title="Toggle SPY chart">
                         <span id="spyCollapseIcon">▶</span>
                     </button>
                 </div>
-                <div id="spyChartContainer" style="height: 100px;"></div>
+                <div class="chart-panel-body" id="spyChartContainer" style="height: 100px;"></div>
             </div>
 
             <!-- Stock Chart -->
@@ -818,8 +811,17 @@
                     <span class="chart-panel-title" id="stockChartTitle">Stock Chart</span>
                 </div>
                 <div id="stockChartContainer"></div>
-                <div class="subchart-label">RSI MktCap</div>
-                <div id="rsiSubChart"></div>
+            </div>
+
+            <!-- RSI Subchart -->
+            <div class="chart-panel collapsed" id="rsiPanel">
+                <div class="chart-panel-header">
+                    <span class="chart-panel-title">RSI MktCap</span>
+                    <button class="chart-collapse-btn" id="rsiCollapseBtn" title="Toggle RSI chart">
+                        <span id="rsiCollapseIcon">▶</span>
+                    </button>
+                </div>
+                <div class="chart-panel-body" id="rsiSubChart" style="height: 70px;"></div>
             </div>
         </div>
     </div>
@@ -1280,8 +1282,7 @@
         if (!stockChart || !stockChart.chart) return;
         const stockChartPanel = document.getElementById('stockChartPanel');
         const panelHeader = stockChartPanel.querySelector('.chart-panel-header');
-        const subLabel = stockChartPanel.querySelector('.subchart-label');
-        const usedH = (panelHeader ? panelHeader.offsetHeight : 30) + (subLabel ? subLabel.offsetHeight : 15) + rsiH + 20;
+        const usedH = (panelHeader ? panelHeader.offsetHeight : 30) + 20;
         const tickerH = Math.max(stockChartPanel.clientHeight - usedH, 250);
         const container = document.getElementById('stockChartContainer');
         container.style.height = tickerH + 'px';
@@ -1335,12 +1336,10 @@
         // Compute stock chart height from available space
         const stockChartPanel = document.getElementById('stockChartPanel');
         const panelHeader = stockChartPanel.querySelector('.chart-panel-header');
-        const subLabel = stockChartPanel.querySelector('.subchart-label');
-        const usedH = (panelHeader ? panelHeader.offsetHeight : 30) + (subLabel ? subLabel.offsetHeight : 15) + rsiH + 20;
+        const usedH = (panelHeader ? panelHeader.offsetHeight : 30) + 20;
         const tickerH = Math.max(stockChartPanel.clientHeight - usedH, 250);
 
         document.getElementById('stockChartContainer').style.height = tickerH + 'px';
-        document.getElementById('rsiSubChart').style.height = rsiH + 'px';
 
         try {
             await loadSpyData();
@@ -1352,6 +1351,7 @@
                 upColor: CHART_CONFIG.upColor, downColor: CHART_CONFIG.downColor,
                 borderDownColor: CHART_CONFIG.downColor, borderUpColor: CHART_CONFIG.upColor,
                 wickDownColor: CHART_CONFIG.downColor, wickUpColor: CHART_CONFIG.upColor,
+                priceLineVisible: false,
             });
 
             // Stock chart
@@ -1566,13 +1566,29 @@
         panel.classList.toggle('collapsed');
         const isCollapsed = panel.classList.contains('collapsed');
         icon.textContent = isCollapsed ? '▶' : '▼';
-        // Allow flex layout to settle, then resize the stock chart to fill available space
         requestAnimationFrame(() => {
             resizeStockChart();
             if (!isCollapsed && spyChart) {
                 const c = document.getElementById('spyChartContainer');
                 if (c) spyChart.applyOptions({ width: c.clientWidth });
                 spyChart.timeScale().fitContent();
+            }
+        });
+    });
+
+    // ── RSI chart collapse toggle ──
+    document.getElementById('rsiCollapseBtn').addEventListener('click', () => {
+        const panel = document.getElementById('rsiPanel');
+        const icon = document.getElementById('rsiCollapseIcon');
+        panel.classList.toggle('collapsed');
+        const isCollapsed = panel.classList.contains('collapsed');
+        icon.textContent = isCollapsed ? '▶' : '▼';
+        requestAnimationFrame(() => {
+            resizeStockChart();
+            if (!isCollapsed && rsiChart) {
+                const c = document.getElementById('rsiSubChart');
+                if (c) rsiChart.applyOptions({ width: c.clientWidth });
+                rsiChart.timeScale().fitContent();
             }
         });
     });

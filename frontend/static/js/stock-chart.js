@@ -417,6 +417,7 @@ class StockChart {
             rightPriceScale: {
                 borderColor: CHART_CONFIG.borderColor,
                 scaleMargins: { top: 0.05, bottom: 0.05 },
+                minimumWidth: 80,
             },
             timeScale: {
                 borderColor: CHART_CONFIG.borderColor,
@@ -436,6 +437,7 @@ class StockChart {
             borderUpColor: CHART_CONFIG.upColor,
             wickDownColor: CHART_CONFIG.downColor,
             wickUpColor: CHART_CONFIG.upColor,
+            priceLineVisible: false,
         });
         
         // Add moving average series (using server-provided DMA for 50/200)
@@ -603,6 +605,7 @@ class StockChart {
             rightPriceScale: {
                 borderColor: CHART_CONFIG.borderColor,
                 scaleMargins: { top: 0.1, bottom: 0.1 },
+                minimumWidth: 80,
             },
             timeScale: {
                 borderColor: CHART_CONFIG.borderColor,
