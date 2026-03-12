@@ -214,10 +214,10 @@ class StockChart {
         
         // Track series visibility
         this.seriesVisibility = {
-            ema10: true,
-            ema20: true,
-            dma50: true,
-            dma200: true,
+            ema10: false,
+            ema20: false,
+            dma50: false,
+            dma200: false,
         };
     }
     
@@ -445,6 +445,7 @@ class StockChart {
             priceLineVisible: false,
             lastValueVisible: false,
             crosshairMarkerVisible: false,
+            visible: this.seriesVisibility.ema10,
         });
         
         this.series.ema20 = this.chart.addLineSeries({
@@ -453,6 +454,7 @@ class StockChart {
             priceLineVisible: false,
             lastValueVisible: false,
             crosshairMarkerVisible: false,
+            visible: this.seriesVisibility.ema20,
         });
         
         this.series.dma50 = this.chart.addLineSeries({
@@ -461,6 +463,7 @@ class StockChart {
             priceLineVisible: false,
             lastValueVisible: false,
             crosshairMarkerVisible: false,
+            visible: this.seriesVisibility.dma50,
         });
         
         this.series.dma200 = this.chart.addLineSeries({
@@ -469,6 +472,7 @@ class StockChart {
             priceLineVisible: false,
             lastValueVisible: false,
             crosshairMarkerVisible: false,
+            visible: this.seriesVisibility.dma200,
         });
         
         // Create separate volume chart

@@ -185,6 +185,13 @@
         font-size: 0.72rem;
     }
 
+    .stock-item .ticker-mcap {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.58rem;
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
     .stock-item .ret {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.68rem;
@@ -207,107 +214,150 @@
         display: none;
     }
 
-    /* ── Right panel: detail for selected stock ── */
-    .mv-right {
+    /* ── Center panel: header + charts (fills height) ── */
+    .mv-center {
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 0.4rem;
+        gap: 0.3rem;
         min-width: 0;
-        overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: var(--border-color) transparent;
+        overflow: hidden;
     }
 
-    /* Metrics strip */
-    .metrics-strip {
+    /* ── Right panel: vertical metrics pane ── */
+    .mv-metrics {
+        width: 260px;
+        min-width: 220px;
+        display: none;
+        flex-direction: column;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 8px;
-        padding: 0.5rem 0.6rem;
-        display: none;
-        flex-wrap: wrap;
-        gap: 0.3rem 0;
+        overflow: hidden;
     }
 
-    .metrics-strip.visible { display: flex; }
+    .mv-metrics.visible {
+        display: flex;
+    }
 
-    .ms-section {
+    .mv-metrics-header {
+        padding: 0.4rem 0.6rem;
+        border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.1rem 0.6rem;
-        border-right: 1px solid var(--border-color);
+        justify-content: space-between;
+        gap: 0.4rem;
+        flex-wrap: wrap;
     }
 
-    .ms-section:last-child { border-right: none; }
+    .mv-metrics-ticker {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .mv-metrics-company {
+        font-size: 0.65rem;
+        color: var(--text-secondary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 160px;
+    }
+
+    .mv-metrics-body {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-color) transparent;
+        padding: 0.3rem 0;
+    }
+
+    /* Vertical metric sections */
+    .ms-section {
+        padding: 0.35rem 0.6rem;
+        border-bottom: 1px solid rgba(48, 54, 61, 0.4);
+    }
+
+    .ms-section:last-child { border-bottom: none; }
 
     .ms-section-title {
-        font-size: 0.6rem;
+        font-size: 0.55rem;
         color: var(--text-muted);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-weight: 600;
         white-space: nowrap;
+        margin-bottom: 0.2rem;
+        display: block;
+    }
+
+    .ms-section-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.1rem 0.4rem;
     }
 
     .ms-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-width: 35px;
+        min-width: 32px;
     }
 
     .ms-label {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
         color: var(--text-muted);
         line-height: 1.1;
     }
 
     .ms-val {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.78rem;
+        font-size: 0.75rem;
         font-weight: 600;
         line-height: 1.3;
     }
 
+    .ms-val.ms-val-lg {
+        font-size: 1.125rem;
+    }
+
     .ms-sub {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.55rem;
+        font-size: 0.5rem;
         color: var(--text-secondary);
         line-height: 1.1;
     }
 
     .ms-item .ms-val-truncate {
-        max-width: 110px;
+        max-width: 100px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 0.65rem;
+        font-size: 0.62rem;
         font-weight: 400;
     }
 
     .ms-positive { color: var(--accent-green); }
     .ms-negative { color: var(--accent-red); }
 
-    /* Tags strip */
-    .tags-strip {
+    /* Tags inside metrics pane */
+    .ms-tags {
+        padding: 0.3rem 0.6rem;
+        border-bottom: 1px solid rgba(48, 54, 61, 0.4);
         display: none;
         gap: 0.15rem;
         flex-wrap: wrap;
-        padding: 0.25rem 0.6rem;
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
     }
 
-    .tags-strip.visible { display: flex; }
+    .ms-tags.visible { display: flex; }
 
     .tag-pill {
         display: inline-block;
-        padding: 0.1rem 0.3rem;
+        padding: 0.08rem 0.25rem;
         border-radius: 4px;
-        font-size: 0.7rem;
+        font-size: 0.6rem;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 600;
         white-space: nowrap;
@@ -329,7 +379,7 @@
     .charts-container {
         display: flex;
         flex-direction: column;
-        gap: 0.4rem;
+        gap: 0.3rem;
         flex: 1;
         min-height: 0;
     }
@@ -358,6 +408,38 @@
         letter-spacing: 0.5px;
     }
 
+    .spy-collapse-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.15rem 0.35rem;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+
+    .spy-collapse-btn:hover {
+        border-color: var(--accent-purple);
+        color: var(--text-primary);
+    }
+
+    #spyPanel.collapsed #spyChartContainer {
+        display: none;
+    }
+
+    #spyPanel.collapsed {
+        padding-bottom: 0.2rem;
+    }
+
+    #spyPanel.collapsed .chart-panel-header {
+        padding-bottom: 0;
+    }
+
     .chart-ticker-info {
         display: flex;
         align-items: baseline;
@@ -374,6 +456,22 @@
     .chart-ticker-info .company-name {
         font-size: 0.7rem;
         color: var(--text-secondary);
+    }
+
+    .chart-ticker-info .mktcap-badge {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #58a6ff;
+        background: rgba(88, 166, 255, 0.12);
+        padding: 0.05rem 0.4rem;
+        border-radius: 4px;
+    }
+
+    .chart-ticker-info .sector-industry {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        font-family: 'JetBrains Mono', monospace;
     }
 
     .chart-ticker-info .stock-link {
@@ -576,49 +674,6 @@
         color: var(--text-muted);
     }
 
-    /* RS Histogram */
-    .rs-histo-container {
-        height: 80px;
-        position: relative;
-    }
-
-    .rs-histo-bars {
-        display: flex;
-        align-items: flex-end;
-        gap: 2px;
-        height: 60px;
-        padding: 0 0.4rem;
-    }
-
-    .rs-histo-bar {
-        flex: 1;
-        background: var(--accent-purple);
-        border-radius: 2px 2px 0 0;
-        transition: height 0.3s;
-        min-width: 4px;
-    }
-
-    .rs-histo-bar.selected {
-        background: var(--accent-blue);
-    }
-
-    .rs-histo-labels {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.2rem 0.4rem 0;
-        font-size: 0.5rem;
-        color: var(--text-muted);
-        font-family: 'JetBrains Mono', monospace;
-    }
-
-    .rs-histo-label-current {
-        font-size: 0.6rem;
-        color: var(--accent-blue);
-        font-family: 'JetBrains Mono', monospace;
-        text-align: center;
-        padding: 0.1rem 0.4rem;
-    }
-
     /* TI65 Badge */
     .ti65-badge {
         display: inline-flex;
@@ -654,9 +709,10 @@
         color: #ff6b6b;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
         .mv-layout { flex-direction: column; height: auto; }
         .mv-left { width: 100%; height: 200px; }
+        .mv-metrics { width: 100%; min-width: auto; max-height: 300px; }
     }
 </style>
 {% endblock %}
@@ -700,25 +756,25 @@
         <div class="stock-list" id="stockList"></div>
     </div>
 
-    <!-- Right: detail for selected stock -->
-    <div class="mv-right" id="mvRight">
+    <!-- Center: charts (fills height, no scroll) -->
+    <div class="mv-center" id="mvCenter">
         <div class="mv-right-placeholder" id="rightPlaceholder">
             Select a stock from the list
         </div>
 
-        <!-- Detail header (hidden until stock selected) -->
+        <!-- Header bar (hidden until stock selected) -->
         <div id="detailHeader" style="display: none;">
-            <div class="chart-panel" style="padding: 0.5rem 0.6rem;">
+            <div class="chart-panel" style="padding: 0.4rem 0.6rem;">
                 <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                     <span class="chart-ticker-info">
                         <span class="ticker-name" id="detailTicker">—</span>
                         <span class="company-name" id="detailCompany"></span>
+                        <span class="mktcap-badge" id="detailMktCap"></span>
+                        <span class="sector-industry" id="detailSectorIndustry"></span>
                         <a class="stock-link" id="detailLink" href="#" target="_blank">Detail →</a>
                     </span>
                     <span id="detailTi65"></span>
                     <span id="detailLowFloat"></span>
-                    <span style="font-size: 0.7rem; color: var(--text-muted);" id="detailSector"></span>
-                    <span style="font-size: 0.7rem; color: var(--accent-purple);" id="detailIndustry"></span>
                     <div class="detail-actions">
                         <button class="detail-pref-btn favorite" id="detailFavBtn" title="Favorite" onclick="togglePreference(selectedTicker, 'favorite')">⭐</button>
                         <button class="detail-pref-btn dislike" id="detailDislikeBtn" title="Dislike" onclick="togglePreference(selectedTicker, 'dislike')">👎</button>
@@ -733,46 +789,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Metrics strip -->
-        <div class="metrics-strip" id="metricsStrip"></div>
-
-        <!-- Tags strip -->
-        <div class="tags-strip" id="tagsStrip"></div>
-
-        <!-- Charts -->
-        <div class="charts-container" id="chartsContainer" style="display: none;">
-            <!-- RS Histogram -->
-            <div class="chart-panel" id="rsHistoPanel">
-                <div class="chart-panel-header">
-                    <span class="chart-panel-title">Relative Strength Histogram</span>
-                    <span class="rs-histo-label-current" id="rsHistoValue"></span>
-                </div>
-                <div class="rs-histo-container" id="rsHistoContainer">
-                    <div class="rs-histo-bars" id="rsHistoBars"></div>
-                    <div class="rs-histo-labels">
-                        <span>Weak</span>
-                        <span>Strong</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SPY Candlestick Chart -->
-            <div class="chart-panel" id="spyPanel">
-                <div class="chart-panel-header">
-                    <span class="chart-panel-title">SPY</span>
-                </div>
-                <div class="subchart-label">S&P 500 ETF</div>
-                <div id="spyChartContainer" style="height: 120px;"></div>
-            </div>
-
-            <!-- Stock Chart -->
-            <div class="chart-panel" id="stockChartPanel" style="flex: 1; min-height: 300px;">
-                <div class="chart-panel-header">
-                    <span class="chart-panel-title" id="stockChartTitle">Stock Chart</span>
                     <div class="chart-timeframes" id="chartTimeframes">
                         <button data-days="30">1M</button>
                         <button data-days="90">3M</button>
@@ -780,10 +796,45 @@
                         <button data-days="365" class="active">1Y</button>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Charts (fill remaining height) -->
+        <div class="charts-container" id="chartsContainer" style="display: none;">
+            <!-- SPY Candlestick Chart -->
+            <div class="chart-panel collapsed" id="spyPanel">
+                <div class="chart-panel-header">
+                    <span class="chart-panel-title">SPY</span>
+                    <button class="spy-collapse-btn" id="spyCollapseBtn" title="Toggle SPY chart">
+                        <span id="spyCollapseIcon">▶</span>
+                    </button>
+                </div>
+                <div id="spyChartContainer" style="height: 100px;"></div>
+            </div>
+
+            <!-- Stock Chart -->
+            <div class="chart-panel" id="stockChartPanel" style="flex: 1; min-height: 250px;">
+                <div class="chart-panel-header">
+                    <span class="chart-panel-title" id="stockChartTitle">Stock Chart</span>
+                </div>
                 <div id="stockChartContainer"></div>
                 <div class="subchart-label">RSI MktCap</div>
                 <div id="rsiSubChart"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- Right: vertical metrics pane -->
+    <div class="mv-metrics" id="mvMetrics">
+        <div class="mv-metrics-header">
+            <span class="mv-metrics-ticker" id="metricsTicker">—</span>
+            <span class="mv-metrics-company" id="metricsCompany"></span>
+        </div>
+        <div class="mv-metrics-body">
+            <!-- Tags -->
+            <div class="ms-tags" id="tagsStrip"></div>
+            <!-- Dynamic metric sections injected here -->
+            <div id="metricsContent"></div>
         </div>
     </div>
 </div>
@@ -928,8 +979,9 @@
 
             if (!hidden) visibleCount++;
 
+            const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
             return `<div class="stock-item${isActive}${prefClass}${hidden}" data-ticker="${s.ticker}">
-                <span class="ticker">${s.ticker}</span>
+                <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
                 <span class="ret ${retClass}">${retStr}</span>
             </div>`;
         }).join('');
@@ -959,17 +1011,21 @@
         document.getElementById('rightPlaceholder').style.display = 'none';
         document.getElementById('detailHeader').style.display = 'block';
         document.getElementById('chartsContainer').style.display = 'flex';
+        document.getElementById('mvMetrics').classList.add('visible');
 
         // Update header
         document.getElementById('detailTicker').textContent = ticker;
-        document.getElementById('detailCompany').textContent = (stock.company_name || '') + (stock.market_cap ? ' (' + fmtMktCap(stock.market_cap) + ')' : '');
+        document.getElementById('detailCompany').textContent = stock.company_name || '';
+        document.getElementById('detailMktCap').textContent = stock.market_cap ? fmtMktCap(stock.market_cap) : '';
+        const sectorParts = [stock.sector, stock.industry].filter(Boolean);
+        document.getElementById('detailSectorIndustry').textContent = sectorParts.length ? sectorParts.join(' · ') : '';
         document.getElementById('detailLink').href = '/stock/' + ticker;
-        document.getElementById('detailSector').textContent = stock.sector || '';
-        document.getElementById('detailIndustry').textContent = stock.industry || '';
+        document.getElementById('metricsTicker').textContent = ticker;
+        document.getElementById('metricsCompany').textContent = stock.company_name || '';
         document.getElementById('notesTooltipTitle').textContent = 'Notes for ' + ticker;
         document.getElementById('notesEditLink').href = '/stock/' + ticker;
 
-        // TI65 badge
+        // TI65 badge (in chart header)
         const ti65El = document.getElementById('detailTi65');
         if (stock.ti65) {
             ti65El.innerHTML = `<span class="ti65-badge ${stock.ti65 > 1.1 ? 'hot' : ''}">TI65 ${stock.ti65.toFixed(2)}</span>`;
@@ -977,7 +1033,7 @@
             ti65El.innerHTML = '';
         }
 
-        // Low float badge
+        // Low float badge (in chart header)
         const lfEl = document.getElementById('detailLowFloat');
         if (isLowFloat(stock.float_shares)) {
             lfEl.innerHTML = `<span class="low-float-badge">❄️ LOW FLOAT ${fmtVol(stock.float_shares)}</span>`;
@@ -997,100 +1053,105 @@
         // Metrics
         updateMetricsStrip(stock);
 
-        // RS Histogram
-        updateRsHistogram(stock);
-
         // Charts
         await loadCharts(ticker);
     }
 
-    // ── Metrics strip ──
+    // ── Metrics (vertical pane) ──
     function updateMetricsStrip(s) {
-        const strip = document.getElementById('metricsStrip');
+        const container = document.getElementById('metricsContent');
         let html = '';
 
-        // Price & Market
-        html += '<div class="ms-section"><span class="ms-section-title">Mkt</span>';
-        html += msItem('Price', s.current_price ? '$'+s.current_price.toFixed(2) : '—');
-        html += msItem('MCap', fmtMktCap(s.market_cap));
-        html += msItem('Vol', fmtVol(s.volume));
-        html += msItem('$Vol', s.dollar_volume ? fmtMktCap(s.dollar_volume) : '—');
-        html += '</div>';
+        function section(title, items) {
+            return `<div class="ms-section"><span class="ms-section-title">${title}</span><div class="ms-section-row">${items}</div></div>`;
+        }
 
-        // Technical
-        html += '<div class="ms-section"><span class="ms-section-title">Tech</span>';
-        html += msItem('RSI', s.rsi_mktcap || '—', s.rsi_mktcap >= 70 ? 'ms-positive' : s.rsi_mktcap <= 30 ? 'ms-negative' : '');
-        html += msItem('ATR%', s.atr20 ? s.atr20.toFixed(1)+'%' : '—');
-        html += msItem('V/Avg', s.vol_vs_10d_avg ? s.vol_vs_10d_avg.toFixed(1)+'x' : '—');
-        html += '</div>';
+        // Price & Market
+        let items = '';
+        items += msItem('Price', s.current_price ? '$'+s.current_price.toFixed(2) : '—');
+        items += msItem('MCap', fmtMktCap(s.market_cap));
+        items += msItem('Vol', fmtVol(s.volume));
+        items += msItem('$Vol', s.dollar_volume ? fmtMktCap(s.dollar_volume) : '—');
+        html += section('Price & Market', items);
 
         // Returns
-        html += '<div class="ms-section"><span class="ms-section-title">Ret</span>';
-        [['1D','dr_1'],['5D','dr_5'],['20D','dr_20'],['60D','dr_60'],['120D','dr_120']].forEach(([l,k]) => {
-            html += msItem(l, fmtRet(s[k]), retCls(s[k]));
+        items = '';
+        [['1D','dr_1'],['5D','dr_5'],['20D','dr_20']].forEach(([l,k]) => {
+            items += msItem(l, fmtRet(s[k]), retCls(s[k]) + ' ms-val-lg');
         });
-        html += '</div>';
-
-        // Revenue Growth
-        html += '<div class="ms-section"><span class="ms-section-title">Rev</span>';
-        [['T-1','rev_growth_t_minus_1'],['T','rev_growth_t'],['T+1','rev_growth_t_plus_1'],['T+2','rev_growth_t_plus_2']].forEach(([l,k]) => {
-            html += msItem(l, fmtRet(s[k]), retCls(s[k]));
+        [['60D','dr_60'],['120D','dr_120']].forEach(([l,k]) => {
+            items += msItem(l, fmtRet(s[k]), retCls(s[k]));
         });
-        html += '</div>';
+        html += section('Returns', items);
 
         // EPS Growth
-        html += '<div class="ms-section"><span class="ms-section-title">EPS</span>';
+        items = '';
         [['T-1','eps_growth_t_minus_1'],['T','eps_growth_t'],['T+1','eps_growth_t_plus_1'],['T+2','eps_growth_t_plus_2']].forEach(([l,k]) => {
-            html += msItem(l, fmtRet(s[k]), retCls(s[k]));
+            items += msItem(l, fmtRet(s[k]), retCls(s[k]));
         });
-        html += '</div>';
+        html += section('EPS Growth', items);
+
+        // Technical
+        items = '';
+        items += msItem('RSI', s.rsi_mktcap || '—', s.rsi_mktcap >= 70 ? 'ms-positive' : s.rsi_mktcap <= 30 ? 'ms-negative' : '');
+        items += msItem('ATR%', s.atr20 ? s.atr20.toFixed(1)+'%' : '—');
+        items += msItem('V/Avg', s.vol_vs_10d_avg ? s.vol_vs_10d_avg.toFixed(1)+'x' : '—');
+        html += section('Technical', items);
+
+        // Revenue Growth
+        items = '';
+        [['T-1','rev_growth_t_minus_1'],['T','rev_growth_t'],['T+1','rev_growth_t_plus_1'],['T+2','rev_growth_t_plus_2']].forEach(([l,k]) => {
+            items += msItem(l, fmtRet(s[k]), retCls(s[k]));
+        });
+        html += section('Revenue Growth', items);
 
         // P/S
-        html += '<div class="ms-section"><span class="ms-section-title">P/S</span>';
+        items = '';
         [['T-1','ps_t_minus_1'],['T','ps_t'],['T+1','ps_t_plus_1'],['T+2','ps_t_plus_2']].forEach(([l,k]) => {
-            html += msItem(l, fmtVal(s[k], 1));
+            items += msItem(l, fmtVal(s[k], 1));
         });
-        html += '</div>';
+        html += section('P/S Ratio', items);
 
         // P/E
-        html += '<div class="ms-section"><span class="ms-section-title">P/E</span>';
+        items = '';
         [['T-1','pe_t_minus_1'],['T','pe_t'],['T+1','pe_t_plus_1'],['T+2','pe_t_plus_2']].forEach(([l,k]) => {
-            html += msItem(l, fmtVal(s[k], 0));
+            items += msItem(l, fmtVal(s[k], 0));
         });
-        html += '</div>';
+        html += section('P/E Ratio', items);
 
         // Float & Short
-        html += '<div class="ms-section"><span class="ms-section-title">Flt</span>';
-        html += msItem('Float', fmtVol(s.float_shares));
-        html += msItem('Free%', s.free_float ? s.free_float.toFixed(1)+'%' : '—');
-        html += msItem('Short%', s.short_float ? s.short_float.toFixed(1)+'%' : '—');
-        html += msItem('S.Ratio', s.short_ratio ? s.short_ratio.toFixed(1) : '—');
-        html += '</div>';
+        items = '';
+        items += msItem('Float', fmtVol(s.float_shares));
+        items += msItem('Free%', s.free_float ? s.free_float.toFixed(1)+'%' : '—');
+        items += msItem('Short%', s.short_float ? s.short_float.toFixed(1)+'%' : '—');
+        items += msItem('S.Ratio', s.short_ratio ? s.short_ratio.toFixed(1) : '—');
+        html += section('Float & Short', items);
 
         // Events
         if (s.spike_day_count > 0 || s.gapper_day_count > 0) {
-            html += '<div class="ms-section"><span class="ms-section-title">Events</span>';
+            items = '';
             if (s.spike_day_count > 0) {
-                html += msItem('Spikes', s.spike_day_count, '', s.avg_volume_spike ? s.avg_volume_spike.toFixed(1)+'x avg' : '');
+                items += msItem('Spikes', s.spike_day_count, '', s.avg_volume_spike ? s.avg_volume_spike.toFixed(1)+'x avg' : '');
             }
             if (s.gapper_day_count > 0) {
-                html += msItem('Gaps', s.gapper_day_count, '', s.avg_return_gapper ? (s.avg_return_gapper*100).toFixed(1)+'% avg' : '');
+                items += msItem('Gaps', s.gapper_day_count, '', s.avg_return_gapper ? (s.avg_return_gapper*100).toFixed(1)+'% avg' : '');
             }
-            html += '</div>';
+            html += section('Events', items);
         }
 
         // Info
-        html += '<div class="ms-section"><span class="ms-section-title">Info</span>';
-        html += `<span class="ms-item"><span class="ms-label">Country</span><span class="ms-val ms-val-truncate">${s.country||'—'}</span></span>`;
-        html += `<span class="ms-item"><span class="ms-label">IPO</span><span class="ms-val">${s.ipo_date ? s.ipo_date.slice(0,4) : '—'}</span></span>`;
-        html += `<span class="ms-item"><span class="ms-label">52W</span><span class="ms-val ms-val-truncate">${s.range_52_week||'—'}</span></span>`;
-        html += '</div>';
+        items = '';
+        items += `<span class="ms-item"><span class="ms-label">Sector</span><span class="ms-val ms-val-truncate" title="${s.sector||''}">${s.sector||'—'}</span></span>`;
+        items += `<span class="ms-item"><span class="ms-label">Industry</span><span class="ms-val ms-val-truncate" title="${s.industry||''}">${s.industry||'—'}</span></span>`;
+        items += `<span class="ms-item"><span class="ms-label">Country</span><span class="ms-val ms-val-truncate">${s.country||'—'}</span></span>`;
+        items += `<span class="ms-item"><span class="ms-label">IPO</span><span class="ms-val">${s.ipo_date ? s.ipo_date.slice(0,4) : '—'}</span></span>`;
+        items += `<span class="ms-item"><span class="ms-label">52W</span><span class="ms-val ms-val-truncate">${s.range_52_week||'—'}</span></span>`;
+        html += section('Info', items);
 
-        strip.innerHTML = html;
-        strip.classList.add('visible');
+        container.innerHTML = html;
     }
 
-    // ── Tags strip ──
+    // ── Tags ──
     function updateTagsStrip(stock) {
         const strip = document.getElementById('tagsStrip');
         if (!stock.tags) {
@@ -1114,39 +1175,6 @@
             return `<span class="tag-pill ${cls}">${tag}</span>`;
         }).join('');
         strip.classList.add('visible');
-    }
-
-    // ── RS Histogram ──
-    function updateRsHistogram(stock) {
-        const container = document.getElementById('rsHistoBars');
-        const valueEl = document.getElementById('rsHistoValue');
-        const rsi = stock.rsi_mktcap;
-
-        if (rsi == null) {
-            container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.7rem; padding: 0.5rem;">No RS data</span>';
-            valueEl.textContent = '';
-            return;
-        }
-
-        // Build a 20-bucket histogram based on the RSI values in the current dataset
-        const buckets = new Array(20).fill(0);
-        const bucketSize = 5;
-        allStocks.forEach(s => {
-            if (s.rsi_mktcap != null) {
-                const idx = Math.min(Math.floor(s.rsi_mktcap / bucketSize), 19);
-                buckets[idx]++;
-            }
-        });
-        const maxCount = Math.max(...buckets, 1);
-        const selectedBucket = Math.min(Math.floor(rsi / bucketSize), 19);
-
-        container.innerHTML = buckets.map((count, i) => {
-            const h = Math.max((count / maxCount) * 55, 2);
-            const sel = i === selectedBucket ? ' selected' : '';
-            return `<div class="rs-histo-bar${sel}" style="height: ${h}px;" title="${i*bucketSize}-${(i+1)*bucketSize}: ${count} stocks"></div>`;
-        }).join('');
-
-        valueEl.textContent = `RSI: ${rsi} (P${selectedBucket * bucketSize + Math.floor(bucketSize/2)})`;
     }
 
     // ── Charts ──
@@ -1246,6 +1274,32 @@
         });
     }
 
+    const rsiH = 70;
+
+    function resizeStockChart() {
+        if (!stockChart || !stockChart.chart) return;
+        const stockChartPanel = document.getElementById('stockChartPanel');
+        const panelHeader = stockChartPanel.querySelector('.chart-panel-header');
+        const subLabel = stockChartPanel.querySelector('.subchart-label');
+        const usedH = (panelHeader ? panelHeader.offsetHeight : 30) + (subLabel ? subLabel.offsetHeight : 15) + rsiH + 20;
+        const tickerH = Math.max(stockChartPanel.clientHeight - usedH, 250);
+        const container = document.getElementById('stockChartContainer');
+        container.style.height = tickerH + 'px';
+
+        const legendH = stockChart.legendContainer ? stockChart.legendContainer.offsetHeight : 0;
+        const chartAreaH = tickerH - legendH;
+        const priceH = Math.floor(chartAreaH * CHART_CONFIG.candlestickRatio);
+        const volumeH = chartAreaH - priceH;
+
+        if (stockChart.priceContainer) stockChart.priceContainer.style.height = priceH + 'px';
+        if (stockChart.volumeContainer) stockChart.volumeContainer.style.height = volumeH + 'px';
+
+        stockChart.chart.applyOptions({ height: priceH, width: container.clientWidth });
+        if (stockChart.volumeChart) {
+            stockChart.volumeChart.applyOptions({ height: volumeH, width: container.clientWidth });
+        }
+    }
+
     let extraResizeHandler = null;
     function setupExtraResize() {
         if (extraResizeHandler) window.removeEventListener('resize', extraResizeHandler);
@@ -1258,6 +1312,7 @@
                 const c = document.getElementById('rsiSubChart');
                 if (c) rsiChart.applyOptions({ width: c.clientWidth });
             }
+            resizeStockChart();
         };
         window.addEventListener('resize', extraResizeHandler);
     }
@@ -1275,8 +1330,7 @@
 
         document.getElementById('stockChartTitle').textContent = ticker + ' Chart';
 
-        const spyH = 120;
-        const rsiH = 70;
+        const spyH = 100;
 
         // Compute stock chart height from available space
         const stockChartPanel = document.getElementById('stockChartPanel');
@@ -1323,6 +1377,8 @@
             setupExtraResize();
             syncAllCharts();
             setAllTimeframes(currentTimeframeDays);
+
+            requestAnimationFrame(() => resizeStockChart());
 
         } catch (e) {
             console.error('Chart load error for ' + ticker, e);
@@ -1502,6 +1558,24 @@
         const el = document.querySelector(`.stock-item[data-ticker="${ticker}"]`);
         if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
+
+    // ── SPY chart collapse toggle ──
+    document.getElementById('spyCollapseBtn').addEventListener('click', () => {
+        const panel = document.getElementById('spyPanel');
+        const icon = document.getElementById('spyCollapseIcon');
+        panel.classList.toggle('collapsed');
+        const isCollapsed = panel.classList.contains('collapsed');
+        icon.textContent = isCollapsed ? '▶' : '▼';
+        // Allow flex layout to settle, then resize the stock chart to fill available space
+        requestAnimationFrame(() => {
+            resizeStockChart();
+            if (!isCollapsed && spyChart) {
+                const c = document.getElementById('spyChartContainer');
+                if (c) spyChart.applyOptions({ width: c.clientWidth });
+                spyChart.timeScale().fitContent();
+            }
+        });
+    });
 
     // ── Init ──
     loadData('all');

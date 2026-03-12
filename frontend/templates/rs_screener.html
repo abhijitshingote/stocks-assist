@@ -387,28 +387,28 @@
         <div class="slider-bar">
             <div class="slider-group">
                 <label>2D</label>
-                <input type="range" min="0" max="100" value="20" data-tf="2d">
-                <span class="slider-val">20</span>
+                <input type="range" min="0" max="100" value="75" data-tf="2d">
+                <span class="slider-val">75</span>
             </div>
             <div class="slider-group">
                 <label>5D</label>
-                <input type="range" min="0" max="100" value="20" data-tf="5d">
-                <span class="slider-val">20</span>
+                <input type="range" min="0" max="100" value="75" data-tf="5d">
+                <span class="slider-val">75</span>
             </div>
             <div class="slider-group">
                 <label>10D</label>
-                <input type="range" min="0" max="100" value="20" data-tf="10d">
-                <span class="slider-val">20</span>
+                <input type="range" min="0" max="100" value="60" data-tf="10d">
+                <span class="slider-val">60</span>
             </div>
             <div class="slider-group">
                 <label>20D</label>
-                <input type="range" min="0" max="100" value="20" data-tf="20d">
-                <span class="slider-val">20</span>
+                <input type="range" min="0" max="100" value="30" data-tf="20d">
+                <span class="slider-val">30</span>
             </div>
             <div class="slider-group">
                 <label>60D</label>
-                <input type="range" min="0" max="100" value="20" data-tf="60d">
-                <span class="slider-val">20</span>
+                <input type="range" min="0" max="100" value="15" data-tf="60d">
+                <span class="slider-val">15</span>
             </div>
             <button class="slider-reset" id="resetSliders">Reset</button>
         </div>
@@ -884,10 +884,12 @@
         });
     });
 
+    const SLIDER_DEFAULTS = { '2d': 75, '5d': 75, '10d': 60, '20d': 30, '60d': 15 };
     document.getElementById('resetSliders').addEventListener('click', () => {
         document.querySelectorAll('.slider-group input[type="range"]').forEach(el => {
-            el.value = 20;
-            el.nextElementSibling.textContent = '20';
+            const def = SLIDER_DEFAULTS[el.dataset.tf] || 20;
+            el.value = def;
+            el.nextElementSibling.textContent = def;
         });
         renderList();
     });
