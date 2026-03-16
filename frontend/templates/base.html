@@ -283,8 +283,14 @@
                 .then(data => {
                     if (data.latest_date) {
                         const d = new Date(data.latest_date + 'T00:00:00');
-                        const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                        document.getElementById('latest-date').textContent = formatted;
+                        const datePart = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        let label = datePart;
+                        if (data.last_update) {
+                            const ts = new Date(data.last_update);
+                            const timePart = ts.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
+                            label = datePart + ', ' + timePart + ' EST';
+                        }
+                        document.getElementById('latest-date').textContent = label;
                         document.getElementById('data-date').classList.add('loaded');
                     }
                 })
