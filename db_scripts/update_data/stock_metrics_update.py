@@ -424,6 +424,7 @@ def compute_and_load_metrics(connection):
     WHERE t.is_actively_trading = TRUE
       AND t.is_etf = FALSE
       AND t.is_fund = FALSE
+      AND t.market_cap > 200000000
     """
     
     result = connection.execute(text(metrics_query))

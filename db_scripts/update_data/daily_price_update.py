@@ -89,6 +89,26 @@ def get_existing_tickers(session):
         return []
 
 
+def is_market_closed():
+    """Check if the US stock market is closed (past 4:30 PM ET with buffer)"""
+    eastern = pytz.timezone('US/Eastern')
+    now_et = datetime.now(eastern)
+    market_close_with_buffer = now_et.replace(hour=16, minute=30, second=0, microsecond=0)
+    return now_et >= market_close_with_buffer
+
+
+def get_tickers_already_updated(session, target_date):
+    """Get tickers that already have OHLC data for the target date"""
+    try:
+        result = session.query(OHLC.ticker).filter(
+            OHLC.date == target_date
+        ).all()
+        return {t[0] for t in result}
+    except Exception as e:
+        logger.error(f"Error checking existing data: {str(e)}")
+        return set()
+
+
 def parse_float(value):
     """Parse float value safely"""
     try:
@@ -105,40 +125,31 @@ def parse_int(value):
         return None
 
 
-def fetch_single_ticker_eod(ticker, target_date, api_key):
+def fetch_single_ticker_quote(ticker, target_date, api_key):
     """
-    Fetch EOD price for a single ticker.
-    Returns (ticker, price_data) or (ticker, None)
+    Fetch current price via the lightweight /quote endpoint.
+    Returns (ticker, price_data) or (ticker, None).
+    Much smaller response than historical-price-eod/full.
     """
-    date_str = target_date.strftime('%Y-%m-%d')
-    
     try:
-        url = f"{BASE_URL}/historical-price-eod/full"
-        params = {
-            'apikey': api_key,
-            'symbol': ticker,
-            'from': date_str,
-            'to': date_str
-        }
+        url = f"{BASE_URL}/quote/{ticker}"
+        params = {'apikey': api_key}
         
         response = requests.get(url, params=params, timeout=30)
         response.raise_for_status()
         
         data = response.json()
         
-        # Handle list or dict response
-        historical = data if isinstance(data, list) else data.get('historical', [])
-        
-        if historical:
-            item = historical[0]
+        if data and len(data) > 0:
+            quote = data[0]
             return (ticker, {
                 'ticker': ticker,
-                'date': datetime.strptime(item['date'], '%Y-%m-%d').date(),
-                'open': parse_float(item.get('open')),
-                'high': parse_float(item.get('high')),
-                'low': parse_float(item.get('low')),
-                'close': parse_float(item.get('close')),
-                'volume': parse_int(item.get('volume'))
+                'date': target_date,
+                'open': parse_float(quote.get('open')),
+                'high': parse_float(quote.get('dayHigh')),
+                'low': parse_float(quote.get('dayLow')),
+                'close': parse_float(quote.get('price')),
+                'volume': parse_int(quote.get('volume'))
             })
         
         return (ticker, None)
@@ -171,7 +182,7 @@ def fetch_eod_prices_concurrent(tickers, target_date, api_key, max_workers=10):
     logger.info(f"Estimated time: ~{estimated_minutes:.1f} minutes")
     logger.info("-" * 60)
     
-    logger.info("📡 Phase 1: Fetching EOD prices from API...")
+    logger.info("📡 Phase 1: Fetching prices via /quote endpoint...")
     
     rate_limiter = RateLimiter(calls_per_minute=290)
     progress = ProgressTracker(total, logger, update_interval=100, prefix="Prices:")
@@ -184,7 +195,7 @@ def fetch_eod_prices_concurrent(tickers, target_date, api_key, max_workers=10):
     
     def worker(ticker):
         rate_limiter.acquire()
-        return fetch_single_ticker_eod(ticker, target_date, api_key)
+        return fetch_single_ticker_quote(ticker, target_date, api_key)
     
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(worker, t): t for t in tickers}
@@ -292,6 +303,23 @@ def main():
             target_date = get_eastern_date()
         
         logger.info(f"Target date: {target_date}")
+        
+        # After market close, skip tickers that already have final data for the day.
+        # During market hours, always re-fetch to capture intraday price changes.
+        if is_market_closed():
+            already_updated = get_tickers_already_updated(session, target_date)
+            if already_updated:
+                before = len(existing_tickers)
+                existing_tickers = [t for t in existing_tickers if t not in already_updated]
+                logger.info(f"Market closed — skipping {before - len(existing_tickers)} tickers already updated for {target_date}")
+            
+            if not existing_tickers:
+                logger.info(f"All tickers already have final data for {target_date}. Nothing to do.")
+                total_time = time.time() - overall_start
+                write_summary(SCRIPT_NAME, 'SUCCESS', f'All tickers already updated for {target_date}', 0, duration_seconds=total_time)
+                return
+        else:
+            logger.info("Market still open — fetching latest prices for all tickers")
         
         # Step 2: Fetch price data concurrently
         price_records = fetch_eod_prices_concurrent(

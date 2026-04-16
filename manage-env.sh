@@ -406,23 +406,42 @@ case $ACTION in
         fi
         echo "✅ Staging schema ready" | tee -a $LOG_FILE
 
-        # Step 2: Initialize tables in staging schema
+        # Step 2: Initialize tables and pre-populate from public
         echo ""
-        echo "📥 Step 2: Seeding data to staging schema..." | tee -a $LOG_FILE
+        echo "📥 Step 2: Setting up staging schema..." | tee -a $LOG_FILE
+
+        # 2a: Create tables in staging
+        echo "  Creating tables in staging..." | tee -a $LOG_FILE
+        if ! docker-compose -f $COMPOSE_FILE exec -T $BACKEND_SERVICE python db_scripts/initialize_data/initialize_db.py --reset --schema staging >> $LOG_FILE 2>&1; then
+            echo "❌ Failed to create staging tables" | tee -a $LOG_FILE
+            exit 1
+        fi
+        echo "  ✅ Staging tables created" | tee -a $LOG_FILE
+
+        # 2b: Pre-populate staging from public (avoids re-fetching from FMP API)
+        echo "  Pre-populating staging from public schema (saves API bandwidth)..." | tee -a $LOG_FILE
+        if docker-compose -f $COMPOSE_FILE exec -T $BACKEND_SERVICE python db_scripts/schema_manager.py prepopulate >> $LOG_FILE 2>&1; then
+            echo "  ✅ Staging pre-populated from public" | tee -a $LOG_FILE
+        else
+            echo "  ⚠️  Pre-population failed (will seed from scratch)" | tee -a $LOG_FILE
+        fi
+
+        echo ""
+        echo "📥 Step 2c: Running seed scripts (incremental mode)..." | tee -a $LOG_FILE
 
         scripts=(
-            "db_scripts/initialize_data/initialize_db.py --reset --schema staging:Reset database tables (staging)"
             "db_scripts/initialize_data/seed_tickers_from_fmp.py:Seed tickers from FMP screener"
             "db_scripts/initialize_data/seed_earnings_from_fmp.py:Seed earnings data"
             "db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py:Seed analyst estimates"
             "db_scripts/initialize_data/seed_index_prices_fmp.py:Seed index/ETF prices"
             "db_scripts/initialize_data/seed_index_constituents_fmp.py:Seed index constituents"
             "db_scripts/initialize_data/seed_ohlc_from_fmp.py:Seed OHLC price history"
-            "db_scripts/initialize_data/seed_profiles_from_fmp.py:Seed company profiles"
+            "db_scripts/initialize_data/seed_profiles_from_fmp.py --missing-only:Seed company profiles (missing only)"
             "db_scripts/initialize_data/seed_ratios_from_fmp.py:Seed financial ratios"
             "db_scripts/initialize_data/seed_shares_float_from_fmp.py:Seed shares float data"
             "db_scripts/update_data/stock_metrics_update.py:Compute stock metrics"
             "db_scripts/update_data/historical_rsi_update.py:Compute historical RSI"
+            "db_scripts/update_data/market_breadth_update.py:Compute market breadth"
             "db_scripts/update_data/rsi_indices_update.py:Compute RSI for indices"
             "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
             "db_scripts/update_data/main_view_update.py:Update main screener view"
@@ -458,14 +477,8 @@ case $ACTION in
                     ;;
             esac
 
-            # Set DATABASE_URL to target staging schema (except for initialize_db which handles it via --schema)
-            if [[ "$script" == *"initialize_db"* ]]; then
-                # initialize_db.py already has --schema staging in the command
-                DB_URL_OVERRIDE=""
-            else
-                # For other scripts, modify DATABASE_URL to target staging schema
-                DB_URL_OVERRIDE="export DATABASE_URL=\"\${DATABASE_URL}?options=-csearch_path%3Dstaging\" && "
-            fi
+            # Set DATABASE_URL to target staging schema
+            DB_URL_OVERRIDE="export DATABASE_URL=\"\${DATABASE_URL}?options=-csearch_path%3Dstaging\" && "
 
             if [ "$TEST_MODE" = "true" ]; then
                 CMD="${DB_URL_OVERRIDE}TEST_TICKER_LIMIT=$TEST_LIMIT python $script $EXTRA_ARGS"

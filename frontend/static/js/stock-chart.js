@@ -64,6 +64,7 @@ const CHART_CONFIG = {
 // ============================================================================
 
 const TIMEFRAME_STORAGE_KEY = 'stockChartTimeframe';
+const MA_VISIBILITY_STORAGE_KEY = 'stockChartMAVisibility';
 
 function getStoredTimeframe() {
     try {
@@ -83,6 +84,26 @@ function getStoredTimeframe() {
 function setStoredTimeframe(days) {
     try {
         localStorage.setItem(TIMEFRAME_STORAGE_KEY, days.toString());
+    } catch (e) {
+        // localStorage not available
+    }
+}
+
+function getStoredMAVisibility() {
+    try {
+        const stored = localStorage.getItem(MA_VISIBILITY_STORAGE_KEY);
+        if (stored) {
+            return JSON.parse(stored);
+        }
+    } catch (e) {
+        // localStorage not available or invalid JSON
+    }
+    return { ema10: false, ema20: false, dma50: false, dma200: false };
+}
+
+function setStoredMAVisibility(visibility) {
+    try {
+        localStorage.setItem(MA_VISIBILITY_STORAGE_KEY, JSON.stringify(visibility));
     } catch (e) {
         // localStorage not available
     }
@@ -212,13 +233,8 @@ class StockChart {
         this.volumeContainer = null;
         this.legendContainer = null;
         
-        // Track series visibility
-        this.seriesVisibility = {
-            ema10: false,
-            ema20: false,
-            dma50: false,
-            dma200: false,
-        };
+        // Track series visibility (restored from localStorage)
+        this.seriesVisibility = getStoredMAVisibility();
     }
     
     /**
@@ -356,6 +372,7 @@ class StockChart {
             this.series[seriesName].applyOptions({
                 visible: visible,
             });
+            setStoredMAVisibility(this.seriesVisibility);
         }
     }
     

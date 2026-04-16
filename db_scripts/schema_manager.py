@@ -174,6 +174,99 @@ class SchemaManager:
         else:
             return f"{self.database_url}?options=-csearch_path%3D{schema}"
 
+    # Tables sourced from FMP API that benefit from pre-population.
+    # Seed scripts have incremental logic, so copying existing data means
+    # they only fetch the delta instead of re-downloading everything.
+    FMP_DATA_TABLES = [
+        'tickers',
+        'ohlc',
+        'earnings',
+        'analyst_estimates',
+        'company_profiles',
+        'ratios_ttm',
+        'shares_float',
+        'index_prices',
+        'indices',
+        'index_components',
+    ]
+
+    def prepopulate_staging(self):
+        """
+        Copy FMP-sourced data from public to staging so seed scripts
+        only need to fetch incremental updates from the API.
+        Must be called AFTER prepare_staging() and initialize_db --schema staging.
+        """
+        with self.engine.connect() as conn:
+            result = conn.execute(text(f"""
+                SELECT COUNT(*) FROM information_schema.tables
+                WHERE table_schema = '{self.STAGING_SCHEMA}'
+            """))
+            if result.scalar() == 0:
+                raise ValueError("Staging schema has no tables. Run initialize_db --schema staging first.")
+
+            total_rows = 0
+            for table in self.FMP_DATA_TABLES:
+                try:
+                    public_exists = conn.execute(text(f"""
+                        SELECT EXISTS (
+                            SELECT 1 FROM information_schema.tables
+                            WHERE table_schema = '{self.LIVE_SCHEMA}' AND table_name = :tbl
+                        )
+                    """), {'tbl': table}).scalar()
+
+                    staging_exists = conn.execute(text(f"""
+                        SELECT EXISTS (
+                            SELECT 1 FROM information_schema.tables
+                            WHERE table_schema = '{self.STAGING_SCHEMA}' AND table_name = :tbl
+                        )
+                    """), {'tbl': table}).scalar()
+
+                    if not public_exists or not staging_exists:
+                        print(f"  ⏭ {table}: skipped (table missing in one schema)")
+                        continue
+
+                    conn.execute(text(
+                        f"INSERT INTO {self.STAGING_SCHEMA}.{table} "
+                        f"SELECT * FROM {self.LIVE_SCHEMA}.{table}"
+                    ))
+                    row_count = conn.execute(text(
+                        f"SELECT COUNT(*) FROM {self.STAGING_SCHEMA}.{table}"
+                    )).scalar()
+                    total_rows += row_count
+                    print(f"  ✓ {table}: {row_count:,} rows copied")
+                except Exception as e:
+                    print(f"  ⚠ {table}: failed ({e})")
+                    conn.rollback()
+                    continue
+
+            conn.commit()
+            print(f"✓ Pre-populated staging with {total_rows:,} total rows from public")
+
+            # Reset sequences so auto-generated IDs don't collide with copied data
+            reset_count = 0
+            result = conn.execute(text(f"""
+                SELECT seq.relname AS sequence_name,
+                       tab.relname AS table_name,
+                       col.attname AS column_name
+                FROM pg_class seq
+                JOIN pg_namespace ns ON ns.oid = seq.relnamespace
+                JOIN pg_depend d ON d.objid = seq.oid
+                JOIN pg_class tab ON tab.oid = d.refobjid
+                JOIN pg_attribute col ON col.attrelid = tab.oid AND col.attnum = d.refobjsubid
+                WHERE ns.nspname = '{self.STAGING_SCHEMA}'
+                  AND seq.relkind = 'S'
+            """))
+            for row in result:
+                seq_name, table_name, col_name = row
+                conn.execute(text(
+                    f"SELECT setval('{self.STAGING_SCHEMA}.{seq_name}', "
+                    f"COALESCE((SELECT MAX({col_name}) FROM {self.STAGING_SCHEMA}.{table_name}), 0) + 1, false)"
+                ))
+                reset_count += 1
+            conn.commit()
+            if reset_count:
+                print(f"✓ Reset {reset_count} sequence(s) in staging")
+
 
 def get_staging_database_url():
     """
@@ -188,7 +281,7 @@ if __name__ == '__main__':
     import argparse
     
     parser = argparse.ArgumentParser(description='Manage database schemas for zero-downtime updates')
-    parser.add_argument('action', choices=['prepare', 'swap', 'cleanup', 'rollback', 'info'],
+    parser.add_argument('action', choices=['prepare', 'swap', 'cleanup', 'rollback', 'info', 'prepopulate'],
                         help='Action to perform')
     args = parser.parse_args()
     
@@ -202,6 +295,8 @@ if __name__ == '__main__':
         sm.cleanup_old()
     elif args.action == 'rollback':
         sm.rollback_swap()
+    elif args.action == 'prepopulate':
+        sm.prepopulate_staging()
     elif args.action == 'info':
         info = sm.get_schema_info()
         print("Schema Information:")

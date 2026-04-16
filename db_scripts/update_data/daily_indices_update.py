@@ -258,14 +258,16 @@ def upsert_index_prices(session, symbol, price_data):
         return 0, 0
 
 
-def update_all_indices(session, days_back=5, use_quote=False):
+def update_all_indices(session, days_back=5, use_quote=True):
     """
-    Update all tracked indices with latest price data
+    Update all tracked indices with latest price data.
+    Defaults to the lightweight /quote endpoint to minimize API data usage.
     
     Args:
         session: Database session
-        days_back: Number of days to fetch historical data
-        use_quote: If True, use quote endpoint for current day only
+        days_back: Number of days to fetch if using historical endpoint
+        use_quote: If True (default), use lightweight quote endpoint for today only.
+                   If False, use historical endpoint for backfill.
     
     Returns:
         Dictionary with update statistics
@@ -283,15 +285,12 @@ def update_all_indices(session, days_back=5, use_quote=False):
             logger.info(f"Updating {symbol}")
             logger.info(f"{'='*60}")
             
-            # Fetch price data
             if use_quote:
-                # Use quote endpoint for current day only
                 price_data = []
                 quote = fetch_current_quote(symbol)
                 if quote:
                     price_data = [quote]
             else:
-                # Use historical endpoint for multiple days
                 price_data = fetch_index_price_data(symbol, days_back=days_back)
             
             if not price_data:
@@ -325,9 +324,11 @@ def main():
     
     parser = argparse.ArgumentParser(description='Daily indices update from FMP API')
     parser.add_argument('--days', type=int, default=5,
-                        help='Number of days of history to fetch (default: 5)')
+                        help='Number of days of history to fetch when using --historical (default: 5)')
+    parser.add_argument('--historical', action='store_true',
+                        help='Use historical endpoint instead of lightweight quote (for backfill)')
     parser.add_argument('--quote', action='store_true',
-                        help='Use quote endpoint for current day only (faster)')
+                        help='(deprecated, now the default) Use quote endpoint')
     parser.add_argument('--symbols', type=str, nargs='+',
                         help='Specific symbols to update (default: SPY QQQ IWM)')
     args = parser.parse_args()
@@ -359,8 +360,10 @@ def main():
         
         logger.info(f"ETFs to update: {ETF_SYMBOLS}")
         
-        # Update all indices
-        stats = update_all_indices(session, days_back=args.days, use_quote=args.quote)
+        use_quote = not args.historical
+        logger.info(f"Mode: {'quote (lightweight)' if use_quote else f'historical ({args.days} days)'}")
+        
+        stats = update_all_indices(session, days_back=args.days, use_quote=use_quote)
         
         # Print summary
         logger.info("\n" + "="*80)

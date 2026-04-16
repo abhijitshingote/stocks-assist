@@ -198,10 +198,10 @@ ARRAY_TO_STRING(
             CASE WHEN sm.TI65 > 1.05 THEN 'TI65' END,
 
             -- Recent spike/gapper tags with date
-            CASE WHEN svg.spike_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '60 days'
+            CASE WHEN svg.spike_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '30 days'
                  THEN 'volume_spike (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')'
             END,
-            CASE WHEN svg.gapper_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '60 days'
+            CASE WHEN svg.gapper_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '30 days'
                  THEN 'gapper (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')'
             END
         ]) AS tag

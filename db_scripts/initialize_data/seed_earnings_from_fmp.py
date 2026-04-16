@@ -41,9 +41,9 @@ def get_api_key():
     return api_key
 
 
-def fetch_earnings(api_key, symbol):
+def fetch_earnings(api_key, symbol, limit=20):
     url = f'{BASE_URL}/earnings'
-    params = {'symbol': symbol, 'apikey': api_key}
+    params = {'symbol': symbol, 'apikey': api_key, 'limit': limit}
     try:
         r = requests.get(url, params=params, timeout=30)
         return r.json() if r.ok else []

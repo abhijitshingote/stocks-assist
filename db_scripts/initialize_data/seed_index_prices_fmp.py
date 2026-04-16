@@ -13,7 +13,7 @@ Uses ETFs as proxies since actual index prices require higher tier:
 
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -76,19 +76,37 @@ def parse_int(value):
         return None
 
 
-def download_price_history(symbol, api_key, days=1825):
-    """Download historical price data from FMP API"""
+def get_last_index_date(session, symbol):
+    """Get the most recent date we have for a symbol in index_prices"""
+    try:
+        from sqlalchemy import func
+        result = session.query(func.max(IndexPrice.date)).filter(
+            IndexPrice.symbol == symbol
+        ).scalar()
+        return result
+    except:
+        return None
+
+
+def download_price_history(symbol, api_key, days=1825, from_override=None):
+    """Download historical price data from FMP API.
+    If from_override is set, fetch from that date instead of days back."""
     try:
         end_date = datetime.now()
-        start_date = end_date - timedelta(days=days)
+        if from_override:
+            start_date = from_override
+        else:
+            start_date = end_date - timedelta(days=days)
         
-        logger.info(f"  Downloading {days} days of price data...")
+        start_d = start_date if not isinstance(start_date, datetime) else start_date.date()
+        actual_days = (end_date.date() - start_d).days
+        logger.info(f"  Downloading ~{actual_days} days of price data...")
         
         url = f"{BASE_URL}/historical-price-eod/full"
         params = {
             'apikey': api_key,
             'symbol': symbol,
-            'from': start_date.strftime('%Y-%m-%d'),
+            'from': start_d.strftime('%Y-%m-%d'),
             'to': end_date.strftime('%Y-%m-%d')
         }
         
@@ -239,7 +257,18 @@ def main():
         for symbol in symbols:
             logger.info(f"\nProcessing {symbol}...")
 
-            price_data = download_price_history(symbol, api_key, days=args.days)
+            last_date = get_last_index_date(session, symbol)
+            if last_date:
+                from_date = last_date + timedelta(days=1)
+                today = datetime.now().date()
+                if from_date >= today:
+                    logger.info(f"  Already up to date (last: {last_date}), skipping")
+                    continue
+                logger.info(f"  Incremental fetch from {from_date} (last in DB: {last_date})")
+                price_data = download_price_history(symbol, api_key, from_override=from_date)
+            else:
+                price_data = download_price_history(symbol, api_key, days=args.days)
+
             if price_data:
                 inserted, updated = upsert_prices(session, symbol, price_data)
                 total_inserted += inserted

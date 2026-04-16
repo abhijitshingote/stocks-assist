@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 
+{% block body_class %}page-main-view{% endblock %}
+
 {% block title %}Main View - Stocks Assist{% endblock %}
 
 {% block extra_styles %}
-<style>
     main {
         max-width: 100% !important;
-        padding: 0.5rem !important;
+        padding: 0.3rem 0.5rem !important;
     }
 
     /* ── Top bar: cap tabs + stats ── */
     .mv-top-bar {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
+        gap: 0.35rem;
+        margin-bottom: 0.25rem;
         flex-wrap: wrap;
     }
 
@@ -25,20 +26,21 @@
     }
 
     .cap-tab {
-        padding: 0.3rem 0.6rem;
+        padding: 0.2rem 0.5rem;
         border-radius: 4px;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         color: var(--text-secondary);
         cursor: pointer;
         font-weight: 500;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         transition: all 0.2s;
         font-family: 'JetBrains Mono', monospace;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.05rem;
+        gap: 0;
+        line-height: 1.2;
     }
 
     .cap-tab:hover {
@@ -119,8 +121,8 @@
     /* ── Main Layout ── */
     .mv-layout {
         display: flex;
-        gap: 0.5rem;
-        height: calc(100vh - 115px);
+        gap: 0.4rem;
+        height: calc(100vh - 75px);
     }
 
     /* ── Left panel: stock list ── */
@@ -136,7 +138,7 @@
     }
 
     .mv-left-header {
-        padding: 0.4rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-bottom: 1px solid var(--border-color);
         font-size: 0.65rem;
         color: var(--text-secondary);
@@ -161,7 +163,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.3rem 0.5rem;
+        padding: 0.2rem 0.5rem;
         cursor: pointer;
         border-bottom: 1px solid rgba(48, 54, 61, 0.3);
         font-size: 0.72rem;
@@ -219,7 +221,7 @@
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
+        gap: 0.2rem;
         min-width: 0;
         overflow: hidden;
     }
@@ -241,12 +243,12 @@
     }
 
     .mv-metrics-header {
-        padding: 0.4rem 0.6rem;
+        padding: 0.25rem 0.6rem;
         border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 0.4rem;
+        gap: 0.3rem;
         flex-wrap: wrap;
     }
 
@@ -379,7 +381,7 @@
     .charts-container {
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
+        gap: 0.2rem;
         flex: 1;
         min-height: 0;
     }
@@ -387,8 +389,8 @@
     .chart-panel {
         background: var(--bg-card);
         border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 0.4rem;
+        border-radius: 6px;
+        padding: 0.25rem;
         position: relative;
         overflow: hidden;
     }
@@ -397,7 +399,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 0.4rem 0.3rem 0.4rem;
+        padding: 0 0.3rem 0.15rem 0.3rem;
     }
 
     .chart-panel-title {
@@ -433,7 +435,7 @@
     }
 
     .chart-panel.collapsed {
-        padding-bottom: 0.2rem;
+        padding-bottom: 0.1rem;
     }
 
     .chart-panel.collapsed .chart-panel-header {
@@ -443,28 +445,28 @@
     .chart-ticker-info {
         display: flex;
         align-items: baseline;
-        gap: 0.75rem;
+        gap: 0.5rem;
     }
 
     .chart-ticker-info .ticker-name {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 700;
         color: var(--text-primary);
     }
 
     .chart-ticker-info .company-name {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         color: var(--text-secondary);
     }
 
     .chart-ticker-info .mktcap-badge {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 1rem;
+        font-size: 0.85rem;
         font-weight: 700;
         color: #58a6ff;
         background: rgba(88, 166, 255, 0.12);
-        padding: 0.05rem 0.4rem;
+        padding: 0.02rem 0.3rem;
         border-radius: 4px;
     }
 
@@ -514,7 +516,7 @@
         justify-content: center;
         color: var(--text-muted);
         font-size: 0.8rem;
-        padding: 2rem;
+        padding: 1rem;
     }
 
     .spinner {
@@ -663,7 +665,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 3rem;
+        padding: 1.5rem;
         color: var(--text-muted);
     }
 
@@ -702,12 +704,53 @@
         color: #ff6b6b;
     }
 
+    /* Wide layout: large displays (toggle or auto ≥1600px) */
+    body.page-main-view.wide-layout nav .container {
+        max-width: none;
+        width: 100%;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    body.page-main-view.wide-layout .mv-left {
+        width: 240px;
+        min-width: 200px;
+    }
+
+    body.page-main-view.wide-layout .mv-metrics {
+        width: 320px;
+        min-width: 280px;
+    }
+
+    body.page-main-view.wide-layout .mv-metrics-company {
+        max-width: 240px;
+    }
+
+    .mv-wide-toggle-wrap {
+        display: flex;
+        align-items: center;
+        margin-left: 0.35rem;
+    }
+
+    .mv-wide-toggle {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.45rem;
+    }
+
     @media (max-width: 1024px) {
         .mv-layout { flex-direction: column; height: auto; }
         .mv-left { width: 100%; height: 200px; }
         .mv-metrics { width: 100%; min-width: auto; max-height: 300px; }
+        .mv-wide-toggle-wrap { display: none; }
+        body.page-main-view.wide-layout .mv-left,
+        body.page-main-view.wide-layout .mv-metrics {
+            width: 100%;
+            min-width: auto;
+        }
+        body.page-main-view.wide-layout nav .container {
+            max-width: 1400px;
+        }
     }
-</style>
 {% endblock %}
 
 {% block content %}
@@ -728,7 +771,10 @@
     <div class="preference-filter">
         <button class="pref-filter-btn active" data-filter="all">All</button>
         <button class="pref-filter-btn" data-filter="favorite">⭐ <span class="count" id="favCount">0</span></button>
-        <button class="pref-filter-btn" data-filter="dislike">👎 <span class="count" id="dislikeCount">0</span></button>
+        <button class="pref-filter-btn" data-filter="dislike" aria-label="Dislikes">👎 <span class="count" id="dislikeCount">0</span></button>
+    </div>
+    <div class="mv-wide-toggle-wrap">
+        <button type="button" class="pref-filter-btn mv-wide-toggle" id="mvWideToggle" title="Full-width nav and wider side panels on large displays. Preference is saved in this browser.">Wide layout</button>
     </div>
 </div>
 
@@ -757,8 +803,8 @@
 
         <!-- Header bar (hidden until stock selected) -->
         <div id="detailHeader" style="display: none;">
-            <div class="chart-panel" style="padding: 0.4rem 0.6rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <div class="chart-panel" style="padding: 0.2rem 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
                     <span class="chart-ticker-info">
                         <span class="ticker-name" id="detailTicker">—</span>
                         <span class="company-name" id="detailCompany"></span>
@@ -806,7 +852,7 @@
             </div>
 
             <!-- Stock Chart -->
-            <div class="chart-panel" id="stockChartPanel" style="flex: 1; min-height: 250px;">
+            <div class="chart-panel" id="stockChartPanel" style="flex: 1; min-height: 200px;">
                 <div class="chart-panel-header">
                     <span class="chart-panel-title" id="stockChartTitle">Stock Chart</span>
                 </div>
@@ -847,6 +893,38 @@
 <script src="/static/js/stock-chart.js"></script>
 <script>
 (function() {
+    const MV_WIDE_STORAGE = 'wideLayoutOverride';
+    const MV_WIDE_MQ = window.matchMedia('(min-width: 1600px)');
+
+    function mvWideEffective() {
+        const o = localStorage.getItem(MV_WIDE_STORAGE);
+        if (o === '1') return true;
+        if (o === '0') return false;
+        return MV_WIDE_MQ.matches;
+    }
+
+    function applyMvWideLayout() {
+        document.body.classList.toggle('wide-layout', mvWideEffective());
+        const btn = document.getElementById('mvWideToggle');
+        if (btn) {
+            const wide = document.body.classList.contains('wide-layout');
+            btn.classList.toggle('active', wide);
+            btn.textContent = wide ? 'Standard layout' : 'Wide layout';
+        }
+        requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+    }
+
+    function toggleMvWideLayout() {
+        const next = !mvWideEffective();
+        localStorage.setItem(MV_WIDE_STORAGE, next ? '1' : '0');
+        applyMvWideLayout();
+    }
+
+    applyMvWideLayout();
+    MV_WIDE_MQ.addEventListener('change', applyMvWideLayout);
+
+    document.getElementById('mvWideToggle')?.addEventListener('click', toggleMvWideLayout);
+
     // ── State ──
     let allStocks = [];
     let currentCap = 'all';
@@ -1282,8 +1360,8 @@
         if (!stockChart || !stockChart.chart) return;
         const stockChartPanel = document.getElementById('stockChartPanel');
         const panelHeader = stockChartPanel.querySelector('.chart-panel-header');
-        const usedH = (panelHeader ? panelHeader.offsetHeight : 30) + 20;
-        const tickerH = Math.max(stockChartPanel.clientHeight - usedH, 250);
+        const usedH = (panelHeader ? panelHeader.offsetHeight : 20) + 10;
+        const tickerH = Math.max(stockChartPanel.clientHeight - usedH, 200);
         const container = document.getElementById('stockChartContainer');
         container.style.height = tickerH + 'px';
 
@@ -1336,8 +1414,8 @@
         // Compute stock chart height from available space
         const stockChartPanel = document.getElementById('stockChartPanel');
         const panelHeader = stockChartPanel.querySelector('.chart-panel-header');
-        const usedH = (panelHeader ? panelHeader.offsetHeight : 30) + 20;
-        const tickerH = Math.max(stockChartPanel.clientHeight - usedH, 250);
+        const usedH = (panelHeader ? panelHeader.offsetHeight : 20) + 10;
+        const tickerH = Math.max(stockChartPanel.clientHeight - usedH, 200);
 
         document.getElementById('stockChartContainer').style.height = tickerH + 'px';
 
