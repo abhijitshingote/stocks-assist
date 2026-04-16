@@ -152,6 +152,48 @@
             color: var(--text-primary);
         }
 
+        .nav-indicators {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .nav-indicator-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.25rem 0.6rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            min-width: 70px;
+        }
+
+        .nav-indicator-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-indicator-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .nav-indicator-change {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            font-weight: 500;
+        }
+
+        .nav-indicator-change.up { color: var(--accent-green); }
+        .nav-indicator-change.down { color: var(--accent-red); }
+
         @media (max-width: 900px) {
             nav .container {
                 flex-wrap: wrap;
@@ -263,7 +305,20 @@
                     <a href="/rsi">Relative Strength</a>
                     <a href="/rs-screener">RS Screener</a>
                     <a href="/main-view">Main View</a>
+                    <a href="/context">Context</a>
+                    <a href="/context-2">Context-2</a>
                     <a href="/logs">Logs</a>
+                </div>
+            </div>
+            <div class="nav-indicators">
+                <div class="nav-indicator-card" id="vix-card">
+                    <span class="nav-indicator-label">VIX</span>
+                    <span class="nav-indicator-value" id="vix-value">--</span>
+                    <span class="nav-indicator-change" id="vix-change"></span>
+                </div>
+                <div class="nav-indicator-card" id="us10y-card">
+                    <span class="nav-indicator-label">US 10Y</span>
+                    <span class="nav-indicator-value" id="us10y-value">--</span>
                 </div>
             </div>
         </div>
@@ -296,6 +351,32 @@
                 })
                 .catch(() => {});
         })();
+
+        // Fetch VIX latest
+        fetch('/api/frontend/vix-latest')
+            .then(r => r.json())
+            .then(data => {
+                if (data.close != null) {
+                    document.getElementById('vix-value').textContent = data.close.toFixed(2);
+                    if (data.change != null) {
+                        const el = document.getElementById('vix-change');
+                        const sign = data.change >= 0 ? '+' : '';
+                        el.textContent = sign + data.change.toFixed(2);
+                        el.classList.add(data.change >= 0 ? 'up' : 'down');
+                    }
+                }
+            })
+            .catch(() => {});
+
+        // Fetch 10Y Treasury yield
+        fetch('/api/frontend/treasury-10y')
+            .then(r => r.json())
+            .then(data => {
+                if (data.yield_pct != null) {
+                    document.getElementById('us10y-value').textContent = data.yield_pct.toFixed(2) + '%';
+                }
+            })
+            .catch(() => {});
 
         // Navbar ticker search
         function navGoToStock(event) {

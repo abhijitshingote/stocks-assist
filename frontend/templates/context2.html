@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-context2{% endblock %}
+
+{% block title %}Stocks Assist - Context 2{% endblock %}
+
+{% block extra_styles %}
+main {
+    max-width: 1400px !important;
+    padding: 1.5rem 2rem !important;
+}
+
+.context2-page-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+.context2-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .context2-row {
+        flex-direction: column;
+    }
+}
+
+.context2-panel {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.25rem;
+}
+
+.context2-panel-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+}
+
+.context2-link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.context2-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.context2-link:hover .context2-link-text {
+    color: var(--accent-blue);
+}
+
+.context2-link-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    flex-shrink: 0;
+}
+
+.context2-link-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.context2-link-domain {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-left: 0.25rem;
+}
+
+.context2-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+}
+{% endblock %}
+
+{% block content %}
+<div class="context2-page-title">Context - 2</div>
+
+<!-- Section 1: Groups & Commentary -->
+<div class="context2-section-title">Research & Commentary</div>
+<div class="context2-row">
+    <div class="context2-panel">
+        <div class="context2-panel-label">Groups</div>
+        <div class="context2-link-list">
+            <a href="https://finviz.com/groups.ashx" target="_blank" rel="noopener noreferrer" class="context2-link">
+                <span class="context2-link-dot"></span>
+                <span class="context2-link-text">Finviz Groups</span>
+                <span class="context2-link-domain">finviz.com</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="context2-panel">
+        <div class="context2-panel-label">Commentary</div>
+        <div class="context2-link-list">
+            <a href="https://www.briefing.com/story-stocks/archive" target="_blank" rel="noopener noreferrer" class="context2-link">
+                <span class="context2-link-dot"></span>
+                <span class="context2-link-text">Story Stocks Archive</span>
+                <span class="context2-link-domain">briefing.com</span>
+            </a>
+            <a href="https://www.briefing.com/stock-market-update" target="_blank" rel="noopener noreferrer" class="context2-link">
+                <span class="context2-link-dot"></span>
+                <span class="context2-link-text">Stock Market Update</span>
+                <span class="context2-link-domain">briefing.com</span>
+            </a>
+            <a href="https://www.briefing.com/the-big-picture" target="_blank" rel="noopener noreferrer" class="context2-link">
+                <span class="context2-link-dot"></span>
+                <span class="context2-link-text">The Big Picture</span>
+                <span class="context2-link-domain">briefing.com</span>
+            </a>
+            <a href="https://www.briefing.com/page-one" target="_blank" rel="noopener noreferrer" class="context2-link">
+                <span class="context2-link-dot"></span>
+                <span class="context2-link-text">Page One</span>
+                <span class="context2-link-domain">briefing.com</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Section 2: Calendar Events -->
+<div class="context2-section-title">Calendar Events</div>
+<div class="context2-row">
+    <div class="context2-panel">
+        <div class="context2-panel-label">Economic Calendar & Earnings</div>
+        <div class="context2-link-list">
+            <a href="https://tradingeconomics.com/calendar" target="_blank" rel="noopener noreferrer" class="context2-link">
+                <span class="context2-link-dot"></span>
+                <span class="context2-link-text">Economic Calendar</span>
+                <span class="context2-link-domain">tradingeconomics.com</span>
+            </a>
+            <a href="https://tradingeconomics.com/earnings" target="_blank" rel="noopener noreferrer" class="context2-link">
+                <span class="context2-link-dot"></span>
+                <span class="context2-link-text">Earnings - Upcoming</span>
+                <span class="context2-link-domain">tradingeconomics.com</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -345,6 +345,18 @@ def api_main_view(market_cap):
     return jsonify(data), status_code
 
 
+@app.route('/context')
+def context_page():
+    """Context page - Market context with QQQ/SPY charts and DMA analysis"""
+    return render_template('context.html')
+
+
+@app.route('/context-2')
+def context2_page():
+    """Context 2 page - Research links, commentary, and calendar events"""
+    return render_template('context2.html')
+
+
 @app.route('/high-sales-growth')
 def high_sales_growth_page():
     """High Sales Growth page - Stocks with high revenue growth"""
@@ -642,6 +654,24 @@ def api_index_ohlc(symbol):
     data, status_code = make_backend_request(f'/api/index-ohlc/{symbol}')
     if data is None:
         return jsonify({'error': 'Failed to fetch index OHLC data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/vix-latest')
+def api_vix_latest():
+    """Proxy endpoint for latest VIX value from backend"""
+    data, status_code = make_backend_request('/api/vix-latest')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch VIX data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/treasury-10y')
+def api_treasury_10y():
+    """Proxy endpoint for 10-Year Treasury yield from backend"""
+    data, status_code = make_backend_request('/api/treasury-10y')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Treasury yield'}), status_code
     return jsonify(data), status_code
 
 

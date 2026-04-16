@@ -1,0 +1,487 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-context{% endblock %}
+
+{% block title %}Stocks Assist - Context{% endblock %}
+
+{% block extra_styles %}
+main {
+    max-width: 100% !important;
+    padding: 1rem 1.5rem !important;
+}
+
+.context-page-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+.context-chart-section {
+    margin-bottom: 2rem;
+}
+
+.context-chart-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.context-chart-panel {
+    flex: 1;
+    min-width: 0;
+    height: 1080px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.context-notes-panel {
+    width: 15%;
+    min-width: 180px;
+    flex-shrink: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.context-notes-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.context-note-item {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent-blue);
+}
+
+.context-note-item .note-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent-blue);
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.context-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.context-chart-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.context-chart-subtitle {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
+.context-chart-wrapper {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+}
+
+.context-chart-legend {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.context-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.context-legend-line {
+    width: 20px;
+    height: 3px;
+    border-radius: 1px;
+}
+
+.chart-timeframe {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.tf-btn {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.tf-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-secondary);
+}
+
+.tf-btn.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--bg-dark);
+}
+
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: var(--text-muted);
+}
+
+.chart-loading .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 900px) {
+    .context-chart-row {
+        flex-direction: column;
+    }
+    .context-notes-panel {
+        width: 100%;
+        min-width: unset;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="context-page-title">Market Context</div>
+
+<!-- QQQ Section -->
+<div class="context-chart-section">
+    <div class="context-chart-row">
+        <div class="context-chart-panel">
+            <div class="context-chart-header">
+                <div>
+                    <div class="context-chart-title">QQQ</div>
+                    <div class="context-chart-subtitle">Invesco QQQ Trust (Nasdaq 100)</div>
+                </div>
+                <div class="chart-timeframe" data-symbol="QQQ">
+                    <button class="tf-btn" data-days="90">3M</button>
+                    <button class="tf-btn" data-days="180">6M</button>
+                    <button class="tf-btn active" data-days="365">1Y</button>
+                    <button class="tf-btn" data-days="730">2Y</button>
+                </div>
+            </div>
+            <div class="context-chart-wrapper" id="qqqChartWrapper">
+                <div class="chart-loading"><div class="spinner"></div><span>Loading QQQ...</span></div>
+            </div>
+            <div class="context-chart-legend">
+                <div class="context-legend-item">
+                    <div class="context-legend-line" style="background: #00ff00;"></div>
+                    <span style="color: #00ff00;">50 DMA</span>
+                </div>
+                <div class="context-legend-item">
+                    <div class="context-legend-line" style="background: #ff4444;"></div>
+                    <span style="color: #ff4444;">200 DMA</span>
+                </div>
+            </div>
+        </div>
+        <div class="context-notes-panel">
+            <div class="context-notes-title">Questions / Notes</div>
+            <div class="context-note-item">
+                <div class="note-label">A</div>
+                Was there a recent pullback or rally?
+            </div>
+            <div class="context-note-item">
+                <div class="note-label">B</div>
+                Are we at support or resistance?
+            </div>
+            <div class="context-note-item">
+                <div class="note-label">C</div>
+                Tightening up? Double bottom or top, cup and handle?
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPY Section -->
+<div class="context-chart-section">
+    <div class="context-chart-row">
+        <div class="context-chart-panel">
+            <div class="context-chart-header">
+                <div>
+                    <div class="context-chart-title">SPY</div>
+                    <div class="context-chart-subtitle">SPDR S&P 500 ETF Trust</div>
+                </div>
+                <div class="chart-timeframe" data-symbol="SPY">
+                    <button class="tf-btn" data-days="90">3M</button>
+                    <button class="tf-btn" data-days="180">6M</button>
+                    <button class="tf-btn active" data-days="365">1Y</button>
+                    <button class="tf-btn" data-days="730">2Y</button>
+                </div>
+            </div>
+            <div class="context-chart-wrapper" id="spyChartWrapper">
+                <div class="chart-loading"><div class="spinner"></div><span>Loading SPY...</span></div>
+            </div>
+            <div class="context-chart-legend">
+                <div class="context-legend-item">
+                    <div class="context-legend-line" style="background: #00ff00;"></div>
+                    <span style="color: #00ff00;">50 DMA</span>
+                </div>
+                <div class="context-legend-item">
+                    <div class="context-legend-line" style="background: #ff4444;"></div>
+                    <span style="color: #ff4444;">200 DMA</span>
+                </div>
+            </div>
+        </div>
+        <div class="context-notes-panel">
+            <div class="context-notes-title">Questions / Notes</div>
+            <div class="context-note-item">
+                <div class="note-label">A</div>
+                Was there a recent pullback or rally?
+            </div>
+            <div class="context-note-item">
+                <div class="note-label">B</div>
+                Are we at support or resistance?
+            </div>
+            <div class="context-note-item">
+                <div class="note-label">C</div>
+                Tightening up? Double bottom or top, cup and handle?
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+const chartInstances = {};
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadContextChart('QQQ', 'qqqChartWrapper');
+    loadContextChart('SPY', 'spyChartWrapper');
+    setupTimeframeButtons();
+});
+
+function setupTimeframeButtons() {
+    document.querySelectorAll('.chart-timeframe').forEach(group => {
+        const symbol = group.dataset.symbol;
+        group.querySelectorAll('.tf-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const days = parseInt(this.dataset.days);
+                group.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                if (chartInstances[symbol]) {
+                    updateContextChart(symbol, days);
+                }
+            });
+        });
+    });
+}
+
+async function loadContextChart(symbol, containerId) {
+    const container = document.getElementById(containerId);
+
+    try {
+        const response = await fetch(`/api/frontend/index-ohlc/${symbol}`);
+        const data = await response.json();
+
+        if (data.error || !Array.isArray(data) || data.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:2rem;">No data available</div>';
+            return;
+        }
+
+        container.innerHTML = '';
+        initContextChart(symbol, containerId, data);
+    } catch (error) {
+        console.error(`Error loading ${symbol}:`, error);
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:2rem;">Failed to load</div>';
+    }
+}
+
+function initContextChart(symbol, containerId, data) {
+    const container = document.getElementById(containerId);
+
+    if (chartInstances[symbol]?.chart) {
+        chartInstances[symbol].chart.remove();
+    }
+
+    const chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: container.clientHeight,
+        layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#8b949e',
+            fontFamily: "'JetBrains Mono', monospace",
+        },
+        grid: {
+            vertLines: { color: 'rgba(48, 54, 61, 0.3)' },
+            horzLines: { color: 'rgba(48, 54, 61, 0.3)' },
+        },
+        crosshair: {
+            mode: LightweightCharts.CrosshairMode.Normal,
+        },
+        rightPriceScale: {
+            borderColor: '#30363d',
+            scaleMargins: { top: 0.05, bottom: 0.05 },
+            minimumWidth: 80,
+        },
+        timeScale: {
+            borderColor: '#30363d',
+            timeVisible: true
+        },
+        handleScroll: false,
+        handleScale: false,
+    });
+
+    const candleSeries = chart.addCandlestickSeries({
+        upColor: '#3fb950',
+        downColor: '#f85149',
+        borderDownColor: '#f85149',
+        borderUpColor: '#3fb950',
+        wickDownColor: '#f85149',
+        wickUpColor: '#3fb950',
+        priceLineVisible: false,
+    });
+
+    const volumeSeries = chart.addHistogramSeries({
+        priceFormat: { type: 'volume' },
+        priceScaleId: 'volume',
+        priceLineVisible: false,
+        lastValueVisible: false,
+    });
+    chart.priceScale('volume').applyOptions({
+        scaleMargins: { top: 0.85, bottom: 0 },
+    });
+
+    const sma50Series = chart.addLineSeries({
+        color: '#00ff00',
+        lineWidth: 3,
+        priceLineVisible: false,
+        lastValueVisible: true,
+        crosshairMarkerVisible: true,
+    });
+
+    const sma200Series = chart.addLineSeries({
+        color: '#ff4444',
+        lineWidth: 3,
+        priceLineVisible: false,
+        lastValueVisible: true,
+        crosshairMarkerVisible: true,
+    });
+
+    chartInstances[symbol] = {
+        chart,
+        series: { candleSeries, volumeSeries, sma50Series, sma200Series },
+        data,
+        timeframe: 365,
+    };
+
+    const resizeObserver = new ResizeObserver(() => {
+        if (chartInstances[symbol]?.chart) {
+            chartInstances[symbol].chart.applyOptions({
+                width: container.clientWidth,
+                height: container.clientHeight,
+            });
+        }
+    });
+    resizeObserver.observe(container);
+
+    updateContextChart(symbol, 365);
+}
+
+function updateContextChart(symbol, days) {
+    const instance = chartInstances[symbol];
+    if (!instance) return;
+
+    const { data, series } = instance;
+    instance.timeframe = days;
+
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    const cutoffStr = cutoffDate.toISOString().split('T')[0];
+
+    const sma50Full = calculateSMA(data, 50);
+    const sma200Full = calculateSMA(data, 200);
+
+    const filtered = data.filter(d => d.time >= cutoffStr);
+    const filteredSma50 = sma50Full.filter(d => d.time >= cutoffStr);
+    const filteredSma200 = sma200Full.filter(d => d.time >= cutoffStr);
+
+    const candles = filtered.map(d => ({
+        time: d.time,
+        open: d.open,
+        high: d.high,
+        low: d.low,
+        close: d.close,
+    }));
+
+    const volumeData = filtered.map(d => ({
+        time: d.time,
+        value: d.volume,
+        color: d.close >= d.open ? 'rgba(63, 185, 80, 0.4)' : 'rgba(248, 81, 73, 0.4)',
+    }));
+
+    series.candleSeries.setData(candles);
+    series.volumeSeries.setData(volumeData);
+    series.sma50Series.setData(filteredSma50);
+    series.sma200Series.setData(filteredSma200);
+
+    instance.chart.timeScale().fitContent();
+}
+
+function calculateSMA(data, period) {
+    if (data.length < period) return [];
+
+    const smaData = [];
+    for (let i = period - 1; i < data.length; i++) {
+        let sum = 0;
+        for (let j = 0; j < period; j++) {
+            sum += data[i - j].close;
+        }
+        smaData.push({ time: data[i].time, value: sum / period });
+    }
+    return smaData;
+}
+</script>
+{% endblock %}

@@ -1357,6 +1357,19 @@ function renderDmaChart() {
     dmaSeries.above50dma.setData(above50Data);
     dmaSeries.above200dma.setData(above200Data);
     
+    // Add horizontal line at 25%
+    const referenceData = history.map(d => ({ time: d.date, value: 25 }));
+    if (!dmaSeries.reference) {
+        dmaSeries.reference = dmaChart.addLineSeries({
+            color: '#ff0000',
+            lineWidth: 3,
+            priceLineVisible: false,
+            lastValueVisible: false,
+            lineStyle: LightweightCharts.LineStyle.Solid,
+        });
+    }
+    dmaSeries.reference.setData(referenceData);
+    
     dmaChart.timeScale().fitContent();
     dmaChart.timeScale().subscribeVisibleTimeRangeChange(syncTimeRange);
 }

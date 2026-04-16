@@ -3823,5 +3823,76 @@ def get_rs_screener(market_cap=None):
         s.close()
 
 
+# ============================================================================
+# Market Indicators (VIX, Treasury Yield)
+# ============================================================================
+
+@app.route('/api/vix-latest')
+def get_vix_latest():
+    """Get latest VIX close price from index_prices table."""
+    s = Session()
+    try:
+        row = s.query(
+            IndexPrice.date,
+            IndexPrice.close_price,
+            IndexPrice.open_price
+        ).filter(
+            IndexPrice.symbol == '^VIX'
+        ).order_by(IndexPrice.date.desc()).first()
+
+        if not row:
+            return jsonify({'error': 'No VIX data available'}), 404
+
+        prev = s.query(IndexPrice.close_price).filter(
+            IndexPrice.symbol == '^VIX',
+            IndexPrice.date < row.date
+        ).order_by(IndexPrice.date.desc()).first()
+
+        prev_close = prev.close_price if prev else None
+        change = round(row.close_price - prev_close, 2) if prev_close else None
+        change_pct = round((row.close_price - prev_close) / prev_close * 100, 2) if prev_close else None
+
+        return jsonify({
+            'symbol': 'VIX',
+            'date': row.date.strftime('%Y-%m-%d'),
+            'close': round(row.close_price, 2),
+            'change': change,
+            'change_pct': change_pct,
+        })
+    except Exception as e:
+        logger.error(f"Error getting VIX latest: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/treasury-10y')
+def get_treasury_10y():
+    """Scrape current 10-Year Treasury yield from CNBC."""
+    import urllib.request
+    import re
+
+    try:
+        url = 'https://www.cnbc.com/quotes/US10Y'
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            html = resp.read().decode('utf-8', errors='ignore')
+
+        match = re.search(r'"structured-data-module"[^>]*>.*?"price":\s*"([\d.]+)"', html, re.DOTALL)
+        if not match:
+            match = re.search(r'class="QuoteStrip-lastPrice[^"]*"[^>]*>([\d.]+)%?<', html)
+        if not match:
+            match = re.search(r'"last(?:Price)?"\s*:\s*"?([\d.]+)"?', html)
+
+        if match:
+            value = float(match.group(1))
+            return jsonify({'symbol': 'US10Y', 'yield_pct': value})
+
+        return jsonify({'error': 'Could not parse yield'}), 502
+    except Exception as e:
+        logger.error(f"Error scraping 10Y yield: {str(e)}")
+        return jsonify({'error': str(e)}), 502
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -38,8 +38,18 @@ if not FMP_API_KEY:
 
 BASE_URL = 'https://financialmodelingprep.com/stable'
 
-# ETF symbols we track
-ETF_SYMBOLS = ['SPY', 'QQQ', 'IWM']
+# ETFs to track
+ETFS = ['SPY', 'QQQ', 'IWM', '^VIX',
+        # Commodities & Rates  
+        'GLD', 'SLV', 'USO', 'TLT',
+        # Sector ETFs - Risk On
+        'XLB', 'XLC', 'XLY', 'XLE', 'XLF', 'XLV', 'XLI', 'XLK',
+        # Sector ETFs - Risk Off
+        'XLP', 'XLRE', 'XLU',
+        # Tech / Growth
+        'IGM', 'SOXX', 'IGV', 'ARTY', 'BAI', 'IBB', 'IHF', 'IHI', 'IHE', 
+        'IDNA', 'IEZ', 'IEO', 'FILL', 'ITA', 'IYT', 'ICOP', 'RING', 'ILIT', 'PICK', 'SLVP',
+        'WOOD', 'IAI', 'IYG', 'IAK', 'IAT', 'REM', 'REZ', 'IDGT', 'ITB']
 
 
 def get_eastern_date():
@@ -160,8 +170,8 @@ def fetch_current_quote(symbol):
         Price data dictionary or None
     """
     try:
-        url = f"{BASE_URL}/quote/{symbol}"
-        params = {'apikey': FMP_API_KEY}
+        url = f"{BASE_URL}/quote"
+        params = {'symbol': symbol, 'apikey': FMP_API_KEY}
         
         response = requests.get(url, params=params, timeout=30)
         response.raise_for_status()

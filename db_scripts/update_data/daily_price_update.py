@@ -132,8 +132,8 @@ def fetch_single_ticker_quote(ticker, target_date, api_key):
     Much smaller response than historical-price-eod/full.
     """
     try:
-        url = f"{BASE_URL}/quote/{ticker}"
-        params = {'apikey': api_key}
+        url = f"{BASE_URL}/quote"
+        params = {'symbol': ticker, 'apikey': api_key}
         
         response = requests.get(url, params=params, timeout=30)
         response.raise_for_status()
