@@ -251,6 +251,7 @@ def get_stock_metrics_data(session, ticker):
         'gap_days': gap_dates,
         'last_event_date': volspike_gapper.last_event_date.strftime('%Y-%m-%d') if volspike_gapper and volspike_gapper.last_event_date else None,
         'last_event_type': volspike_gapper.last_event_type if volspike_gapper else None,
+        'last_event_magnitude': float(volspike_gapper.last_event_magnitude) if volspike_gapper and volspike_gapper.last_event_magnitude else None,
     }
 
 
@@ -1596,6 +1597,7 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
             StockVolspikeGapper.gap_days,
             StockVolspikeGapper.last_event_date,
             StockVolspikeGapper.last_event_type,
+            StockVolspikeGapper.last_event_magnitude,
             StockMetrics.company_name,
             StockMetrics.country,
             StockMetrics.sector,
@@ -1730,6 +1732,7 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
                 'gap_days': gap_dates,
                 'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
                 'last_event_type': stock.last_event_type,
+                'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
 
@@ -1874,6 +1877,7 @@ def get_main_view_stocks(session, market_cap_category=None):
                 'gap_days': gap_dates,
                 'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
                 'last_event_type': stock.last_event_type,
+                'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
                 'tags': stock.tags,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
@@ -2017,6 +2021,7 @@ def get_high_sales_growth_stocks(session, market_cap_category=None):
                 'gap_days': gap_dates,
                 'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
                 'last_event_type': stock.last_event_type,
+                'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
                 'tags': stock.tags,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })

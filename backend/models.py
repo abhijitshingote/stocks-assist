@@ -415,6 +415,7 @@ class StockVolspikeGapper(Base):
     # Event tracking for sorting
     last_event_date = Column(Date)           # Most recent spike or gap date
     last_event_type = Column(String(20))     # 'volume_spike' or 'gapper'
+    last_event_magnitude = Column(Float)     # Volume ratio (spike) or return decimal (gapper) for the last event
     
     updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
@@ -503,6 +504,7 @@ class MainView(Base):
     gap_days = Column(Text)
     last_event_date = Column(Date)
     last_event_type = Column(String(20))
+    last_event_magnitude = Column(Float)
     
     # Computed tags
     tags = Column(Text)

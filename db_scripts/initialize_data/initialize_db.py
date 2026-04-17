@@ -370,6 +370,7 @@ def initialize_database(reset=False, schema='public'):
                 gap_days TEXT,
                 last_event_date DATE,
                 last_event_type VARCHAR(20),
+                last_event_magnitude FLOAT,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
@@ -431,6 +432,7 @@ def initialize_database(reset=False, schema='public'):
                 gap_days TEXT,
                 last_event_date DATE,
                 last_event_type VARCHAR(20),
+                last_event_magnitude FLOAT,
                 tags TEXT,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE

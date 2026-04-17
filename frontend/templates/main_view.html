@@ -189,8 +189,8 @@
     .stock-item .ticker-mcap {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.68rem;
-        color: var(--text-secondary);
-        font-weight: 600;
+        color: #f0c040;
+        font-weight: 700;
         margin-left: 0.3rem;
     }
 
@@ -938,6 +938,15 @@
 
     let stockChart = null;
 
+    function sortByReturn(data) {
+        return [...data].sort((a, b) => {
+            const aVal = a.dr_1, bVal = b.dr_1;
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+            return bVal - aVal;
+        });
+    }
+
     // SPY subchart
     let spyChart = null;
     let spyCandleSeries = null;
@@ -1011,6 +1020,7 @@
 
         document.getElementById('totalStocks').textContent = allStocks.length;
 
+        allStocks = sortByReturn(allStocks);
         renderList();
 
         // Load preferences and notes for all tickers

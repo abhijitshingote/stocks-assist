@@ -120,6 +120,7 @@ def compute_and_load_main_view(connection):
         gap_days,
         last_event_date,
         last_event_type,
+        last_event_magnitude,
         tags,
         updated_at
     )
@@ -179,6 +180,7 @@ def compute_and_load_main_view(connection):
             svg.gap_days,
             svg.last_event_date,
             svg.last_event_type,
+            svg.last_event_magnitude,
 
             -- Combined tags
 ARRAY_TO_STRING(

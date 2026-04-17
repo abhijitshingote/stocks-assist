@@ -177,8 +177,8 @@
     .stock-item .ticker-mcap {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.68rem;
-        color: var(--text-secondary);
-        font-weight: 600;
+        color: #f0c040;
+        font-weight: 700;
         margin-left: 0.3rem;
     }
 
@@ -613,6 +613,15 @@
     let currentTimeframeDays = 365;
     let stockChart = null;
 
+    function sortByReturn(data) {
+        return [...data].sort((a, b) => {
+            const aVal = a.dr_1, bVal = b.dr_1;
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+            return bVal - aVal;
+        });
+    }
+
     // ── Formatting ──
     function fmtRet(v) { if (v == null) return '—'; return (v >= 0 ? '+' : '') + v.toFixed(0) + '%'; }
     function retCls(v) { if (v == null) return ''; return v >= 0 ? 'ms-positive' : 'ms-negative'; }
@@ -637,6 +646,7 @@
         hideLoading();
         document.getElementById('mainLayout').style.display = 'flex';
         document.getElementById('totalStocks').textContent = allStocks.length;
+        allStocks = sortByReturn(allStocks);
         renderList();
 
         if (allStocks.length > 0 && !selectedTicker) {
@@ -655,10 +665,9 @@
 
         listEl.innerHTML = allStocks.map(s => {
             const isActive = s.ticker === selectedTicker ? ' active' : '';
-            const avgGrowth = [s.rev_growth_t, s.rev_growth_t_plus_1].filter(v => v != null);
-            const avg = avgGrowth.length ? avgGrowth.reduce((a,b)=>a+b,0)/avgGrowth.length : null;
-            const retStr = avg != null ? (avg >= 0 ? '+' : '') + avg.toFixed(0) + '%' : '—';
-            const retClass = avg != null ? (avg >= 0 ? 'positive' : 'negative') : 'muted';
+            const ret1d = s.dr_1;
+            const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
+            const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
             return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
                 <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>

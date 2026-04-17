@@ -156,13 +156,11 @@
 
     .stock-item {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
         padding: 0.45rem 0.6rem;
         cursor: pointer;
         border-bottom: 1px solid rgba(48, 54, 61, 0.3);
         transition: background 0.15s;
-        gap: 0.5rem;
     }
 
     .stock-item:hover {
@@ -181,11 +179,27 @@
         font-size: 0.8rem;
     }
 
-    .stock-item .item-meta {
+    .stock-item .ticker-mcap {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        color: #f0c040;
+        font-weight: 700;
+        margin-left: 0.3rem;
+    }
+
+    .stock-item .stock-main-row {
         display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 0.05rem;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .stock-item .stock-extra-row {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        width: 100%;
+        margin-top: 0.15rem;
     }
 
     .stock-item .event-badges {
@@ -215,6 +229,13 @@
     .stock-item .last-date {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.65rem;
+        color: #58a6ff;
+        font-weight: 600;
+    }
+
+    .stock-item .event-mag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.62rem;
         color: var(--text-muted);
     }
 
@@ -708,7 +729,7 @@
     let selectedTicker = null;
     let currentRecency = 'all';
     let currentTimeframeDays = 365;
-    let sortColumn = 'last_event_date';
+    let sortColumn = 'dr_1';
     let sortDirection = 'desc';
     let stockChart = null;
 
@@ -799,18 +820,30 @@
             const ret1d = s.dr_1;
             const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
             const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
-            const spikeBadge = s.spike_day_count > 0 ? `<span class="mini-badge spike">S${s.spike_day_count}</span>` : '';
-            const gapBadge = s.gapper_day_count > 0 ? `<span class="mini-badge gap">G${s.gapper_day_count}</span>` : '';
+            const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
+
             const lastDate = s.last_event_date ? fmtShortDate(s.last_event_date) : '';
+            const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
+            const evtClass = s.last_event_type === 'volume_spike' ? 'spike' : s.last_event_type === 'gapper' ? 'gap' : '';
+
+            let magStr = '';
+            if (s.last_event_magnitude != null) {
+                if (s.last_event_type === 'volume_spike') {
+                    magStr = s.last_event_magnitude.toFixed(1) + 'x vol';
+                } else if (s.last_event_type === 'gapper') {
+                    magStr = (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(1) + '% gap';
+                }
+            }
 
             return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
-                <div>
-                    <span class="ticker">${s.ticker}</span>
-                    <span class="last-date">${lastDate}</span>
-                </div>
-                <div class="item-meta">
-                    <div class="event-badges">${spikeBadge}${gapBadge}</div>
+                <div class="stock-main-row">
+                    <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
                     <span class="ret ${retClass}">${retStr}</span>
+                </div>
+                <div class="stock-extra-row">
+                    <span class="last-date">${lastDate}</span>
+                    ${evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : ''}
+                    ${magStr ? `<span class="event-mag">${magStr}</span>` : ''}
                 </div>
             </div>`;
         }).join('');
