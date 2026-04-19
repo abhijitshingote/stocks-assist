@@ -3048,6 +3048,50 @@ def get_company_profile_data(ticker):
 
 
 # ============================================================
+# Stock News Endpoint (live FMP API call)
+# ============================================================
+
+@app.route('/api/stock-news/<ticker>')
+def get_stock_news(ticker):
+    """Fetch latest news for a ticker from Financial Modeling Prep."""
+    ticker = ticker.upper()
+    fmp_api_key = os.getenv('FMP_API_KEY')
+    if not fmp_api_key:
+        return jsonify({'error': 'FMP_API_KEY not configured'}), 500
+
+    try:
+        limit = request.args.get('limit', 20, type=int)
+        url = 'https://financialmodelingprep.com/stable/news/stock'
+        params = {'symbols': ticker, 'limit': limit, 'apikey': fmp_api_key}
+
+        import requests as req
+        resp = req.get(url, params=params, timeout=10)
+        resp.raise_for_status()
+        articles = resp.json()
+
+        if not isinstance(articles, list):
+            return jsonify({'error': 'Unexpected response from FMP'}), 502
+
+        results = []
+        for a in articles:
+            results.append({
+                'title': a.get('title'),
+                'url': a.get('url'),
+                'published_date': a.get('publishedDate'),
+                'site': a.get('site'),
+                'text': a.get('text'),
+                'image': a.get('image'),
+                'symbol': a.get('symbol'),
+            })
+
+        return jsonify({'ticker': ticker, 'count': len(results), 'articles': results})
+
+    except Exception as e:
+        logger.error(f"Error fetching stock news for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+# ============================================================
 # Abi Notes API Endpoints (date-based personal notes)
 # ============================================================
 

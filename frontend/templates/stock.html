@@ -63,6 +63,13 @@
 .price-positive { color: var(--accent-green); }
 .price-negative { color: var(--accent-red); }
 
+.pct-change {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: right;
+}
+
 .price-subtext {
     font-size: 0.85rem;
     color: var(--text-muted);
@@ -1514,6 +1521,135 @@
     font-size: 0.8rem;
     font-style: italic;
 }
+
+/* News Section */
+.news-section {
+    margin-top: 1.5rem;
+}
+
+.news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.news-header h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.news-load-btn {
+    padding: 0.5rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.news-load-btn:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.news-load-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.news-load-btn.loading::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid transparent;
+    border-top-color: var(--accent-blue);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.news-article {
+    display: flex;
+    gap: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    transition: border-color 0.2s;
+}
+
+.news-article:hover {
+    border-color: var(--accent-blue);
+}
+
+.news-article-thumb {
+    flex-shrink: 0;
+    width: 80px;
+    height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+    background: var(--bg-card-hover);
+}
+
+.news-article-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.news-article-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+}
+
+.news-article-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.news-article-title a:hover {
+    color: var(--accent-blue);
+}
+
+.news-article-meta {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.news-article-snippet {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
 {% endblock %}
 
 {% block content %}
@@ -1551,6 +1687,7 @@
         </div>
         <div class="price-display">
             <div class="current-price" id="currentPrice">--</div>
+            <div class="pct-change" id="pctChange"></div>
             <div class="price-subtext" id="range52Week">52W: --</div>
         </div>
     </div>
@@ -1837,6 +1974,15 @@
         </div>
     </div>
 
+    <!-- News Section -->
+    <div class="news-section">
+        <div class="news-header">
+            <h2><span class="notes-icon">📰</span> News</h2>
+            <button class="news-load-btn" id="loadNewsBtn" onclick="loadStockNews()">Load News</button>
+        </div>
+        <div id="newsContent"></div>
+    </div>
+
     <!-- Notes Section -->
     <div class="notes-section">
         <div class="notes-header">
@@ -2076,8 +2222,17 @@ async function loadStockData() {
         
         // Price in header
         if (data.current_price != null) {
-            document.getElementById('currentPrice').textContent = '$' + formatNumber(data.current_price, 2);
-            document.getElementById('currentPrice').classList.add('price-positive');
+            const priceEl = document.getElementById('currentPrice');
+            priceEl.textContent = '$' + formatNumber(data.current_price, 2);
+            const isPositive = data.dr_1 == null || data.dr_1 >= 0;
+            priceEl.classList.add(isPositive ? 'price-positive' : 'price-negative');
+        }
+        // Pct change
+        const pctEl = document.getElementById('pctChange');
+        if (data.dr_1 != null) {
+            const sign = data.dr_1 >= 0 ? '+' : '';
+            pctEl.textContent = '(' + sign + formatNumber(data.dr_1, 2) + '%)';
+            pctEl.classList.add(data.dr_1 >= 0 ? 'price-positive' : 'price-negative');
         }
         document.getElementById('range52Week').textContent = '52W: ' + (data.range_52_week || '--');
         
@@ -3057,16 +3212,78 @@ function formatCompactNumber(num) {
     return '$' + num.toLocaleString();
 }
 
+// ============================================
+// News Functions
+// ============================================
+
+async function loadStockNews() {
+    const btn = document.getElementById('loadNewsBtn');
+    const container = document.getElementById('newsContent');
+
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btn.textContent = 'Loading';
+    container.innerHTML = '<div class="detail-loading">Fetching news...</div>';
+
+    try {
+        const response = await fetch(`/api/frontend/stock-news/${ticker}?limit=20`);
+        const data = await response.json();
+
+        if (data.error) {
+            container.innerHTML = '<div class="news-empty">Failed to load news.</div>';
+            return;
+        }
+
+        if (!data.articles || data.articles.length === 0) {
+            container.innerHTML = '<div class="news-empty">No news found for this stock.</div>';
+            return;
+        }
+
+        renderNews(data.articles);
+        btn.textContent = 'Refresh News';
+    } catch (error) {
+        console.error('Error loading news:', error);
+        container.innerHTML = '<div class="news-empty">Error fetching news.</div>';
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+    }
+}
+
+function renderNews(articles) {
+    const container = document.getElementById('newsContent');
+
+    const html = '<div class="news-list">' + articles.map(a => {
+        const date = a.published_date ? new Date(a.published_date).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}) : '';
+        const thumb = a.image ? `<img class="news-article-thumb" src="${a.image}" alt="" onerror="this.style.display='none'">` : '';
+        const snippet = a.text ? a.text.substring(0, 200) : '';
+
+        return `
+            <div class="news-article">
+                ${thumb}
+                <div class="news-article-body">
+                    <div class="news-article-title"><a href="${a.url || '#'}" target="_blank" rel="noopener">${a.title || 'Untitled'}</a></div>
+                    <div class="news-article-meta">
+                        ${a.site ? `<span>${a.site}</span>` : ''}
+                        ${date ? `<span>${date}</span>` : ''}
+                    </div>
+                    ${snippet ? `<div class="news-article-snippet">${snippet}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('') + '</div>';
+
+    container.innerHTML = html;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     loadStockData();
     loadNotes();
     loadPreference();
-    // Load detail sections
     loadEarningsData();
     loadEstimatesData();
     loadRatiosData();
     loadProfileData();
-    // Initialize AI notes modal
     initModelSelector();
     loadPromptTemplate();
 });

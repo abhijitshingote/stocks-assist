@@ -612,6 +612,16 @@ def api_company_profile(ticker):
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/stock-news/<ticker>')
+def api_stock_news(ticker):
+    """Proxy endpoint for stock news from FMP via backend"""
+    limit = request.args.get('limit', 20, type=int)
+    data, status_code = make_backend_request(f'/api/stock-news/{ticker}?limit={limit}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch stock news'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/latest-date')
 def api_latest_date():
     """Proxy endpoint for latest OHLC date from backend"""
