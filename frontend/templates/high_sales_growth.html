@@ -205,8 +205,8 @@
 
     /* ── Right panel: metrics ── */
     .hsg-metrics {
-        width: 280px;
-        min-width: 240px;
+        width: 260px;
+        min-width: 220px;
         display: none;
         flex-direction: column;
         background: var(--bg-card);
@@ -242,7 +242,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        max-width: 170px;
+        max-width: 160px;
     }
 
     .hsg-metrics-body {
@@ -319,6 +319,39 @@
 
     .ms-positive { color: var(--accent-green); }
     .ms-negative { color: var(--accent-red); }
+
+    /* Tags inside metrics pane */
+    .ms-tags {
+        padding: 0.3rem 0.6rem;
+        border-bottom: 1px solid rgba(48, 54, 61, 0.4);
+        display: none;
+        gap: 0.15rem;
+        flex-wrap: wrap;
+    }
+
+    .ms-tags.visible { display: flex; }
+
+    .tag-pill {
+        display: inline-block;
+        padding: 0.08rem 0.25rem;
+        border-radius: 4px;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .tag-pill.high-growth { background: rgba(63, 185, 80, 0.2); color: var(--accent-green); }
+    .tag-pill.return { background: rgba(88, 166, 255, 0.2); color: var(--accent-blue); }
+    .tag-pill.spike { background: rgba(210, 153, 34, 0.2); color: var(--accent-yellow); }
+    .tag-pill.gapper { background: rgba(248, 81, 73, 0.2); color: var(--accent-red); }
+    .tag-pill.event { background: rgba(163, 113, 247, 0.2); color: var(--accent-purple); }
+    .tag-pill.ti65-tag {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(124, 58, 237, 0.3) 100%);
+        color: #00d4ff;
+        font-weight: 700;
+        border: 1px solid rgba(0, 212, 255, 0.5);
+    }
 
     /* Chart panels */
     .charts-container {
@@ -467,12 +500,12 @@
     }
 
     body.page-hsg.wide-layout .hsg-metrics {
-        width: 340px;
-        min-width: 300px;
+        width: 320px;
+        min-width: 280px;
     }
 
     body.page-hsg.wide-layout .hsg-metrics-company {
-        max-width: 250px;
+        max-width: 240px;
     }
 
     @media (max-width: 1024px) {
@@ -564,6 +597,7 @@
             <span class="hsg-metrics-company" id="metricsCompany"></span>
         </div>
         <div class="hsg-metrics-body">
+            <div class="ms-tags" id="tagsStrip"></div>
             <div id="metricsContent"></div>
         </div>
     </div>
@@ -706,8 +740,41 @@
         document.getElementById('metricsTicker').textContent = ticker;
         document.getElementById('metricsCompany').textContent = stock.company_name || '';
 
+        updateTagsStrip(stock);
         updateMetrics(stock);
         await loadChart(ticker);
+    }
+
+    // ── Tags ──
+    function updateTagsStrip(stock) {
+        const strip = document.getElementById('tagsStrip');
+        let pills = '';
+
+        const tags = (stock.tags || '').split(', ').filter(t => t.trim());
+        if (tags.includes('high_sales_growth')) {
+            pills += '<span class="tag-pill high-growth">high_sales_growth</span>';
+        }
+
+        if (stock.last_event_type && stock.last_event_date) {
+            const isSpike = stock.last_event_type === 'volume_spike';
+            const label = isSpike ? 'spike' : 'gap';
+            const cls = isSpike ? 'spike' : 'gapper';
+            let mag = '';
+            if (stock.last_event_magnitude != null) {
+                mag = isSpike
+                    ? stock.last_event_magnitude.toFixed(1) + 'x'
+                    : (stock.last_event_magnitude * 100).toFixed(1) + '%';
+            }
+            pills += `<span class="tag-pill ${cls}">last ${label}: ${mag} (${stock.last_event_date})</span>`;
+        }
+
+        if (!pills) {
+            strip.classList.remove('visible');
+            strip.innerHTML = '';
+            return;
+        }
+        strip.innerHTML = pills;
+        strip.classList.add('visible');
     }
 
     // ── Metrics (matches Main View right column) ──
@@ -735,22 +802,16 @@
         html += section('Returns', items);
 
         items = '';
-        [['T-1','eps_growth_t_minus_1'],['T','eps_growth_t'],['T+1','eps_growth_t_plus_1'],['T+2','eps_growth_t_plus_2']].forEach(([l,k]) => {
-            items += msItem(l, fmtRet(s[k]), retCls(s[k]));
-        });
-        html += section('EPS Growth', items);
-
-        items = '';
-        items += msItem('RSI', s.rsi_mktcap || '—', s.rsi_mktcap >= 70 ? 'ms-positive' : s.rsi_mktcap <= 30 ? 'ms-negative' : '');
-        items += msItem('ATR%', s.atr20 ? s.atr20.toFixed(1)+'%' : '—');
-        items += msItem('V/Avg', s.vol_vs_10d_avg ? s.vol_vs_10d_avg.toFixed(1)+'x' : '—');
-        html += section('Technical', items);
-
-        items = '';
         [['T-1','rev_growth_t_minus_1'],['T','rev_growth_t'],['T+1','rev_growth_t_plus_1'],['T+2','rev_growth_t_plus_2']].forEach(([l,k]) => {
             items += msItem(l, fmtRet(s[k]), retCls(s[k]));
         });
         html += section('Revenue Growth', items);
+
+        items = '';
+        [['T-1','eps_growth_t_minus_1'],['T','eps_growth_t'],['T+1','eps_growth_t_plus_1'],['T+2','eps_growth_t_plus_2']].forEach(([l,k]) => {
+            items += msItem(l, fmtRet(s[k]), retCls(s[k]));
+        });
+        html += section('EPS Growth', items);
 
         items = '';
         [['T-1','ps_t_minus_1'],['T','ps_t'],['T+1','ps_t_plus_1'],['T+2','ps_t_plus_2']].forEach(([l,k]) => {
@@ -765,30 +826,17 @@
         html += section('P/E Ratio', items);
 
         items = '';
+        items += msItem('RSI', s.rsi_mktcap || '—', s.rsi_mktcap >= 70 ? 'ms-positive' : s.rsi_mktcap <= 30 ? 'ms-negative' : '');
+        items += msItem('ATR%', s.atr20 ? s.atr20.toFixed(1)+'%' : '—');
+        items += msItem('V/Avg', s.vol_vs_10d_avg ? s.vol_vs_10d_avg.toFixed(1)+'x' : '—');
+        html += section('Technical', items);
+
+        items = '';
         items += msItem('Float', fmtVol(s.float_shares));
         items += msItem('Free%', s.free_float ? s.free_float.toFixed(1)+'%' : '—');
         items += msItem('Short%', s.short_float ? s.short_float.toFixed(1)+'%' : '—');
         items += msItem('S.Ratio', s.short_ratio ? s.short_ratio.toFixed(1) : '—');
         html += section('Float & Short', items);
-
-        if (s.spike_day_count > 0 || s.gapper_day_count > 0) {
-            items = '';
-            if (s.spike_day_count > 0) {
-                items += msItem('Spikes', s.spike_day_count, '', s.avg_volume_spike ? s.avg_volume_spike.toFixed(1)+'x avg' : '');
-            }
-            if (s.gapper_day_count > 0) {
-                items += msItem('Gaps', s.gapper_day_count, '', s.avg_return_gapper ? (s.avg_return_gapper*100).toFixed(1)+'% avg' : '');
-            }
-            html += section('Events', items);
-        }
-
-        items = '';
-        items += `<span class="ms-item"><span class="ms-label">Sector</span><span class="ms-val ms-val-truncate" title="${s.sector||''}">${s.sector||'—'}</span></span>`;
-        items += `<span class="ms-item"><span class="ms-label">Industry</span><span class="ms-val ms-val-truncate" title="${s.industry||''}">${s.industry||'—'}</span></span>`;
-        items += `<span class="ms-item"><span class="ms-label">Country</span><span class="ms-val ms-val-truncate">${s.country||'—'}</span></span>`;
-        items += `<span class="ms-item"><span class="ms-label">IPO</span><span class="ms-val">${s.ipo_date ? s.ipo_date.slice(0,4) : '—'}</span></span>`;
-        items += `<span class="ms-item"><span class="ms-label">52W</span><span class="ms-val ms-val-truncate">${s.range_52_week||'—'}</span></span>`;
-        html += section('Info', items);
 
         container.innerHTML = html;
     }

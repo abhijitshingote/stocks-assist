@@ -1157,7 +1157,6 @@
             return `<div class="ms-section"><span class="ms-section-title">${title}</span><div class="ms-section-row">${items}</div></div>`;
         }
 
-        // Price & Market
         let items = '';
         items += msItem('Price', s.current_price ? '$'+s.current_price.toFixed(2) : '—');
         items += msItem('MCap', fmtMktCap(s.market_cap));
@@ -1165,7 +1164,6 @@
         items += msItem('$Vol', s.dollar_volume ? fmtMktCap(s.dollar_volume) : '—');
         html += section('Price & Market', items);
 
-        // Returns
         items = '';
         [['1D','dr_1'],['5D','dr_5'],['20D','dr_20']].forEach(([l,k]) => {
             items += msItem(l, fmtRet(s[k]), retCls(s[k]) + ' ms-val-lg');
@@ -1175,42 +1173,36 @@
         });
         html += section('Returns', items);
 
-        // EPS Growth
-        items = '';
-        [['T-1','eps_growth_t_minus_1'],['T','eps_growth_t'],['T+1','eps_growth_t_plus_1'],['T+2','eps_growth_t_plus_2']].forEach(([l,k]) => {
-            items += msItem(l, fmtRet(s[k]), retCls(s[k]));
-        });
-        html += section('EPS Growth', items);
-
-        // Technical
-        items = '';
-        items += msItem('RSI', s.rsi_mktcap || '—', s.rsi_mktcap >= 70 ? 'ms-positive' : s.rsi_mktcap <= 30 ? 'ms-negative' : '');
-        items += msItem('ATR%', s.atr20 ? s.atr20.toFixed(1)+'%' : '—');
-        items += msItem('V/Avg', s.vol_vs_10d_avg ? s.vol_vs_10d_avg.toFixed(1)+'x' : '—');
-        html += section('Technical', items);
-
-        // Revenue Growth
         items = '';
         [['T-1','rev_growth_t_minus_1'],['T','rev_growth_t'],['T+1','rev_growth_t_plus_1'],['T+2','rev_growth_t_plus_2']].forEach(([l,k]) => {
             items += msItem(l, fmtRet(s[k]), retCls(s[k]));
         });
         html += section('Revenue Growth', items);
 
-        // P/S
+        items = '';
+        [['T-1','eps_growth_t_minus_1'],['T','eps_growth_t'],['T+1','eps_growth_t_plus_1'],['T+2','eps_growth_t_plus_2']].forEach(([l,k]) => {
+            items += msItem(l, fmtRet(s[k]), retCls(s[k]));
+        });
+        html += section('EPS Growth', items);
+
         items = '';
         [['T-1','ps_t_minus_1'],['T','ps_t'],['T+1','ps_t_plus_1'],['T+2','ps_t_plus_2']].forEach(([l,k]) => {
             items += msItem(l, fmtVal(s[k], 1));
         });
         html += section('P/S Ratio', items);
 
-        // P/E
         items = '';
         [['T-1','pe_t_minus_1'],['T','pe_t'],['T+1','pe_t_plus_1'],['T+2','pe_t_plus_2']].forEach(([l,k]) => {
             items += msItem(l, fmtVal(s[k], 0));
         });
         html += section('P/E Ratio', items);
 
-        // Float & Short
+        items = '';
+        items += msItem('RSI', s.rsi_mktcap || '—', s.rsi_mktcap >= 70 ? 'ms-positive' : s.rsi_mktcap <= 30 ? 'ms-negative' : '');
+        items += msItem('ATR%', s.atr20 ? s.atr20.toFixed(1)+'%' : '—');
+        items += msItem('V/Avg', s.vol_vs_10d_avg ? s.vol_vs_10d_avg.toFixed(1)+'x' : '—');
+        html += section('Technical', items);
+
         items = '';
         items += msItem('Float', fmtVol(s.float_shares));
         items += msItem('Free%', s.free_float ? s.free_float.toFixed(1)+'%' : '—');
@@ -1218,53 +1210,38 @@
         items += msItem('S.Ratio', s.short_ratio ? s.short_ratio.toFixed(1) : '—');
         html += section('Float & Short', items);
 
-        // Events
-        if (s.spike_day_count > 0 || s.gapper_day_count > 0) {
-            items = '';
-            if (s.spike_day_count > 0) {
-                items += msItem('Spikes', s.spike_day_count, '', s.avg_volume_spike ? s.avg_volume_spike.toFixed(1)+'x avg' : '');
-            }
-            if (s.gapper_day_count > 0) {
-                items += msItem('Gaps', s.gapper_day_count, '', s.avg_return_gapper ? (s.avg_return_gapper*100).toFixed(1)+'% avg' : '');
-            }
-            html += section('Events', items);
-        }
-
-        // Info
-        items = '';
-        items += `<span class="ms-item"><span class="ms-label">Sector</span><span class="ms-val ms-val-truncate" title="${s.sector||''}">${s.sector||'—'}</span></span>`;
-        items += `<span class="ms-item"><span class="ms-label">Industry</span><span class="ms-val ms-val-truncate" title="${s.industry||''}">${s.industry||'—'}</span></span>`;
-        items += `<span class="ms-item"><span class="ms-label">Country</span><span class="ms-val ms-val-truncate">${s.country||'—'}</span></span>`;
-        items += `<span class="ms-item"><span class="ms-label">IPO</span><span class="ms-val">${s.ipo_date ? s.ipo_date.slice(0,4) : '—'}</span></span>`;
-        items += `<span class="ms-item"><span class="ms-label">52W</span><span class="ms-val ms-val-truncate">${s.range_52_week||'—'}</span></span>`;
-        html += section('Info', items);
-
         container.innerHTML = html;
     }
 
     // ── Tags ──
     function updateTagsStrip(stock) {
         const strip = document.getElementById('tagsStrip');
-        if (!stock.tags) {
+        let pills = '';
+
+        const tags = (stock.tags || '').split(', ').filter(t => t.trim());
+        if (tags.includes('high_sales_growth')) {
+            pills += '<span class="tag-pill high-growth">high_sales_growth</span>';
+        }
+
+        if (stock.last_event_type && stock.last_event_date) {
+            const isSpike = stock.last_event_type === 'volume_spike';
+            const label = isSpike ? 'spike' : 'gap';
+            const cls = isSpike ? 'spike' : 'gapper';
+            let mag = '';
+            if (stock.last_event_magnitude != null) {
+                mag = isSpike
+                    ? stock.last_event_magnitude.toFixed(1) + 'x'
+                    : (stock.last_event_magnitude * 100).toFixed(1) + '%';
+            }
+            pills += `<span class="tag-pill ${cls}">last ${label}: ${mag} (${stock.last_event_date})</span>`;
+        }
+
+        if (!pills) {
             strip.classList.remove('visible');
             strip.innerHTML = '';
             return;
         }
-        const tags = stock.tags.split(', ').filter(t => t.trim());
-        if (tags.length === 0) {
-            strip.classList.remove('visible');
-            strip.innerHTML = '';
-            return;
-        }
-        strip.innerHTML = tags.map(tag => {
-            let cls = 'event';
-            if (tag === 'high_sales_growth') cls = 'high-growth';
-            else if (tag === 'TI65') cls = 'ti65-tag';
-            else if (tag.includes('dr_')) cls = 'return';
-            else if (tag.includes('volume_spike') || tag === 'volume_spike') cls = 'spike';
-            else if (tag.includes('gapper') || tag === 'gapper') cls = 'gapper';
-            return `<span class="tag-pill ${cls}">${tag}</span>`;
-        }).join('');
+        strip.innerHTML = pills;
         strip.classList.add('visible');
     }
 

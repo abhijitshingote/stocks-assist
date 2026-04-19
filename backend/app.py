@@ -252,6 +252,7 @@ def get_stock_metrics_data(session, ticker):
         'last_event_date': volspike_gapper.last_event_date.strftime('%Y-%m-%d') if volspike_gapper and volspike_gapper.last_event_date else None,
         'last_event_type': volspike_gapper.last_event_type if volspike_gapper else None,
         'last_event_magnitude': float(volspike_gapper.last_event_magnitude) if volspike_gapper and volspike_gapper.last_event_magnitude else None,
+        'last_event_return': float(volspike_gapper.last_event_return) if volspike_gapper and volspike_gapper.last_event_return else None,
     }
 
 
@@ -1432,7 +1433,16 @@ def get_top_performance_stocks(session, market_cap_category=None):
                 StockMetrics.float_shares,
                 StockMetrics.outstanding_shares,
                 StockMetrics.free_float,
-                StockMetrics.updated_at
+                StockMetrics.updated_at,
+                StockVolspikeGapper.last_event_date,
+                StockVolspikeGapper.last_event_type,
+                StockVolspikeGapper.last_event_magnitude,
+                StockVolspikeGapper.last_event_return,
+                MainView.tags,
+            ).outerjoin(
+                StockVolspikeGapper, StockVolspikeGapper.ticker == StockMetrics.ticker
+            ).outerjoin(
+                MainView, MainView.ticker == StockMetrics.ticker
             ).filter(
                 getattr(StockMetrics, return_column).isnot(None),
                 StockMetrics.market_cap.isnot(None)
@@ -1517,6 +1527,11 @@ def get_top_performance_stocks(session, market_cap_category=None):
                 'float_shares': stock.float_shares,
                 'outstanding_shares': stock.outstanding_shares,
                 'free_float': round(stock.free_float, 2) if stock.free_float else None,
+                'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
+                'last_event_type': stock.last_event_type,
+                'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
+                'last_event_return': float(stock.last_event_return) if stock.last_event_return else None,
+                'tags': stock.tags,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
         
@@ -1598,6 +1613,7 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
             StockVolspikeGapper.last_event_date,
             StockVolspikeGapper.last_event_type,
             StockVolspikeGapper.last_event_magnitude,
+            StockVolspikeGapper.last_event_return,
             StockMetrics.company_name,
             StockMetrics.country,
             StockMetrics.sector,
@@ -1642,9 +1658,12 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
             StockMetrics.float_shares,
             StockMetrics.outstanding_shares,
             StockMetrics.free_float,
-            StockMetrics.updated_at
+            StockMetrics.updated_at,
+            MainView.tags,
         ).join(
             StockMetrics, StockVolspikeGapper.ticker == StockMetrics.ticker
+        ).outerjoin(
+            MainView, MainView.ticker == StockVolspikeGapper.ticker
         ).filter(
             # Only include stocks that have at least one spike day or one gap day
             # Use COALESCE to handle NULL values (treat NULL as 0)
@@ -1733,6 +1752,8 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
                 'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
                 'last_event_type': stock.last_event_type,
                 'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
+                'last_event_return': float(stock.last_event_return) if stock.last_event_return else None,
+                'tags': stock.tags,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
 
@@ -1878,6 +1899,7 @@ def get_main_view_stocks(session, market_cap_category=None):
                 'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
                 'last_event_type': stock.last_event_type,
                 'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
+                'last_event_return': float(stock.last_event_return) if stock.last_event_return else None,
                 'tags': stock.tags,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
@@ -2022,6 +2044,7 @@ def get_high_sales_growth_stocks(session, market_cap_category=None):
                 'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
                 'last_event_type': stock.last_event_type,
                 'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
+                'last_event_return': float(stock.last_event_return) if stock.last_event_return else None,
                 'tags': stock.tags,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })

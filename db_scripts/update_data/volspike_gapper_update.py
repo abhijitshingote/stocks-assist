@@ -121,7 +121,8 @@ volume_spikes_agg AS (
 last_spike AS (
     SELECT DISTINCT ON (ticker)
         ticker,
-        volume_ratio AS last_spike_magnitude
+        volume_ratio AS last_spike_magnitude,
+        daily_return AS last_spike_return
     FROM volume_spikes
     ORDER BY ticker, spike_date DESC
 ),
@@ -156,7 +157,8 @@ gap_returns_agg AS (
 last_gap AS (
     SELECT DISTINCT ON (ticker)
         ticker,
-        ROUND((close / prev_close - 1)::numeric, 4) AS last_gap_magnitude
+        ROUND((close / prev_close - 1)::numeric, 4) AS last_gap_magnitude,
+        ROUND((close / prev_close - 1)::numeric, 4) AS last_gap_return
     FROM gap_days
     ORDER BY ticker, gap_date DESC
 )
@@ -172,7 +174,8 @@ INSERT INTO stock_volspike_gapper (
     updated_at,
     last_event_date,
     last_event_type,
-    last_event_magnitude
+    last_event_magnitude,
+    last_event_return
 )
 SELECT
     sm.ticker,
@@ -193,7 +196,12 @@ SELECT
         WHEN vsa.last_spike_date IS NULL AND gra.last_gap_date IS NULL THEN NULL
         WHEN vsa.last_spike_date >= gra.last_gap_date THEN ls.last_spike_magnitude
         ELSE lg.last_gap_magnitude
-    END AS last_event_magnitude
+    END AS last_event_magnitude,
+    CASE
+        WHEN vsa.last_spike_date IS NULL AND gra.last_gap_date IS NULL THEN NULL
+        WHEN vsa.last_spike_date >= gra.last_gap_date THEN ls.last_spike_return
+        ELSE lg.last_gap_return
+    END AS last_event_return
 FROM stock_metrics sm
 LEFT JOIN volume_spikes_agg vsa ON vsa.ticker = sm.ticker
 LEFT JOIN last_spike ls ON ls.ticker = sm.ticker

@@ -121,6 +121,7 @@ def compute_and_load_main_view(connection):
         last_event_date,
         last_event_type,
         last_event_magnitude,
+        last_event_return,
         tags,
         updated_at
     )
@@ -181,6 +182,7 @@ def compute_and_load_main_view(connection):
             svg.last_event_date,
             svg.last_event_type,
             svg.last_event_magnitude,
+            svg.last_event_return,
 
             -- Combined tags
 ARRAY_TO_STRING(
