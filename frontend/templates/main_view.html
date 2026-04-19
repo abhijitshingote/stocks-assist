@@ -828,6 +828,7 @@
                                 <div class="notes-tooltip-content empty" id="notesTooltipContent">Loading...</div>
                             </div>
                         </div>
+                        <button class="abi-wl-btn" id="detailWlBtn" title="Abi Watchlist" onclick="openWatchlistModal()">+ Watchlist</button>
                     </div>
                     <div class="chart-timeframes" id="chartTimeframes">
                         <button data-days="30">1M</button>
@@ -1023,11 +1024,12 @@
         allStocks = sortByReturn(allStocks);
         renderList();
 
-        // Load preferences and notes for all tickers
+        // Load preferences, notes, and watchlist status for all tickers
         const tickers = allStocks.map(s => s.ticker);
         if (tickers.length > 0) {
             loadPreferencesForStocks(tickers);
             loadNotesForStocks(tickers);
+            loadWatchlistForStocks(tickers);
         }
 
         // Auto-select first stock if none selected
@@ -1137,6 +1139,9 @@
 
         // Notes
         updateDetailNotes(ticker);
+
+        // Watchlist
+        updateWatchlistBtn(ticker);
 
         // Tags
         updateTagsStrip(stock);
@@ -1546,6 +1551,46 @@
             content.classList.add('empty');
         }
     }
+
+    // ── Watchlist functions ──
+    let watchlistStatus = {};
+
+    async function loadWatchlistForStocks(tickers) {
+        if (!tickers || tickers.length === 0) return;
+        try {
+            const resp = await fetch('/api/frontend/abi-watchlist/batch-check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tickers }),
+            });
+            if (resp.ok) {
+                watchlistStatus = await resp.json();
+                if (selectedTicker) updateWatchlistBtn(selectedTicker);
+            }
+        } catch (e) { console.error('Error loading watchlist status:', e); }
+    }
+
+    function updateWatchlistBtn(ticker) {
+        const btn = document.getElementById('detailWlBtn');
+        if (!btn) return;
+        const inWl = !!watchlistStatus[ticker];
+        btn.classList.toggle('in-watchlist', inWl);
+        btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
+    }
+
+    window.openWatchlistModal = function() {
+        if (!selectedTicker) return;
+        const inWl = !!watchlistStatus[selectedTicker];
+        const notes = inWl ? (watchlistStatus[selectedTicker].notes || '') : '';
+        window._wlOpen(selectedTicker, notes, inWl, function(action, ticker, newNotes) {
+            if (action === 'saved') {
+                watchlistStatus[ticker] = { notes: newNotes || '' };
+            } else if (action === 'removed') {
+                delete watchlistStatus[ticker];
+            }
+            updateWatchlistBtn(ticker);
+        });
+    };
 
     // ── UI helpers ──
     function showLoading() {

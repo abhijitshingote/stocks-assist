@@ -571,6 +571,7 @@
                         <span class="sector-industry" id="detailSectorIndustry"></span>
                         <a class="stock-link" id="detailLink" href="#" target="_blank">Detail →</a>
                     </span>
+                    <button class="abi-wl-btn" id="detailWlBtn" title="Abi Watchlist" onclick="openWatchlistModal()">+ Watchlist</button>
                     <div class="chart-timeframes" id="chartTimeframes">
                         <button data-days="30">1M</button>
                         <button data-days="90">3M</button>
@@ -683,6 +684,9 @@
         allStocks = sortByReturn(allStocks);
         renderList();
 
+        const tickers = allStocks.map(s => s.ticker);
+        if (tickers.length > 0) loadWatchlistForStocks(tickers);
+
         if (allStocks.length > 0 && !selectedTicker) {
             selectStock(allStocks[0].ticker);
         } else if (selectedTicker) {
@@ -742,8 +746,37 @@
 
         updateTagsStrip(stock);
         updateMetrics(stock);
+        updateWatchlistBtn(ticker);
         await loadChart(ticker);
     }
+
+    // ── Watchlist ──
+    let watchlistStatus = {};
+    async function loadWatchlistForStocks(tickers) {
+        try {
+            const resp = await fetch('/api/frontend/abi-watchlist/batch-check', {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({tickers}),
+            });
+            if (resp.ok) { watchlistStatus = await resp.json(); if (selectedTicker) updateWatchlistBtn(selectedTicker); }
+        } catch(e) { console.error('Error loading watchlist:', e); }
+    }
+    function updateWatchlistBtn(ticker) {
+        const btn = document.getElementById('detailWlBtn');
+        if (!btn) return;
+        const inWl = !!watchlistStatus[ticker];
+        btn.classList.toggle('in-watchlist', inWl);
+        btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
+    }
+    window.openWatchlistModal = function() {
+        if (!selectedTicker) return;
+        const inWl = !!watchlistStatus[selectedTicker];
+        window._wlOpen(selectedTicker, inWl ? (watchlistStatus[selectedTicker].notes||'') : '', inWl, function(action, ticker, notes) {
+            if (action === 'saved') watchlistStatus[ticker] = {notes: notes||''};
+            else if (action === 'removed') delete watchlistStatus[ticker];
+            updateWatchlistBtn(ticker);
+        });
+    };
 
     // ── Tags ──
     function updateTagsStrip(stock) {

@@ -422,6 +422,7 @@
                 <div class="chart-ticker-info">
                     <span class="ticker-name" id="chartTicker">—</span>
                     <span class="company-name" id="chartCompany"></span>
+                    <button class="abi-wl-btn" id="detailWlBtn" title="Abi Watchlist" onclick="openWatchlistModal()">+ Watchlist</button>
                 </div>
                 <div class="chart-timeframes">
                     <button data-days="30">1M</button>
@@ -525,6 +526,8 @@
             allStocks = await resp.json();
             if (allStocks.error) allStocks = [];
             renderList();
+            const tickers = allStocks.map(s => s.ticker);
+            if (tickers.length > 0) loadWatchlistForStocks(tickers);
         } catch (e) {
             console.error('Failed to load RS screener data', e);
             allStocks = [];
@@ -681,6 +684,34 @@
         window.addEventListener('resize', extraResizeHandler);
     }
 
+    // ── Watchlist ──
+    let watchlistStatus = {};
+    async function loadWatchlistForStocks(tickers) {
+        try {
+            const resp = await fetch('/api/frontend/abi-watchlist/batch-check', {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({tickers}),
+            });
+            if (resp.ok) { watchlistStatus = await resp.json(); if (selectedTicker) updateWatchlistBtn(selectedTicker); }
+        } catch(e) { console.error('Error loading watchlist:', e); }
+    }
+    function updateWatchlistBtn(ticker) {
+        const btn = document.getElementById('detailWlBtn');
+        if (!btn) return;
+        const inWl = !!watchlistStatus[ticker];
+        btn.classList.toggle('in-watchlist', inWl);
+        btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
+    }
+    window.openWatchlistModal = function() {
+        if (!selectedTicker) return;
+        const inWl = !!watchlistStatus[selectedTicker];
+        window._wlOpen(selectedTicker, inWl ? (watchlistStatus[selectedTicker].notes||'') : '', inWl, function(action, ticker, notes) {
+            if (action === 'saved') watchlistStatus[ticker] = {notes: notes||''};
+            else if (action === 'removed') delete watchlistStatus[ticker];
+            updateWatchlistBtn(ticker);
+        });
+    };
+
     // ── Select stock and load chart ──
     async function selectStock(ticker) {
         if (selectedTicker === ticker) return;
@@ -695,6 +726,7 @@
 
         document.getElementById('chartTicker').textContent = ticker;
         document.getElementById('chartCompany').textContent = stock.company_name || '';
+        updateWatchlistBtn(ticker);
         document.getElementById('chartLoading').style.display = 'flex';
 
         // Destroy old charts

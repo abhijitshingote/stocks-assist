@@ -284,6 +284,107 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
+        /* ── Abi Watchlist Button & Modal (shared across screener pages) ── */
+        .abi-wl-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.15rem 0.4rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .abi-wl-btn:hover {
+            border-color: var(--accent-purple);
+            color: var(--text-primary);
+        }
+        .abi-wl-btn.in-watchlist {
+            background: rgba(163, 113, 247, 0.2);
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
+        }
+
+        .wl-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .wl-modal-overlay.visible { display: flex; }
+
+        .wl-modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            width: 420px;
+            max-width: 90vw;
+            padding: 1.25rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+        }
+        .wl-modal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+        .wl-modal-title .ticker-hl {
+            color: var(--accent-purple);
+        }
+        .wl-modal textarea {
+            width: 100%;
+            min-height: 80px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            padding: 0.5rem;
+            resize: vertical;
+            margin-bottom: 0.75rem;
+        }
+        .wl-modal textarea:focus { outline: none; border-color: var(--accent-purple); }
+        .wl-modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        .wl-modal-actions button {
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.15s;
+        }
+        .wl-modal-actions .wl-cancel {
+            background: var(--bg-dark);
+            color: var(--text-secondary);
+        }
+        .wl-modal-actions .wl-cancel:hover { color: var(--text-primary); }
+        .wl-modal-actions .wl-save {
+            background: var(--accent-purple);
+            color: #fff;
+            border-color: var(--accent-purple);
+        }
+        .wl-modal-actions .wl-save:hover { background: #b585ff; }
+        .wl-modal-actions .wl-remove {
+            background: transparent;
+            color: var(--accent-red);
+            border-color: var(--accent-red);
+            margin-right: auto;
+        }
+        .wl-modal-actions .wl-remove:hover { background: rgba(248, 81, 73, 0.15); }
+
         {% block extra_styles %}{% endblock %}
     </style>
 </head>
@@ -305,6 +406,7 @@
                     <a href="/rsi">Relative Strength</a>
                     <a href="/rs-screener">RS Screener</a>
                     <a href="/main-view">Main View</a>
+                    <a href="/abi-watchlist">Abi Watchlist</a>
                     <a href="/context">Context</a>
                     <a href="/context-2">Context-2</a>
                     <a href="/logs">Logs</a>
@@ -387,6 +489,86 @@
                 }
             }
         }
+    </script>
+
+    <!-- Abi Watchlist Modal (shared across pages) -->
+    <div class="wl-modal-overlay" id="wlModalOverlay">
+        <div class="wl-modal">
+            <div class="wl-modal-title">Add <span class="ticker-hl" id="wlModalTicker"></span> to Abi Watchlist</div>
+            <textarea id="wlModalNotes" placeholder="Notes (optional)..."></textarea>
+            <div class="wl-modal-actions">
+                <button class="wl-remove" id="wlModalRemoveBtn" style="display:none;" onclick="window._wlRemove()">Remove</button>
+                <button class="wl-cancel" onclick="window._wlClose()">Cancel</button>
+                <button class="wl-save" id="wlModalSaveBtn" onclick="window._wlSave()">Add</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function(){
+        const overlay = document.getElementById('wlModalOverlay');
+        const tickerEl = document.getElementById('wlModalTicker');
+        const notesEl = document.getElementById('wlModalNotes');
+        const removeBtn = document.getElementById('wlModalRemoveBtn');
+        const saveBtn = document.getElementById('wlModalSaveBtn');
+        let _ticker = null;
+        let _isInWl = false;
+        let _onDone = null;
+
+        window._wlOpen = function(ticker, currentNotes, inWatchlist, onDone) {
+            _ticker = ticker;
+            _isInWl = !!inWatchlist;
+            _onDone = onDone || null;
+            tickerEl.textContent = ticker;
+            notesEl.value = currentNotes || '';
+            removeBtn.style.display = _isInWl ? 'inline-block' : 'none';
+            saveBtn.textContent = _isInWl ? 'Update' : 'Add';
+            document.querySelector('.wl-modal-title').innerHTML = (_isInWl ? 'Edit ' : 'Add ') + '<span class="ticker-hl">' + ticker + '</span>' + (_isInWl ? ' Watchlist Notes' : ' to Abi Watchlist');
+            overlay.classList.add('visible');
+            notesEl.focus();
+        };
+
+        window._wlClose = function() {
+            overlay.classList.remove('visible');
+            _ticker = null;
+        };
+
+        window._wlSave = async function() {
+            if (!_ticker) return;
+            const notes = notesEl.value.trim();
+            try {
+                if (_isInWl) {
+                    await fetch('/api/frontend/abi-watchlist/' + _ticker, {
+                        method: 'PUT',
+                        headers: {'Content-Type':'application/json'},
+                        body: JSON.stringify({notes})
+                    });
+                } else {
+                    await fetch('/api/frontend/abi-watchlist', {
+                        method: 'POST',
+                        headers: {'Content-Type':'application/json'},
+                        body: JSON.stringify({ticker: _ticker, notes})
+                    });
+                }
+            } catch(e) { console.error('Watchlist save error', e); }
+            overlay.classList.remove('visible');
+            if (_onDone) _onDone('saved', _ticker, notes);
+            _ticker = null;
+        };
+
+        window._wlRemove = async function() {
+            if (!_ticker) return;
+            try {
+                await fetch('/api/frontend/abi-watchlist/' + _ticker, {method:'DELETE'});
+            } catch(e) { console.error('Watchlist remove error', e); }
+            overlay.classList.remove('visible');
+            if (_onDone) _onDone('removed', _ticker);
+            _ticker = null;
+        };
+
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) window._wlClose();
+        });
+    })();
     </script>
 </body>
 </html>

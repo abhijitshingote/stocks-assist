@@ -685,6 +685,73 @@ def api_treasury_10y():
     return jsonify(data), status_code
 
 
+# ============================================================
+# Abi Watchlist Endpoints
+# ============================================================
+
+@app.route('/abi-watchlist')
+def abi_watchlist_page():
+    """Abi Watchlist page - personal watchlist with Main View layout"""
+    return render_template('abi_watchlist.html')
+
+
+@app.route('/api/frontend/abi-watchlist', methods=['GET'])
+def api_get_abi_watchlist():
+    """Proxy endpoint to get all watchlist items"""
+    data, status_code = make_backend_request('/api/abi-watchlist')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch watchlist'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-watchlist', methods=['POST'])
+def api_add_to_abi_watchlist():
+    """Proxy endpoint to add a ticker to the watchlist"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/abi-watchlist', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to add to watchlist'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-watchlist/<ticker>', methods=['PUT'])
+def api_update_abi_watchlist(ticker):
+    """Proxy endpoint to update watchlist notes"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request(f'/api/abi-watchlist/{ticker}', method='PUT', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to update watchlist'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-watchlist/<ticker>', methods=['DELETE'])
+def api_delete_from_abi_watchlist(ticker):
+    """Proxy endpoint to remove a ticker from the watchlist"""
+    data, status_code = make_backend_request(f'/api/abi-watchlist/{ticker}', method='DELETE', json_data={})
+    if data is None:
+        return jsonify({'error': 'Failed to remove from watchlist'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-watchlist/batch-check', methods=['POST'])
+def api_batch_check_abi_watchlist():
+    """Proxy endpoint to check which tickers are in the watchlist"""
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/abi-watchlist/batch-check', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to check watchlist'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-watchlist/data')
+def api_abi_watchlist_data():
+    """Proxy endpoint for watchlist data with MainView metrics"""
+    data, status_code = make_backend_request('/api/abi-watchlist/data')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch watchlist data'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/rs-screener/<market_cap>')
 def api_rs_screener(market_cap):
     """Proxy endpoint for RS Screener data from backend"""
