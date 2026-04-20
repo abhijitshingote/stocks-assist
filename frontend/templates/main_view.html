@@ -941,7 +941,7 @@
 
     function sortByReturn(data) {
         return [...data].sort((a, b) => {
-            const aVal = a.dr_1, bVal = b.dr_1;
+            const aVal = a.ti65, bVal = b.ti65;
             if (aVal == null) return 1;
             if (bVal == null) return -1;
             return bVal - aVal;
