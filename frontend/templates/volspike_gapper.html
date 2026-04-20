@@ -646,7 +646,9 @@
     </div>
     <div class="recency-filter">
         <button class="recency-btn active" data-filter="all">All Time</button>
-        <button class="recency-btn" data-filter="recent">Last 30D <span class="count" id="recentCount">0</span></button>
+        <button class="recency-btn" data-filter="1">Last 1D <span class="count" id="count1D">0</span></button>
+        <button class="recency-btn" data-filter="5">Last 5D <span class="count" id="count5D">0</span></button>
+        <button class="recency-btn" data-filter="20">Last 20D <span class="count" id="count20D">0</span></button>
     </div>
     <div class="wide-toggle-wrap">
         <button type="button" class="recency-btn wide-toggle" id="wideToggle" title="Full-width layout for large displays">Wide layout</button>
@@ -783,11 +785,28 @@
         return `<span class="ms-item"><span class="ms-label">${label}</span><span class="ms-val ${cls||''}">${val}</span>${sub ? '<span class="ms-sub">'+sub+'</span>':''}</span>`;
     }
 
+    function recencyDays(filter) {
+        if (filter === 'all') return null;
+        const n = parseInt(filter, 10);
+        return Number.isFinite(n) ? n : null;
+    }
+
+    // Cutoff date (inclusive) for the last N trading days, anchored to the trading
+    // days that actually appear in the dataset. This automatically handles market
+    // holidays and late / missing ingestion for the current day.
+    function cutoffStrForTradingDays(days) {
+        const uniq = Array.from(new Set(
+            currentData.map(d => d.last_event_date).filter(Boolean)
+        )).sort().reverse();
+        if (!uniq.length) return null;
+        return uniq[Math.min(days, uniq.length) - 1];
+    }
+
     function getFilteredData() {
-        if (currentRecency !== 'recent') return sortData(currentData);
-        const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - 30);
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        const days = recencyDays(currentRecency);
+        if (days == null) return sortData(currentData);
+        const cutoffStr = cutoffStrForTradingDays(days);
+        if (!cutoffStr) return [];
         return sortData(currentData.filter(d => d.last_event_date && d.last_event_date >= cutoffStr));
     }
 
@@ -807,11 +826,14 @@
         document.getElementById('withSpikes').textContent = filtered.filter(d => d.spike_day_count > 0).length;
         document.getElementById('withGaps').textContent = filtered.filter(d => d.gapper_day_count > 0).length;
 
-        const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - 30);
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
-        const recentCount = currentData.filter(d => d.last_event_date && d.last_event_date >= cutoffStr).length;
-        document.getElementById('recentCount').textContent = recentCount;
+        const countForDays = (days) => {
+            const cutoffStr = cutoffStrForTradingDays(days);
+            if (!cutoffStr) return 0;
+            return currentData.filter(d => d.last_event_date && d.last_event_date >= cutoffStr).length;
+        };
+        document.getElementById('count1D').textContent = countForDays(1);
+        document.getElementById('count5D').textContent = countForDays(5);
+        document.getElementById('count20D').textContent = countForDays(20);
     }
 
     // ── Data loading ──
