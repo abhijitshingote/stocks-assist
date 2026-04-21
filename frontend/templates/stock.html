@@ -1682,6 +1682,7 @@
                 <button class="pref-btn dislike" id="dislikeBtn" onclick="togglePreference('dislike')">
                     <span class="icon">👎</span> Dislike
                 </button>
+                <button class="abi-wl-btn" id="detailWlBtn" title="Abi Watchlist" onclick="openWatchlistModal()" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">+ Watchlist</button>
             </div>
             <div class="pref-status" id="prefStatus"></div>
         </div>
@@ -2676,6 +2677,47 @@ async function togglePreference(prefType) {
 }
 
 // ============================================
+// Watchlist Functions
+// ============================================
+
+let watchlistStatus = {};
+
+async function loadWatchlistStatus() {
+    try {
+        const resp = await fetch('/api/frontend/abi-watchlist/batch-check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tickers: [ticker] }),
+        });
+        if (resp.ok) {
+            watchlistStatus = await resp.json();
+            updateWatchlistBtn();
+        }
+    } catch (e) { console.error('Error loading watchlist status:', e); }
+}
+
+function updateWatchlistBtn() {
+    const btn = document.getElementById('detailWlBtn');
+    if (!btn) return;
+    const inWl = !!watchlistStatus[ticker];
+    btn.classList.toggle('in-watchlist', inWl);
+    btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
+}
+
+function openWatchlistModal() {
+    const inWl = !!watchlistStatus[ticker];
+    const notes = inWl ? (watchlistStatus[ticker].notes || '') : '';
+    window._wlOpen(ticker, notes, inWl, function(action, t, newNotes) {
+        if (action === 'saved') {
+            watchlistStatus[t] = { notes: newNotes || '' };
+        } else if (action === 'removed') {
+            delete watchlistStatus[t];
+        }
+        updateWatchlistBtn();
+    });
+}
+
+// ============================================
 // AI Notes Functions
 // ============================================
 
@@ -3280,6 +3322,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadStockData();
     loadNotes();
     loadPreference();
+    loadWatchlistStatus();
     loadEarningsData();
     loadEstimatesData();
     loadRatiosData();
