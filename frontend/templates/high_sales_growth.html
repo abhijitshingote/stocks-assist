@@ -76,6 +76,50 @@
         font-weight: 600;
     }
 
+    .sort-toggle-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+
+    .sort-toggle {
+        padding: 0.2rem 0.45rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.65rem;
+        transition: all 0.2s;
+        font-family: 'JetBrains Mono', monospace;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        line-height: 1.2;
+    }
+
+    .sort-toggle:hover {
+        border-color: var(--accent-yellow);
+        color: var(--text-primary);
+    }
+
+    .sort-toggle.active {
+        background: linear-gradient(135deg, rgba(210, 153, 34, 0.2) 0%, rgba(163, 113, 247, 0.2) 100%);
+        border-color: var(--accent-yellow);
+        color: var(--text-primary);
+    }
+
+    .sort-toggle .sort-sublabel {
+        font-size: 0.5rem;
+        color: var(--text-muted);
+    }
+
+    .sort-toggle.active .sort-sublabel {
+        color: var(--text-secondary);
+    }
+
     .wide-toggle-wrap {
         display: flex;
         align-items: center;
@@ -548,6 +592,14 @@
     <div class="stats-compact">
         <div>High Growth: <span id="totalStocks">—</span></div>
     </div>
+    <div class="sort-toggle-wrap">
+        <button type="button" class="sort-toggle active" id="sortReturnBtn" data-sort="return" title="Sort by 1D return (default)">
+            Top Returns<span class="sort-sublabel">1D %</span>
+        </button>
+        <button type="button" class="sort-toggle" id="sortExpensiveBtn" data-sort="expensive" title="Sort by average P/S of T and T+1 (most expensive first)">
+            Most Expensive<span class="sort-sublabel">P/S avg (T, T+1)</span>
+        </button>
+    </div>
     <div class="wide-toggle-wrap">
         <button type="button" class="wide-toggle" id="wideToggle" title="Full-width layout for large displays">Wide layout</button>
     </div>
@@ -655,9 +707,17 @@
     // ── State ──
     let allStocks = [];
     let currentCap = 'all';
+    let currentSort = 'return'; // 'return' | 'expensive'
     let selectedTicker = null;
     let currentTimeframeDays = 365;
     let stockChart = null;
+
+    function psAvg(s) {
+        // Average of forward P/S (T and T+1). Treat non-positive/missing as unavailable.
+        const vals = [s.ps_t, s.ps_t_plus_1].filter(v => v != null && v > 0);
+        if (vals.length === 0) return null;
+        return vals.reduce((a, b) => a + b, 0) / vals.length;
+    }
 
     function sortByReturn(data) {
         return [...data].sort((a, b) => {
@@ -666,6 +726,25 @@
             if (bVal == null) return -1;
             return bVal - aVal;
         });
+    }
+
+    function sortByExpensive(data) {
+        // Descending by average of ps_t and ps_t_plus_1. Missing values go last.
+        return [...data].sort((a, b) => {
+            const aVal = psAvg(a), bVal = psAvg(b);
+            if (aVal == null && bVal == null) return 0;
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+            return bVal - aVal;
+        });
+    }
+
+    function applySort() {
+        if (currentSort === 'expensive') {
+            allStocks = sortByExpensive(allStocks);
+        } else {
+            allStocks = sortByReturn(allStocks);
+        }
     }
 
     // ── Formatting ──
@@ -692,7 +771,7 @@
         hideLoading();
         document.getElementById('mainLayout').style.display = 'flex';
         document.getElementById('totalStocks').textContent = allStocks.length;
-        allStocks = sortByReturn(allStocks);
+        applySort();
         renderList();
 
         const tickers = allStocks.map(s => s.ticker);
@@ -712,18 +791,26 @@
         const listEl = document.getElementById('stockList');
         document.getElementById('stockCount').textContent = allStocks.length;
 
+        const showPs = currentSort === 'expensive';
         listEl.innerHTML = allStocks.map((s, i) => {
             const isActive = s.ticker === selectedTicker ? ' active' : '';
-            const ret1d = s.dr_1;
-            const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
-            const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
+            let rightStr, rightClass;
+            if (showPs) {
+                const pa = psAvg(s);
+                rightStr = pa != null ? pa.toFixed(1) + 'x' : '—';
+                rightClass = pa != null ? 'muted' : 'muted';
+            } else {
+                const ret1d = s.dr_1;
+                rightStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
+                rightClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
+            }
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
             return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
                 <span style="display:flex;align-items:center;min-width:0;">
                     <span class="sn">${i + 1}.</span>
                     <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
                 </span>
-                <span class="ret ${retClass}">${retStr}</span>
+                <span class="ret ${rightClass}">${rightStr}</span>
             </div>`;
         }).join('');
 
@@ -955,6 +1042,25 @@
             currentCap = btn.dataset.cap;
             selectedTicker = null;
             loadData(currentCap);
+        });
+    });
+
+    document.querySelectorAll('.sort-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const nextSort = btn.dataset.sort;
+            if (nextSort === currentSort) return;
+            document.querySelectorAll('.sort-toggle').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentSort = nextSort;
+            applySort();
+            renderList();
+            // Keep the currently selected ticker; if it's still present the list will mark it active.
+            if (selectedTicker) {
+                const stillExists = allStocks.find(s => s.ticker === selectedTicker);
+                if (!stillExists && allStocks.length > 0) selectStock(allStocks[0].ticker);
+            } else if (allStocks.length > 0) {
+                selectStock(allStocks[0].ticker);
+            }
         });
     });
 
