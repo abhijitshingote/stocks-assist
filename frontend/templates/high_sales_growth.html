@@ -167,6 +167,17 @@
         border-left: 2px solid var(--accent-green);
     }
 
+    .stock-item .sn {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        min-width: 1.6rem;
+        text-align: right;
+        margin-right: 0.35rem;
+        flex-shrink: 0;
+    }
+
     .stock-item .ticker {
         font-family: 'JetBrains Mono', monospace;
         font-weight: 700;
@@ -701,14 +712,17 @@
         const listEl = document.getElementById('stockList');
         document.getElementById('stockCount').textContent = allStocks.length;
 
-        listEl.innerHTML = allStocks.map(s => {
+        listEl.innerHTML = allStocks.map((s, i) => {
             const isActive = s.ticker === selectedTicker ? ' active' : '';
             const ret1d = s.dr_1;
             const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
             const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
             return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
-                <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
+                <span style="display:flex;align-items:center;min-width:0;">
+                    <span class="sn">${i + 1}.</span>
+                    <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
+                </span>
                 <span class="ret ${retClass}">${retStr}</span>
             </div>`;
         }).join('');
