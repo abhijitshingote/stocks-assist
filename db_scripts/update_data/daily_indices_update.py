@@ -39,7 +39,7 @@ if not FMP_API_KEY:
 BASE_URL = 'https://financialmodelingprep.com/stable'
 
 # ETFs to track
-ETFS = ['SPY', 'QQQ', 'IWM', '^VIX',
+ETF_SYMBOLS = ['SPY', 'QQQ', 'IWM', '^VIX',
         # Commodities & Rates  
         'GLD', 'SLV', 'USO', 'TLT',
         # Sector ETFs - Risk On
