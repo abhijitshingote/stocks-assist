@@ -172,6 +172,17 @@
         border-left: 2px solid var(--accent-yellow);
     }
 
+    .stock-item .sn {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        min-width: 1.6rem;
+        text-align: right;
+        margin-right: 0.35rem;
+        flex-shrink: 0;
+    }
+
     .stock-item .ticker {
         font-family: 'JetBrains Mono', monospace;
         font-weight: 700;
@@ -876,7 +887,7 @@
         const listEl = document.getElementById('stockList');
         document.getElementById('stockCount').textContent = data.length;
 
-        listEl.innerHTML = data.map(s => {
+        listEl.innerHTML = data.map((s, i) => {
             const isActive = s.ticker === selectedTicker ? ' active' : '';
             const ret1d = s.dr_1;
             const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
@@ -898,7 +909,10 @@
 
             return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
                 <div class="stock-main-row">
-                    <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
+                    <span style="display:flex;align-items:center;min-width:0;">
+                        <span class="sn">${i + 1}.</span>
+                        <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
+                    </span>
                     <span class="ret ${retClass}">${retStr}</span>
                 </div>
                 <div class="stock-extra-row">
