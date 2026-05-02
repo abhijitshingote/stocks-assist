@@ -122,7 +122,16 @@ Bitcoin Treasury
 SOlana Treasury
 Ethereum Related
 
-
+## DB UPDATE - REMOTE TO LOCAL
+```bash
+ssh -i ~/Downloads/ssh-key-2026-01-16.key ubuntu@150.136.177.33 \
+  "cd stocks-assist && ./manage-env.sh prod backup" \
+&& scp -i ~/Downloads/ssh-key-2026-01-16.key \
+  'ubuntu@150.136.177.33:~/stocks-assist/stocks_db_backup_prod_*.dump' \
+  ~/src/stocks-assist/ \
+&& cd ~/src/stocks-assist \
+&& ./manage-env.sh prod restore "$(ls -t stocks_db_backup_prod_*.dump | head -1)"
+```
 ######### CLOUD DEPLOY #############
 
 ## Oracle Cloud Free Tier (VM.Standard.E2.1.Micro - 1GB RAM)
