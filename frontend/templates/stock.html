@@ -1650,6 +1650,66 @@
     color: var(--text-muted);
     font-size: 0.85rem;
 }
+
+/* News source badges + filter chips */
+.news-source-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.85rem;
+}
+
+.news-filter-chip {
+    padding: 0.3rem 0.7rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    user-select: none;
+}
+
+.news-filter-chip:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.news-filter-chip.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: #fff;
+}
+
+.news-source-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.news-source-badge.source-sa {
+    background: rgba(255, 152, 0, 0.15);
+    color: #ff9800;
+    border: 1px solid rgba(255, 152, 0, 0.35);
+}
+
+.news-source-badge.source-yahoo {
+    background: rgba(124, 77, 255, 0.15);
+    color: #b388ff;
+    border: 1px solid rgba(124, 77, 255, 0.35);
+}
+
+.news-source-badge.source-fmp {
+    background: rgba(76, 175, 80, 0.15);
+    color: #66bb6a;
+    border: 1px solid rgba(76, 175, 80, 0.35);
+}
 {% endblock %}
 
 {% block content %}
@@ -3258,6 +3318,9 @@ function formatCompactNumber(num) {
 // News Functions
 // ============================================
 
+let _allNewsArticles = [];
+let _activeNewsSource = 'All';
+
 async function loadStockNews() {
     const btn = document.getElementById('loadNewsBtn');
     const container = document.getElementById('newsContent');
@@ -3265,10 +3328,10 @@ async function loadStockNews() {
     btn.disabled = true;
     btn.classList.add('loading');
     btn.textContent = 'Loading';
-    container.innerHTML = '<div class="detail-loading">Fetching news...</div>';
+    container.innerHTML = '<div class="detail-loading">Fetching news from FMP, Yahoo, Seeking Alpha...</div>';
 
     try {
-        const response = await fetch(`/api/frontend/stock-news/${ticker}?limit=20`);
+        const response = await fetch(`/api/frontend/stock-news/${ticker}?limit=40`);
         const data = await response.json();
 
         if (data.error) {
@@ -3281,7 +3344,9 @@ async function loadStockNews() {
             return;
         }
 
-        renderNews(data.articles);
+        _allNewsArticles = data.articles;
+        _activeNewsSource = 'All';
+        renderNews(_allNewsArticles, data.source_counts || {});
         btn.textContent = 'Refresh News';
     } catch (error) {
         console.error('Error loading news:', error);
@@ -3292,13 +3357,51 @@ async function loadStockNews() {
     }
 }
 
-function renderNews(articles) {
+function _sourceBadgeClass(source) {
+    if (source === 'Seeking Alpha') return 'source-sa';
+    if (source === 'Yahoo Finance') return 'source-yahoo';
+    if (source === 'FMP') return 'source-fmp';
+    return '';
+}
+
+function _filterNewsBySource(source) {
+    _activeNewsSource = source;
+    const counts = {
+        'FMP': _allNewsArticles.filter(a => a.source === 'FMP').length,
+        'Yahoo Finance': _allNewsArticles.filter(a => a.source === 'Yahoo Finance').length,
+        'Seeking Alpha': _allNewsArticles.filter(a => a.source === 'Seeking Alpha').length,
+    };
+    renderNews(_allNewsArticles, counts);
+}
+
+function renderNews(articles, sourceCounts) {
     const container = document.getElementById('newsContent');
 
-    const html = '<div class="news-list">' + articles.map(a => {
+    const sources = ['All', 'Seeking Alpha', 'Yahoo Finance', 'FMP'];
+    const total = articles.length;
+
+    const chipsHtml = '<div class="news-source-filters">' + sources.map(s => {
+        const count = s === 'All' ? total : (sourceCounts[s] || 0);
+        const active = s === _activeNewsSource ? ' active' : '';
+        const disabled = s !== 'All' && count === 0;
+        if (disabled) return '';
+        return `<button class="news-filter-chip${active}" onclick="_filterNewsBySource('${s.replace(/'/g, "\\'")}')">${s} (${count})</button>`;
+    }).join('') + '</div>';
+
+    const filtered = _activeNewsSource === 'All'
+        ? articles
+        : articles.filter(a => a.source === _activeNewsSource);
+
+    if (filtered.length === 0) {
+        container.innerHTML = chipsHtml + '<div class="news-empty">No articles from ' + _activeNewsSource + '.</div>';
+        return;
+    }
+
+    const listHtml = '<div class="news-list">' + filtered.map(a => {
         const date = a.published_date ? new Date(a.published_date).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}) : '';
         const thumb = a.image ? `<img class="news-article-thumb" src="${a.image}" alt="" onerror="this.style.display='none'">` : '';
         const snippet = a.text ? a.text.substring(0, 200) : '';
+        const badge = a.source ? `<span class="news-source-badge ${_sourceBadgeClass(a.source)}">${a.source}</span>` : '';
 
         return `
             <div class="news-article">
@@ -3306,7 +3409,8 @@ function renderNews(articles) {
                 <div class="news-article-body">
                     <div class="news-article-title"><a href="${a.url || '#'}" target="_blank" rel="noopener">${a.title || 'Untitled'}</a></div>
                     <div class="news-article-meta">
-                        ${a.site ? `<span>${a.site}</span>` : ''}
+                        ${badge}
+                        ${a.site && a.source !== a.site ? `<span>${a.site}</span>` : ''}
                         ${date ? `<span>${date}</span>` : ''}
                     </div>
                     ${snippet ? `<div class="news-article-snippet">${snippet}</div>` : ''}
@@ -3315,7 +3419,7 @@ function renderNews(articles) {
         `;
     }).join('') + '</div>';
 
-    container.innerHTML = html;
+    container.innerHTML = chipsHtml + listHtml;
 }
 
 document.addEventListener('DOMContentLoaded', function() {

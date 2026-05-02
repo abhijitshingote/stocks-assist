@@ -3051,30 +3051,60 @@ def get_company_profile_data(ticker):
 
 
 # ============================================================
-# Stock News Endpoint (live FMP API call)
+# Stock News Endpoint (FMP + Yahoo RSS + Seeking Alpha RSS, merged)
 # ============================================================
 
-@app.route('/api/stock-news/<ticker>')
-def get_stock_news(ticker):
-    """Fetch latest news for a ticker from Financial Modeling Prep."""
-    ticker = ticker.upper()
-    fmp_api_key = os.getenv('FMP_API_KEY')
-    if not fmp_api_key:
-        return jsonify({'error': 'FMP_API_KEY not configured'}), 500
+# A realistic UA helps with RSS feeds (esp. Seeking Alpha) that 403 default
+# python-requests UAs.
+_NEWS_UA = (
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
+    '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+)
 
+
+def _strip_html(text):
+    """Crude HTML stripper for RSS description fields."""
+    if not text:
+        return ''
+    import re
+    text = re.sub(r'<[^>]+>', ' ', text)
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
+
+
+def _parse_rss_date(s):
+    """Parse RFC 822 / ISO 8601 date strings; return ISO string or None."""
+    if not s:
+        return None
     try:
-        limit = request.args.get('limit', 20, type=int)
-        url = 'https://financialmodelingprep.com/stable/news/stock'
-        params = {'symbols': ticker, 'limit': limit, 'apikey': fmp_api_key}
+        from email.utils import parsedate_to_datetime
+        dt = parsedate_to_datetime(s)
+        if dt is not None:
+            return dt.isoformat()
+    except Exception:
+        pass
+    try:
+        from datetime import datetime as _dt
+        return _dt.fromisoformat(s.replace('Z', '+00:00')).isoformat()
+    except Exception:
+        return None
 
+
+def _fetch_fmp_news(ticker, limit, api_key):
+    """Fetch news from Financial Modeling Prep."""
+    if not api_key:
+        return []
+    try:
         import requests as req
-        resp = req.get(url, params=params, timeout=10)
+        resp = req.get(
+            'https://financialmodelingprep.com/stable/news/stock',
+            params={'symbols': ticker, 'limit': limit, 'apikey': api_key},
+            timeout=10,
+        )
         resp.raise_for_status()
         articles = resp.json()
-
         if not isinstance(articles, list):
-            return jsonify({'error': 'Unexpected response from FMP'}), 502
-
+            return []
         results = []
         for a in articles:
             results.append({
@@ -3084,10 +3114,154 @@ def get_stock_news(ticker):
                 'site': a.get('site'),
                 'text': a.get('text'),
                 'image': a.get('image'),
-                'symbol': a.get('symbol'),
+                'symbol': a.get('symbol') or ticker,
+                'source': 'FMP',
             })
+        return results
+    except Exception as e:
+        logger.warning(f"FMP news fetch failed for {ticker}: {e}")
+        return []
 
-        return jsonify({'ticker': ticker, 'count': len(results), 'articles': results})
+
+def _fetch_rss_items(url, source_name, ticker, limit):
+    """Generic RSS fetcher for Yahoo + Seeking Alpha. Returns normalized items."""
+    try:
+        import requests as req
+        import xml.etree.ElementTree as ET
+
+        resp = req.get(
+            url,
+            headers={
+                'User-Agent': _NEWS_UA,
+                'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+            },
+            timeout=10,
+        )
+        resp.raise_for_status()
+        # Some RSS endpoints return HTML on block; bail if not XML-ish.
+        body = resp.content
+        if not body or body.lstrip()[:1] not in (b'<',):
+            return []
+
+        try:
+            root = ET.fromstring(body)
+        except ET.ParseError as pe:
+            logger.warning(f"{source_name} RSS parse error for {ticker}: {pe}")
+            return []
+
+        # Handle <rss><channel><item> (RSS 2.0) and <feed><entry> (Atom)
+        channel = root.find('channel')
+        items = channel.findall('item') if channel is not None else root.findall('{http://www.w3.org/2005/Atom}entry')
+
+        results = []
+        for item in items[:limit]:
+            def _txt(tag):
+                el = item.find(tag)
+                if el is None:
+                    el = item.find('{http://www.w3.org/2005/Atom}' + tag)
+                return el.text.strip() if (el is not None and el.text) else None
+
+            title = _txt('title')
+            link = _txt('link')
+            # Atom puts URL in href attribute
+            if not link:
+                link_el = item.find('{http://www.w3.org/2005/Atom}link')
+                if link_el is not None:
+                    link = link_el.get('href')
+            pub = _txt('pubDate') or _txt('published') or _txt('updated')
+            desc = _txt('description') or _txt('summary')
+
+            # Try to get a thumbnail from <media:thumbnail> or <media:content>
+            image = None
+            for media_tag in (
+                '{http://search.yahoo.com/mrss/}thumbnail',
+                '{http://search.yahoo.com/mrss/}content',
+            ):
+                m = item.find(media_tag)
+                if m is not None and m.get('url'):
+                    image = m.get('url')
+                    break
+
+            if not title or not link:
+                continue
+
+            results.append({
+                'title': title,
+                'url': link,
+                'published_date': _parse_rss_date(pub),
+                'site': source_name,
+                'text': _strip_html(desc),
+                'image': image,
+                'symbol': ticker,
+                'source': source_name,
+            })
+        return results
+    except Exception as e:
+        logger.warning(f"{source_name} RSS fetch failed for {ticker}: {e}")
+        return []
+
+
+def _fetch_yahoo_news(ticker, limit):
+    url = f'https://feeds.finance.yahoo.com/rss/2.0/headline?s={ticker}&region=US&lang=en-US'
+    return _fetch_rss_items(url, 'Yahoo Finance', ticker, limit)
+
+
+def _fetch_seekingalpha_news(ticker, limit):
+    url = f'https://seekingalpha.com/api/sa/combined/{ticker}.xml'
+    return _fetch_rss_items(url, 'Seeking Alpha', ticker, limit)
+
+
+@app.route('/api/stock-news/<ticker>')
+def get_stock_news(ticker):
+    """Fetch latest news for a ticker, merged from FMP + Yahoo + Seeking Alpha."""
+    ticker = ticker.upper()
+    fmp_api_key = os.getenv('FMP_API_KEY')
+
+    try:
+        limit = request.args.get('limit', 20, type=int)
+        # Per-source cap; we'll merge + dedupe + trim to `limit` after.
+        per_source = max(limit, 20)
+
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=3) as ex:
+            fut_fmp = ex.submit(_fetch_fmp_news, ticker, per_source, fmp_api_key)
+            fut_yahoo = ex.submit(_fetch_yahoo_news, ticker, per_source)
+            fut_sa = ex.submit(_fetch_seekingalpha_news, ticker, per_source)
+            fmp_items = fut_fmp.result()
+            yahoo_items = fut_yahoo.result()
+            sa_items = fut_sa.result()
+
+        # Merge + dedupe by URL (case-insensitive, ignore querystring fragments).
+        seen = set()
+        merged = []
+        for batch in (sa_items, fmp_items, yahoo_items):  # SA first to keep their version on dedupe
+            for art in batch:
+                url = (art.get('url') or '').split('?')[0].strip().lower()
+                if not url or url in seen:
+                    continue
+                seen.add(url)
+                merged.append(art)
+
+        # Sort newest-first by published_date (None goes last).
+        def _sort_key(a):
+            pd = a.get('published_date')
+            return pd if pd else ''
+        merged.sort(key=_sort_key, reverse=True)
+
+        # Per-source counts (for UI badges/filters)
+        counts = {
+            'FMP': sum(1 for a in merged if a.get('source') == 'FMP'),
+            'Yahoo Finance': sum(1 for a in merged if a.get('source') == 'Yahoo Finance'),
+            'Seeking Alpha': sum(1 for a in merged if a.get('source') == 'Seeking Alpha'),
+        }
+
+        return jsonify({
+            'ticker': ticker,
+            'count': len(merged[:limit]),
+            'total_fetched': len(merged),
+            'source_counts': counts,
+            'articles': merged[:limit],
+        })
 
     except Exception as e:
         logger.error(f"Error fetching stock news for {ticker}: {str(e)}")

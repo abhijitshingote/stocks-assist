@@ -614,8 +614,8 @@ def api_company_profile(ticker):
 
 @app.route('/api/frontend/stock-news/<ticker>')
 def api_stock_news(ticker):
-    """Proxy endpoint for stock news from FMP via backend"""
-    limit = request.args.get('limit', 20, type=int)
+    """Proxy endpoint for merged stock news (FMP + Yahoo + Seeking Alpha) via backend"""
+    limit = request.args.get('limit', 40, type=int)
     data, status_code = make_backend_request(f'/api/stock-news/{ticker}?limit={limit}')
     if data is None:
         return jsonify({'error': 'Failed to fetch stock news'}), status_code
