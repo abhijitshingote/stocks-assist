@@ -132,6 +132,22 @@ def main_view_page():
     return render_template('main_view.html')
 
 
+@app.route('/themes')
+def themes_page():
+    """Themes page - curated thematic watchlists shown side-by-side"""
+    return render_template('themes.html')
+
+
+@app.route('/api/frontend/main-view/by-tickers')
+def api_main_view_by_tickers():
+    """Proxy endpoint for MainView data filtered to a specific ticker list"""
+    tickers = request.args.get('tickers', '')
+    data, status_code = make_backend_request(f'/api/MainView-ByTickers?tickers={tickers}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch themes data'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/stock/<ticker>')
 def stock_detail(ticker):
     """Stock detail page"""

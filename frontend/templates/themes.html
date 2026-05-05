@@ -1,0 +1,482 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-themes{% endblock %}
+
+{% block title %}Themes - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+    main {
+        max-width: 100% !important;
+        padding: 0.4rem 0.6rem !important;
+    }
+
+    /* ── Top bar ── */
+    .th-top-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.4rem;
+        flex-wrap: wrap;
+    }
+
+    .page-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--accent-purple);
+        letter-spacing: -0.3px;
+    }
+
+    .stats-compact {
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        font-family: 'JetBrains Mono', monospace;
+        align-items: center;
+    }
+
+    .stats-compact span {
+        color: var(--accent-purple);
+        font-weight: 600;
+    }
+
+    .th-controls {
+        margin-left: auto;
+        display: flex;
+        gap: 0.3rem;
+        align-items: center;
+    }
+
+    .th-sort-toggle {
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.65rem;
+        transition: all 0.15s;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .th-sort-toggle:hover {
+        border-color: var(--accent-purple);
+        color: var(--text-primary);
+    }
+
+    .th-sort-toggle.active {
+        background: linear-gradient(135deg, rgba(163, 113, 247, 0.2) 0%, rgba(88, 166, 255, 0.2) 100%);
+        border-color: var(--accent-purple);
+        color: var(--text-primary);
+    }
+
+    /* ── Themes grid ── */
+    .themes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .theme-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .theme-card-header {
+        padding: 0.5rem 0.6rem;
+        border-bottom: 1px solid var(--border-color);
+        background: linear-gradient(135deg, rgba(163, 113, 247, 0.06) 0%, rgba(88, 166, 255, 0.04) 100%);
+    }
+
+    .theme-card-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--accent-purple);
+        letter-spacing: -0.3px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .theme-card-title .count-pill {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0.05rem 0.45rem;
+    }
+
+    .theme-card-desc {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        margin-top: 0.15rem;
+        line-height: 1.4;
+    }
+
+    /* ── Column headers ── */
+    .theme-col-headers {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 56px 56px 56px;
+        gap: 0.35rem;
+        padding: 0.25rem 0.6rem;
+        border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.55rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+    }
+
+    .theme-col-headers .col-num {
+        text-align: right;
+    }
+
+    /* ── Stock rows ── */
+    .theme-stock-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .theme-stock-item {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 56px 56px 56px;
+        gap: 0.35rem;
+        align-items: center;
+        padding: 0.4rem 0.6rem;
+        border-bottom: 1px solid rgba(48, 54, 61, 0.3);
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.15s;
+        cursor: pointer;
+    }
+
+    .theme-stock-item:last-child {
+        border-bottom: none;
+    }
+
+    .theme-stock-item:hover {
+        background: var(--bg-card-hover);
+    }
+
+    .theme-stock-item .ticker-block {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        gap: 0.05rem;
+    }
+
+    .theme-stock-item .ticker-row {
+        display: flex;
+        align-items: baseline;
+        gap: 0.35rem;
+        min-width: 0;
+    }
+
+    .theme-stock-item .ticker {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 0.82rem;
+        flex-shrink: 0;
+    }
+
+    .theme-stock-item .ticker-mcap {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: #f0c040;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .theme-stock-item .company {
+        font-size: 0.62rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .theme-stock-item .ret {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .theme-stock-item .ret.positive { color: var(--accent-green); }
+    .theme-stock-item .ret.negative { color: var(--accent-red); }
+    .theme-stock-item .ret.muted { color: var(--text-muted); }
+
+    .theme-stock-item.missing {
+        opacity: 0.45;
+    }
+
+    .theme-stock-item.missing .ticker {
+        color: var(--text-muted);
+    }
+
+    /* Empty / loading states */
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        color: var(--text-muted);
+    }
+
+    .spinner {
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--border-color);
+        border-top-color: var(--accent-purple);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 0.4rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+        .themes-grid { grid-template-columns: 1fr; }
+    }
+{% endblock %}
+
+{% block content %}
+<!-- Top Bar -->
+<div class="th-top-bar">
+    <span class="page-title">Themes</span>
+    <div class="stats-compact">
+        <div>Themes: <span id="totalThemes">—</span></div>
+        <div>Tickers: <span id="totalTickers">—</span></div>
+    </div>
+    <div class="th-controls">
+        <button type="button" class="th-sort-toggle active" data-sort="default" title="Original ordering">Default</button>
+        <button type="button" class="th-sort-toggle" data-sort="dr_1" title="Sort by 1D % return">1D %</button>
+        <button type="button" class="th-sort-toggle" data-sort="dr_5" title="Sort by 5D % return">5D %</button>
+        <button type="button" class="th-sort-toggle" data-sort="dr_20" title="Sort by 20D % return">20D %</button>
+        <button type="button" class="th-sort-toggle" data-sort="market_cap" title="Sort by market cap (largest first)">MCap</button>
+    </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" id="loadingState">
+    <div class="spinner"></div>
+    <span>Loading themes...</span>
+</div>
+
+<!-- Themes Grid -->
+<div class="themes-grid" id="themesGrid" style="display: none;"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function() {
+    // ── Themes definition (preserves order) ──
+    const THEMES = [
+        {
+            name: 'AI Compute',
+            desc: 'GPUs, CPUs & AI accelerators powering the data center buildout',
+            tickers: ['NVDA','AMD','INTC','ARM','ALAB','CEVA','AMBA','SIMO','AIP'],
+        },
+        {
+            name: 'Chip Equipment',
+            desc: 'Wafer fab tools & process control riding the AI capex wave',
+            tickers: ['ASML','LRCX','AMAT','KLAC','ENTG','UCTT','ICHR','ACMR','VECO','ACLS'],
+        },
+        {
+            name: 'Memory & Interconnect',
+            desc: 'DRAM, HBM, memory IP & advanced packaging',
+            tickers: ['MU','RMBS','GSIT','MRAM','AMKR','TSEM','GFS','UMC','ASX'],
+        },
+        {
+            name: 'Wireless & Mobile',
+            desc: 'RF, baseband & connectivity chips',
+            tickers: ['QCOM','AVGO','SWKS','QRVO','MRVL','INDI','SYNA','HIMX','MXL'],
+        },
+        {
+            name: 'Analog & Mixed-Signal',
+            desc: 'Auto, industrial & power management semiconductors',
+            tickers: ['TXN','ADI','NXPI','MCHP','MPWR','ON','ALGM','DIOD','POWI','VSH','MTSI','STM','AOSL'],
+        },
+        {
+            name: 'Optical & Photonics',
+            desc: 'Transceivers, lasers & silicon photonics for AI data centers',
+            tickers: ['AAOI','IPGP','LASR','POET','AMBQ','AXTI'],
+        },
+        {
+            name: 'Power & Wide-Bandgap',
+            desc: 'SiC, GaN & power semiconductors for EV and fast charging',
+            tickers: ['WOLF','NVTS','SMTC','AEHR'],
+        },
+        {
+            name: 'Test & Advanced Packaging',
+            desc: 'Wafer probe, test sockets & inspection equipment',
+            tickers: ['TER','FORM','COHU','ONTO','CAMT','KLIC','PLAB','LSCC','SKYT'],
+        },
+        {
+            name: 'Fab & Foundry',
+            desc: 'Leading-edge & specialty wafer manufacturing',
+            tickers: ['TSM','GFS','UMC','ASX','TSEM','SLAB','SITM'],
+        },
+        {
+            name: 'Specialty Materials & IP Licensing',
+            desc: 'Substrates, process technology & semiconductor IP',
+            tickers: ['ATOM','ALMU','GSIT','NVMI','RMBS','OLED','AXTI'],
+        },
+    ];
+
+    // ── State ──
+    let stockMap = {}; // ticker → MainView row
+    let currentSort = 'default';
+
+    // ── Formatting helpers ──
+    function fmtRet(v) {
+        if (v == null) return '—';
+        return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+    }
+    function retCls(v) {
+        if (v == null) return 'muted';
+        return v >= 0 ? 'positive' : 'negative';
+    }
+    function fmtMktCap(v) {
+        if (!v) return '—';
+        if (v >= 1e12) return '$' + (v / 1e12).toFixed(1) + 'T';
+        if (v >= 1e9) return '$' + (v / 1e9).toFixed(0) + 'B';
+        if (v >= 1e6) return '$' + (v / 1e6).toFixed(0) + 'M';
+        return '$' + v.toLocaleString();
+    }
+
+    // ── Data loading ──
+    async function loadData() {
+        const allTickers = Array.from(new Set(THEMES.flatMap(t => t.tickers)));
+        document.getElementById('totalThemes').textContent = THEMES.length;
+        document.getElementById('totalTickers').textContent = allTickers.length;
+
+        try {
+            const url = '/api/frontend/main-view/by-tickers?tickers=' + encodeURIComponent(allTickers.join(','));
+            const resp = await fetch(url);
+            const rows = await resp.json();
+            if (Array.isArray(rows)) {
+                rows.forEach(s => { stockMap[s.ticker] = s; });
+            }
+        } catch (e) {
+            console.error('Failed to load themes data', e);
+        }
+
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('themesGrid').style.display = 'grid';
+        renderGrid();
+    }
+
+    // ── Sorting ──
+    function sortTickers(tickers) {
+        if (currentSort === 'default') return tickers.slice();
+
+        const arr = tickers.slice();
+        arr.sort((a, b) => {
+            const sa = stockMap[a];
+            const sb = stockMap[b];
+            const va = sa ? sa[currentSort] : null;
+            const vb = sb ? sb[currentSort] : null;
+            if (va == null && vb == null) return 0;
+            if (va == null) return 1;
+            if (vb == null) return -1;
+            return vb - va; // descending
+        });
+        return arr;
+    }
+
+    // ── Render ──
+    function renderGrid() {
+        const grid = document.getElementById('themesGrid');
+        grid.innerHTML = THEMES.map(theme => {
+            const sortedTickers = sortTickers(theme.tickers);
+            const rowsHtml = sortedTickers.map(ticker => renderStockRow(ticker)).join('');
+            return `
+                <div class="theme-card">
+                    <div class="theme-card-header">
+                        <div class="theme-card-title">
+                            <span>${theme.name}</span>
+                            <span class="count-pill">${theme.tickers.length}</span>
+                        </div>
+                        <div class="theme-card-desc">${theme.desc}</div>
+                    </div>
+                    <div class="theme-col-headers">
+                        <span>Ticker</span>
+                        <span class="col-num">1D</span>
+                        <span class="col-num">5D</span>
+                        <span class="col-num">20D</span>
+                    </div>
+                    <div class="theme-stock-list">${rowsHtml}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderStockRow(ticker) {
+        const s = stockMap[ticker];
+        if (!s) {
+            return `
+                <a class="theme-stock-item missing" href="/stock/${ticker}" target="_blank" rel="noopener">
+                    <span class="ticker-block">
+                        <span class="ticker-row">
+                            <span class="ticker">${ticker}</span>
+                        </span>
+                        <span class="company">No data</span>
+                    </span>
+                    <span class="ret muted">—</span>
+                    <span class="ret muted">—</span>
+                    <span class="ret muted">—</span>
+                </a>
+            `;
+        }
+
+        const mcapStr = s.market_cap ? fmtMktCap(s.market_cap) : '';
+        const company = s.company_name || '';
+        return `
+            <a class="theme-stock-item" href="/stock/${s.ticker}" target="_blank" rel="noopener">
+                <span class="ticker-block">
+                    <span class="ticker-row">
+                        <span class="ticker">${s.ticker}</span>
+                        ${mcapStr ? `<span class="ticker-mcap">${mcapStr}</span>` : ''}
+                    </span>
+                    <span class="company">${company}</span>
+                </span>
+                <span class="ret ${retCls(s.dr_1)}">${fmtRet(s.dr_1)}</span>
+                <span class="ret ${retCls(s.dr_5)}">${fmtRet(s.dr_5)}</span>
+                <span class="ret ${retCls(s.dr_20)}">${fmtRet(s.dr_20)}</span>
+            </a>
+        `;
+    }
+
+    // ── Sort toggle wiring ──
+    document.querySelectorAll('.th-sort-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const next = btn.dataset.sort;
+            if (next === currentSort) return;
+            currentSort = next;
+            document.querySelectorAll('.th-sort-toggle').forEach(b => {
+                b.classList.toggle('active', b.dataset.sort === currentSort);
+            });
+            renderGrid();
+        });
+    });
+
+    // ── Init ──
+    loadData();
+})();
+</script>
+{% endblock %}

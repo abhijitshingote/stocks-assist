@@ -163,6 +163,78 @@
     .stock-item .ret.negative { color: var(--accent-red); }
     .stock-item .ret.muted { color: var(--text-muted); }
 
+    /* ── Star rating widget ── */
+    .star-rating {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.05rem;
+        margin-right: 0.35rem;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    .star-rating .star {
+        font-size: 0.85rem;
+        cursor: pointer;
+        color: #3a3f47;
+        transition: color 0.12s, transform 0.08s;
+        user-select: none;
+        line-height: 1;
+    }
+
+    .star-rating .star.filled {
+        color: #ffd700;
+        text-shadow: 0 0 4px rgba(255, 215, 0, 0.35);
+    }
+
+    .star-rating .star:hover {
+        color: #ffd700;
+        transform: scale(1.15);
+    }
+
+    .stock-item.has-stars {
+        background: rgba(255, 215, 0, 0.04);
+    }
+
+    .stock-item.has-stars.active {
+        background: rgba(163, 113, 247, 0.12);
+    }
+
+    /* ── Sort toggle ── */
+    .sort-toggle-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        margin-left: 0.35rem;
+    }
+
+    .sort-toggle {
+        padding: 0.2rem 0.45rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.65rem;
+        transition: all 0.15s;
+        font-family: 'JetBrains Mono', monospace;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+
+    .sort-toggle:hover {
+        border-color: var(--accent-purple);
+        color: var(--text-primary);
+    }
+
+    .sort-toggle.active {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(163, 113, 247, 0.2) 100%);
+        border-color: #ffd700;
+        color: var(--text-primary);
+    }
+
     /* ── Center panel ── */
     .mv-center {
         flex: 1;
@@ -548,6 +620,10 @@
     <div class="stats-compact">
         <div>Stocks: <span id="totalStocks">—</span></div>
     </div>
+    <div class="sort-toggle-wrap">
+        <button type="button" class="sort-toggle active" id="sortStarsBtn" data-sort="stars" title="Sort by highest stars first (1D% as tiebreaker)">★ Stars</button>
+        <button type="button" class="sort-toggle" id="sortReturnBtn" data-sort="return" title="Sort by 1D return only">1D %</button>
+    </div>
     <div class="mv-wide-toggle-wrap">
         <button type="button" class="pref-filter-btn mv-wide-toggle" id="mvWideToggle" title="Wide layout toggle">Wide layout</button>
     </div>
@@ -693,6 +769,7 @@
     window.selectedTicker = null;
     let currentTimeframeDays = 365;
     let watchlistData = {};
+    let currentSort = (localStorage.getItem('abiWlSort') === 'return') ? 'return' : 'stars';
 
     let stockChart = null;
     let spyChart = null, spyCandleSeries = null, spyAllData = null;
@@ -723,13 +800,32 @@
         };
     }
 
-    function sortByReturn(data) {
-        return [...data].sort((a, b) => {
-            const aVal = a.dr_1, bVal = b.dr_1;
-            if (aVal == null) return 1;
-            if (bVal == null) return -1;
-            return bVal - aVal;
-        });
+    function getStars(ticker) {
+        const wl = watchlistData[ticker];
+        return (wl && Number.isFinite(wl.stars)) ? wl.stars : 0;
+    }
+
+    function compareReturnDesc(a, b) {
+        const aVal = a.dr_1, bVal = b.dr_1;
+        if (aVal == null && bVal == null) return 0;
+        if (aVal == null) return 1;
+        if (bVal == null) return -1;
+        return bVal - aVal;
+    }
+
+    function applySort(data) {
+        const arr = [...data];
+        if (currentSort === 'stars') {
+            // Highest stars first; 1D % desc as tiebreaker.
+            arr.sort((a, b) => {
+                const s = getStars(b.ticker) - getStars(a.ticker);
+                if (s !== 0) return s;
+                return compareReturnDesc(a, b);
+            });
+        } else {
+            arr.sort(compareReturnDesc);
+        }
+        return arr;
     }
 
     // ── Data loading ──
@@ -747,14 +843,18 @@
 
         // Build watchlist data map
         allStocks.forEach(s => {
-            watchlistData[s.ticker] = { notes: s.watchlist_notes || '', added_at: s.watchlist_added_at || '' };
+            watchlistData[s.ticker] = {
+                notes: s.watchlist_notes || '',
+                added_at: s.watchlist_added_at || '',
+                stars: Number.isFinite(s.watchlist_stars) ? s.watchlist_stars : 0,
+            };
         });
 
         hideLoading();
         document.getElementById('mainLayout').style.display = 'flex';
         document.getElementById('totalStocks').textContent = allStocks.length;
 
-        allStocks = sortByReturn(allStocks);
+        allStocks = applySort(allStocks);
         renderList();
 
         if (allStocks.length > 0 && !selectedTicker) {
@@ -766,6 +866,15 @@
         }
     }
 
+    function starsHtml(stars) {
+        let html = '<span class="star-rating" data-stars="' + stars + '">';
+        for (let i = 1; i <= 3; i++) {
+            html += `<span class="star${i <= stars ? ' filled' : ''}" data-level="${i}" title="${i} star${i > 1 ? 's' : ''}">★</span>`;
+        }
+        html += '</span>';
+        return html;
+    }
+
     // ── Render stock list ──
     function renderList() {
         const listEl = document.getElementById('stockList');
@@ -773,19 +882,73 @@
 
         listEl.innerHTML = allStocks.map(s => {
             const isActive = s.ticker === selectedTicker ? ' active' : '';
+            const stars = getStars(s.ticker);
+            const hasStarsCls = stars > 0 ? ' has-stars' : '';
             const ret1d = s.dr_1;
             const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
             const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
-            return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
-                <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
+            return `<div class="stock-item${isActive}${hasStarsCls}" data-ticker="${s.ticker}">
+                <span style="display:flex;align-items:center;min-width:0;">
+                    ${starsHtml(stars)}
+                    <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
+                </span>
                 <span class="ret ${retClass}">${retStr}</span>
             </div>`;
         }).join('');
 
         listEl.querySelectorAll('.stock-item').forEach(el => {
-            el.addEventListener('click', () => selectStock(el.dataset.ticker));
+            el.addEventListener('click', (e) => {
+                if (e.target.closest('.star-rating')) return;
+                selectStock(el.dataset.ticker);
+            });
         });
+
+        listEl.querySelectorAll('.star-rating .star').forEach(starEl => {
+            starEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const itemEl = starEl.closest('.stock-item');
+                if (!itemEl) return;
+                const ticker = itemEl.dataset.ticker;
+                const level = parseInt(starEl.dataset.level, 10);
+                const current = getStars(ticker);
+                // Toggle: clicking the highest currently-set star clears, otherwise sets.
+                const next = (level === current) ? 0 : level;
+                setStarsForTicker(ticker, next);
+            });
+        });
+    }
+
+    async function setStarsForTicker(ticker, stars) {
+        // Optimistic local update so the UI feels instant.
+        if (!watchlistData[ticker]) watchlistData[ticker] = { notes: '', stars: 0 };
+        const prev = watchlistData[ticker].stars || 0;
+        watchlistData[ticker].stars = stars;
+
+        // Re-sort if we're sorting by stars; always re-render for visual update.
+        if (currentSort === 'stars') {
+            allStocks = applySort(allStocks);
+        }
+        renderList();
+        if (selectedTicker === ticker) {
+            // Keep the active row visible after a re-sort.
+            scrollToStock(ticker);
+        }
+
+        try {
+            const resp = await fetch('/api/frontend/abi-watchlist/' + ticker, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ stars }),
+            });
+            if (!resp.ok) throw new Error('PUT failed: ' + resp.status);
+        } catch (e) {
+            console.error('Failed to save stars for ' + ticker, e);
+            // Roll back on failure.
+            watchlistData[ticker].stars = prev;
+            if (currentSort === 'stars') allStocks = applySort(allStocks);
+            renderList();
+        }
     }
 
     // ── Select stock ──
@@ -855,7 +1018,12 @@
         const wl = watchlistData[selectedTicker];
         window._wlOpen(selectedTicker, wl ? wl.notes : '', true, function(action, ticker, notes) {
             if (action === 'saved') {
-                watchlistData[ticker] = { notes: notes || '' };
+                const prev = watchlistData[ticker] || {};
+                watchlistData[ticker] = {
+                    ...prev,
+                    notes: notes || '',
+                    stars: Number.isFinite(prev.stars) ? prev.stars : 0,
+                };
                 updateWatchlistNotes(ticker);
             } else if (action === 'removed') {
                 delete watchlistData[ticker];
@@ -1168,6 +1336,26 @@
             document.querySelectorAll('#chartTimeframes button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             setAllTimeframes(parseInt(btn.dataset.days, 10));
+        });
+    });
+
+    // Sort toggle: stars vs 1D return.
+    function applySortToggleUI() {
+        document.querySelectorAll('.sort-toggle').forEach(b => {
+            b.classList.toggle('active', b.dataset.sort === currentSort);
+        });
+    }
+    applySortToggleUI();
+    document.querySelectorAll('.sort-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const next = btn.dataset.sort;
+            if (next === currentSort) return;
+            currentSort = next;
+            localStorage.setItem('abiWlSort', currentSort);
+            applySortToggleUI();
+            allStocks = applySort(allStocks);
+            renderList();
+            if (selectedTicker) scrollToStock(selectedTicker);
         });
     });
 

@@ -76,6 +76,88 @@
         font-weight: 600;
     }
 
+    /* ── Sector / Industry filter bars ── */
+    .si-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        margin-bottom: 0.25rem;
+        flex-wrap: wrap;
+    }
+
+    .si-bar-label {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-right: 0.2rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .industry-bar {
+        display: none;
+        padding: 0.15rem 0.35rem 0.15rem 0.5rem;
+        border-left: 2px solid var(--accent-green);
+        background: rgba(63, 185, 80, 0.04);
+        border-radius: 0 4px 4px 0;
+    }
+
+    .industry-bar.visible { display: flex; }
+
+    .si-tab {
+        padding: 0.18rem 0.45rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.65rem;
+        transition: all 0.15s;
+        font-family: 'JetBrains Mono', monospace;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+    }
+
+    .si-tab:hover {
+        border-color: var(--accent-purple);
+        color: var(--text-primary);
+    }
+
+    .si-tab.sector-tab.active {
+        background: linear-gradient(135deg, rgba(63, 185, 80, 0.22) 0%, rgba(0, 188, 212, 0.22) 100%);
+        border-color: var(--accent-green);
+        color: var(--text-primary);
+    }
+
+    .si-tab.industry-tab {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+    }
+
+    .si-tab.industry-tab.active {
+        background: rgba(88, 166, 255, 0.22);
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
+    .si-tab .count {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 0.02rem 0.22rem;
+        border-radius: 3px;
+    }
+
+    .si-tab.active .count {
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .stock-item.hidden-by-filter { display: none; }
+
     .wide-toggle-wrap {
         display: flex;
         align-items: center;
@@ -137,6 +219,31 @@
 
     .tp-left-header .stock-count {
         font-family: 'JetBrains Mono', monospace;
+        color: var(--accent-green);
+    }
+
+    .copy-tickers-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.05rem 0.3rem;
+        border-radius: 3px;
+        margin-left: 0.35rem;
+        transition: all 0.15s;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .copy-tickers-btn:hover {
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
+    .copy-tickers-btn.copied {
+        border-color: var(--accent-green);
         color: var(--accent-green);
     }
 
@@ -553,6 +660,12 @@
     </div>
 </div>
 
+<!-- Sector filter bar -->
+<div class="si-bar" id="sectorBar"></div>
+
+<!-- Industry filter bar (visible only when a sector is selected) -->
+<div class="si-bar industry-bar" id="industryBar"></div>
+
 <div class="loading-container" id="loadingState">
     <div class="spinner"></div>
     <span>Loading top performance data...</span>
@@ -562,7 +675,10 @@
     <div class="tp-left">
         <div class="tp-left-header">
             <span>Top Returns</span>
-            <span class="stock-count" id="stockCount">0</span>
+            <span style="display: flex; align-items: center;">
+                <span class="stock-count" id="stockCount">0</span>
+                <button type="button" class="copy-tickers-btn" id="copyTickersBtn" title="Copy visible tickers to clipboard (comma-separated)">📋 Copy</button>
+            </span>
         </div>
         <div class="stock-list" id="stockList"></div>
     </div>
@@ -660,6 +776,100 @@
     let sortColumn = 'dr_1';
     let sortDirection = 'desc';
     let stockChart = null;
+    let selectedSector = null;
+    let selectedIndustry = null;
+
+    function escAttr(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function passesSectorIndustry(s) {
+        if (selectedSector && (s.sector || 'Unknown') !== selectedSector) return false;
+        if (selectedIndustry && (s.industry || 'Unknown') !== selectedIndustry) return false;
+        return true;
+    }
+
+    function renderSectorTabs() {
+        const bar = document.getElementById('sectorBar');
+        if (!bar) return;
+        const counts = {};
+        allStocks.forEach(s => {
+            const sec = s.sector || 'Unknown';
+            counts[sec] = (counts[sec] || 0) + 1;
+        });
+        const sectors = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+        let html = '<span class="si-bar-label">Sector</span>';
+        const allActive = selectedSector === null ? ' active' : '';
+        html += `<button class="si-tab sector-tab${allActive}" data-sector="">All <span class="count">${allStocks.length}</span></button>`;
+        sectors.forEach(sec => {
+            const isActive = sec === selectedSector ? ' active' : '';
+            html += `<button class="si-tab sector-tab${isActive}" data-sector="${escAttr(sec)}">${escAttr(sec)} <span class="count">${counts[sec]}</span></button>`;
+        });
+        bar.innerHTML = html;
+        bar.querySelectorAll('.sector-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sec = btn.dataset.sector || null;
+                if (sec === selectedSector) {
+                    selectedSector = null;
+                    selectedIndustry = null;
+                } else {
+                    selectedSector = sec;
+                    selectedIndustry = null;
+                }
+                renderSectorTabs();
+                renderIndustryTabs();
+                renderList();
+                ensureSelectedVisible();
+            });
+        });
+    }
+
+    function renderIndustryTabs() {
+        const bar = document.getElementById('industryBar');
+        if (!bar) return;
+        if (!selectedSector) {
+            bar.classList.remove('visible');
+            bar.innerHTML = '';
+            return;
+        }
+        const counts = {};
+        allStocks.forEach(s => {
+            if ((s.sector || 'Unknown') !== selectedSector) return;
+            const ind = s.industry || 'Unknown';
+            counts[ind] = (counts[ind] || 0) + 1;
+        });
+        const industries = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+        const totalInSector = industries.reduce((acc, k) => acc + counts[k], 0);
+        let html = '<span class="si-bar-label">Industry</span>';
+        const allActive = selectedIndustry === null ? ' active' : '';
+        html += `<button class="si-tab industry-tab${allActive}" data-industry="">All <span class="count">${totalInSector}</span></button>`;
+        industries.forEach(ind => {
+            const isActive = ind === selectedIndustry ? ' active' : '';
+            html += `<button class="si-tab industry-tab${isActive}" data-industry="${escAttr(ind)}">${escAttr(ind)} <span class="count">${counts[ind]}</span></button>`;
+        });
+        bar.innerHTML = html;
+        bar.classList.add('visible');
+        bar.querySelectorAll('.industry-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ind = btn.dataset.industry || null;
+                selectedIndustry = (ind === selectedIndustry) ? null : ind;
+                renderIndustryTabs();
+                renderList();
+                ensureSelectedVisible();
+            });
+        });
+    }
+
+    function ensureSelectedVisible() {
+        const visible = allStocks.filter(passesSectorIndustry);
+        if (visible.length === 0) return;
+        const stillVisible = visible.find(s => s.ticker === selectedTicker);
+        if (!stillVisible) selectStock(visible[0].ticker);
+    }
 
     // ── Formatting ──
     function fmtRet(v) { if (v == null) return '—'; return (v >= 0 ? '+' : '') + v.toFixed(0) + '%'; }
@@ -696,6 +906,20 @@
         document.getElementById('mainLayout').style.display = 'flex';
         document.getElementById('totalStocks').textContent = allStocks.length;
         allStocks = sortData(allStocks);
+
+        // Drop sector/industry selections that no longer exist in the new data set
+        if (selectedSector && !allStocks.some(s => (s.sector || 'Unknown') === selectedSector)) {
+            selectedSector = null;
+            selectedIndustry = null;
+        } else if (selectedIndustry && !allStocks.some(s =>
+            (s.sector || 'Unknown') === selectedSector &&
+            (s.industry || 'Unknown') === selectedIndustry
+        )) {
+            selectedIndustry = null;
+        }
+
+        renderSectorTabs();
+        renderIndustryTabs();
         renderList();
 
         const tickers = allStocks.map(s => s.ticker);
@@ -742,15 +966,17 @@
     // ── Render stock list ──
     function renderList() {
         const listEl = document.getElementById('stockList');
-        document.getElementById('stockCount').textContent = allStocks.length;
 
+        let visibleCount = 0;
         listEl.innerHTML = allStocks.map((s, i) => {
             const isActive = s.ticker === selectedTicker ? ' active' : '';
             const ret1d = s.dr_1;
             const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
             const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
-            return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
+            const hidden = passesSectorIndustry(s) ? '' : ' hidden-by-filter';
+            if (!hidden) visibleCount++;
+            return `<div class="stock-item${isActive}${hidden}" data-ticker="${s.ticker}">
                 <span style="display:flex;align-items:center;min-width:0;">
                     <span class="sn">${i + 1}.</span>
                     <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
@@ -758,6 +984,8 @@
                 <span class="ret ${retClass}">${retStr}</span>
             </div>`;
         }).join('');
+
+        document.getElementById('stockCount').textContent = visibleCount;
 
         listEl.querySelectorAll('.stock-item').forEach(el => {
             el.addEventListener('click', () => selectStock(el.dataset.ticker));
@@ -951,6 +1179,52 @@
         document.getElementById('loadingState').style.display = 'none';
     }
 
+    // ── Copy visible tickers ──
+    function getVisibleTickers() {
+        return allStocks.filter(passesSectorIndustry).map(s => s.ticker);
+    }
+
+    function copyTextFallback(text) {
+        return new Promise((resolve, reject) => {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                ok ? resolve() : reject(new Error('execCommand copy failed'));
+            } catch (e) { reject(e); }
+        });
+    }
+
+    async function copyVisibleTickers() {
+        const btn = document.getElementById('copyTickersBtn');
+        const tickers = getVisibleTickers();
+        const flash = (msg, ok) => {
+            if (!btn) return;
+            const original = '📋 Copy';
+            btn.classList.toggle('copied', !!ok);
+            btn.textContent = msg;
+            setTimeout(() => { btn.classList.remove('copied'); btn.textContent = original; }, 1500);
+        };
+        if (!tickers.length) { flash('No tickers', false); return; }
+        const text = tickers.join(', ');
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                await copyTextFallback(text);
+            }
+            flash(`✓ Copied ${tickers.length}`, true);
+        } catch (e) {
+            console.error('Copy failed', e);
+            flash('Copy failed', false);
+        }
+    }
+
     // ── Events ──
     document.querySelectorAll('.cap-tab').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -971,20 +1245,23 @@
         });
     });
 
+    document.getElementById('copyTickersBtn')?.addEventListener('click', copyVisibleTickers);
+
     document.addEventListener('keydown', function(e) {
-        if (!allStocks.length) return;
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        const currentIdx = allStocks.findIndex(s => s.ticker === selectedTicker);
+        const visibleItems = allStocks.filter(passesSectorIndustry);
+        if (!visibleItems.length) return;
+        const currentIdx = visibleItems.findIndex(s => s.ticker === selectedTicker);
         if (e.key === 'ArrowDown' || e.key === 'j') {
             e.preventDefault();
-            const nextIdx = currentIdx < allStocks.length - 1 ? currentIdx + 1 : 0;
-            selectStock(allStocks[nextIdx].ticker);
-            scrollToStock(allStocks[nextIdx].ticker);
+            const nextIdx = currentIdx < visibleItems.length - 1 ? currentIdx + 1 : 0;
+            selectStock(visibleItems[nextIdx].ticker);
+            scrollToStock(visibleItems[nextIdx].ticker);
         } else if (e.key === 'ArrowUp' || e.key === 'k') {
             e.preventDefault();
-            const prevIdx = currentIdx > 0 ? currentIdx - 1 : allStocks.length - 1;
-            selectStock(allStocks[prevIdx].ticker);
-            scrollToStock(allStocks[prevIdx].ticker);
+            const prevIdx = currentIdx > 0 ? currentIdx - 1 : visibleItems.length - 1;
+            selectStock(visibleItems[prevIdx].ticker);
+            scrollToStock(visibleItems[prevIdx].ticker);
         }
     });
 

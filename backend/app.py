@@ -1963,6 +1963,62 @@ def get_main_view_mega():
         s.close()
 
 
+@app.route('/api/MainView-ByTickers')
+def get_main_view_by_tickers():
+    """
+    Get MainView data for a specific list of tickers.
+    Tickers passed as comma-separated string via 'tickers' query param.
+    """
+    tickers_param = request.args.get('tickers', '').strip()
+    if not tickers_param:
+        return jsonify([])
+
+    tickers = [t.strip().upper() for t in tickers_param.split(',') if t.strip()]
+    if not tickers:
+        return jsonify([])
+
+    s = Session()
+    try:
+        stocks = s.query(MainView).filter(MainView.ticker.in_(tickers)).all()
+        results = []
+        for stock in stocks:
+            spike_dates = [d for d in (stock.volume_spike_days or '').split(',') if d.strip()]
+            gap_dates = [d for d in (stock.gap_days or '').split(',') if d.strip()]
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'volume': int(stock.volume) if stock.volume else None,
+                'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
+                'vol_vs_10d_avg': float(stock.vol_vs_10d_avg) if stock.vol_vs_10d_avg else None,
+                'ti65': round(stock.ti65, 2) if stock.ti65 else None,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'dr_60': round(stock.dr_60, 2) if stock.dr_60 else None,
+                'dr_120': round(stock.dr_120, 2) if stock.dr_120 else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
+                'rsi': stock.rsi,
+                'rsi_mktcap': stock.rsi_mktcap,
+                'float_shares': stock.float_shares,
+                'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
+                'last_event_type': stock.last_event_type,
+                'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
+                'volume_spike_days': spike_dates,
+                'gap_days': gap_dates,
+                'tags': stock.tags,
+            })
+        return jsonify(results)
+    except Exception as e:
+        logger.error(f"Error getting main view by tickers: {str(e)}")
+        return jsonify([])
+    finally:
+        s.close()
+
+
 # ============================================================================
 # High Sales Growth Endpoints (filter MainView by high_sales_growth tag)
 # ============================================================================
@@ -4171,40 +4227,70 @@ def get_abi_watchlist():
     return jsonify(_load_watchlist())
 
 
+def _coerce_stars(value):
+    """Validate and clamp a stars value to an int in [0, 3]. Returns None if invalid."""
+    try:
+        n = int(value)
+    except (TypeError, ValueError):
+        return None
+    if n < 0 or n > 3:
+        return None
+    return n
+
+
 @app.route('/api/abi-watchlist', methods=['POST'])
 def add_to_abi_watchlist():
-    """Add a ticker to the watchlist with optional notes."""
+    """Add a ticker to the watchlist with optional notes and stars (0-3)."""
     data = request.get_json()
     if not data or 'ticker' not in data:
         return jsonify({'error': 'ticker field is required'}), 400
 
     ticker = data['ticker'].upper()
     notes = data.get('notes', '')
+    stars = _coerce_stars(data.get('stars', 0)) or 0
 
     wl = _load_watchlist()
     wl[ticker] = {
         'notes': notes,
+        'stars': stars,
         'added_at': datetime.now(pytz.timezone("US/Eastern")).isoformat(),
     }
     _save_watchlist(wl)
-    return jsonify({'ticker': ticker, 'notes': notes, 'status': 'added'})
+    return jsonify({'ticker': ticker, 'notes': notes, 'stars': stars, 'status': 'added'})
 
 
 @app.route('/api/abi-watchlist/<ticker>', methods=['PUT'])
 def update_abi_watchlist(ticker):
-    """Update notes for a watchlist ticker."""
+    """Partial update for a watchlist ticker. Accepts notes and/or stars (0-3)."""
     ticker = ticker.upper()
-    data = request.get_json()
-    if not data or 'notes' not in data:
-        return jsonify({'error': 'notes field is required'}), 400
+    data = request.get_json() or {}
+
+    has_notes = 'notes' in data
+    has_stars = 'stars' in data
+    if not has_notes and not has_stars:
+        return jsonify({'error': 'at least one of notes or stars is required'}), 400
+
+    if has_stars:
+        stars = _coerce_stars(data.get('stars'))
+        if stars is None:
+            return jsonify({'error': 'stars must be an integer between 0 and 3'}), 400
 
     wl = _load_watchlist()
     if ticker not in wl:
         return jsonify({'error': 'ticker not in watchlist'}), 404
 
-    wl[ticker]['notes'] = data['notes']
+    if has_notes:
+        wl[ticker]['notes'] = data['notes']
+    if has_stars:
+        wl[ticker]['stars'] = stars
+
     _save_watchlist(wl)
-    return jsonify({'ticker': ticker, 'notes': data['notes'], 'status': 'updated'})
+    return jsonify({
+        'ticker': ticker,
+        'notes': wl[ticker].get('notes', ''),
+        'stars': wl[ticker].get('stars', 0),
+        'status': 'updated',
+    })
 
 
 @app.route('/api/abi-watchlist/<ticker>', methods=['DELETE'])
@@ -4312,6 +4398,7 @@ def get_abi_watchlist_data():
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None,
                 'watchlist_notes': wl.get(stock.ticker, {}).get('notes', ''),
                 'watchlist_added_at': wl.get(stock.ticker, {}).get('added_at', ''),
+                'watchlist_stars': int(wl.get(stock.ticker, {}).get('stars', 0) or 0),
             }
             results.append(item)
 

@@ -113,6 +113,86 @@
         border-radius: 3px;
     }
 
+    /* ── Sector / Industry filter bars ── */
+    .si-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        margin-bottom: 0.25rem;
+        flex-wrap: wrap;
+    }
+
+    .si-bar-label {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-right: 0.2rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .industry-bar {
+        display: none;
+        padding: 0.15rem 0.35rem 0.15rem 0.5rem;
+        border-left: 2px solid var(--accent-yellow);
+        background: rgba(210, 153, 34, 0.04);
+        border-radius: 0 4px 4px 0;
+    }
+
+    .industry-bar.visible { display: flex; }
+
+    .si-tab {
+        padding: 0.18rem 0.45rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.65rem;
+        transition: all 0.15s;
+        font-family: 'JetBrains Mono', monospace;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+    }
+
+    .si-tab:hover {
+        border-color: var(--accent-yellow);
+        color: var(--text-primary);
+    }
+
+    .si-tab.sector-tab.active {
+        background: linear-gradient(135deg, rgba(210, 153, 34, 0.22) 0%, rgba(248, 81, 73, 0.22) 100%);
+        border-color: var(--accent-yellow);
+        color: var(--text-primary);
+    }
+
+    .si-tab.industry-tab {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+    }
+
+    .si-tab.industry-tab.active {
+        background: rgba(248, 81, 73, 0.22);
+        border-color: var(--accent-red);
+        color: var(--text-primary);
+    }
+
+    .si-tab .count {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 0.02rem 0.22rem;
+        border-radius: 3px;
+    }
+
+    .si-tab.active .count {
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
     /* ── Main Layout ── */
     .vsg-layout {
         display: flex;
@@ -145,6 +225,31 @@
     .vsg-left-header .stock-count {
         font-family: 'JetBrains Mono', monospace;
         color: var(--accent-yellow);
+    }
+
+    .copy-tickers-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.05rem 0.3rem;
+        border-radius: 3px;
+        margin-left: 0.35rem;
+        transition: all 0.15s;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .copy-tickers-btn:hover {
+        border-color: var(--accent-yellow);
+        color: var(--text-primary);
+    }
+
+    .copy-tickers-btn.copied {
+        border-color: var(--accent-green);
+        color: var(--accent-green);
     }
 
     .stock-list {
@@ -668,6 +773,12 @@
     </div>
 </div>
 
+<!-- Sector filter bar -->
+<div class="si-bar" id="sectorBar"></div>
+
+<!-- Industry filter bar (visible only when a sector is selected) -->
+<div class="si-bar industry-bar" id="industryBar"></div>
+
 <!-- Loading State -->
 <div class="loading-container" id="loadingState">
     <div class="spinner"></div>
@@ -680,7 +791,10 @@
     <div class="vsg-left">
         <div class="vsg-left-header">
             <span>Vol Spike & Gapper</span>
-            <span class="stock-count" id="stockCount">0</span>
+            <span style="display: flex; align-items: center;">
+                <span class="stock-count" id="stockCount">0</span>
+                <button type="button" class="copy-tickers-btn" id="copyTickersBtn" title="Copy visible tickers to clipboard (comma-separated)">📋 Copy</button>
+            </span>
         </div>
         <div class="stock-list" id="stockList"></div>
     </div>
@@ -782,6 +896,22 @@
     let sortColumn = 'last_event_date';
     let sortDirection = 'desc';
     let stockChart = null;
+    let selectedSector = null;
+    let selectedIndustry = null;
+
+    function escAttr(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function passesSectorIndustry(s) {
+        if (selectedSector && (s.sector || 'Unknown') !== selectedSector) return false;
+        if (selectedIndustry && (s.industry || 'Unknown') !== selectedIndustry) return false;
+        return true;
+    }
 
     const capLabels = {
         'all': 'All', 'mega': 'Mega Cap', 'large': 'Large Cap',
@@ -815,12 +945,85 @@
         return uniq[Math.min(days, uniq.length) - 1];
     }
 
-    function getFilteredData() {
+    function getRecencyFilteredData() {
         const days = recencyDays(currentRecency);
         if (days == null) return sortData(currentData);
         const cutoffStr = cutoffStrForTradingDays(days);
         if (!cutoffStr) return [];
         return sortData(currentData.filter(d => d.last_event_date && d.last_event_date >= cutoffStr));
+    }
+
+    function getFilteredData() {
+        return getRecencyFilteredData().filter(passesSectorIndustry);
+    }
+
+    function renderSectorTabs() {
+        const bar = document.getElementById('sectorBar');
+        if (!bar) return;
+        const base = getRecencyFilteredData();
+        const counts = {};
+        base.forEach(s => {
+            const sec = s.sector || 'Unknown';
+            counts[sec] = (counts[sec] || 0) + 1;
+        });
+        const sectors = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+        let html = '<span class="si-bar-label">Sector</span>';
+        const allActive = selectedSector === null ? ' active' : '';
+        html += `<button class="si-tab sector-tab${allActive}" data-sector="">All <span class="count">${base.length}</span></button>`;
+        sectors.forEach(sec => {
+            const isActive = sec === selectedSector ? ' active' : '';
+            html += `<button class="si-tab sector-tab${isActive}" data-sector="${escAttr(sec)}">${escAttr(sec)} <span class="count">${counts[sec]}</span></button>`;
+        });
+        bar.innerHTML = html;
+        bar.querySelectorAll('.sector-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sec = btn.dataset.sector || null;
+                if (sec === selectedSector) {
+                    selectedSector = null;
+                    selectedIndustry = null;
+                } else {
+                    selectedSector = sec;
+                    selectedIndustry = null;
+                }
+                renderSectorTabs();
+                renderIndustryTabs();
+                applyFilterAndRender();
+            });
+        });
+    }
+
+    function renderIndustryTabs() {
+        const bar = document.getElementById('industryBar');
+        if (!bar) return;
+        if (!selectedSector) {
+            bar.classList.remove('visible');
+            bar.innerHTML = '';
+            return;
+        }
+        const base = getRecencyFilteredData().filter(s => (s.sector || 'Unknown') === selectedSector);
+        const counts = {};
+        base.forEach(s => {
+            const ind = s.industry || 'Unknown';
+            counts[ind] = (counts[ind] || 0) + 1;
+        });
+        const industries = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+        let html = '<span class="si-bar-label">Industry</span>';
+        const allActive = selectedIndustry === null ? ' active' : '';
+        html += `<button class="si-tab industry-tab${allActive}" data-industry="">All <span class="count">${base.length}</span></button>`;
+        industries.forEach(ind => {
+            const isActive = ind === selectedIndustry ? ' active' : '';
+            html += `<button class="si-tab industry-tab${isActive}" data-industry="${escAttr(ind)}">${escAttr(ind)} <span class="count">${counts[ind]}</span></button>`;
+        });
+        bar.innerHTML = html;
+        bar.classList.add('visible');
+        bar.querySelectorAll('.industry-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ind = btn.dataset.industry || null;
+                selectedIndustry = (ind === selectedIndustry) ? null : ind;
+                renderIndustryTabs();
+                applyFilterAndRender();
+            });
+        });
     }
 
     function sortData(data) {
@@ -862,6 +1065,20 @@
         }
         hideLoading();
         document.getElementById('mainLayout').style.display = 'flex';
+
+        // Drop sector/industry selections that no longer exist in the new data set
+        if (selectedSector && !currentData.some(s => (s.sector || 'Unknown') === selectedSector)) {
+            selectedSector = null;
+            selectedIndustry = null;
+        } else if (selectedIndustry && !currentData.some(s =>
+            (s.sector || 'Unknown') === selectedSector &&
+            (s.industry || 'Unknown') === selectedIndustry
+        )) {
+            selectedIndustry = null;
+        }
+
+        renderSectorTabs();
+        renderIndustryTabs();
 
         const filtered = getFilteredData();
         updateStats(filtered);
@@ -1158,6 +1375,52 @@
         document.getElementById('loadingState').style.display = 'none';
     }
 
+    // ── Copy visible tickers ──
+    function getVisibleTickers() {
+        return getFilteredData().map(s => s.ticker);
+    }
+
+    function copyTextFallback(text) {
+        return new Promise((resolve, reject) => {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                ok ? resolve() : reject(new Error('execCommand copy failed'));
+            } catch (e) { reject(e); }
+        });
+    }
+
+    async function copyVisibleTickers() {
+        const btn = document.getElementById('copyTickersBtn');
+        const tickers = getVisibleTickers();
+        const flash = (msg, ok) => {
+            if (!btn) return;
+            const original = '📋 Copy';
+            btn.classList.toggle('copied', !!ok);
+            btn.textContent = msg;
+            setTimeout(() => { btn.classList.remove('copied'); btn.textContent = original; }, 1500);
+        };
+        if (!tickers.length) { flash('No tickers', false); return; }
+        const text = tickers.join(', ');
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                await copyTextFallback(text);
+            }
+            flash(`✓ Copied ${tickers.length}`, true);
+        } catch (e) {
+            console.error('Copy failed', e);
+            flash('Copy failed', false);
+        }
+    }
+
     function applyFilterAndRender() {
         const filtered = getFilteredData();
         updateStats(filtered);
@@ -1184,9 +1447,27 @@
 
     document.querySelectorAll('.recency-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+            // Skip the wide-toggle button which lives in the same .recency-btn class
+            if (!btn.dataset.filter) return;
             document.querySelectorAll('.recency-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentRecency = btn.dataset.filter;
+
+            // Re-render sector/industry cards because the universe changed.
+            // Drop any sector/industry selection that no longer exists in the new universe.
+            const recBase = getRecencyFilteredData();
+            if (selectedSector && !recBase.some(s => (s.sector || 'Unknown') === selectedSector)) {
+                selectedSector = null;
+                selectedIndustry = null;
+            } else if (selectedIndustry && !recBase.some(s =>
+                (s.sector || 'Unknown') === selectedSector &&
+                (s.industry || 'Unknown') === selectedIndustry
+            )) {
+                selectedIndustry = null;
+            }
+            renderSectorTabs();
+            renderIndustryTabs();
+
             applyFilterAndRender();
         });
     });
@@ -1198,6 +1479,8 @@
             setTimeframe(parseInt(btn.dataset.days, 10));
         });
     });
+
+    document.getElementById('copyTickersBtn')?.addEventListener('click', copyVisibleTickers);
 
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {

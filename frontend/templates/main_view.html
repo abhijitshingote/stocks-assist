@@ -113,6 +113,86 @@
         align-items: center;
     }
 
+    /* ── Sector / Industry filter bars ── */
+    .si-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        margin-bottom: 0.25rem;
+        flex-wrap: wrap;
+    }
+
+    .si-bar-label {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-right: 0.2rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .industry-bar {
+        display: none;
+        padding: 0.15rem 0.35rem 0.15rem 0.5rem;
+        border-left: 2px solid var(--accent-green);
+        background: rgba(63, 185, 80, 0.04);
+        border-radius: 0 4px 4px 0;
+    }
+
+    .industry-bar.visible { display: flex; }
+
+    .si-tab {
+        padding: 0.18rem 0.45rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.65rem;
+        transition: all 0.15s;
+        font-family: 'JetBrains Mono', monospace;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+    }
+
+    .si-tab:hover {
+        border-color: var(--accent-purple);
+        color: var(--text-primary);
+    }
+
+    .si-tab.sector-tab.active {
+        background: linear-gradient(135deg, rgba(63, 185, 80, 0.22) 0%, rgba(0, 188, 212, 0.22) 100%);
+        border-color: var(--accent-green);
+        color: var(--text-primary);
+    }
+
+    .si-tab.industry-tab {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+    }
+
+    .si-tab.industry-tab.active {
+        background: rgba(88, 166, 255, 0.22);
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
+    .si-tab .count {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 0.02rem 0.22rem;
+        border-radius: 3px;
+    }
+
+    .si-tab.active .count {
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
     .stats-compact span {
         color: var(--accent-purple);
         font-weight: 600;
@@ -149,6 +229,31 @@
 
     .mv-left-header .stock-count {
         font-family: 'JetBrains Mono', monospace;
+        color: var(--accent-green);
+    }
+
+    .copy-tickers-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.05rem 0.3rem;
+        border-radius: 3px;
+        margin-left: 0.35rem;
+        transition: all 0.15s;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .copy-tickers-btn:hover {
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
+    .copy-tickers-btn.copied {
+        border-color: var(--accent-green);
         color: var(--accent-green);
     }
 
@@ -790,6 +895,12 @@
     </div>
 </div>
 
+<!-- Sector filter bar -->
+<div class="si-bar" id="sectorBar"></div>
+
+<!-- Industry filter bar (visible only when a sector is selected) -->
+<div class="si-bar industry-bar" id="industryBar"></div>
+
 <!-- Loading State -->
 <div class="loading-container" id="loadingState">
     <div class="spinner"></div>
@@ -802,7 +913,10 @@
     <div class="mv-left">
         <div class="mv-left-header">
             <span>Main View</span>
-            <span class="stock-count" id="stockCount">0</span>
+            <span style="display: flex; align-items: center;">
+                <span class="stock-count" id="stockCount">0</span>
+                <button type="button" class="copy-tickers-btn" id="copyTickersBtn" title="Copy visible tickers to clipboard (comma-separated)">📋 Copy</button>
+            </span>
         </div>
         <div class="stock-list" id="stockList"></div>
     </div>
@@ -944,9 +1058,19 @@
     let selectedTicker = null;
     window.selectedTicker = null;
     let currentFilter = 'all';
+    let selectedSector = null;
+    let selectedIndustry = null;
     let currentTimeframeDays = 365;
     let stockPreferences = {};
     let stockNotes = {};
+
+    function escAttr(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
 
     let stockChart = null;
 
@@ -1033,6 +1157,21 @@
         document.getElementById('totalStocks').textContent = allStocks.length;
 
         allStocks = sortByReturn(allStocks);
+
+        // Reset sector/industry filter to whatever is currently selected, but
+        // drop selections that no longer exist in the freshly loaded data set.
+        if (selectedSector && !allStocks.some(s => (s.sector || 'Unknown') === selectedSector)) {
+            selectedSector = null;
+            selectedIndustry = null;
+        } else if (selectedIndustry && !allStocks.some(s =>
+            (s.sector || 'Unknown') === selectedSector &&
+            (s.industry || 'Unknown') === selectedIndustry
+        )) {
+            selectedIndustry = null;
+        }
+
+        renderSectorTabs();
+        renderIndustryTabs();
         renderList();
 
         // Load preferences, notes, and watchlist status for all tickers
@@ -1057,6 +1196,96 @@
         }
     }
 
+    // ── Sector / Industry filter cards ──
+    function renderSectorTabs() {
+        const bar = document.getElementById('sectorBar');
+        if (!bar) return;
+
+        const counts = {};
+        allStocks.forEach(s => {
+            const sec = s.sector || 'Unknown';
+            counts[sec] = (counts[sec] || 0) + 1;
+        });
+        const sectors = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+
+        let html = '<span class="si-bar-label">Sector</span>';
+        const allActive = selectedSector === null ? ' active' : '';
+        html += `<button class="si-tab sector-tab${allActive}" data-sector="">All <span class="count">${allStocks.length}</span></button>`;
+        sectors.forEach(sec => {
+            const isActive = sec === selectedSector ? ' active' : '';
+            html += `<button class="si-tab sector-tab${isActive}" data-sector="${escAttr(sec)}">${escAttr(sec)} <span class="count">${counts[sec]}</span></button>`;
+        });
+        bar.innerHTML = html;
+
+        bar.querySelectorAll('.sector-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sec = btn.dataset.sector || null;
+                if (sec === selectedSector) {
+                    selectedSector = null;
+                    selectedIndustry = null;
+                } else {
+                    selectedSector = sec;
+                    selectedIndustry = null;
+                }
+                renderSectorTabs();
+                renderIndustryTabs();
+                renderList();
+            });
+        });
+    }
+
+    function renderIndustryTabs() {
+        const bar = document.getElementById('industryBar');
+        if (!bar) return;
+
+        if (!selectedSector) {
+            bar.classList.remove('visible');
+            bar.innerHTML = '';
+            return;
+        }
+
+        const counts = {};
+        allStocks.forEach(s => {
+            if ((s.sector || 'Unknown') !== selectedSector) return;
+            const ind = s.industry || 'Unknown';
+            counts[ind] = (counts[ind] || 0) + 1;
+        });
+        const industries = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+        const totalInSector = industries.reduce((acc, k) => acc + counts[k], 0);
+
+        let html = '<span class="si-bar-label">Industry</span>';
+        const allActive = selectedIndustry === null ? ' active' : '';
+        html += `<button class="si-tab industry-tab${allActive}" data-industry="">All <span class="count">${totalInSector}</span></button>`;
+        industries.forEach(ind => {
+            const isActive = ind === selectedIndustry ? ' active' : '';
+            html += `<button class="si-tab industry-tab${isActive}" data-industry="${escAttr(ind)}">${escAttr(ind)} <span class="count">${counts[ind]}</span></button>`;
+        });
+        bar.innerHTML = html;
+        bar.classList.add('visible');
+
+        bar.querySelectorAll('.industry-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ind = btn.dataset.industry || null;
+                selectedIndustry = (ind === selectedIndustry) ? null : ind;
+                renderIndustryTabs();
+                renderList();
+            });
+        });
+    }
+
+    function passesSectorIndustry(s) {
+        if (selectedSector && (s.sector || 'Unknown') !== selectedSector) return false;
+        if (selectedIndustry && (s.industry || 'Unknown') !== selectedIndustry) return false;
+        return true;
+    }
+
+    function passesPrefFilter(s) {
+        const pref = stockPreferences[s.ticker]?.preference;
+        if (currentFilter === 'favorite') return pref === 'favorite';
+        if (currentFilter === 'dislike') return pref === 'dislike';
+        return true;
+    }
+
     // ── Render stock list ──
     function renderList() {
         const listEl = document.getElementById('stockList');
@@ -1076,10 +1305,10 @@
             if (pref === 'favorite') prefClass = ' is-favorite';
             else if (pref === 'dislike') prefClass = ' is-dislike';
 
-            // Filter
+            // Filter (sector/industry first, then preference)
             let hidden = '';
-            if (currentFilter === 'favorite' && pref !== 'favorite') hidden = ' hidden-by-filter';
-            else if (currentFilter === 'dislike' && pref !== 'dislike') hidden = ' hidden-by-filter';
+            if (!passesSectorIndustry(s)) hidden = ' hidden-by-filter';
+            else if (!passesPrefFilter(s)) hidden = ' hidden-by-filter';
 
             if (!hidden) visibleCount++;
 
@@ -1620,6 +1849,54 @@
         renderList();
     }
 
+    // ── Copy visible tickers ──
+    function getVisibleTickers() {
+        return allStocks
+            .filter(s => passesSectorIndustry(s) && passesPrefFilter(s))
+            .map(s => s.ticker);
+    }
+
+    function copyTextFallback(text) {
+        return new Promise((resolve, reject) => {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                ok ? resolve() : reject(new Error('execCommand copy failed'));
+            } catch (e) { reject(e); }
+        });
+    }
+
+    async function copyVisibleTickers() {
+        const btn = document.getElementById('copyTickersBtn');
+        const tickers = getVisibleTickers();
+        const flash = (msg, ok) => {
+            if (!btn) return;
+            const original = '📋 Copy';
+            btn.classList.toggle('copied', !!ok);
+            btn.textContent = msg;
+            setTimeout(() => { btn.classList.remove('copied'); btn.textContent = original; }, 1500);
+        };
+        if (!tickers.length) { flash('No tickers', false); return; }
+        const text = tickers.join(', ');
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                await copyTextFallback(text);
+            }
+            flash(`✓ Copied ${tickers.length}`, true);
+        } catch (e) {
+            console.error('Copy failed', e);
+            flash('Copy failed', false);
+        }
+    }
+
     // ── Event wiring ──
     document.querySelectorAll('.cap-tab').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1649,18 +1926,14 @@
         });
     });
 
+    document.getElementById('copyTickersBtn')?.addEventListener('click', copyVisibleTickers);
+
     // Keyboard navigation in stock list
     document.addEventListener('keydown', function(e) {
         if (!allStocks.length) return;
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-        const visibleItems = allStocks.filter(s => {
-            if (currentFilter === 'all') return true;
-            const pref = stockPreferences[s.ticker]?.preference;
-            if (currentFilter === 'favorite') return pref === 'favorite';
-            if (currentFilter === 'dislike') return pref === 'dislike';
-            return true;
-        });
+        const visibleItems = allStocks.filter(s => passesSectorIndustry(s) && passesPrefFilter(s));
 
         if (visibleItems.length === 0) return;
 
