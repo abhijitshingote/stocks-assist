@@ -57,6 +57,9 @@ const CHART_CONFIG = {
     // Height ratio: candlestick:volume = 3:1
     candlestickRatio: 0.75,
     volumeRatio: 0.25,
+
+    /** Logical bars of empty space after the last bar (time scale) */
+    rightBarOffset: 3,
 };
 
 // ============================================================================
@@ -281,15 +284,19 @@ class StockChart {
         setStoredTimeframe(days); // Persist for next chart
         this._updateChartData();
         
-        // Fit content on all charts
+        // Fit content on all charts (re-apply right offset after fit)
+        const ro = { rightOffset: CHART_CONFIG.rightBarOffset };
         if (this.chart) {
             this.chart.timeScale().fitContent();
+            this.chart.timeScale().applyOptions(ro);
         }
         if (this.volumeChart) {
             this.volumeChart.timeScale().fitContent();
+            this.volumeChart.timeScale().applyOptions(ro);
         }
         if (this.rsiChart) {
             this.rsiChart.timeScale().fitContent();
+            this.rsiChart.timeScale().applyOptions(ro);
         }
     }
     
@@ -441,6 +448,7 @@ class StockChart {
                 timeVisible: true,
                 secondsVisible: false,
                 visible: false, // Hide time scale on price chart, show on volume
+                rightOffset: CHART_CONFIG.rightBarOffset,
             },
             handleScroll: false,
             handleScale: false,
@@ -628,6 +636,7 @@ class StockChart {
                 borderColor: CHART_CONFIG.borderColor,
                 timeVisible: true,
                 secondsVisible: false,
+                rightOffset: CHART_CONFIG.rightBarOffset,
             },
             handleScroll: false,
             handleScale: false,
@@ -713,6 +722,7 @@ class StockChart {
                 timeVisible: true,
                 secondsVisible: false,
                 visible: false,
+                rightOffset: CHART_CONFIG.rightBarOffset,
             },
             handleScroll: false,
             handleScale: false,
