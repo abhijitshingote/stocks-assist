@@ -321,20 +321,307 @@
         overflow: hidden;
     }
 
-    /* ── Right panel: metrics ── */
-    .tp-metrics {
+    /* ── Right column: news + metrics (stacked) ── */
+    .tp-right-column {
         width: 260px;
         min-width: 220px;
         display: none;
         flex-direction: column;
+        gap: 0.35rem;
+        min-height: 0;
+        height: 100%;
+    }
+
+    .tp-right-column.visible {
+        display: flex;
+    }
+
+    .tp-stack-panel {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        min-height: 0;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 8px;
         overflow: hidden;
     }
 
-    .tp-metrics.visible {
+    .tp-stack-panel.collapsed {
+        flex: 0 0 auto;
+        min-height: unset;
+    }
+
+    .tp-stack-head {
         display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+        user-select: none;
+    }
+
+    .tp-collapse-icon {
+        background: transparent;
+        border: none;
+        padding: 0.1rem 0.2rem;
+        margin: 0;
+        cursor: pointer;
+        color: var(--text-muted);
+        border-radius: 4px;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .tp-collapse-icon:hover {
+        color: var(--text-primary);
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .tp-collapse-icon:focus-visible {
+        outline: 2px solid var(--accent-blue);
+        outline-offset: 1px;
+    }
+
+    .tp-stack-head:hover {
+        background: var(--bg-card-hover);
+    }
+
+    .tp-chevron {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        width: 0.85rem;
+        text-align: center;
+        transition: transform 0.15s;
+    }
+
+    .tp-stack-panel.collapsed .tp-chevron {
+        transform: rotate(-90deg);
+    }
+
+    .tp-stack-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .tp-stack-body {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .tp-stack-panel.collapsed .tp-stack-body {
+        display: none;
+    }
+
+    /* News (stock detail parity, scoped to sidebar) */
+    .page-top-perf .news-load-btn {
+        padding: 0.2rem 0.45rem;
+        font-size: 0.62rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: inherit;
+    }
+
+    .page-top-perf .news-load-btn:hover {
+        background: var(--bg-card-hover);
+        border-color: var(--accent-blue);
+        color: var(--accent-blue);
+    }
+
+    .page-top-perf .tp-news-inner {
+        padding: 0.35rem 0.5rem 0.5rem;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-color) transparent;
+    }
+
+    .page-top-perf .tp-news-inner .news-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .page-top-perf .tp-news-inner .news-header h2 {
+        font-size: 0.75rem;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .page-top-perf .tp-news-inner .news-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+    }
+
+    .page-top-perf .tp-news-inner .news-article {
+        display: flex;
+        gap: 0.5rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.45rem 0.55rem;
+        transition: border-color 0.2s;
+    }
+
+    .page-top-perf .tp-news-inner .news-article:hover {
+        border-color: var(--accent-blue);
+    }
+
+    .page-top-perf .tp-news-inner .news-article-thumb {
+        flex-shrink: 0;
+        width: 48px;
+        height: 36px;
+        border-radius: 4px;
+        object-fit: cover;
+        background: var(--bg-card-hover);
+    }
+
+    .page-top-perf .tp-news-inner .news-article-body {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .page-top-perf .tp-news-inner .news-article-title {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.2rem;
+        line-height: 1.3;
+    }
+
+    .page-top-perf .tp-news-inner .news-article-title a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .page-top-perf .tp-news-inner .news-article-title a:hover {
+        color: var(--accent-blue);
+    }
+
+    .page-top-perf .tp-news-inner .news-article-meta {
+        display: flex;
+        gap: 0.35rem;
+        font-size: 0.58rem;
+        color: var(--text-muted);
+        margin-bottom: 0.2rem;
+    }
+
+    .page-top-perf .tp-news-inner .news-article-snippet {
+        font-size: 0.65rem;
+        color: var(--text-secondary);
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .page-top-perf .tp-news-inner .news-empty {
+        text-align: center;
+        padding: 1rem 0.5rem;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+    }
+
+    .page-top-perf .tp-news-inner .news-source-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        margin-bottom: 0.45rem;
+    }
+
+    .page-top-perf .tp-news-inner .news-filter-chip {
+        padding: 0.12rem 0.4rem;
+        font-size: 0.58rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 999px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+        user-select: none;
+    }
+
+    .page-top-perf .tp-news-inner .news-filter-chip:hover {
+        border-color: var(--accent-blue);
+        color: var(--accent-blue);
+    }
+
+    .page-top-perf .tp-news-inner .news-filter-chip.active {
+        background: var(--accent-blue);
+        border-color: var(--accent-blue);
+        color: #fff;
+    }
+
+    .page-top-perf .tp-news-inner .news-source-badge {
+        display: inline-block;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 0.55rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .page-top-perf .tp-news-inner .news-source-badge.source-sa {
+        background: rgba(255, 152, 0, 0.15);
+        color: #ff9800;
+        border: 1px solid rgba(255, 152, 0, 0.35);
+    }
+
+    .page-top-perf .tp-news-inner .news-source-badge.source-yahoo {
+        background: rgba(124, 77, 255, 0.15);
+        color: #b388ff;
+        border: 1px solid rgba(124, 77, 255, 0.35);
+    }
+
+    .page-top-perf .tp-news-inner .news-source-badge.source-fmp {
+        background: rgba(76, 175, 80, 0.15);
+        color: #66bb6a;
+        border: 1px solid rgba(76, 175, 80, 0.35);
+    }
+
+    .page-top-perf .tp-news-inner .detail-loading {
+        text-align: center;
+        padding: 0.75rem;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+    }
+
+    /* ── Right panel: metrics stack ── */
+    .tp-metrics-stack {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .tp-stack-panel.collapsed .tp-metrics-body {
+        display: none;
+    }
+
+    .tp-metrics-stack .tp-metrics-header {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .tp-metrics-stack .tp-metrics-header:hover {
+        background: var(--bg-card-hover);
     }
 
     .tp-metrics-header {
@@ -342,9 +629,44 @@
         border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         gap: 0.3rem;
         flex-wrap: wrap;
+    }
+
+    .tp-metrics-header-main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .page-top-perf .tp-stack-head .news-load-btn {
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .page-top-perf .news-load-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .page-top-perf .news-load-btn.loading::after {
+        content: '';
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border: 2px solid transparent;
+        border-top-color: var(--accent-blue);
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        margin-left: 4px;
+        vertical-align: middle;
+    }
+
+    .tp-metrics-stack .tp-metrics-header:focus-visible {
+        outline: 2px solid var(--accent-blue);
+        outline-offset: -2px;
     }
 
     .tp-metrics-ticker {
@@ -617,7 +939,7 @@
         min-width: 200px;
     }
 
-    body.page-top-perf.wide-layout .tp-metrics {
+    body.page-top-perf.wide-layout .tp-right-column {
         width: 320px;
         min-width: 280px;
     }
@@ -629,10 +951,10 @@
     @media (max-width: 1024px) {
         .tp-layout { flex-direction: column; height: auto; }
         .tp-left { width: 100%; height: 200px; }
-        .tp-metrics { width: 100%; min-width: auto; max-height: 300px; }
+        .tp-right-column { width: 100%; min-width: auto; max-height: 520px; }
         .wide-toggle-wrap { display: none; }
         body.page-top-perf.wide-layout .tp-left,
-        body.page-top-perf.wide-layout .tp-metrics {
+        body.page-top-perf.wide-layout .tp-right-column {
             width: 100%;
             min-width: auto;
         }
@@ -719,14 +1041,34 @@
         </div>
     </div>
 
-    <div class="tp-metrics" id="tpMetrics">
-        <div class="tp-metrics-header">
-            <span class="tp-metrics-ticker" id="metricsTicker">—</span>
-            <span class="tp-metrics-company" id="metricsCompany"></span>
+    <div class="tp-right-column" id="tpRightColumn">
+        <div class="tp-stack-panel" id="tpNewsStack">
+            <div class="tp-stack-head" id="tpNewsHeadRow">
+                <button type="button" class="tp-collapse-icon" id="tpNewsCollapseBtn" aria-expanded="true" aria-controls="tpNewsStackBody" title="Collapse or expand news">
+                    <span class="tp-chevron" aria-hidden="true">▼</span>
+                </button>
+                <span class="tp-stack-title"><span class="notes-icon">📰</span> News</span>
+                <button type="button" class="news-load-btn" id="tpLoadNewsBtn">Load News</button>
+            </div>
+            <div class="tp-stack-body" id="tpNewsStackBody">
+                <div class="tp-news-inner" id="tpNewsInner">
+                    <div id="tpNewsContent"></div>
+                </div>
+            </div>
         </div>
-        <div class="tp-metrics-body">
-            <div class="ms-tags" id="tagsStrip"></div>
-            <div id="metricsContent"></div>
+
+        <div class="tp-stack-panel tp-metrics-stack" id="tpMetricsStack">
+            <div class="tp-metrics-header" id="tpMetricsHead" role="button" tabindex="0" aria-expanded="true" aria-controls="tpMetricsBody">
+                <span class="tp-chevron" aria-hidden="true">▼</span>
+                <div class="tp-metrics-header-main">
+                    <span class="tp-metrics-ticker" id="metricsTicker">—</span>
+                    <span class="tp-metrics-company" id="metricsCompany"></span>
+                </div>
+            </div>
+            <div class="tp-metrics-body" id="tpMetricsBody">
+                <div class="ms-tags" id="tagsStrip"></div>
+                <div id="metricsContent"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -785,6 +1127,192 @@
             .replace(/"/g, '&quot;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
+    }
+
+    let tpAllNewsArticles = [];
+    let tpActiveNewsSource = 'All';
+
+    function tpRafResize() {
+        requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+    }
+
+    function tpSetPanelAria(stackEl, headEl) {
+        if (!stackEl || !headEl) return;
+        headEl.setAttribute('aria-expanded', String(!stackEl.classList.contains('collapsed')));
+    }
+
+    function tpBindCollapsibleHead(stackEl, headEl) {
+        if (!stackEl || !headEl) return;
+        const toggle = () => {
+            stackEl.classList.toggle('collapsed');
+            tpSetPanelAria(stackEl, headEl);
+            tpRafResize();
+        };
+        headEl.addEventListener('click', toggle);
+        headEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggle();
+            }
+        });
+    }
+
+    function tpResetNewsPanel() {
+        tpAllNewsArticles = [];
+        tpActiveNewsSource = 'All';
+        const c = document.getElementById('tpNewsContent');
+        if (c) c.innerHTML = '<div class="news-empty">Click Load News to fetch headlines.</div>';
+        const btn = document.getElementById('tpLoadNewsBtn');
+        if (btn) {
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.textContent = 'Load News';
+        }
+    }
+
+    function tpComputeSourceCounts(articles) {
+        return {
+            'FMP': articles.filter(a => a.source === 'FMP').length,
+            'Yahoo Finance': articles.filter(a => a.source === 'Yahoo Finance').length,
+            'Seeking Alpha': articles.filter(a => a.source === 'Seeking Alpha').length,
+        };
+    }
+
+    function tpSourceBadgeClass(source) {
+        if (source === 'Seeking Alpha') return 'source-sa';
+        if (source === 'Yahoo Finance') return 'source-yahoo';
+        if (source === 'FMP') return 'source-fmp';
+        return '';
+    }
+
+    function tpRenderNews(articles, sourceCounts) {
+        const container = document.getElementById('tpNewsContent');
+        if (!container) return;
+
+        const sources = ['All', 'Seeking Alpha', 'Yahoo Finance', 'FMP'];
+        const total = articles.length;
+
+        const chipsHtml = '<div class="news-source-filters">' + sources.map(s => {
+            const count = s === 'All' ? total : (sourceCounts[s] || 0);
+            const active = s === tpActiveNewsSource ? ' active' : '';
+            const disabled = s !== 'All' && count === 0;
+            if (disabled) return '';
+            return `<button type="button" class="news-filter-chip${active}" data-news-source="${escAttr(s)}">${escAttr(s)} (${count})</button>`;
+        }).join('') + '</div>';
+
+        const filtered = tpActiveNewsSource === 'All'
+            ? articles
+            : articles.filter(a => a.source === tpActiveNewsSource);
+
+        if (filtered.length === 0) {
+            container.innerHTML = chipsHtml + '<div class="news-empty">No articles from ' + escAttr(tpActiveNewsSource) + '.</div>';
+            return;
+        }
+
+        const listHtml = '<div class="news-list">' + filtered.map(a => {
+            const date = a.published_date ? new Date(a.published_date).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}) : '';
+            const thumb = a.image ? `<img class="news-article-thumb" src="${escAttr(a.image)}" alt="" onerror="this.style.display='none'">` : '';
+            const snippet = a.text ? a.text.substring(0, 200) : '';
+            const badge = a.source ? `<span class="news-source-badge ${tpSourceBadgeClass(a.source)}">${escAttr(a.source)}</span>` : '';
+            const title = escAttr(a.title || 'Untitled');
+            const url = a.url ? escAttr(a.url) : '#';
+            const siteSpan = a.site && a.source !== a.site ? `<span>${escAttr(a.site)}</span>` : '';
+
+            return `
+            <div class="news-article">
+                ${thumb}
+                <div class="news-article-body">
+                    <div class="news-article-title"><a href="${url}" target="_blank" rel="noopener">${title}</a></div>
+                    <div class="news-article-meta">
+                        ${badge}
+                        ${siteSpan}
+                        ${date ? `<span>${escAttr(date)}</span>` : ''}
+                    </div>
+                    ${snippet ? `<div class="news-article-snippet">${escAttr(snippet)}</div>` : ''}
+                </div>
+            </div>
+        `;
+        }).join('') + '</div>';
+
+        container.innerHTML = chipsHtml + listHtml;
+    }
+
+    async function tpLoadStockNews() {
+        if (!selectedTicker) return;
+        const btn = document.getElementById('tpLoadNewsBtn');
+        const container = document.getElementById('tpNewsContent');
+        if (!btn || !container) return;
+
+        btn.disabled = true;
+        btn.classList.add('loading');
+        btn.textContent = 'Loading';
+        container.innerHTML = '<div class="detail-loading">Fetching news from FMP, Yahoo, Seeking Alpha...</div>';
+
+        try {
+            const response = await fetch(`/api/frontend/stock-news/${selectedTicker}?limit=40`);
+            const data = await response.json();
+
+            if (data.error) {
+                container.innerHTML = '<div class="news-empty">Failed to load news.</div>';
+                return;
+            }
+
+            if (!data.articles || data.articles.length === 0) {
+                container.innerHTML = '<div class="news-empty">No news found for this stock.</div>';
+                return;
+            }
+
+            tpAllNewsArticles = data.articles;
+            tpActiveNewsSource = 'All';
+            tpRenderNews(tpAllNewsArticles, data.source_counts || tpComputeSourceCounts(tpAllNewsArticles));
+            btn.textContent = 'Refresh News';
+        } catch (error) {
+            console.error('Error loading news:', error);
+            container.innerHTML = '<div class="news-empty">Error fetching news.</div>';
+        } finally {
+            btn.disabled = false;
+            btn.classList.remove('loading');
+        }
+    }
+
+    function setupTopPerfNewsAndPanels() {
+        const newsStack = document.getElementById('tpNewsStack');
+        const newsCollapseBtn = document.getElementById('tpNewsCollapseBtn');
+        const loadBtn = document.getElementById('tpLoadNewsBtn');
+        if (newsStack && newsCollapseBtn) {
+            const toggleNews = () => {
+                newsStack.classList.toggle('collapsed');
+                tpSetPanelAria(newsStack, newsCollapseBtn);
+                tpRafResize();
+            };
+            newsCollapseBtn.addEventListener('click', toggleNews);
+            newsCollapseBtn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleNews();
+                }
+            });
+        }
+        if (loadBtn) {
+            loadBtn.addEventListener('click', () => tpLoadStockNews());
+        }
+
+        const metricsStack = document.getElementById('tpMetricsStack');
+        const metricsHead = document.getElementById('tpMetricsHead');
+        tpBindCollapsibleHead(metricsStack, metricsHead);
+
+        const newsInner = document.getElementById('tpNewsInner');
+        if (newsInner) {
+            newsInner.addEventListener('click', (e) => {
+                const chip = e.target.closest('.news-filter-chip[data-news-source]');
+                if (!chip) return;
+                e.preventDefault();
+                tpActiveNewsSource = chip.getAttribute('data-news-source') || 'All';
+                tpRenderNews(tpAllNewsArticles, tpComputeSourceCounts(tpAllNewsArticles));
+            });
+        }
+
+        tpResetNewsPanel();
     }
 
     function passesSectorIndustry(s) {
@@ -1007,7 +1535,8 @@
         document.getElementById('rightPlaceholder').style.display = 'none';
         document.getElementById('detailHeader').style.display = 'block';
         document.getElementById('chartsContainer').style.display = 'flex';
-        document.getElementById('tpMetrics').classList.add('visible');
+        document.getElementById('tpRightColumn').classList.add('visible');
+        tpResetNewsPanel();
 
         document.getElementById('detailTicker').textContent = ticker;
         document.getElementById('detailCompany').textContent = stock.company_name || '';
@@ -1271,6 +1800,7 @@
     }
 
     // ── Init ──
+    setupTopPerfNewsAndPanels();
     loadData('all');
 })();
 </script>
