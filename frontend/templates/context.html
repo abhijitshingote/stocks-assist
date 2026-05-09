@@ -23,6 +23,118 @@ main {
     margin-bottom: 2rem;
 }
 
+.context-banner {
+    display: flex;
+    gap: 1rem;
+    background: linear-gradient(135deg, rgba(56, 139, 253, 0.08), rgba(63, 185, 80, 0.05));
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent-blue);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.75rem;
+    align-items: stretch;
+}
+
+.context-banner-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.context-banner-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.context-banner-symbol {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+}
+
+.context-banner-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid rgba(56, 139, 253, 0.4);
+    border-radius: 4px;
+    background: rgba(56, 139, 253, 0.08);
+}
+
+.context-banner-narrative {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+}
+
+.context-banner-narrative.is-loading {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.context-banner-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.15rem;
+}
+
+.context-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.15rem 0.45rem;
+    white-space: nowrap;
+}
+
+.context-chip .chip-key {
+    color: var(--text-muted);
+    margin-right: 0.3rem;
+}
+
+.context-chip.pos { color: #3fb950; border-color: rgba(63, 185, 80, 0.35); }
+.context-chip.neg { color: #f85149; border-color: rgba(248, 81, 73, 0.35); }
+
+.context-banner-meta {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.context-banner-refresh {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    border-radius: 4px;
+    padding: 0.2rem 0.45rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.context-banner-refresh:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
 .context-chart-row {
     display: flex;
     gap: 1rem;
@@ -197,6 +309,20 @@ main {
 
 <!-- QQQ Section -->
 <div class="context-chart-section">
+    <div class="context-banner" id="qqqBanner" data-symbol="QQQ">
+        <div class="context-banner-main">
+            <div class="context-banner-header">
+                <span class="context-banner-symbol">QQQ</span>
+                <span class="context-banner-label">Market Context</span>
+                <span class="context-banner-meta" data-role="meta"></span>
+            </div>
+            <div class="context-banner-narrative is-loading" data-role="narrative">Synthesizing market context…</div>
+            <div class="context-banner-chips" data-role="chips"></div>
+        </div>
+        <div>
+            <button class="context-banner-refresh" data-role="refresh" title="Regenerate narrative">refresh</button>
+        </div>
+    </div>
     <div class="context-chart-row">
         <div class="context-chart-panel">
             <div class="context-chart-header">
@@ -245,6 +371,20 @@ main {
 
 <!-- SPY Section -->
 <div class="context-chart-section">
+    <div class="context-banner" id="spyBanner" data-symbol="SPY">
+        <div class="context-banner-main">
+            <div class="context-banner-header">
+                <span class="context-banner-symbol">SPY</span>
+                <span class="context-banner-label">Market Context</span>
+                <span class="context-banner-meta" data-role="meta"></span>
+            </div>
+            <div class="context-banner-narrative is-loading" data-role="narrative">Synthesizing market context…</div>
+            <div class="context-banner-chips" data-role="chips"></div>
+        </div>
+        <div>
+            <button class="context-banner-refresh" data-role="refresh" title="Regenerate narrative">refresh</button>
+        </div>
+    </div>
     <div class="context-chart-row">
         <div class="context-chart-panel">
             <div class="context-chart-header">
@@ -301,7 +441,120 @@ document.addEventListener('DOMContentLoaded', function() {
     loadContextChart('QQQ', 'qqqChartWrapper');
     loadContextChart('SPY', 'spyChartWrapper');
     setupTimeframeButtons();
+    setupContextBanners();
 });
+
+function setupContextBanners() {
+    document.querySelectorAll('.context-banner').forEach(banner => {
+        const symbol = banner.dataset.symbol;
+        loadContextBanner(symbol, banner, false);
+        const refreshBtn = banner.querySelector('[data-role="refresh"]');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => loadContextBanner(symbol, banner, true));
+        }
+    });
+}
+
+async function loadContextBanner(symbol, banner, refresh) {
+    const narrativeEl = banner.querySelector('[data-role="narrative"]');
+    const chipsEl = banner.querySelector('[data-role="chips"]');
+    const metaEl = banner.querySelector('[data-role="meta"]');
+    const refreshBtn = banner.querySelector('[data-role="refresh"]');
+
+    narrativeEl.classList.add('is-loading');
+    narrativeEl.textContent = refresh ? 'Regenerating market context…' : 'Synthesizing market context…';
+    chipsEl.innerHTML = '';
+    metaEl.textContent = '';
+    if (refreshBtn) refreshBtn.disabled = true;
+
+    try {
+        const url = `/api/frontend/index-context-summary/${symbol}` + (refresh ? '?refresh=1' : '');
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!res.ok || (data.error && !data.metrics)) {
+            narrativeEl.textContent = data.error || 'Failed to load market context.';
+            return;
+        }
+
+        narrativeEl.classList.remove('is-loading');
+        if (data.narrative) {
+            narrativeEl.textContent = data.narrative;
+        } else {
+            narrativeEl.classList.add('is-loading');
+            narrativeEl.textContent = data.error
+                ? `LLM error: ${data.error}`
+                : 'No narrative available.';
+        }
+
+        if (data.metrics) {
+            chipsEl.innerHTML = renderChips(data.metrics);
+        }
+
+        const stamp = data.metrics?.latest_date ? `as of ${data.metrics.latest_date}` : '';
+        const cached = data.cached ? ' (cached)' : '';
+        metaEl.textContent = stamp + cached;
+    } catch (err) {
+        console.error(`Context banner error (${symbol}):`, err);
+        narrativeEl.textContent = 'Failed to load market context.';
+    } finally {
+        if (refreshBtn) refreshBtn.disabled = false;
+    }
+}
+
+function renderChips(m) {
+    const chips = [];
+    const fmtPct = (v, signed = true) => {
+        if (v === null || v === undefined) return '—';
+        const s = signed && v > 0 ? '+' : '';
+        return `${s}${v.toFixed(2)}%`;
+    };
+
+    if (m.daily_change_pct !== null && m.daily_change_pct !== undefined) {
+        const cls = m.daily_change_pct >= 0 ? 'pos' : 'neg';
+        chips.push(`<div class="context-chip ${cls}"><span class="chip-key">1D</span>${fmtPct(m.daily_change_pct)}</div>`);
+    }
+    if (m.current_streak_dir && m.current_streak_len > 1) {
+        const cls = m.current_streak_dir === 'up' ? 'pos' : 'neg';
+        chips.push(`<div class="context-chip ${cls}"><span class="chip-key">Streak</span>${m.current_streak_len}${m.current_streak_dir === 'up' ? '↑' : '↓'}</div>`);
+    } else if (m.prior_streak_dir && m.prior_streak_len >= 3 && m.today_dir && m.today_dir !== m.prior_streak_dir) {
+        chips.push(`<div class="context-chip"><span class="chip-key">Reversal</span>after ${m.prior_streak_len}${m.prior_streak_dir === 'up' ? '↑' : '↓'}</div>`);
+    }
+    if (m.pct_in_52w_range !== null && m.pct_in_52w_range !== undefined) {
+        chips.push(`<div class="context-chip"><span class="chip-key">52w Range</span>${m.pct_in_52w_range.toFixed(0)}%</div>`);
+    }
+    if (m.pct_from_ath !== null && m.pct_from_ath !== undefined) {
+        const cls = m.pct_from_ath >= -0.5 ? 'pos' : (m.pct_from_ath <= -10 ? 'neg' : '');
+        const label = m.is_new_ath_today ? 'new ATH' : `${fmtPct(m.pct_from_ath)} from ATH`;
+        chips.push(`<div class="context-chip ${cls}"><span class="chip-key">ATH</span>${label}</div>`);
+    }
+    if (m.pct_from_sma50 !== null && m.pct_from_sma50 !== undefined) {
+        const cls = m.pct_from_sma50 >= 0 ? 'pos' : 'neg';
+        chips.push(`<div class="context-chip ${cls}"><span class="chip-key">vs 50dma</span>${fmtPct(m.pct_from_sma50)}</div>`);
+    }
+    if (m.pct_from_sma200 !== null && m.pct_from_sma200 !== undefined) {
+        const cls = m.pct_from_sma200 >= 0 ? 'pos' : 'neg';
+        chips.push(`<div class="context-chip ${cls}"><span class="chip-key">vs 200dma</span>${fmtPct(m.pct_from_sma200)}</div>`);
+    }
+    if (m.ma_cross && m.ma_cross_days_ago !== null && m.ma_cross_days_ago <= 60) {
+        const label = m.ma_cross === 'golden_cross' ? 'Golden Cross' : 'Death Cross';
+        const cls = m.ma_cross === 'golden_cross' ? 'pos' : 'neg';
+        chips.push(`<div class="context-chip ${cls}"><span class="chip-key">${label}</span>${m.ma_cross_days_ago}d ago</div>`);
+    }
+    if (m.vol_ratio_20d !== null && m.vol_ratio_20d !== undefined && m.vol_ratio_20d >= 1.4) {
+        chips.push(`<div class="context-chip"><span class="chip-key">Vol</span>${m.vol_ratio_20d.toFixed(1)}× 20d</div>`);
+    }
+    if (m.gap_pattern) {
+        const labels = {
+            'gap_and_go_up': 'Gap & Go ↑',
+            'gap_and_fade_up': 'Gap & Fade ↑',
+            'gap_and_go_down': 'Gap & Go ↓',
+            'gap_and_fade_down': 'Gap & Fade ↓',
+        };
+        chips.push(`<div class="context-chip"><span class="chip-key">Gap</span>${labels[m.gap_pattern] || m.gap_pattern}</div>`);
+    }
+    return chips.join('');
+}
 
 function setupTimeframeButtons() {
     document.querySelectorAll('.chart-timeframe').forEach(group => {

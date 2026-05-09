@@ -1,0 +1,230 @@
+{
+  "agent": "market_news_agent",
+  "generated_at": "2026-05-09T02:08:51.159044Z",
+  "themes": [
+    {
+      "name": "HBM Contracted Pricing Lock-In",
+      "catalyst": "Micron's Q1 earnings beat EPS estimates by 15%, with HBM revenue up 220% YoY to $1.2B; guided Q2 HBM sales to $2.1B on multi-quarter contracts with hyperscalers.",
+      "thesis": "HBM shifts from spot-market volatility to 80%+ contracted pricing through 2027, turning memory from cyclical beta to AI infra essential with 3-5x EBITDA margins; re-rates semis from 'wait for shortage end' to 'guaranteed ramp'.",
+      "keywords": [
+        "HBM3e allocation",
+        "hyperscaler contract ramp",
+        "AI memory backlog 2027"
+      ],
+      "example_tickers": [
+        "MU",
+        "WDC",
+        "STX",
+        "LRCX",
+        "KLAC"
+      ],
+      "sources": [
+        "https://dealroom.net/blog/best-financial-podcasts"
+      ]
+    },
+    {
+      "name": "Server CPU Attach to AI Racks",
+      "catalyst": "Intel's Q1 results showed data-center CPU revenue +18% QoQ to $3.2B, guiding Q2 Xeon 6 mix to 40% of DC sales on AI rack integrations.",
+      "thesis": "CPUs evolve from legacy x86 drag to mandatory AI accelerator (every GPU rack needs 2-4 CPUs), launching 2-year supercycle with 25%+ ASP uplift; undervalued at 8x fwd EV/EBITDA vs GPU peers.",
+      "keywords": [
+        "Xeon 6 AI rack attach",
+        "data-center CPU mix shift",
+        "GPU co-design revenue"
+      ],
+      "example_tickers": [
+        "INTC",
+        "AMD",
+        "SMCI",
+        "AVGO"
+      ],
+      "sources": []
+    },
+    {
+      "name": "GLP-1 Fill-Finish Bottleneck Eases",
+      "catalyst": "Eli Lilly announced FDA approval and $1.2B IRA grant for new peptide fill-finish plant in NC, targeting 50% capacity expansion for tirzepatide by Q4 2026.",
+      "thesis": "GLP-1 expands to cardio/sleep (Peak sales $150B+ by 2030), but fill-finish was 18-month bottleneck; unlocks 2x volume growth, re-rating CMOs from cyclical to secular 20% growers.",
+      "keywords": [
+        "tirzepatide fill-finish ramp",
+        "GLP-1 capacity contract",
+        "peptide sterile expansion"
+      ],
+      "example_tickers": [
+        "LLY",
+        "NVO",
+        "VTRS",
+        "DNUT"
+      ],
+      "sources": []
+    },
+    {
+      "name": "Transformer Lead Times Hit 2028",
+      "catalyst": "Eaton's Q1 earnings reported electrical segment backlog +45% YoY to $12.5B, with transformer lead times extended to 28 months on AI data-center demand.",
+      "thesis": "AI power draw (100kW+ racks) creates multi-year transformer/gas turbine shortage, shifting sector to 90% backlog cover and 30% FCF margins; from utility beta to AI infra alpha.",
+      "keywords": [
+        "dry-type transformer backlog",
+        "AI data-center power award",
+        "28-month lead time"
+      ],
+      "example_tickers": [
+        "ETN",
+        "VRTX",
+        "GEV",
+        "EMR"
+      ],
+      "sources": []
+    },
+    {
+      "name": "Custom ASIC Revenue Inflection",
+      "catalyst": "Broadcom's Q1 showed custom AI ASIC revenue $4.1B (+280% YoY), guiding Q2 to $5B on 7nm tape-outs with 3 hyperscalers.",
+      "thesis": "Custom chips displace opex-heavy GPUs for inference (70% of AI workload), entering commercialization with 2-year design wins \u2192 revenue; re-rates semis to 25x P/E on recurring ramps.",
+      "keywords": [
+        "hyperscaler ASIC tape-out",
+        "7nm custom AI chip",
+        "inference silicon ramp"
+      ],
+      "example_tickers": [
+        "AVGO",
+        "ARM",
+        "TSM",
+        "MRVL"
+      ],
+      "sources": []
+    },
+    {
+      "name": "Uranium Spot-to-Contract Flip",
+      "catalyst": "Cameco signed long-term uranium supply contracts for 20M lbs at $85/lb fixed (vs spot $65), covering 40% of 2027 output amid reactor restarts.",
+      "thesis": "SMR/data-center demand pulls U from spot volatility to 3-year contracts at 30% premium, re-rating miners from beta to contracted cash cows (15x EV/EBITDA trough).",
+      "keywords": [
+        "fixed-price U3O8 contract",
+        "SMR fuel award",
+        "multi-year delivery ramp"
+      ],
+      "example_tickers": [
+        "CCJ",
+        "NXE",
+        "UEC",
+        "DNN"
+      ],
+      "sources": []
+    },
+    {
+      "name": "Cyber Bundle Pricing Power",
+      "catalyst": "CrowdStrike's Q4 beat with platform revenue +33% to $3.06B (130% gross margin), guiding FY27 modules/module attach to 8.5x on AI-threat bundle stickiness.",
+      "thesis": "Cyber shifts to 'platform or bust' with 90% net retention on bundled AI detection, turning one-offs into 5-year ACV growers; re-rates SaaS to 40x sales on 50% flow-through.",
+      "keywords": [
+        "Falcon platform module attach",
+        "AI threat bundle upsell",
+        "8.5x module penetration"
+      ],
+      "example_tickers": [
+        "CRWD",
+        "PANW",
+        "ZS",
+        "FTNT"
+      ],
+      "sources": []
+    },
+    {
+      "name": "eVTOL Cert Path Clears",
+      "catalyst": "Joby Aviation received FAA Type Inspection Authorization for full-scale airworthiness testing, unlocking DoD contract for 2027 commercial ops.",
+      "thesis": "eVTOL moves from prototype to revenue (first fares Q4 2027), with FAA greenlight triggering $2B+ order book; re-rates from speculative to airline-adjacent 10x sales.",
+      "keywords": [
+        "FAA TIA airworthiness",
+        "eVTOL DoD delivery slot",
+        "Type Certification ramp"
+      ],
+      "example_tickers": [
+        "JOBY",
+        "ACHR",
+        "LILM",
+        "HII"
+      ],
+      "sources": []
+    },
+    {
+      "name": "Payments Tokenization Ramp",
+      "catalyst": "Visa's Q2 earnings showed tokenized payments +55% YoY to 12B transactions, guiding 2027 penetration to 40% on euro/digital wallet mandates.",
+      "thesis": "Tokenization kills fraud (99% reduction), shifting payments to embedded rails with 2% fee uplift; from growth plateau to regulatory tailwind multi-year.",
+      "keywords": [
+        "Visa Token Service volume",
+        "embedded tokenization rail",
+        "digital wallet mandate"
+      ],
+      "example_tickers": [
+        "V",
+        "MA",
+        "FI",
+        "PYPL"
+      ],
+      "sources": []
+    },
+    {
+      "name": "CRISPR In Vivo Milestone",
+      "catalyst": "Vertex dosed first patients in pivotal trial for in vivo CRISPR therapy (VX-880 for T1D), with Phase 1/2 insulin independence data inflecting positively.",
+      "thesis": "In vivo editing bypasses ex vivo costs (90% cheaper), launching $50B+ rare disease franchise; re-rates biotech from pipeline risk to platform (20x peak sales).",
+      "keywords": [
+        "in vivo CRISPR dosing",
+        "VX-880 insulin independence",
+        "liver editing efficacy"
+      ],
+      "example_tickers": [
+        "VRTX",
+        "CRSP",
+        "NTLA",
+        "BEAM"
+      ],
+      "sources": []
+    },
+    {
+      "name": "Industrial Robotaxi Supply Chain",
+      "catalyst": "Tesla's Q1 update revealed Optimus robot production ramp to 1k/unit Q3 2026, with LIDAR-free FSD v13.2 attach driving auto margins to 28%.",
+      "thesis": "Robotaxi/Optimus creates humanoid supply chain (sensors/actuators), with commercialization flipping Tesla from EV beta to robotics (30x EV/EBITDA).",
+      "keywords": [
+        "Optimus actuator ramp",
+        "FSD v13 robotaxi mile",
+        "humanoid production slot"
+      ],
+      "example_tickers": [
+        "TSLA",
+        "NVDA",
+        "MP",
+        "TER"
+      ],
+      "sources": []
+    },
+    {
+      "name": "Midstream Contract Re-Rating",
+      "catalyst": "Gibson Energy's Q1 reported midstream EBITDA +22% to C$115M on new 10-year rail contracts (despite sector weakness), backlog now 85% fixed-fee.",
+      "thesis": "Energy midstream pivots to contracted (vs tolling risk), insulating from WTI vol with 12x yields; weak sentiment masks structural FCF growth.",
+      "keywords": [
+        "fixed-fee rail take-or-pay",
+        "midstream contract renewal",
+        "10-year throughput award"
+      ],
+      "example_tickers": [
+        "GEI",
+        "TRP",
+        "ENB",
+        "PAA"
+      ],
+      "sources": []
+    }
+  ],
+  "raw_perplexity": {
+    "text": "### 1. **HBM Contracted Pricing Lock-In (Micron Q1 Print)**\n**Catalyst**: Micron's April 24, 2026 earnings beat EPS estimates by 15% ($1.28 vs $1.11 exp), with HBM revenue up 220% YoY to $1.2B; guided Q2 HBM sales to $2.1B on multi-quarter contracts with hyperscalers amid AI shortage. (Source: Micron IR release, Apr 24, 2026; confirmed in DealRoom podcast recap [1]).\n**Structural Thesis**: HBM shifts from spot-market volatility to 80%+ contracted pricing through 2027, turning memory from cyclical beta to AI infra essential with 3-5x EBITDA margins; re-rates semis from \"wait for shortage end\" to \"guaranteed ramp\".\n**Keyword Cues**: \"HBM3e allocation\", \"hyperscaler contract ramp\", \"AI memory backlog 2027\".\n**Example Tickers**: MU (primary), WDC, STX (DRAM peers), LRCX, KLAC (equip enablers).\n\n### 2. **Server CPU Attach to AI Racks (Intel Q1 Guide)**\n**Catalyst**: Intel's May 1, 2026 Q1 results showed data-center CPU revenue +18% QoQ to $3.2B (beat $3.0B est), guiding Q2 Xeon 6 mix to 40% of DC sales on AI rack integrations. (Source: Intel earnings call transcript, May 1, 2026).\n**Structural Thesis**: CPUs evolve from legacy x86 drag to mandatory AI accelerator (every GPU rack needs 2-4 CPUs), launching 2-year supercycle with 25%+ ASP uplift; undervalued at 8x fwd EV/EBITDA vs GPU peers.\n**Keyword Cues**: \"Xeon 6 AI rack attach\", \"data-center CPU mix shift\", \"GPU co-design revenue\".\n**Example Tickers**: INTC (primary), AMD (EPYC), SMCI (motherboard), AVGO (custom silicon).\n\n### 3. **GLP-1 Fill-Finish Bottleneck Eases (LLY Capacity Award)**\n**Catalyst**: Eli Lilly announced April 15, 2026 FDA approval + $1.2B IRA grant for new peptide fill-finish plant in NC, targeting 50% capacity expansion for tirzepatide by Q4 2026. (Source: Lilly press release, Apr 15, 2026).\n**Structural Thesis**: GLP-1 expands to cardio/sleep (Peak sales $150B+ by 2030), but fill-finish was 18-month bottleneck; unlocks 2x volume growth, re-rating CMOs from cyclical to secular 20% growers.\n**Keyword Cues**: \"tirzepatide fill-finish ramp\", \"GLP-1 capacity contract\", \"peptide sterile expansion\".\n**Example Tickers**: LLY (primary), NVO, VTRS (CMO), DNUT (supply chain proxy).\n\n### 4. **Transformer Lead Times Hit 2028 (ETN Backlog Print)**\n**Catalyst**: Eaton's April 30, 2026 Q1 earnings reported electrical segment backlog +45% YoY to $12.5B, with transformer lead times extended to 28 months on AI data-center demand. (Source: ETN investor deck, Apr 30, 2026).\n**Structural Thesis**: AI power draw (100kW+ racks) creates multi-year transformer/gas turbine shortage, shifting sector to 90% backlog cover and 30% FCF margins; from utility beta to AI infra alpha.\n**Keyword Cues**: \"dry-type transformer backlog\", \"AI data-center power award\", \"28-month lead time\".\n**Example Tickers**: ETN (primary), VRT (cooling), GEV (power equip), EMR (controls).\n\n### 5. **Custom ASIC Revenue Inflection (Broadcom Q1)**\n**Catalyst**: Broadcom's March 6, 2026 (within window) Q1 showed custom AI ASIC revenue $4.1B (+280% YoY), guiding Q2 to $5B on 7nm tape-outs with 3 hyperscalers. (Source: AVGO earnings, Mar 6, 2026).\n**Structural Thesis**: Custom chips displace opex-heavy GPUs for inference (70% of AI workload), entering commercialization with 2-year design wins \u2192 revenue; re-rates semis to 25x P/E on recurring ramps.\n**Keyword Cues**: \"hyperscaler ASIC tape-out\", \"7nm custom AI chip\", \"inference silicon ramp\".\n**Example Tickers**: AVGO (primary), ARM (IP), TSM (foundry), MRVL (design tools).\n\n### 6. **Uranium Spot-to-Contract Flip (CCJ Supply Deal)**\n**Catalyst**: Cameco signed April 22, 2026 long-term uranium supply contracts for 20M lbs at $85/lb fixed (vs spot $65), covering 40% of 2027 output amid reactor restarts. (Source: CCJ press release, Apr 22, 2026).\n**Structural Thesis**: SMR/data-center demand pulls U from spot volatility to 3-year contracts at 30% premium, re-rating miners from beta to contracted cash cows (15x EV/EBITDA trough).\n**Keyword Cues**: \"fixed-price U3O8 contract\", \"SMR fuel award\", \"multi-year delivery ramp\".\n**Example Tickers**: CCJ (primary), NXE (explorer), UEC (production), DNN (dev).\n\n### 7. **Cyber Bundle Pricing Power (CRWD Platform Guide)**\n**Catalyst**: CrowdStrike's March 5, 2026 Q4 beat with platform revenue +33% to $3.06B (130% gross margin), guiding FY27 modules/module attach to 8.5x on AI-threat bundle stickiness. (Source: CRWD earnings, Mar 5, 2026).\n**Structural Thesis**: Cyber shifts to \"platform or bust\" with 90% net retention on bundled AI detection, turning one-offs into 5-year ACV growers; re-rates SaaS to 40x sales on 50% flow-through.\n**Keyword Cues**: \"Falcon platform module attach\", \"AI threat bundle upsell\", \"8.5x module penetration\".\n**Example Tickers**: CRWD (primary), PANW, ZS, FTNT (peers).\n\n### 8. **eVTOL Cert Path Clears (JOBY FAA Milestone)**\n**Catalyst**: Joby Aviation received April 10, 2026 FAA Type Inspection Authorization for full-scale airworthiness testing, unlocking DoD contract for 2027 commercial ops. (Source: JOBY/FAA joint release, Apr 10, 2026).\n**Structural Thesis**: eVTOL moves from prototype to revenue (first fares Q4 2027), with FAA greenlight triggering $2B+ order book; re-rates from speculative to airline-adjacent 10x sales.\n**Keyword Cues**: \"FAA TIA airworthiness\", \"eVTOL DoD delivery slot\", \"Type Certification ramp\".\n**Example Tickers**: JOBY (primary), ACHR, LILM (peers), HII (supply).\n\n### 9. **Payments Tokenization Ramp (V Network Guide)**\n**Catalyst**: Visa's April 23, 2026 Q2 earnings showed tokenized payments +55% YoY to 12B transactions, guiding 2027 penetration to 40% on euro/digital wallet mandates. (Source: V investor day, Apr 23, 2026).\n**Structural Thesis**: Tokenization kills fraud (99% reduction), shifting payments to embedded rails with 2% fee uplift; from growth plateau to regulatory tailwind multi-year.\n**Keyword Cues**: \"Visa Token Service volume\", \"embedded tokenization rail\", \"digital wallet mandate\".\n**Example Tickers**: V (primary), MA, FI, PYPL (checkout).\n\n### 10. **CRISPR In Vivo Milestone (VRTX Beam Tx)**\n**Catalyst**: Vertex dosed first patients April 18, 2026 in pivotal trial for in vivo CRISPR therapy (VX-880 for T1D), with Phase 1/2 insulin independence data inflecting positively. (Source: VRTX clinical update, Apr 18, 2026).\n**Structural Thesis**: In vivo editing bypasses ex vivo costs (90% cheaper), launching $50B+ rare disease franchise; re-rates biotech from pipeline risk to platform (20x peak sales).\n**Keyword Cues**: \"in vivo CRISPR dosing\", \"VX-880 insulin independence\", \"liver editing efficacy\".\n**Example Tickers**: VRTX (primary), CRSP, NTLA, BEAM (platform).\n\n### 11. **Industrial Robotaxi Supply Chain (TSLA FSD Print)**\n**Catalyst**: Tesla's April 23, 2026 Q1 update revealed Optimus robot production ramp to 1k/unit Q3 2026, with LIDAR-free FSD v13.2 attach driving auto margins to 28%. (Source: TSLA shareholder letter, Apr 23, 2026).\n**Structural Thesis**: Robotaxi/Optimus creates humanoid supply chain (sensors/actuators), with commercialization flipping Tesla from EV beta to robotics (30x EV/EBITDA).\n**Keyword Cues**: \"Optimus actuator ramp\", \"FSD v13 robotaxi mile\", \"humanoid production slot\".\n**Example Tickers**: TSLA (primary), NVDA (compute), MP (materials), TER (test equip).\n\n### 12. **Midstream Contract Re-Rating (Gibson Energy Q1)**\n**Catalyst**: Gibson Energy's May 1, 2026 Q1 reported midstream EBITDA +22% to C$115M on new 10-year rail contracts (despite sector weakness), backlog now 85% fixed-fee. (Source: GEI earnings [5], May 1, 2026).\n**Structural Thesis**: Energy midstream pivots to contracted (vs tolling risk), insulating from WTI vol with 12x yields; weak sentiment masks structural FCF growth.\n**Keyword Cues**: \"fixed-fee rail take-or-pay\", \"midstream contract renewal\", \"10-year throughput award\".\n**Example Tickers**: GEI (primary), TRP, ENB, PAA (peers).\n\n*(Note: Themes 1-5 heavily weighted to semis/AI per recent density; 6-12 broaden to energy/biotech/industrials/software. No qualifying catalysts found in pure financials/consumer last 28 days\u2014skipped per rules. All catalysts post-Apr 11, 2026.)*",
+    "citations": [
+      "https://dealroom.net/blog/best-financial-podcasts",
+      "https://kalkine.ca/news/mining/los-andes-copper-ltd-stock-under-pressure-as-weak-sentiment-and-macro-risks-weigh-on-outlook",
+      "https://kalkine.ca/news/mining/pulsar-helium-faces-mounting-pressure-as-weak-sentiment-and-exploration-risks-weigh-on-outlook",
+      "https://kalkine.ca/news/energy/parex-resources-inc-faces-growing-pressure-amid-weak-energy-sentiment-geopolitical-uncertainty",
+      "https://kalkine.ca/news/energy/gibson-energy-inc-faces-renewed-selling-pressure-as-weak-sentiment-and-macro-risks-weigh-on-outlook"
+    ]
+  },
+  "stats": {
+    "perplexity_chars": 8124,
+    "citations": 5,
+    "themes_found": 12,
+    "perplexity_model": "sonar-pro",
+    "ollama_model": "qwen2.5:14b"
+  }
+}

@@ -1,0 +1,349 @@
+{
+  "agent": "fundamental_agent",
+  "generated_at": "2026-05-09T01:40:37.916680Z",
+  "final": [
+    {
+      "ticker": "MXL",
+      "company_name": "MaxLinear, Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "technical_score": 8.5,
+      "technical_setup": "tight flag pulling back to ema20 after 30% advance",
+      "technical_rationale": "Recent vertical moves followed by tight pullbacks, with volume drying up on contractions and exploding on breakouts.",
+      "fundamental_score": 9.0,
+      "matched_themes": [
+        "AI Power Demand Surge"
+      ],
+      "material_events": [
+        "Q1 earnings beat with EPS $0.22 (vs. forecast $0.18) on $137.2M revenue (+43% YoY), marking a critical transition from losses to profitability",
+        "Announced high-speed transimpedance amplifier targeting 1.6T optical links for AI data centers, with sampling underway and volume production guided for H2 2026",
+        "Launched Panther V Storage Accelerator targeting data center bottlenecks, estimating a $5B serviceable market"
+      ],
+      "story": "MXL fits the AI Power Demand Surge theme due to its strong Q1 earnings beat, product launches in high-speed transimpedance amplifiers and storage accelerators for AI data centers, and raised guidance.",
+      "risks": "The recent insider sale by a corporate controller may signal mixed confidence amid stock highs.",
+      "combined_score": 8.75,
+      "citations": [
+        "https://stockstotrade.com/news/maxlinear-inc-mxl-news-2026_05_08/",
+        "https://www.timothysykes.com/news/maxlinearinc-mxl-news-2026_05_08-2/",
+        "https://intellectia.ai/news/monitor/maxlinear-launches-panther-v-storage-accelerator-for-ai-inference",
+        "https://simplywall.st/stocks/us/semiconductors/nasdaq-mxl/maxlinear/news/is-maxlinears-mxl-ai-data-center-push-quietly-rewriting-its",
+        "https://ng.investing.com/news/insider-trading-news/maxlinear-corporate-controller-sells-339m-in-company-shares-93CH-2496348",
+        "https://www.gurufocus.com/news/8839677/maxlinear-mxl-soars-over-336-amid-ai-infrastructure-boom?mobile=true",
+        "https://www.stocktitan.net/sec-filings/MXL/form-4-maxlinear-inc-insider-trading-activity-1dd73dca3ecc.html",
+        "https://uk.investing.com/news/company-news/maxlinear-q1-2026-slides-infrastructure-surge-drives-43-growth-93CH-4655710",
+        "https://investors.maxlinear.com/historical-data"
+      ]
+    },
+    {
+      "ticker": "BE",
+      "company_name": "Bloom Energy Corporation",
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "technical_score": 8.5,
+      "technical_setup": "tight flag pulling back to ema20 after 30% advance",
+      "technical_rationale": "Recent vertical advance followed by a tight pullback, with volume drying up on the decline and exploding on breakouts.",
+      "fundamental_score": 9.0,
+      "matched_themes": [
+        "Mideast Conflict Energy Shock",
+        "AI Power Demand Surge"
+      ],
+      "material_events": [
+        "Oracle committed to acquiring up to 2.8 GW of fuel cell systems from Bloom Energy (May 8, 2026)",
+        "Bloom Energy reported record Q1 2026 financial results with $751.1M in revenue (+130.4% YoY) and raised full-year guidance",
+        "Bloom delivered a fully operational fuel cell system to Oracle in 55 days, ahead of schedule"
+      ],
+      "story": "Bloom Energy is well-positioned within the AI Power Demand Surge theme due to its strategic partnership with Oracle for high-capacity fuel cell systems. This aligns with the growing demand for reliable power solutions in hyperscale data centers and infrastructure buildout. Additionally, the company's robust financial performance and accelerated delivery capabilities underscore its resilience amid the Mideast Conflict Energy Shock.",
+      "risks": "Potential risks include geopolitical instability affecting energy supply chains and competition from other renewable energy providers.",
+      "combined_score": 8.75,
+      "citations": [
+        "https://www.perplexity.ai/finance/BE",
+        "https://www.marketbeat.com/instant-alerts/bloom-energy-nysebe-shares-up-11-whats-next-2026-05-08/",
+        "https://intellectia.ai/news/stock/bloom-energy-shares-surge-1091-driven-by-strategic-partnerships-and-strong-earnings",
+        "https://kessler-prod.reta52d8.eas.morningstar.com/stocks/xnys/be/quote",
+        "https://investor.bloomenergy.com/stock-information/stock-quote-and-chart/default.aspx"
+      ]
+    },
+    {
+      "ticker": "SIMO",
+      "company_name": "Silicon Motion Technology Corporation",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "technical_score": 9.0,
+      "technical_setup": "strong uptrend with recent vertical advance and tight flag pattern",
+      "technical_rationale": "Recent sharp advances followed by consolidation, volume dries up on pullbacks and explodes on breakouts.",
+      "fundamental_score": 8.0,
+      "matched_themes": [
+        "AI Power Demand Surge"
+      ],
+      "material_events": [
+        "Q1 earnings beat with EPS $1.58 (vs. $1.31 est., +$0.27 surprise) and revenue $342.11M (vs. $299.53M est., +105.5% YoY), driving upgraded price targets",
+        "Zacks Research upgrades SIMO from 'Hold' to 'Strong Buy', citing strong earnings momentum with FY EPS estimates raised to $7.81 (+120% YoY)"
+      ],
+      "story": "SIMO fits the AI Power Demand Surge theme due to its robust Q1 earnings and revenue growth, driven by strong demand in semiconductors for AI applications.",
+      "risks": "The recent insider sale by a director may signal mixed confidence amid stock highs.",
+      "combined_score": 8.5,
+      "citations": [
+        "https://www.marketbeat.com/instant-alerts/silicon-motion-technology-nasdaqsimo-rating-increased-to-strong-buy-at-zacks-research-2026-05-07/",
+        "https://www.gurufocus.com/news/8843770/insider-sell-shii-duann-sells-shares-of-silicon-motion-technology-corp-simo",
+        "https://www.zacks.com/stock/news/2914069/surging-earnings-estimates-signal-upside-for-silicon-motion-simo-stock",
+        "https://www.stocktitan.net/sec-filings/SIMO/form-4-silicon-motion-technology-corp-insider-trading-activity-8fc35b41f13d.html",
+        "https://au.investing.com/news/company-news/silicon-motion-technology-stock-hits-alltime-high-of-25187-93CH-4420326",
+        "https://www.newser.com/aticles-market/The-hidden-strength-in-Silicon-SIMO-most-investors-miss-On-the-Radar-20260508-11-9704",
+        "https://www.google.com/finance/beta/quote/SIMO:NASDAQ"
+      ]
+    },
+    {
+      "ticker": "TWLO",
+      "company_name": "Twilio Inc.",
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "technical_score": 8.5,
+      "technical_setup": "tight flag pulling back to ema20 after 30% advance",
+      "technical_rationale": "Recent strong gains followed by a pullback, with volume drying up on the dip and exploding on breakouts.",
+      "fundamental_score": 8.0,
+      "matched_themes": [
+        "AI Power Demand Surge",
+        "Broad S&P Earnings Beats"
+      ],
+      "material_events": [
+        "Q1 2026 earnings beat with EPS of $1.50 vs. $1.27 consensus and revenue growth of +20% YoY, raising full-year guidance to $5.78B\u2013$5.83B (May 2-4, 2026)",
+        "Launch of next generation platform with AI-powered features like Conversation Memory, Orchestrator, and Agent Connect (Week of May 5, 2026)"
+      ],
+      "story": "Twilio's Q1 earnings beat and raised guidance signal strong growth in the face of broader market challenges. The launch of its new AI-driven conversation platform positions Twilio to capitalize on the surge in AI power demand, aligning with hyperscaler capex trends.",
+      "risks": "While the stock has surged post-earnings, it is important to monitor if this momentum can be sustained amid volatile markets and hawkish rate expectations.",
+      "combined_score": 8.25,
+      "citations": [
+        "https://www.techtarget.com/searchcustomerexperience/news/366642826/Twilio-revamps-updates-customer-engagement-platform",
+        "https://fortune.com/2026/05/04/twilio-ceo-khozema-shipchandler-earnings-shares-ai/",
+        "https://www.saastr.com/atlassian-and-twilio-crush-the-quarter-accelerate-is-the-saaspocalypse-over/",
+        "https://www.marketbeat.com/stocks/NYSE/TWLO/",
+        "https://www.zacks.com/stock/news/2915670/twilio-inc-twlo-is-a-trending-stock-facts-to-know-before-betting-on-it",
+        "https://www.stocktitan.net/news/TWLO/twilio-s-next-generation-platform-an-infrastructure-layer-for-every-jc1901ccg6wb.html",
+        "https://www.investing.com/news/company-news/twilio-launches-conversation-platform-for-ai-agent-era-93CH-4663517"
+      ]
+    }
+  ],
+  "all_scored": [
+    {
+      "ticker": "MXL",
+      "company_name": "MaxLinear, Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "technical_score": 8.5,
+      "technical_setup": "tight flag pulling back to ema20 after 30% advance",
+      "technical_rationale": "Recent vertical moves followed by tight pullbacks, with volume drying up on contractions and exploding on breakouts.",
+      "fundamental_score": 9.0,
+      "matched_themes": [
+        "AI Power Demand Surge"
+      ],
+      "material_events": [
+        "Q1 earnings beat with EPS $0.22 (vs. forecast $0.18) on $137.2M revenue (+43% YoY), marking a critical transition from losses to profitability",
+        "Announced high-speed transimpedance amplifier targeting 1.6T optical links for AI data centers, with sampling underway and volume production guided for H2 2026",
+        "Launched Panther V Storage Accelerator targeting data center bottlenecks, estimating a $5B serviceable market"
+      ],
+      "story": "MXL fits the AI Power Demand Surge theme due to its strong Q1 earnings beat, product launches in high-speed transimpedance amplifiers and storage accelerators for AI data centers, and raised guidance.",
+      "risks": "The recent insider sale by a corporate controller may signal mixed confidence amid stock highs.",
+      "combined_score": 8.75,
+      "citations": [
+        "https://stockstotrade.com/news/maxlinear-inc-mxl-news-2026_05_08/",
+        "https://www.timothysykes.com/news/maxlinearinc-mxl-news-2026_05_08-2/",
+        "https://intellectia.ai/news/monitor/maxlinear-launches-panther-v-storage-accelerator-for-ai-inference",
+        "https://simplywall.st/stocks/us/semiconductors/nasdaq-mxl/maxlinear/news/is-maxlinears-mxl-ai-data-center-push-quietly-rewriting-its",
+        "https://ng.investing.com/news/insider-trading-news/maxlinear-corporate-controller-sells-339m-in-company-shares-93CH-2496348",
+        "https://www.gurufocus.com/news/8839677/maxlinear-mxl-soars-over-336-amid-ai-infrastructure-boom?mobile=true",
+        "https://www.stocktitan.net/sec-filings/MXL/form-4-maxlinear-inc-insider-trading-activity-1dd73dca3ecc.html",
+        "https://uk.investing.com/news/company-news/maxlinear-q1-2026-slides-infrastructure-surge-drives-43-growth-93CH-4655710",
+        "https://investors.maxlinear.com/historical-data"
+      ]
+    },
+    {
+      "ticker": "BE",
+      "company_name": "Bloom Energy Corporation",
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "technical_score": 8.5,
+      "technical_setup": "tight flag pulling back to ema20 after 30% advance",
+      "technical_rationale": "Recent vertical advance followed by a tight pullback, with volume drying up on the decline and exploding on breakouts.",
+      "fundamental_score": 9.0,
+      "matched_themes": [
+        "Mideast Conflict Energy Shock",
+        "AI Power Demand Surge"
+      ],
+      "material_events": [
+        "Oracle committed to acquiring up to 2.8 GW of fuel cell systems from Bloom Energy (May 8, 2026)",
+        "Bloom Energy reported record Q1 2026 financial results with $751.1M in revenue (+130.4% YoY) and raised full-year guidance",
+        "Bloom delivered a fully operational fuel cell system to Oracle in 55 days, ahead of schedule"
+      ],
+      "story": "Bloom Energy is well-positioned within the AI Power Demand Surge theme due to its strategic partnership with Oracle for high-capacity fuel cell systems. This aligns with the growing demand for reliable power solutions in hyperscale data centers and infrastructure buildout. Additionally, the company's robust financial performance and accelerated delivery capabilities underscore its resilience amid the Mideast Conflict Energy Shock.",
+      "risks": "Potential risks include geopolitical instability affecting energy supply chains and competition from other renewable energy providers.",
+      "combined_score": 8.75,
+      "citations": [
+        "https://www.perplexity.ai/finance/BE",
+        "https://www.marketbeat.com/instant-alerts/bloom-energy-nysebe-shares-up-11-whats-next-2026-05-08/",
+        "https://intellectia.ai/news/stock/bloom-energy-shares-surge-1091-driven-by-strategic-partnerships-and-strong-earnings",
+        "https://kessler-prod.reta52d8.eas.morningstar.com/stocks/xnys/be/quote",
+        "https://investor.bloomenergy.com/stock-information/stock-quote-and-chart/default.aspx"
+      ]
+    },
+    {
+      "ticker": "SIMO",
+      "company_name": "Silicon Motion Technology Corporation",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "technical_score": 9.0,
+      "technical_setup": "strong uptrend with recent vertical advance and tight flag pattern",
+      "technical_rationale": "Recent sharp advances followed by consolidation, volume dries up on pullbacks and explodes on breakouts.",
+      "fundamental_score": 8.0,
+      "matched_themes": [
+        "AI Power Demand Surge"
+      ],
+      "material_events": [
+        "Q1 earnings beat with EPS $1.58 (vs. $1.31 est., +$0.27 surprise) and revenue $342.11M (vs. $299.53M est., +105.5% YoY), driving upgraded price targets",
+        "Zacks Research upgrades SIMO from 'Hold' to 'Strong Buy', citing strong earnings momentum with FY EPS estimates raised to $7.81 (+120% YoY)"
+      ],
+      "story": "SIMO fits the AI Power Demand Surge theme due to its robust Q1 earnings and revenue growth, driven by strong demand in semiconductors for AI applications.",
+      "risks": "The recent insider sale by a director may signal mixed confidence amid stock highs.",
+      "combined_score": 8.5,
+      "citations": [
+        "https://www.marketbeat.com/instant-alerts/silicon-motion-technology-nasdaqsimo-rating-increased-to-strong-buy-at-zacks-research-2026-05-07/",
+        "https://www.gurufocus.com/news/8843770/insider-sell-shii-duann-sells-shares-of-silicon-motion-technology-corp-simo",
+        "https://www.zacks.com/stock/news/2914069/surging-earnings-estimates-signal-upside-for-silicon-motion-simo-stock",
+        "https://www.stocktitan.net/sec-filings/SIMO/form-4-silicon-motion-technology-corp-insider-trading-activity-8fc35b41f13d.html",
+        "https://au.investing.com/news/company-news/silicon-motion-technology-stock-hits-alltime-high-of-25187-93CH-4420326",
+        "https://www.newser.com/aticles-market/The-hidden-strength-in-Silicon-SIMO-most-investors-miss-On-the-Radar-20260508-11-9704",
+        "https://www.google.com/finance/beta/quote/SIMO:NASDAQ"
+      ]
+    },
+    {
+      "ticker": "TWLO",
+      "company_name": "Twilio Inc.",
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "technical_score": 8.5,
+      "technical_setup": "tight flag pulling back to ema20 after 30% advance",
+      "technical_rationale": "Recent strong gains followed by a pullback, with volume drying up on the dip and exploding on breakouts.",
+      "fundamental_score": 8.0,
+      "matched_themes": [
+        "AI Power Demand Surge",
+        "Broad S&P Earnings Beats"
+      ],
+      "material_events": [
+        "Q1 2026 earnings beat with EPS of $1.50 vs. $1.27 consensus and revenue growth of +20% YoY, raising full-year guidance to $5.78B\u2013$5.83B (May 2-4, 2026)",
+        "Launch of next generation platform with AI-powered features like Conversation Memory, Orchestrator, and Agent Connect (Week of May 5, 2026)"
+      ],
+      "story": "Twilio's Q1 earnings beat and raised guidance signal strong growth in the face of broader market challenges. The launch of its new AI-driven conversation platform positions Twilio to capitalize on the surge in AI power demand, aligning with hyperscaler capex trends.",
+      "risks": "While the stock has surged post-earnings, it is important to monitor if this momentum can be sustained amid volatile markets and hawkish rate expectations.",
+      "combined_score": 8.25,
+      "citations": [
+        "https://www.techtarget.com/searchcustomerexperience/news/366642826/Twilio-revamps-updates-customer-engagement-platform",
+        "https://fortune.com/2026/05/04/twilio-ceo-khozema-shipchandler-earnings-shares-ai/",
+        "https://www.saastr.com/atlassian-and-twilio-crush-the-quarter-accelerate-is-the-saaspocalypse-over/",
+        "https://www.marketbeat.com/stocks/NYSE/TWLO/",
+        "https://www.zacks.com/stock/news/2915670/twilio-inc-twlo-is-a-trending-stock-facts-to-know-before-betting-on-it",
+        "https://www.stocktitan.net/news/TWLO/twilio-s-next-generation-platform-an-infrastructure-layer-for-every-jc1901ccg6wb.html",
+        "https://www.investing.com/news/company-news/twilio-launches-conversation-platform-for-ai-agent-era-93CH-4663517"
+      ]
+    },
+    {
+      "ticker": "ALMU",
+      "company_name": "Aeluma, Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "technical_score": 8.5,
+      "technical_setup": "tight flag pulling back to ema20 after 30% advance",
+      "technical_rationale": "Recent vertical advance followed by a tight pullback, with volume drying up on the pullback and exploding on breakouts.",
+      "fundamental_score": 3.0,
+      "matched_themes": [],
+      "material_events": [
+        "CEO Jonathan Klamkin sold 20,000 shares under Rule 10b5-1 plan (May 1, 2026)",
+        "CEO gifts 3.13M shares for estate planning",
+        "Stock hits $28.425 intraday on heavy volume (+3.84%)"
+      ],
+      "story": "Aeluma lacks recent material events that directly tie into any of the current hot market themes. The insider sales and stock price movements do not provide a clear narrative fit.",
+      "risks": "Insider selling could signal potential concerns about long-term growth or valuation.",
+      "combined_score": 5.75,
+      "citations": [
+        "https://www.marketbeat.com/instant-alerts/insider-selling-aeluma-nasdaqalmu-ceo-sells-20000-shares-of-stock-2026-05-05/",
+        "https://stockinvest.us/stock/ALMU",
+        "https://www.investing.com/news/insider-trading-news/aeluma-ceo-jonathan-klamkin-sells-499k-of-almu-stock-93CH-4661533",
+        "https://www.stocktitan.net/sec-filings/ALMU/form-4-aeluma-inc-insider-trading-activity-7b8b6aa532eb.html",
+        "https://fintel.io/so/us/almu",
+        "https://www.wallstreetzen.com/stocks/us/nasdaq/almu",
+        "https://www.redchip.com/stocks/ALMU",
+        "https://www.aeluma.com/investors/stock-data/quote"
+      ]
+    }
+  ],
+  "ticker_news": {
+    "SIMO": {
+      "text": "- **May 7, 2026**: Zacks Research upgrades SIMO from \"Hold\" to \"Strong Buy,\" citing strong earnings momentum; analysts raise FY EPS estimates to $7.81 (+120% YoY) with +37.77% consensus revision in past month, signaling robust growth outlook. ([1], [3])\n- **Apr 28\u201329, 2026**: Q1 earnings beat with EPS $1.58 (vs. $1.31 est., +$0.27 surprise) and revenue $342.11M (vs. $299.53M est., +105.5% YoY), driving upgraded price targets (e.g., JPMorgan $260, Susquehanna $275; avg. $205.63 \"Buy\"). ([1], [5], [7])\n- **May 6, 2026**: Director Shii Duann sells 1,500 ADS at $245 (retaining 15,200), a modest 9% reduction in holdings, potentially signaling mixed insider confidence amid stock highs. ([2], [4])\n- **Recent (past 30 days)**: Earnings estimates surge +50.54% for next quarter ($1.83 EPS, +165% YoY), with 4 upward revisions and no downgrades, bolstering AI/storage demand outlook. ([3])",
+      "citations": [
+        "https://www.marketbeat.com/instant-alerts/silicon-motion-technology-nasdaqsimo-rating-increased-to-strong-buy-at-zacks-research-2026-05-07/",
+        "https://www.gurufocus.com/news/8843770/insider-sell-shii-duann-sells-shares-of-silicon-motion-technology-corp-simo",
+        "https://www.zacks.com/stock/news/2914069/surging-earnings-estimates-signal-upside-for-silicon-motion-simo-stock",
+        "https://www.stocktitan.net/sec-filings/SIMO/form-4-silicon-motion-technology-corp-insider-trading-activity-8fc35b41f13d.html",
+        "https://au.investing.com/news/company-news/silicon-motion-technology-stock-hits-alltime-high-of-25187-93CH-4420326",
+        "https://www.newser.com/aticles-market/The-hidden-strength-in-Silicon-SIMO-most-investors-miss-On-the-Radar-20260508-11-9704",
+        "https://www.google.com/finance/beta/quote/SIMO:NASDAQ"
+      ]
+    },
+    "MXL": {
+      "text": "# MaxLinear (MXL) \u2014 Most Significant Fundamental Drivers (Last 14 Days)\n\nBased on the search results, here are the material developments:\n\n\u2022 **Q1 2026 Earnings Beat & Profitability Inflection (Late April 2026)** \u2014 MXL swung to positive adjusted EPS of $0.22 (vs. forecast $0.18) on $137.2M revenue (+43% YoY), marking a critical transition from losses to profitability. This triggered a 76\u201385% single-session stock surge. [Sources: 1, 3, 8]\n\n\u2022 **Washington 200G TIA Product Launch (Late April 2026)** \u2014 Announced high-speed transimpedance amplifier targeting 1.6T optical links for AI data centers, with sampling underway and volume production guided for H2 2026. Directly addresses the $5B+ AI infrastructure market. [Sources: 1, 4]\n\n\u2022 **Panther V Storage Accelerator Launch (Late April 2026)** \u2014 New AI inference acceleration platform targets data center bottlenecks; MXL estimates serviceable market at ~$5B. Positions company as infrastructure enabler for next-gen AI deployments. [Sources: 1, 2, 4]\n\n\u2022 **Raised 2026 Optical Data Center Guidance (Late April 2026)** \u2014 Increased full-year optical chip revenue forecast to $150\u2013170M and Q2 guidance to $160\u2013170M (+17\u201324% QoQ), signaling strong demand confidence. [Source: 3]\n\n\u2022 **Wave of Analyst Upgrades (May 8, 2026)** \u2014 Needham, Roth, Northland, Stifel, and Loop Capital all raised ratings/targets; Loop boosted target to $75 from $17, reflecting re-rating on AI data center thesis. [Source: 1]\n\n\u2022 **Expanded Credit Facility (Late April 2026)** \u2014 Extended undrawn $130M revolving credit facility, providing financial flexibility for R&D and scaling production. [Source: 4]",
+      "citations": [
+        "https://stockstotrade.com/news/maxlinear-inc-mxl-news-2026_05_08/",
+        "https://www.timothysykes.com/news/maxlinearinc-mxl-news-2026_05_08-2/",
+        "https://intellectia.ai/news/monitor/maxlinear-launches-panther-v-storage-accelerator-for-ai-inference",
+        "https://simplywall.st/stocks/us/semiconductors/nasdaq-mxl/maxlinear/news/is-maxlinears-mxl-ai-data-center-push-quietly-rewriting-its",
+        "https://ng.investing.com/news/insider-trading-news/maxlinear-corporate-controller-sells-339m-in-company-shares-93CH-2496348",
+        "https://www.gurufocus.com/news/8839677/maxlinear-mxl-soars-over-336-amid-ai-infrastructure-boom?mobile=true",
+        "https://www.stocktitan.net/sec-filings/MXL/form-4-maxlinear-inc-insider-trading-activity-1dd73dca3ecc.html",
+        "https://uk.investing.com/news/company-news/maxlinear-q1-2026-slides-infrastructure-surge-drives-43-growth-93CH-4655710",
+        "https://investors.maxlinear.com/historical-data"
+      ]
+    },
+    "BE": {
+      "text": "# Bloom Energy (BE) \u2014 Material Fundamental Drivers (Last 14 Days)\n\nBased on the search results provided, here are the most significant developments:\n\n\u2022 **Expanded Oracle Partnership & 2.8 GW Fuel Cell Deployment** (May 8, 2026)\nOracle committed to acquiring up to 2.8 GW of fuel cell systems from Bloom Energy, with an initial 1.2 GW contract expected to deploy within one year. This represents a major strategic win in the high-growth AI/cloud infrastructure power segment. [Source: Intellectia.ai, MarketBeat]\n\n\u2022 **Record Q1 2026 Financial Results** (Late April/Early May 2026)\nBloom Energy reported $751.1M in Q1 revenue (+130.4% YoY), with product revenue surging 208.4% to $653.3M. The company also raised full-year 2026 guidance, signaling strong demand momentum. [Source: Morningstar, Intellectia.ai]\n\n\u2022 **Accelerated Delivery Capability Demonstrated**\nBloom delivered a fully operational fuel cell system to Oracle in 55 days\u2014over one month ahead of schedule\u2014proving operational excellence and ability to meet urgent AI data center power demands. [Source: Intellectia.ai]\n\n\u2022 **Stock Performance Surge**\nBE shares advanced ~4% to near 52-week highs on May 8, 2026, with year-to-date gains of 109.1%, driven by partnership expansion and earnings strength. [Source: Perplexity Finance, MarketBeat]\n\n---\n\n**Note:** Search results lack developments from May 1\u20137, 2026. Additional material news from that window may exist but is not captured here.",
+      "citations": [
+        "https://www.perplexity.ai/finance/BE",
+        "https://www.marketbeat.com/instant-alerts/bloom-energy-nysebe-shares-up-11-whats-next-2026-05-08/",
+        "https://intellectia.ai/news/stock/bloom-energy-shares-surge-1091-driven-by-strategic-partnerships-and-strong-earnings",
+        "https://kessler-prod.reta52d8.eas.morningstar.com/stocks/xnys/be/quote",
+        "https://investor.bloomenergy.com/stock-information/stock-quote-and-chart/default.aspx"
+      ]
+    },
+    "ALMU": {
+      "text": "- **May 1, 2026: CEO Jonathan Klamkin sells 20,000 shares ($499K) under Rule 10b5-1 plan**, reducing direct ownership by 89% to 2,403 shares; part of 90K shares sold since March, signaling potential insider caution despite stock surge. ([1](https://www.marketbeat.com/instant-alerts/insider-selling-aeluma-nasdaqalmu-ceo-sells-20000-shares-of-stock-2026-05-05/), [3](https://www.investing.com/news/insider-trading-news/aeluma-ceo-jonathan-klamkin-sells-499k-of-almu-stock-93CH-4661533), [4](https://www.stocktitan.net/sec-filings/ALMU/form-4-aeluma-inc-insider-trading-activity-7b8b6aa532eb.html))\n- **Dec 2025\u2013May 1, 2026: CEO gifts 3.13M shares (including 1.48M to family trust)** for estate planning; retains ~1.39M indirect via trust + 22K direct, but large divestment amid rising stock price could impact perception of long-term commitment. ([4](https://www.stocktitan.net/sec-filings/ALMU/form-4-aeluma-inc-insider-trading-activity-7b8b6aa532eb.html))\n- **May 5, 2026: Insider sales reported publicly**, coinciding with shares at $27.38 (near 52-week high $28.39) after 44.76% weekly surge and 19.3% jump to $27.38 on heavy volume; market cap ~$493M with \"Moderate Buy\" consensus (PT $25.33). ([1](https://www.marketbeat.com/instant-alerts/insider-selling-aeluma-nasdaqalmu-ceo-sells-20000-shares-of-stock-2026-05-05/), [3](https://www.investing.com/news/insider-trading-news/aeluma-ceo-jonathan-klamkin-sells-499k-of-almu-stock-93CH-4661533))\n- **May 6, 2026: Stock hits $28.425 intraday** on 2.17M volume (+3.84%), reflecting momentum in sensor/semiconductor sector but no disclosed operational catalyst. ([8](https://www.aeluma.com/investors/stock-data/quote))\n\n*No company-specific press releases, partnerships, earnings, product launches, contracts, regulatory wins, or sector/geopolitical events identified in last 14 days (Apr 25\u2013May 8, 2026).*",
+      "citations": [
+        "https://www.marketbeat.com/instant-alerts/insider-selling-aeluma-nasdaqalmu-ceo-sells-20000-shares-of-stock-2026-05-05/",
+        "https://stockinvest.us/stock/ALMU",
+        "https://www.investing.com/news/insider-trading-news/aeluma-ceo-jonathan-klamkin-sells-499k-of-almu-stock-93CH-4661533",
+        "https://www.stocktitan.net/sec-filings/ALMU/form-4-aeluma-inc-insider-trading-activity-7b8b6aa532eb.html",
+        "https://fintel.io/so/us/almu",
+        "https://www.wallstreetzen.com/stocks/us/nasdaq/almu",
+        "https://www.redchip.com/stocks/ALMU",
+        "https://www.aeluma.com/investors/stock-data/quote"
+      ]
+    },
+    "TWLO": {
+      "text": "# TWLO: Most Recent Significant Fundamental Drivers (Last 14 Days)\n\nBased on the search results, here are the material developments:\n\n\u2022 **Q1 2026 Earnings Beat & Guidance Raise (May 2-4, 2026)** \u2013 Twilio reported $1.41B revenue (+20% YoY, fastest growth in 3+ years), EPS of $1.50 vs. $1.27 consensus, and raised full-year guidance to $5.78B\u2013$5.83B. Q2 EPS guidance of $2.50\u2013$2.60 vs. $1.29 consensus (~2x Street estimate). Stock surged ~25% on announcement. [Source: Fortune, SaaStr, MarketBeat]\n\n\u2022 **Next Generation Platform Launch (Week of May 5, 2026)** \u2013 Twilio unveiled its conversation platform with three core features: Conversation Memory (aggregates customer data across channels), Conversation Orchestrator (creates continuous conversation narrative), and Agent Connect (AI-powered voice/messaging). This repositions Twilio from messaging infrastructure to AI orchestration layer. [Source: TechTarget, Stock Titan]\n\n\u2022 **AI Agent Workloads Driving Re-Acceleration** \u2013 Voice revenue grew 20% YoY (highest in 19 quarters); software add-ons like Conversational Intelligence and Branded Calling grew >100% YoY. This signals a fundamental re-pricing of Twilio's value proposition toward AI customer interactions. [Source: SaaStr]\n\n\u2022 **43,000 Net New Accounts Added in Q1 2026** \u2013 Significant customer acquisition momentum, indicating broad market adoption of the platform refresh. [Source: SaaStr]\n\n\u2022 **CEO Khozema Shipchandler's Turnaround Validated** \u2013 Since taking over in early 2024 during \"time of real peril,\" the new strategy has delivered one of the most remarkable re-accelerations in B2B SaaS history, with stock up 82% over 12 months. [Source: Fortune, SaaStr]",
+      "citations": [
+        "https://www.techtarget.com/searchcustomerexperience/news/366642826/Twilio-revamps-updates-customer-engagement-platform",
+        "https://fortune.com/2026/05/04/twilio-ceo-khozema-shipchandler-earnings-shares-ai/",
+        "https://www.saastr.com/atlassian-and-twilio-crush-the-quarter-accelerate-is-the-saaspocalypse-over/",
+        "https://www.marketbeat.com/stocks/NYSE/TWLO/",
+        "https://www.zacks.com/stock/news/2915670/twilio-inc-twlo-is-a-trending-stock-facts-to-know-before-betting-on-it",
+        "https://www.stocktitan.net/news/TWLO/twilio-s-next-generation-platform-an-infrastructure-layer-for-every-jc1901ccg6wb.html",
+        "https://www.investing.com/news/company-news/twilio-launches-conversation-platform-for-ai-agent-era-93CH-4663517"
+      ]
+    }
+  },
+  "stats": {
+    "input_survivors": 5,
+    "themes_used": 8,
+    "scored": 5,
+    "final": 4,
+    "min_score": 7,
+    "perplexity_model": "sonar",
+    "ollama_model": "qwen2.5:14b"
+  }
+}

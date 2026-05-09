@@ -4005,6 +4005,377 @@ def get_market_breadth():
         s.close()
 
 
+# ============================================================
+# Market Context Banner (LLM-generated narrative)
+# ============================================================
+
+# In-memory cache: { (symbol, latest_date_iso): {metrics, narrative, generated_at} }
+_INDEX_CONTEXT_CACHE = {}
+
+
+def _compute_index_context_metrics(session, symbol: str):
+    """
+    Compute structured market-context metrics for an index/ETF from index_prices.
+    Returns a dict of metrics or None if insufficient data.
+    """
+    from datetime import timedelta
+
+    symbol = symbol.upper()
+    latest_date = session.query(func.max(IndexPrice.date)).filter(IndexPrice.symbol == symbol).scalar()
+    if not latest_date:
+        return None
+
+    # Pull ~3 years for ATH context plus 200dma calc
+    start_date = latest_date - timedelta(days=1100)
+    rows = session.query(
+        IndexPrice.date,
+        IndexPrice.open_price,
+        IndexPrice.high_price,
+        IndexPrice.low_price,
+        IndexPrice.close_price,
+        IndexPrice.volume,
+    ).filter(
+        IndexPrice.symbol == symbol,
+        IndexPrice.date >= start_date,
+        IndexPrice.date <= latest_date,
+    ).order_by(IndexPrice.date.asc()).all()
+
+    if not rows or len(rows) < 30:
+        return None
+
+    bars = [{
+        'date': r.date,
+        'open': float(r.open_price) if r.open_price else None,
+        'high': float(r.high_price) if r.high_price else None,
+        'low': float(r.low_price) if r.low_price else None,
+        'close': float(r.close_price) if r.close_price else None,
+        'volume': int(r.volume) if r.volume else 0,
+    } for r in rows]
+
+    closes = [b['close'] for b in bars]
+    highs = [b['high'] for b in bars]
+    lows = [b['low'] for b in bars]
+    volumes = [b['volume'] for b in bars]
+    n = len(bars)
+
+    last = bars[-1]
+    prev = bars[-2] if n >= 2 else None
+    last_close = last['close']
+    prev_close = prev['close'] if prev else None
+    daily_change_pct = ((last_close - prev_close) / prev_close * 100.0) if prev_close else None
+
+    # Consecutive up/down streak ENDING the prior day (so we can describe today's reversal)
+    prior_streak_dir = None  # 'up' or 'down'
+    prior_streak_len = 0
+    if n >= 3:
+        i = n - 2  # start from yesterday
+        while i >= 1:
+            ch = bars[i]['close'] - bars[i - 1]['close']
+            if ch > 0:
+                d = 'up'
+            elif ch < 0:
+                d = 'down'
+            else:
+                break
+            if prior_streak_dir is None:
+                prior_streak_dir = d
+                prior_streak_len = 1
+            elif d == prior_streak_dir:
+                prior_streak_len += 1
+            else:
+                break
+            i -= 1
+
+    # Today's direction
+    today_dir = None
+    if daily_change_pct is not None:
+        today_dir = 'up' if daily_change_pct > 0 else ('down' if daily_change_pct < 0 else 'flat')
+
+    # Current consecutive streak (including today)
+    current_streak_dir = None
+    current_streak_len = 0
+    if n >= 2:
+        for i in range(n - 1, 0, -1):
+            ch = bars[i]['close'] - bars[i - 1]['close']
+            d = 'up' if ch > 0 else ('down' if ch < 0 else None)
+            if d is None:
+                break
+            if current_streak_dir is None:
+                current_streak_dir = d
+                current_streak_len = 1
+            elif d == current_streak_dir:
+                current_streak_len += 1
+            else:
+                break
+
+    # Gap analysis (open vs prior close); fade/go vs today's close
+    gap_pct = None
+    gap_pattern = None
+    if prev and last['open']:
+        gap_pct = (last['open'] - prev_close) / prev_close * 100.0
+        if abs(gap_pct) >= 0.4:  # meaningful gap threshold
+            if gap_pct > 0:
+                # gap up
+                if last_close >= last['open']:
+                    gap_pattern = 'gap_and_go_up'
+                else:
+                    gap_pattern = 'gap_and_fade_up'
+            else:
+                if last_close <= last['open']:
+                    gap_pattern = 'gap_and_go_down'
+                else:
+                    gap_pattern = 'gap_and_fade_down'
+
+    # 52-week range (last ~252 trading days)
+    win_252 = bars[-252:] if n >= 252 else bars
+    high_52w = max(b['high'] for b in win_252 if b['high'] is not None)
+    low_52w = min(b['low'] for b in win_252 if b['low'] is not None)
+    pct_in_52w_range = None
+    if high_52w > low_52w:
+        pct_in_52w_range = (last_close - low_52w) / (high_52w - low_52w) * 100.0
+
+    # All-time high (over available history, ~3yr)
+    ath = max(highs)
+    ath_idx = max(range(n), key=lambda i: highs[i])
+    ath_date = bars[ath_idx]['date']
+    pct_from_ath = (last_close - ath) / ath * 100.0
+    is_new_ath_today = last['high'] >= ath - 1e-9
+    days_since_ath = (latest_date - ath_date).days
+
+    # 50-DMA / 200-DMA
+    sma50 = sum(closes[-50:]) / 50 if n >= 50 else None
+    sma200 = sum(closes[-200:]) / 200 if n >= 200 else None
+    pct_from_sma50 = ((last_close - sma50) / sma50 * 100.0) if sma50 else None
+    pct_from_sma200 = ((last_close - sma200) / sma200 * 100.0) if sma200 else None
+
+    # Compute SMA series for cross detection (last 90 days)
+    def _sma_series(period):
+        if n < period:
+            return [None] * n
+        s = [None] * (period - 1)
+        running = sum(closes[:period])
+        s.append(running / period)
+        for i in range(period, n):
+            running += closes[i] - closes[i - period]
+            s.append(running / period)
+        return s
+
+    sma50_series = _sma_series(50)
+    sma200_series = _sma_series(200)
+
+    # Detect price crossing 50/200 DMA in last 30 trading days
+    def _detect_cross(price_series, sma_series, lookback=30):
+        last_cross = None  # 'above' or 'below'
+        last_cross_days_ago = None
+        start_i = max(1, n - lookback)
+        for i in range(start_i, n):
+            a, b = sma_series[i - 1], sma_series[i]
+            if a is None or b is None:
+                continue
+            pa, pb = price_series[i - 1], price_series[i]
+            if pa <= a and pb > b:
+                last_cross = 'above'
+                last_cross_days_ago = n - 1 - i
+            elif pa >= a and pb < b:
+                last_cross = 'below'
+                last_cross_days_ago = n - 1 - i
+        return last_cross, last_cross_days_ago
+
+    cross_50, cross_50_days = _detect_cross(closes, sma50_series)
+    cross_200, cross_200_days = _detect_cross(closes, sma200_series)
+
+    # Golden/death cross (50 vs 200) in last 60 days
+    ma_cross = None
+    ma_cross_days = None
+    if n >= 200:
+        for i in range(max(201, n - 60), n):
+            a50, b50 = sma50_series[i - 1], sma50_series[i]
+            a200, b200 = sma200_series[i - 1], sma200_series[i]
+            if None in (a50, b50, a200, b200):
+                continue
+            if a50 <= a200 and b50 > b200:
+                ma_cross = 'golden_cross'
+                ma_cross_days = n - 1 - i
+            elif a50 >= a200 and b50 < b200:
+                ma_cross = 'death_cross'
+                ma_cross_days = n - 1 - i
+
+    # Volume context: today's volume vs 20d avg
+    vol_20_avg = sum(volumes[-21:-1]) / 20 if n >= 21 else None
+    vol_ratio = (last['volume'] / vol_20_avg) if (vol_20_avg and vol_20_avg > 0) else None
+
+    # Multi-period returns
+    def _ret(days):
+        if n <= days:
+            return None
+        return (last_close - closes[-days - 1]) / closes[-days - 1] * 100.0
+
+    ret_5d = _ret(5)
+    ret_20d = _ret(20)
+    ret_60d = _ret(60)
+
+    return {
+        'symbol': symbol,
+        'latest_date': latest_date.strftime('%Y-%m-%d'),
+        'last_close': round(last_close, 2),
+        'daily_change_pct': round(daily_change_pct, 2) if daily_change_pct is not None else None,
+        'today_dir': today_dir,
+        'prior_streak_dir': prior_streak_dir,
+        'prior_streak_len': prior_streak_len,
+        'current_streak_dir': current_streak_dir,
+        'current_streak_len': current_streak_len,
+        'gap_pct': round(gap_pct, 2) if gap_pct is not None else None,
+        'gap_pattern': gap_pattern,
+        'high_52w': round(high_52w, 2),
+        'low_52w': round(low_52w, 2),
+        'pct_in_52w_range': round(pct_in_52w_range, 1) if pct_in_52w_range is not None else None,
+        'ath': round(ath, 2),
+        'ath_date': ath_date.strftime('%Y-%m-%d'),
+        'days_since_ath': days_since_ath,
+        'pct_from_ath': round(pct_from_ath, 2),
+        'is_new_ath_today': bool(is_new_ath_today),
+        'sma50': round(sma50, 2) if sma50 else None,
+        'sma200': round(sma200, 2) if sma200 else None,
+        'pct_from_sma50': round(pct_from_sma50, 2) if pct_from_sma50 is not None else None,
+        'pct_from_sma200': round(pct_from_sma200, 2) if pct_from_sma200 is not None else None,
+        'price_above_sma50': bool(sma50 and last_close > sma50),
+        'price_above_sma200': bool(sma200 and last_close > sma200),
+        'recent_50dma_cross': cross_50,
+        'recent_50dma_cross_days_ago': cross_50_days,
+        'recent_200dma_cross': cross_200,
+        'recent_200dma_cross_days_ago': cross_200_days,
+        'ma_cross': ma_cross,
+        'ma_cross_days_ago': ma_cross_days,
+        'vol_ratio_20d': round(vol_ratio, 2) if vol_ratio is not None else None,
+        'ret_5d': round(ret_5d, 2) if ret_5d is not None else None,
+        'ret_20d': round(ret_20d, 2) if ret_20d is not None else None,
+        'ret_60d': round(ret_60d, 2) if ret_60d is not None else None,
+    }
+
+
+_MARKET_CONTEXT_SYSTEM_PROMPT = (
+    "You are a concise, intelligent market analyst. When summarizing market context, "
+    "use crisp narrative language — not bullet dumps. Lead with the most surprising or "
+    "actionable signal. Frame statistics relative to norms, not just as raw numbers. "
+    "Use patterns like:\n"
+    "- '1st negative day after 6 consecutive gains'\n"
+    "- 'Retesting the 200dma for the third time this month'\n"
+    "- 'VIX spiked 18% but remains in a historically low regime'\n"
+    "- 'Volume confirmed the breakout — heaviest in 3 weeks'\n"
+    "- 'SPY lagged QQQ by 120bps — worst relative day in a month'\n\n"
+    "When given market data, synthesize the following signals into a 3–5 sentence "
+    "narrative context paragraph:\n"
+    "- Consecutive up/down day count (e.g. '1st negative day after 6 consecutive gains')\n"
+    "- Flag meaningful reversals: first green after a losing streak, gap-and-fade, gap-and-go\n"
+    "- Position in 52-week range expressed as a percentile (e.g. 'trading in the top 10% of its annual range')\n"
+    "- Distance from all-time high as a % (e.g. '-4.2% from ATH', 'just made new ATH')\n"
+    "- Relationship to key moving averages: above/below 50dma, 200dma; any recent crosses\n"
+    "- Proximity to key support or resistance zones; whether price is at a decision point\n\n"
+    "Keep the output under 120 words. Prioritize what is unusual, historically extreme, "
+    "or actionable over what is routine. If a signal is within normal range, omit it "
+    "unless it contrasts meaningfully with another signal. Output plain prose only — "
+    "no headings, no bullets, no markdown."
+)
+
+
+def _generate_market_context_narrative(symbol: str, metrics: dict):
+    """Call Claude to produce the narrative paragraph. Returns (text, error)."""
+    try:
+        from anthropic import Anthropic
+    except ImportError:
+        return None, 'anthropic package not installed'
+
+    api_key = os.getenv('ANTHROPIC_API_KEY')
+    if not api_key:
+        return None, 'ANTHROPIC_API_KEY not configured'
+
+    client = Anthropic(api_key=api_key)
+
+    user_prompt = (
+        f"Symbol: {symbol}\n"
+        f"As of: {metrics.get('latest_date')}\n\n"
+        f"Computed signals (raw):\n{json.dumps(metrics, indent=2)}\n\n"
+        "Write the narrative paragraph now."
+    )
+
+    try:
+        logger.info(f"Calling Claude for market context narrative: {symbol}")
+        response = client.messages.create(
+            model="claude-sonnet-4-5-20250929",
+            max_tokens=400,
+            system=_MARKET_CONTEXT_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        parts = []
+        for block in response.content:
+            if hasattr(block, 'type') and block.type == 'text':
+                parts.append(block.text)
+        text_out = "\n".join(parts).strip()
+        if not text_out:
+            logger.warning(f"Claude returned empty narrative for {symbol}; raw blocks={response.content}")
+            return None, 'Claude returned an empty response'
+        return text_out, None
+    except Exception as e:
+        logger.error(f"Claude market-context error for {symbol}: {e}", exc_info=True)
+        return None, f'{type(e).__name__}: {e}'
+
+
+@app.route('/api/index-context-summary/<symbol>')
+def get_index_context_summary(symbol):
+    """
+    Return a market-context banner for an index/ETF: structured metrics + LLM narrative.
+    Cached in-memory per (symbol, latest_date). Pass ?refresh=1 to bypass cache.
+    """
+    s = Session()
+    try:
+        symbol = symbol.upper()
+        refresh = request.args.get('refresh') in ('1', 'true', 'yes')
+
+        metrics = _compute_index_context_metrics(s, symbol)
+        if not metrics:
+            return jsonify({'error': f'Insufficient data for {symbol}'}), 404
+
+        cache_key = (symbol, metrics['latest_date'])
+        if not refresh and cache_key in _INDEX_CONTEXT_CACHE:
+            cached = _INDEX_CONTEXT_CACHE[cache_key]
+            return jsonify({
+                'symbol': symbol,
+                'metrics': cached['metrics'],
+                'narrative': cached['narrative'],
+                'generated_at': cached['generated_at'],
+                'cached': True,
+            })
+
+        narrative, error = _generate_market_context_narrative(symbol, metrics)
+        if not narrative:
+            return jsonify({
+                'symbol': symbol,
+                'metrics': metrics,
+                'narrative': None,
+                'error': error or 'Empty narrative',
+            }), 200
+
+        generated_at = datetime.now(pytz.timezone('US/Eastern')).isoformat()
+        _INDEX_CONTEXT_CACHE[cache_key] = {
+            'metrics': metrics,
+            'narrative': narrative,
+            'generated_at': generated_at,
+        }
+
+        return jsonify({
+            'symbol': symbol,
+            'metrics': metrics,
+            'narrative': narrative,
+            'generated_at': generated_at,
+            'cached': False,
+        })
+    except Exception as e:
+        logger.error(f"Error in index context summary for {symbol}: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
 @app.route('/api/index-ohlc/<symbol>')
 def get_index_ohlc_data(symbol):
     """Get OHLC data for a specific index/ETF from index_prices table (for charts)."""

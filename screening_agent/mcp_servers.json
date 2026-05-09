@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"],
+      "description": "Generic web page fetcher. Required for both theme discovery and per-stock news lookup."
+    }
+  }
+}

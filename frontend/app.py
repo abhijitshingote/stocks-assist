@@ -683,6 +683,17 @@ def api_index_ohlc(symbol):
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/index-context-summary/<symbol>')
+def api_index_context_summary(symbol):
+    """Proxy endpoint for LLM-generated market context banner for an index/ETF"""
+    refresh = request.args.get('refresh', '')
+    qs = f'?refresh={refresh}' if refresh else ''
+    data, status_code = make_backend_request(f'/api/index-context-summary/{symbol}{qs}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch context summary'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/vix-latest')
 def api_vix_latest():
     """Proxy endpoint for latest VIX value from backend"""

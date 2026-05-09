@@ -1,0 +1,167 @@
+{
+  "agent": "market_news_agent",
+  "generated_at": "2026-05-09T01:37:37.186909Z",
+  "themes": [
+    {
+      "name": "Mideast Conflict Energy Shock",
+      "description": "Escalation in the Middle East is driving Brent crude prices up, testing central bank inflation control and leading to thematic investments in energy security and infrastructure.",
+      "keywords": [
+        "Brent $112",
+        "Mideast oil shock",
+        "energy security",
+        "supply chain resilience"
+      ],
+      "example_tickers": [
+        "XOM",
+        "CVX",
+        "SLB"
+      ],
+      "sources": [
+        "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/weekly-commentary",
+        "https://www.blackrock.com/uk/professionals/solutions/market-updates/weekly-commentary"
+      ]
+    },
+    {
+      "name": "AI Power Demand Surge",
+      "description": "Hyperscalers' capex is hitting $131B in Q1, driving electrification and infrastructure buildout amid the Mideast energy shock.",
+      "keywords": [
+        "AI power demand",
+        "hyperscaler capex $131B",
+        "electrification themes",
+        "datacenter energy"
+      ],
+      "example_tickers": [
+        "NEE",
+        "VST",
+        "GEV"
+      ],
+      "sources": [
+        "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/weekly-commentary",
+        "https://markets.jpmorgan.com/research-and-insights"
+      ]
+    },
+    {
+      "name": "Broad S&P Earnings Beats",
+      "description": "74% of companies are beating EPS expectations, with median stock growth at 11%, the highest in five years.",
+      "keywords": [
+        "74% EPS beats",
+        "11% median earnings growth",
+        "Q1 2026 beats"
+      ],
+      "example_tickers": [
+        "NVDA",
+        "MSFT",
+        "AAPL"
+      ],
+      "sources": [
+        "https://business.bofa.com/en-us/content/market-strategies-insights/weekly-market-recap-report.html",
+        "https://markets.jpmorgan.com/research-and-insights"
+      ]
+    },
+    {
+      "name": "Medicaid Managed Care Turnaround",
+      "description": "Analyst upgrades after Medicaid margins bottom in 2026, with enrollment down and risk pool stabilizing.",
+      "keywords": [
+        "Medicaid margins bottoming",
+        "19% enrollment drop",
+        "managed care upgrades"
+      ],
+      "example_tickers": [
+        "UNH",
+        "CNC",
+        "MOH"
+      ],
+      "sources": [
+        "https://business.bofa.com/en-us/content/market-strategies-insights/weekly-market-recap-report.html"
+      ]
+    },
+    {
+      "name": "Tokenized Credit & Crypto Yield Plays",
+      "description": "Shift in demand from crypto to tokenized credit products for yield, with new launches like US commercial paper on Solana.",
+      "keywords": [
+        "tokenized commercial paper Solana",
+        "private credit tokenization",
+        "crypto yield products"
+      ],
+      "example_tickers": [
+        "COIN",
+        "MSTR",
+        "BLK"
+      ],
+      "sources": [
+        "https://markets.jpmorgan.com/research-and-insights"
+      ]
+    },
+    {
+      "name": "Mag 7 / Tech Positioning Shift",
+      "description": "Rotation from max bullish Mag 7 to caution, with tech leading earnings but broader market jitters due to conflict and volatility.",
+      "keywords": [
+        "Mag 7 caution",
+        "tech positioning shift",
+        "late October tech peak"
+      ],
+      "example_tickers": [
+        "NVDA",
+        "TSLA",
+        "AMZN"
+      ],
+      "sources": [
+        "https://markets.jpmorgan.com/research-and-insights",
+        "https://www.nuveen.com/global/insights/investment-outlook/cio-weekly-commentary"
+      ]
+    },
+    {
+      "name": "Sticky Inflation & Hawkish Rates",
+      "description": "Despite earnings beats, 'sticky' inflation data is leading to hawkish rate expectations and divergence in policy.",
+      "keywords": [
+        "sticky inflation",
+        "10yr 4.43%",
+        "Fed hike expectations"
+      ],
+      "example_tickers": [
+        "TLT (short)",
+        "GLD",
+        "TIP"
+      ],
+      "sources": [
+        "https://www.nuveen.com/global/insights/investment-outlook/cio-weekly-commentary",
+        "https://markets.jpmorgan.com/research-and-insights"
+      ]
+    },
+    {
+      "name": "Utilities Sector Weakness",
+      "description": "Utilities are lagging amid AI power narrative and energy shock volatility, with only 6% above their 5/20-day moving averages.",
+      "keywords": [
+        "utilities 6% above MA",
+        "sector laggard energy shock"
+      ],
+      "example_tickers": [
+        "NEE",
+        "SO",
+        "DUK"
+      ],
+      "sources": [
+        "https://www.barchart.com/stocks/market-performance"
+      ]
+    }
+  ],
+  "raw_perplexity": {
+    "text": "### 1. Mideast Conflict Energy Shock\n**Why hot:** Middle East escalation driving Brent crude to $112\u2013$119/bbl (up 5% last week), testing central bank inflation control; S&P 500 down 2% for fifth straight week (worst month in a year); unlocking thematic investments in energy security/infrastructure amid supply fears. Markets pricing in prolonged drag, flipping Fed cut expectations to hikes.  \n**Keyword cues:** \"Brent $112\", \"Mideast oil shock\", \"energy security\", \"supply chain resilience\".  \n**Example tickers:** XOM, CVX, SLB.  \n**Sources:** [1], [5].\n\n### 2. AI Power Demand Surge\n**Why hot:** AI hyperscaler capex hit $131B in Q1 (67% YoY growth, beating consensus); colliding with Mideast energy shock to accelerate electrification/infrastructure buildout; BlackRock favoring active thematic exposures in public/private markets.  \n**Keyword cues:** \"AI power demand\", \"hyperscaler capex $131B\", \"electrification themes\", \"datacenter energy\".  \n**Example tickers:** NEE, VST, GEV.  \n**Sources:** [1], [3].\n\n### 3. Broad S&P Earnings Beats\n**Why hot:** 74% EPS beats/78% sales beats (best since 2021); median stock +11% YoY growth (highest in 5 years); up/down guidance ratio above average, driven by Big Tech but broad-based. Earnings carrying rally amid geopolitics.  \n**Keyword cues:** \"74% EPS beats\", \"11% median earnings growth\", \"Q1 2026 beats\".  \n**Example tickers:** NVDA, MSFT, AAPL.  \n**Sources:** [2], [3].\n\n### 4. Medicaid Managed Care Turnaround\n**Why hot:** Analyst upgrades after margins bottom in 2026; enrollment down 19% from COVID peak, risk pool stabilizing, rates adjusting higher; historical rallies happen in year one of visibility. Beat rates accelerating.  \n**Keyword cues:** \"Medicaid margins bottoming\", \"19% enrollment drop\", \"managed care upgrades\".  \n**Example tickers:** UNH, CNC, MOH.  \n**Sources:** [2].\n\n### 5. Tokenized Credit & Crypto Yield Plays\n**Why hot:** Crypto market pullback shifting demand to tokenized credit products (home equity lines, private/public credit blends) for yield; new launches like US commercial paper on Solana (Galaxy Digital/Franklin Templeton/Coinbase); blending TradFi/crypto.  \n**Keyword cues:** \"tokenized commercial paper Solana\", \"private credit tokenization\", \"crypto yield products\".  \n**Example tickers:** COIN, MSTR, BLK.  \n**Sources:** [4].\n\n### 6. Mag 7 / Tech Positioning Shift\n**Why hot:** Rotation from max bullish Mag 7 (late Oct peak) to caution; tech leading earnings but broader market jitters from conflict/volatility; key watch for next weeks' positioning unwind.  \n**Keyword cues:** \"Mag 7 caution\", \"tech positioning shift\", \"late October tech peak\".  \n**Example tickers:** NVDA, TSLA, AMZN.  \n**Sources:** [4], [3].\n\n### 7. Sticky Inflation & Hawkish Rates\n**Why hot:** \"Sticky\" inflation data despite beats; Fed/BOE/ECB on hold, US 10yr yields to 4.43%, Europe/UK pricing hikes; markets diverging on policy (US tempered vs. peers hawkish).  \n**Keyword cues:** \"sticky inflation\", \"10yr 4.43%\", \"Fed hike expectations\".  \n**Example tickers:** TLT (short), GLD, TIP.  \n**Sources:** [3], [5].\n\n### 8. Utilities Sector Weakness\n**Why hot:** Only 6% above 5/20-day MAs (vs. tech's 67\u201373%); potential rotation target amid AI power narrative, but lagging in energy shock volatility.  \n**Keyword cues:** \"utilities 6% above MA\", \"sector laggard energy shock\".  \n**Example tickers:** NEE, SO, DUK.  \n**Sources:** [6].",
+    "citations": [
+      "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/weekly-commentary",
+      "https://business.bofa.com/en-us/content/market-strategies-insights/weekly-market-recap-report.html",
+      "https://www.nuveen.com/global/insights/investment-outlook/cio-weekly-commentary",
+      "https://markets.jpmorgan.com/research-and-insights",
+      "https://www.blackrock.com/uk/professionals/solutions/market-updates/weekly-commentary",
+      "https://www.barchart.com/stocks/market-performance",
+      "https://marketchameleon.com/Reports/Equity52WeekHighsAndLows"
+    ]
+  },
+  "stats": {
+    "perplexity_chars": 3404,
+    "citations": 7,
+    "themes_found": 8,
+    "perplexity_model": "sonar",
+    "ollama_model": "qwen2.5:14b"
+  }
+}
