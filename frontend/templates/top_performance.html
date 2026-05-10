@@ -311,6 +311,67 @@
     .stock-item .ret.negative { color: var(--accent-red); }
     .stock-item .ret.muted { color: var(--text-muted); }
 
+    /* ── Star rating widget ── */
+    .star-rating {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.05rem;
+        margin-right: 0.35rem;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+    .star-rating .star {
+        font-size: 0.85rem;
+        cursor: pointer;
+        color: #3a3f47;
+        transition: color 0.12s, transform 0.08s;
+        user-select: none;
+        line-height: 1;
+    }
+    .star-rating .star.filled {
+        color: #ffd700;
+        text-shadow: 0 0 4px rgba(255, 215, 0, 0.35);
+    }
+    .star-rating .star:hover {
+        color: #ffd700;
+        transform: scale(1.15);
+    }
+    .stock-item.has-stars {
+        background: rgba(255, 215, 0, 0.04);
+    }
+    .stock-item.has-stars.active {
+        background: rgba(88, 166, 255, 0.12);
+    }
+
+    /* Watchlist notes section in metrics pane */
+    .wl-notes-section {
+        padding: 0.4rem 0.6rem;
+        border-bottom: 1px solid rgba(48, 54, 61, 0.4);
+    }
+    .wl-notes-section .ms-section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .wl-notes-edit {
+        font-size: 0.55rem;
+        color: var(--accent-purple);
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .wl-notes-edit:hover { text-decoration: underline; }
+    .wl-notes-text {
+        font-size: 0.8rem;
+        color: var(--text-primary);
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    .wl-notes-text.empty {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
     /* ── Center panel ── */
     .tp-center {
         flex: 1;
@@ -1066,6 +1127,13 @@
                 </div>
             </div>
             <div class="tp-metrics-body" id="tpMetricsBody">
+                <div class="wl-notes-section" id="wlNotesSection" style="display:none;">
+                    <span class="ms-section-title">
+                        <span>Watchlist Notes</span>
+                        <a class="wl-notes-edit" onclick="openWatchlistModal()">Edit</a>
+                    </span>
+                    <div class="wl-notes-text empty" id="wlNotesText">No notes</div>
+                </div>
                 <div class="ms-tags" id="tagsStrip"></div>
                 <div id="metricsContent"></div>
             </div>
@@ -1465,13 +1533,57 @@
     // ── Watchlist ──
     let watchlistStatus = {};
 
+    function getStars(ticker) {
+        const wl = watchlistStatus[ticker];
+        return (wl && Number.isFinite(wl.stars)) ? wl.stars : 0;
+    }
+
+    function starsHtml(ticker) {
+        const inWl = !!watchlistStatus[ticker];
+        if (!inWl) return '';
+        const stars = getStars(ticker);
+        let html = '<span class="star-rating" data-stars="' + stars + '">';
+        for (let i = 1; i <= 3; i++) {
+            html += `<span class="star${i <= stars ? ' filled' : ''}" data-level="${i}" title="${i} star${i > 1 ? 's' : ''}">★</span>`;
+        }
+        html += '</span>';
+        return html;
+    }
+
+    async function setStarsForTicker(ticker, stars) {
+        if (!watchlistStatus[ticker]) return;
+        const prev = watchlistStatus[ticker].stars || 0;
+        watchlistStatus[ticker].stars = stars;
+        renderList();
+
+        try {
+            const resp = await fetch('/api/frontend/abi-watchlist/' + ticker, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ stars }),
+            });
+            if (!resp.ok) throw new Error('PUT failed: ' + resp.status);
+        } catch (e) {
+            console.error('Failed to save stars for ' + ticker, e);
+            watchlistStatus[ticker].stars = prev;
+            renderList();
+        }
+    }
+
     async function loadWatchlistForStocks(tickers) {
         try {
             const resp = await fetch('/api/frontend/abi-watchlist/batch-check', {
                 method: 'POST', headers: {'Content-Type':'application/json'},
                 body: JSON.stringify({tickers}),
             });
-            if (resp.ok) { watchlistStatus = await resp.json(); if (selectedTicker) updateWatchlistBtn(selectedTicker); }
+            if (resp.ok) {
+                watchlistStatus = await resp.json();
+                renderList();
+                if (selectedTicker) {
+                    updateWatchlistBtn(selectedTicker);
+                    updateWatchlistNotes(selectedTicker);
+                }
+            }
         } catch(e) { console.error('Error loading watchlist:', e); }
     }
     function updateWatchlistBtn(ticker) {
@@ -1481,13 +1593,33 @@
         btn.classList.toggle('in-watchlist', inWl);
         btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
     }
+
+    function updateWatchlistNotes(ticker) {
+        const section = document.getElementById('wlNotesSection');
+        const textEl = document.getElementById('wlNotesText');
+        const wl = watchlistStatus[ticker];
+        if (wl && wl.notes) {
+            section.style.display = 'block';
+            textEl.textContent = wl.notes;
+            textEl.classList.remove('empty');
+        } else if (wl) {
+            section.style.display = 'block';
+            textEl.textContent = 'No notes';
+            textEl.classList.add('empty');
+        } else {
+            section.style.display = 'none';
+        }
+    }
+
     window.openWatchlistModal = function() {
         if (!selectedTicker) return;
         const inWl = !!watchlistStatus[selectedTicker];
         window._wlOpen(selectedTicker, inWl ? (watchlistStatus[selectedTicker].notes||'') : '', inWl, function(action, ticker, notes) {
-            if (action === 'saved') watchlistStatus[ticker] = {notes: notes||''};
+            if (action === 'saved') watchlistStatus[ticker] = {notes: notes||'', stars: watchlistStatus[ticker]?.stars || 0};
             else if (action === 'removed') delete watchlistStatus[ticker];
             updateWatchlistBtn(ticker);
+            updateWatchlistNotes(ticker);
+            renderList();
         });
     };
 
@@ -1504,8 +1636,11 @@
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
             const hidden = passesSectorIndustry(s) ? '' : ' hidden-by-filter';
             if (!hidden) visibleCount++;
-            return `<div class="stock-item${isActive}${hidden}" data-ticker="${s.ticker}">
+            const stars = getStars(s.ticker);
+            const hasStarsCls = stars > 0 ? ' has-stars' : '';
+            return `<div class="stock-item${isActive}${hasStarsCls}${hidden}" data-ticker="${s.ticker}">
                 <span style="display:flex;align-items:center;min-width:0;">
+                    ${starsHtml(s.ticker)}
                     <span class="sn">${i + 1}.</span>
                     <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
                 </span>
@@ -1516,7 +1651,23 @@
         document.getElementById('stockCount').textContent = visibleCount;
 
         listEl.querySelectorAll('.stock-item').forEach(el => {
-            el.addEventListener('click', () => selectStock(el.dataset.ticker));
+            el.addEventListener('click', (e) => {
+                if (e.target.closest('.star-rating')) return;
+                selectStock(el.dataset.ticker);
+            });
+        });
+
+        listEl.querySelectorAll('.star-rating .star').forEach(starEl => {
+            starEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const itemEl = starEl.closest('.stock-item');
+                if (!itemEl) return;
+                const ticker = itemEl.dataset.ticker;
+                const level = parseInt(starEl.dataset.level, 10);
+                const current = getStars(ticker);
+                const newStars = (level === current) ? level - 1 : level;
+                setStarsForTicker(ticker, newStars);
+            });
         });
     }
 
@@ -1550,6 +1701,7 @@
         updateTagsStrip(stock);
         updateMetrics(stock);
         updateWatchlistBtn(ticker);
+        updateWatchlistNotes(ticker);
         await loadChart(ticker);
     }
 

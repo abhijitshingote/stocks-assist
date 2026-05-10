@@ -5,6 +5,237 @@
 {% block title %}Volume Spike & Gapper - Stocks Assist{% endblock %}
 
 {% block extra_styles %}
+    /* Side News Panel Styles */
+    .side-right-column {
+        width: 260px;
+        min-width: 220px;
+        display: none;
+        flex-direction: column;
+        gap: 0.35rem;
+        min-height: 0;
+        height: 100%;
+    }
+    .side-right-column.visible { display: flex; }
+    .side-stack-panel {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        min-height: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .side-stack-panel.collapsed { flex: 0 0 auto; min-height: unset; }
+    .side-stack-head {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+        user-select: none;
+    }
+    .side-stack-head:hover { background: var(--bg-card-hover); }
+    .side-collapse-icon {
+        background: transparent;
+        border: none;
+        padding: 0.1rem 0.2rem;
+        margin: 0;
+        cursor: pointer;
+        color: var(--text-muted);
+        border-radius: 4px;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .side-collapse-icon:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.06); }
+    .side-chevron {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        width: 0.85rem;
+        text-align: center;
+        transition: transform 0.15s;
+    }
+    .side-stack-panel.collapsed .side-chevron { transform: rotate(-90deg); }
+    .side-stack-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+    .side-stack-title .notes-icon {
+        font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+        font-size: 0.9rem;
+        line-height: 1;
+        text-transform: none;
+    }
+    .side-stack-body {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    .side-stack-panel.collapsed .side-stack-body { display: none; }
+    .side-stack-head .news-load-btn {
+        margin-left: auto;
+        flex-shrink: 0;
+        padding: 0.2rem 0.45rem;
+        font-size: 0.62rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: inherit;
+    }
+    .side-stack-head .news-load-btn:hover {
+        background: var(--bg-card-hover);
+        border-color: var(--accent-blue);
+        color: var(--accent-blue);
+    }
+    .side-news-inner {
+        padding: 0.35rem 0.5rem 0.5rem;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-color) transparent;
+    }
+    .side-news-inner .news-list { display: flex; flex-direction: column; gap: 0.45rem; }
+    .side-news-inner .news-article {
+        display: flex;
+        gap: 0.5rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.45rem 0.55rem;
+        transition: border-color 0.2s;
+    }
+    .side-news-inner .news-article:hover { border-color: var(--accent-blue); }
+    .side-news-inner .news-article-thumb {
+        flex-shrink: 0;
+        width: 48px;
+        height: 36px;
+        border-radius: 4px;
+        object-fit: cover;
+        background: var(--bg-card-hover);
+    }
+    .side-news-inner .news-article-body { flex: 1; min-width: 0; }
+    .side-news-inner .news-article-title {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.2rem;
+        line-height: 1.3;
+    }
+    .side-news-inner .news-article-title a { color: inherit; text-decoration: none; }
+    .side-news-inner .news-article-title a:hover { color: var(--accent-blue); }
+    .side-news-inner .news-article-meta {
+        display: flex;
+        gap: 0.35rem;
+        font-size: 0.58rem;
+        color: var(--text-muted);
+        margin-bottom: 0.2rem;
+    }
+    .side-news-inner .news-article-snippet {
+        font-size: 0.65rem;
+        color: var(--text-secondary);
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .side-news-inner .news-empty {
+        text-align: center;
+        padding: 1rem 0.5rem;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+    }
+    .side-news-inner .news-source-filters { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.45rem; }
+    .side-news-inner .news-filter-chip {
+        padding: 0.12rem 0.4rem;
+        font-size: 0.58rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 999px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+        user-select: none;
+    }
+    .side-news-inner .news-filter-chip:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .side-news-inner .news-filter-chip.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
+    .side-news-inner .news-source-badge {
+        display: inline-block;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 0.55rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+    .side-news-inner .news-source-badge.source-sa { background: rgba(255, 152, 0, 0.15); color: #ff9800; border: 1px solid rgba(255, 152, 0, 0.35); }
+    .side-news-inner .news-source-badge.source-yahoo { background: rgba(124, 77, 255, 0.15); color: #b388ff; border: 1px solid rgba(124, 77, 255, 0.35); }
+    .side-news-inner .news-source-badge.source-fmp { background: rgba(76, 175, 80, 0.15); color: #66bb6a; border: 1px solid rgba(76, 175, 80, 0.35); }
+    .side-news-inner .detail-loading { text-align: center; padding: 0.75rem; font-size: 0.72rem; color: var(--text-muted); }
+
+    /* Watchlist notes section in metrics pane */
+    .wl-notes-section {
+        padding: 0.4rem 0.6rem;
+        border-bottom: 1px solid rgba(48, 54, 61, 0.4);
+    }
+    .wl-notes-section .ms-section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .wl-notes-edit {
+        font-size: 0.55rem;
+        color: var(--accent-purple);
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .wl-notes-edit:hover { text-decoration: underline; }
+    .wl-notes-text {
+        font-size: 0.8rem;
+        color: var(--text-primary);
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    .wl-notes-text.empty {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .side-metrics-header {
+        padding: 0.25rem 0.6rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        cursor: pointer;
+    }
+    .side-metrics-header:hover { background: var(--bg-card-hover); }
+    .side-metrics-header-main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        flex: 1;
+    }
+    .side-stack-panel.collapsed .side-metrics-body { display: none; }
+
     main {
         max-width: 100% !important;
         padding: 0.3rem 0.5rem !important;
@@ -368,6 +599,38 @@
     .stock-item .ret.negative { color: var(--accent-red); }
     .stock-item .ret.muted { color: var(--text-muted); }
 
+    /* ── Star rating widget ── */
+    .star-rating {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.05rem;
+        margin-right: 0.35rem;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+    .star-rating .star {
+        font-size: 0.85rem;
+        cursor: pointer;
+        color: #3a3f47;
+        transition: color 0.12s, transform 0.08s;
+        user-select: none;
+        line-height: 1;
+    }
+    .star-rating .star.filled {
+        color: #ffd700;
+        text-shadow: 0 0 4px rgba(255, 215, 0, 0.35);
+    }
+    .star-rating .star:hover {
+        color: #ffd700;
+        transform: scale(1.15);
+    }
+    .stock-item.has-stars {
+        background: rgba(255, 215, 0, 0.04);
+    }
+    .stock-item.has-stars.active {
+        background: rgba(88, 166, 255, 0.12);
+    }
+
     /* ── Center panel: chart ── */
     .vsg-center {
         flex: 1;
@@ -710,7 +973,7 @@
         min-width: 220px;
     }
 
-    body.page-vsg.wide-layout .vsg-metrics {
+    body.page-vsg.wide-layout .side-right-column {
         width: 320px;
         min-width: 280px;
     }
@@ -733,10 +996,10 @@
     @media (max-width: 1024px) {
         .vsg-layout { flex-direction: column; height: auto; }
         .vsg-left { width: 100%; height: 200px; }
-        .vsg-metrics { width: 100%; min-width: auto; max-height: 300px; }
+        .side-right-column { width: 100%; min-width: auto; max-height: 520px; }
         .wide-toggle-wrap { display: none; }
         body.page-vsg.wide-layout .vsg-left,
-        body.page-vsg.wide-layout .vsg-metrics {
+        body.page-vsg.wide-layout .side-right-column {
             width: 100%;
             min-width: auto;
         }
@@ -744,6 +1007,7 @@
             max-width: 1400px;
         }
     }
+
 {% endblock %}
 
 {% block content %}
@@ -838,15 +1102,42 @@
         </div>
     </div>
 
-    <!-- Right: metrics pane -->
-    <div class="vsg-metrics" id="vsgMetrics">
-        <div class="vsg-metrics-header">
-            <span class="vsg-metrics-ticker" id="metricsTicker">—</span>
-            <span class="vsg-metrics-company" id="metricsCompany"></span>
+    <!-- Right: news + metrics stacked -->
+    <div class="side-right-column" id="sideRightColumn">
+        <div class="side-stack-panel" id="sideNewsStack">
+            <div class="side-stack-head" id="sideNewsHeadRow">
+                <button type="button" class="side-collapse-icon" id="sideNewsCollapseBtn" aria-expanded="true" aria-controls="sideNewsStackBody" title="Collapse or expand news">
+                    <span class="side-chevron" aria-hidden="true">▼</span>
+                </button>
+                <span class="side-stack-title"><span class="notes-icon">📰</span> News</span>
+                <button type="button" class="news-load-btn" id="sideLoadNewsBtn">Load News</button>
+            </div>
+            <div class="side-stack-body" id="sideNewsStackBody">
+                <div class="side-news-inner" id="sideNewsInner">
+                    <div id="sideNewsContent"></div>
+                </div>
+            </div>
         </div>
-        <div class="vsg-metrics-body">
-            <div class="ms-tags" id="tagsStrip"></div>
-            <div id="metricsContent"></div>
+
+        <div class="side-stack-panel side-metrics-stack" id="sideMetricsStack">
+            <div class="side-metrics-header" id="sideMetricsHead" role="button" tabindex="0" aria-expanded="true" aria-controls="sideMetricsBody">
+                <span class="side-chevron" aria-hidden="true">▼</span>
+                <div class="side-metrics-header-main">
+                    <span class="vsg-metrics-ticker" id="metricsTicker">—</span>
+                    <span class="vsg-metrics-company" id="metricsCompany"></span>
+                </div>
+            </div>
+            <div class="vsg-metrics-body side-metrics-body" id="sideMetricsBody">
+                <div class="wl-notes-section" id="wlNotesSection" style="display:none;">
+                    <span class="ms-section-title">
+                        <span>Watchlist Notes</span>
+                        <a class="wl-notes-edit" onclick="openWatchlistModal()">Edit</a>
+                    </span>
+                    <div class="wl-notes-text empty" id="wlNotesText">No notes</div>
+                </div>
+                <div class="ms-tags" id="tagsStrip"></div>
+                <div id="metricsContent"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -855,6 +1146,7 @@
 {% block extra_scripts %}
 <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
 <script src="/static/js/stock-chart.js"></script>
+<script src="/static/js/side-news-panel.js"></script>
 <script>
 (function() {
     const WIDE_STORAGE = 'wideLayoutOverride';
@@ -1110,6 +1402,8 @@
             const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
             const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
+            const stars = getStars(s.ticker);
+            const hasStarsCls = stars > 0 ? ' has-stars' : '';
 
             const lastDate = s.last_event_date ? fmtShortDate(s.last_event_date) : '';
             const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
@@ -1124,9 +1418,10 @@
                 }
             }
 
-            return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
+            return `<div class="stock-item${isActive}${hasStarsCls}" data-ticker="${s.ticker}">
                 <div class="stock-main-row">
                     <span style="display:flex;align-items:center;min-width:0;">
+                        ${starsHtml(s.ticker)}
                         <span class="sn">${i + 1}.</span>
                         <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
                     </span>
@@ -1141,7 +1436,23 @@
         }).join('');
 
         listEl.querySelectorAll('.stock-item').forEach(el => {
-            el.addEventListener('click', () => selectStock(el.dataset.ticker));
+            el.addEventListener('click', (e) => {
+                if (e.target.closest('.star-rating')) return;
+                selectStock(el.dataset.ticker);
+            });
+        });
+
+        listEl.querySelectorAll('.star-rating .star').forEach(starEl => {
+            starEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const itemEl = starEl.closest('.stock-item');
+                if (!itemEl) return;
+                const ticker = itemEl.dataset.ticker;
+                const level = parseInt(starEl.dataset.level, 10);
+                const current = getStars(ticker);
+                const newStars = (level === current) ? level - 1 : level;
+                setStarsForTicker(ticker, newStars);
+            });
         });
     }
 
@@ -1160,7 +1471,8 @@
         document.getElementById('rightPlaceholder').style.display = 'none';
         document.getElementById('detailHeader').style.display = 'block';
         document.getElementById('chartsContainer').style.display = 'flex';
-        document.getElementById('vsgMetrics').classList.add('visible');
+        document.getElementById('sideRightColumn').classList.add('visible');
+        SideNewsPanel.setTicker(ticker);
 
         document.getElementById('detailTicker').textContent = ticker;
         document.getElementById('detailCompany').textContent = stock.company_name || '';
@@ -1174,18 +1486,64 @@
         updateTagsStrip(stock);
         updateMetrics(stock);
         updateWatchlistBtn(ticker);
+        updateWatchlistNotes(ticker);
         await loadChart(ticker);
     }
 
     // ── Watchlist ──
     let watchlistStatus = {};
+
+    function getStars(ticker) {
+        const wl = watchlistStatus[ticker];
+        return (wl && Number.isFinite(wl.stars)) ? wl.stars : 0;
+    }
+
+    function starsHtml(ticker) {
+        const inWl = !!watchlistStatus[ticker];
+        if (!inWl) return '';
+        const stars = getStars(ticker);
+        let html = '<span class="star-rating" data-stars="' + stars + '">';
+        for (let i = 1; i <= 3; i++) {
+            html += `<span class="star${i <= stars ? ' filled' : ''}" data-level="${i}" title="${i} star${i > 1 ? 's' : ''}">★</span>`;
+        }
+        html += '</span>';
+        return html;
+    }
+
+    async function setStarsForTicker(ticker, stars) {
+        if (!watchlistStatus[ticker]) return;
+        const prev = watchlistStatus[ticker].stars || 0;
+        watchlistStatus[ticker].stars = stars;
+        renderList(getFilteredData());
+
+        try {
+            const resp = await fetch('/api/frontend/abi-watchlist/' + ticker, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ stars }),
+            });
+            if (!resp.ok) throw new Error('PUT failed: ' + resp.status);
+        } catch (e) {
+            console.error('Failed to save stars for ' + ticker, e);
+            watchlistStatus[ticker].stars = prev;
+            renderList(getFilteredData());
+        }
+    }
+
     async function loadWatchlistForStocks(tickers) {
         try {
             const resp = await fetch('/api/frontend/abi-watchlist/batch-check', {
                 method: 'POST', headers: {'Content-Type':'application/json'},
                 body: JSON.stringify({tickers}),
             });
-            if (resp.ok) { watchlistStatus = await resp.json(); if (selectedTicker) updateWatchlistBtn(selectedTicker); }
+            if (resp.ok) {
+                watchlistStatus = await resp.json();
+                renderList(getFilteredData());
+                if (selectedTicker) {
+                    updateWatchlistBtn(selectedTicker);
+                    updateWatchlistNotes(selectedTicker);
+                }
+            }
         } catch(e) { console.error('Error loading watchlist:', e); }
     }
     function updateWatchlistBtn(ticker) {
@@ -1195,13 +1553,31 @@
         btn.classList.toggle('in-watchlist', inWl);
         btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
     }
+    function updateWatchlistNotes(ticker) {
+        const section = document.getElementById('wlNotesSection');
+        const textEl = document.getElementById('wlNotesText');
+        const wl = watchlistStatus[ticker];
+        if (wl && wl.notes) {
+            section.style.display = 'block';
+            textEl.textContent = wl.notes;
+            textEl.classList.remove('empty');
+        } else if (wl) {
+            section.style.display = 'block';
+            textEl.textContent = 'No notes';
+            textEl.classList.add('empty');
+        } else {
+            section.style.display = 'none';
+        }
+    }
     window.openWatchlistModal = function() {
         if (!selectedTicker) return;
         const inWl = !!watchlistStatus[selectedTicker];
         window._wlOpen(selectedTicker, inWl ? (watchlistStatus[selectedTicker].notes||'') : '', inWl, function(action, ticker, notes) {
-            if (action === 'saved') watchlistStatus[ticker] = {notes: notes||''};
+            if (action === 'saved') watchlistStatus[ticker] = {notes: notes||'', stars: watchlistStatus[ticker]?.stars || 0};
             else if (action === 'removed') delete watchlistStatus[ticker];
             updateWatchlistBtn(ticker);
+            updateWatchlistNotes(ticker);
+            renderList(getFilteredData());
         });
     };
 
@@ -1509,6 +1885,7 @@
     }
 
     // ── Init ──
+    SideNewsPanel.setup();
     loadData('all');
 })();
 </script>
