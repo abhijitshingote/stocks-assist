@@ -284,61 +284,8 @@
 {% block extra_scripts %}
 <script>
 (function() {
-    // ── Themes definition (preserves order) ──
-    const THEMES = [
-        {
-            name: 'AI Compute',
-            desc: 'GPUs, CPUs & AI accelerators powering the data center buildout',
-            tickers: ['NVDA','AMD','INTC','ARM','ALAB','CEVA','AMBA','SIMO','AIP'],
-        },
-        {
-            name: 'Chip Equipment',
-            desc: 'Wafer fab tools & process control riding the AI capex wave',
-            tickers: ['ASML','LRCX','AMAT','KLAC','ENTG','UCTT','ICHR','ACMR','VECO','ACLS'],
-        },
-        {
-            name: 'Memory & Interconnect',
-            desc: 'DRAM, HBM, memory IP & advanced packaging',
-            tickers: ['MU','RMBS','GSIT','MRAM','AMKR','TSEM','GFS','UMC','ASX'],
-        },
-        {
-            name: 'Wireless & Mobile',
-            desc: 'RF, baseband & connectivity chips',
-            tickers: ['QCOM','AVGO','SWKS','QRVO','MRVL','INDI','SYNA','HIMX','MXL'],
-        },
-        {
-            name: 'Analog & Mixed-Signal',
-            desc: 'Auto, industrial & power management semiconductors',
-            tickers: ['TXN','ADI','NXPI','MCHP','MPWR','ON','ALGM','DIOD','POWI','VSH','MTSI','STM','AOSL'],
-        },
-        {
-            name: 'Optical & Photonics',
-            desc: 'Transceivers, lasers & silicon photonics for AI data centers',
-            tickers: ['AAOI','IPGP','LASR','POET','AMBQ','AXTI'],
-        },
-        {
-            name: 'Power & Wide-Bandgap',
-            desc: 'SiC, GaN & power semiconductors for EV and fast charging',
-            tickers: ['WOLF','NVTS','SMTC','AEHR'],
-        },
-        {
-            name: 'Test & Advanced Packaging',
-            desc: 'Wafer probe, test sockets & inspection equipment',
-            tickers: ['TER','FORM','COHU','ONTO','CAMT','KLIC','PLAB','LSCC','SKYT'],
-        },
-        {
-            name: 'Fab & Foundry',
-            desc: 'Leading-edge & specialty wafer manufacturing',
-            tickers: ['TSM','GFS','UMC','ASX','TSEM','SLAB','SITM'],
-        },
-        {
-            name: 'Specialty Materials & IP Licensing',
-            desc: 'Substrates, process technology & semiconductor IP',
-            tickers: ['ATOM','ALMU','GSIT','NVMI','RMBS','OLED','AXTI'],
-        },
-    ];
-
     // ── State ──
+    let THEMES = [];  // Loaded from API (user_data/themes.json)
     let stockMap = {}; // ticker → MainView row
     let currentSort = 'default';
 
@@ -361,6 +308,22 @@
 
     // ── Data loading ──
     async function loadData() {
+        // First, load themes from user_data/themes.json via API
+        try {
+            const themesResp = await fetch('/api/frontend/themes');
+            const themesData = await themesResp.json();
+            if (Array.isArray(themesData)) {
+                THEMES = themesData;
+            }
+        } catch (e) {
+            console.error('Failed to load themes config', e);
+        }
+
+        if (THEMES.length === 0) {
+            document.getElementById('loadingState').innerHTML = '<span>No themes configured. Edit user_data/themes.json to add themes.</span>';
+            return;
+        }
+
         const allTickers = Array.from(new Set(THEMES.flatMap(t => t.tickers)));
         document.getElementById('totalThemes').textContent = THEMES.length;
         document.getElementById('totalTickers').textContent = allTickers.length;

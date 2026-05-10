@@ -524,11 +524,80 @@
         color: var(--accent-green);
     }
 
+    .collapse-all-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.05rem 0.3rem;
+        border-radius: 3px;
+        margin-left: 0.25rem;
+        transition: all 0.15s;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+    .collapse-all-btn:hover {
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
     .stock-list {
         flex: 1;
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: var(--border-color) transparent;
+    }
+
+    /* Day group headers (collapsible) */
+    .day-group-header {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.35rem 0.5rem;
+        background: rgba(88, 166, 255, 0.08);
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        user-select: none;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    .day-group-header:hover {
+        background: rgba(88, 166, 255, 0.12);
+    }
+    .day-group-chevron {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        width: 0.85rem;
+        text-align: center;
+        transition: transform 0.15s;
+        flex-shrink: 0;
+    }
+    .day-group-header.collapsed .day-group-chevron {
+        transform: rotate(-90deg);
+    }
+    .day-group-date {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #58a6ff;
+    }
+    .day-group-count {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 0.05rem 0.25rem;
+        border-radius: 3px;
+        margin-left: auto;
+    }
+    .day-group-items {
+        display: block;
+    }
+    .day-group-header.collapsed + .day-group-items {
+        display: none;
     }
 
     .stock-item {
@@ -1098,6 +1167,7 @@
             <span>Vol Spike & Gapper</span>
             <span style="display: flex; align-items: center;">
                 <span class="stock-count" id="stockCount">0</span>
+                <button type="button" class="collapse-all-btn" id="collapseAllBtn" title="Collapse or expand all day groups">▼ All</button>
                 <button type="button" class="copy-tickers-btn" id="copyTickersBtn" title="Copy visible tickers to clipboard (comma-separated)">📋 Copy</button>
             </span>
         </div>
@@ -1433,49 +1503,110 @@
         }
     }
 
+    // ── Collapsed day groups storage ──
+    const COLLAPSED_DAYS_KEY = 'vsg_collapsed_days';
+    function getCollapsedDays() {
+        try {
+            return JSON.parse(localStorage.getItem(COLLAPSED_DAYS_KEY)) || {};
+        } catch { return {}; }
+    }
+    function setCollapsedDays(collapsed) {
+        localStorage.setItem(COLLAPSED_DAYS_KEY, JSON.stringify(collapsed));
+    }
+    function toggleDayCollapsed(date) {
+        const collapsed = getCollapsedDays();
+        collapsed[date] = !collapsed[date];
+        setCollapsedDays(collapsed);
+        return collapsed[date];
+    }
+
     // ── Render stock list ──
     function renderList(data) {
         const listEl = document.getElementById('stockList');
         document.getElementById('stockCount').textContent = data.length;
 
-        listEl.innerHTML = data.map((s, i) => {
-            const isActive = s.ticker === selectedTicker ? ' active' : '';
-            const ret1d = s.dr_1;
-            const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
-            const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
-            const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
-            const stars = getStars(s.ticker);
-            const hasStarsCls = stars > 0 ? ' has-stars' : '';
+        // Group stocks by last_event_date
+        const groups = {};
+        data.forEach((s, idx) => {
+            const date = s.last_event_date || 'Unknown';
+            if (!groups[date]) groups[date] = [];
+            groups[date].push({ stock: s, globalIdx: idx });
+        });
 
-            const lastDate = s.last_event_date ? fmtShortDate(s.last_event_date) : '';
-            const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
-            const evtClass = s.last_event_type === 'volume_spike' ? 'spike' : s.last_event_type === 'gapper' ? 'gap' : '';
+        // Sort dates descending (most recent first)
+        const sortedDates = Object.keys(groups).sort((a, b) => {
+            if (a === 'Unknown') return 1;
+            if (b === 'Unknown') return -1;
+            return b.localeCompare(a);
+        });
 
-            let magStr = '';
-            if (s.last_event_magnitude != null) {
-                if (s.last_event_type === 'volume_spike') {
-                    magStr = s.last_event_magnitude.toFixed(1) + 'x vol';
-                } else if (s.last_event_type === 'gapper') {
-                    magStr = (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(1) + '% gap';
-                }
-            }
+        const collapsed = getCollapsedDays();
+        let html = '';
+        let runningIdx = 0;
 
-            return `<div class="stock-item${isActive}${hasStarsCls}" data-ticker="${s.ticker}">
-                <div class="stock-main-row">
-                    <span style="display:flex;align-items:center;min-width:0;">
-                        ${starsHtml(s.ticker)}
-                        <span class="sn">${i + 1}.</span>
-                        <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
-                    </span>
-                    <span class="ret ${retClass}">${retStr}</span>
-                </div>
-                <div class="stock-extra-row">
-                    <span class="last-date">${lastDate}</span>
-                    ${evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : ''}
-                    ${magStr ? `<span class="event-mag">${magStr}</span>` : ''}
-                </div>
+        sortedDates.forEach(date => {
+            const stocks = groups[date];
+            const isCollapsed = collapsed[date] ? ' collapsed' : '';
+            const displayDate = date === 'Unknown' ? 'Unknown Date' : formatDisplayDate(date);
+
+            html += `<div class="day-group-header${isCollapsed}" data-date="${escAttr(date)}">
+                <span class="day-group-chevron">▼</span>
+                <span class="day-group-date">${displayDate}</span>
+                <span class="day-group-count">${stocks.length}</span>
             </div>`;
-        }).join('');
+
+            html += `<div class="day-group-items">`;
+            stocks.forEach(({ stock: s }) => {
+                runningIdx++;
+                const isActive = s.ticker === selectedTicker ? ' active' : '';
+                const ret1d = s.dr_1;
+                const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
+                const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
+                const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
+                const stars = getStars(s.ticker);
+                const hasStarsCls = stars > 0 ? ' has-stars' : '';
+
+                const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
+                const evtClass = s.last_event_type === 'volume_spike' ? 'spike' : s.last_event_type === 'gapper' ? 'gap' : '';
+
+                let magStr = '';
+                if (s.last_event_magnitude != null) {
+                    if (s.last_event_type === 'volume_spike') {
+                        magStr = s.last_event_magnitude.toFixed(1) + 'x vol';
+                    } else if (s.last_event_type === 'gapper') {
+                        magStr = (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(1) + '% gap';
+                    }
+                }
+
+                html += `<div class="stock-item${isActive}${hasStarsCls}" data-ticker="${s.ticker}">
+                    <div class="stock-main-row">
+                        <span style="display:flex;align-items:center;min-width:0;">
+                            ${starsHtml(s.ticker)}
+                            <span class="sn">${runningIdx}.</span>
+                            <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
+                        </span>
+                        <span class="ret ${retClass}">${retStr}</span>
+                    </div>
+                    <div class="stock-extra-row">
+                        ${evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : ''}
+                        ${magStr ? `<span class="event-mag">${magStr}</span>` : ''}
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+        });
+
+        listEl.innerHTML = html;
+
+        // Wire up day group header click handlers
+        listEl.querySelectorAll('.day-group-header').forEach(headerEl => {
+            headerEl.addEventListener('click', () => {
+                const date = headerEl.dataset.date;
+                const nowCollapsed = toggleDayCollapsed(date);
+                headerEl.classList.toggle('collapsed', nowCollapsed);
+                updateCollapseAllBtn();
+            });
+        });
 
         listEl.querySelectorAll('.stock-item').forEach(el => {
             el.addEventListener('click', (e) => {
@@ -1496,6 +1627,29 @@
                 setStarsForTicker(ticker, newStars);
             });
         });
+
+        // Update collapse all button state
+        updateCollapseAllBtn();
+    }
+
+    function updateCollapseAllBtn() {
+        const btn = document.getElementById('collapseAllBtn');
+        if (!btn) return;
+        const headers = document.querySelectorAll('.day-group-header');
+        const anyExpanded = Array.from(headers).some(h => !h.classList.contains('collapsed'));
+        btn.textContent = anyExpanded ? '▼ All' : '▶ All';
+    }
+
+    // Format date for display (e.g., "2024-01-15" -> "Mon, Jan 15")
+    function formatDisplayDate(dateStr) {
+        if (!dateStr) return dateStr;
+        try {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${days[date.getDay()]}, ${months[date.getMonth()]} ${d}`;
+        } catch { return dateStr; }
     }
 
     // ── Select stock ──
@@ -1899,6 +2053,29 @@
     });
 
     document.getElementById('copyTickersBtn')?.addEventListener('click', copyVisibleTickers);
+
+    // Collapse/Expand all day groups
+    document.getElementById('collapseAllBtn')?.addEventListener('click', function() {
+        const headers = document.querySelectorAll('.day-group-header');
+        if (!headers.length) return;
+        // Check if any are expanded - if so, collapse all; otherwise expand all
+        const anyExpanded = Array.from(headers).some(h => !h.classList.contains('collapsed'));
+        const collapsed = getCollapsedDays();
+        headers.forEach(h => {
+            const date = h.dataset.date;
+            if (anyExpanded) {
+                h.classList.add('collapsed');
+                collapsed[date] = true;
+            } else {
+                h.classList.remove('collapsed');
+                collapsed[date] = false;
+            }
+        });
+        setCollapsedDays(collapsed);
+        // Update button text
+        const btn = document.getElementById('collapseAllBtn');
+        if (btn) btn.textContent = anyExpanded ? '▶ All' : '▼ All';
+    });
 
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {

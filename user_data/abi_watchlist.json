@@ -16,8 +16,9 @@
     "added_at": "2026-04-30T07:13:53.657764-04:00"
   },
   "SIMO": {
-    "notes": "new breakout",
-    "added_at": "2026-04-30T07:14:19.706993-04:00"
+    "notes": "new breakout\nSilicon Motion Technology doesn't create memory chips, but it designs the controller chips that go inside memory chips. The firm's recently filed Form 20-F highlighted Micron as one of its largest customers. Micron has made up more than 10% of Silicon Motion Technology's revenue for multiple years.\nhttps://www.fool.com/investing/2026/05/06/this-little-known-ai-stock-is-up-150-in-2026-and-w/",
+    "added_at": "2026-04-30T07:14:19.706993-04:00",
+    "stars": 3
   },
   "NXPI": {
     "notes": "what's up find out",
@@ -105,5 +106,25 @@
     "notes": "https://247wallst.com/investing/2026/05/08/wall-street-just-piled-into-datadog-keybanc-hikes-price-target-to-225-as-ai-customer-wins-accelerate/",
     "stars": 3,
     "added_at": "2026-05-10T13:12:13.103901-04:00"
+  },
+  "HIMX": {
+    "notes": "**WiseEye potentially adopted by Apple for smart glasses (mass production 2026-27); CPO partnership with NVIDIA/TSM unconfirmed but supported by patent analysis; automotive TCON sales +50% YoY; OLED Touch IC HX85200 entering mass production**; FY2025 rev -8.2% to $832M; net profit -45% to $44M ($0.25/share); Q1 2026 guide rev -2% to -6% QoQ ($191-$199M); 2026 rev est. ~$850M; net margin est. 6-7%; EPS est. $0.34; CPO market est. >$20B by 2036; WiseEye smart glasses market est. $40B by 2030; 2030 total rev est. $1.9B (+128% vs 2025); EPS could exceed $3.00/share (Ming-Chi Kuo); balance sheet equity ratio 52%; $257M cash; $97M FOCI stake; market cap $1.73B; P/E (2026) 29x; CAPE5 10.2x; div yield ~2%",
+    "stars": 1,
+    "added_at": "2026-05-10T15:07:32.858238-04:00"
+  },
+  "SITM": {
+    "notes": "**AVOID**SiTime makes oscillators, clock ICs, and resonators, with the majority of revenue coming from oscillators. These chips help synchronize GPUs and CPUs during data processing, a synchronization that is crucial to the efficiency of an AI data center. Oscillators also help synchronize data traffic to and from high-speed networks, which is crucial to preventing data-transfer errors. Finally, these chips also play a role in power transfer, which is important for controlling heat spikes.",
+    "stars": 0,
+    "added_at": "2026-05-10T15:16:12.745463-04:00"
+  },
+  "FLEX": {
+    "notes": "Fair point \u2014 EMS is a commoditized, low-margin business. The appeal here is really the **CPI spin**:\n\n**The bull case is essentially a sum-of-parts re-rating story.** CPI is growing 65-75% and tied to AI data center buildout (Google, hyperscalers). Bundled inside a generic contract manufacturer, that growth gets valued at EMS multiples (~10-12x). As a standalone power/infrastructure company, it likely commands a much higher multiple (think Vertiv, nVent territory \u2014 25-35x).\n\n**The moat argument management made** is scale and integration \u2014 fully assembled, fully tested rack-scale systems that very few companies can deliver. That's closer to what Celestica and Jabil are also pitching, so it's not unique, but execution at that scale with multi-year backlog locked in is defensible near-term.\n\n**The risks are real though:**\n- Google concentration is a genuine concern analysts flagged\n- Cloud margins are below power margins, so mix matters\n- CapEx is surging and FCF conversion drops to 60% \u2014 they're spending heavily to grow\n- RemainCo (the leftover Flex) is a slower, lower-quality business\n\nBottom line \u2014 it's less about what Flex does and more about **unlocking the valuation gap** between a boring EMS multiple and what an AI infrastructure pure-play deserves. The bet is on the spin executing cleanly and CPI sustaining hyperscaler demand.",
+    "stars": 1,
+    "added_at": "2026-05-10T15:34:08.548600-04:00"
+  },
+  "AMD": {
+    "notes": "SHORT",
+    "stars": 0,
+    "added_at": "2026-05-10T15:35:37.635064-04:00"
   }
 }

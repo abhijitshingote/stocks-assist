@@ -1,0 +1,52 @@
+[
+  {
+    "name": "AI Compute",
+    "desc": "GPUs, CPUs & AI accelerators powering the data center buildout",
+    "tickers": ["NVDA", "AMD", "INTC", "ARM", "ALAB", "CEVA", "AMBA", "SIMO", "AIP"]
+  },
+  {
+    "name": "Optical & Photonics",
+    "desc": "Transceivers, lasers & silicon photonics for AI data centers",
+    "tickers": ["AXTI","LITE","LWLG","AAOI", "IPGP", "LASR", "POET", "AMBQ"]
+  },
+  {
+    "name": "Chip Equipment",
+    "desc": "Wafer fab tools & process control riding the AI capex wave",
+    "tickers": ["ASML", "LRCX", "AMAT", "KLAC", "ENTG", "UCTT", "ICHR", "ACMR", "VECO", "ACLS"]
+  },
+  {
+    "name": "Memory & Interconnect",
+    "desc": "DRAM, HBM, memory IP & advanced packaging",
+    "tickers": ["MU", "RMBS", "GSIT", "MRAM", "AMKR", "TSEM", "GFS", "UMC", "ASX"]
+  },
+  {
+    "name": "Wireless & Mobile",
+    "desc": "RF, baseband & connectivity chips",
+    "tickers": ["QCOM", "AVGO", "SWKS", "QRVO", "MRVL", "INDI", "SYNA", "HIMX", "MXL"]
+  },
+  {
+    "name": "Analog & Mixed-Signal",
+    "desc": "Auto, industrial & power management semiconductors",
+    "tickers": ["TXN", "ADI", "NXPI", "MCHP", "MPWR", "ON", "ALGM", "DIOD", "POWI", "VSH", "MTSI", "STM", "AOSL"]
+  },
+  {
+    "name": "Power & Wide-Bandgap",
+    "desc": "SiC, GaN & power semiconductors for EV and fast charging",
+    "tickers": ["WOLF", "NVTS", "SMTC", "AEHR"]
+  },
+  {
+    "name": "Test & Advanced Packaging",
+    "desc": "Wafer probe, test sockets & inspection equipment",
+    "tickers": ["TER", "FORM", "COHU", "ONTO", "CAMT", "KLIC", "PLAB", "LSCC", "SKYT"]
+  },
+  {
+    "name": "Fab & Foundry",
+    "desc": "Leading-edge & specialty wafer manufacturing",
+    "tickers": ["TSM", "GFS", "UMC", "ASX", "TSEM", "SLAB", "SITM"]
+  },
+  {
+    "name": "Specialty Materials & IP Licensing",
+    "desc": "Substrates, process technology & semiconductor IP",
+    "tickers": ["ATOM", "ALMU", "GSIT", "NVMI", "RMBS", "OLED", "AXTI"]
+  }
+]

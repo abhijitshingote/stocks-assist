@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, jsonify, request
 import os
+import json
 import requests
 import logging
 
@@ -136,6 +137,40 @@ def main_view_page():
 def themes_page():
     """Themes page - curated thematic watchlists shown side-by-side"""
     return render_template('themes.html')
+
+
+# User data directory for themes
+USER_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'user_data')
+THEMES_FILE = os.path.join(USER_DATA_DIR, 'themes.json')
+
+
+@app.route('/api/frontend/themes', methods=['GET'])
+def api_get_themes():
+    """Get user-defined themes from user_data/themes.json"""
+    try:
+        if os.path.exists(THEMES_FILE):
+            with open(THEMES_FILE, 'r') as f:
+                themes = json.load(f)
+            return jsonify(themes), 200
+        else:
+            return jsonify([]), 200
+    except Exception as e:
+        logger.error(f"Error reading themes file: {e}")
+        return jsonify({'error': 'Failed to read themes'}), 500
+
+
+@app.route('/api/frontend/themes', methods=['PUT'])
+def api_save_themes():
+    """Save themes to user_data/themes.json"""
+    try:
+        themes = request.get_json()
+        os.makedirs(USER_DATA_DIR, exist_ok=True)
+        with open(THEMES_FILE, 'w') as f:
+            json.dump(themes, f, indent=2)
+        return jsonify({'status': 'ok'}), 200
+    except Exception as e:
+        logger.error(f"Error saving themes file: {e}")
+        return jsonify({'error': 'Failed to save themes'}), 500
 
 
 @app.route('/api/frontend/main-view/by-tickers')
