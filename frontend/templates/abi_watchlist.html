@@ -311,6 +311,30 @@
         color: var(--accent-purple);
     }
 
+    .copy-tickers-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 0.6rem;
+        padding: 0.15rem 0.35rem;
+        border-radius: 4px;
+        margin-left: 0.35rem;
+        transition: all 0.15s;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .copy-tickers-btn:hover {
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
+    .copy-tickers-btn.copied {
+        border-color: var(--accent-green);
+        color: var(--accent-green);
+    }
+
     .stock-list {
         flex: 1;
         overflow-y: auto;
@@ -884,7 +908,10 @@
     <div class="mv-left">
         <div class="mv-left-header">
             <span>Watchlist</span>
-            <span class="stock-count" id="stockCount">0</span>
+            <span style="display: flex; align-items: center;">
+                <span class="stock-count" id="stockCount">0</span>
+                <button type="button" class="copy-tickers-btn" id="copyTickersBtn" title="Copy visible tickers to clipboard (comma-separated)">📋 Copy</button>
+            </span>
         </div>
         <div class="stock-list" id="stockList"></div>
     </div>
@@ -1594,6 +1621,54 @@
     function hideLoading() {
         document.getElementById('loadingState').style.display = 'none';
     }
+
+    // ── Copy visible tickers ──
+    function getVisibleTickers() {
+        return allStocks.map(s => s.ticker);
+    }
+
+    function copyTextFallback(text) {
+        return new Promise((resolve, reject) => {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                ok ? resolve() : reject(new Error('execCommand copy failed'));
+            } catch (e) { reject(e); }
+        });
+    }
+
+    async function copyVisibleTickers() {
+        const btn = document.getElementById('copyTickersBtn');
+        const tickers = getVisibleTickers();
+        const flash = (msg, ok) => {
+            if (!btn) return;
+            const original = '📋 Copy';
+            btn.classList.toggle('copied', !!ok);
+            btn.textContent = msg;
+            setTimeout(() => { btn.classList.remove('copied'); btn.textContent = original; }, 1500);
+        };
+        if (!tickers.length) { flash('No tickers', false); return; }
+        const text = tickers.join(', ');
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                await copyTextFallback(text);
+            }
+            flash(`✓ Copied ${tickers.length}`, true);
+        } catch (e) {
+            console.error('Copy failed', e);
+            flash('Copy failed', false);
+        }
+    }
+
+    document.getElementById('copyTickersBtn')?.addEventListener('click', copyVisibleTickers);
 
     // ── Event wiring ──
     document.querySelectorAll('#chartTimeframes button').forEach(btn => {
