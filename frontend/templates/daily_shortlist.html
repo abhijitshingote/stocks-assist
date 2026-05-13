@@ -1,0 +1,987 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Shortlist - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+.ds-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+.ds-toolbar select, .ds-toolbar input {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.35rem 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+}
+.ds-toolbar select:focus, .ds-toolbar input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+.ds-toolbar .ds-meta {
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    margin-left: auto;
+}
+.ds-toolbar button {
+    background: var(--accent-blue);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.78rem;
+}
+.ds-toolbar button:hover { filter: brightness(1.1); }
+.ds-toolbar button.secondary {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.ds-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.ds-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    padding: 0.55rem 1rem;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.ds-tab:hover { color: var(--text-primary); }
+.ds-tab.active {
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
+}
+.ds-tab .ds-tab-count {
+    margin-left: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    background: var(--bg-dark);
+    padding: 0.05rem 0.4rem;
+    border-radius: 6px;
+    color: var(--text-muted);
+}
+.ds-tab.active .ds-tab-count {
+    color: var(--accent-blue);
+    background: rgba(88, 166, 255, 0.15);
+}
+
+.ds-summary {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+}
+.ds-summary .ds-summary-pill {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.2rem 0.55rem;
+}
+
+/* Compact pipeline funnel */
+.ds-funnel {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+    padding: 0.55rem 0.8rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+}
+.ds-funnel .ds-funnel-title {
+    color: var(--text-muted);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-right: 0.35rem;
+}
+.ds-funnel .stage {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.22rem 0.55rem;
+    color: var(--text-secondary);
+    cursor: default;
+}
+.ds-funnel .stage .label {
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.ds-funnel .stage .value {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+.ds-funnel .stage .sub {
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    margin-left: 0.1rem;
+}
+.ds-funnel .arrow {
+    color: var(--text-muted);
+    user-select: none;
+}
+.ds-funnel .stage.final {
+    gap: 0.55rem;
+    padding: 0.22rem 0.7rem;
+}
+.ds-funnel .stage.final .pick { color: var(--accent-green); font-weight: 700; }
+.ds-funnel .stage.final .watch { color: var(--accent-yellow); font-weight: 700; }
+.ds-funnel .stage.final .skip { color: var(--text-muted); font-weight: 700; }
+
+.ds-list { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.ds-row {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left-width: 3px;
+    border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    display: grid;
+    grid-template-columns: 78px 1fr 230px;
+    gap: 0.7rem;
+    align-items: start;
+    transition: border-color 0.15s, background 0.15s;
+}
+.ds-row:hover { border-color: var(--accent-blue); background: var(--bg-card-hover); }
+.ds-row.verdict-PICK { border-left-color: var(--accent-green); }
+.ds-row.verdict-WATCH { border-left-color: var(--accent-yellow); }
+.ds-row.verdict-SKIP { border-left-color: var(--text-muted); }
+
+.ds-row-head { display: flex; flex-direction: column; gap: 0.2rem; }
+.ds-row-ticker {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+.ds-row-ticker:hover { text-decoration: underline; }
+.ds-row-company {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 75px;
+}
+.ds-row-sector {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 75px;
+}
+
+.ds-row-main { min-width: 0; }
+.ds-row-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+}
+.ds-row-metrics .metric { display: inline-flex; gap: 0.3rem; }
+.ds-row-metrics .metric .label { color: var(--text-muted); }
+.ds-row-metrics .metric.pos .value { color: var(--accent-green); }
+.ds-row-metrics .metric.neg .value { color: var(--accent-red); }
+
+.ds-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.4rem; }
+.ds-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.1rem 0.45rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-secondary);
+}
+.ds-chip.source { color: var(--accent-blue); border-color: rgba(88,166,255,0.4); }
+.ds-chip.theme { color: var(--accent-purple); border-color: rgba(163,113,247,0.4); }
+.ds-chip.tag { color: var(--text-muted); }
+
+.ds-drivers {
+    list-style: none;
+    margin: 0.25rem 0 0.35rem 0;
+    padding: 0 0 0 0.9rem;
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+.ds-drivers li {
+    position: relative;
+    padding-left: 0.5rem;
+    margin-bottom: 0.15rem;
+}
+.ds-drivers li::before {
+    content: "▸";
+    color: var(--accent-blue);
+    position: absolute;
+    left: -0.6rem;
+    top: 0;
+}
+
+.ds-rationale {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background: var(--bg-dark);
+    border-left: 2px solid var(--accent-purple);
+    border-radius: 0 4px 4px 0;
+    padding: 0.4rem 0.65rem;
+    margin-top: 0.35rem;
+    line-height: 1.45;
+}
+.ds-rationale.skip { border-left-color: var(--text-muted); }
+.ds-rationale .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.ds-drop-reason {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0.4rem 0.55rem;
+    background: var(--bg-dark);
+    border-radius: 4px;
+}
+
+.ds-scorebox {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+    min-width: 0;
+}
+.ds-score-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+}
+.ds-score-line .score-label { color: var(--text-muted); }
+.ds-score-line .score-value { color: var(--text-primary); font-weight: 600; }
+.ds-score-bar {
+    height: 5px;
+    background: var(--bg-dark);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 0.1rem;
+}
+.ds-score-bar .fill {
+    height: 100%;
+    background: var(--accent-blue);
+    border-radius: 99px;
+}
+.ds-score-bar.green .fill { background: var(--accent-green); }
+.ds-score-bar.yellow .fill { background: var(--accent-yellow); }
+.ds-score-bar.muted .fill { background: var(--text-muted); }
+
+.ds-verdict-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.18rem 0.5rem;
+    border-radius: 99px;
+}
+.ds-verdict-badge.PICK { background: rgba(63,185,80,0.15); color: var(--accent-green); }
+.ds-verdict-badge.WATCH { background: rgba(210,153,34,0.15); color: var(--accent-yellow); }
+.ds-verdict-badge.SKIP { background: rgba(110,118,129,0.15); color: var(--text-muted); }
+
+.ds-actions {
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 0.45rem;
+    flex-wrap: wrap;
+}
+
+.ds-row-grade {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.1rem 0.45rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-secondary);
+}
+.ds-row-grade .num { color: var(--text-primary); font-weight: 600; }
+.ds-row-grade.g3 .num { color: var(--accent-green); }
+.ds-row-grade.g2 .num { color: var(--accent-yellow); }
+.ds-row-grade.g1 .num { color: var(--text-secondary); }
+.ds-row-grade.g0 .num { color: var(--text-muted); }
+
+.ds-empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3rem 1rem;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+}
+
+.ds-loading {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem 1rem;
+    font-size: 0.85rem;
+}
+
+.ds-filter-row {
+    display: flex;
+    gap: 0.55rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+}
+.ds-filter-row label { display: inline-flex; align-items: center; gap: 0.35rem; }
+
+.ds-toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.55rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.2s;
+    pointer-events: none;
+    z-index: 9000;
+}
+.ds-toast.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 900px) {
+    .ds-row { grid-template-columns: 1fr; }
+    .ds-row-head { flex-direction: row; align-items: center; gap: 0.6rem; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="ds-toolbar">
+    <strong style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;">Daily Shortlist</strong>
+    <select id="dateSelect"></select>
+    <button onclick="dsRunPipeline()" id="runBtn">Run Today</button>
+    <button class="secondary" onclick="dsReload()">Refresh</button>
+    <span class="ds-meta" id="metaInfo">Loading...</span>
+</div>
+
+<div class="ds-funnel" id="funnel" style="display:none;"></div>
+<div class="ds-summary" id="summary"></div>
+
+<div class="ds-tabs">
+    <button class="ds-tab active" data-tab="PICK">Picks <span class="ds-tab-count" id="count-PICK">0</span></button>
+    <button class="ds-tab" data-tab="WATCH">Watch <span class="ds-tab-count" id="count-WATCH">0</span></button>
+    <button class="ds-tab" data-tab="SKIP">Rejected <span class="ds-tab-count" id="count-SKIP">0</span></button>
+</div>
+
+<div class="ds-filter-row">
+    <label>Filter:
+        <input type="text" id="filterText" placeholder="ticker, theme, sector..." style="width:200px;">
+    </label>
+    <label>Source:
+        <select id="filterSource"><option value="">all</option></select>
+    </label>
+    <label>Sector:
+        <select id="filterSector"><option value="">all</option></select>
+    </label>
+    <label>
+        <input type="checkbox" id="showAlmostMadeIt"> show "almost made it" first
+    </label>
+</div>
+
+<div id="listContainer" class="ds-list">
+    <div class="ds-loading">Loading...</div>
+</div>
+
+<div class="ds-toast" id="toast"></div>
+
+<script>
+const state = {
+    date: null,
+    data: null,
+    activeTab: 'PICK',
+    filterText: '',
+    filterSource: '',
+    filterSector: '',
+    almostMadeItFirst: false,
+    runPolling: null,
+};
+
+function toast(msg, ms=2200) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('visible'), ms);
+}
+
+function pctFmt(v) {
+    if (v == null || isNaN(v)) return '-';
+    const n = Number(v);
+    const sign = n > 0 ? '+' : '';
+    return sign + n.toFixed(1) + '%';
+}
+
+function metricCls(v) {
+    if (v == null || isNaN(v)) return '';
+    return Number(v) >= 0 ? 'pos' : 'neg';
+}
+
+function mcapFmt(v) {
+    if (!v) return '-';
+    const n = Number(v);
+    if (n >= 1e12) return (n / 1e12).toFixed(2) + 'T';
+    if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+    if (n >= 1e6) return (n / 1e6).toFixed(0) + 'M';
+    return String(n);
+}
+
+function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+}
+
+async function loadDates() {
+    const r = await fetch('/api/frontend/daily-shortlist/dates');
+    const data = await r.json();
+    const sel = document.getElementById('dateSelect');
+    sel.innerHTML = '';
+    const dates = (data.dates || []).filter(d => d.has_audit);
+    if (!dates.length) {
+        sel.innerHTML = '<option value="">(no runs yet)</option>';
+        document.getElementById('listContainer').innerHTML =
+            '<div class="ds-empty">No daily shortlist runs yet. Click "Run Today" to start one.</div>';
+        document.getElementById('metaInfo').textContent = 'no artifacts';
+        return;
+    }
+    for (const d of dates) {
+        const opt = document.createElement('option');
+        opt.value = d.date;
+        opt.textContent = d.date;
+        sel.appendChild(opt);
+    }
+    state.date = dates[0].date;
+    sel.value = state.date;
+    sel.addEventListener('change', () => {
+        state.date = sel.value;
+        loadAudit();
+    });
+    await loadAudit();
+}
+
+async function loadAudit() {
+    if (!state.date) return;
+    document.getElementById('listContainer').innerHTML = '<div class="ds-loading">Loading ' + state.date + '...</div>';
+    try {
+        const r = await fetch('/api/frontend/daily-shortlist/' + state.date);
+        if (!r.ok) {
+            const e = await r.json().catch(() => ({}));
+            document.getElementById('listContainer').innerHTML =
+                '<div class="ds-empty">Failed to load: ' + escapeHtml(e.error || r.statusText) + '</div>';
+            return;
+        }
+        state.data = await r.json();
+    } catch (e) {
+        document.getElementById('listContainer').innerHTML =
+            '<div class="ds-empty">Error loading: ' + escapeHtml(e.message) + '</div>';
+        return;
+    }
+    populateFilters();
+    renderFunnel();
+    renderSummary();
+    renderCounts();
+    render();
+}
+
+function renderFunnel() {
+    const f = (state.data && state.data.funnel) || null;
+    const el = document.getElementById('funnel');
+    if (!f) { el.style.display = 'none'; return; }
+    el.style.display = 'flex';
+
+    const arrow = '<span class="arrow">▸</span>';
+    const sourceTooltip = Object.entries(f.source_counts || {})
+        .map(([k, v]) => k + '=' + v)
+        .join(', ');
+    const filteredOut = (f.industry_dropped || 0) + (f.disliked_dropped || 0);
+    const filteredDetail = filteredOut > 0
+        ? ` <span class="sub" title="industry=${f.industry_dropped}, disliked=${f.disliked_dropped}">(−${filteredOut})</span>`
+        : '';
+    const momDropDetail = (f.momentum_dropped || 0) > 0
+        ? ` <span class="sub">(−${f.momentum_dropped})</span>`
+        : '';
+    const newsFailDetail = (f.news_failures || 0) > 0
+        ? ` <span class="sub">(−${f.news_failures} failed)</span>`
+        : '';
+
+    // The post-filter survivors stage; truncation (if any) happens right after.
+    const filtered = f.survivors_after_filters != null
+        ? f.survivors_after_filters
+        : ((f.unique_after_dedup || 0) - filteredOut);
+    const truncated = f.truncated_count || 0;
+    const cap = f.max_tickers_cap;
+
+    let truncatedStage = '';
+    if (truncated > 0) {
+        truncatedStage = `
+            ${arrow}
+            <span class="stage" title="silently dropped by --max-tickers cap${cap != null ? ' (=' + cap + ')' : ''}">
+                <span class="label">Capped</span><span class="value">${f.universe_survivors || 0}</span>
+                <span class="sub">(−${truncated} by max_tickers${cap != null ? '=' + cap : ''})</span>
+            </span>
+        `;
+    }
+
+    el.innerHTML = `
+        <span class="ds-funnel-title">Funnel</span>
+        <span class="stage" title="${escapeHtml(sourceTooltip)}">
+            <span class="label">Raw</span><span class="value">${f.raw_total || 0}</span>
+        </span>
+        ${arrow}
+        <span class="stage" title="unique tickers after dedup across screens">
+            <span class="label">Unique</span><span class="value">${f.unique_after_dedup || 0}</span>
+        </span>
+        ${arrow}
+        <span class="stage" title="survivors after industry / dislike filters">
+            <span class="label">Filtered</span><span class="value">${filtered}</span>${filteredDetail}
+        </span>
+        ${truncatedStage}
+        ${arrow}
+        <span class="stage" title="passed momentum threshold">
+            <span class="label">Momentum</span><span class="value">${f.momentum_survivors || 0}</span>${momDropDetail}
+        </span>
+        ${arrow}
+        <span class="stage" title="news fetched via Perplexity">
+            <span class="label">News</span><span class="value">${f.news_results || 0}</span>${newsFailDetail}
+        </span>
+        ${arrow}
+        <span class="stage final" title="LLM judge verdict">
+            <span class="pick">PICK ${f.judged_pick || 0}</span>
+            <span class="watch">WATCH ${f.judged_watch || 0}</span>
+            <span class="skip">SKIP ${f.judged_skip || 0}</span>
+        </span>
+    `;
+}
+
+function populateFilters() {
+    const sourceSet = new Set();
+    const sectorSet = new Set();
+    for (const r of (state.data.rows || [])) {
+        for (const s of (r.sources || [])) sourceSet.add(s);
+        if (r.sector) sectorSet.add(r.sector);
+    }
+    const sourceSel = document.getElementById('filterSource');
+    sourceSel.innerHTML = '<option value="">all</option>';
+    for (const s of Array.from(sourceSet).sort()) {
+        const o = document.createElement('option'); o.value = s; o.textContent = s;
+        sourceSel.appendChild(o);
+    }
+    const sectorSel = document.getElementById('filterSector');
+    sectorSel.innerHTML = '<option value="">all</option>';
+    for (const s of Array.from(sectorSet).sort()) {
+        const o = document.createElement('option'); o.value = s; o.textContent = s;
+        sectorSel.appendChild(o);
+    }
+}
+
+function renderSummary() {
+    const d = state.data;
+    const counts = d.verdict_counts || {};
+    const totals = d.source_counts || {};
+    const meta = document.getElementById('metaInfo');
+    meta.textContent = 'universe=' + (d.total_universe || 0)
+        + ' • PICK=' + (counts.PICK || 0)
+        + ' • WATCH=' + (counts.WATCH || 0)
+        + ' • SKIP=' + (counts.SKIP || 0);
+
+    const summary = document.getElementById('summary');
+    summary.innerHTML = '';
+    for (const [src, cnt] of Object.entries(totals)) {
+        const pill = document.createElement('span');
+        pill.className = 'ds-summary-pill';
+        pill.textContent = src + ': ' + cnt;
+        summary.appendChild(pill);
+    }
+}
+
+function renderCounts() {
+    const c = state.data.verdict_counts || {};
+    document.getElementById('count-PICK').textContent = c.PICK || 0;
+    document.getElementById('count-WATCH').textContent = c.WATCH || 0;
+    document.getElementById('count-SKIP').textContent = c.SKIP || 0;
+}
+
+function rowMatches(r) {
+    if (state.filterSource && !(r.sources || []).includes(state.filterSource)) return false;
+    if (state.filterSector && r.sector !== state.filterSector) return false;
+    if (state.filterText) {
+        const q = state.filterText.toLowerCase();
+        const hay = [
+            r.ticker, r.company_name, r.sector, r.industry,
+            (r.matched_themes || []).join(' '),
+            (r.news_theme_tags || []).join(' '),
+            r.verdict_rationale, r.news_summary, r.drop_reason,
+        ].filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+    }
+    return true;
+}
+
+function render() {
+    const container = document.getElementById('listContainer');
+    if (!state.data || !state.data.rows) {
+        container.innerHTML = '<div class="ds-empty">No data.</div>';
+        return;
+    }
+    let rows = state.data.rows.filter(r => (r.verdict || 'SKIP') === state.activeTab);
+    rows = rows.filter(rowMatches);
+
+    // Sort: rejected tab can show "almost made it" first (highest composite among SKIPs).
+    if (state.activeTab === 'SKIP' && state.almostMadeItFirst) {
+        rows.sort((a, b) => (b.composite_score || 0) - (a.composite_score || 0));
+    } else if (state.activeTab === 'PICK' || state.activeTab === 'WATCH') {
+        rows.sort((a, b) => (b.composite_score || 0) - (a.composite_score || 0));
+    } else {
+        // SKIP default: dropped-at-stage rows last (cheap drops), Claude-skips first.
+        rows.sort((a, b) => (b.composite_score || 0) - (a.composite_score || 0));
+    }
+
+    if (!rows.length) {
+        container.innerHTML = '<div class="ds-empty">No ' + state.activeTab.toLowerCase() + ' candidates match the current filters.</div>';
+        return;
+    }
+    container.innerHTML = '';
+    for (const r of rows) {
+        container.appendChild(renderRow(r));
+    }
+}
+
+function renderRow(r) {
+    const verdict = r.verdict || 'SKIP';
+    const wrap = document.createElement('div');
+    wrap.className = 'ds-row verdict-' + verdict;
+
+    // Head column
+    const head = document.createElement('div');
+    head.className = 'ds-row-head';
+    head.innerHTML = `
+        <a class="ds-row-ticker" href="/stock/${encodeURIComponent(r.ticker)}" target="_blank">${escapeHtml(r.ticker)}</a>
+        <span class="ds-row-company" title="${escapeHtml(r.company_name || '')}">${escapeHtml(r.company_name || '')}</span>
+        <span class="ds-row-sector" title="${escapeHtml(r.sector || '')}">${escapeHtml(r.sector || '')}</span>
+        <span class="ds-row-sector">${escapeHtml(mcapFmt(r.market_cap))}</span>
+    `;
+    wrap.appendChild(head);
+
+    // Main column
+    const main = document.createElement('div');
+    main.className = 'ds-row-main';
+
+    const metrics = document.createElement('div');
+    metrics.className = 'ds-row-metrics';
+    const pairs = [
+        ['1D', r.dr_1], ['5D', r.dr_5], ['20D', r.dr_20], ['60D', r.dr_60],
+    ];
+    for (const [label, val] of pairs) {
+        const m = document.createElement('span');
+        m.className = 'metric ' + metricCls(val);
+        m.innerHTML = '<span class="label">' + label + '</span><span class="value">' + pctFmt(val) + '</span>';
+        metrics.appendChild(m);
+    }
+    if (r.rsi_mktcap != null) {
+        const m = document.createElement('span');
+        m.className = 'metric';
+        m.innerHTML = '<span class="label">RSIᵐ</span><span class="value">' + escapeHtml(r.rsi_mktcap) + '</span>';
+        metrics.appendChild(m);
+    }
+    if (r.atr20 != null) {
+        const m = document.createElement('span');
+        m.className = 'metric';
+        m.innerHTML = '<span class="label">ATR</span><span class="value">' + Number(r.atr20).toFixed(1) + '%</span>';
+        metrics.appendChild(m);
+    }
+    main.appendChild(metrics);
+
+    // Chips: sources + matched themes
+    const chips = document.createElement('div');
+    chips.className = 'ds-chips';
+    for (const s of (r.sources || [])) {
+        const c = document.createElement('span');
+        c.className = 'ds-chip source';
+        c.textContent = s;
+        chips.appendChild(c);
+    }
+    const themes = r.matched_themes && r.matched_themes.length
+        ? r.matched_themes : (r.news_theme_tags || []);
+    for (const t of themes) {
+        const c = document.createElement('span');
+        c.className = 'ds-chip theme';
+        c.textContent = t;
+        chips.appendChild(c);
+    }
+    if (chips.children.length) main.appendChild(chips);
+
+    // Drivers
+    if (r.headline_drivers && r.headline_drivers.length) {
+        const ul = document.createElement('ul');
+        ul.className = 'ds-drivers';
+        for (const d of r.headline_drivers) {
+            const li = document.createElement('li');
+            li.textContent = d;
+            ul.appendChild(li);
+        }
+        main.appendChild(ul);
+    }
+
+    // Rationale OR drop reason
+    if (r.verdict_rationale) {
+        const ra = document.createElement('div');
+        ra.className = 'ds-rationale' + (verdict === 'SKIP' ? ' skip' : '');
+        ra.innerHTML = '<span class="label">' + verdict + ' rationale</span>' + escapeHtml(r.verdict_rationale);
+        main.appendChild(ra);
+    } else if (r.drop_reason) {
+        const dr = document.createElement('div');
+        dr.className = 'ds-drop-reason';
+        dr.textContent = 'Dropped at stage ' + (r.dropped_at_stage || '?') + ': ' + r.drop_reason;
+        main.appendChild(dr);
+    } else if (r.news_summary) {
+        const ra = document.createElement('div');
+        ra.className = 'ds-rationale skip';
+        ra.innerHTML = '<span class="label">news</span>' + escapeHtml(r.news_summary);
+        main.appendChild(ra);
+    }
+
+    // Actions
+    const actions = document.createElement('div');
+    actions.className = 'ds-actions';
+    const wl = r.watchlist || {};
+    const wlBtn = document.createElement('button');
+    wlBtn.className = 'abi-wl-btn' + (wl.in_watchlist ? ' in-watchlist' : '');
+    wlBtn.textContent = wl.in_watchlist ? '★ Watchlist' : '+ Watchlist';
+    wlBtn.onclick = () => openWatchlist(r);
+    actions.appendChild(wlBtn);
+
+    const dl = r.dislike || {};
+    const dlBtn = document.createElement('button');
+    dlBtn.className = 'abi-dl-btn' + (dl.is_disliked ? ' is-disliked' : '');
+    dlBtn.setAttribute('data-ticker', r.ticker);
+    dlBtn.textContent = dl.is_disliked ? '👎 Blocked' : '👎';
+    dlBtn.title = dl.is_disliked
+        ? 'Edit dislike notes for ' + r.ticker
+        : 'Block ' + r.ticker + ' from screeners';
+    dlBtn.onclick = () => window._dlOpenForTicker(r.ticker, function(action, t) {
+        if (action === 'saved') { dlBtn.textContent = '👎 Blocked'; dlBtn.classList.add('is-disliked'); }
+        else if (action === 'removed') { dlBtn.textContent = '👎'; dlBtn.classList.remove('is-disliked'); }
+    });
+    actions.appendChild(dlBtn);
+    main.appendChild(actions);
+
+    wrap.appendChild(main);
+
+    // Right scorebox column
+    const score = document.createElement('div');
+    score.className = 'ds-scorebox';
+
+    const vb = document.createElement('span');
+    vb.className = 'ds-verdict-badge ' + verdict;
+    vb.textContent = verdict;
+    score.appendChild(vb);
+
+    if (r.composite_score != null) {
+        score.appendChild(scoreLine('Composite', r.composite_score, 100, verdict));
+    }
+    if (r.momentum_score != null) {
+        score.appendChild(scoreLine('Momentum', r.momentum_score, 100, 'muted'));
+    }
+    if (r.news_materiality != null) {
+        const grade = document.createElement('span');
+        grade.className = 'ds-row-grade g' + r.news_materiality;
+        grade.innerHTML = '<span>news</span><span class="num">' + r.news_materiality + '/3</span>';
+        score.appendChild(grade);
+    }
+    if (r.theme_fit != null) {
+        const grade = document.createElement('span');
+        grade.className = 'ds-row-grade g' + r.theme_fit;
+        grade.innerHTML = '<span>theme</span><span class="num">' + r.theme_fit + '/3</span>';
+        score.appendChild(grade);
+    }
+
+    wrap.appendChild(score);
+    return wrap;
+}
+
+function scoreLine(label, value, max, verdict) {
+    const w = document.createElement('div');
+    const pct = Math.max(0, Math.min(100, (value / max) * 100));
+    let cls = 'muted';
+    if (verdict === 'PICK') cls = 'green';
+    else if (verdict === 'WATCH') cls = 'yellow';
+    w.innerHTML = `
+        <div class="ds-score-line">
+            <span class="score-label">${label}</span>
+            <span class="score-value">${Number(value).toFixed(1)}</span>
+        </div>
+        <div class="ds-score-bar ${cls}"><div class="fill" style="width:${pct}%;"></div></div>
+    `;
+    return w;
+}
+
+function openWatchlist(r) {
+    const wl = r.watchlist || {};
+    window._wlOpen(r.ticker, wl.notes || '', !!wl.in_watchlist, (action, ticker, notes) => {
+        // Optimistic local update
+        if (action === 'saved') {
+            r.watchlist = { in_watchlist: true, notes: notes || '', stars: wl.stars || 0 };
+        } else if (action === 'removed') {
+            r.watchlist = { in_watchlist: false, notes: '', stars: 0 };
+        }
+        render();
+        toast(action === 'saved' ? 'Saved to watchlist' : 'Removed from watchlist');
+    });
+}
+
+function dsReload() {
+    loadAudit();
+    toast('Refreshed');
+}
+
+async function dsRunPipeline() {
+    const btn = document.getElementById('runBtn');
+    btn.disabled = true;
+    btn.textContent = 'Starting...';
+    try {
+        const r = await fetch('/api/frontend/daily-shortlist/run', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({}),
+        });
+        const data = await r.json();
+        if (r.ok) {
+            toast('Pipeline started (pid ' + data.pid + ')');
+            btn.textContent = 'Running...';
+            // Poll for new artifacts.
+            state.runPolling = setInterval(async () => {
+                try {
+                    const rr = await fetch('/api/frontend/daily-shortlist/dates');
+                    const d = await rr.json();
+                    const latest = (d.dates || [])[0];
+                    if (latest && latest.has_audit) {
+                        const sel = document.getElementById('dateSelect');
+                        // Re-populate options to pick up new date.
+                        await loadDates();
+                        btn.textContent = 'Run Today';
+                        btn.disabled = false;
+                        clearInterval(state.runPolling);
+                        state.runPolling = null;
+                        toast('Run complete');
+                    }
+                } catch (e) {}
+            }, 10000);
+        } else {
+            toast('Failed: ' + (data.error || r.statusText));
+            btn.textContent = 'Run Today';
+            btn.disabled = false;
+        }
+    } catch (e) {
+        toast('Error: ' + e.message);
+        btn.textContent = 'Run Today';
+        btn.disabled = false;
+    }
+}
+
+document.querySelectorAll('.ds-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.ds-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        state.activeTab = tab.dataset.tab;
+        render();
+    });
+});
+
+document.getElementById('filterText').addEventListener('input', e => {
+    state.filterText = e.target.value.trim();
+    render();
+});
+document.getElementById('filterSource').addEventListener('change', e => {
+    state.filterSource = e.target.value;
+    render();
+});
+document.getElementById('filterSector').addEventListener('change', e => {
+    state.filterSector = e.target.value;
+    render();
+});
+document.getElementById('showAlmostMadeIt').addEventListener('change', e => {
+    state.almostMadeItFirst = e.target.checked;
+    render();
+});
+
+loadDates();
+</script>
+{% endblock %}

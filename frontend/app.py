@@ -121,6 +121,12 @@ def top_performance_page():
     return render_template('top_performance.html')
 
 
+@app.route('/top-losers')
+def top_losers_page():
+    """Top Losers page - Union of bottom stocks by 1D, 5D, 20D returns"""
+    return render_template('top_losers.html')
+
+
 @app.route('/volspike-gapper')
 def volspike_gapper_page():
     """Volume Spike & Gapper page - Stocks with unusual volume and gap activity"""
@@ -131,6 +137,12 @@ def volspike_gapper_page():
 def main_view_page():
     """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
     return render_template('main_view.html')
+
+
+@app.route('/technical-screener')
+def technical_screener_page():
+    """Technical Screener page - intraday/technical setups (reversal, etc.)"""
+    return render_template('technical_screener.html')
 
 
 @app.route('/themes')
@@ -354,6 +366,27 @@ def api_top_performance(market_cap):
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/top-losers/<market_cap>')
+def api_top_losers(market_cap):
+    """Proxy endpoint for Top Losers (union of bottom stocks by 1D, 5D, 20D returns) from backend"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+    
+    data, status_code = make_backend_request(f'/api/BottomPerformance-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Top Losers data'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/volspike-gapper/<market_cap>')
 def api_volspike_gapper(market_cap):
     """Proxy endpoint for Volume Spike & Gapper data from backend"""
@@ -393,6 +426,37 @@ def api_main_view(market_cap):
     data, status_code = make_backend_request(f'/api/MainView-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch Main View data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/technical-screener/<criterion>/<market_cap>')
+def api_technical_screener(criterion, market_cap):
+    """Proxy endpoint for Technical Screener data from backend.
+
+    Supported criteria:
+      - reversal: biggest low-to-close reversal % for the latest trading day
+    """
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    criterion_map = {
+        'reversal': 'Reversal',
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    endpoint_criterion = criterion_map.get(criterion.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+    if not endpoint_criterion:
+        return jsonify({'error': 'Invalid technical screener criterion'}), 400
+
+    data, status_code = make_backend_request(f'/api/TechnicalScreener-{endpoint_criterion}-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Technical Screener data'}), status_code
     return jsonify(data), status_code
 
 
@@ -800,6 +864,102 @@ def api_abi_watchlist_data():
     data, status_code = make_backend_request('/api/abi-watchlist/data')
     if data is None:
         return jsonify({'error': 'Failed to fetch watchlist data'}), status_code
+    return jsonify(data), status_code
+
+
+# ============================================================
+# Abi Dislikes Endpoints (parallel to watchlist, thumbs-down list with notes)
+# ============================================================
+# Replaces the legacy DB-backed `preference='dislike'`. Dislike entries get
+# filtered out of the daily screener pipeline and are surfaced as "you blocked
+# this and here's why" anywhere they would otherwise appear.
+
+@app.route('/abi-dislikes')
+def abi_dislikes_page():
+    """Abi Dislikes page - thumbs-down list with notes."""
+    return render_template('abi_dislikes.html')
+
+
+@app.route('/api/frontend/abi-dislikes', methods=['GET'])
+def api_get_abi_dislikes():
+    data, status_code = make_backend_request('/api/abi-dislikes')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch dislikes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-dislikes', methods=['POST'])
+def api_add_to_abi_dislikes():
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/abi-dislikes', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to add to dislikes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-dislikes/<ticker>', methods=['PUT'])
+def api_update_abi_dislikes(ticker):
+    json_data = request.get_json()
+    data, status_code = make_backend_request(f'/api/abi-dislikes/{ticker}', method='PUT', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to update dislike'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-dislikes/<ticker>', methods=['DELETE'])
+def api_delete_from_abi_dislikes(ticker):
+    data, status_code = make_backend_request(f'/api/abi-dislikes/{ticker}', method='DELETE', json_data={})
+    if data is None:
+        return jsonify({'error': 'Failed to remove from dislikes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-dislikes/batch-check', methods=['POST'])
+def api_batch_check_abi_dislikes():
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/abi-dislikes/batch-check', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to check dislikes'}), status_code
+    return jsonify(data), status_code
+
+
+# ============================================================
+# Daily Shortlist Endpoints
+# ============================================================
+
+@app.route('/daily-shortlist')
+def daily_shortlist_page():
+    """Daily Shortlist page - screened candidates with Picks/Watch/Rejected tabs"""
+    return render_template('daily_shortlist.html')
+
+
+@app.route('/api/frontend/daily-shortlist/dates')
+def api_daily_shortlist_dates():
+    """Proxy: list of dates with daily shortlist artifacts"""
+    data, status_code = make_backend_request('/api/daily-shortlist/dates')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch dates'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/<date>')
+def api_daily_shortlist_for_date(date):
+    """Proxy: full audit artifact for a specific date"""
+    data, status_code = make_backend_request(f'/api/daily-shortlist/{date}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch daily shortlist'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/run', methods=['POST'])
+def api_daily_shortlist_run():
+    """Proxy: kick off a daily shortlist pipeline run"""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        '/api/daily-shortlist/run', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to start run'}), status_code
     return jsonify(data), status_code
 
 

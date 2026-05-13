@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-abi-dislikes{% endblock %}
+
+{% block title %}Abi Dislikes - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+    .dl-page {
+        padding: 1rem 1.25rem;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+    .dl-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+    .dl-header h1 {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+    .dl-header h1 .count {
+        color: var(--accent-red);
+        margin-left: 0.4rem;
+    }
+    .dl-header .subtitle {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+    .dl-add-bar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .dl-add-bar input {
+        flex: 0 0 140px;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-primary);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
+        text-transform: uppercase;
+    }
+    .dl-add-bar input:focus {
+        outline: none;
+        border-color: var(--accent-red);
+    }
+    .dl-add-bar button {
+        background: var(--accent-red);
+        color: #fff;
+        border: 1px solid var(--accent-red);
+        border-radius: 6px;
+        padding: 0.4rem 0.9rem;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .dl-add-bar button:hover { background: #ff6b62; }
+
+    .dl-empty {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        border: 1px dashed var(--border-color);
+        border-radius: 8px;
+        background: var(--bg-card);
+    }
+
+    .dl-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .dl-row {
+        display: grid;
+        grid-template-columns: 110px 1fr auto;
+        align-items: start;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+    }
+    .dl-row:hover { border-color: var(--accent-red); }
+    .dl-ticker {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--accent-red);
+    }
+    .dl-ticker a {
+        color: var(--accent-red);
+        text-decoration: none;
+    }
+    .dl-ticker a:hover { text-decoration: underline; }
+    .dl-meta {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-top: 0.1rem;
+    }
+    .dl-notes {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        white-space: pre-wrap;
+        line-height: 1.4;
+        font-family: 'Outfit', sans-serif;
+    }
+    .dl-notes.empty {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+    .dl-actions {
+        display: flex;
+        gap: 0.4rem;
+        align-items: center;
+    }
+    .dl-actions button {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 0.7rem;
+        font-family: 'Outfit', sans-serif;
+        padding: 0.25rem 0.55rem;
+        transition: all 0.15s;
+    }
+    .dl-actions button:hover {
+        border-color: var(--accent-red);
+        color: var(--accent-red);
+    }
+    .dl-actions .dl-remove-btn:hover {
+        background: rgba(248, 81, 73, 0.15);
+    }
+{% endblock %}
+
+{% block content %}
+<div class="dl-page">
+    <div class="dl-header">
+        <h1>Disliked Tickers <span class="count" id="dlCount">0</span></h1>
+        <div class="subtitle">These are filtered out of every screener (Daily Shortlist, Top Returns, Vol Spike, etc.) with an audit trail.</div>
+    </div>
+
+    <div class="dl-add-bar">
+        <input type="text" id="dlAddTicker" placeholder="TICKER" maxlength="10" onkeydown="if(event.key==='Enter')addDislike()" />
+        <button onclick="addDislike()">Add to Dislikes</button>
+    </div>
+
+    <div id="dlContent">
+        <div class="dl-empty">Loading...</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let _dislikes = {};
+
+async function loadDislikes() {
+    try {
+        const resp = await fetch('/api/frontend/abi-dislikes');
+        _dislikes = await resp.json();
+        render();
+    } catch (e) {
+        document.getElementById('dlContent').innerHTML = '<div class="dl-empty">Failed to load dislikes.</div>';
+        console.error(e);
+    }
+}
+
+function fmtDate(iso) {
+    if (!iso) return '';
+    try {
+        const d = new Date(iso);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch (_) { return iso; }
+}
+
+function escapeHtml(s) {
+    if (!s) return '';
+    return String(s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function render() {
+    const tickers = Object.keys(_dislikes).sort();
+    document.getElementById('dlCount').textContent = tickers.length;
+
+    const root = document.getElementById('dlContent');
+    if (tickers.length === 0) {
+        root.innerHTML = '<div class="dl-empty">No dislikes yet. Add tickers you want filtered out of every screener.</div>';
+        return;
+    }
+
+    let html = '<div class="dl-list">';
+    for (const t of tickers) {
+        const entry = _dislikes[t] || {};
+        const notes = (entry.notes || '').trim();
+        html += `
+            <div class="dl-row" data-ticker="${t}">
+                <div>
+                    <div class="dl-ticker"><a href="/stock/${t}">${t}</a></div>
+                    <div class="dl-meta">Added ${fmtDate(entry.added_at)}</div>
+                </div>
+                <div class="dl-notes ${notes ? '' : 'empty'}">${notes ? escapeHtml(notes) : 'No notes'}</div>
+                <div class="dl-actions">
+                    <button onclick="editDislike('${t}')">Edit</button>
+                    <button class="dl-remove-btn" onclick="removeDislike('${t}')">Remove</button>
+                </div>
+            </div>`;
+    }
+    html += '</div>';
+    root.innerHTML = html;
+}
+
+async function addDislike() {
+    const input = document.getElementById('dlAddTicker');
+    const ticker = input.value.trim().toUpperCase();
+    if (!ticker) return;
+    if (_dislikes[ticker]) {
+        editDislike(ticker);
+        input.value = '';
+        return;
+    }
+    window._dlOpen(ticker, '', false, async function(action) {
+        input.value = '';
+        if (action === 'saved') await loadDislikes();
+    });
+}
+
+function editDislike(ticker) {
+    const entry = _dislikes[ticker] || {};
+    window._dlOpen(ticker, entry.notes || '', true, async function(action) {
+        if (action === 'saved' || action === 'removed') await loadDislikes();
+    });
+}
+
+async function removeDislike(ticker) {
+    if (!confirm(`Remove ${ticker} from dislikes?`)) return;
+    try {
+        await fetch('/api/frontend/abi-dislikes/' + ticker, { method: 'DELETE' });
+        await loadDislikes();
+    } catch (e) { console.error(e); }
+}
+
+loadDislikes();
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{
+  "ticker": "EVC",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Q1 2026 earnings shock on 2026-05-06: consolidated net revenue rose 114% year over year to about $197M, with EPS swinging to $0.13 from -$0.53, driving a sharp re-rating",
+    "Advertising Technology & Services revenue surged 204% year over year to about $154.6M-$155M in Q1 2026, with operating profit rising to $34.3M from $6.5M and monthly active advertisers / revenue per advertiser both higher",
+    "Management flagged a strong 2026 political ad cycle on the 2026-05-06 earnings call, citing Election Day 2026 being 182 days away and ongoing primaries as a catalyst for higher political spend",
+    "The board declared a $0.05 quarterly cash dividend payable 2026-06-30 (record 2026-06-16), reinforcing the turnaround / cash flow narrative"
+  ],
+  "latest_material_date": "2026-05-06",
+  "theme_tags": [
+    "earnings-beat-and-raise",
+    "turnaround-and-recovery",
+    "earnings-surprise-momentum",
+    "breakout-and-momentum",
+    "small-cap-relief-rally"
+  ],
+  "summary": "The market is reacting primarily to Entravision\u2019s blowout Q1 2026 earnings: revenue more than doubled, EPS flipped from a large loss to a profit, and the high-growth Advertising Technology & Services segment posted triple-digit growth with improved profitability. Management also pointed to an approaching 2026 political ad cycle as an additional upside catalyst. I did not find evidence of a separate named-customer win or major M&A/regulatory event driving the move; this looks like an earnings-driven repricing with momentum following the surprise.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"EVC\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Q1 2026 earnings shock on 2026-05-06: consolidated net revenue rose 114% year over year to about $197M, with EPS swinging to $0.13 from -$0.53, driving a sharp re-rating\",\n    \"Advertising Technology & Services revenue surged 204% year over year to about $154.6M-$155M in Q1 2026, with operating profit rising to $34.3M from $6.5M and monthly active advertisers / revenue per advertiser both higher\",\n    \"Management flagged a strong 2026 political ad cycle on the 2026-05-06 earnings call, citing Election Day 2026 being 182 days away and ongoing primaries as a catalyst for higher political spend\",\n    \"The board declared a $0.05 quarterly cash dividend payable 2026-06-30 (record 2026-06-16), reinforcing the turnaround / cash flow narrative\"\n  ],\n  \"latest_material_date\": \"2026-05-06\",\n  \"theme_tags\": [\n    \"earnings-beat-and-raise\",\n    \"turnaround-and-recovery\",\n    \"earnings-surprise-momentum\",\n    \"breakout-and-momentum\",\n    \"small-cap-relief-rally\"\n  ],\n  \"summary\": \"The market is reacting primarily to Entravision\u2019s blowout Q1 2026 earnings: revenue more than doubled, EPS flipped from a large loss to a profit, and the high-growth Advertising Technology & Services segment posted triple-digit growth with improved profitability. Management also pointed to an approaching 2026 political ad cycle as an additional upside catalyst. I did not find evidence of a separate named-customer win or major M&A/regulatory event driving the move; this looks like an earnings-driven repricing with momentum following the surprise.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

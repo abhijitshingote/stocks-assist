@@ -1,5 +1,10 @@
 [
   {
+    "name": "EdgeAI",
+    "desc": "",
+    "tickers": ["AKAM","NET","AMBQ"]
+  },
+  {
     "name": "AI Compute",
     "desc": "GPUs, CPUs & AI accelerators powering the data center buildout",
     "tickers": ["NVDA", "AMD", "INTC", "ARM", "ALAB", "CEVA", "AMBA", "SIMO", "AIP"]

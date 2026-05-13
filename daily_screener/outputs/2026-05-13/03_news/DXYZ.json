@@ -1,0 +1,26 @@
+{
+  "ticker": "DXYZ",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Fund is heavily exposed to high\u2011profile private AI names like Anthropic and SpaceX; retail and social\u2011media hype around those holdings has driven a speculative re\u2011rating of the closed\u2011end fund\u2019s shares far above its underlying portfolio value (highlighted in retail broker write\u2011ups, e.g., Public.com note that the fund has \u2018jumped 1,200% on Anthropic and SpaceX hype,\u2019 early May 2026).",
+    "Persistent elevated trading volumes and repeated appearance on \u2018top 20d / top 5d / volspike_gapper\u2019 momentum screens indicate a momentum/technical chase and short\u2011squeeze dynamics in a relatively low\u2011float closed\u2011end fund, rather than a discrete new fundamental event (volume ~4x 10\u2011day average and recent volume spike magnitude 5.46 on 2026\u201105\u201111).",
+    "No new 8\u2011K, earnings release, large acquisition, or named-customer fundamental development in the last 30\u201360 days that would independently justify a near\u2011term ~80% move; the vehicle\u2019s own website and regulatory filings continue to describe the same strategy (closed\u2011end fund investing in top 100 venture\u2011backed tech companies) with no structural change to mandate or fee structure."
+  ],
+  "latest_material_date": "2026-05-11",
+  "theme_tags": [
+    "special-situation-re-rating",
+    "breakout-and-momentum",
+    "low-float-or-small-cap-catalyst",
+    "earnings-surprise-momentum"
+  ],
+  "summary": "The recent spike in Destiny Tech100 (DXYZ) looks driven far more by speculative enthusiasm and momentum than by new company\u2011specific fundamentals. DXYZ is a closed\u2011end fund giving public exposure to buzzy private tech names (notably Anthropic and SpaceX), and retail/online chatter around those holdings has triggered a sharp re\u2011rating and heavy inflows, with volumes running ~4x normal and the stock repeatedly hitting top\u2011performance and volume\u2011spike screens. There is no fresh earnings beat, structural change, or named new portfolio holding announced in the last 30\u201360 days that would directly explain an ~80% move; instead, the market appears to be chasing the theme (AI/SpaceX access) and the technical setup in a relatively constrained vehicle, which can decouple significantly from underlying NAV.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"DXYZ\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Fund is heavily exposed to high\u2011profile private AI names like Anthropic and SpaceX; retail and social\u2011media hype around those holdings has driven a speculative re\u2011rating of the closed\u2011end fund\u2019s shares far above its underlying portfolio value (highlighted in retail broker write\u2011ups, e.g., Public.com note that the fund has \u2018jumped 1,200% on Anthropic and SpaceX hype,\u2019 early May 2026).\",\n    \"Persistent elevated trading volumes and repeated appearance on \u2018top 20d / top 5d / volspike_gapper\u2019 momentum screens indicate a momentum/technical chase and short\u2011squeeze dynamics in a relatively low\u2011float closed\u2011end fund, rather than a discrete new fundamental event (volume ~4x 10\u2011day average and recent volume spike magnitude 5.46 on 2026\u201105\u201111).\",\n    \"No new 8\u2011K, earnings release, large acquisition, or named-customer fundamental development in the last 30\u201360 days that would independently justify a near\u2011term ~80% move; the vehicle\u2019s own website and regulatory filings continue to describe the same strategy (closed\u2011end fund investing in top 100 venture\u2011backed tech companies) with no structural change to mandate or fee structure.\"\n  ],\n  \"latest_material_date\": \"2026-05-11\",\n  \"theme_tags\": [\n    \"special-situation-re-rating\",\n    \"breakout-and-momentum\",\n    \"low-float-or-small-cap-catalyst\",\n    \"earnings-surprise-momentum\"\n  ],\n  \"summary\": \"The recent spike in Destiny Tech100 (DXYZ) looks driven far more by speculative enthusiasm and momentum than by new company\u2011specific fundamentals. DXYZ is a closed\u2011end fund giving public exposure to buzzy private tech names (notably Anthropic and SpaceX), and retail/online chatter around those holdings has triggered a sharp re\u2011rating and heavy inflows, with volumes running ~4x normal and the stock repeatedly hitting top\u2011performance and volume\u2011spike screens. There is no fresh earnings beat, structural change, or named new portfolio holding announced in the last 30\u201360 days that would directly explain an ~80% move; instead, the market appears to be chasing the theme (AI/SpaceX access) and the technical setup in a relatively constrained vehicle, which can decouple significantly from underlying NAV.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

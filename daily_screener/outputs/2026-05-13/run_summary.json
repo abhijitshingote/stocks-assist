@@ -1,0 +1,105 @@
+{
+  "date": "2026-05-13",
+  "stages": {
+    "universe": {
+      "stage": 1,
+      "status": "ok",
+      "elapsed_s": 0.0,
+      "stats": {
+        "total_universe": 242,
+        "source_counts": {
+          "top_1d": 30,
+          "top_5d": 30,
+          "top_20d": 30,
+          "volspike_gapper": 258
+        }
+      }
+    },
+    "momentum": {
+      "stage": 2,
+      "status": "ok",
+      "elapsed_s": 0.0,
+      "stats": {
+        "survivor_count": 60,
+        "drop_count": 182
+      }
+    },
+    "themes": {
+      "stage": 3,
+      "status": "ok",
+      "elapsed_s": 0.0,
+      "stats": {
+        "merged_count": 30
+      }
+    },
+    "news": {
+      "stage": 4,
+      "status": "ok",
+      "elapsed_s": 200.6,
+      "stats": {
+        "result_count": 59,
+        "failure_count": 1
+      }
+    },
+    "judge": {
+      "stage": 5,
+      "status": "ok",
+      "elapsed_s": 102.8,
+      "stats": {
+        "judged_count": 59,
+        "verdict_counts": {
+          "PICK": 21,
+          "WATCH": 33,
+          "SKIP": 5
+        },
+        "skipped_no_news_count": 1
+      }
+    },
+    "audit": {
+      "stage": 6,
+      "status": "ok",
+      "elapsed_s": 0.0,
+      "stats": {
+        "total_universe": 242,
+        "source_counts": {
+          "top_1d": 30,
+          "top_5d": 30,
+          "top_20d": 30,
+          "volspike_gapper": 258
+        },
+        "verdict_counts": {
+          "PICK": 21,
+          "WATCH": 33,
+          "SKIP": 216
+        }
+      }
+    }
+  },
+  "perplexity_usage": {
+    "per_model": {
+      "sonar-pro": {
+        "requests": 80,
+        "prompt_tokens": 106444,
+        "completion_tokens": 50414,
+        "reported_cost_usd": 1.5556,
+        "fallback_cost_usd": 0.0,
+        "cost_usd": 1.5556,
+        "missing_cost_requests": 0
+      },
+      "sonar": {
+        "requests": 59,
+        "prompt_tokens": 189599,
+        "completion_tokens": 19273,
+        "reported_cost_usd": 0.5039,
+        "fallback_cost_usd": 0.0,
+        "cost_usd": 0.5039,
+        "missing_cost_requests": 0
+      }
+    },
+    "total_requests": 139,
+    "total_prompt_tokens": 296043,
+    "total_completion_tokens": 69687,
+    "cost_usd_total": 2.0595,
+    "pricing_note": "Uses Perplexity's API-reported `usage.cost.total_cost` per response where available (authoritative). Falls back to the _PRICING table in utils/perplexity.py for any response that did not include a cost field."
+  }
+}

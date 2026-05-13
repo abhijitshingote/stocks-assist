@@ -1,0 +1,164 @@
+{
+  "themes": [
+    {
+      "tag": "ai-hyperscaler-deals",
+      "label": "Ai Hyperscaler Deals",
+      "description": "AI infrastructure remains the dominant leadership trade, with investors rewarding companies tied to large cloud/compute buildouts, strong guidance, and hyperscaler demand signals. The market is still treating every sign of accelerating AI capex as a bullish catalyst.",
+      "example_tickers": [
+        "ORCL",
+        "MSFT",
+        "AMZN",
+        "GOOGL",
+        "NVDA",
+        "SMCI",
+        "ANET",
+        "VRT"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "ai-power-buildout",
+      "label": "Ai Power Buildout",
+      "description": "Rising electricity demand from AI data centers is pushing attention toward power generation, grid equipment, and electrification suppliers. Investors are rotating into the picks-and-shovels names needed to keep AI clusters powered and cooled.",
+      "example_tickers": [
+        "CEG",
+        "VST",
+        "ETN",
+        "GEV",
+        "NVT",
+        "PCG",
+        "NEE"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "semicap-capex-cycle",
+      "label": "Semicap Capex Cycle",
+      "description": "Semiconductor equipment and wafer-fab supply chain stocks are moving on the view that AI-related spending is extending the chip capex cycle. Strong orders, upbeat commentary, and longer runway expectations are driving renewed interest in the group.",
+      "example_tickers": [
+        "AMAT",
+        "LRCX",
+        "KLAC",
+        "ASML",
+        "ONTO",
+        "TER"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "optical-networking",
+      "label": "Optical Networking",
+      "description": "High-speed networking and optical interconnect names are benefiting as investors focus on the plumbing required for AI clusters. The trade is being driven by expectations for continued hyperscaler bandwidth upgrades and data-center buildouts.",
+      "example_tickers": [
+        "COHR",
+        "LITE",
+        "FN",
+        "CIEN",
+        "AAOI",
+        "INFN",
+        "MRVL"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "data-center-infrastructure",
+      "label": "Data Center Infrastructure",
+      "description": "Data-center real estate, thermal management, and backup infrastructure stocks are catching bids as capital spending broadens beyond chips into physical buildout. The narrative is that AI demand is pulling through racks, cooling, power, and colocation capacity.",
+      "example_tickers": [
+        "EQIX",
+        "DLR",
+        "SBAC",
+        "VRT",
+        "CRUS",
+        "AMH"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "small-cap-relief-rally",
+      "label": "Small Cap Relief Rally",
+      "description": "Small caps have been outperforming as investors price in a softer labor backdrop and the possibility of additional Fed easing. The move is being reinforced by improving risk appetite and a chase for more cyclically sensitive names.",
+      "example_tickers": [
+        "IWM",
+        "RUSL",
+        "KRE",
+        "ARKK",
+        "XBI",
+        "SMH",
+        "MDY"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "rate-cut-repricing",
+      "label": "Rate Cut Repricing",
+      "description": "Markets are actively repricing the Fed path after softer labor data and mixed inflation prints, with rate-cut odds shifting week to week. Stocks sensitive to funding costs and discount rates are reacting sharply to every new macro data point.",
+      "example_tickers": [
+        "TLT",
+        "IEF",
+        "IWM",
+        "XLF",
+        "REIT",
+        "KRE",
+        "VNQ"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "defense-and-geopolitical-risk",
+      "label": "Defense And Geopolitical Risk",
+      "description": "Escalating geopolitical tensions are supporting defense and security names as investors hedge uncertainty around conflict risk and supply-chain disruption. The theme is also spilling into companies tied to resilience, surveillance, and munitions.",
+      "example_tickers": [
+        "LMT",
+        "NOC",
+        "RTX",
+        "GD",
+        "HII",
+        "KTOS",
+        "PLTR"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "energy-security",
+      "label": "Energy Security",
+      "description": "Oil, LNG, and broader energy-security names are in focus as investors weigh higher crude prices and the strategic push to secure supply. The market is favoring producers and infrastructure assets that can benefit from tighter energy conditions.",
+      "example_tickers": [
+        "XLE",
+        "XOP",
+        "OXY",
+        "COP",
+        "EOG",
+        "SLB",
+        "WMB"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "earnings-surprise-momentum",
+      "label": "Earnings Surprise Momentum",
+      "description": "Stocks delivering upside earnings surprises and strong forward guidance are continuing to get rewarded aggressively, regardless of broader market rotations. The market is still very selective, paying up for execution and punishing weak outlooks.",
+      "example_tickers": [
+        "NVDA",
+        "META",
+        "MSFT",
+        "ORCL",
+        "CRWD",
+        "ADBE",
+        "PANW"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    }
+  ],
+  "fetched_at": "2026-05-13T21:08:02.317186"
+}

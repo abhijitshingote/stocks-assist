@@ -2,7 +2,7 @@
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from sqlalchemy import create_engine, func, desc, text, or_
+from sqlalchemy import create_engine, func, desc, asc, text, or_
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
@@ -29,6 +29,9 @@ STOCK_PREFERENCES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_dat
 ABI_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_notes.json')
 # Path to persist abi watchlist (survives database resets)
 ABI_WATCHLIST_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_watchlist.json')
+# Path to persist explicit thumbs-down list (separate from watchlist).
+# Watchlist `stars: 0` means "unrated"; dislikes are tracked here instead.
+ABI_DISLIKES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_dislikes.json')
 
 app = Flask(__name__)
 CORS(app)
@@ -1590,6 +1593,215 @@ def get_top_performance_mega():
     s = Session()
     try:
         return jsonify(get_top_performance_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
+# Bottom Performance (Top Losers) Endpoints
+# ============================================================================
+
+def get_bottom_performance_stocks(session, market_cap_category=None):
+    """
+    Get union of bottom 30 stocks by dr_1, dr_5, and dr_20 from stock_metrics.
+    Returns combined list with all columns for consistency with other pages.
+    This is the inverse of get_top_performance_stocks - showing biggest losers.
+    """
+    try:
+        def build_query(return_column, limit=30):
+            query = session.query(
+                StockMetrics.ticker,
+                StockMetrics.company_name,
+                StockMetrics.country,
+                StockMetrics.sector,
+                StockMetrics.industry,
+                StockMetrics.ipo_date,
+                StockMetrics.market_cap,
+                StockMetrics.current_price,
+                StockMetrics.range_52_week,
+                StockMetrics.volume,
+                StockMetrics.dollar_volume,
+                StockMetrics.avg_vol_10d,
+                StockMetrics.vol_vs_10d_avg,
+                StockMetrics.ti65,
+                StockMetrics.rsi,
+                StockMetrics.rsi_mktcap,
+                StockMetrics.dr_1,
+                StockMetrics.dr_5,
+                StockMetrics.dr_20,
+                StockMetrics.dr_60,
+                StockMetrics.dr_120,
+                StockMetrics.atr20,
+                StockMetrics.pe_t_minus_1,
+                StockMetrics.pe_t,
+                StockMetrics.pe_t_plus_1,
+                StockMetrics.pe_t_plus_2,
+                StockMetrics.ps_t_minus_1,
+                StockMetrics.ps_t,
+                StockMetrics.ps_t_plus_1,
+                StockMetrics.ps_t_plus_2,
+                StockMetrics.rev_growth_t_minus_1,
+                StockMetrics.rev_growth_t,
+                StockMetrics.rev_growth_t_plus_1,
+                StockMetrics.rev_growth_t_plus_2,
+                StockMetrics.eps_growth_t_minus_1,
+                StockMetrics.eps_growth_t,
+                StockMetrics.eps_growth_t_plus_1,
+                StockMetrics.eps_growth_t_plus_2,
+                StockMetrics.short_float,
+                StockMetrics.short_ratio,
+                StockMetrics.short_interest,
+                StockMetrics.low_float,
+                StockMetrics.float_shares,
+                StockMetrics.outstanding_shares,
+                StockMetrics.free_float,
+                StockMetrics.updated_at,
+                StockVolspikeGapper.last_event_date,
+                StockVolspikeGapper.last_event_type,
+                StockVolspikeGapper.last_event_magnitude,
+                StockVolspikeGapper.last_event_return,
+                MainView.tags,
+            ).outerjoin(
+                StockVolspikeGapper, StockVolspikeGapper.ticker == StockMetrics.ticker
+            ).outerjoin(
+                MainView, MainView.ticker == StockMetrics.ticker
+            ).filter(
+                getattr(StockMetrics, return_column).isnot(None),
+                StockMetrics.market_cap.isnot(None)
+            )
+
+            if market_cap_category:
+                category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+                if category:
+                    query = query.filter(StockMetrics.market_cap >= category['min'])
+                    if category['max'] is not None:
+                        query = query.filter(StockMetrics.market_cap < category['max'])
+
+            query = apply_global_liquidity_filters(query)
+            query = query.order_by(asc(getattr(StockMetrics, return_column))).limit(limit)
+            return query
+
+        bottom_1d = build_query('dr_1').all()
+        bottom_5d = build_query('dr_5').all()
+        bottom_20d = build_query('dr_20').all()
+
+        seen_tickers = set()
+        combined_stocks = []
+
+        for stock_list in [bottom_1d, bottom_5d, bottom_20d]:
+            for stock in stock_list:
+                if stock.ticker not in seen_tickers:
+                    seen_tickers.add(stock.ticker)
+                    combined_stocks.append(stock)
+
+        results = []
+        for stock in combined_stocks:
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'country': stock.country,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'range_52_week': stock.range_52_week,
+                'volume': int(stock.volume) if stock.volume else None,
+                'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
+                'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
+                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
+                'ti65': round(stock.ti65, 2) if stock.ti65 else None,
+                'rsi': stock.rsi,
+                'rsi_mktcap': stock.rsi_mktcap,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'dr_60': round(stock.dr_60, 2) if stock.dr_60 else None,
+                'dr_120': round(stock.dr_120, 2) if stock.dr_120 else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
+                'pe_t_minus_1': round(stock.pe_t_minus_1, 2) if stock.pe_t_minus_1 else None,
+                'pe_t': round(stock.pe_t, 2) if stock.pe_t else None,
+                'pe_t_plus_1': round(stock.pe_t_plus_1, 2) if stock.pe_t_plus_1 else None,
+                'pe_t_plus_2': round(stock.pe_t_plus_2, 2) if stock.pe_t_plus_2 else None,
+                'ps_t_minus_1': round(stock.ps_t_minus_1, 2) if stock.ps_t_minus_1 else None,
+                'ps_t': round(stock.ps_t, 2) if stock.ps_t else None,
+                'ps_t_plus_1': round(stock.ps_t_plus_1, 2) if stock.ps_t_plus_1 else None,
+                'ps_t_plus_2': round(stock.ps_t_plus_2, 2) if stock.ps_t_plus_2 else None,
+                'rev_growth_t_minus_1': round(stock.rev_growth_t_minus_1, 2) if stock.rev_growth_t_minus_1 else None,
+                'rev_growth_t': round(stock.rev_growth_t, 2) if stock.rev_growth_t else None,
+                'rev_growth_t_plus_1': round(stock.rev_growth_t_plus_1, 2) if stock.rev_growth_t_plus_1 else None,
+                'rev_growth_t_plus_2': round(stock.rev_growth_t_plus_2, 2) if stock.rev_growth_t_plus_2 else None,
+                'eps_growth_t_minus_1': round(stock.eps_growth_t_minus_1, 2) if stock.eps_growth_t_minus_1 else None,
+                'eps_growth_t': round(stock.eps_growth_t, 2) if stock.eps_growth_t else None,
+                'eps_growth_t_plus_1': round(stock.eps_growth_t_plus_1, 2) if stock.eps_growth_t_plus_1 else None,
+                'eps_growth_t_plus_2': round(stock.eps_growth_t_plus_2, 2) if stock.eps_growth_t_plus_2 else None,
+                'short_float': round(stock.short_float, 2) if stock.short_float else None,
+                'short_ratio': round(stock.short_ratio, 2) if stock.short_ratio else None,
+                'short_interest': round(stock.short_interest, 2) if stock.short_interest else None,
+                'low_float': stock.low_float,
+                'float_shares': stock.float_shares,
+                'outstanding_shares': stock.outstanding_shares,
+                'free_float': round(stock.free_float, 2) if stock.free_float else None,
+                'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
+                'last_event_type': stock.last_event_type,
+                'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
+                'last_event_return': float(stock.last_event_return) if stock.last_event_return else None,
+                'tags': stock.tags,
+                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
+            })
+        
+        return results
+    
+    except Exception as e:
+        logger.error(f"Error getting bottom performance stocks: {str(e)}")
+        return []
+
+
+@app.route('/api/BottomPerformance-All')
+def get_bottom_performance_all():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-MicroCap')
+def get_bottom_performance_micro():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-SmallCap')
+def get_bottom_performance_small():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-MidCap')
+def get_bottom_performance_mid():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-LargeCap')
+def get_bottom_performance_large():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-MegaCap')
+def get_bottom_performance_mega():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='mega'))
     finally:
         s.close()
 
@@ -4408,6 +4620,646 @@ def get_abi_watchlist_data():
         return jsonify([])
     finally:
         s.close()
+
+
+# ============================================================================
+# Abi Dislikes Endpoints (JSON file-based thumbs-down list with notes)
+# ============================================================================
+# This list is separate from the watchlist on purpose:
+#   - Watchlist `stars: 0` means "on the watchlist but not yet rated" (neutral).
+#   - Anything in this dislikes file is an explicit "do not surface this".
+# The daily screener pipeline (Stage 1) reads this file as its veto source.
+
+def _load_dislikes():
+    """Load the dislikes file. Returns {} if missing or invalid."""
+    if os.path.exists(ABI_DISLIKES_FILE):
+        try:
+            with open(ABI_DISLIKES_FILE, 'r') as f:
+                return json.load(f)
+        except Exception:
+            return {}
+    return {}
+
+
+def _save_dislikes(data):
+    os.makedirs(os.path.dirname(ABI_DISLIKES_FILE), exist_ok=True)
+    with open(ABI_DISLIKES_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+
+
+
+@app.route('/api/abi-dislikes', methods=['GET'])
+def get_abi_dislikes():
+    """Get all dislikes: {TICKER: {notes, added_at}, ...}."""
+    return jsonify(_load_dislikes())
+
+
+@app.route('/api/abi-dislikes', methods=['POST'])
+def add_to_abi_dislikes():
+    """Add a ticker to the dislikes list with optional notes."""
+    data = request.get_json()
+    if not data or 'ticker' not in data:
+        return jsonify({'error': 'ticker field is required'}), 400
+
+    ticker = data['ticker'].upper()
+    notes = data.get('notes', '')
+
+    dl = _load_dislikes()
+    dl[ticker] = {
+        'notes': notes,
+        'added_at': datetime.now(pytz.timezone("US/Eastern")).isoformat(),
+    }
+    _save_dislikes(dl)
+    return jsonify({'ticker': ticker, 'notes': notes, 'status': 'added'})
+
+
+@app.route('/api/abi-dislikes/<ticker>', methods=['PUT'])
+def update_abi_dislikes(ticker):
+    """Partial update for a disliked ticker. Accepts notes."""
+    ticker = ticker.upper()
+    data = request.get_json() or {}
+
+    if 'notes' not in data:
+        return jsonify({'error': 'notes field is required'}), 400
+
+    dl = _load_dislikes()
+    if ticker not in dl:
+        return jsonify({'error': 'ticker not in dislikes'}), 404
+
+    dl[ticker]['notes'] = data['notes']
+    _save_dislikes(dl)
+    return jsonify({
+        'ticker': ticker,
+        'notes': dl[ticker].get('notes', ''),
+        'status': 'updated',
+    })
+
+
+@app.route('/api/abi-dislikes/<ticker>', methods=['DELETE'])
+def remove_from_abi_dislikes(ticker):
+    """Remove a ticker from the dislikes list."""
+    ticker = ticker.upper()
+    dl = _load_dislikes()
+    if ticker in dl:
+        del dl[ticker]
+        _save_dislikes(dl)
+    return jsonify({'ticker': ticker, 'status': 'removed'})
+
+
+@app.route('/api/abi-dislikes/batch-check', methods=['POST'])
+def batch_check_abi_dislikes():
+    """Return {TICKER: {notes, added_at}, ...} for tickers that are disliked."""
+    data = request.get_json()
+    if not data or 'tickers' not in data:
+        return jsonify({'error': 'tickers field is required'}), 400
+
+    dl = _load_dislikes()
+    result = {}
+    for t in data['tickers']:
+        t_upper = t.upper()
+        if t_upper in dl:
+            result[t_upper] = dl[t_upper]
+    return jsonify(result)
+
+
+# ============================================================================
+# Technical Screener Endpoints
+# ============================================================================
+# These endpoints surface intraday/technical setups from the latest OHLC bar.
+# Each criterion is exposed as a separate sub-endpoint so additional setups
+# (e.g. inside bars, opening drives, etc.) can be added over time without
+# changing the route surface for existing ones.
+#
+# Currently supported criteria:
+#   - reversal: Biggest reversal from low-of-day to close (in % terms),
+#               i.e. how far price recovered off the intraday low.
+# ============================================================================
+
+
+def _get_index_reversal_context(session, latest_date, symbols=('SPY', 'QQQ')):
+    """Compute low-to-close reversal % on ``latest_date`` for the given index/ETF symbols.
+
+    Returns a list of dicts (one per symbol) with the same shape used elsewhere
+    on the page so the frontend can render them in a context panel.
+    """
+    context = []
+    rows = session.query(
+        IndexPrice.symbol,
+        IndexPrice.open_price,
+        IndexPrice.high_price,
+        IndexPrice.low_price,
+        IndexPrice.close_price,
+    ).filter(
+        IndexPrice.symbol.in_(list(symbols)),
+        IndexPrice.date == latest_date,
+    ).all()
+
+    by_symbol = {r.symbol: r for r in rows}
+
+    for sym in symbols:
+        r = by_symbol.get(sym)
+        if not r or r.low_price is None or r.close_price is None or r.open_price is None:
+            context.append({
+                'symbol': sym,
+                'open': None,
+                'high': None,
+                'low': None,
+                'close': None,
+                'reversal_pct': None,
+                'day_change_pct': None,
+            })
+            continue
+
+        reversal_pct = ((r.close_price - r.low_price) / r.low_price * 100.0) if r.low_price else None
+        day_change_pct = ((r.close_price - r.open_price) / r.open_price * 100.0) if r.open_price else None
+        context.append({
+            'symbol': sym,
+            'open': round(r.open_price, 2),
+            'high': round(r.high_price, 2) if r.high_price is not None else None,
+            'low': round(r.low_price, 2),
+            'close': round(r.close_price, 2),
+            'reversal_pct': round(reversal_pct, 2) if reversal_pct is not None else None,
+            'day_change_pct': round(day_change_pct, 2) if day_change_pct is not None else None,
+        })
+
+    return context
+
+
+def get_technical_reversal_stocks(session, market_cap_category=None, limit=100):
+    """Return stocks ranked by largest low-of-day to close reversal % on the
+    latest trading day, joined with the full screener metrics set so the
+    Top-Returns-style detail panel can render the same metric sections.
+
+    Reversal % = (close - low) / low * 100
+    """
+    try:
+        latest_date = get_latest_price_date(session)
+        if not latest_date:
+            return {'latest_date': None, 'context': [], 'stocks': []}
+
+        reversal_expr = ((OHLC.close - OHLC.low) / OHLC.low * 100.0).label('reversal_pct')
+        day_change_expr = ((OHLC.close - OHLC.open) / OHLC.open * 100.0).label('day_change_pct')
+
+        query = session.query(
+            StockMetrics.ticker,
+            StockMetrics.company_name,
+            StockMetrics.country,
+            StockMetrics.sector,
+            StockMetrics.industry,
+            StockMetrics.ipo_date,
+            StockMetrics.market_cap,
+            StockMetrics.current_price,
+            StockMetrics.range_52_week,
+            StockMetrics.volume,
+            StockMetrics.dollar_volume,
+            StockMetrics.avg_vol_10d,
+            StockMetrics.vol_vs_10d_avg,
+            StockMetrics.ti65,
+            StockMetrics.rsi,
+            StockMetrics.rsi_mktcap,
+            StockMetrics.dr_1,
+            StockMetrics.dr_5,
+            StockMetrics.dr_20,
+            StockMetrics.dr_60,
+            StockMetrics.dr_120,
+            StockMetrics.atr20,
+            StockMetrics.pe_t_minus_1,
+            StockMetrics.pe_t,
+            StockMetrics.pe_t_plus_1,
+            StockMetrics.pe_t_plus_2,
+            StockMetrics.ps_t_minus_1,
+            StockMetrics.ps_t,
+            StockMetrics.ps_t_plus_1,
+            StockMetrics.ps_t_plus_2,
+            StockMetrics.rev_growth_t_minus_1,
+            StockMetrics.rev_growth_t,
+            StockMetrics.rev_growth_t_plus_1,
+            StockMetrics.rev_growth_t_plus_2,
+            StockMetrics.eps_growth_t_minus_1,
+            StockMetrics.eps_growth_t,
+            StockMetrics.eps_growth_t_plus_1,
+            StockMetrics.eps_growth_t_plus_2,
+            StockMetrics.short_float,
+            StockMetrics.short_ratio,
+            StockMetrics.short_interest,
+            StockMetrics.low_float,
+            StockMetrics.float_shares,
+            StockMetrics.outstanding_shares,
+            StockMetrics.free_float,
+            StockMetrics.updated_at,
+            StockVolspikeGapper.last_event_date,
+            StockVolspikeGapper.last_event_type,
+            StockVolspikeGapper.last_event_magnitude,
+            StockVolspikeGapper.last_event_return,
+            MainView.tags,
+            OHLC.open.label('day_open'),
+            OHLC.high.label('day_high'),
+            OHLC.low.label('day_low'),
+            OHLC.close.label('day_close'),
+            reversal_expr,
+            day_change_expr,
+        ).outerjoin(
+            StockVolspikeGapper, StockVolspikeGapper.ticker == StockMetrics.ticker
+        ).outerjoin(
+            MainView, MainView.ticker == StockMetrics.ticker
+        ).join(
+            OHLC,
+            (OHLC.ticker == StockMetrics.ticker) & (OHLC.date == latest_date)
+        ).filter(
+            OHLC.low.isnot(None),
+            OHLC.low > 0,
+            OHLC.close.isnot(None),
+            StockMetrics.market_cap.isnot(None),
+        )
+
+        if market_cap_category:
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                query = query.filter(StockMetrics.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(StockMetrics.market_cap < category['max'])
+
+        query = apply_global_liquidity_filters(query)
+        query = query.order_by(desc(reversal_expr)).limit(limit)
+
+        results = []
+        for r in query.all():
+            results.append({
+                'ticker': r.ticker,
+                'company_name': r.company_name,
+                'country': r.country,
+                'sector': r.sector,
+                'industry': r.industry,
+                'ipo_date': r.ipo_date.strftime('%Y-%m-%d') if r.ipo_date else None,
+                'market_cap': r.market_cap,
+                'current_price': round(r.current_price, 2) if r.current_price else None,
+                'range_52_week': r.range_52_week,
+                'volume': int(r.volume) if r.volume else None,
+                'dollar_volume': round(r.dollar_volume, 2) if r.dollar_volume else None,
+                'avg_vol_10d': float(r.avg_vol_10d) if r.avg_vol_10d else None,
+                'vol_vs_10d_avg': round(r.vol_vs_10d_avg, 2) if r.vol_vs_10d_avg else None,
+                'ti65': round(r.ti65, 2) if r.ti65 else None,
+                'rsi': r.rsi,
+                'rsi_mktcap': r.rsi_mktcap,
+                'dr_1': round(r.dr_1, 2) if r.dr_1 is not None else None,
+                'dr_5': round(r.dr_5, 2) if r.dr_5 is not None else None,
+                'dr_20': round(r.dr_20, 2) if r.dr_20 is not None else None,
+                'dr_60': round(r.dr_60, 2) if r.dr_60 is not None else None,
+                'dr_120': round(r.dr_120, 2) if r.dr_120 is not None else None,
+                'atr20': round(r.atr20, 2) if r.atr20 else None,
+                'pe_t_minus_1': round(r.pe_t_minus_1, 2) if r.pe_t_minus_1 else None,
+                'pe_t': round(r.pe_t, 2) if r.pe_t else None,
+                'pe_t_plus_1': round(r.pe_t_plus_1, 2) if r.pe_t_plus_1 else None,
+                'pe_t_plus_2': round(r.pe_t_plus_2, 2) if r.pe_t_plus_2 else None,
+                'ps_t_minus_1': round(r.ps_t_minus_1, 2) if r.ps_t_minus_1 else None,
+                'ps_t': round(r.ps_t, 2) if r.ps_t else None,
+                'ps_t_plus_1': round(r.ps_t_plus_1, 2) if r.ps_t_plus_1 else None,
+                'ps_t_plus_2': round(r.ps_t_plus_2, 2) if r.ps_t_plus_2 else None,
+                'rev_growth_t_minus_1': round(r.rev_growth_t_minus_1, 2) if r.rev_growth_t_minus_1 else None,
+                'rev_growth_t': round(r.rev_growth_t, 2) if r.rev_growth_t else None,
+                'rev_growth_t_plus_1': round(r.rev_growth_t_plus_1, 2) if r.rev_growth_t_plus_1 else None,
+                'rev_growth_t_plus_2': round(r.rev_growth_t_plus_2, 2) if r.rev_growth_t_plus_2 else None,
+                'eps_growth_t_minus_1': round(r.eps_growth_t_minus_1, 2) if r.eps_growth_t_minus_1 else None,
+                'eps_growth_t': round(r.eps_growth_t, 2) if r.eps_growth_t else None,
+                'eps_growth_t_plus_1': round(r.eps_growth_t_plus_1, 2) if r.eps_growth_t_plus_1 else None,
+                'eps_growth_t_plus_2': round(r.eps_growth_t_plus_2, 2) if r.eps_growth_t_plus_2 else None,
+                'short_float': round(r.short_float, 2) if r.short_float else None,
+                'short_ratio': round(r.short_ratio, 2) if r.short_ratio else None,
+                'short_interest': round(r.short_interest, 2) if r.short_interest else None,
+                'low_float': r.low_float,
+                'float_shares': r.float_shares,
+                'outstanding_shares': r.outstanding_shares,
+                'free_float': round(r.free_float, 2) if r.free_float else None,
+                'last_event_date': r.last_event_date.strftime('%Y-%m-%d') if r.last_event_date else None,
+                'last_event_type': r.last_event_type,
+                'last_event_magnitude': float(r.last_event_magnitude) if r.last_event_magnitude else None,
+                'last_event_return': float(r.last_event_return) if r.last_event_return else None,
+                'tags': r.tags,
+                'updated_at': r.updated_at.strftime('%Y-%m-%d %H:%M:%S') if r.updated_at else None,
+                'day_open': round(r.day_open, 2) if r.day_open is not None else None,
+                'day_high': round(r.day_high, 2) if r.day_high is not None else None,
+                'day_low': round(r.day_low, 2) if r.day_low is not None else None,
+                'day_close': round(r.day_close, 2) if r.day_close is not None else None,
+                'reversal_pct': round(r.reversal_pct, 2) if r.reversal_pct is not None else None,
+                'day_change_pct': round(r.day_change_pct, 2) if r.day_change_pct is not None else None,
+            })
+
+        context = _get_index_reversal_context(session, latest_date)
+
+        return {
+            'latest_date': latest_date.strftime('%Y-%m-%d'),
+            'context': context,
+            'stocks': results,
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting technical reversal stocks: {str(e)}")
+        return {'latest_date': None, 'context': [], 'stocks': []}
+
+
+@app.route('/api/TechnicalScreener-Reversal-All')
+def get_technical_reversal_all():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-MicroCap')
+def get_technical_reversal_micro():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-SmallCap')
+def get_technical_reversal_small():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-MidCap')
+def get_technical_reversal_mid():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-LargeCap')
+def get_technical_reversal_large():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-MegaCap')
+def get_technical_reversal_mega():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
+# Daily Shortlist (Screening Agent) Endpoints
+# ============================================================================
+
+DAILY_SCREENER_OUTPUTS_DIR = os.path.join(
+    os.path.dirname(__file__), '..', 'daily_screener', 'outputs'
+)
+
+
+def _compute_daily_shortlist_funnel(date: str):
+    """Read per-stage artifacts under daily_screener/outputs/<date>/ and
+    construct a compact funnel summary the UI can render. Works retroactively
+    even if s6_audit didn't write a funnel block."""
+    base = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date)
+
+    def _safe_read(name):
+        path = os.path.join(base, name)
+        if not os.path.exists(path):
+            return None
+        try:
+            with open(path, 'r') as f:
+                return json.load(f)
+        except Exception:
+            return None
+
+    universe = _safe_read('00_universe.json') or {}
+    momentum = _safe_read('01_momentum.json') or {}
+    news = _safe_read('03_news.json') or {}
+    judged = _safe_read('04_judged.json') or {}
+    summary = _safe_read('run_summary.json') or {}
+
+    source_counts = universe.get('source_counts') or {}
+    raw_total = int(universe.get('raw_total') or sum(int(v or 0) for v in source_counts.values()))
+
+    disliked = int(universe.get('disliked_count') or 0)
+    industry = int(universe.get('industry_dropped_count') or 0)
+    universe_survivors = int(universe.get('total_universe') or 0)
+
+    # Prefer fields written by s1; fall back to the (lossy) computation for
+    # older artifacts that didn't capture them.
+    unique_after_dedup = universe.get('unique_after_dedup')
+    if unique_after_dedup is None:
+        unique_after_dedup = universe_survivors + disliked + industry
+    unique_after_dedup = int(unique_after_dedup)
+
+    survivors_after_filters = universe.get('survivors_after_filters')
+    if survivors_after_filters is None:
+        survivors_after_filters = unique_after_dedup - disliked - industry
+    survivors_after_filters = int(survivors_after_filters)
+
+    truncated_count = int(universe.get('truncated_count') or 0)
+    max_tickers_cap = universe.get('max_tickers_cap')
+
+    momentum_survivors = int(momentum.get('survivor_count') or 0)
+    momentum_dropped = int(momentum.get('drop_count') or 0)
+
+    news_results = int(news.get('result_count') or 0)
+    news_failures = int(news.get('failure_count') or 0)
+
+    verdicts = judged.get('verdict_counts') or {}
+
+    stages_meta = (summary.get('stages') or {}) if isinstance(summary, dict) else {}
+    timings = {
+        name: data.get('elapsed_s')
+        for name, data in stages_meta.items()
+        if isinstance(data, dict)
+    } if stages_meta else None
+
+    return {
+        'source_counts': source_counts,
+        'raw_total': raw_total,
+        'unique_after_dedup': unique_after_dedup,
+        'industry_dropped': industry,
+        'disliked_dropped': disliked,
+        'survivors_after_filters': survivors_after_filters,
+        'max_tickers_cap': max_tickers_cap,
+        'truncated_count': truncated_count,
+        'universe_survivors': universe_survivors,
+        'momentum_survivors': momentum_survivors,
+        'momentum_dropped': momentum_dropped,
+        'news_results': news_results,
+        'news_failures': news_failures,
+        'judged_pick': int(verdicts.get('PICK') or 0),
+        'judged_watch': int(verdicts.get('WATCH') or 0),
+        'judged_skip': int(verdicts.get('SKIP') or 0),
+        'timings': timings,
+    }
+
+
+def _list_daily_shortlist_dates():
+    """List YYYY-MM-DD folders under daily_screener/outputs that contain a 05_audit.json."""
+    if not os.path.isdir(DAILY_SCREENER_OUTPUTS_DIR):
+        return []
+    entries = []
+    for name in os.listdir(DAILY_SCREENER_OUTPUTS_DIR):
+        full = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, name)
+        if not os.path.isdir(full):
+            continue
+        # Validate date-like name
+        try:
+            datetime.strptime(name, '%Y-%m-%d')
+        except ValueError:
+            continue
+        audit_path = os.path.join(full, '05_audit.json')
+        if os.path.exists(audit_path):
+            try:
+                mtime = os.path.getmtime(audit_path)
+            except OSError:
+                mtime = None
+            entries.append({
+                'date': name,
+                'audit_mtime': mtime,
+                'has_audit': True,
+            })
+        else:
+            entries.append({'date': name, 'audit_mtime': None, 'has_audit': False})
+    entries.sort(key=lambda e: e['date'], reverse=True)
+    return entries
+
+
+@app.route('/api/daily-shortlist/dates', methods=['GET'])
+def daily_shortlist_dates():
+    """List available daily shortlist dates."""
+    return jsonify({'dates': _list_daily_shortlist_dates()})
+
+
+@app.route('/api/daily-shortlist/<date>', methods=['GET'])
+def daily_shortlist_for_date(date):
+    """Return the audit artifact for a given date, enriched with watchlist /
+    preference status so the UI can render in-line actions."""
+    # Validate date format
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+
+    audit_path = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date, '05_audit.json')
+    if not os.path.exists(audit_path):
+        return jsonify({'error': 'no audit artifact for date', 'date': date}), 404
+
+    try:
+        with open(audit_path, 'r') as f:
+            audit = json.load(f)
+    except Exception as e:
+        logger.error(f"failed to read audit {audit_path}: {e}")
+        return jsonify({'error': f'failed to read audit: {e}'}), 500
+
+    rows = audit.get('rows', []) or []
+    tickers = sorted({(r.get('ticker') or '').upper() for r in rows if r.get('ticker')})
+
+    s = Session()
+    try:
+        wl = _load_watchlist()
+        dl = _load_dislikes()
+        prefs = {
+            p.ticker: p.preference
+            for p in s.query(StockPreference).filter(
+                StockPreference.ticker.in_(tickers),
+                StockPreference.preference.isnot(None),
+            ).all()
+        }
+        # Pull MainView tags for these tickers (useful for the UI "tags" column).
+        mvs = {
+            m.ticker: m
+            for m in s.query(MainView).filter(MainView.ticker.in_(tickers)).all()
+        }
+
+        enriched = []
+        for r in rows:
+            t = (r.get('ticker') or '').upper()
+            wl_entry = wl.get(t) if t in wl else None
+            dl_entry = dl.get(t) if t in dl else None
+            mv = mvs.get(t)
+            enriched_row = dict(r)
+            enriched_row['watchlist'] = (
+                {
+                    'in_watchlist': True,
+                    'notes': wl_entry.get('notes', '') if isinstance(wl_entry, dict) else '',
+                    'stars': int(wl_entry.get('stars', 0) or 0) if isinstance(wl_entry, dict) else 0,
+                }
+                if wl_entry is not None
+                else {'in_watchlist': False, 'notes': '', 'stars': 0}
+            )
+            enriched_row['dislike'] = (
+                {
+                    'is_disliked': True,
+                    'notes': dl_entry.get('notes', '') if isinstance(dl_entry, dict) else '',
+                }
+                if dl_entry is not None
+                else {'is_disliked': False, 'notes': ''}
+            )
+            enriched_row['preference'] = prefs.get(t)
+            if mv is not None:
+                enriched_row.setdefault('tags', mv.tags)
+                if enriched_row.get('current_price') is None and mv.current_price is not None:
+                    enriched_row['current_price'] = round(mv.current_price, 2)
+            enriched.append(enriched_row)
+    finally:
+        s.close()
+
+    return jsonify({
+        'date': audit.get('date', date),
+        'total_universe': audit.get('total_universe'),
+        'verdict_counts': audit.get('verdict_counts'),
+        'source_counts': audit.get('source_counts'),
+        'funnel': _compute_daily_shortlist_funnel(date),
+        'rows': enriched,
+    })
+
+
+@app.route('/api/daily-shortlist/run', methods=['POST'])
+def daily_shortlist_run():
+    """Trigger a pipeline run as a background subprocess. Returns immediately
+    with the date being processed. Optional JSON body:
+      { "max_tickers": 5, "from_stage": 1, "force_refresh_themes": false }
+    """
+    import subprocess
+    import sys as _sys
+
+    data = request.get_json(silent=True) or {}
+    args = [
+        _sys.executable, '-m', 'daily_screener.run',
+    ]
+    if 'max_tickers' in data:
+        args += ['--max-tickers', str(int(data['max_tickers']))]
+    if 'from_stage' in data:
+        args += ['--from-stage', str(int(data['from_stage']))]
+    if data.get('force_refresh_themes'):
+        args += ['--force-refresh-themes']
+    if data.get('date'):
+        args += ['--date', str(data['date'])]
+    if data.get('verbose'):
+        args += ['--verbose']
+
+    cwd = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    try:
+        proc = subprocess.Popen(
+            args,
+            cwd=cwd,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    except Exception as e:
+        logger.error(f"failed to start daily_screener.run: {e}")
+        return jsonify({'error': f'failed to start: {e}'}), 500
+
+    return jsonify({
+        'status': 'started',
+        'pid': proc.pid,
+        'cmd': args,
+        'cwd': cwd,
+    })
 
 
 if __name__ == '__main__':

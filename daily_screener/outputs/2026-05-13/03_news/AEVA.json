@@ -1,0 +1,26 @@
+{
+  "ticker": "AEVA",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Q1 2026 results showed a 90% revenue surge across diversified markets, with the stock up 8.33% to $15.24 after the announcement (Investing.com, 2026-05-12).",
+    "The post-earnings move was amplified by a bullish analyst/market reset: AEVA has been trading on strong momentum after a major European OEM win and raised 2026 revenue guidance, with 9 analysts cited at a $24 median target and strong-buy consensus (tickernerd summary, updated 2026-05-13)."
+  ],
+  "latest_material_date": "2026-05-12",
+  "theme_tags": [
+    "earnings-beat-and-raise",
+    "breakout-and-momentum",
+    "optical-and-photonics",
+    "big-ticket-customer-wins",
+    "data-center-infrastructure"
+  ],
+  "summary": "The market appears to be reacting primarily to AEVA's Q1 2026 revenue acceleration and the follow-through from a recent European OEM win, which together support the idea that lidar demand is inflecting rather than just producing a one-off earnings pop. The move also has strong momentum/technical reinforcement: the stock gapped higher on 2026-05-12, volume is running at 2.59x the 10-day average, and the name is showing up on gapper/volume screens. I did not find a clearly newer named-customer or regulatory catalyst than the Q1 update, so this looks like earnings-plus-customer-win re-rating with momentum chasing rather than a separate hidden event.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"AEVA\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Q1 2026 results showed a 90% revenue surge across diversified markets, with the stock up 8.33% to $15.24 after the announcement (Investing.com, 2026-05-12).\",\n    \"The post-earnings move was amplified by a bullish analyst/market reset: AEVA has been trading on strong momentum after a major European OEM win and raised 2026 revenue guidance, with 9 analysts cited at a $24 median target and strong-buy consensus (tickernerd summary, updated 2026-05-13).\"\n  ],\n  \"latest_material_date\": \"2026-05-12\",\n  \"theme_tags\": [\n    \"earnings-beat-and-raise\",\n    \"breakout-and-momentum\",\n    \"optical-and-photonics\",\n    \"big-ticket-customer-wins\",\n    \"data-center-infrastructure\"\n  ],\n  \"summary\": \"The market appears to be reacting primarily to AEVA's Q1 2026 revenue acceleration and the follow-through from a recent European OEM win, which together support the idea that lidar demand is inflecting rather than just producing a one-off earnings pop. The move also has strong momentum/technical reinforcement: the stock gapped higher on 2026-05-12, volume is running at 2.59x the 10-day average, and the name is showing up on gapper/volume screens. I did not find a clearly newer named-customer or regulatory catalyst than the Q1 update, so this looks like earnings-plus-customer-win re-rating with momentum chasing rather than a separate hidden event.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

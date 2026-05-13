@@ -1,0 +1,32 @@
+{
+  "ticker": "POET",
+  "has_material_news": true,
+  "headline_drivers": [
+    "No verified marquee-customer adoption, qualification, or mass-production announcement found in the last 60 days",
+    "No verified Ming-Chi Kuo / DigiTimes / Wedbush / Loop Capital / Needham / Morgan Stanley supply-chain note found in the last 90 days",
+    "Recent public flow remains centered on POET's Q3 2025 results and corporate updates (including a COO appointment on 2026-05-12), but nothing in the searched material ties the move to Apple, NVIDIA, TSMC, Google, Microsoft, Amazon, Meta, Tesla, OpenAI, Anthropic, a major auto OEM, or a defense prime",
+    "Sharp recovery from Wolfpack Research short-seller report as stock rebounds over 100% in 20 trading days, squeezing shorts and triggering momentum buying (late April\u2013early May 2026, cited in Perplexity finance summary)",
+    "Heavy options activity and nearly 24% one-day spike on April 24, 2026, which appears to have kicked off/accelerated the current rally and momentum regime (GuruFocus note, 2026-04-24)",
+    "Stock set new 52-week high above $11 intraday amid continued follow-through buying after the short-report rebound, with volumes running roughly in line with 10-day average but price action flagging extreme overbought conditions (RSI ~98th percentile, early\u2013mid May 2026)"
+  ],
+  "latest_material_date": "2026-05-12",
+  "theme_tags": [
+    "optical-and-photonics",
+    "technical-momentum",
+    "short-squeeze",
+    "breakout-and-momentum",
+    "low-float-or-small-cap-catalyst",
+    "small-cap-relief-rally",
+    "special-situation-re-rating"
+  ],
+  "summary": "I could not verify a new marquee-buyer catalyst behind POET's recent surge. The checked material does not show a named Apple/NVIDIA/TSMC-style customer win, supply-chain note, design-win confirmation, qualification-to-mass-production milestone, or patent/conference disclosure that clearly points to a specific large end customer. The only clearly dated recent item I found was POET's 2026-05-12 COO appointment, which is not a fundamental demand catalyst. Based on the available evidence, the move still looks more consistent with a technical / momentum / squeeze-driven re-rating than with a newly discovered fundamental contract or platform win.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"POET\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Sharp recovery from Wolfpack Research short-seller report as stock rebounds over 100% in 20 trading days, squeezing shorts and triggering momentum buying (late April\u2013early May 2026, cited in Perplexity finance summary)\",\n    \"Heavy options activity and nearly 24% one-day spike on April 24, 2026, which appears to have kicked off/accelerated the current rally and momentum regime (GuruFocus note, 2026-04-24)\",\n    \"Stock set new 52-week high above $11 intraday amid continued follow-through buying after the short-report rebound, with volumes running roughly in line with 10-day average but price action flagging extreme overbought conditions (RSI ~98th percentile, early\u2013mid May 2026)\"\n  ],\n  \"latest_material_date\": \"2026-04-24\",\n  \"theme_tags\": [\n    \"breakout-and-momentum\",\n    \"low-float-or-small-cap-catalyst\",\n    \"small-cap-relief-rally\",\n    \"special-situation-re-rating\",\n    \"optical-and-photonics\"\n  ],\n  \"summary\": \"The recent triple\u2011digit move in POET looks driven less by a new fundamental contract win or guidance change and more by a violent reversal from a prior Wolfpack Research short report, amplified by options\u2011driven positioning and momentum trading. A nearly 24% surge on April 24, 2026, alongside heavy options activity appears to have started a short\u2011squeeze/relief\u2011rally dynamic, with the stock subsequently punching to new 52\u2011week highs. Screening data (top 5d/20d returns, gapper flag, RSI in the 98th percentile) and the absence of a clearly identifiable new customer, product, or regulatory catalyst in the last 60 days point to a technical, positioning\u2011driven re\u2011rating rather than a discrete fundamental event.\"\n}",
+  "_verify": {
+    "triggered": true,
+    "reason": "weak_driver_big_move (dr5=48.9%, dr20=104.2%)",
+    "pass2_ok": true,
+    "pass2_error": null,
+    "pass2_raw": "{\n  \"ticker\": \"POET\",\n  \"has_material_news\": false,\n  \"headline_drivers\": [\n    \"No verified marquee-customer adoption, qualification, or mass-production announcement found in the last 60 days\",\n    \"No verified Ming-Chi Kuo / DigiTimes / Wedbush / Loop Capital / Needham / Morgan Stanley supply-chain note found in the last 90 days\",\n    \"Recent public flow remains centered on POET's Q3 2025 results and corporate updates (including a COO appointment on 2026-05-12), but nothing in the searched material ties the move to Apple, NVIDIA, TSMC, Google, Microsoft, Amazon, Meta, Tesla, OpenAI, Anthropic, a major auto OEM, or a defense prime\"\n  ],\n  \"latest_material_date\": \"2026-05-12\",\n  \"theme_tags\": [\n    \"optical-and-photonics\",\n    \"technical-momentum\",\n    \"short-squeeze\"\n  ],\n  \"summary\": \"I could not verify a new marquee-buyer catalyst behind POET's recent surge. The checked material does not show a named Apple/NVIDIA/TSMC-style customer win, supply-chain note, design-win confirmation, qualification-to-mass-production milestone, or patent/conference disclosure that clearly points to a specific large end customer. The only clearly dated recent item I found was POET's 2026-05-12 COO appointment, which is not a fundamental demand catalyst. Based on the available evidence, the move still looks more consistent with a technical / momentum / squeeze-driven re-rating than with a newly discovered fundamental contract or platform win.\"\n}"
+  }
+}

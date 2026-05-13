@@ -1,0 +1,138 @@
+{
+  "watchlist_hash": "5ee6c51e8bd6",
+  "themes": [
+    {
+      "tag": "big-ticket-customer-wins",
+      "label": "Big Ticket Customer Wins",
+      "description": "The trader repeatedly fixes on large, named customer wins or contract announcements that can re-rate a business. They seem to like when the note includes explicit dollars, term length, or a concrete operational start date.",
+      "example_tickers": [
+        "CRML",
+        "AKAM",
+        "FLNC",
+        "INOD"
+      ],
+      "anti_pattern": "Generic partnership chatter or 'working with a major customer' language without a named counterparty, amount, or timing.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "hyperscaler-ai-infrastructure",
+      "label": "Hyperscaler Ai Infrastructure",
+      "description": "A strong recurring theme is AI infrastructure exposure through hyperscalers, model providers, or adjacent compute stack providers. They favor stories where the AI angle is not abstract but tied to real customer demand, multi-step reasoning products, model hosting, or cloud infrastructure expansion.",
+      "example_tickers": [
+        "DDOG",
+        "INOD",
+        "AKAM",
+        "FROG",
+        "FLNC",
+        "RXT"
+      ],
+      "anti_pattern": "Pure AI branding with no enterprise adoption, no infrastructure relevance, or no evidence of customer pull-through.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "earnings-beat-and-raise",
+      "label": "Earnings Beat And Raise",
+      "description": "They like companies that beat expectations and then raise guidance, especially when the raise is quantified and tied to accelerating revenue or margin inflection. The notes often emphasize estimates, YoY growth, QoQ acceleration, or improved guidance ranges.",
+      "example_tickers": [
+        "MXL",
+        "TEAM",
+        "BAND",
+        "AKAM",
+        "FLNC"
+      ],
+      "anti_pattern": "One-quarter beat with unchanged guidance or a vague 'solid quarter' without a meaningful forward revision.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "breakout-and-momentum",
+      "label": "Breakout And Momentum",
+      "description": "There is clear appetite for technical momentum, breakouts, and 'what's up?' chart curiosity. The trader seems drawn to names showing strength, bottoms forming, gaps, or low-float spikes when paired with a catalyst.",
+      "example_tickers": [
+        "SIMO",
+        "BULL",
+        "BE",
+        "INTC",
+        "SNDK",
+        "XNDU"
+      ],
+      "anti_pattern": "Pure chart action with no identifiable catalyst, or a move that is just noise/liquidity without a story.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "optical-and-data-center-gear",
+      "label": "Optical And Data Center Gear",
+      "description": "The watchlist shows a strong bias toward the picks-and-shovels of AI buildout: optics, transceivers, data-center components, and networking-adjacent hardware. They seem to like inflection points in optical revenue, hyperscaler wins, or data-center ramp details.",
+      "example_tickers": [
+        "MXL",
+        "HIMX",
+        "MRVL",
+        "NXPI",
+        "SITM"
+      ],
+      "anti_pattern": "Commodity semis or component suppliers with no direct tie to AI/data-center demand or no visible inflection.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "special-situation-re-rating",
+      "label": "Special Situation Re Rating",
+      "description": "They are interested in valuation unlocks where a business can be re-rated due to a spin, sum-of-parts logic, new vertical, or a clearer standalone identity. The appeal is often the market mispricing a faster-growing segment inside a slower wrapper.",
+      "example_tickers": [
+        "FLEX",
+        "RXT",
+        "SBUX",
+        "AIP"
+      ],
+      "anti_pattern": "Mature businesses with no structural change, no segment separation, and no identifiable multiple gap to close.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "new-product-or-platform-inflection",
+      "label": "New Product Or Platform Inflection",
+      "description": "The trader likes stories where a new product, platform, or vertical could change the growth trajectory. Notes often mention a launch, adoption curve, or an emerging use case rather than just past performance.",
+      "example_tickers": [
+        "BAND",
+        "FROG",
+        "HIMX",
+        "RXT",
+        "AIP"
+      ],
+      "anti_pattern": "Incremental product updates that do not create a credible path to new revenue or customer expansion.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "low-float-or-small-cap-catalyst",
+      "label": "Low Float Or Small Cap Catalyst",
+      "description": "They show interest in smaller or more speculative names when there is a concrete catalyst and a believable narrative. The 'Chinese, low float, quantum' style note suggests they are open to fast-moving setups if a story and technicals line up.",
+      "example_tickers": [
+        "XNDU",
+        "CRML",
+        "BULL",
+        "MXL"
+      ],
+      "anti_pattern": "Low-float speculation with no real business catalyst, no revenue signal, and no clear reason the move should persist.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "turnaround-and-recovery",
+      "label": "Turnaround And Recovery",
+      "description": "There is repeated curiosity about whether a struggling or mature company is changing direction through a new CEO, better execution, or a reacceleration in demand. They appear to like the 'what changed?' setup when fundamentals start improving.",
+      "example_tickers": [
+        "SBUX",
+        "INTC",
+        "RMAX",
+        "BE"
+      ],
+      "anti_pattern": "Deeply broken businesses with no credible evidence of stabilization, leadership change, or operational improvement.",
+      "source": "user_taste",
+      "weight": 3.0
+    }
+  ]
+}

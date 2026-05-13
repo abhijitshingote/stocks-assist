@@ -377,6 +377,40 @@
             border-color: var(--accent-purple);
         }
         .wl-modal-actions .wl-save:hover { background: #b585ff; }
+        /* ── Abi Dislike Button (mirrors .abi-wl-btn, red accent) ── */
+        .abi-dl-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.15rem 0.4rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .abi-dl-btn:hover {
+            border-color: var(--accent-red);
+            color: var(--text-primary);
+        }
+        .abi-dl-btn.is-disliked {
+            background: rgba(248, 81, 73, 0.18);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        /* Dislike modal reuses .wl-modal-* layout styles via dual classes;
+           only the accent colors swap. */
+        .wl-modal.dl-theme .ticker-hl { color: var(--accent-red); }
+        .wl-modal.dl-theme textarea:focus { border-color: var(--accent-red); }
+        .wl-modal-actions .dl-save {
+            background: var(--accent-red);
+            color: #fff;
+            border-color: var(--accent-red);
+        }
+        .wl-modal-actions .dl-save:hover { background: #ff6b62; }
+
         .wl-modal-actions .wl-remove {
             background: transparent;
             color: var(--accent-red);
@@ -400,13 +434,17 @@
             </div>
             <div class="nav-links">
                 <div class="nav-row">
+                    <a href="/daily-shortlist" class="nav-highlight">Daily Shortlist</a>
                     <a href="/high-sales-growth">High Growth</a>
                     <a href="/volspike-gapper" class="nav-highlight">Vol Spike & Gaps</a>
                     <a href="/top-performance">Top Returns</a>
+                    <a href="/top-losers">Top Losers</a>
                     <a href="/rsi">Relative Strength</a>
                     <a href="/rs-screener">RS Screener</a>
+                    <a href="/technical-screener">Technical</a>
                     <a href="/main-view">Main View</a>
                     <a href="/abi-watchlist">Abi Watchlist</a>
+                    <a href="/abi-dislikes">Dislikes</a>
                     <a href="/themes">Themes</a>
                     <a href="/context">Context</a>
                     <a href="/context-2">Context-2</a>
@@ -570,6 +608,119 @@
             if (e.target === overlay) window._wlClose();
         });
     })();
+    </script>
+
+    <!-- Abi Dislike Modal (shared across pages) -->
+    <div class="wl-modal-overlay" id="dlModalOverlay">
+        <div class="wl-modal dl-theme">
+            <div class="wl-modal-title" id="dlModalTitleEl">Block <span class="ticker-hl" id="dlModalTicker"></span> from screeners</div>
+            <textarea id="dlModalNotes" placeholder="Why are you blocking this? (optional - e.g. 'AVOID - thesis broken', 'SHORT bias', 'too speculative')..."></textarea>
+            <div class="wl-modal-actions">
+                <button class="wl-remove" id="dlModalRemoveBtn" style="display:none;" onclick="window._dlRemove()">Remove</button>
+                <button class="wl-cancel" onclick="window._dlClose()">Cancel</button>
+                <button class="wl-save dl-save" id="dlModalSaveBtn" onclick="window._dlSave()">Block</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function(){
+        const overlay = document.getElementById('dlModalOverlay');
+        const tickerEl = document.getElementById('dlModalTicker');
+        const notesEl = document.getElementById('dlModalNotes');
+        const titleEl = document.getElementById('dlModalTitleEl');
+        const removeBtn = document.getElementById('dlModalRemoveBtn');
+        const saveBtn = document.getElementById('dlModalSaveBtn');
+        let _ticker = null;
+        let _isDisliked = false;
+        let _onDone = null;
+
+        window._dlOpen = function(ticker, currentNotes, isDisliked, onDone) {
+            _ticker = ticker;
+            _isDisliked = !!isDisliked;
+            _onDone = onDone || null;
+            tickerEl.textContent = ticker;
+            notesEl.value = currentNotes || '';
+            removeBtn.style.display = _isDisliked ? 'inline-block' : 'none';
+            saveBtn.textContent = _isDisliked ? 'Update' : 'Block';
+            titleEl.innerHTML = (_isDisliked ? 'Edit dislike notes for ' : 'Block ') + '<span class="ticker-hl">' + ticker + '</span>' + (_isDisliked ? '' : ' from screeners');
+            overlay.classList.add('visible');
+            notesEl.focus();
+        };
+
+        window._dlClose = function() {
+            overlay.classList.remove('visible');
+            _ticker = null;
+        };
+
+        window._dlSave = async function() {
+            if (!_ticker) return;
+            const notes = notesEl.value.trim();
+            try {
+                if (_isDisliked) {
+                    await fetch('/api/frontend/abi-dislikes/' + _ticker, {
+                        method: 'PUT',
+                        headers: {'Content-Type':'application/json'},
+                        body: JSON.stringify({notes})
+                    });
+                } else {
+                    await fetch('/api/frontend/abi-dislikes', {
+                        method: 'POST',
+                        headers: {'Content-Type':'application/json'},
+                        body: JSON.stringify({ticker: _ticker, notes})
+                    });
+                }
+            } catch(e) { console.error('Dislike save error', e); }
+            overlay.classList.remove('visible');
+            if (_onDone) _onDone('saved', _ticker, notes);
+            _ticker = null;
+        };
+
+        window._dlRemove = async function() {
+            if (!_ticker) return;
+            try {
+                await fetch('/api/frontend/abi-dislikes/' + _ticker, {method:'DELETE'});
+            } catch(e) { console.error('Dislike remove error', e); }
+            overlay.classList.remove('visible');
+            if (_onDone) _onDone('removed', _ticker);
+            _ticker = null;
+        };
+
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) window._dlClose();
+        });
+    })();
+    </script>
+
+    <script>
+    // Shared helper: open the dislike modal for a ticker, automatically
+    // detecting whether it's already disliked (so the modal shows
+    // Update/Remove instead of Block) without each page tracking state.
+    // Usage on screener pages: onclick="window._dlOpenForTicker(selectedTicker)"
+    window._dlOpenForTicker = async function(ticker, onDone) {
+        if (!ticker) return;
+        let isDisliked = false;
+        let notes = '';
+        try {
+            const resp = await fetch('/api/frontend/abi-dislikes/batch-check', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({tickers: [ticker]})
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                const entry = data[ticker.toUpperCase()];
+                if (entry) { isDisliked = true; notes = entry.notes || ''; }
+            }
+        } catch (e) { console.error('Dislike lookup failed', e); }
+        window._dlOpen(ticker, notes, isDisliked, function(action, t, newNotes) {
+            // Re-style any dislike buttons on the page for this ticker.
+            const isNowDisliked = action === 'saved';
+            document.querySelectorAll('.abi-dl-btn[data-ticker="' + (t || ticker) + '"]').forEach(btn => {
+                btn.classList.toggle('is-disliked', isNowDisliked);
+            });
+            if (onDone) onDone(action, t, newNotes);
+        });
+    };
     </script>
 </body>
 </html>

@@ -1,0 +1,30 @@
+{
+  "ticker": "NVTS",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Strategic alliance with NVIDIA positioning Navitas as a power solutions supplier for next\u2011generation AI data center systems, with production ramp targeted from 2027 (reported in StockInvest.us analysis dated 2025-05-27; repeatedly cited in recent commentary as core AI hyperscaler exposure)",
+    "Launch of new 5th\u2011generation 1200 V GeneSiC SiC MOSFET packages (top\u2011side\u2011cooled QDPAK and low\u2011profile TO\u2011247\u20114L) aimed at AI data centers and energy infrastructure, with ~35% FOM improvement vs prior gen and initial 6.5\u201312 m\u03a9 devices released (Investing.com news, 2025-xx-xx)",
+    "Q1 2026 earnings and outlook highlighting rapid growth in design\u2011win pipeline (reported by Nasdaq/Zacks as underpinning a 778% 1\u2011yr share price rise) and reinforcing the AI data\u2011center and EV/energy transition narrative",
+    "Momentum/technical re\u2011rating: stock has moved +96% over 20 days and +133% over 60 days with elevated volume (~1.2x 10\u2011day avg) and RSI in the 99th percentile vs market cap peers, triggering top_20d and volspike_gapper screens and attracting trend/quant flows"
+  ],
+  "latest_material_date": "2026-05-11",
+  "theme_tags": [
+    "ai-hyperscaler-deals",
+    "ai-power-buildout",
+    "power-and-wide-bandgap",
+    "new-product-or-platform-inflection",
+    "breakout-and-momentum",
+    "earnings-surprise-momentum",
+    "low-float-or-small-cap-catalyst"
+  ],
+  "summary": "The market is mostly reacting to a structural re\u2011rating of Navitas as a leveraged way to play AI data\u2011center power and next\u2011gen energy infrastructure, anchored by its strategic alliance with NVIDIA and the ramp of its SiC/GaN platforms. The recent product launch of 5th\u2011gen 1200 V GeneSiC SiC MOSFETs for AI data centers and grid/EV use, plus Q1 2026 results that emphasized a large and growing design\u2011win pipeline, have given investors a tangible path from story to revenues. Those fundamental catalysts have then been amplified by momentum: NVTS has nearly doubled in 20 days and more than doubled in 60 days, with very high RSI and volume, so a meaningful part of the latest swing (including the -14.6% 1\u2011day giveback) reflects technical/positioning dynamics rather than fresh news.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"NVTS\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Strategic alliance with NVIDIA positioning Navitas as a power solutions supplier for next\u2011generation AI data center systems, with production ramp targeted from 2027 (reported in StockInvest.us analysis dated 2025-05-27; repeatedly cited in recent commentary as core AI hyperscaler exposure)\",\n    \"Launch of new 5th\u2011generation 1200 V GeneSiC SiC MOSFET packages (top\u2011side\u2011cooled QDPAK and low\u2011profile TO\u2011247\u20114L) aimed at AI data centers and energy infrastructure, with ~35% FOM improvement vs prior gen and initial 6.5\u201312 m\u03a9 devices released (Investing.com news, 2025-xx-xx)\",\n    \"Q1 2026 earnings and outlook highlighting rapid growth in design\u2011win pipeline (reported by Nasdaq/Zacks as underpinning a 778% 1\u2011yr share price rise) and reinforcing the AI data\u2011center and EV/energy transition narrative\",\n    \"Momentum/technical re\u2011rating: stock has moved +96% over 20 days and +133% over 60 days with elevated volume (~1.2x 10\u2011day avg) and RSI in the 99th percentile vs market cap peers, triggering top_20d and volspike_gapper screens and attracting trend/quant flows\"\n  ],\n  \"latest_material_date\": \"2026-05-11\",\n  \"theme_tags\": [\n    \"ai-hyperscaler-deals\",\n    \"ai-power-buildout\",\n    \"power-and-wide-bandgap\",\n    \"new-product-or-platform-inflection\",\n    \"breakout-and-momentum\",\n    \"earnings-surprise-momentum\",\n    \"low-float-or-small-cap-catalyst\"\n  ],\n  \"summary\": \"The market is mostly reacting to a structural re\u2011rating of Navitas as a leveraged way to play AI data\u2011center power and next\u2011gen energy infrastructure, anchored by its strategic alliance with NVIDIA and the ramp of its SiC/GaN platforms. The recent product launch of 5th\u2011gen 1200 V GeneSiC SiC MOSFETs for AI data centers and grid/EV use, plus Q1 2026 results that emphasized a large and growing design\u2011win pipeline, have given investors a tangible path from story to revenues. Those fundamental catalysts have then been amplified by momentum: NVTS has nearly doubled in 20 days and more than doubled in 60 days, with very high RSI and volume, so a meaningful part of the latest swing (including the -14.6% 1\u2011day giveback) reflects technical/positioning dynamics rather than fresh news.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

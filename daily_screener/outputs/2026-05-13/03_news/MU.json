@@ -1,0 +1,29 @@
+{
+  "ticker": "MU",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Street re-rating of HBM/AI memory earnings power after Micron\u2019s late\u2011March FY26 guidance and commentary on multi\u2011year AI demand, driving a sustained AI\u2011infrastructure rerating across memory names (late March\u2013April 2026)",
+    "BofA Securities raises Micron price target to $950 from $500 and reiterates Buy, explicitly tying upside to AI server/HBM demand and expanding margin profile (reported in market coverage around 2026-05-13)",
+    "Ongoing sector momentum from AI compute and data\u2011center peers (e.g., NVIDIA, Broadcom, other AI infrastructure beneficiaries) with investors rotating into memory as a leveraged way to play hyperscaler AI capex (March\u2013May 2026)"
+  ],
+  "latest_material_date": "2026-05-13",
+  "theme_tags": [
+    "memory-and-interconnect",
+    "ai-compute",
+    "ai-hyperscaler-deals",
+    "ai-power-buildout",
+    "earnings-surprise-momentum",
+    "breakout-and-momentum",
+    "special-situation-re-rating"
+  ],
+  "summary": "The recent 60\u201380% move in Micron isn\u2019t about a one\u2011day headline but a rapid re-rating of its AI/HBM earnings power, reinforced by bullish sell-side calls like BofA\u2019s target hike to $950 that frame MU as a core beneficiary of hyperscaler AI build\u2011outs. Investors are extrapolating Micron\u2019s earlier guidance and commentary on tight high\u2011bandwidth memory supply, AI server content growth, and improving margins into a much higher multi\u2011year EPS trajectory, which is why the stock has squeezed sharply higher on elevated volume and a very high RSI. The -5\u20136% pullback on the day looks more like digestion/positioning after a parabolic run (profit-taking, short-covering reversing) than a response to new negative fundamentals. In short, the market is reacting to an AI-infrastructure-driven earnings upgrade cycle and aggressive upward revisions to fair value, not to a fresh company-specific press release in the last 24 hours.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"MU\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Street re-rating of HBM/AI memory earnings power after Micron\u2019s late\u2011March FY26 guidance and commentary on multi\u2011year AI demand, driving a sustained AI\u2011infrastructure rerating across memory names (late March\u2013April 2026)\",\n    \"BofA Securities raises Micron price target to $950 from $500 and reiterates Buy, explicitly tying upside to AI server/HBM demand and expanding margin profile (reported in market coverage around 2026-05-13)\",\n    \"Ongoing sector momentum from AI compute and data\u2011center peers (e.g., NVIDIA, Broadcom, other AI infrastructure beneficiaries) with investors rotating into memory as a leveraged way to play hyperscaler AI capex (March\u2013May 2026)\"\n  ],\n  \"latest_material_date\": \"2026-05-13\",\n  \"theme_tags\": [\n    \"memory-and-interconnect\",\n    \"ai-compute\",\n    \"ai-hyperscaler-deals\",\n    \"ai-power-buildout\",\n    \"earnings-surprise-momentum\",\n    \"breakout-and-momentum\",\n    \"special-situation-re-rating\"\n  ],\n  \"summary\": \"The recent 60\u201380% move in Micron isn\u2019t about a one\u2011day headline but a rapid re-rating of its AI/HBM earnings power, reinforced by bullish sell-side calls like BofA\u2019s target hike to $950 that frame MU as a core beneficiary of hyperscaler AI build\u2011outs. Investors are extrapolating Micron\u2019s earlier guidance and commentary on tight high\u2011bandwidth memory supply, AI server content growth, and improving margins into a much higher multi\u2011year EPS trajectory, which is why the stock has squeezed sharply higher on elevated volume and a very high RSI. The -5\u20136% pullback on the day looks more like digestion/positioning after a parabolic run (profit-taking, short-covering reversing) than a response to new negative fundamentals. In short, the market is reacting to an AI-infrastructure-driven earnings upgrade cycle and aggressive upward revisions to fair value, not to a fresh company-specific press release in the last 24 hours.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}
