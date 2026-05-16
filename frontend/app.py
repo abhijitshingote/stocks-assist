@@ -963,6 +963,79 @@ def api_daily_shortlist_run():
     return jsonify(data), status_code
 
 
+# ----- Daily Shortlist Feedback proxies -----
+
+@app.route('/api/frontend/daily-shortlist/feedback/<date>', methods=['GET'])
+def api_daily_shortlist_feedback_for_date(date):
+    """Proxy: feedback for a given date as {ticker: record}"""
+    data, status_code = make_backend_request(f'/api/daily-shortlist/feedback/{date}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch feedback'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/feedback/<date>/<ticker>', methods=['PUT'])
+def api_daily_shortlist_feedback_upsert(date, ticker):
+    """Proxy: upsert feedback for (date, ticker)"""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        f'/api/daily-shortlist/feedback/{date}/{ticker}',
+        method='PUT', json_data=json_data,
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to save feedback'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/feedback/<date>/<ticker>', methods=['DELETE'])
+def api_daily_shortlist_feedback_delete(date, ticker):
+    """Proxy: delete a feedback entry for (date, ticker)"""
+    data, status_code = make_backend_request(
+        f'/api/daily-shortlist/feedback/{date}/{ticker}',
+        method='DELETE', json_data={},
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to delete feedback'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/feedback-all', methods=['GET'])
+def api_daily_shortlist_feedback_all():
+    """Proxy: all feedback entries, flattened. Optional ?limit=N."""
+    qs = request.query_string.decode() if request.query_string else ''
+    endpoint = '/api/daily-shortlist/feedback' + (('?' + qs) if qs else '')
+    data, status_code = make_backend_request(endpoint)
+    if data is None:
+        return jsonify({'error': 'Failed to fetch all feedback'}), status_code
+    return jsonify(data), status_code
+
+
+# ----- Daily Themes (visualization) -----
+
+@app.route('/daily-themes')
+def daily_themes_page():
+    """Daily Themes page - visualize the theme vector for any pipeline run"""
+    return render_template('daily_themes.html')
+
+
+@app.route('/api/frontend/daily-shortlist/themes/dates', methods=['GET'])
+def api_daily_themes_dates():
+    """Proxy: list of dates that have a theme vector artifact"""
+    data, status_code = make_backend_request('/api/daily-shortlist/themes/dates')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch theme dates'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/themes/<date>', methods=['GET'])
+def api_daily_themes_for_date(date):
+    """Proxy: theme vector + per-source raw lists for a given date"""
+    data, status_code = make_backend_request(f'/api/daily-shortlist/themes/{date}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch themes'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/rs-screener/<market_cap>')
 def api_rs_screener(market_cap):
     """Proxy endpoint for RS Screener data from backend"""
@@ -985,9 +1058,15 @@ def logs_page():
 @app.route('/api/frontend/logs')
 def api_list_logs():
     """List available log files"""
-    import glob
     from pathlib import Path
-    
+    from datetime import datetime, timezone
+    from zoneinfo import ZoneInfo
+
+    et = ZoneInfo('America/New_York')
+
+    def _est_edt_abbr(dt_et):
+        return 'EDT' if dt_et.dst() else 'EST'
+
     # Look for logs in the project root's logs directory
     # In Docker, the project is mounted at /app
     logs_dir = Path('/app/logs')
@@ -998,11 +1077,16 @@ def api_list_logs():
     if logs_dir.exists():
         for log_file in sorted(logs_dir.glob('*.log'), key=lambda x: x.stat().st_mtime, reverse=True):
             stat = log_file.stat()
+            mt_et = datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc).astimezone(et)
             log_files.append({
                 'name': log_file.name,
                 'size': stat.st_size,
                 'modified': stat.st_mtime,
-                'modified_str': __import__('datetime').datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M:%S')
+                'modified_str': (
+                    f'{mt_et.year}-{mt_et.month:02d}-{mt_et.day:02d} '
+                    f'{mt_et.hour:02d}:{mt_et.minute:02d}:{mt_et.second:02d} '
+                    f'{_est_edt_abbr(mt_et)}'
+                ),
             })
     
     return jsonify({'logs': log_files})

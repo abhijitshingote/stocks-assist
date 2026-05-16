@@ -413,6 +413,123 @@
 }
 .ds-toast.visible { opacity: 1; transform: translateY(0); }
 
+/* ── Feedback (override) badge + button ── */
+.ds-feedback-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.65rem;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0.15rem 0.4rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.ds-feedback-btn:hover {
+    border-color: var(--accent-yellow);
+    color: var(--text-primary);
+}
+.ds-feedback-btn.has-feedback {
+    background: rgba(210, 153, 34, 0.18);
+    border-color: var(--accent-yellow);
+    color: var(--accent-yellow);
+}
+
+.ds-correction-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    background: var(--bg-dark);
+    border: 1px solid var(--accent-yellow);
+    color: var(--accent-yellow);
+    border-radius: 4px;
+    padding: 0.12rem 0.4rem;
+    margin-top: 0.3rem;
+    cursor: help;
+}
+.ds-correction-badge .arrow {
+    color: var(--text-muted);
+}
+
+/* ── Feedback modal (reuses .wl-modal-overlay/.wl-modal layout from base) ── */
+.wl-modal.fb-theme .ticker-hl { color: var(--accent-yellow); }
+.wl-modal.fb-theme textarea:focus,
+.wl-modal.fb-theme select:focus,
+.wl-modal.fb-theme .fb-verdict-pills label.selected { border-color: var(--accent-yellow); }
+.wl-modal-actions .fb-save {
+    background: var(--accent-yellow);
+    color: var(--bg-dark);
+    border-color: var(--accent-yellow);
+    font-weight: 600;
+}
+.wl-modal-actions .fb-save:hover { background: #e3a72e; }
+
+.fb-agent-summary {
+    background: var(--bg-dark);
+    border-left: 2px solid var(--text-muted);
+    padding: 0.45rem 0.65rem;
+    margin-bottom: 0.65rem;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    border-radius: 0 4px 4px 0;
+    max-height: 110px;
+    overflow-y: auto;
+}
+.fb-agent-summary .label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.2rem;
+}
+.fb-agent-summary .ag-verdict {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+}
+.fb-agent-summary .ag-verdict.PICK { color: var(--accent-green); }
+.fb-agent-summary .ag-verdict.WATCH { color: var(--accent-yellow); }
+.fb-agent-summary .ag-verdict.SKIP { color: var(--text-muted); }
+
+.fb-verdict-pills {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+}
+.fb-verdict-pills label {
+    flex: 1;
+    text-align: center;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.5rem 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+}
+.fb-verdict-pills label:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+.fb-verdict-pills label input { display: none; }
+.fb-verdict-pills label.selected.PICK { border-color: var(--accent-green); color: var(--accent-green); background: rgba(63,185,80,0.12); }
+.fb-verdict-pills label.selected.WATCH { border-color: var(--accent-yellow); color: var(--accent-yellow); background: rgba(210,153,34,0.12); }
+.fb-verdict-pills label.selected.SKIP { border-color: var(--text-muted); color: var(--text-primary); background: rgba(110,118,129,0.18); }
+
+.fb-section-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
+}
+
 @media (max-width: 900px) {
     .ds-row { grid-template-columns: 1fr; }
     .ds-row-head { flex-direction: row; align-items: center; gap: 0.6rem; }
@@ -450,6 +567,10 @@
     <label>
         <input type="checkbox" id="showAlmostMadeIt"> show "almost made it" first
     </label>
+    <label>
+        <input type="checkbox" id="showCorrectionsOnly"> show corrected rows only
+    </label>
+    <span id="feedbackCount" style="margin-left:auto; color: var(--accent-yellow); font-size:0.7rem;"></span>
 </div>
 
 <div id="listContainer" class="ds-list">
@@ -457,6 +578,29 @@
 </div>
 
 <div class="ds-toast" id="toast"></div>
+
+<!-- Feedback (verdict override) modal -->
+<div class="wl-modal-overlay" id="fbModalOverlay">
+    <div class="wl-modal fb-theme" style="width: 520px;">
+        <div class="wl-modal-title">
+            Feedback on <span class="ticker-hl" id="fbModalTicker"></span>
+        </div>
+        <div class="fb-agent-summary" id="fbModalAgent"></div>
+        <span class="fb-section-label">What should this have been?</span>
+        <div class="fb-verdict-pills" id="fbModalPills">
+            <label data-value="PICK"><input type="radio" name="fbv" value="PICK">PICK</label>
+            <label data-value="WATCH"><input type="radio" name="fbv" value="WATCH">WATCH</label>
+            <label data-value="SKIP"><input type="radio" name="fbv" value="SKIP">SKIP</label>
+        </div>
+        <span class="fb-section-label">Why?</span>
+        <textarea id="fbModalReason" placeholder="e.g. 'Too extended after a 100% move', 'News is just a sympathy bounce', 'Strong fundamental story the agent missed', 'Off-theme', ..."></textarea>
+        <div class="wl-modal-actions">
+            <button class="wl-remove" id="fbModalRemoveBtn" style="display:none;" onclick="window._fbRemove()">Remove</button>
+            <button class="wl-cancel" onclick="window._fbClose()">Cancel</button>
+            <button class="wl-save fb-save" id="fbModalSaveBtn" onclick="window._fbSave()">Save feedback</button>
+        </div>
+    </div>
+</div>
 
 <script>
 const state = {
@@ -467,6 +611,7 @@ const state = {
     filterSource: '',
     filterSector: '',
     almostMadeItFirst: false,
+    correctionsOnly: false,
     runPolling: null,
 };
 
@@ -682,6 +827,7 @@ function renderCounts() {
 function rowMatches(r) {
     if (state.filterSource && !(r.sources || []).includes(state.filterSource)) return false;
     if (state.filterSector && r.sector !== state.filterSector) return false;
+    if (state.correctionsOnly && !r.feedback) return false;
     if (state.filterText) {
         const q = state.filterText.toLowerCase();
         const hay = [
@@ -689,6 +835,8 @@ function rowMatches(r) {
             (r.matched_themes || []).join(' '),
             (r.news_theme_tags || []).join(' '),
             r.verdict_rationale, r.news_summary, r.drop_reason,
+            r.feedback ? r.feedback.reason : '',
+            r.feedback ? r.feedback.expected_verdict : '',
         ].filter(Boolean).join(' ').toLowerCase();
         if (!hay.includes(q)) return false;
     }
@@ -841,6 +989,16 @@ function renderRow(r) {
         else if (action === 'removed') { dlBtn.textContent = '👎'; dlBtn.classList.remove('is-disliked'); }
     });
     actions.appendChild(dlBtn);
+
+    const fb = r.feedback || null;
+    const fbBtn = document.createElement('button');
+    fbBtn.className = 'ds-feedback-btn' + (fb ? ' has-feedback' : '');
+    fbBtn.textContent = fb ? '✎ Edit feedback' : '✎ Feedback';
+    fbBtn.title = fb
+        ? 'Edit your verdict override for ' + r.ticker
+        : 'Disagree with the agent? Tell it what this should have been.';
+    fbBtn.onclick = () => openFeedback(r);
+    actions.appendChild(fbBtn);
     main.appendChild(actions);
 
     wrap.appendChild(main);
@@ -853,6 +1011,17 @@ function renderRow(r) {
     vb.className = 'ds-verdict-badge ' + verdict;
     vb.textContent = verdict;
     score.appendChild(vb);
+
+    if (r.feedback && r.feedback.expected_verdict) {
+        const cb = document.createElement('span');
+        cb.className = 'ds-correction-badge';
+        const want = r.feedback.expected_verdict;
+        const reason = r.feedback.reason || '(no reason)';
+        cb.innerHTML = 'you: ' + escapeHtml(verdict)
+            + ' <span class="arrow">→</span> ' + escapeHtml(want);
+        cb.title = 'Your correction (' + verdict + ' → ' + want + '): ' + reason;
+        score.appendChild(cb);
+    }
 
     if (r.composite_score != null) {
         score.appendChild(scoreLine('Composite', r.composite_score, 100, verdict));
@@ -981,6 +1150,165 @@ document.getElementById('showAlmostMadeIt').addEventListener('change', e => {
     state.almostMadeItFirst = e.target.checked;
     render();
 });
+document.getElementById('showCorrectionsOnly').addEventListener('change', e => {
+    state.correctionsOnly = e.target.checked;
+    render();
+});
+
+function renderFeedbackCount() {
+    const el = document.getElementById('feedbackCount');
+    if (!state.data || !state.data.rows) { el.textContent = ''; return; }
+    const n = state.data.rows.filter(r => r.feedback).length;
+    el.textContent = n ? (n + ' correction' + (n === 1 ? '' : 's') + ' saved') : '';
+}
+
+// Hook feedback count refresh into the existing render path.
+const _originalRender = render;
+render = function() {
+    _originalRender();
+    renderFeedbackCount();
+};
+
+// ---------- Feedback (verdict override) modal ----------
+
+function openFeedback(r) {
+    window._fbOpen(r, function(action, ticker, record) {
+        if (action === 'saved') {
+            r.feedback = record;
+            toast('Feedback saved for ' + ticker);
+        } else if (action === 'removed') {
+            r.feedback = null;
+            toast('Feedback removed for ' + ticker);
+        }
+        render();
+    });
+}
+
+(function() {
+    const overlay = document.getElementById('fbModalOverlay');
+    const tickerEl = document.getElementById('fbModalTicker');
+    const agentEl = document.getElementById('fbModalAgent');
+    const reasonEl = document.getElementById('fbModalReason');
+    const pillsEl = document.getElementById('fbModalPills');
+    const removeBtn = document.getElementById('fbModalRemoveBtn');
+    const saveBtn = document.getElementById('fbModalSaveBtn');
+    let _row = null;
+    let _onDone = null;
+    let _selected = null;
+
+    function setPill(v) {
+        _selected = v;
+        pillsEl.querySelectorAll('label').forEach(l => {
+            l.classList.remove('selected', 'PICK', 'WATCH', 'SKIP');
+            if (l.dataset.value === v) {
+                l.classList.add('selected', v);
+            }
+        });
+    }
+
+    pillsEl.addEventListener('click', e => {
+        const lbl = e.target.closest('label');
+        if (!lbl) return;
+        setPill(lbl.dataset.value);
+    });
+
+    window._fbOpen = function(row, onDone) {
+        _row = row;
+        _onDone = onDone || null;
+        const fb = row.feedback || null;
+        const agentVerdict = row.verdict || 'SKIP';
+
+        tickerEl.textContent = row.ticker;
+        reasonEl.value = (fb && fb.reason) || '';
+
+        const score = row.composite_score != null ? Number(row.composite_score).toFixed(1) : '-';
+        const newsM = row.news_materiality != null ? row.news_materiality + '/3' : '-';
+        const themeF = row.theme_fit != null ? row.theme_fit + '/3' : '-';
+        const matched = (row.matched_themes || []).slice(0, 4).join(', ') || '(none)';
+        const rationale = (row.verdict_rationale || row.drop_reason || '').toString();
+        agentEl.innerHTML = `
+            <span class="label">Agent verdict</span>
+            <span class="ag-verdict ${agentVerdict}">${agentVerdict}</span>
+            &nbsp;·&nbsp; composite=${score} · news=${newsM} · theme=${themeF}
+            <div style="margin-top:0.3rem;color:var(--text-muted);font-size:0.65rem;">matched: ${escapeHtml(matched)}</div>
+            ${rationale ? `<div style="margin-top:0.3rem;line-height:1.35;">${escapeHtml(rationale)}</div>` : ''}
+        `;
+
+        // Default to existing or to the opposite of the agent verdict (most likely case).
+        const initial = (fb && fb.expected_verdict)
+            || (agentVerdict === 'PICK' ? 'SKIP' : (agentVerdict === 'SKIP' ? 'PICK' : 'PICK'));
+        setPill(initial);
+
+        removeBtn.style.display = fb ? 'inline-block' : 'none';
+        saveBtn.textContent = fb ? 'Update' : 'Save feedback';
+
+        overlay.classList.add('visible');
+        reasonEl.focus();
+    };
+
+    window._fbClose = function() {
+        overlay.classList.remove('visible');
+        _row = null;
+    };
+
+    window._fbSave = async function() {
+        if (!_row) return;
+        if (!_selected) { toast('Pick a verdict first'); return; }
+        const date = state.date;
+        if (!date) { toast('No date selected'); return; }
+
+        const body = {
+            expected_verdict: _selected,
+            reason: reasonEl.value.trim(),
+            agent_verdict: _row.verdict || null,
+            agent_rationale: _row.verdict_rationale || _row.drop_reason || null,
+            agent_composite_score: _row.composite_score,
+            agent_news_materiality: _row.news_materiality,
+            agent_theme_fit: _row.theme_fit,
+            agent_matched_themes: _row.matched_themes || [],
+        };
+        try {
+            const resp = await fetch('/api/frontend/daily-shortlist/feedback/' + date + '/' + encodeURIComponent(_row.ticker), {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body),
+            });
+            if (!resp.ok) {
+                const e = await resp.json().catch(() => ({}));
+                toast('Failed: ' + (e.error || resp.statusText));
+                return;
+            }
+            const saved = await resp.json();
+            overlay.classList.remove('visible');
+            const ticker = _row.ticker;
+            const onDone = _onDone;
+            _row = null;
+            if (onDone) onDone('saved', ticker, saved);
+        } catch (e) {
+            toast('Error: ' + e.message);
+        }
+    };
+
+    window._fbRemove = async function() {
+        if (!_row) return;
+        const date = state.date;
+        if (!date) return;
+        try {
+            await fetch('/api/frontend/daily-shortlist/feedback/' + date + '/' + encodeURIComponent(_row.ticker), {
+                method: 'DELETE',
+            });
+        } catch (e) { console.error('Feedback remove error', e); }
+        overlay.classList.remove('visible');
+        const ticker = _row.ticker;
+        const onDone = _onDone;
+        _row = null;
+        if (onDone) onDone('removed', ticker);
+    };
+
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) window._fbClose();
+    });
+})();
 
 loadDates();
 </script>

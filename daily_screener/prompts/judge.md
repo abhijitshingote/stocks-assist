@@ -41,6 +41,23 @@ that's a strong signal. Explicit dislikes are filtered out earlier in the
 pipeline and never reach this stage; do not invent negative calibration from
 the absence of a star rating.
 
+### Recent verdict corrections (CRITICAL calibration signal)
+
+The trader has reviewed your past verdicts and explicitly corrected the ones
+below. Each entry shows the date, the ticker, what you said, what the trader
+said it should have been, and *why*. **Treat these as ground truth for this
+trader's taste.** If the current candidate shares features with a setup the
+trader downgraded (e.g. "too extended", "sympathy chase", "off-theme"), be
+more conservative. If it resembles a setup the trader upgraded (e.g. "you
+missed the thesis", "fundamentally on-theme"), lean PICK.
+
+{user_corrections_block}
+
+When you write your `verdict_rationale`, briefly note in one phrase if a
+recent correction is relevant (e.g. "consistent with the 2026-05-13 INOD
+correction — extended after a multi-bagger move"). This makes it easy for
+the trader to verify you're actually using their feedback.
+
 ### Candidate
 
 ```

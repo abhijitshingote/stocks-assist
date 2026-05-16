@@ -32,6 +32,11 @@ ABI_WATCHLIST_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 
 # Path to persist explicit thumbs-down list (separate from watchlist).
 # Watchlist `stars: 0` means "unrated"; dislikes are tracked here instead.
 ABI_DISLIKES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_dislikes.json')
+# Daily screener feedback (per-date, per-ticker corrections from the user).
+# Used by Stage 5 of the daily_screener pipeline to calibrate the judge.
+DAILY_SCREENER_FEEDBACK_FILE = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'daily_screener_feedback.json'
+)
 
 app = Flask(__name__)
 CORS(app)
@@ -121,6 +126,34 @@ def apply_global_liquidity_filters(query, metrics_model=StockMetrics):
     
     return query
 
+
+_ENG_MONTH_ABBR = (
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+)
+
+
+def _fmt_est_edt_abbr(dt_eastern):
+    """US Eastern: always label EST or EDT (never generic ET or locale zone names)."""
+    return 'EDT' if dt_eastern.dst() else 'EST'
+
+
+def _fmt_time_12h_eng(dt):
+    hour12 = dt.hour % 12
+    if hour12 == 0:
+        hour12 = 12
+    ampm = 'AM' if dt.hour < 12 else 'PM'
+    return f'{hour12}:{dt.minute:02d} {ampm}'
+
+
+def _fmt_month_day_eng(d):
+    return f'{_ENG_MONTH_ABBR[d.month - 1]} {d.day}'
+
+
+def _fmt_full_date_eng(d):
+    return f'{_ENG_MONTH_ABBR[d.month - 1]} {d.day}, {d.year}'
+
+
 @app.route('/api/health')
 def health():
     try:
@@ -161,12 +194,27 @@ def get_latest_date():
 
         response = {
             'latest_date': latest_date.strftime('%Y-%m-%d'),
-            'formatted_date': latest_date.strftime('%B %d, %Y')
+            'formatted_date': _fmt_full_date_eng(latest_date),
         }
 
         if latest_update and latest_update.last_synced_at:
-            response['last_update'] = latest_update.last_synced_at.strftime('%Y-%m-%d %H:%M:%S')
-            response['last_update_formatted'] = latest_update.last_synced_at.strftime('%b %d, %Y %I:%M %p')
+            raw = latest_update.last_synced_at
+            # ETL scripts store naive UTC wall times in sync_metadata.last_synced_at.
+            if raw.tzinfo is None:
+                utc_dt = pytz.UTC.localize(raw)
+            else:
+                utc_dt = raw.astimezone(pytz.UTC)
+            eastern = pytz.timezone('US/Eastern')
+            et_dt = utc_dt.astimezone(eastern)
+            abbr = _fmt_est_edt_abbr(et_dt)
+            response['last_update'] = utc_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+            response['last_update_formatted'] = (
+                f'{_ENG_MONTH_ABBR[et_dt.month - 1]} {et_dt.day}, {et_dt.year} '
+                f'{_fmt_time_12h_eng(et_dt)} {abbr}'
+            )
+            response['nav_data_thru_label'] = (
+                f'{_fmt_month_day_eng(latest_date)}, {_fmt_time_12h_eng(et_dt)} {abbr}'
+            )
 
         return jsonify(response)
     except Exception as e:
@@ -5157,6 +5205,8 @@ def daily_shortlist_for_date(date):
     rows = audit.get('rows', []) or []
     tickers = sorted({(r.get('ticker') or '').upper() for r in rows if r.get('ticker')})
 
+    feedback_for_date = _load_feedback().get(date, {}) or {}
+
     s = Session()
     try:
         wl = _load_watchlist()
@@ -5199,6 +5249,7 @@ def daily_shortlist_for_date(date):
                 else {'is_disliked': False, 'notes': ''}
             )
             enriched_row['preference'] = prefs.get(t)
+            enriched_row['feedback'] = feedback_for_date.get(t)
             if mv is not None:
                 enriched_row.setdefault('tags', mv.tags)
                 if enriched_row.get('current_price') is None and mv.current_price is not None:
@@ -5260,6 +5311,232 @@ def daily_shortlist_run():
         'cmd': args,
         'cwd': cwd,
     })
+
+
+# ============================================================================
+# Daily Shortlist Feedback (per-date, per-ticker corrections)
+# ============================================================================
+# The user clicks "Feedback" on a row in /daily-shortlist if they think the
+# agent's verdict was wrong (e.g. PICK that should have been SKIP, or SKIP
+# that should have been PICK). We capture both the agent's verdict at the
+# time and what the user thinks it should have been, plus a free-text reason.
+#
+# Stage 5 of the daily_screener pipeline reads this file and feeds recent
+# corrections into the judge prompt as calibration examples.
+
+_VALID_VERDICTS = {'PICK', 'WATCH', 'SKIP'}
+
+
+def _load_feedback():
+    """Load the feedback file. Returns {date: {ticker: record}}."""
+    if not os.path.exists(DAILY_SCREENER_FEEDBACK_FILE):
+        return {}
+    try:
+        with open(DAILY_SCREENER_FEEDBACK_FILE, 'r') as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception as e:
+        logger.error(f"failed to read feedback file: {e}")
+        return {}
+
+
+def _save_feedback(data):
+    os.makedirs(os.path.dirname(DAILY_SCREENER_FEEDBACK_FILE), exist_ok=True)
+    with open(DAILY_SCREENER_FEEDBACK_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+
+@app.route('/api/daily-shortlist/feedback/<date>', methods=['GET'])
+def daily_shortlist_feedback_for_date(date):
+    """Return all feedback entries for a given date as {ticker: record}."""
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+    data = _load_feedback()
+    return jsonify(data.get(date, {}))
+
+
+@app.route('/api/daily-shortlist/feedback', methods=['GET'])
+def daily_shortlist_feedback_all():
+    """Return all feedback entries flattened into a list, newest first.
+
+    Optional ?limit=N to cap the list (handy for the judge prompt).
+    """
+    limit = request.args.get('limit', type=int)
+    data = _load_feedback()
+    flat = []
+    for date_key in sorted(data.keys(), reverse=True):
+        per_date = data[date_key]
+        if not isinstance(per_date, dict):
+            continue
+        for ticker, rec in per_date.items():
+            if not isinstance(rec, dict):
+                continue
+            flat.append({'date': date_key, 'ticker': ticker, **rec})
+    if limit:
+        flat = flat[:limit]
+    return jsonify({'count': len(flat), 'feedback': flat})
+
+
+@app.route('/api/daily-shortlist/feedback/<date>/<ticker>', methods=['PUT'])
+def upsert_daily_shortlist_feedback(date, ticker):
+    """Upsert a feedback record for (date, ticker).
+
+    Request body:
+      {
+        "expected_verdict": "PICK|WATCH|SKIP",
+        "reason": "free text",
+        # Optional snapshot fields - capture the agent's state at the time so
+        # we can show it later even if the audit artifact changes:
+        "agent_verdict": "PICK|WATCH|SKIP",
+        "agent_rationale": "...",
+        "agent_composite_score": 76.5,
+        "agent_news_materiality": 2,
+        "agent_theme_fit": 3,
+        "agent_matched_themes": [...]
+      }
+    """
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+
+    payload = request.get_json(silent=True) or {}
+
+    expected = (payload.get('expected_verdict') or '').upper()
+    if expected not in _VALID_VERDICTS:
+        return jsonify({
+            'error': f'expected_verdict must be one of {sorted(_VALID_VERDICTS)}'
+        }), 400
+
+    agent_verdict = (payload.get('agent_verdict') or '').upper() or None
+    if agent_verdict is not None and agent_verdict not in _VALID_VERDICTS:
+        return jsonify({
+            'error': f'agent_verdict must be one of {sorted(_VALID_VERDICTS)} if provided'
+        }), 400
+
+    ticker_u = (ticker or '').upper()
+    if not ticker_u:
+        return jsonify({'error': 'ticker is required'}), 400
+
+    data = _load_feedback()
+    per_date = data.setdefault(date, {})
+    existing = per_date.get(ticker_u) or {}
+    now_iso = datetime.now(pytz.timezone('US/Eastern')).isoformat()
+
+    record = {
+        'expected_verdict': expected,
+        'reason': (payload.get('reason') or '').strip(),
+        'agent_verdict': agent_verdict or existing.get('agent_verdict'),
+        'agent_rationale': payload.get('agent_rationale')
+            if 'agent_rationale' in payload else existing.get('agent_rationale'),
+        'agent_composite_score': payload.get('agent_composite_score')
+            if 'agent_composite_score' in payload else existing.get('agent_composite_score'),
+        'agent_news_materiality': payload.get('agent_news_materiality')
+            if 'agent_news_materiality' in payload else existing.get('agent_news_materiality'),
+        'agent_theme_fit': payload.get('agent_theme_fit')
+            if 'agent_theme_fit' in payload else existing.get('agent_theme_fit'),
+        'agent_matched_themes': payload.get('agent_matched_themes')
+            if 'agent_matched_themes' in payload else existing.get('agent_matched_themes'),
+        'created_at': existing.get('created_at') or now_iso,
+        'updated_at': now_iso,
+    }
+    per_date[ticker_u] = record
+    _save_feedback(data)
+    return jsonify({'date': date, 'ticker': ticker_u, 'status': 'saved', **record})
+
+
+@app.route('/api/daily-shortlist/feedback/<date>/<ticker>', methods=['DELETE'])
+def delete_daily_shortlist_feedback(date, ticker):
+    """Remove a feedback record for (date, ticker)."""
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+
+    ticker_u = (ticker or '').upper()
+    data = _load_feedback()
+    if date in data and ticker_u in data[date]:
+        del data[date][ticker_u]
+        if not data[date]:
+            del data[date]
+        _save_feedback(data)
+        return jsonify({'date': date, 'ticker': ticker_u, 'status': 'removed'})
+    return jsonify({'date': date, 'ticker': ticker_u, 'status': 'not_found'}), 404
+
+
+# ============================================================================
+# Daily Shortlist Themes (read the 02_theme_vector.json artifact)
+# ============================================================================
+
+@app.route('/api/daily-shortlist/themes/<date>', methods=['GET'])
+def daily_shortlist_themes_for_date(date):
+    """Return the merged theme vector for a date plus the per-source raw lists.
+
+    Reads:
+      - 02_theme_vector.json (merged, weighted vector — primary)
+      - 02a_market_themes.json (hot market themes, source: hot_market)
+      - 02b_user_themes.json (user-taste themes from watchlist, source: user_taste)
+    """
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+
+    base = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date)
+    if not os.path.isdir(base):
+        return jsonify({'error': 'no theme artifacts for date', 'date': date}), 404
+
+    def _read(name):
+        path = os.path.join(base, name)
+        if not os.path.exists(path):
+            return None
+        try:
+            with open(path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"failed to read {path}: {e}")
+            return None
+
+    merged = _read('02_theme_vector.json')
+    market = _read('02a_market_themes.json')
+    user = _read('02b_user_themes.json')
+
+    if merged is None and market is None and user is None:
+        return jsonify({'error': 'no theme artifacts for date', 'date': date}), 404
+
+    return jsonify({
+        'date': date,
+        'merged': merged or {},
+        'market': market or {},
+        'user': user or {},
+    })
+
+
+@app.route('/api/daily-shortlist/themes/dates', methods=['GET'])
+def daily_shortlist_theme_dates():
+    """List dates that have a 02_theme_vector.json artifact."""
+    if not os.path.isdir(DAILY_SCREENER_OUTPUTS_DIR):
+        return jsonify({'dates': []})
+    entries = []
+    for name in os.listdir(DAILY_SCREENER_OUTPUTS_DIR):
+        full = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, name)
+        if not os.path.isdir(full):
+            continue
+        try:
+            datetime.strptime(name, '%Y-%m-%d')
+        except ValueError:
+            continue
+        tv_path = os.path.join(full, '02_theme_vector.json')
+        if os.path.exists(tv_path):
+            try:
+                mtime = os.path.getmtime(tv_path)
+            except OSError:
+                mtime = None
+            entries.append({'date': name, 'mtime': mtime})
+    entries.sort(key=lambda e: e['date'], reverse=True)
+    return jsonify({'dates': entries})
 
 
 if __name__ == '__main__':

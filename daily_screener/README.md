@@ -194,10 +194,39 @@ descending, so "almost made it" candidates are highest-priority for QA.
 2. Open `/daily-shortlist` in the web UI. Skim PICKs.
 3. Open the **Rejected** tab — look at the top 10 by composite. If any should
    have been PICKs, the rationale tells you exactly why Claude said no.
-4. Edit `prompts/judge.md` (or `config.py` weights).
-5. Re-run only stage 5: `python -m daily_screener.run --from-stage 5`. No
-   Perplexity cost.
-6. Repeat.
+4. Click **✎ Feedback** on any row to register a correction (e.g. "this should
+   have been WATCH not PICK"). Saved to `user_data/daily_screener_feedback.json`.
+5. Optionally edit `prompts/judge.md` (or `config.py` weights).
+6. Re-run only stage 5: `python -m daily_screener.run --from-stage 5`. No
+   Perplexity cost. The judge sees your corrections and recalibrates.
+7. Repeat.
+
+### Feedback loop ("fine-tuning")
+
+The pipeline is calibrated in three layers, listed strongest → weakest:
+
+1. **Veto layer** — anything in `user_data/abi_dislikes.json` is filtered in
+   Stage 1 and never reaches the judge.
+2. **In-context correction layer** — every entry in
+   `user_data/daily_screener_feedback.json` (populated by the **✎ Feedback**
+   button on `/daily-shortlist`) shows up in the judge prompt as a concrete
+   "you said X, the trader said Y because Z" example. The judge is asked to
+   generalize from these on the next run. Controlled by `FEEDBACK_LOOKBACK_DAYS`
+   (default 30) and `FEEDBACK_MAX_EXAMPLES` (default 20) in `config.py`.
+3. **Static layer** — `prompts/judge.md`, `config.py` weights, and curated
+   themes (`user_data/themes.json`).
+
+This is intentionally NOT a model-weights fine-tune — it's the cheap,
+zero-latency version that takes effect on the very next run. If a correction
+pattern is durable (e.g. "any RSI=100 momentum chase is a SKIP regardless
+of news"), promote it into `prompts/judge.md` directly.
+
+### Theme visualization
+
+Open `/daily-themes` in the UI to see the day's theme vector laid out as
+cards: weights, sources (user_taste / curated / hot_market), descriptions,
+anti-patterns, and example tickers. Use the date picker to compare across
+runs and confirm the theme extraction is doing what you expect.
 
 ## Cost
 

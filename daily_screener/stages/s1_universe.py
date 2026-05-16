@@ -1,9 +1,9 @@
 """Stage 1: Universe Gathering.
 
 Replicates the universe of the existing screens (Top Performance + VolSpike +
-Gappers) by querying the DB directly (no HTTP). Tags every ticker with the set
-of source screens it appeared in, so later stages can use multi-screen
-membership as a momentum signal.
+Gappers + top tickers from Main View by ti65) by querying the DB directly (no
+HTTP). Tags every ticker with the set of source screens it appeared in, so
+later stages can use multi-screen membership as a momentum signal.
 
 Output: outputs/<date>/00_universe.json
 """
@@ -126,6 +126,16 @@ def _query_top_performance(session, source: str, return_col: str, limit: int):
     return [_row_to_dict(r, source) for r in q.all()]
 
 
+def _query_main_view_top(session, source: str, limit: int):
+    """Top N rows from main_view — same default sort as the Main View UI (ti65 desc)."""
+    from models import MainView
+
+    q = session.query(MainView).filter(MainView.market_cap.isnot(None))
+    q = _apply_liquidity(q, MainView)
+    q = q.order_by(MainView.ti65.desc().nullslast()).limit(limit)
+    return [_row_to_dict(r, source) for r in q.all()]
+
+
 def _query_volspike_gapper(session, source: str, date_str: str):
     from datetime import datetime, timedelta
 
@@ -214,6 +224,7 @@ def run(date_str: str | None = None, *, max_tickers: int | None = None) -> dict[
         sources_data.append(_query_top_performance(session, "top_1d", "dr_1", config.TOP_PERFORMANCE_PER_BUCKET))
         sources_data.append(_query_top_performance(session, "top_5d", "dr_5", config.TOP_PERFORMANCE_PER_BUCKET))
         sources_data.append(_query_top_performance(session, "top_20d", "dr_20", config.TOP_PERFORMANCE_PER_BUCKET))
+        sources_data.append(_query_main_view_top(session, "main_view", config.MAIN_VIEW_TOP_N))
         sources_data.append(_query_volspike_gapper(session, "volspike_gapper", date_str))
     finally:
         session.close()

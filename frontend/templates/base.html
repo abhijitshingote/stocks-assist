@@ -435,6 +435,7 @@
             <div class="nav-links">
                 <div class="nav-row">
                     <a href="/daily-shortlist" class="nav-highlight">Daily Shortlist</a>
+                    <a href="/daily-themes">Daily Themes</a>
                     <a href="/high-sales-growth">High Growth</a>
                     <a href="/volspike-gapper" class="nav-highlight">Vol Spike & Gaps</a>
                     <a href="/top-performance">Top Returns</a>
@@ -478,13 +479,13 @@
                 .then(r => r.json())
                 .then(data => {
                     if (data.latest_date) {
-                        const d = new Date(data.latest_date + 'T00:00:00');
-                        const datePart = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                        let label = datePart;
-                        if (data.last_update) {
-                            const ts = new Date(data.last_update);
-                            const timePart = ts.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
-                            label = datePart + ', ' + timePart + ' EST';
+                        const ENG_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                        let label = data.nav_data_thru_label;
+                        if (!label) {
+                            const parts = data.latest_date.split('-').map(Number);
+                            const mo = parts[1];
+                            const day = parts[2];
+                            label = ENG_MONTHS[mo - 1] + ' ' + day;
                         }
                         document.getElementById('latest-date').textContent = label;
                         document.getElementById('data-date').classList.add('loaded');

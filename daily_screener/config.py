@@ -22,6 +22,9 @@ ABI_WATCHLIST_FILE = USER_DATA_DIR / "abi_watchlist.json"
 # watchlist.stars == 0 means "not yet rated" (neutral), NOT a veto.
 ABI_DISLIKES_FILE = USER_DATA_DIR / "abi_dislikes.json"
 THEMES_FILE = USER_DATA_DIR / "themes.json"
+# Per-date, per-ticker verdict corrections. Populated by the UI; consumed
+# by the judge (Stage 5) as in-context calibration examples.
+DAILY_SCREENER_FEEDBACK_FILE = USER_DATA_DIR / "daily_screener_feedback.json"
 
 # ---------------------------------------------------------------------------
 # Universe selection (Stage 1)
@@ -29,6 +32,10 @@ THEMES_FILE = USER_DATA_DIR / "themes.json"
 
 # How many tickers to pull from each return bucket (matches existing endpoints).
 TOP_PERFORMANCE_PER_BUCKET = 30
+
+# Top N from `main_view` using the same ordering as the Main View page (ti65 desc,
+# default "All" market-cap tab — no cap filter). Merged with other universe sources.
+MAIN_VIEW_TOP_N = 50
 
 # Only include vol-spike/gapper rows whose `last_event_date` is within this many
 # calendar days of the run date. The underlying table holds the last 365 days of
@@ -158,6 +165,14 @@ JUDGE_CONCURRENCY = 3
 
 # How many nearest watchlist examples to include in the judge prompt per ticker.
 JUDGE_NEAREST_EXAMPLES = 3
+
+# Feedback (verdict overrides) calibration. The judge sees the trader's last
+# N corrections so it can recalibrate going forward. This is the cheap,
+# in-context alternative to full fine-tuning - takes effect on the next run.
+#
+# Set FEEDBACK_LOOKBACK_DAYS=0 to include all feedback regardless of age.
+FEEDBACK_LOOKBACK_DAYS = 30
+FEEDBACK_MAX_EXAMPLES = 20
 
 # Composite score weights. Must sum to 1.0.
 SCORE_WEIGHTS = {

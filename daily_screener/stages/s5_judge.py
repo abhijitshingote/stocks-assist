@@ -19,6 +19,7 @@ from __future__ import annotations
 import concurrent.futures
 import json
 import logging
+from datetime import datetime, timedelta
 from typing import Any
 
 from daily_screener import config
@@ -37,6 +38,103 @@ def _load_watchlist() -> dict:
         return {}
     with config.ABI_WATCHLIST_FILE.open("r") as f:
         return json.load(f) or {}
+
+
+# ---------------------------------------------------------------------------
+# User feedback (verdict-override) calibration
+# ---------------------------------------------------------------------------
+
+def _load_feedback() -> dict:
+    """Return {date: {ticker: record}} or {} if missing/invalid."""
+    if not config.DAILY_SCREENER_FEEDBACK_FILE.exists():
+        return {}
+    try:
+        with config.DAILY_SCREENER_FEEDBACK_FILE.open("r") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception as e:  # noqa: BLE001
+        logger.warning("[s5] feedback file unreadable: %s", e)
+        return {}
+
+
+def _format_user_corrections(
+    feedback: dict,
+    run_date: str,
+    lookback_days: int,
+    max_examples: int,
+) -> str:
+    """Format the trader's recent verdict overrides as a calibration block.
+
+    Each entry tells the judge "on date D you said X for ticker T, the trader
+    corrected it to Y because Z" - the model should generalize from these to
+    avoid making the same mistake again.
+    """
+    if not feedback:
+        return "(no prior corrections - the trader has not flagged any of your past verdicts yet)"
+
+    # Filter by date window (if lookback_days > 0). Sort newest first.
+    if lookback_days and lookback_days > 0:
+        try:
+            run_dt = datetime.strptime(run_date, "%Y-%m-%d").date()
+            cutoff = run_dt - timedelta(days=lookback_days)
+        except ValueError:
+            cutoff = None
+    else:
+        cutoff = None
+
+    flat: list[tuple[str, str, dict]] = []
+    for date_key in sorted(feedback.keys(), reverse=True):
+        per_date = feedback[date_key]
+        if not isinstance(per_date, dict):
+            continue
+        if cutoff is not None:
+            try:
+                d = datetime.strptime(date_key, "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            if d < cutoff:
+                continue
+        for ticker, rec in per_date.items():
+            if not isinstance(rec, dict):
+                continue
+            if not rec.get("expected_verdict"):
+                continue
+            flat.append((date_key, ticker.upper(), rec))
+
+    if not flat:
+        return f"(no corrections in the last {lookback_days} day(s))"
+
+    flat = flat[:max_examples]
+
+    blocks = []
+    for date_key, ticker, rec in flat:
+        agent = (rec.get("agent_verdict") or "").upper() or "?"
+        wanted = (rec.get("expected_verdict") or "").upper() or "?"
+        reason = (rec.get("reason") or "").strip()
+        composite = rec.get("agent_composite_score")
+        news_mat = rec.get("agent_news_materiality")
+        theme_fit = rec.get("agent_theme_fit")
+        matched = rec.get("agent_matched_themes") or []
+        rationale = (rec.get("agent_rationale") or "").strip()
+
+        head = f"- {date_key} **{ticker}**: agent={agent} → trader said **{wanted}**"
+        bits = []
+        if composite is not None:
+            bits.append(f"composite={composite}")
+        if news_mat is not None:
+            bits.append(f"news={news_mat}/3")
+        if theme_fit is not None:
+            bits.append(f"theme={theme_fit}/3")
+        if matched:
+            bits.append("matched=" + ",".join(matched[:4]))
+        if bits:
+            head += " (" + ", ".join(bits) + ")"
+        blocks.append(head)
+        if rationale:
+            blocks.append(f"    agent_rationale: {rationale[:280]}")
+        if reason:
+            blocks.append(f"    trader_reason:   {reason[:400]}")
+    return "\n".join(blocks)
 
 
 def _nearest_examples(
@@ -250,6 +348,7 @@ def _judge_one(
     theme_block: str,
     examples: list[dict[str, Any]],
     own_thesis_block: str,
+    user_corrections_block: str,
     prompt_template: str,
 ) -> dict[str, Any]:
     ticker = survivor["ticker"]
@@ -263,6 +362,7 @@ def _judge_one(
         .replace("{theme_vector_block}", theme_block)
         .replace("{nearest_examples_block}", nearest_block)
         .replace("{own_thesis_block}", own_thesis)
+        .replace("{user_corrections_block}", user_corrections_block)
         .replace("{candidate_block}", candidate_block)
     )
 
@@ -336,6 +436,18 @@ def run(date_str: str | None = None, *, max_tickers: int | None = None) -> dict[
     theme_block = _format_theme_vector(theme_vec.get("themes", []))
     prompt_template = io.load_prompt("judge")
     watchlist = _load_watchlist()
+    feedback = _load_feedback()
+    user_corrections_block = _format_user_corrections(
+        feedback,
+        run_date=date_str,
+        lookback_days=getattr(config, "FEEDBACK_LOOKBACK_DAYS", 30),
+        max_examples=getattr(config, "FEEDBACK_MAX_EXAMPLES", 20),
+    )
+    if feedback:
+        logger.info(
+            "[s5] feeding %d-day user-correction history into judge prompt",
+            getattr(config, "FEEDBACK_LOOKBACK_DAYS", 30),
+        )
 
     results: list[dict[str, Any]] = []
     failures: list[dict[str, Any]] = []
@@ -356,6 +468,7 @@ def run(date_str: str | None = None, *, max_tickers: int | None = None) -> dict[
                     theme_block,
                     examples,
                     own_thesis_block,
+                    user_corrections_block,
                     prompt_template,
                 )
             ] = s
