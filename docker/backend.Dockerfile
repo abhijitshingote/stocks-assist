@@ -39,8 +39,8 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 # Make the daily price update script executable
 RUN chmod +x db_scripts/update_data/daily_price_update.py
 
-# Make the startup script executable
-RUN chmod +x docker/start.sh
+# Make the startup script and git HTTPS helper executable
+RUN chmod +x docker/start.sh docker/git_askpass_env.sh
 
 # Create log file for cron
 RUN touch /var/log/cron.log

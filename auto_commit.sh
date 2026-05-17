@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Repo root is the directory containing this script (works locally and in Docker /app).
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$REPO_ROOT"
-
-if ! command -v git >/dev/null 2>&1; then
-  echo "git is not installed or not on PATH" >&2
-  exit 127
-fi
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 git add user_data/
 
