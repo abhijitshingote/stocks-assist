@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat, AbiGeneralNotes, MarketBreadth,
+    StockVolspikeGapper, MainView, SharesFloat, MarketBreadth,
     RsScreener
 )
 import os
@@ -21,10 +21,6 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Path to persist stock notes (survives database resets)
-STOCK_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_notes.json')
-# Path to persist stock preferences (survives database resets)
-STOCK_PREFERENCES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_preferences.json')
 # Path to persist abi general notes (survives database resets)
 ABI_GENERAL_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_general_notes.json')
 # Path to persist abi watchlist (survives database resets)
@@ -2430,762 +2426,26 @@ def get_high_sales_growth_mega():
         s.close()
 
 
-# ============================================================
-# Stock Notes API Endpoints
-# ============================================================
-
-def export_all_notes_to_file():
-    """Export all stock notes to JSON file for persistence across database resets."""
-    s = Session()
-    try:
-        notes = s.query(StockNotes).filter(StockNotes.notes.isnot(None), StockNotes.notes != '').all()
-        
-        data = {}
-        for note in notes:
-            data[note.ticker] = {
-                'notes': note.notes,
-                'created_at': note.created_at.isoformat() if note.created_at else None,
-                'updated_at': note.updated_at.isoformat() if note.updated_at else None
-            }
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(STOCK_NOTES_FILE), exist_ok=True)
-        
-        with open(STOCK_NOTES_FILE, 'w') as f:
-            json.dump(data, f, indent=2)
-        
-        logger.info(f"Exported {len(data)} stock notes to {STOCK_NOTES_FILE}")
-    except Exception as e:
-        logger.error(f"Error exporting stock notes: {str(e)}")
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/<ticker>', methods=['GET'])
-def get_stock_notes(ticker):
-    """Get notes for a specific stock."""
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        note = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        if note:
-            return jsonify({
-                'ticker': note.ticker,
-                'notes': note.notes,
-                'updated_at': note.updated_at.isoformat() if note.updated_at else None
-            })
-        return jsonify({
-            'ticker': ticker,
-            'notes': None,
-            'updated_at': None
-        })
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/<ticker>', methods=['PUT'])
-def update_stock_notes(ticker):
-    """Create or update notes for a specific stock."""
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        data = request.get_json()
-        
-        if not data or 'notes' not in data:
-            return jsonify({'error': 'notes field is required'}), 400
-        
-        notes_content = data['notes']
-        
-        # Check if notes already exist for this ticker
-        existing = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        
-        if existing:
-            # Update existing notes
-            existing.notes = notes_content if notes_content else None
-            s.commit()
-            
-            # Export all notes to file for persistence
-            export_all_notes_to_file()
-            
-            return jsonify({
-                'ticker': existing.ticker,
-                'notes': existing.notes,
-                'updated_at': existing.updated_at.isoformat() if existing.updated_at else None,
-                'message': 'Notes updated successfully'
-            })
-        else:
-            # Create new notes entry
-            new_note = StockNotes(ticker=ticker, notes=notes_content if notes_content else None)
-            s.add(new_note)
-            s.commit()
-            
-            # Export all notes to file for persistence
-            export_all_notes_to_file()
-            
-            return jsonify({
-                'ticker': new_note.ticker,
-                'notes': new_note.notes,
-                'updated_at': new_note.updated_at.isoformat() if new_note.updated_at else None,
-                'message': 'Notes created successfully'
-            }), 201
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error updating stock notes for {ticker}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/batch', methods=['POST'])
-def get_stock_notes_batch():
-    """Get notes for multiple tickers at once (for screener views)."""
-    s = Session()
-    try:
-        data = request.get_json()
-        
-        if not data or 'tickers' not in data:
-            return jsonify({'error': 'tickers field is required'}), 400
-        
-        tickers = [t.upper() for t in data['tickers']]
-        
-        notes = s.query(StockNotes).filter(StockNotes.ticker.in_(tickers)).all()
-        
-        result = {}
-        for note in notes:
-            if note.notes:  # Only include non-empty notes
-                result[note.ticker] = {
-                    'notes': note.notes,
-                    'updated_at': note.updated_at.isoformat() if note.updated_at else None
-                }
-        
-        return jsonify(result)
-    finally:
-        s.close()
-
+# Stock Notes endpoints removed (along with AI Stock Research). This store
+# has been deprecated. Per-ticker notes are now served exclusively by the
+# file-only abi_ticker_notes store (user_data/abi_ticker_notes.json). The
+# AI research integration (Perplexity / Claude web search) has been removed
+# with it; reintroduce it later as a feature that writes into
+# abi_ticker_notes if you want it back.
 
 # ============================================================
-# AI Stock Research (Perplexity API) Endpoints
+# (AI Stock Research endpoints removed; see note above.)
 # ============================================================
 
-# Path to AI prompt templates
-AI_PROMPT_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'ai_prompts', 'stock_research_prompt.txt')
-CLAUDE_PROMPT_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'ai_prompts', 'claude_stock_research_prompt.txt')
+# (AI Stock Research, prompt template helpers, Perplexity / Claude wrappers
+# all removed along with the stock_notes store they wrote into. If you want
+# AI research back, reintroduce it as a feature that writes into
+# user_data/abi_ticker_notes.json instead of the deprecated DB store.)
 
 
-def get_company_name_for_ticker(session, ticker):
-    """Get company name for a ticker from the database."""
-    ticker_obj = session.query(Ticker).filter(Ticker.ticker == ticker.upper()).first()
-    if ticker_obj and ticker_obj.company_name:
-        return ticker_obj.company_name
-    return ticker.upper()
-
-
-def load_ai_prompt_template():
-    """Load the AI prompt template from file."""
-    try:
-        if os.path.exists(AI_PROMPT_FILE):
-            with open(AI_PROMPT_FILE, 'r') as f:
-                return f.read()
-        else:
-            logger.warning(f"AI prompt file not found at {AI_PROMPT_FILE}, using default prompt")
-            return None
-    except Exception as e:
-        logger.error(f"Error loading AI prompt template: {str(e)}")
-        return None
-
-
-def load_claude_prompt_template():
-    """Load the Claude AI prompt template from file."""
-    try:
-        if os.path.exists(CLAUDE_PROMPT_FILE):
-            with open(CLAUDE_PROMPT_FILE, 'r') as f:
-                return f.read()
-        else:
-            logger.warning(f"Claude prompt file not found at {CLAUDE_PROMPT_FILE}")
-            return None
-    except Exception as e:
-        logger.error(f"Error loading Claude prompt template: {str(e)}")
-        return None
-
-
-def call_perplexity_api(prompt, model='sonar'):
-    """
-    Call the Perplexity API with the given prompt.
-    
-    Args:
-        prompt: The prompt text to send
-        model: 'sonar' or 'sonar-pro'
-    
-    Returns:
-        Tuple of (response_text, error_message)
-        - On success: (response_text, None)
-        - On API credit failure: (None, 'INSUFFICIENT_CREDITS')
-        - On other errors: (None, error_message)
-    """
-    import requests
-    
-    api_key = os.getenv('PERPLEXITY_API_KEY')
-    if not api_key:
-        return None, 'PERPLEXITY_API_KEY not configured'
-    
-    # Map model names to Perplexity API model identifiers
-    model_map = {
-        'sonar': 'sonar',
-        'sonar-pro': 'sonar-pro'
-    }
-    api_model = model_map.get(model, 'sonar')
-    
-    url = "https://api.perplexity.ai/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-    
-    payload = {
-        "model": api_model,
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        "max_tokens": 20000,
-        "temperature": 0.1,
-        "return_citations": False
-    }
-    
-    try:
-        response = requests.post(url, headers=headers, json=payload, timeout=120)
-        
-        # Check for API credit issues
-        if response.status_code == 402:
-            return None, 'INSUFFICIENT_CREDITS'
-        
-        if response.status_code == 429:
-            return None, 'RATE_LIMITED'
-        
-        if response.status_code != 200:
-            error_detail = response.text[:500] if response.text else 'Unknown error'
-            logger.error(f"Perplexity API error {response.status_code}: {error_detail}")
-            return None, f'API error: {response.status_code}'
-        
-        data = response.json()
-        
-        if 'choices' in data and len(data['choices']) > 0:
-            content = data['choices'][0].get('message', {}).get('content', '')
-            return content, None
-        else:
-            return None, 'No response content from API'
-            
-    except requests.exceptions.Timeout:
-        return None, 'API request timed out (120s)'
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Perplexity API request error: {str(e)}")
-        return None, f'Request error: {str(e)}'
-    except Exception as e:
-        logger.error(f"Unexpected error calling Perplexity API: {str(e)}")
-        return None, f'Unexpected error: {str(e)}'
-
-
-def call_claude_api_with_web_search(ticker: str, company_name: str, months: int = 12):
-    """
-    Call Claude API with web search to get stock news summary.
-    
-    Args:
-        ticker: Stock ticker symbol
-        company_name: Full company name
-        months: How many months back to search
-    
-    Returns:
-        Tuple of (response_text, error_message)
-        - On success: (response_text, None)
-        - On rate limit: (None, 'RATE_LIMITED')
-        - On other errors: (None, error_message)
-    """
-    try:
-        from anthropic import Anthropic
-    except ImportError:
-        return None, 'anthropic package not installed. Run: pip install anthropic'
-    
-    api_key = os.getenv('ANTHROPIC_API_KEY')
-    if not api_key:
-        return None, 'ANTHROPIC_API_KEY not configured'
-    
-    client = Anthropic(api_key=api_key)
-    
-    # Load prompt from file
-    template = load_claude_prompt_template()
-    if not template:
-        return None, f'Claude prompt template not found at {CLAUDE_PROMPT_FILE}'
-    
-    # Replace placeholders
-    prompt = template.replace('[company_name]', company_name)
-    prompt = prompt.replace('[ticker]', ticker)
-    prompt = prompt.replace('[months]', str(months))
-
-    # Retry logic for rate limits
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            response = client.messages.create(
-                model="claude-sonnet-4-5-20250929",
-                max_tokens=4096,
-                system="You are a financial analyst. Use web search to find current, accurate information about stock-moving events. Be thorough and factual.",
-                tools=[{
-                    "type": "web_search_20250305",
-                    "name": "web_search"
-                }],
-                messages=[{"role": "user", "content": prompt}]
-            )
-            
-            # Extract all text from response blocks
-            text_parts = []
-            for block in response.content:
-                if hasattr(block, 'type') and block.type == "text":
-                    text_parts.append(block.text)
-            
-            summary = "\n".join(text_parts)
-            return summary, None
-            
-        except Exception as e:
-            error_msg = str(e)
-            
-            # Rate limit - wait and retry
-            if "429" in error_msg or "rate_limit" in error_msg:
-                if attempt < max_retries - 1:
-                    wait_time = 60 * (attempt + 1)
-                    logger.info(f"Claude rate limit hit. Waiting {wait_time}s before retry...")
-                    time.sleep(wait_time)
-                    continue
-                return None, 'RATE_LIMITED'
-            
-            logger.error(f"Claude API error: {error_msg}")
-            return None, f'API error: {error_msg}'
-    
-    return None, 'Max retries exceeded'
-
-
-@app.route('/api/stock-notes/ai-research/<ticker>', methods=['POST'])
-def generate_ai_stock_research(ticker):
-    """
-    Generate AI stock research notes using Perplexity API.
-    Appends the generated notes to existing notes and saves to DB.
-    
-    Request body (optional):
-    {
-        "model": "sonar" or "sonar-pro" (default: "sonar"),
-        "custom_prompt": "Optional custom prompt override"
-    }
-    
-    Returns:
-    {
-        "ticker": "AAPL",
-        "ai_notes": "Generated AI research notes...",
-        "notes": "Full combined notes (existing + AI)",
-        "updated_at": "2024-01-20T...",
-        "model_used": "sonar",
-        "message": "success"
-    }
-    
-    Error responses:
-    - 402: Insufficient API credits
-    - 429: Rate limited
-    - 500: Other errors
-    """
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        data = request.get_json() or {}
-        
-        model = data.get('model', 'sonar')
-        custom_prompt = data.get('custom_prompt')
-        
-        # Validate model
-        if model not in ['sonar', 'sonar-pro']:
-            return jsonify({'error': 'model must be "sonar" or "sonar-pro"'}), 400
-        
-        # Get company name
-        company_name = get_company_name_for_ticker(s, ticker)
-        
-        # Build prompt from template file
-        if custom_prompt:
-            prompt = custom_prompt
-        else:
-            template = load_ai_prompt_template()
-            if not template:
-                return jsonify({
-                    'error': 'AI prompt template file not found. Please create the template at user_data/ai_prompts/stock_research_prompt.txt',
-                    'error_type': 'MISSING_TEMPLATE'
-                }), 500
-            
-            # Replace placeholders in template
-            # Supports both [placeholder] and {placeholder} formats
-            prompt = template.replace('[company_name]', company_name)
-            prompt = prompt.replace('[ticker]', ticker)
-        
-        # Call Perplexity API
-        logger.info(f"Calling Perplexity API for {ticker} with model {model}")
-        ai_response, error = call_perplexity_api(prompt, model)
-        
-        if error:
-            # Handle specific error types
-            if error == 'INSUFFICIENT_CREDITS':
-                return jsonify({
-                    'error': 'Insufficient Perplexity API credits. Please add credits to your account.',
-                    'error_type': 'INSUFFICIENT_CREDITS'
-                }), 402
-            elif error == 'RATE_LIMITED':
-                return jsonify({
-                    'error': 'Perplexity API rate limited. Please try again in a few minutes.',
-                    'error_type': 'RATE_LIMITED'
-                }), 429
-            else:
-                return jsonify({
-                    'error': f'Failed to generate AI research: {error}',
-                    'error_type': 'API_ERROR'
-                }), 500
-        
-        # Format AI notes with timestamp
-        from datetime import datetime
-        import pytz
-        eastern = pytz.timezone('US/Eastern')
-        now = datetime.now(eastern)
-        timestamp = now.strftime('%Y-%m-%d %H:%M:%S %Z')
-        
-        ai_notes_formatted = f"\n\n---\n\n## AI Research ({model}) - {timestamp}\n\n{ai_response}"
-        
-        # Get existing notes
-        existing = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        current_notes = existing.notes if existing and existing.notes else ''
-        
-        # Combine notes
-        combined_notes = current_notes + ai_notes_formatted
-        
-        # Save to database
-        if existing:
-            existing.notes = combined_notes
-        else:
-            new_note = StockNotes(ticker=ticker, notes=combined_notes)
-            s.add(new_note)
-        
-        s.commit()
-        
-        # Export all notes to file for persistence
-        export_all_notes_to_file()
-        
-        # Get updated timestamp
-        updated_note = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        
-        return jsonify({
-            'ticker': ticker,
-            'ai_notes': ai_response,
-            'notes': combined_notes,
-            'updated_at': updated_note.updated_at.isoformat() if updated_note and updated_note.updated_at else None,
-            'model_used': model,
-            'message': 'AI research notes generated and saved successfully'
-        })
-        
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error generating AI research for {ticker}: {str(e)}")
-        return jsonify({
-            'error': f'Unexpected error: {str(e)}',
-            'error_type': 'INTERNAL_ERROR'
-        }), 500
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/ai-research-claude/<ticker>', methods=['POST'])
-def generate_ai_stock_research_claude(ticker):
-    """
-    Generate AI stock research notes using Claude API with web search.
-    Appends the generated notes to existing notes and saves to DB.
-    
-    Request body (optional):
-    {
-        "months": 12  (default: 12 months of news)
-    }
-    
-    Returns:
-    {
-        "ticker": "AAPL",
-        "ai_notes": "Generated AI research notes...",
-        "notes": "Full combined notes (existing + AI)",
-        "updated_at": "2024-01-20T...",
-        "model_used": "claude-web-search",
-        "message": "success"
-    }
-    """
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        data = request.get_json() or {}
-        
-        months = data.get('months', 12)
-        
-        # Get company name
-        company_name = get_company_name_for_ticker(s, ticker)
-        
-        # Call Claude API with web search
-        logger.info(f"Calling Claude API with web search for {ticker}")
-        ai_response, error = call_claude_api_with_web_search(ticker, company_name, months)
-        
-        if error:
-            if error == 'RATE_LIMITED':
-                return jsonify({
-                    'error': 'Claude API rate limited. Please try again in a few minutes.',
-                    'error_type': 'RATE_LIMITED'
-                }), 429
-            else:
-                return jsonify({
-                    'error': f'Failed to generate AI research: {error}',
-                    'error_type': 'API_ERROR'
-                }), 500
-        
-        # Format AI notes with timestamp
-        from datetime import datetime
-        import pytz
-        eastern = pytz.timezone('US/Eastern')
-        now = datetime.now(eastern)
-        timestamp = now.strftime('%Y-%m-%d %H:%M:%S %Z')
-        
-        ai_notes_formatted = f"\n\n---\n\n## AI Research (Claude Web Search) - {timestamp}\n\n{ai_response}"
-        
-        # Get existing notes
-        existing = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        current_notes = existing.notes if existing and existing.notes else ''
-        
-        # Combine notes
-        combined_notes = current_notes + ai_notes_formatted
-        
-        # Save to database
-        if existing:
-            existing.notes = combined_notes
-        else:
-            new_note = StockNotes(ticker=ticker, notes=combined_notes)
-            s.add(new_note)
-        
-        s.commit()
-        
-        # Export all notes to file for persistence
-        export_all_notes_to_file()
-        
-        # Get updated timestamp
-        updated_note = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        
-        return jsonify({
-            'ticker': ticker,
-            'ai_notes': ai_response,
-            'notes': combined_notes,
-            'updated_at': updated_note.updated_at.isoformat() if updated_note and updated_note.updated_at else None,
-            'model_used': 'claude-web-search',
-            'message': 'AI research notes generated and saved successfully'
-        })
-        
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error generating Claude AI research for {ticker}: {str(e)}")
-        return jsonify({
-            'error': f'Unexpected error: {str(e)}',
-            'error_type': 'INTERNAL_ERROR'
-        }), 500
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/ai-prompt', methods=['GET'])
-def get_ai_prompt_template():
-    """Get the current AI prompt template."""
-    template = load_ai_prompt_template()
-    if template:
-        return jsonify({
-            'prompt': template,
-            'path': AI_PROMPT_FILE
-        })
-    return jsonify({
-        'prompt': None,
-        'error': 'Prompt template not found',
-        'path': AI_PROMPT_FILE
-    }), 404
-
-
-@app.route('/api/stock-notes/ai-prompt', methods=['PUT'])
-def update_ai_prompt_template():
-    """Update the AI prompt template."""
-    data = request.get_json()
-    
-    if not data or 'prompt' not in data:
-        return jsonify({'error': 'prompt field is required'}), 400
-    
-    try:
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(AI_PROMPT_FILE), exist_ok=True)
-        
-        with open(AI_PROMPT_FILE, 'w') as f:
-            f.write(data['prompt'])
-        
-        return jsonify({
-            'message': 'Prompt template updated successfully',
-            'path': AI_PROMPT_FILE
-        })
-    except Exception as e:
-        logger.error(f"Error updating AI prompt template: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-
-# ============================================================
-# Stock Preferences API Endpoints
-# ============================================================
-
-def export_all_preferences_to_file():
-    """Export all stock preferences to JSON file for persistence across database resets."""
-    s = Session()
-    try:
-        prefs = s.query(StockPreference).filter(StockPreference.preference.isnot(None)).all()
-        
-        data = {}
-        for pref in prefs:
-            data[pref.ticker] = {
-                'preference': pref.preference,
-                'created_at': pref.created_at.isoformat() if pref.created_at else None,
-                'updated_at': pref.updated_at.isoformat() if pref.updated_at else None
-            }
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(STOCK_PREFERENCES_FILE), exist_ok=True)
-        
-        with open(STOCK_PREFERENCES_FILE, 'w') as f:
-            json.dump(data, f, indent=2)
-        
-        logger.info(f"Exported {len(data)} stock preferences to {STOCK_PREFERENCES_FILE}")
-    except Exception as e:
-        logger.error(f"Error exporting stock preferences: {str(e)}")
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-preferences/<ticker>', methods=['GET'])
-def get_stock_preference(ticker):
-    """Get preference for a specific stock."""
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        pref = s.query(StockPreference).filter(StockPreference.ticker == ticker).first()
-        if pref:
-            return jsonify({
-                'ticker': pref.ticker,
-                'preference': pref.preference,
-                'updated_at': pref.updated_at.isoformat() if pref.updated_at else None
-            })
-        return jsonify({
-            'ticker': ticker,
-            'preference': None,
-            'updated_at': None
-        })
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-preferences/<ticker>', methods=['PUT'])
-def update_stock_preference(ticker):
-    """Create or update preference for a specific stock."""
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        data = request.get_json()
-        
-        if not data or 'preference' not in data:
-            return jsonify({'error': 'preference field is required'}), 400
-        
-        preference_value = data['preference']
-        
-        # Validate preference value
-        if preference_value is not None and preference_value not in ['favorite', 'dislike']:
-            return jsonify({'error': 'preference must be "favorite", "dislike", or null'}), 400
-        
-        # Check if preference already exists for this ticker
-        existing = s.query(StockPreference).filter(StockPreference.ticker == ticker).first()
-        
-        if existing:
-            # Update existing preference
-            existing.preference = preference_value
-            s.commit()
-            
-            # Export all preferences to file for persistence
-            export_all_preferences_to_file()
-            
-            return jsonify({
-                'ticker': existing.ticker,
-                'preference': existing.preference,
-                'updated_at': existing.updated_at.isoformat() if existing.updated_at else None,
-                'message': 'Preference updated successfully'
-            })
-        else:
-            # Create new preference entry
-            new_pref = StockPreference(ticker=ticker, preference=preference_value)
-            s.add(new_pref)
-            s.commit()
-            
-            # Export all preferences to file for persistence
-            export_all_preferences_to_file()
-            
-            return jsonify({
-                'ticker': new_pref.ticker,
-                'preference': new_pref.preference,
-                'updated_at': new_pref.updated_at.isoformat() if new_pref.updated_at else None,
-                'message': 'Preference created successfully'
-            }), 201
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error updating stock preference for {ticker}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-preferences/batch', methods=['POST'])
-def get_stock_preferences_batch():
-    """Get preferences for multiple tickers at once."""
-    s = Session()
-    try:
-        data = request.get_json()
-        
-        if not data or 'tickers' not in data:
-            return jsonify({'error': 'tickers field is required'}), 400
-        
-        tickers = [t.upper() for t in data['tickers']]
-        
-        prefs = s.query(StockPreference).filter(StockPreference.ticker.in_(tickers)).all()
-        
-        result = {}
-        for pref in prefs:
-            if pref.preference:  # Only include non-null preferences
-                result[pref.ticker] = {
-                    'preference': pref.preference,
-                    'updated_at': pref.updated_at.isoformat() if pref.updated_at else None
-                }
-        
-        return jsonify(result)
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-preferences/list/<preference_type>')
-def list_stock_preferences(preference_type):
-    """List all stocks with a specific preference (favorites or dislikes)."""
-    s = Session()
-    try:
-        if preference_type not in ['favorite', 'dislike']:
-            return jsonify({'error': 'preference_type must be "favorite" or "dislike"'}), 400
-        
-        prefs = s.query(StockPreference).filter(StockPreference.preference == preference_type).all()
-        
-        tickers = [pref.ticker for pref in prefs]
-        
-        return jsonify({'tickers': tickers, 'count': len(tickers)})
-    finally:
-        s.close()
+# Stock Preferences endpoints removed: this store has been deprecated and
+# replaced by the file-only abi_watchlist (favorites) and abi_dislikes
+# stores. Same UX, no DB dependency, lives entirely under user_data/.
 
 
 # ============================================================================
@@ -3593,250 +2853,196 @@ def get_stock_news(ticker):
 # ============================================================
 # Abi General Notes API Endpoints (date-based personal notes)
 # ============================================================
+#
+# File-only store. Same pattern as abi_watchlist / abi_ticker_notes /
+# abi_dislikes: user_data/abi_general_notes.json IS the source of truth,
+# read & written on every request. No Postgres dependency, no DB-to-file
+# snapshot, no seed script. Survives container/DB resets automatically and
+# rides along with the auto_commit.sh user_data backup.
+#
+# Schema: a JSON list of note objects, each with:
+#   id (int)         — local, monotonically increasing; assigned on create
+#   note_date (str)  — "YYYY-MM-DD"; defaults to today
+#   title (str)
+#   content (str)
+#   tags (str)       — comma-separated
+#   created_at (str) — ISO 8601 Eastern
+#   updated_at (str) — ISO 8601 Eastern
 
-def export_all_abi_general_notes_to_file():
-    """Export all abi general notes to JSON file for persistence across database resets."""
-    s = Session()
+def _abi_general_notes_now_iso():
+    """Eastern time ISO 8601, matches the old DB-default behavior."""
+    return datetime.now(pytz.timezone("US/Eastern")).isoformat()
+
+
+def _load_abi_general_notes():
+    """Read the notes list from disk. Returns [] if missing or unreadable.
+
+    Defensive: an empty/corrupt file should not 500 the API.
+    """
+    if not os.path.exists(ABI_GENERAL_NOTES_FILE):
+        return []
     try:
-        notes = s.query(AbiGeneralNotes).order_by(AbiGeneralNotes.note_date.desc(), AbiGeneralNotes.id.desc()).all()
-        
-        data = []
-        for note in notes:
-            data.append({
-                'id': note.id,
-                'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
-                'title': note.title,
-                'content': note.content,
-                'tags': note.tags,
-                'created_at': note.created_at.isoformat() if note.created_at else None,
-                'updated_at': note.updated_at.isoformat() if note.updated_at else None
-            })
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(ABI_GENERAL_NOTES_FILE), exist_ok=True)
-        
-        with open(ABI_GENERAL_NOTES_FILE, 'w') as f:
-            json.dump(data, f, indent=2)
-        
-        logger.info(f"Exported {len(data)} abi general notes to {ABI_GENERAL_NOTES_FILE}")
-    except Exception as e:
-        logger.error(f"Error exporting abi general notes: {str(e)}")
-    finally:
-        s.close()
+        with open(ABI_GENERAL_NOTES_FILE, 'r') as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except (json.JSONDecodeError, OSError) as e:
+        logger.error(f"Error reading {ABI_GENERAL_NOTES_FILE}: {e}")
+        return []
+
+
+def _save_abi_general_notes(notes):
+    """Persist notes list to disk. Same ordering convention as the API GET
+    (note_date desc, id desc) so the on-disk file is always readable in the
+    same order the UI shows it."""
+    notes_sorted = sorted(
+        notes,
+        key=lambda n: (n.get('note_date') or '', n.get('id') or 0),
+        reverse=True,
+    )
+    os.makedirs(os.path.dirname(ABI_GENERAL_NOTES_FILE), exist_ok=True)
+    with open(ABI_GENERAL_NOTES_FILE, 'w') as f:
+        json.dump(notes_sorted, f, indent=2)
+
+
+def _next_abi_general_note_id(notes):
+    """Monotonically increasing id. Old DB used autoincrement; we mimic that
+    so existing frontend code (which routes on `<int:note_id>`) keeps
+    working without changes."""
+    return (max((int(n.get('id') or 0) for n in notes), default=0)) + 1
 
 
 @app.route('/api/abi-general-notes', methods=['GET'])
 def get_abi_general_notes():
-    """Get all abi general notes, optionally filtered by date range or search query."""
-    s = Session()
-    try:
-        query = s.query(AbiGeneralNotes)
-        
-        # Optional date filtering
-        start_date = request.args.get('start_date')
-        end_date = request.args.get('end_date')
-        search = request.args.get('search')
-        tag = request.args.get('tag')
-        
-        if start_date:
-            query = query.filter(AbiGeneralNotes.note_date >= start_date)
-        if end_date:
-            query = query.filter(AbiGeneralNotes.note_date <= end_date)
+    """Get all abi general notes, optionally filtered by date range, search
+    query, or tag. Filtering is done in Python over the in-memory list — fine
+    for the size of this store (handful of notes)."""
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    search = (request.args.get('search') or '').lower()
+    tag = (request.args.get('tag') or '').lower()
+
+    notes = _load_abi_general_notes()
+    results = []
+    for n in notes:
+        nd = n.get('note_date') or ''
+        if start_date and nd < start_date:
+            continue
+        if end_date and nd > end_date:
+            continue
         if search:
-            search_term = f'%{search}%'
-            query = query.filter(
-                or_(
-                    AbiGeneralNotes.title.ilike(search_term),
-                    AbiGeneralNotes.content.ilike(search_term)
-                )
-            )
+            title = (n.get('title') or '').lower()
+            content = (n.get('content') or '').lower()
+            if search not in title and search not in content:
+                continue
         if tag:
-            query = query.filter(AbiGeneralNotes.tags.ilike(f'%{tag}%'))
-        
-        notes = query.order_by(AbiGeneralNotes.note_date.desc(), AbiGeneralNotes.id.desc()).all()
-        
-        results = []
-        for note in notes:
-            results.append({
-                'id': note.id,
-                'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
-                'title': note.title,
-                'content': note.content,
-                'tags': note.tags,
-                'created_at': note.created_at.isoformat() if note.created_at else None,
-                'updated_at': note.updated_at.isoformat() if note.updated_at else None
-            })
-        
-        return jsonify(results)
-    finally:
-        s.close()
+            tags = (n.get('tags') or '').lower()
+            if tag not in tags:
+                continue
+        results.append(n)
+
+    results.sort(
+        key=lambda n: (n.get('note_date') or '', n.get('id') or 0),
+        reverse=True,
+    )
+    return jsonify(results)
 
 
 @app.route('/api/abi-general-notes/<int:note_id>', methods=['GET'])
 def get_abi_general_note(note_id):
     """Get a specific abi general note by ID."""
-    s = Session()
-    try:
-        note = s.query(AbiGeneralNotes).filter(AbiGeneralNotes.id == note_id).first()
-        
-        if not note:
-            return jsonify({'error': 'Note not found'}), 404
-        
-        return jsonify({
-            'id': note.id,
-            'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
-            'title': note.title,
-            'content': note.content,
-            'tags': note.tags,
-            'created_at': note.created_at.isoformat() if note.created_at else None,
-            'updated_at': note.updated_at.isoformat() if note.updated_at else None
-        })
-    finally:
-        s.close()
+    for n in _load_abi_general_notes():
+        if int(n.get('id') or 0) == note_id:
+            return jsonify(n)
+    return jsonify({'error': 'Note not found'}), 404
 
 
 @app.route('/api/abi-general-notes', methods=['POST'])
 def create_abi_general_note():
     """Create a new abi general note."""
-    s = Session()
-    try:
-        data = request.get_json()
-        
-        if not data:
-            return jsonify({'error': 'Request body is required'}), 400
-        
-        # note_date defaults to today if not provided
-        note_date_str = data.get('note_date')
-        if note_date_str:
-            from datetime import datetime
-            note_date = datetime.strptime(note_date_str, '%Y-%m-%d').date()
-        else:
-            note_date = date.today()
-        
-        new_note = AbiGeneralNotes(
-            note_date=note_date,
-            title=data.get('title'),
-            content=data.get('content'),
-            tags=data.get('tags')
-        )
-        
-        s.add(new_note)
-        s.commit()
-        
-        # Export all abi general notes to file for persistence
-        export_all_abi_general_notes_to_file()
-        
-        return jsonify({
-            'id': new_note.id,
-            'note_date': new_note.note_date.strftime('%Y-%m-%d') if new_note.note_date else None,
-            'title': new_note.title,
-            'content': new_note.content,
-            'tags': new_note.tags,
-            'created_at': new_note.created_at.isoformat() if new_note.created_at else None,
-            'updated_at': new_note.updated_at.isoformat() if new_note.updated_at else None,
-            'message': 'Note created successfully'
-        }), 201
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error creating abi general note: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Request body is required'}), 400
+
+    note_date_str = data.get('note_date')
+    if note_date_str:
+        try:
+            datetime.strptime(note_date_str, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'invalid note_date (expected YYYY-MM-DD)'}), 400
+    else:
+        note_date_str = date.today().strftime('%Y-%m-%d')
+
+    notes = _load_abi_general_notes()
+    now = _abi_general_notes_now_iso()
+    new_note = {
+        'id': _next_abi_general_note_id(notes),
+        'note_date': note_date_str,
+        'title': data.get('title'),
+        'content': data.get('content'),
+        'tags': data.get('tags'),
+        'created_at': now,
+        'updated_at': now,
+    }
+    notes.append(new_note)
+    _save_abi_general_notes(notes)
+
+    return jsonify({**new_note, 'message': 'Note created successfully'}), 201
 
 
 @app.route('/api/abi-general-notes/<int:note_id>', methods=['PUT'])
 def update_abi_general_note(note_id):
     """Update an existing abi general note."""
-    s = Session()
-    try:
-        data = request.get_json()
-        
-        if not data:
-            return jsonify({'error': 'Request body is required'}), 400
-        
-        note = s.query(AbiGeneralNotes).filter(AbiGeneralNotes.id == note_id).first()
-        
-        if not note:
-            return jsonify({'error': 'Note not found'}), 404
-        
-        # Update fields if provided
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Request body is required'}), 400
+
+    notes = _load_abi_general_notes()
+    for n in notes:
+        if int(n.get('id') or 0) != note_id:
+            continue
         if 'note_date' in data:
-            from datetime import datetime
-            note.note_date = datetime.strptime(data['note_date'], '%Y-%m-%d').date()
+            try:
+                datetime.strptime(data['note_date'], '%Y-%m-%d')
+            except (ValueError, TypeError):
+                return jsonify({'error': 'invalid note_date (expected YYYY-MM-DD)'}), 400
+            n['note_date'] = data['note_date']
         if 'title' in data:
-            note.title = data['title']
+            n['title'] = data['title']
         if 'content' in data:
-            note.content = data['content']
+            n['content'] = data['content']
         if 'tags' in data:
-            note.tags = data['tags']
-        
-        s.commit()
-        
-        # Export all abi general notes to file for persistence
-        export_all_abi_general_notes_to_file()
-        
-        return jsonify({
-            'id': note.id,
-            'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
-            'title': note.title,
-            'content': note.content,
-            'tags': note.tags,
-            'created_at': note.created_at.isoformat() if note.created_at else None,
-            'updated_at': note.updated_at.isoformat() if note.updated_at else None,
-            'message': 'Note updated successfully'
-        })
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error updating abi general note {note_id}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
+            n['tags'] = data['tags']
+        n['updated_at'] = _abi_general_notes_now_iso()
+        _save_abi_general_notes(notes)
+        return jsonify({**n, 'message': 'Note updated successfully'})
+
+    return jsonify({'error': 'Note not found'}), 404
 
 
 @app.route('/api/abi-general-notes/<int:note_id>', methods=['DELETE'])
 def delete_abi_general_note(note_id):
     """Delete an abi general note."""
-    s = Session()
-    try:
-        note = s.query(AbiGeneralNotes).filter(AbiGeneralNotes.id == note_id).first()
-        
-        if not note:
-            return jsonify({'error': 'Note not found'}), 404
-        
-        s.delete(note)
-        s.commit()
-        
-        # Export all abi general notes to file for persistence
-        export_all_abi_general_notes_to_file()
-        
-        return jsonify({'message': 'Note deleted successfully', 'id': note_id})
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error deleting abi general note {note_id}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
+    notes = _load_abi_general_notes()
+    remaining = [n for n in notes if int(n.get('id') or 0) != note_id]
+    if len(remaining) == len(notes):
+        return jsonify({'error': 'Note not found'}), 404
+    _save_abi_general_notes(remaining)
+    return jsonify({'message': 'Note deleted successfully', 'id': note_id})
 
 
 @app.route('/api/abi-general-notes/tags', methods=['GET'])
 def get_abi_general_notes_tags():
     """Get all unique tags used in abi general notes."""
-    s = Session()
-    try:
-        notes = s.query(AbiGeneralNotes.tags).filter(AbiGeneralNotes.tags.isnot(None), AbiGeneralNotes.tags != '').all()
-        
-        # Extract unique tags
-        all_tags = set()
-        for (tags,) in notes:
-            if tags:
-                for tag in tags.split(','):
-                    tag = tag.strip()
-                    if tag:
-                        all_tags.add(tag)
-        
-        return jsonify({'tags': sorted(list(all_tags))})
-    finally:
-        s.close()
+    all_tags = set()
+    for n in _load_abi_general_notes():
+        tags = n.get('tags')
+        if not tags:
+            continue
+        for t in tags.split(','):
+            t = t.strip()
+            if t:
+                all_tags.add(t)
+    return jsonify({'tags': sorted(all_tags)})
 
 
 # ============================================================================
@@ -5374,13 +4580,6 @@ def daily_shortlist_for_date(date):
         wl = _load_watchlist()
         dl = _load_dislikes()
         comments = _load_abi_ticker_notes()
-        prefs = {
-            p.ticker: p.preference
-            for p in s.query(StockPreference).filter(
-                StockPreference.ticker.in_(tickers),
-                StockPreference.preference.isnot(None),
-            ).all()
-        }
         # Pull MainView tags for these tickers (useful for the UI "tags" column).
         mvs = {
             m.ticker: m
@@ -5421,7 +4620,6 @@ def daily_shortlist_for_date(date):
                 'updated_at': (comments.get(t) or {}).get('updated_at'),
                 'has_ticker_note': bool(comment_notes),
             }
-            enriched_row['preference'] = prefs.get(t)
             enriched_row['feedback'] = feedback_for_date.get(t)
             if mv is not None:
                 enriched_row.setdefault('tags', mv.tags)

@@ -160,9 +160,11 @@ case $ACTION in
         "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
         "db_scripts/update_data/main_view_update.py:Update main screener view"
         "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
-        "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
-        "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
-        "db_scripts/initialize_data/seed_abi_general_notes.py:Seed user abi general notes"
+        # stock_notes is removed; superseded by file-only
+        # abi_ticker_notes.json. Nothing to seed.
+        # stock_preferences is removed; superseded by file-only
+        # abi_watchlist.json + abi_dislikes.json. Nothing to seed.
+        # abi_general_notes is also a file-only store; the JSON IS the data.
     )
 
     total_scripts=${#scripts[@]}
@@ -446,9 +448,11 @@ case $ACTION in
             "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
             "db_scripts/update_data/main_view_update.py:Update main screener view"
             "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
-            "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
-            "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
-            "db_scripts/initialize_data/seed_abi_general_notes.py:Seed user abi general notes"
+            # stock_notes is removed; superseded by file-only
+            # abi_ticker_notes.json. Nothing to seed.
+            # stock_preferences is removed; superseded by file-only
+            # abi_watchlist.json + abi_dislikes.json. Nothing to seed.
+            # abi_general_notes is also a file-only store; the JSON IS the data.
         )
 
         total_scripts=${#scripts[@]}
@@ -510,20 +514,17 @@ import os
 engine = create_engine(os.getenv('DATABASE_URL'))
 with engine.connect() as conn:
     try:
-        conn.execute(text('''
-            INSERT INTO staging.stock_notes (ticker, notes, created_at, updated_at)
-            SELECT ticker, notes, created_at, updated_at FROM public.stock_notes
-            ON CONFLICT (ticker) DO UPDATE SET notes = EXCLUDED.notes, updated_at = EXCLUDED.updated_at
-        '''))
-        conn.execute(text('''
-            INSERT INTO staging.stock_preferences (ticker, preference, created_at, updated_at)
-            SELECT ticker, preference, created_at, updated_at FROM public.stock_preferences
-            ON CONFLICT (ticker) DO UPDATE SET preference = EXCLUDED.preference, updated_at = EXCLUDED.updated_at
-        '''))
-        conn.execute(text('''
-            INSERT INTO staging.abi_general_notes (note_date, title, content, tags, created_at, updated_at)
-            SELECT note_date, title, content, tags, created_at, updated_at FROM public.abi_general_notes
-        '''))
+        # stock_notes intentionally omitted: removed entirely. Per-ticker
+        # notes are now in file-only user_data/abi_ticker_notes.json.
+        # stock_preferences intentionally omitted: removed entirely. The
+        # favorite/dislike UX is now in file-only stores (abi_watchlist.json
+        # + abi_dislikes.json). No DB rows to preserve.
+        # abi_general_notes intentionally omitted: it's now a file-only store
+        # at user_data/abi_general_notes.json. No DB rows to preserve.
+        # NOTE: this whole user-data preservation block is now a no-op since
+        # every user-editable store lives in user_data/ on disk and is
+        # backed up via auto_commit.sh. Left in place as a placeholder in
+        # case new DB-backed user data is added later.
         conn.commit()
         print('User data preserved')
     except Exception as e:

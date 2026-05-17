@@ -34,10 +34,13 @@ def initialize_database(reset=False, schema='public'):
     13. rsi_indices - RSI rankings within index universes (SPX, NDX, DJI)
     14. stock_volspike_gapper - Volume spike and gapper detection
     15. main_view - Combined screener view with metrics, volspike/gapper, and tags
-    16. stock_notes - User notes for stocks
-    17. stock_preferences - User favorite/dislike status for stocks
+    16. (was stock_notes; removed. Per-ticker notes now live in file-only
+        user_data/abi_ticker_notes.json. AI research integration removed.)
+    17. (was stock_preferences; removed. The favorite/dislike UX is now
+        served by file-only stores: user_data/abi_watchlist.json and
+        user_data/abi_dislikes.json.)
     18. shares_float - Company share float and liquidity data
-    19. abi_general_notes - User personal general notes by date
+    19. (was abi_general_notes; now file-only at user_data/abi_general_notes.json)
     20. rs_screener - Multi-timeframe relative strength vs SPY
     
     Args:
@@ -65,10 +68,22 @@ def initialize_database(reset=False, schema='public'):
             logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
             connection.execute(text("DROP TABLE IF EXISTS rs_screener CASCADE;"))
+            # abi_general_notes is now file-only; drop here so any leftover
+            # table from older deployments is cleaned up on --reset.
             connection.execute(text("DROP TABLE IF EXISTS abi_general_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS main_view CASCADE;"))
+            # stock_notes is deprecated and now lives in the file-only
+            # user_data/abi_ticker_notes.json store. Keep this DROP so any
+            # leftover table from older deployments gets cleaned up on --reset.
             connection.execute(text("DROP TABLE IF EXISTS stock_notes CASCADE;"))
+            # stock_preferences is deprecated and now lives in file-only
+            # stores (abi_watchlist.json + abi_dislikes.json). Keep this DROP
+            # so any leftover table from older deployments gets cleaned up
+            # on --reset.
             connection.execute(text("DROP TABLE IF EXISTS stock_preferences CASCADE;"))
+            # abi_notes was an old empty table renamed to abi_general_notes
+            # (since itself removed). Drop here to clean up old environments.
+            connection.execute(text("DROP TABLE IF EXISTS abi_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS shares_float CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_volspike_gapper CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS rsi_indices CASCADE;"))
@@ -441,25 +456,12 @@ def initialize_database(reset=False, schema='public'):
             )
         """))
 
-        # 16. stock_notes - User notes for stocks
-        connection.execute(text(f"""
-            {table_clause} stock_notes (
-                ticker VARCHAR(20) PRIMARY KEY REFERENCES tickers(ticker),
-                notes TEXT,
-                created_at TIMESTAMP DEFAULT NOW(),
-                updated_at TIMESTAMP DEFAULT NOW()
-            )
-        """))
+        # 16. stock_notes — removed. Per-ticker notes are now in file-only
+        # user_data/abi_ticker_notes.json. See backend/app.py.
 
-        # 17. stock_preferences - User favorite/dislike status for stocks
-        connection.execute(text(f"""
-            {table_clause} stock_preferences (
-                ticker VARCHAR(20) PRIMARY KEY REFERENCES tickers(ticker),
-                preference VARCHAR(20),
-                created_at TIMESTAMP DEFAULT NOW(),
-                updated_at TIMESTAMP DEFAULT NOW()
-            )
-        """))
+        # 17. stock_preferences — removed. Now superseded by file-only
+        # stores: user_data/abi_watchlist.json (favorites) and
+        # user_data/abi_dislikes.json (dislikes). See backend/app.py.
 
         # 18. shares_float - Company share float and liquidity data
         connection.execute(text(f"""
@@ -474,18 +476,8 @@ def initialize_database(reset=False, schema='public'):
             )
         """))
 
-        # 19. abi_general_notes - User personal general notes by date
-        connection.execute(text(f"""
-            {table_clause} abi_general_notes (
-                id SERIAL PRIMARY KEY,
-                note_date DATE NOT NULL,
-                title VARCHAR(255),
-                content TEXT,
-                tags VARCHAR(500),
-                created_at TIMESTAMP DEFAULT NOW(),
-                updated_at TIMESTAMP DEFAULT NOW()
-            )
-        """))
+        # 19. abi_general_notes — removed. Now a file-only store at
+        # user_data/abi_general_notes.json. See backend/app.py for the API.
 
         # 20. rs_screener - Multi-timeframe relative strength vs SPY
         connection.execute(text(f"""
@@ -548,7 +540,6 @@ def initialize_database(reset=False, schema='public'):
             {idx_clause} idx_main_view_dr_20 ON main_view(dr_20);
             {idx_clause} idx_main_view_dr_60 ON main_view(dr_60);
             {idx_clause} idx_main_view_dr_120 ON main_view(dr_120);
-            {idx_clause} idx_abi_general_notes_note_date ON abi_general_notes(note_date);
             {idx_clause} idx_rs_screener_market_cap ON rs_screener(market_cap);
         """))
         
@@ -578,10 +569,7 @@ def initialize_database(reset=False, schema='public'):
         logger.info("  - rsi_indices (RSI within index universes: SPX, NDX, DJI)")
         logger.info("  - stock_volspike_gapper (volume spike and gapper detection)")
         logger.info("  - main_view (combined screener view with tags)")
-        logger.info("  - stock_notes (user notes for stocks)")
-        logger.info("  - stock_preferences (user favorite/dislike status for stocks)")
         logger.info("  - shares_float (company share float and liquidity data)")
-        logger.info("  - abi_general_notes (user personal general notes by date)")
         logger.info("  - rs_screener (multi-timeframe relative strength vs SPY)")
         
         flush_logger(SCRIPT_NAME)

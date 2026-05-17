@@ -335,13 +335,10 @@
         color: var(--text-secondary);
     }
 
-    .preference-filter {
-        display: flex;
-        gap: 0.25rem;
-        margin-left: auto;
-        align-items: center;
-    }
-
+    /* .pref-filter-btn is retained because the "Wide layout" toggle button
+       (#mvWideToggle) borrows these styles. The .preference-filter wrapper
+       and the favorite/dislike filter buttons that originally used it have
+       been removed along with the deprecated stock_preferences store. */
     .pref-filter-btn {
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
@@ -367,13 +364,6 @@
         background: linear-gradient(135deg, rgba(163, 113, 247, 0.2) 0%, rgba(88, 166, 255, 0.2) 100%);
         border-color: var(--accent-purple);
         color: var(--text-primary);
-    }
-
-    .pref-filter-btn .count {
-        font-size: 0.6rem;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 0.05rem 0.2rem;
-        border-radius: 3px;
     }
 
     .stats-compact {
@@ -623,14 +613,6 @@
     }
     .stock-item.has-stars.active {
         background: rgba(88, 166, 255, 0.12);
-    }
-
-    .stock-item.is-favorite {
-        border-right: 2px solid #ffd700;
-    }
-
-    .stock-item.is-dislike {
-        opacity: 0.55;
     }
 
     .stock-item.hidden-by-filter {
@@ -959,24 +941,6 @@
         gap: 0.3rem;
     }
 
-    .detail-pref-btn {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        padding: 0.15rem 0.2rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        opacity: 0.3;
-        transition: all 0.2s;
-        line-height: 1;
-    }
-
-    .detail-pref-btn:hover { opacity: 0.8; }
-
-    .detail-pref-btn.active { opacity: 1; }
-    .detail-pref-btn.favorite.active { color: #ffd700; text-shadow: 0 0 4px rgba(255, 215, 0, 0.5); }
-    .detail-pref-btn.dislike.active { color: var(--accent-red); }
-
     .notes-indicator {
         position: relative;
         display: inline-flex;
@@ -1190,11 +1154,6 @@
         <div>Stocks: <span id="totalStocks">—</span></div>
         <div>Showing: <span id="showingStocks">—</span></div>
     </div>
-    <div class="preference-filter">
-        <button class="pref-filter-btn active" data-filter="all">All</button>
-        <button class="pref-filter-btn" data-filter="favorite">⭐ <span class="count" id="favCount">0</span></button>
-        <button class="pref-filter-btn" data-filter="dislike" aria-label="Dislikes">👎 <span class="count" id="dislikeCount">0</span></button>
-    </div>
     <div class="mv-wide-toggle-wrap">
         <button type="button" class="pref-filter-btn mv-wide-toggle" id="mvWideToggle" title="Full-width nav and wider side panels on large displays. Preference is saved in this browser.">Wide layout</button>
     </div>
@@ -1246,8 +1205,6 @@
                     <span id="detailTi65"></span>
                     <span id="detailLowFloat"></span>
                     <div class="detail-actions">
-                        <button class="detail-pref-btn favorite" id="detailFavBtn" title="Favorite" onclick="togglePreference(selectedTicker, 'favorite')">⭐</button>
-                        <button class="detail-pref-btn dislike" id="detailDislikeBtn" title="Dislike" onclick="togglePreference(selectedTicker, 'dislike')">👎</button>
                         <div class="notes-indicator" id="detailNotesIndicator">
                             <span class="notes-icon-btn" id="detailNotesIcon" title="Notes">📝</span>
                             <div class="notes-tooltip">
@@ -1390,12 +1347,9 @@
     let currentCap = 'all';
     let selectedTicker = null;
     window.selectedTicker = null;
-    let currentFilter = 'all';
     let selectedSector = null;
     let selectedIndustry = null;
     let currentTimeframeDays = 365;
-    let stockPreferences = {};
-    let stockNotes = {};
 
     function escAttr(s) {
         return String(s == null ? '' : s)
@@ -1507,11 +1461,9 @@
         renderIndustryTabs();
         renderList();
 
-        // Load preferences, notes, and watchlist status for all tickers
+        // Load watchlist + abi-ticker-notes status for all tickers
         const tickers = allStocks.map(s => s.ticker);
         if (tickers.length > 0) {
-            loadPreferencesForStocks(tickers);
-            loadNotesForStocks(tickers);
             loadWatchlistForStocks(tickers);
         }
 
@@ -1612,13 +1564,6 @@
         return true;
     }
 
-    function passesPrefFilter(s) {
-        const pref = stockPreferences[s.ticker]?.preference;
-        if (currentFilter === 'favorite') return pref === 'favorite';
-        if (currentFilter === 'dislike') return pref === 'dislike';
-        return true;
-    }
-
     // ── Render stock list ──
     function renderList() {
         const listEl = document.getElementById('stockList');
@@ -1632,23 +1577,14 @@
             const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
             const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
 
-            // Preference classes
-            const pref = stockPreferences[s.ticker]?.preference;
-            let prefClass = '';
-            if (pref === 'favorite') prefClass = ' is-favorite';
-            else if (pref === 'dislike') prefClass = ' is-dislike';
-
-            // Filter (sector/industry first, then preference)
-            let hidden = '';
-            if (!passesSectorIndustry(s)) hidden = ' hidden-by-filter';
-            else if (!passesPrefFilter(s)) hidden = ' hidden-by-filter';
+            const hidden = passesSectorIndustry(s) ? '' : ' hidden-by-filter';
 
             if (!hidden) visibleCount++;
 
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
             const stars = getStars(s.ticker);
             const hasStarsCls = stars > 0 ? ' has-stars' : '';
-            return `<div class="stock-item${isActive}${prefClass}${hasStarsCls}${hidden}" data-ticker="${s.ticker}">
+            return `<div class="stock-item${isActive}${hasStarsCls}${hidden}" data-ticker="${s.ticker}">
                 <span style="display:flex;align-items:center;min-width:0;">
                     ${starsHtml(s.ticker)}
                     <span class="sn">${i + 1}.</span>
@@ -1729,9 +1665,6 @@
         } else {
             lfEl.innerHTML = '';
         }
-
-        // Preferences
-        updateDetailPreference(ticker);
 
         // Notes
         updateDetailNotes(ticker);
@@ -2053,98 +1986,20 @@
         }
     }
 
-    // ── Preference functions ──
-    async function loadPreferencesForStocks(tickers) {
-        if (!tickers || tickers.length === 0) return;
-        try {
-            const resp = await fetch('/api/frontend/stock-preferences/batch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tickers }),
-            });
-            if (resp.ok) {
-                const data = await resp.json();
-                stockPreferences = { ...stockPreferences, ...data };
-                renderList();
-                updatePreferenceCounts();
-                if (selectedTicker) updateDetailPreference(selectedTicker);
-            }
-        } catch (e) { console.error('Error loading preferences:', e); }
-    }
-
-    function updatePreferenceCounts() {
-        let favCount = 0, dislikeCount = 0;
-        allStocks.forEach(s => {
-            const p = stockPreferences[s.ticker];
-            if (p) {
-                if (p.preference === 'favorite') favCount++;
-                else if (p.preference === 'dislike') dislikeCount++;
-            }
-        });
-        document.getElementById('favCount').textContent = favCount;
-        document.getElementById('dislikeCount').textContent = dislikeCount;
-    }
-
-    window.togglePreference = async function(ticker, prefType) {
-        if (!ticker) return;
-        const currentPref = stockPreferences[ticker]?.preference;
-        const newPref = currentPref === prefType ? null : prefType;
-        try {
-            const resp = await fetch(`/api/frontend/stock-preferences/${ticker}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ preference: newPref }),
-            });
-            if (resp.ok) {
-                if (newPref) {
-                    stockPreferences[ticker] = { preference: newPref };
-                } else {
-                    delete stockPreferences[ticker];
-                }
-                renderList();
-                updatePreferenceCounts();
-                updateDetailPreference(ticker);
-            }
-        } catch (e) { console.error('Error updating preference:', e); }
-    };
-
-    function updateDetailPreference(ticker) {
-        const favBtn = document.getElementById('detailFavBtn');
-        const dislikeBtn = document.getElementById('detailDislikeBtn');
-        favBtn.classList.remove('active');
-        dislikeBtn.classList.remove('active');
-        const pref = stockPreferences[ticker]?.preference;
-        if (pref === 'favorite') favBtn.classList.add('active');
-        else if (pref === 'dislike') dislikeBtn.classList.add('active');
-    }
-
-    // ── Notes functions ──
-    async function loadNotesForStocks(tickers) {
-        if (!tickers || tickers.length === 0) return;
-        try {
-            const resp = await fetch('/api/frontend/stock-notes/batch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tickers }),
-            });
-            if (resp.ok) {
-                const data = await resp.json();
-                stockNotes = { ...stockNotes, ...data };
-                if (selectedTicker) updateDetailNotes(selectedTicker);
-            }
-        } catch (e) { console.error('Error loading notes:', e); }
-    }
-
+    // Notes tooltip now sources its content from abi_ticker_notes (the
+    // file-only canonical per-ticker notes store). The old stock_notes
+    // batch loader has been removed along with the deprecated DB store.
     function updateDetailNotes(ticker) {
         const icon = document.getElementById('detailNotesIcon');
         const content = document.getElementById('notesTooltipContent');
-        if (stockNotes[ticker] && stockNotes[ticker].notes) {
+        const entry = abiTickerNotesStatus[ticker];
+        if (entry && entry.notes) {
             icon.classList.add('has-notes');
-            content.textContent = stockNotes[ticker].notes;
+            content.textContent = entry.notes;
             content.classList.remove('empty');
         } else {
             icon.classList.remove('has-notes');
-            content.textContent = 'No notes yet. Click Edit to add your analysis.';
+            content.textContent = 'No Abi ticker notes yet.';
             content.classList.add('empty');
         }
     }
@@ -2274,6 +2129,7 @@
                 delete abiTickerNotesStatus[ticker];
             }
             updateWatchlistNotes(ticker);
+            updateDetailNotes(ticker);
         });
     };
 
@@ -2287,14 +2143,10 @@
         document.getElementById('loadingState').style.display = 'none';
     }
 
-    function applyPreferenceFilter() {
-        renderList();
-    }
-
     // ── Copy visible tickers ──
     function getVisibleTickers() {
         return allStocks
-            .filter(s => passesSectorIndustry(s) && passesPrefFilter(s))
+            .filter(passesSectorIndustry)
             .map(s => s.ticker);
     }
 
@@ -2351,15 +2203,6 @@
         });
     });
 
-    document.querySelectorAll('.pref-filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.pref-filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
-            applyPreferenceFilter();
-        });
-    });
-
     document.querySelectorAll('#chartTimeframes button').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('#chartTimeframes button').forEach(b => b.classList.remove('active'));
@@ -2375,7 +2218,7 @@
         if (!allStocks.length) return;
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-        const visibleItems = allStocks.filter(s => passesSectorIndustry(s) && passesPrefFilter(s));
+        const visibleItems = allStocks.filter(passesSectorIndustry);
 
         if (visibleItems.length === 0) return;
 

@@ -1222,62 +1222,13 @@
     animation: spin 0.8s linear infinite;
 }
 
-/* Preference Controls */
+/* Action row container (watchlist / notes / dislike buttons). The old
+   favorite/dislike "preference" buttons used to live here too; that store
+   has been deprecated in favor of file-only abi_watchlist + abi_dislikes. */
 .preference-controls {
     display: flex;
     gap: 0.5rem;
     margin-top: 0.75rem;
-}
-
-.pref-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 0.9rem;
-    border-radius: 8px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-family: 'JetBrains Mono', monospace;
-    transition: all 0.2s;
-}
-
-.pref-btn:hover {
-    border-color: var(--accent-purple);
-    color: var(--text-primary);
-    background: var(--bg-card-hover);
-}
-
-.pref-btn.active.favorite {
-    background: rgba(255, 215, 0, 0.15);
-    border-color: #ffd700;
-    color: #ffd700;
-}
-
-.pref-btn.active.dislike {
-    background: rgba(248, 81, 73, 0.15);
-    border-color: var(--accent-red);
-    color: var(--accent-red);
-}
-
-.pref-btn .icon {
-    font-size: 1rem;
-}
-
-.pref-status {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 0.25rem;
-}
-
-.pref-status.saving {
-    color: var(--accent-yellow);
-}
-
-.pref-status.saved {
-    color: var(--accent-green);
 }
 
 /* Detail Sections Container */
@@ -1736,17 +1687,10 @@
                 <span class="tag" id="industry">--</span>
             </div>
             <div class="preference-controls">
-                <button class="pref-btn favorite" id="favBtn" onclick="togglePreference('favorite')">
-                    <span class="icon">⭐</span> Favorite
-                </button>
-                <button class="pref-btn dislike" id="dislikeBtn" onclick="togglePreference('dislike')">
-                    <span class="icon">👎</span> Dislike
-                </button>
                 <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership" onclick="toggleWatchlist()" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">+ Watchlist</button>
                 <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes for this ticker" onclick="openNotesModalForStock()" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">📝 Abi ticker notes</button>
                 <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners" onclick="window._dlOpenForTicker(ticker)" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">👎</button>
             </div>
-            <div class="pref-status" id="prefStatus"></div>
         </div>
         <div class="price-display">
             <div class="current-price" id="currentPrice">--</div>
@@ -2046,98 +1990,11 @@
         <div id="newsContent"></div>
     </div>
 
-    <!-- Notes Section -->
-    <div class="notes-section">
-        <div class="notes-header">
-            <h2><span class="notes-icon">📝</span> Notes</h2>
-            <div class="notes-actions">
-                <button class="notes-btn ai" id="aiNotesBtn" onclick="openAiModal()">
-                    🤖 Get AI Notes
-                </button>
-                <button class="notes-btn" id="editNotesBtn" onclick="toggleEditMode()">Edit</button>
-                <button class="notes-btn primary" id="saveNotesBtn" onclick="saveNotes()" style="display: none;">Save</button>
-                <button class="notes-btn" id="cancelNotesBtn" onclick="cancelEdit()" style="display: none;">Cancel</button>
-                <span class="notes-save-status" id="saveStatus"></span>
-            </div>
-        </div>
-        <div class="notes-content">
-            <div class="notes-display" id="notesDisplay">Loading notes...</div>
-            <textarea class="notes-textarea" id="notesTextarea" style="display: none;" placeholder="Add your notes here... You can write multiple paragraphs of analysis, thesis, key metrics to watch, etc."></textarea>
-        </div>
-        <div class="notes-meta" id="notesMeta"></div>
-    </div>
-
-    <!-- AI Notes Configuration Modal -->
-    <div class="modal-overlay" id="aiModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><span class="icon">🤖</span> AI Stock Research</h3>
-                <button class="modal-close" onclick="closeAiModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <!-- Status Message -->
-                <div class="ai-status" id="aiStatus"></div>
-                
-                <!-- Model Selection -->
-                <div class="form-group">
-                    <label>Select Model</label>
-                    <div class="model-selector">
-                        <label class="model-option" id="modelSonar">
-                            <input type="radio" name="ai-model" value="sonar">
-                            <span class="model-name">Sonar</span>
-                            <span class="model-desc">Fast, cost-effective</span>
-                            <span class="model-cost">~$0.01/request</span>
-                        </label>
-                        <label class="model-option" id="modelSonarPro">
-                            <input type="radio" name="ai-model" value="sonar-pro">
-                            <span class="model-name">Sonar Pro</span>
-                            <span class="model-desc">More detailed analysis</span>
-                            <span class="model-cost">~$0.05/request</span>
-                        </label>
-                        <label class="model-option selected" id="modelClaude">
-                            <input type="radio" name="ai-model" value="claude-web-search" checked>
-                            <span class="model-name">Claude Web Search</span>
-                            <span class="model-desc">Real-time web search for stock news</span>
-                            <span class="model-cost">~$0.10/request</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <!-- Custom Prompt (for Perplexity models) -->
-                <div class="form-group" id="promptSection" style="display: none;">
-                    <label>
-                        Prompt Template
-                        <span class="hint">(Uses [company_name], [ticker] placeholders)</span>
-                    </label>
-                    <textarea class="prompt-textarea" id="aiPromptInput" placeholder="Loading prompt template..."></textarea>
-                    <div class="prompt-actions">
-                        <button onclick="loadDefaultPrompt()">↻ Reset to Default</button>
-                        <button onclick="savePromptTemplate()">💾 Save as Default</button>
-                    </div>
-                </div>
-                
-                <!-- Claude Info (shown when Claude is selected) -->
-                <div class="form-group" id="claudeInfoSection">
-                    <div class="claude-info" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 12px; font-size: 13px; color: #a5b4fc;">
-                        <strong>🔍 Claude Web Search</strong><br>
-                        Searches the web for stock-moving news from the last 12 months including:
-                        <ul style="margin: 8px 0 0 16px; padding: 0;">
-                            <li>Earnings reports & financial results</li>
-                            <li>Contracts, partnerships, acquisitions</li>
-                            <li>Product launches & regulatory approvals</li>
-                            <li>Management changes & analyst ratings</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn secondary" onclick="closeAiModal()">Cancel</button>
-                <button class="modal-btn primary" id="generateAiBtn" onclick="generateAiResearch()">
-                    🚀 Generate Research
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- Notes Section / AI Stock Research modal removed: the stock_notes
+         store has been deprecated. Per-ticker notes are now handled by the
+         "Abi ticker notes" button at the top of this page (file-only
+         abi_ticker_notes.json). The Perplexity / Claude AI research feature
+         was removed with it. -->
 
     <div class="updated-at" id="updatedAt"></div>
 </div>
@@ -2543,200 +2400,9 @@ function updateChartStats() {
     document.getElementById('chartStats').innerHTML = statsHtml;
 }
 
-// ============================================
-// Notes Functions
-// ============================================
-
-let currentNotes = '';
-let isEditMode = false;
-
-async function loadNotes() {
-    try {
-        const response = await fetch(`/api/frontend/stock-notes/${ticker}`);
-        const data = await response.json();
-        
-        currentNotes = data.notes || '';
-        updateNotesDisplay();
-        
-        if (data.updated_at) {
-            const date = new Date(data.updated_at);
-            document.getElementById('notesMeta').textContent = `Last updated: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-        } else {
-            document.getElementById('notesMeta').textContent = '';
-        }
-    } catch (error) {
-        console.error('Error loading notes:', error);
-        document.getElementById('notesDisplay').textContent = 'Error loading notes';
-        document.getElementById('notesDisplay').classList.add('empty');
-    }
-}
-
-function updateNotesDisplay() {
-    const display = document.getElementById('notesDisplay');
-    if (currentNotes && currentNotes.trim()) {
-        // Configure marked for better rendering
-        marked.setOptions({
-            breaks: true,      // Convert \n to <br>
-            gfm: true,         // GitHub Flavored Markdown (tables, etc.)
-            headerIds: false,  // Don't add IDs to headers
-            mangle: false      // Don't mangle email links
-        });
-        
-        // Render markdown to HTML
-        display.innerHTML = marked.parse(currentNotes);
-        display.classList.remove('empty');
-    } else {
-        display.textContent = 'No notes yet. Click Edit to add your analysis.';
-        display.classList.add('empty');
-    }
-}
-
-function toggleEditMode() {
-    isEditMode = true;
-    document.getElementById('notesDisplay').style.display = 'none';
-    document.getElementById('notesTextarea').style.display = 'block';
-    document.getElementById('notesTextarea').value = currentNotes;
-    document.getElementById('notesTextarea').focus();
-    
-    document.getElementById('editNotesBtn').style.display = 'none';
-    document.getElementById('saveNotesBtn').style.display = 'inline-block';
-    document.getElementById('cancelNotesBtn').style.display = 'inline-block';
-    document.getElementById('saveStatus').textContent = '';
-}
-
-function cancelEdit() {
-    isEditMode = false;
-    document.getElementById('notesDisplay').style.display = 'block';
-    document.getElementById('notesTextarea').style.display = 'none';
-    
-    document.getElementById('editNotesBtn').style.display = 'inline-block';
-    document.getElementById('saveNotesBtn').style.display = 'none';
-    document.getElementById('cancelNotesBtn').style.display = 'none';
-    document.getElementById('saveStatus').textContent = '';
-}
-
-async function saveNotes() {
-    const newNotes = document.getElementById('notesTextarea').value;
-    const saveStatus = document.getElementById('saveStatus');
-    const saveBtn = document.getElementById('saveNotesBtn');
-    
-    saveStatus.textContent = 'Saving...';
-    saveStatus.className = 'notes-save-status saving';
-    saveBtn.disabled = true;
-    
-    try {
-        const response = await fetch(`/api/frontend/stock-notes/${ticker}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ notes: newNotes }),
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            currentNotes = newNotes;
-            updateNotesDisplay();
-            cancelEdit();
-            
-            saveStatus.textContent = '✓ Saved';
-            saveStatus.className = 'notes-save-status saved';
-            
-            if (data.updated_at) {
-                const date = new Date(data.updated_at);
-                document.getElementById('notesMeta').textContent = `Last updated: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-            }
-            
-            setTimeout(() => {
-                saveStatus.textContent = '';
-            }, 3000);
-        } else {
-            throw new Error(data.error || 'Failed to save notes');
-        }
-    } catch (error) {
-        console.error('Error saving notes:', error);
-        saveStatus.textContent = '✕ Error saving';
-        saveStatus.className = 'notes-save-status error';
-    } finally {
-        saveBtn.disabled = false;
-    }
-}
-
-// ============================================
-// Preference Functions
-// ============================================
-
-let currentPreference = null;
-
-async function loadPreference() {
-    try {
-        const response = await fetch(`/api/frontend/stock-preferences/${ticker}`);
-        const data = await response.json();
-        
-        currentPreference = data.preference;
-        updatePreferenceUI();
-    } catch (error) {
-        console.error('Error loading preference:', error);
-    }
-}
-
-function updatePreferenceUI() {
-    const favBtn = document.getElementById('favBtn');
-    const dislikeBtn = document.getElementById('dislikeBtn');
-    
-    // Reset both buttons
-    favBtn.classList.remove('active');
-    dislikeBtn.classList.remove('active');
-    
-    // Apply active state based on preference
-    if (currentPreference === 'favorite') {
-        favBtn.classList.add('active');
-    } else if (currentPreference === 'dislike') {
-        dislikeBtn.classList.add('active');
-    }
-}
-
-async function togglePreference(prefType) {
-    const prefStatus = document.getElementById('prefStatus');
-    
-    // If clicking same preference, toggle off
-    const newPref = currentPreference === prefType ? null : prefType;
-    
-    prefStatus.textContent = 'Saving...';
-    prefStatus.className = 'pref-status saving';
-    
-    try {
-        const response = await fetch(`/api/frontend/stock-preferences/${ticker}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ preference: newPref }),
-        });
-        
-        if (response.ok) {
-            currentPreference = newPref;
-            updatePreferenceUI();
-            
-            const statusText = newPref === 'favorite' ? '✓ Added to favorites' :
-                               newPref === 'dislike' ? '✓ Marked as dislike' :
-                               '✓ Preference cleared';
-            prefStatus.textContent = statusText;
-            prefStatus.className = 'pref-status saved';
-            
-            setTimeout(() => {
-                prefStatus.textContent = '';
-            }, 2000);
-        } else {
-            throw new Error('Failed to update preference');
-        }
-    } catch (error) {
-        console.error('Error updating preference:', error);
-        prefStatus.textContent = 'Error saving';
-        prefStatus.className = 'pref-status';
-    }
-}
+// Notes Functions removed: the stock_notes store is deprecated. Per-ticker
+// notes live in the file-only abi_ticker_notes store and are reachable via
+// the "Abi ticker notes" button in the action row at the top of this page.
 
 // ============================================
 // Watchlist Functions
@@ -2785,252 +2451,9 @@ function openNotesModalForStock() {
     window._notesOpenForTicker(ticker);
 }
 
-// ============================================
-// AI Notes Functions
-// ============================================
-
-let defaultPromptTemplate = '';
-let currentPromptTemplate = '';
-
-async function loadPromptTemplate() {
-    try {
-        const response = await fetch('/api/frontend/stock-notes/ai-prompt');
-        const data = await response.json();
-        
-        if (data.prompt) {
-            defaultPromptTemplate = data.prompt;
-            currentPromptTemplate = data.prompt;
-            document.getElementById('aiPromptInput').value = data.prompt;
-        }
-    } catch (error) {
-        console.error('Error loading prompt template:', error);
-    }
-}
-
-function openAiModal() {
-    document.getElementById('aiModal').classList.add('active');
-    // Load prompt template if not loaded
-    if (!currentPromptTemplate) {
-        loadPromptTemplate();
-    } else {
-        document.getElementById('aiPromptInput').value = currentPromptTemplate;
-    }
-    // Reset status
-    hideAiStatus();
-}
-
-function closeAiModal() {
-    document.getElementById('aiModal').classList.remove('active');
-}
-
-function showAiStatus(message, type) {
-    const status = document.getElementById('aiStatus');
-    status.className = 'ai-status active ' + type;
-    
-    if (type === 'loading') {
-        status.innerHTML = '<span class="status-spinner"></span> ' + message;
-    } else {
-        status.textContent = message;
-    }
-}
-
-function hideAiStatus() {
-    const status = document.getElementById('aiStatus');
-    status.className = 'ai-status';
-    status.textContent = '';
-}
-
-function getSelectedModel() {
-    const selected = document.querySelector('input[name="ai-model"]:checked');
-    return selected ? selected.value : 'sonar';
-}
-
-function initModelSelector() {
-    // Model selection UI
-    document.querySelectorAll('.model-option').forEach(option => {
-        option.addEventListener('click', function() {
-            document.querySelectorAll('.model-option').forEach(o => o.classList.remove('selected'));
-            this.classList.add('selected');
-            this.querySelector('input').checked = true;
-            
-            // Toggle prompt section visibility based on model
-            updatePromptSectionVisibility();
-        });
-    });
-    
-    // Set initial visibility
-    updatePromptSectionVisibility();
-}
-
-function updatePromptSectionVisibility() {
-    const model = getSelectedModel();
-    const promptSection = document.getElementById('promptSection');
-    const claudeInfoSection = document.getElementById('claudeInfoSection');
-    
-    if (model === 'claude-web-search') {
-        // Hide prompt, show Claude info
-        promptSection.style.display = 'none';
-        claudeInfoSection.style.display = 'block';
-    } else {
-        // Show prompt, hide Claude info
-        promptSection.style.display = 'block';
-        claudeInfoSection.style.display = 'none';
-    }
-}
-
-async function loadDefaultPrompt() {
-    try {
-        const response = await fetch('/api/frontend/stock-notes/ai-prompt');
-        const data = await response.json();
-        
-        if (data.prompt) {
-            defaultPromptTemplate = data.prompt;
-            document.getElementById('aiPromptInput').value = data.prompt;
-            showAiStatus('Prompt reset to default', 'success');
-            setTimeout(hideAiStatus, 2000);
-        }
-    } catch (error) {
-        showAiStatus('Failed to load default prompt', 'error');
-    }
-}
-
-async function savePromptTemplate() {
-    const prompt = document.getElementById('aiPromptInput').value;
-    
-    if (!prompt.trim()) {
-        showAiStatus('Prompt cannot be empty', 'error');
-        return;
-    }
-    
-    try {
-        const response = await fetch('/api/frontend/stock-notes/ai-prompt', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: prompt })
-        });
-        
-        if (response.ok) {
-            defaultPromptTemplate = prompt;
-            showAiStatus('Prompt saved as default', 'success');
-            setTimeout(hideAiStatus, 2000);
-        } else {
-            showAiStatus('Failed to save prompt', 'error');
-        }
-    } catch (error) {
-        showAiStatus('Error saving prompt: ' + error.message, 'error');
-    }
-}
-
-async function generateAiResearch() {
-    const model = getSelectedModel();
-    const customPrompt = document.getElementById('aiPromptInput').value;
-    
-    const aiBtn = document.getElementById('aiNotesBtn');
-    const generateBtn = document.getElementById('generateAiBtn');
-    
-    // Disable buttons and show loading
-    aiBtn.disabled = true;
-    aiBtn.innerHTML = '<span class="spinner"></span> Generating...';
-    generateBtn.disabled = true;
-    generateBtn.textContent = '⏳ Generating...';
-    
-    // Claude web search may take longer due to multiple web searches
-    const waitMessage = model === 'claude-web-search' 
-        ? 'Searching the web for stock news... This may take 60-90 seconds.'
-        : 'Generating AI research notes... This may take 30-60 seconds.';
-    showAiStatus(waitMessage, 'loading');
-    
-    try {
-        let response;
-        
-        if (model === 'claude-web-search') {
-            // Use Claude endpoint (no custom prompt - uses built-in web search prompt)
-            response = await fetch(`/api/frontend/stock-notes/ai-research-claude/${ticker}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ months: 12 })
-            });
-        } else {
-            // Use Perplexity endpoint
-            const requestBody = { model };
-            
-            // Only send custom prompt if it's been modified from the default
-            if (customPrompt && customPrompt !== defaultPromptTemplate) {
-                // Replace placeholders with actual values
-                const companyName = document.getElementById('companyName').textContent.split('(')[0].trim();
-                
-                requestBody.custom_prompt = customPrompt
-                    .replace(/\[company_name\]/g, companyName)
-                    .replace(/\[ticker\]/g, ticker);
-            }
-            
-            response = await fetch(`/api/frontend/stock-notes/ai-research/${ticker}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(requestBody)
-            });
-        }
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            // Update notes display with new content
-            currentNotes = data.notes;
-            updateNotesDisplay();
-            
-            // Update timestamp
-            if (data.updated_at) {
-                const date = new Date(data.updated_at);
-                document.getElementById('notesMeta').textContent = 
-                    `Last updated: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-            }
-            
-            showAiStatus(`✓ AI research generated successfully using ${data.model_used}`, 'success');
-            
-            // Close modal after short delay
-            setTimeout(() => {
-                closeAiModal();
-                hideAiStatus();
-            }, 2000);
-            
-        } else {
-            // Handle specific error types
-            let errorMessage = data.error || 'Failed to generate AI research';
-            
-            if (data.error_type === 'INSUFFICIENT_CREDITS') {
-                errorMessage = '⚠️ Insufficient API credits. Please add credits to your account.';
-            } else if (data.error_type === 'RATE_LIMITED') {
-                errorMessage = '⚠️ Rate limited. Please wait a few minutes and try again.';
-            }
-            
-            showAiStatus(errorMessage, 'error');
-        }
-        
-    } catch (error) {
-        console.error('Error generating AI research:', error);
-        showAiStatus('Network error: ' + error.message, 'error');
-    } finally {
-        // Re-enable buttons
-        aiBtn.disabled = false;
-        aiBtn.innerHTML = '🤖 Get AI Notes';
-        generateBtn.disabled = false;
-        generateBtn.textContent = '🚀 Generate Research';
-    }
-}
-
-// Close modal on escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeAiModal();
-    }
-});
-
-// Close modal on backdrop click
-document.getElementById('aiModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeAiModal();
-    }
-});
+// AI Notes Functions removed: the Perplexity / Claude AI research feature
+// has been deleted along with the stock_notes store. If you want it back,
+// reintroduce as a feature that writes into user_data/abi_ticker_notes.json.
 
 // ============================================
 // Earnings Data Functions
@@ -3432,15 +2855,11 @@ function renderNews(articles, sourceCounts) {
 
 document.addEventListener('DOMContentLoaded', function() {
     loadStockData();
-    loadNotes();
-    loadPreference();
     loadWatchlistStatus();
     loadEarningsData();
     loadEstimatesData();
     loadRatiosData();
     loadProfileData();
-    initModelSelector();
-    loadPromptTemplate();
 });
 </script>
 {% endblock %}

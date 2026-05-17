@@ -517,40 +517,17 @@ class MainView(Base):
     ticker_rel = relationship("Ticker")
 
 
-# ------------------------------------------------------------
-# 15. StockNotes (user-entered long-form notes/comments per stock)
-# ------------------------------------------------------------
-class StockNotes(Base):
-    __tablename__ = "stock_notes"
-
-    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
-    
-    # Long-form notes content (markdown supported)
-    notes = Column(Text)
-    
-    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
-    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
-
-    ticker_rel = relationship("Ticker")
+# 15. StockNotes removed: this feature is deprecated. Per-ticker notes are
+# now served exclusively by the file-only abi_ticker_notes store
+# (user_data/abi_ticker_notes.json). The AI research integration that wrote
+# into this table has been removed entirely. Kept the numbering of
+# subsequent sections as-is to avoid churn.
 
 
-# ------------------------------------------------------------
-# 16. StockPreference (user favorite/dislike status per stock)
-# ------------------------------------------------------------
-class StockPreference(Base):
-    __tablename__ = "stock_preferences"
-
-    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
-    
-    # Preference status: 'favorite', 'dislike', or None (neutral)
-    preference = Column(String(20))
-    
-    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
-    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
-
-    ticker_rel = relationship("Ticker")
+# 16. StockPreference removed: this feature is deprecated. The favorite/
+# dislike UX is now served by the file-only abi_watchlist (favorites) and
+# abi_dislikes (dislikes) stores under user_data/. Kept the numbering of
+# subsequent sections as-is to avoid churn.
 
 
 # ------------------------------------------------------------
@@ -577,29 +554,9 @@ class SharesFloat(Base):
     ticker_rel = relationship("Ticker")
 
 
-# ------------------------------------------------------------
-# 18. AbiGeneralNotes (user-entered free-form general notes by date)
-# ------------------------------------------------------------
-class AbiGeneralNotes(Base):
-    __tablename__ = "abi_general_notes"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    
-    # Date the note is associated with (not necessarily when created)
-    note_date = Column(Date, nullable=False)
-    
-    # Optional title/summary for the note
-    title = Column(String(255))
-    
-    # Long-form notes content (markdown supported)
-    content = Column(Text)
-    
-    # Optional tags for categorization (comma-separated)
-    tags = Column(String(500))
-    
-    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
-    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+# 18. AbiGeneralNotes removed: this store is now file-only, backed by
+# user_data/abi_general_notes.json (see backend/app.py for the API).
+# Kept the numbering of subsequent sections as-is to avoid churn.
 
 
 # ------------------------------------------------------------

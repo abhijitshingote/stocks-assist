@@ -499,122 +499,17 @@ def api_high_sales_growth(market_cap):
     return jsonify(data), status_code
 
 
-# ============================================================
-# Stock Notes Endpoints
-# ============================================================
-
-@app.route('/api/frontend/stock-notes/<ticker>', methods=['GET'])
-def api_get_stock_notes(ticker):
-    """Proxy endpoint to get notes for a specific stock"""
-    data, status_code = make_backend_request(f'/api/stock-notes/{ticker}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock notes'}), status_code
-    return jsonify(data), status_code
+# Stock Notes + AI Research proxy endpoints removed: the underlying
+# DB-backed store has been deprecated. Per-ticker notes are now served by
+# the file-only abi_ticker_notes endpoints. The AI research integration
+# (Perplexity / Claude) was removed along with stock_notes; if you want it
+# back, reintroduce it as a feature that writes into abi_ticker_notes.json.
 
 
-@app.route('/api/frontend/stock-notes/<ticker>', methods=['PUT'])
-def api_update_stock_notes(ticker):
-    """Proxy endpoint to create or update notes for a specific stock"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request(f'/api/stock-notes/{ticker}', method='PUT', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to update stock notes'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-notes/batch', methods=['POST'])
-def api_get_stock_notes_batch():
-    """Proxy endpoint to get notes for multiple tickers at once"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request('/api/stock-notes/batch', method='POST', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock notes batch'}), status_code
-    return jsonify(data), status_code
-
-
-# ============================================================
-# AI Stock Research Endpoints
-# ============================================================
-
-@app.route('/api/frontend/stock-notes/ai-research/<ticker>', methods=['POST'])
-def api_generate_ai_research(ticker):
-    """Proxy endpoint to generate AI stock research notes using Perplexity API"""
-    json_data = request.get_json() or {}
-    data, status_code = make_backend_request(f'/api/stock-notes/ai-research/{ticker}', method='POST', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to generate AI research'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-notes/ai-research-claude/<ticker>', methods=['POST'])
-def api_generate_ai_research_claude(ticker):
-    """Proxy endpoint to generate AI stock research notes using Claude API with web search"""
-    json_data = request.get_json() or {}
-    data, status_code = make_backend_request(f'/api/stock-notes/ai-research-claude/{ticker}', method='POST', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to generate AI research'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-notes/ai-prompt', methods=['GET'])
-def api_get_ai_prompt():
-    """Proxy endpoint to get the AI prompt template"""
-    data, status_code = make_backend_request('/api/stock-notes/ai-prompt')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch AI prompt template'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-notes/ai-prompt', methods=['PUT'])
-def api_update_ai_prompt():
-    """Proxy endpoint to update the AI prompt template"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request('/api/stock-notes/ai-prompt', method='PUT', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to update AI prompt template'}), status_code
-    return jsonify(data), status_code
-
-
-# ============================================================
-# Stock Preferences Endpoints
-# ============================================================
-
-@app.route('/api/frontend/stock-preferences/<ticker>', methods=['GET'])
-def api_get_stock_preference(ticker):
-    """Proxy endpoint to get preference for a specific stock"""
-    data, status_code = make_backend_request(f'/api/stock-preferences/{ticker}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock preference'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-preferences/<ticker>', methods=['PUT'])
-def api_update_stock_preference(ticker):
-    """Proxy endpoint to create or update preference for a specific stock"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request(f'/api/stock-preferences/{ticker}', method='PUT', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to update stock preference'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-preferences/batch', methods=['POST'])
-def api_get_stock_preferences_batch():
-    """Proxy endpoint to get preferences for multiple tickers at once"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request('/api/stock-preferences/batch', method='POST', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock preferences batch'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-preferences/list/<preference_type>')
-def api_list_stock_preferences(preference_type):
-    """Proxy endpoint to list all stocks with a specific preference"""
-    data, status_code = make_backend_request(f'/api/stock-preferences/list/{preference_type}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock preferences list'}), status_code
-    return jsonify(data), status_code
+# Stock Preferences endpoints removed: superseded by file-only
+# abi_watchlist (favorites) and abi_dislikes (dislikes) endpoints elsewhere
+# in this file. The UI in stock.html / main_view.html no longer renders the
+# favorite/dislike controls that called these.
 
 
 # ============================================================

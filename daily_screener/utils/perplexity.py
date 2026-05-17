@@ -1,7 +1,10 @@
 """Thin Perplexity API client.
 
-Mirrors the pattern in backend/app.py::call_perplexity_api but lives standalone
-so the screening pipeline doesn't depend on the Flask app being importable.
+Self-contained so the screening pipeline doesn't depend on the Flask app
+being importable. (The backend's own Perplexity wrapper used to live in
+backend/app.py::call_perplexity_api but was removed along with the
+deprecated stock_notes / AI research feature; this module is the only
+Perplexity entry point now.)
 
 Also includes a process-wide usage accumulator so callers (and the pipeline
 orchestrator) can report token/request totals and an estimated $ cost after a
