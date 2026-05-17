@@ -422,8 +422,8 @@ class StockChart {
                 fontFamily: "'JetBrains Mono', monospace",
             },
             grid: {
-                vertLines: { color: CHART_CONFIG.gridColor },
-                horzLines: { color: CHART_CONFIG.gridColor },
+                vertLines: { visible: false },
+                horzLines: { visible: false },
             },
             crosshair: {
                 mode: LightweightCharts.CrosshairMode.Normal,
@@ -611,8 +611,8 @@ class StockChart {
                 fontFamily: "'JetBrains Mono', monospace",
             },
             grid: {
-                vertLines: { color: CHART_CONFIG.gridColor },
-                horzLines: { color: CHART_CONFIG.gridColor },
+                vertLines: { visible: false },
+                horzLines: { visible: false },
             },
             crosshair: {
                 mode: LightweightCharts.CrosshairMode.Normal,
@@ -696,8 +696,8 @@ class StockChart {
                 fontFamily: "'JetBrains Mono', monospace",
             },
             grid: {
-                vertLines: { color: CHART_CONFIG.gridColor },
-                horzLines: { color: CHART_CONFIG.gridColor },
+                vertLines: { visible: false },
+                horzLines: { visible: false },
             },
             crosshair: {
                 mode: LightweightCharts.CrosshairMode.Normal,

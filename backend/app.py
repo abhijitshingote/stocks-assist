@@ -5807,5 +5807,44 @@ def market_brief_run():
     })
 
 
+@app.route('/api/auto-commit', methods=['POST'])
+def auto_commit():
+    """Trigger auto_commit.sh script to commit and push user_data changes."""
+    try:
+        import subprocess
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'auto_commit.sh')
+        
+        # Make script executable
+        os.chmod(script_path, 0o755)
+        
+        # Run the script
+        result = subprocess.run(['bash', script_path], capture_output=True, text=True, timeout=30)
+        
+        if result.returncode == 0:
+            return jsonify({
+                'status': 'success',
+                'message': 'Auto-commit completed successfully',
+                'output': result.stdout
+            }), 200
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Auto-commit failed',
+                'error': result.stderr
+            }), 500
+    except subprocess.TimeoutExpired:
+        return jsonify({
+            'status': 'error',
+            'message': 'Auto-commit timed out after 30 seconds'
+        }), 500
+    except Exception as e:
+        logger.error(f"Error in auto_commit: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Error running auto-commit',
+            'error': str(e)
+        }), 500
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

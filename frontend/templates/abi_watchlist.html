@@ -1084,7 +1084,7 @@
             width: container.clientWidth,
             height: height,
             layout: { background: { type: 'solid', color: 'transparent' }, textColor: CHART_CONFIG.textColor, fontFamily: "'JetBrains Mono', monospace" },
-            grid: { vertLines: { color: CHART_CONFIG.gridColor }, horzLines: { color: CHART_CONFIG.gridColor } },
+            grid: { vertLines: { visible: false }, horzLines: { visible: false } },
             crosshair: { mode: LightweightCharts.CrosshairMode.Normal, vertLine: { width: 1, color: CHART_CONFIG.crosshairColor, style: LightweightCharts.LineStyle.Dashed }, horzLine: { width: 1, color: CHART_CONFIG.crosshairColor, style: LightweightCharts.LineStyle.Dashed } },
             rightPriceScale: { borderColor: CHART_CONFIG.borderColor, scaleMargins: { top: 0.1, bottom: 0.1 } },
             timeScale: { borderColor: CHART_CONFIG.borderColor, visible: !!showTimeAxis },

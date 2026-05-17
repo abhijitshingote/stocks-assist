@@ -21,6 +21,79 @@
             --accent-purple: #a371f7;
         }
 
+        /* Light theme mode */
+        body.light-theme {
+            --bg-dark: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f2f5;
+            --border-color: #d0d7de;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --text-muted: #6e7681;
+            --accent-green: #1a7f37;
+            --accent-red: #da3633;
+            --accent-blue: #0969da;
+            --accent-yellow: #bf8700;
+            --accent-purple: #8250df;
+        }
+
+        /* Light theme for cards */
+        body.light-theme .card {
+            background: #ffffff;
+            border-color: #d0d7de;
+        }
+
+        body.light-theme .card:hover {
+            background: #f0f2f5;
+            border-color: #0969da;
+        }
+
+        body.light-theme .wl-modal {
+            background: #ffffff;
+            border-color: #d0d7de;
+        }
+
+        body.light-theme .wl-modal textarea {
+            background: #f8f9fa;
+            border-color: #d0d7de;
+            color: #24292f;
+        }
+
+        body.light-theme .btn-secondary {
+            background: #f8f9fa;
+            border-color: #d0d7de;
+            color: #24292f;
+        }
+
+        body.light-theme .btn-secondary:hover {
+            background: #f0f2f5;
+            border-color: #0969da;
+        }
+
+        body.light-theme nav {
+            background: #ffffff;
+            border-color: #d0d7de;
+        }
+
+        body.light-theme .nav-search input {
+            background: #f8f9fa;
+            border-color: #d0d7de;
+            color: #24292f;
+        }
+
+        body.light-theme .nav-indicator-card {
+            background: #f8f9fa;
+            border-color: #d0d7de;
+        }
+
+        body.light-theme .nav-links a {
+            color: #57606a;
+        }
+
+        body.light-theme .nav-links a:hover {
+            color: #24292f;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -455,6 +528,14 @@
                 </div>
             </div>
             <div class="nav-indicators">
+                <button id="autoCommitBtn" style="display: flex; align-items: center; gap: 0.4rem; margin-right: 0.8rem; cursor: pointer; padding: 0.3rem 0.8rem; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 6px; transition: all 0.2s; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; font-weight: 600;" title="Auto-commit user_data changes">
+                    <span id="autoCommitIcon" style="font-size: 0.9rem;">💾</span>
+                    <span id="autoCommitLabel">Save</span>
+                </button>
+                <div class="theme-toggle" id="themeToggle" style="display: flex; align-items: center; gap: 0.4rem; margin-right: 0.8rem; cursor: pointer; padding: 0.3rem 0.6rem; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 6px; transition: all 0.2s;" title="Toggle light/dark theme">
+                    <span id="themeIcon" style="font-size: 1rem;">🌙</span>
+                    <span id="themeLabelShort" style="font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); text-transform: uppercase;">Dark</span>
+                </div>
                 <div class="nav-indicator-card" id="vix-card">
                     <span class="nav-indicator-label">VIX</span>
                     <span class="nav-indicator-value" id="vix-value">--</span>
@@ -533,7 +614,59 @@
         }
     </script>
 
-    <!-- Notes Modal (shared across pages) -->
+    <script>
+    // Global theme manager
+    (function() {
+        const THEME_KEY = 'stocks-assist-theme';
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeLabelShort = document.getElementById('themeLabelShort');
+        
+        function applyTheme(theme) {
+            const isDark = theme === 'dark';
+            if (isDark) {
+                document.body.classList.remove('light-theme');
+                themeIcon.textContent = '🌙';
+                themeLabelShort.textContent = 'Dark';
+            } else {
+                document.body.classList.add('light-theme');
+                themeIcon.textContent = '☀️';
+                themeLabelShort.textContent = 'Light';
+            }
+            localStorage.setItem(THEME_KEY, theme);
+        }
+        
+        function toggleTheme() {
+            const current = localStorage.getItem(THEME_KEY) || 'dark';
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
+        
+        function initTheme() {
+            const saved = localStorage.getItem(THEME_KEY) || 'dark';
+            applyTheme(saved);
+        }
+        
+        themeToggle.addEventListener('click', toggleTheme);
+        themeToggle.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+        
+        // Initialize theme on page load
+        initTheme();
+        
+        // Make theme manager globally accessible
+        window.themeManager = {
+            applyTheme,
+            toggleTheme,
+            initTheme,
+            getCurrent: () => localStorage.getItem(THEME_KEY) || 'dark'
+        };
+    })();
+    </script>
     <!-- Abi ticker notes are decoupled from the watchlist: this modal saves
          notes for ANY ticker without touching watchlist or dislike
          membership. Watchlist toggling is handled separately by
@@ -792,6 +925,63 @@
             if (onDone) onDone(action, t, newNotes);
         });
     };
+    </script>
+
+    <script>
+    // Auto-commit button handler
+    (function() {
+        const autoCommitBtn = document.getElementById('autoCommitBtn');
+        const autoCommitIcon = document.getElementById('autoCommitIcon');
+        const autoCommitLabel = document.getElementById('autoCommitLabel');
+        const BACKEND_URL = window.BACKEND_URL || (window.location.origin.includes(':3000') ? 'http://localhost:5001' : '/api');
+        
+        if (!autoCommitBtn) return;
+        
+        autoCommitBtn.addEventListener('click', async function() {
+            if (autoCommitBtn.disabled) return;
+            
+            autoCommitBtn.disabled = true;
+            autoCommitIcon.textContent = '⏳';
+            autoCommitLabel.textContent = 'Saving...';
+            
+            try {
+                const response = await fetch('/api/auto-commit', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    autoCommitIcon.textContent = '✅';
+                    autoCommitLabel.textContent = 'Saved!';
+                    setTimeout(() => {
+                        autoCommitIcon.textContent = '💾';
+                        autoCommitLabel.textContent = 'Save';
+                        autoCommitBtn.disabled = false;
+                    }, 2000);
+                } else {
+                    autoCommitIcon.textContent = '❌';
+                    autoCommitLabel.textContent = 'Error';
+                    console.error('Auto-commit error:', data.error || data.message);
+                    setTimeout(() => {
+                        autoCommitIcon.textContent = '💾';
+                        autoCommitLabel.textContent = 'Save';
+                        autoCommitBtn.disabled = false;
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Auto-commit error:', error);
+                autoCommitIcon.textContent = '❌';
+                autoCommitLabel.textContent = 'Error';
+                setTimeout(() => {
+                    autoCommitIcon.textContent = '💾';
+                    autoCommitLabel.textContent = 'Save';
+                    autoCommitBtn.disabled = false;
+                }, 2000);
+            }
+        });
+    })();
     </script>
 </body>
 </html>
