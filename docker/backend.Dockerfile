@@ -5,6 +5,7 @@ WORKDIR /app
 # Install system dependencies including cron, timezone data, and WeasyPrint dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
+    git \
     postgresql-client \
     cron \
     tzdata \
