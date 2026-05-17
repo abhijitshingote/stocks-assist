@@ -1258,7 +1258,8 @@
                                 <div class="notes-tooltip-content empty" id="notesTooltipContent">Loading...</div>
                             </div>
                         </div>
-                        <button class="abi-wl-btn" id="detailWlBtn" title="Abi Watchlist" onclick="openWatchlistModal()">+ Watchlist</button>
+                        <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership" onclick="toggleWatchlistForSelected()">+ Watchlist</button>
+                        <button class="abi-wl-btn" id="detailNotesBtn" title="Edit notes for this ticker" onclick="openNotesModalForSelected()">📝 Notes</button>
                     </div>
                     <div class="chart-timeframes" id="chartTimeframes">
                         <button data-days="30">1M</button>
@@ -1332,8 +1333,8 @@
             <div class="mv-metrics-body side-metrics-body" id="sideMetricsBody">
                 <div class="wl-notes-section" id="wlNotesSection" style="display:none;">
                     <span class="ms-section-title">
-                        <span>Watchlist Notes</span>
-                        <a class="wl-notes-edit" onclick="openWatchlistModal()">Edit</a>
+                        <span>Notes</span>
+                        <a class="wl-notes-edit" onclick="openNotesModalForSelected()">Edit</a>
                     </span>
                     <div class="wl-notes-text empty" id="wlNotesText">No notes</div>
                 </div>
@@ -2148,8 +2149,12 @@
         }
     }
 
-    // ── Watchlist functions ──
+    // ── Watchlist + comments functions ──
+    // `watchlistStatus` tracks list membership + stars only (notes are no
+    // longer stored in the watchlist file). `commentsStatus` is the source
+    // of truth for per-ticker notes regardless of watchlist state.
     let watchlistStatus = {};
+    let commentsStatus = {};
 
     function getStars(ticker) {
         const wl = watchlistStatus[ticker];
@@ -2191,20 +2196,26 @@
     async function loadWatchlistForStocks(tickers) {
         if (!tickers || tickers.length === 0) return;
         try {
-            const resp = await fetch('/api/frontend/abi-watchlist/batch-check', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tickers }),
-            });
-            if (resp.ok) {
-                watchlistStatus = await resp.json();
-                renderList();
-                if (selectedTicker) {
-                    updateWatchlistBtn(selectedTicker);
-                    updateWatchlistNotes(selectedTicker);
-                }
+            const [wlResp, cmtResp] = await Promise.all([
+                fetch('/api/frontend/abi-watchlist/batch-check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tickers }),
+                }),
+                fetch('/api/frontend/abi-comments/batch-check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tickers }),
+                }),
+            ]);
+            if (wlResp.ok) watchlistStatus = await wlResp.json();
+            if (cmtResp.ok) commentsStatus = await cmtResp.json();
+            renderList();
+            if (selectedTicker) {
+                updateWatchlistBtn(selectedTicker);
+                updateWatchlistNotes(selectedTicker);
             }
-        } catch (e) { console.error('Error loading watchlist status:', e); }
+        } catch (e) { console.error('Error loading watchlist/comments status:', e); }
     }
 
     function updateWatchlistBtn(ticker) {
@@ -2216,35 +2227,53 @@
     }
 
     function updateWatchlistNotes(ticker) {
+        // Always show the notes section when a ticker is selected; the note
+        // itself is sourced from the (decoupled) comments file, so it's
+        // available regardless of watchlist membership.
         const section = document.getElementById('wlNotesSection');
         const textEl = document.getElementById('wlNotesText');
-        const wl = watchlistStatus[ticker];
-        if (wl && wl.notes) {
-            section.style.display = 'block';
-            textEl.innerHTML = marked.parse(wl.notes);
+        if (!ticker) { section.style.display = 'none'; return; }
+        section.style.display = 'block';
+        const cmt = commentsStatus[ticker];
+        if (cmt && cmt.notes) {
+            textEl.innerHTML = marked.parse(cmt.notes);
             textEl.classList.remove('empty');
-        } else if (wl) {
-            section.style.display = 'block';
+        } else {
             textEl.innerHTML = '<em>No notes</em>';
             textEl.classList.add('empty');
-        } else {
-            section.style.display = 'none';
         }
     }
 
-    window.openWatchlistModal = function() {
+    // Instant watchlist toggle (no modal). Adds the ticker if it isn't on
+    // the watchlist; removes it if it is. Notes are unaffected.
+    window.toggleWatchlistForSelected = function() {
         if (!selectedTicker) return;
         const inWl = !!watchlistStatus[selectedTicker];
-        const notes = inWl ? (watchlistStatus[selectedTicker].notes || '') : '';
-        window._wlOpen(selectedTicker, notes, inWl, function(action, ticker, newNotes) {
-            if (action === 'saved') {
-                watchlistStatus[ticker] = { notes: newNotes || '', stars: watchlistStatus[ticker]?.stars || 0 };
-            } else if (action === 'removed') {
+        window._wlToggle(selectedTicker, inWl, function(nowIn, ticker) {
+            if (nowIn) {
+                watchlistStatus[ticker] = watchlistStatus[ticker] || { stars: 0 };
+            } else {
                 delete watchlistStatus[ticker];
             }
             updateWatchlistBtn(ticker);
-            updateWatchlistNotes(ticker);
             renderList();
+        });
+    };
+
+    // Open the notes modal for the selected ticker. Saving updates the
+    // (decoupled) comments file only - watchlist membership is untouched.
+    window.openNotesModalForSelected = function() {
+        if (!selectedTicker) return;
+        const cmt = commentsStatus[selectedTicker];
+        const currentNotes = (cmt && cmt.notes) || '';
+        const had = !!currentNotes;
+        window._notesOpen(selectedTicker, currentNotes, had, function(action, ticker, newNotes) {
+            if (action === 'saved') {
+                commentsStatus[ticker] = { notes: newNotes || '' };
+            } else if (action === 'removed') {
+                delete commentsStatus[ticker];
+            }
+            updateWatchlistNotes(ticker);
         });
     };
 

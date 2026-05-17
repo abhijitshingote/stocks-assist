@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat, AbiNotes, MarketBreadth,
+    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat, AbiGeneralNotes, MarketBreadth,
     RsScreener
 )
 import os
@@ -25,13 +25,18 @@ load_dotenv()
 STOCK_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_notes.json')
 # Path to persist stock preferences (survives database resets)
 STOCK_PREFERENCES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_preferences.json')
-# Path to persist abi notes (survives database resets)
-ABI_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_notes.json')
+# Path to persist abi general notes (survives database resets)
+ABI_GENERAL_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_general_notes.json')
 # Path to persist abi watchlist (survives database resets)
 ABI_WATCHLIST_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_watchlist.json')
 # Path to persist explicit thumbs-down list (separate from watchlist).
 # Watchlist `stars: 0` means "unrated"; dislikes are tracked here instead.
 ABI_DISLIKES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_dislikes.json')
+# Path to persist per-ticker free-form comments. Decoupled from watchlist /
+# dislikes membership - the user can attach a comment to ANY ticker regardless
+# of whether it's on either list. (Daily screener still consumes only those
+# comments whose ticker is on the watchlist - see daily_screener/config.py.)
+ABI_COMMENTS_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_comments.json')
 # Daily screener feedback (per-date, per-ticker corrections from the user).
 # Used by Stage 5 of the daily_screener pipeline to calibrate the judge.
 DAILY_SCREENER_FEEDBACK_FILE = os.path.join(
@@ -3585,14 +3590,14 @@ def get_stock_news(ticker):
 
 
 # ============================================================
-# Abi Notes API Endpoints (date-based personal notes)
+# Abi General Notes API Endpoints (date-based personal notes)
 # ============================================================
 
-def export_all_abi_notes_to_file():
-    """Export all abi notes to JSON file for persistence across database resets."""
+def export_all_abi_general_notes_to_file():
+    """Export all abi general notes to JSON file for persistence across database resets."""
     s = Session()
     try:
-        notes = s.query(AbiNotes).order_by(AbiNotes.note_date.desc(), AbiNotes.id.desc()).all()
+        notes = s.query(AbiGeneralNotes).order_by(AbiGeneralNotes.note_date.desc(), AbiGeneralNotes.id.desc()).all()
         
         data = []
         for note in notes:
@@ -3607,24 +3612,24 @@ def export_all_abi_notes_to_file():
             })
         
         # Ensure directory exists
-        os.makedirs(os.path.dirname(ABI_NOTES_FILE), exist_ok=True)
+        os.makedirs(os.path.dirname(ABI_GENERAL_NOTES_FILE), exist_ok=True)
         
-        with open(ABI_NOTES_FILE, 'w') as f:
+        with open(ABI_GENERAL_NOTES_FILE, 'w') as f:
             json.dump(data, f, indent=2)
         
-        logger.info(f"Exported {len(data)} abi notes to {ABI_NOTES_FILE}")
+        logger.info(f"Exported {len(data)} abi general notes to {ABI_GENERAL_NOTES_FILE}")
     except Exception as e:
-        logger.error(f"Error exporting abi notes: {str(e)}")
+        logger.error(f"Error exporting abi general notes: {str(e)}")
     finally:
         s.close()
 
 
-@app.route('/api/abi-notes', methods=['GET'])
-def get_abi_notes():
-    """Get all abi notes, optionally filtered by date range or search query."""
+@app.route('/api/abi-general-notes', methods=['GET'])
+def get_abi_general_notes():
+    """Get all abi general notes, optionally filtered by date range or search query."""
     s = Session()
     try:
-        query = s.query(AbiNotes)
+        query = s.query(AbiGeneralNotes)
         
         # Optional date filtering
         start_date = request.args.get('start_date')
@@ -3633,21 +3638,21 @@ def get_abi_notes():
         tag = request.args.get('tag')
         
         if start_date:
-            query = query.filter(AbiNotes.note_date >= start_date)
+            query = query.filter(AbiGeneralNotes.note_date >= start_date)
         if end_date:
-            query = query.filter(AbiNotes.note_date <= end_date)
+            query = query.filter(AbiGeneralNotes.note_date <= end_date)
         if search:
             search_term = f'%{search}%'
             query = query.filter(
                 or_(
-                    AbiNotes.title.ilike(search_term),
-                    AbiNotes.content.ilike(search_term)
+                    AbiGeneralNotes.title.ilike(search_term),
+                    AbiGeneralNotes.content.ilike(search_term)
                 )
             )
         if tag:
-            query = query.filter(AbiNotes.tags.ilike(f'%{tag}%'))
+            query = query.filter(AbiGeneralNotes.tags.ilike(f'%{tag}%'))
         
-        notes = query.order_by(AbiNotes.note_date.desc(), AbiNotes.id.desc()).all()
+        notes = query.order_by(AbiGeneralNotes.note_date.desc(), AbiGeneralNotes.id.desc()).all()
         
         results = []
         for note in notes:
@@ -3666,12 +3671,12 @@ def get_abi_notes():
         s.close()
 
 
-@app.route('/api/abi-notes/<int:note_id>', methods=['GET'])
-def get_abi_note(note_id):
-    """Get a specific abi note by ID."""
+@app.route('/api/abi-general-notes/<int:note_id>', methods=['GET'])
+def get_abi_general_note(note_id):
+    """Get a specific abi general note by ID."""
     s = Session()
     try:
-        note = s.query(AbiNotes).filter(AbiNotes.id == note_id).first()
+        note = s.query(AbiGeneralNotes).filter(AbiGeneralNotes.id == note_id).first()
         
         if not note:
             return jsonify({'error': 'Note not found'}), 404
@@ -3689,9 +3694,9 @@ def get_abi_note(note_id):
         s.close()
 
 
-@app.route('/api/abi-notes', methods=['POST'])
-def create_abi_note():
-    """Create a new abi note."""
+@app.route('/api/abi-general-notes', methods=['POST'])
+def create_abi_general_note():
+    """Create a new abi general note."""
     s = Session()
     try:
         data = request.get_json()
@@ -3707,7 +3712,7 @@ def create_abi_note():
         else:
             note_date = date.today()
         
-        new_note = AbiNotes(
+        new_note = AbiGeneralNotes(
             note_date=note_date,
             title=data.get('title'),
             content=data.get('content'),
@@ -3717,8 +3722,8 @@ def create_abi_note():
         s.add(new_note)
         s.commit()
         
-        # Export all notes to file for persistence
-        export_all_abi_notes_to_file()
+        # Export all abi general notes to file for persistence
+        export_all_abi_general_notes_to_file()
         
         return jsonify({
             'id': new_note.id,
@@ -3732,15 +3737,15 @@ def create_abi_note():
         }), 201
     except Exception as e:
         s.rollback()
-        logger.error(f"Error creating abi note: {str(e)}")
+        logger.error(f"Error creating abi general note: {str(e)}")
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
 
 
-@app.route('/api/abi-notes/<int:note_id>', methods=['PUT'])
-def update_abi_note(note_id):
-    """Update an existing abi note."""
+@app.route('/api/abi-general-notes/<int:note_id>', methods=['PUT'])
+def update_abi_general_note(note_id):
+    """Update an existing abi general note."""
     s = Session()
     try:
         data = request.get_json()
@@ -3748,7 +3753,7 @@ def update_abi_note(note_id):
         if not data:
             return jsonify({'error': 'Request body is required'}), 400
         
-        note = s.query(AbiNotes).filter(AbiNotes.id == note_id).first()
+        note = s.query(AbiGeneralNotes).filter(AbiGeneralNotes.id == note_id).first()
         
         if not note:
             return jsonify({'error': 'Note not found'}), 404
@@ -3766,8 +3771,8 @@ def update_abi_note(note_id):
         
         s.commit()
         
-        # Export all notes to file for persistence
-        export_all_abi_notes_to_file()
+        # Export all abi general notes to file for persistence
+        export_all_abi_general_notes_to_file()
         
         return jsonify({
             'id': note.id,
@@ -3781,18 +3786,18 @@ def update_abi_note(note_id):
         })
     except Exception as e:
         s.rollback()
-        logger.error(f"Error updating abi note {note_id}: {str(e)}")
+        logger.error(f"Error updating abi general note {note_id}: {str(e)}")
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
 
 
-@app.route('/api/abi-notes/<int:note_id>', methods=['DELETE'])
-def delete_abi_note(note_id):
-    """Delete an abi note."""
+@app.route('/api/abi-general-notes/<int:note_id>', methods=['DELETE'])
+def delete_abi_general_note(note_id):
+    """Delete an abi general note."""
     s = Session()
     try:
-        note = s.query(AbiNotes).filter(AbiNotes.id == note_id).first()
+        note = s.query(AbiGeneralNotes).filter(AbiGeneralNotes.id == note_id).first()
         
         if not note:
             return jsonify({'error': 'Note not found'}), 404
@@ -3800,24 +3805,24 @@ def delete_abi_note(note_id):
         s.delete(note)
         s.commit()
         
-        # Export all notes to file for persistence
-        export_all_abi_notes_to_file()
+        # Export all abi general notes to file for persistence
+        export_all_abi_general_notes_to_file()
         
         return jsonify({'message': 'Note deleted successfully', 'id': note_id})
     except Exception as e:
         s.rollback()
-        logger.error(f"Error deleting abi note {note_id}: {str(e)}")
+        logger.error(f"Error deleting abi general note {note_id}: {str(e)}")
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
 
 
-@app.route('/api/abi-notes/tags', methods=['GET'])
-def get_abi_notes_tags():
-    """Get all unique tags used in abi notes."""
+@app.route('/api/abi-general-notes/tags', methods=['GET'])
+def get_abi_general_notes_tags():
+    """Get all unique tags used in abi general notes."""
     s = Session()
     try:
-        notes = s.query(AbiNotes.tags).filter(AbiNotes.tags.isnot(None), AbiNotes.tags != '').all()
+        notes = s.query(AbiGeneralNotes.tags).filter(AbiGeneralNotes.tags.isnot(None), AbiGeneralNotes.tags != '').all()
         
         # Extract unique tags
         all_tags = set()
@@ -4460,11 +4465,194 @@ def get_treasury_10y():
 
 
 # ============================================================================
-# Abi Watchlist Endpoints (JSON file-based personal watchlist with notes)
+# Abi Comments Endpoints (JSON file-based per-ticker free-form notes)
 # ============================================================================
+# Comments are decoupled from watchlist / dislike membership: a comment can
+# exist for any ticker. The daily screener still only consumes comments whose
+# ticker is on the watchlist (see daily_screener stages s3/s4/s5), so adding
+# a stray comment to an arbitrary ticker won't influence the screener output.
+
+def _load_comments():
+    """Load comments from JSON file. Returns {TICKER: {notes, created_at, updated_at}}."""
+    if os.path.exists(ABI_COMMENTS_FILE):
+        try:
+            with open(ABI_COMMENTS_FILE, 'r') as f:
+                return json.load(f)
+        except Exception:
+            return {}
+    return {}
+
+
+def _save_comments(data):
+    """Save comments to JSON file."""
+    os.makedirs(os.path.dirname(ABI_COMMENTS_FILE), exist_ok=True)
+    with open(ABI_COMMENTS_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+
+def _migrate_legacy_notes():
+    """One-time migration: pull `notes` fields out of abi_watchlist.json and
+    abi_dislikes.json into abi_comments.json, then strip them from the
+    source files. Idempotent - safe to run on every load.
+
+    Watchlist notes win on conflict because they are typically the long-form
+    research thesis; dislike notes are usually a brief 'why blocked'.
+    """
+    moved = 0
+    comments = _load_comments()
+
+    def _ingest(source_path, source_loader, source_saver):
+        nonlocal moved
+        if not os.path.exists(source_path):
+            return
+        try:
+            data = source_loader()
+        except Exception:
+            return
+        if not isinstance(data, dict) or not data:
+            return
+        changed = False
+        for tk, entry in list(data.items()):
+            if not isinstance(entry, dict):
+                continue
+            note = (entry.get('notes') or '').strip()
+            if not note:
+                if 'notes' in entry:
+                    del entry['notes']
+                    changed = True
+                continue
+            tk_up = tk.upper()
+            existing = comments.get(tk_up) or {}
+            existing_note = (existing.get('notes') or '').strip()
+            now_iso = datetime.now(pytz.timezone("US/Eastern")).isoformat()
+            if not existing_note:
+                comments[tk_up] = {
+                    'notes': note,
+                    'created_at': entry.get('added_at') or now_iso,
+                    'updated_at': entry.get('added_at') or now_iso,
+                }
+                moved += 1
+            del entry['notes']
+            changed = True
+        if changed:
+            source_saver(data)
+
+    _ingest(ABI_WATCHLIST_FILE, _load_watchlist, _save_watchlist)
+    _ingest(ABI_DISLIKES_FILE, _load_dislikes, _save_dislikes)
+
+    if moved:
+        logger.info(f"abi-comments: migrated {moved} legacy notes from watchlist/dislikes")
+        _save_comments(comments)
+
+
+@app.route('/api/abi-comments', methods=['GET'])
+def get_abi_comments():
+    """Get all comments: {TICKER: {notes, created_at, updated_at}, ...}."""
+    return jsonify(_load_comments())
+
+
+@app.route('/api/abi-comments/<ticker>', methods=['GET'])
+def get_abi_comment(ticker):
+    """Get the comment for a single ticker. Returns 404 if no comment."""
+    ticker = ticker.upper()
+    comments = _load_comments()
+    if ticker not in comments:
+        return jsonify({'ticker': ticker, 'notes': '', 'has_comment': False})
+    return jsonify({
+        'ticker': ticker,
+        'notes': comments[ticker].get('notes', ''),
+        'created_at': comments[ticker].get('created_at'),
+        'updated_at': comments[ticker].get('updated_at'),
+        'has_comment': True,
+    })
+
+
+@app.route('/api/abi-comments/<ticker>', methods=['PUT'])
+def upsert_abi_comment(ticker):
+    """Create or update the comment for a ticker. Body: {notes}.
+
+    Empty notes is allowed and will clear / remove the comment entirely (so
+    PUT '' is equivalent to DELETE).
+    """
+    ticker = ticker.upper()
+    data = request.get_json() or {}
+    if 'notes' not in data:
+        return jsonify({'error': 'notes field is required'}), 400
+
+    notes = (data.get('notes') or '').rstrip()
+    comments = _load_comments()
+    now_iso = datetime.now(pytz.timezone("US/Eastern")).isoformat()
+
+    if not notes:
+        if ticker in comments:
+            del comments[ticker]
+            _save_comments(comments)
+        return jsonify({'ticker': ticker, 'notes': '', 'status': 'cleared'})
+
+    if ticker in comments:
+        comments[ticker]['notes'] = notes
+        comments[ticker]['updated_at'] = now_iso
+        comments[ticker].setdefault('created_at', now_iso)
+        status = 'updated'
+    else:
+        comments[ticker] = {
+            'notes': notes,
+            'created_at': now_iso,
+            'updated_at': now_iso,
+        }
+        status = 'created'
+
+    _save_comments(comments)
+    return jsonify({
+        'ticker': ticker,
+        'notes': comments[ticker]['notes'],
+        'created_at': comments[ticker]['created_at'],
+        'updated_at': comments[ticker]['updated_at'],
+        'status': status,
+    })
+
+
+@app.route('/api/abi-comments/<ticker>', methods=['DELETE'])
+def delete_abi_comment(ticker):
+    """Delete the comment for a ticker."""
+    ticker = ticker.upper()
+    comments = _load_comments()
+    if ticker in comments:
+        del comments[ticker]
+        _save_comments(comments)
+    return jsonify({'ticker': ticker, 'status': 'removed'})
+
+
+@app.route('/api/abi-comments/batch-check', methods=['POST'])
+def batch_check_abi_comments():
+    """Return {TICKER: {notes, created_at, updated_at}, ...} for any of the
+    given tickers that have a comment. Tickers without a comment are omitted.
+    """
+    data = request.get_json()
+    if not data or 'tickers' not in data:
+        return jsonify({'error': 'tickers field is required'}), 400
+
+    comments = _load_comments()
+    result = {}
+    for t in data['tickers']:
+        t_upper = t.upper()
+        if t_upper in comments:
+            result[t_upper] = comments[t_upper]
+    return jsonify(result)
+
+
+# ============================================================================
+# Abi Watchlist Endpoints (JSON file-based personal watchlist)
+# ============================================================================
+# The watchlist tracks list membership + star ratings. Per-ticker notes were
+# moved to abi_comments.json (decoupled from watchlist membership). The
+# response shape still includes a `notes` field, populated from the comments
+# file, so existing UI code that reads `wl[ticker].notes` keeps working.
 
 def _load_watchlist():
-    """Load watchlist from JSON file."""
+    """Load watchlist from JSON file. Notes (if any) are dropped on read so
+    callers always see watchlist memberships joined with comments.
+    """
     if os.path.exists(ABI_WATCHLIST_FILE):
         try:
             with open(ABI_WATCHLIST_FILE, 'r') as f:
@@ -4481,10 +4669,28 @@ def _save_watchlist(data):
         json.dump(data, f, indent=2)
 
 
+def _watchlist_with_comments():
+    """Return watchlist data joined with the comments file: each entry will
+    have a `notes` field populated from abi_comments.json (or '' if no
+    comment exists). Used to keep the existing API response shape intact.
+    """
+    wl = _load_watchlist()
+    comments = _load_comments()
+    out = {}
+    for tk, entry in wl.items():
+        if not isinstance(entry, dict):
+            continue
+        merged = {k: v for k, v in entry.items() if k != 'notes'}
+        merged['notes'] = (comments.get(tk) or {}).get('notes', '')
+        out[tk] = merged
+    return out
+
+
 @app.route('/api/abi-watchlist', methods=['GET'])
 def get_abi_watchlist():
-    """Get all watchlist items: {TICKER: {notes, added_at}, ...}."""
-    return jsonify(_load_watchlist())
+    """Get all watchlist items: {TICKER: {notes, stars, added_at}, ...}.
+    Notes are sourced from abi_comments.json (decoupled from membership)."""
+    return jsonify(_watchlist_with_comments())
 
 
 def _coerce_stars(value):
@@ -4500,28 +4706,53 @@ def _coerce_stars(value):
 
 @app.route('/api/abi-watchlist', methods=['POST'])
 def add_to_abi_watchlist():
-    """Add a ticker to the watchlist with optional notes and stars (0-3)."""
+    """Add a ticker to the watchlist with optional stars (0-3).
+
+    For backwards compatibility, a `notes` field in the body is accepted and
+    forwarded to abi_comments.json (so older clients keep working without
+    auto-coupling notes back into the watchlist file)."""
     data = request.get_json()
     if not data or 'ticker' not in data:
         return jsonify({'error': 'ticker field is required'}), 400
 
     ticker = data['ticker'].upper()
-    notes = data.get('notes', '')
     stars = _coerce_stars(data.get('stars', 0)) or 0
 
     wl = _load_watchlist()
     wl[ticker] = {
-        'notes': notes,
         'stars': stars,
         'added_at': datetime.now(pytz.timezone("US/Eastern")).isoformat(),
     }
     _save_watchlist(wl)
-    return jsonify({'ticker': ticker, 'notes': notes, 'stars': stars, 'status': 'added'})
+
+    notes_in = data.get('notes')
+    if notes_in is not None:
+        notes = (notes_in or '').rstrip()
+        comments = _load_comments()
+        now_iso = datetime.now(pytz.timezone("US/Eastern")).isoformat()
+        if notes:
+            existing = comments.get(ticker) or {}
+            comments[ticker] = {
+                'notes': notes,
+                'created_at': existing.get('created_at') or now_iso,
+                'updated_at': now_iso,
+            }
+            _save_comments(comments)
+        elif ticker in comments:
+            del comments[ticker]
+            _save_comments(comments)
+
+    final_notes = (_load_comments().get(ticker) or {}).get('notes', '')
+    return jsonify({'ticker': ticker, 'notes': final_notes, 'stars': stars, 'status': 'added'})
 
 
 @app.route('/api/abi-watchlist/<ticker>', methods=['PUT'])
 def update_abi_watchlist(ticker):
-    """Partial update for a watchlist ticker. Accepts notes and/or stars (0-3)."""
+    """Partial update for a watchlist ticker. Accepts stars (0-3).
+
+    For backwards compatibility, a `notes` field is also accepted and
+    forwarded to abi_comments.json (notes are no longer stored in the
+    watchlist file itself)."""
     ticker = ticker.upper()
     data = request.get_json() or {}
 
@@ -4539,15 +4770,30 @@ def update_abi_watchlist(ticker):
     if ticker not in wl:
         return jsonify({'error': 'ticker not in watchlist'}), 404
 
-    if has_notes:
-        wl[ticker]['notes'] = data['notes']
     if has_stars:
         wl[ticker]['stars'] = stars
 
     _save_watchlist(wl)
+
+    if has_notes:
+        notes = (data.get('notes') or '').rstrip()
+        comments = _load_comments()
+        now_iso = datetime.now(pytz.timezone("US/Eastern")).isoformat()
+        if notes:
+            existing = comments.get(ticker) or {}
+            comments[ticker] = {
+                'notes': notes,
+                'created_at': existing.get('created_at') or now_iso,
+                'updated_at': now_iso,
+            }
+        elif ticker in comments:
+            del comments[ticker]
+        _save_comments(comments)
+
+    final_notes = (_load_comments().get(ticker) or {}).get('notes', '')
     return jsonify({
         'ticker': ticker,
-        'notes': wl[ticker].get('notes', ''),
+        'notes': final_notes,
         'stars': wl[ticker].get('stars', 0),
         'status': 'updated',
     })
@@ -4555,7 +4801,8 @@ def update_abi_watchlist(ticker):
 
 @app.route('/api/abi-watchlist/<ticker>', methods=['DELETE'])
 def remove_from_abi_watchlist(ticker):
-    """Remove a ticker from the watchlist."""
+    """Remove a ticker from the watchlist. The comment (if any) is preserved
+    intentionally - notes are no longer coupled to membership."""
     ticker = ticker.upper()
     wl = _load_watchlist()
     if ticker in wl:
@@ -4566,12 +4813,14 @@ def remove_from_abi_watchlist(ticker):
 
 @app.route('/api/abi-watchlist/batch-check', methods=['POST'])
 def batch_check_abi_watchlist():
-    """Check which tickers from a list are in the watchlist."""
+    """Return watchlist data (with notes joined from comments file) for any
+    of the given tickers that are on the watchlist. Tickers not on the
+    watchlist are omitted from the response."""
     data = request.get_json()
     if not data or 'tickers' not in data:
         return jsonify({'error': 'tickers field is required'}), 400
 
-    wl = _load_watchlist()
+    wl = _watchlist_with_comments()
     result = {}
     for t in data['tickers']:
         t_upper = t.upper()
@@ -4584,6 +4833,7 @@ def batch_check_abi_watchlist():
 def get_abi_watchlist_data():
     """Get watchlist tickers with full MainView data for the watchlist page."""
     wl = _load_watchlist()
+    comments = _load_comments()
     tickers = list(wl.keys())
 
     if not tickers:
@@ -4656,7 +4906,7 @@ def get_abi_watchlist_data():
                 'last_event_return': float(stock.last_event_return) if stock.last_event_return else None,
                 'tags': stock.tags,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None,
-                'watchlist_notes': wl.get(stock.ticker, {}).get('notes', ''),
+                'watchlist_notes': (comments.get(stock.ticker) or {}).get('notes', ''),
                 'watchlist_added_at': wl.get(stock.ticker, {}).get('added_at', ''),
                 'watchlist_stars': int(wl.get(stock.ticker, {}).get('stars', 0) or 0),
             }
@@ -4671,12 +4921,17 @@ def get_abi_watchlist_data():
 
 
 # ============================================================================
-# Abi Dislikes Endpoints (JSON file-based thumbs-down list with notes)
+# Abi Dislikes Endpoints (JSON file-based thumbs-down list)
 # ============================================================================
 # This list is separate from the watchlist on purpose:
 #   - Watchlist `stars: 0` means "on the watchlist but not yet rated" (neutral).
 #   - Anything in this dislikes file is an explicit "do not surface this".
 # The daily screener pipeline (Stage 1) reads this file as its veto source.
+#
+# Per-ticker notes (the "why is this blocked" rationale) live in
+# abi_comments.json now; the dislikes file only tracks membership. The API
+# response shape still includes a `notes` field, populated from the comments
+# file, so existing UI code keeps working.
 
 def _load_dislikes():
     """Load the dislikes file. Returns {} if missing or invalid."""
@@ -4695,36 +4950,72 @@ def _save_dislikes(data):
         json.dump(data, f, indent=2)
 
 
+def _dislikes_with_comments():
+    """Return dislikes data joined with the comments file: each entry will
+    have a `notes` field populated from abi_comments.json (or '' if no
+    comment exists)."""
+    dl = _load_dislikes()
+    comments = _load_comments()
+    out = {}
+    for tk, entry in dl.items():
+        if not isinstance(entry, dict):
+            continue
+        merged = {k: v for k, v in entry.items() if k != 'notes'}
+        merged['notes'] = (comments.get(tk) or {}).get('notes', '')
+        out[tk] = merged
+    return out
 
 
 @app.route('/api/abi-dislikes', methods=['GET'])
 def get_abi_dislikes():
-    """Get all dislikes: {TICKER: {notes, added_at}, ...}."""
-    return jsonify(_load_dislikes())
+    """Get all dislikes: {TICKER: {notes, added_at}, ...}.
+    Notes are sourced from abi_comments.json (decoupled from membership)."""
+    return jsonify(_dislikes_with_comments())
 
 
 @app.route('/api/abi-dislikes', methods=['POST'])
 def add_to_abi_dislikes():
-    """Add a ticker to the dislikes list with optional notes."""
+    """Add a ticker to the dislikes list.
+
+    For backwards compatibility, a `notes` field in the body is forwarded to
+    abi_comments.json (notes are no longer stored in the dislikes file)."""
     data = request.get_json()
     if not data or 'ticker' not in data:
         return jsonify({'error': 'ticker field is required'}), 400
 
     ticker = data['ticker'].upper()
-    notes = data.get('notes', '')
 
     dl = _load_dislikes()
     dl[ticker] = {
-        'notes': notes,
         'added_at': datetime.now(pytz.timezone("US/Eastern")).isoformat(),
     }
     _save_dislikes(dl)
-    return jsonify({'ticker': ticker, 'notes': notes, 'status': 'added'})
+
+    notes_in = data.get('notes')
+    if notes_in is not None:
+        notes = (notes_in or '').rstrip()
+        comments = _load_comments()
+        now_iso = datetime.now(pytz.timezone("US/Eastern")).isoformat()
+        if notes:
+            existing = comments.get(ticker) or {}
+            comments[ticker] = {
+                'notes': notes,
+                'created_at': existing.get('created_at') or now_iso,
+                'updated_at': now_iso,
+            }
+            _save_comments(comments)
+        elif ticker in comments:
+            del comments[ticker]
+            _save_comments(comments)
+
+    final_notes = (_load_comments().get(ticker) or {}).get('notes', '')
+    return jsonify({'ticker': ticker, 'notes': final_notes, 'status': 'added'})
 
 
 @app.route('/api/abi-dislikes/<ticker>', methods=['PUT'])
 def update_abi_dislikes(ticker):
-    """Partial update for a disliked ticker. Accepts notes."""
+    """Update the comment for a disliked ticker. Notes are routed to
+    abi_comments.json - the dislikes file itself is membership-only."""
     ticker = ticker.upper()
     data = request.get_json() or {}
 
@@ -4735,18 +5026,32 @@ def update_abi_dislikes(ticker):
     if ticker not in dl:
         return jsonify({'error': 'ticker not in dislikes'}), 404
 
-    dl[ticker]['notes'] = data['notes']
-    _save_dislikes(dl)
+    notes = (data.get('notes') or '').rstrip()
+    comments = _load_comments()
+    now_iso = datetime.now(pytz.timezone("US/Eastern")).isoformat()
+    if notes:
+        existing = comments.get(ticker) or {}
+        comments[ticker] = {
+            'notes': notes,
+            'created_at': existing.get('created_at') or now_iso,
+            'updated_at': now_iso,
+        }
+    elif ticker in comments:
+        del comments[ticker]
+    _save_comments(comments)
+
+    final_notes = (_load_comments().get(ticker) or {}).get('notes', '')
     return jsonify({
         'ticker': ticker,
-        'notes': dl[ticker].get('notes', ''),
+        'notes': final_notes,
         'status': 'updated',
     })
 
 
 @app.route('/api/abi-dislikes/<ticker>', methods=['DELETE'])
 def remove_from_abi_dislikes(ticker):
-    """Remove a ticker from the dislikes list."""
+    """Remove a ticker from the dislikes list. The comment (if any) is
+    preserved intentionally - notes are no longer coupled to membership."""
     ticker = ticker.upper()
     dl = _load_dislikes()
     if ticker in dl:
@@ -4757,12 +5062,13 @@ def remove_from_abi_dislikes(ticker):
 
 @app.route('/api/abi-dislikes/batch-check', methods=['POST'])
 def batch_check_abi_dislikes():
-    """Return {TICKER: {notes, added_at}, ...} for tickers that are disliked."""
+    """Return dislikes data (with notes joined from comments file) for any
+    of the given tickers that are disliked."""
     data = request.get_json()
     if not data or 'tickers' not in data:
         return jsonify({'error': 'tickers field is required'}), 400
 
-    dl = _load_dislikes()
+    dl = _dislikes_with_comments()
     result = {}
     for t in data['tickers']:
         t_upper = t.upper()
@@ -5211,6 +5517,7 @@ def daily_shortlist_for_date(date):
     try:
         wl = _load_watchlist()
         dl = _load_dislikes()
+        comments = _load_comments()
         prefs = {
             p.ticker: p.preference
             for p in s.query(StockPreference).filter(
@@ -5229,25 +5536,37 @@ def daily_shortlist_for_date(date):
             t = (r.get('ticker') or '').upper()
             wl_entry = wl.get(t) if t in wl else None
             dl_entry = dl.get(t) if t in dl else None
+            comment_notes = (comments.get(t) or {}).get('notes', '')
             mv = mvs.get(t)
             enriched_row = dict(r)
             enriched_row['watchlist'] = (
                 {
                     'in_watchlist': True,
-                    'notes': wl_entry.get('notes', '') if isinstance(wl_entry, dict) else '',
+                    # Notes are sourced from abi_comments.json (decoupled from
+                    # watchlist membership). Kept under `watchlist.notes` for
+                    # backwards compatibility with existing UI code.
+                    'notes': comment_notes,
                     'stars': int(wl_entry.get('stars', 0) or 0) if isinstance(wl_entry, dict) else 0,
                 }
                 if wl_entry is not None
-                else {'in_watchlist': False, 'notes': '', 'stars': 0}
+                else {'in_watchlist': False, 'notes': comment_notes, 'stars': 0}
             )
             enriched_row['dislike'] = (
                 {
                     'is_disliked': True,
-                    'notes': dl_entry.get('notes', '') if isinstance(dl_entry, dict) else '',
+                    'notes': comment_notes,
                 }
                 if dl_entry is not None
-                else {'is_disliked': False, 'notes': ''}
+                else {'is_disliked': False, 'notes': comment_notes}
             )
+            # Top-level `comment` field: the canonical, decoupled note. The UI
+            # should prefer this over `watchlist.notes` / `dislike.notes`.
+            enriched_row['comment'] = {
+                'notes': comment_notes,
+                'created_at': (comments.get(t) or {}).get('created_at'),
+                'updated_at': (comments.get(t) or {}).get('updated_at'),
+                'has_comment': bool(comment_notes),
+            }
             enriched_row['preference'] = prefs.get(t)
             enriched_row['feedback'] = feedback_for_date.get(t)
             if mv is not None:
@@ -5537,6 +5856,14 @@ def daily_shortlist_theme_dates():
             entries.append({'date': name, 'mtime': mtime})
     entries.sort(key=lambda e: e['date'], reverse=True)
     return jsonify({'dates': entries})
+
+
+# Run any one-time data migrations now that all helper definitions exist.
+# Idempotent - re-running is a no-op once everything has been migrated.
+try:
+    _migrate_legacy_notes()
+except Exception as _e:  # noqa: BLE001
+    logger.warning(f"abi-comments migration skipped due to error: {_e}")
 
 
 if __name__ == '__main__':

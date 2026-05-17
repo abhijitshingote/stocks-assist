@@ -162,7 +162,7 @@ case $ACTION in
         "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
         "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
         "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
-        "db_scripts/initialize_data/seed_abi_notes.py:Seed user abi notes"
+        "db_scripts/initialize_data/seed_abi_general_notes.py:Seed user abi general notes"
     )
 
     total_scripts=${#scripts[@]}
@@ -448,7 +448,7 @@ case $ACTION in
             "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
             "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
             "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
-            "db_scripts/initialize_data/seed_abi_notes.py:Seed user abi notes"
+            "db_scripts/initialize_data/seed_abi_general_notes.py:Seed user abi general notes"
         )
 
         total_scripts=${#scripts[@]}
@@ -521,8 +521,8 @@ with engine.connect() as conn:
             ON CONFLICT (ticker) DO UPDATE SET preference = EXCLUDED.preference, updated_at = EXCLUDED.updated_at
         '''))
         conn.execute(text('''
-            INSERT INTO staging.abi_notes (note_date, title, content, tags, created_at, updated_at)
-            SELECT note_date, title, content, tags, created_at, updated_at FROM public.abi_notes
+            INSERT INTO staging.abi_general_notes (note_date, title, content, tags, created_at, updated_at)
+            SELECT note_date, title, content, tags, created_at, updated_at FROM public.abi_general_notes
         '''))
         conn.commit()
         print('User data preserved')

@@ -21,6 +21,10 @@ ABI_WATCHLIST_FILE = USER_DATA_DIR / "abi_watchlist.json"
 # Explicit thumbs-down list. Separate from the watchlist on purpose:
 # watchlist.stars == 0 means "not yet rated" (neutral), NOT a veto.
 ABI_DISLIKES_FILE = USER_DATA_DIR / "abi_dislikes.json"
+# Per-ticker free-form comments. Decoupled from watchlist / dislike membership
+# so the user can attach a note to ANY ticker. The screener pipeline only
+# consumes comments whose ticker is also on the watchlist (see s3/s4/s5).
+ABI_COMMENTS_FILE = USER_DATA_DIR / "abi_comments.json"
 THEMES_FILE = USER_DATA_DIR / "themes.json"
 # Per-date, per-ticker verdict corrections. Populated by the UI; consumed
 # by the judge (Stage 5) as in-context calibration examples.

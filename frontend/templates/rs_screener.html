@@ -422,7 +422,8 @@
                 <div class="chart-ticker-info">
                     <span class="ticker-name" id="chartTicker">—</span>
                     <span class="company-name" id="chartCompany"></span>
-                    <button class="abi-wl-btn" id="detailWlBtn" title="Abi Watchlist" onclick="openWatchlistModal()">+ Watchlist</button>
+                    <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership" onclick="toggleWatchlistForSelected()">+ Watchlist</button>
+                    <button class="abi-wl-btn" id="detailNotesBtn" title="Edit notes for this ticker" onclick="openNotesModalForSelected()">📝 Notes</button>
                     <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners" onclick="window._dlOpenForTicker(selectedTicker)">👎</button>
                 </div>
                 <div class="chart-timeframes">
@@ -685,16 +686,28 @@
         window.addEventListener('resize', extraResizeHandler);
     }
 
-    // ── Watchlist ──
+    // ── Watchlist + comments ──
+    // `watchlistStatus` is membership only; per-ticker notes live in
+    // `commentsStatus` (decoupled from watchlist membership).
     let watchlistStatus = {};
+    let commentsStatus = {};
     async function loadWatchlistForStocks(tickers) {
+        if (!tickers || tickers.length === 0) return;
         try {
-            const resp = await fetch('/api/frontend/abi-watchlist/batch-check', {
-                method: 'POST', headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({tickers}),
-            });
-            if (resp.ok) { watchlistStatus = await resp.json(); if (selectedTicker) updateWatchlistBtn(selectedTicker); }
-        } catch(e) { console.error('Error loading watchlist:', e); }
+            const [wlResp, cmtResp] = await Promise.all([
+                fetch('/api/frontend/abi-watchlist/batch-check', {
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({tickers}),
+                }),
+                fetch('/api/frontend/abi-comments/batch-check', {
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({tickers}),
+                }),
+            ]);
+            if (wlResp.ok) watchlistStatus = await wlResp.json();
+            if (cmtResp.ok) commentsStatus = await cmtResp.json();
+            if (selectedTicker) updateWatchlistBtn(selectedTicker);
+        } catch(e) { console.error('Error loading watchlist/comments:', e); }
     }
     function updateWatchlistBtn(ticker) {
         const btn = document.getElementById('detailWlBtn');
@@ -703,13 +716,23 @@
         btn.classList.toggle('in-watchlist', inWl);
         btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
     }
-    window.openWatchlistModal = function() {
+    window.toggleWatchlistForSelected = function() {
         if (!selectedTicker) return;
         const inWl = !!watchlistStatus[selectedTicker];
-        window._wlOpen(selectedTicker, inWl ? (watchlistStatus[selectedTicker].notes||'') : '', inWl, function(action, ticker, notes) {
-            if (action === 'saved') watchlistStatus[ticker] = {notes: notes||''};
-            else if (action === 'removed') delete watchlistStatus[ticker];
+        window._wlToggle(selectedTicker, inWl, function(nowIn, ticker) {
+            if (nowIn) watchlistStatus[ticker] = watchlistStatus[ticker] || {};
+            else delete watchlistStatus[ticker];
             updateWatchlistBtn(ticker);
+        });
+    };
+    window.openNotesModalForSelected = function() {
+        if (!selectedTicker) return;
+        const cmt = commentsStatus[selectedTicker];
+        const currentNotes = (cmt && cmt.notes) || '';
+        const had = !!currentNotes;
+        window._notesOpen(selectedTicker, currentNotes, had, function(action, ticker, newNotes) {
+            if (action === 'saved') commentsStatus[ticker] = { notes: newNotes || '' };
+            else if (action === 'removed') delete commentsStatus[ticker];
         });
     };
 

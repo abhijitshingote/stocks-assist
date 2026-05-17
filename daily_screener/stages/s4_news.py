@@ -35,7 +35,6 @@ through to the audit stage as `dropped_at_stage: 4`.
 from __future__ import annotations
 
 import concurrent.futures
-import json
 import logging
 import re
 from typing import Any
@@ -43,6 +42,7 @@ from typing import Any
 from daily_screener import config
 from daily_screener.utils import io
 from daily_screener.utils.claude import extract_json
+from daily_screener.utils.comments import watchlist_notes_only
 from daily_screener.utils.perplexity import PerplexityError, call_perplexity
 
 logger = logging.getLogger(__name__)
@@ -125,25 +125,16 @@ _STRONG_DRIVER_RE = re.compile("|".join(_STRONG_DRIVER_PATTERNS), re.IGNORECASE)
 # ---------------------------------------------------------------------------
 
 def _load_watchlist_notes() -> dict[str, str]:
-    """Return {TICKER: note} from abi_watchlist.json. Used as an OPTIONAL hint
-    only — Stage 4 is designed to work without any notes."""
-    if not config.ABI_WATCHLIST_FILE.exists():
-        return {}
-    try:
-        with config.ABI_WATCHLIST_FILE.open("r") as f:
-            data = json.load(f) or {}
-    except (OSError, ValueError) as e:
-        logger.warning("[s4] could not read watchlist: %s", e)
-        return {}
+    """Return ``{TICKER: note}`` for tickers that BOTH appear on the
+    watchlist AND have a non-empty comment in ``user_data/abi_comments.json``.
 
-    out: dict[str, str] = {}
-    for tk, entry in data.items():
-        if not isinstance(entry, dict):
-            continue
-        note = (entry.get("notes") or "").strip()
-        if note:
-            out[tk.upper()] = note[:_WATCHLIST_NOTE_CHAR_CAP]
-    return out
+    Comments outside the watchlist are intentionally excluded - free-floating
+    notes (e.g. on a stock the trader hasn't formally added to the watchlist)
+    must NOT influence Stage 4. Used as an OPTIONAL hint only; Stage 4 is
+    designed to work without any notes.
+    """
+    notes = watchlist_notes_only()
+    return {tk: note[:_WATCHLIST_NOTE_CHAR_CAP] for tk, note in notes.items()}
 
 
 # ---------------------------------------------------------------------------

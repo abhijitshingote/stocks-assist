@@ -445,6 +445,7 @@
                     <a href="/technical-screener">Technical</a>
                     <a href="/main-view">Main View</a>
                     <a href="/abi-watchlist">Abi Watchlist</a>
+                    <a href="/abi-general-notes">Abi General Notes</a>
                     <a href="/abi-dislikes">Dislikes</a>
                     <a href="/themes">Themes</a>
                     <a href="/context">Context</a>
@@ -531,87 +532,148 @@
         }
     </script>
 
-    <!-- Abi Watchlist Modal (shared across pages) -->
-    <div class="wl-modal-overlay" id="wlModalOverlay">
+    <!-- Notes Modal (shared across pages) -->
+    <!-- Per-ticker comments are decoupled from the watchlist: this modal
+         saves notes for ANY ticker without touching watchlist or dislike
+         membership. Watchlist toggling is handled separately by
+         `window._wlToggle` (no modal). -->
+    <div class="wl-modal-overlay" id="notesModalOverlay">
         <div class="wl-modal">
-            <div class="wl-modal-title">Add <span class="ticker-hl" id="wlModalTicker"></span> to Abi Watchlist</div>
-            <textarea id="wlModalNotes" placeholder="Notes (optional)..."></textarea>
+            <div class="wl-modal-title">Notes for <span class="ticker-hl" id="notesModalTicker"></span></div>
+            <textarea id="notesModalNotes" placeholder="Notes (markdown supported)..."></textarea>
             <div class="wl-modal-actions">
-                <button class="wl-remove" id="wlModalRemoveBtn" style="display:none;" onclick="window._wlRemove()">Remove</button>
-                <button class="wl-cancel" onclick="window._wlClose()">Cancel</button>
-                <button class="wl-save" id="wlModalSaveBtn" onclick="window._wlSave()">Add</button>
+                <button class="wl-remove" id="notesModalRemoveBtn" style="display:none;" onclick="window._notesDelete()">Delete note</button>
+                <button class="wl-cancel" onclick="window._notesClose()">Cancel</button>
+                <button class="wl-save" id="notesModalSaveBtn" onclick="window._notesSave()">Save</button>
             </div>
         </div>
     </div>
     <script>
     (function(){
-        const overlay = document.getElementById('wlModalOverlay');
-        const tickerEl = document.getElementById('wlModalTicker');
-        const notesEl = document.getElementById('wlModalNotes');
-        const removeBtn = document.getElementById('wlModalRemoveBtn');
-        const saveBtn = document.getElementById('wlModalSaveBtn');
+        const overlay = document.getElementById('notesModalOverlay');
+        const tickerEl = document.getElementById('notesModalTicker');
+        const notesEl = document.getElementById('notesModalNotes');
+        const removeBtn = document.getElementById('notesModalRemoveBtn');
+        const saveBtn = document.getElementById('notesModalSaveBtn');
         let _ticker = null;
-        let _isInWl = false;
+        let _hadNote = false;
         let _onDone = null;
 
-        window._wlOpen = function(ticker, currentNotes, inWatchlist, onDone) {
+        // _notesOpen(ticker, currentNotes, hasExistingNote, onDone)
+        //   onDone(action, ticker, newNotes) where action ∈ {'saved','removed'}
+        window._notesOpen = function(ticker, currentNotes, hasExistingNote, onDone) {
             _ticker = ticker;
-            _isInWl = !!inWatchlist;
+            _hadNote = !!hasExistingNote;
             _onDone = onDone || null;
             tickerEl.textContent = ticker;
             notesEl.value = currentNotes || '';
-            removeBtn.style.display = _isInWl ? 'inline-block' : 'none';
-            saveBtn.textContent = _isInWl ? 'Update' : 'Add';
-            document.querySelector('.wl-modal-title').innerHTML = (_isInWl ? 'Edit ' : 'Add ') + '<span class="ticker-hl">' + ticker + '</span>' + (_isInWl ? ' Watchlist Notes' : ' to Abi Watchlist');
+            removeBtn.style.display = _hadNote ? 'inline-block' : 'none';
+            saveBtn.textContent = _hadNote ? 'Save' : 'Add';
             overlay.classList.add('visible');
             notesEl.focus();
         };
 
-        window._wlClose = function() {
+        window._notesClose = function() {
             overlay.classList.remove('visible');
             _ticker = null;
         };
 
-        window._wlSave = async function() {
+        window._notesSave = async function() {
             if (!_ticker) return;
             const notes = notesEl.value.trim();
             try {
-                if (_isInWl) {
-                    await fetch('/api/frontend/abi-watchlist/' + _ticker, {
-                        method: 'PUT',
-                        headers: {'Content-Type':'application/json'},
-                        body: JSON.stringify({notes})
-                    });
-                } else {
-                    await fetch('/api/frontend/abi-watchlist', {
-                        method: 'POST',
-                        headers: {'Content-Type':'application/json'},
-                        body: JSON.stringify({ticker: _ticker, notes})
-                    });
-                }
-            } catch(e) { console.error('Watchlist save error', e); }
+                await fetch('/api/frontend/abi-comments/' + _ticker, {
+                    method: 'PUT',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({notes})
+                });
+            } catch(e) { console.error('Notes save error', e); }
             overlay.classList.remove('visible');
-            if (_onDone) _onDone('saved', _ticker, notes);
+            // If the user cleared the textarea, treat it as a removal so
+            // callers can update their UI accordingly. Otherwise it's a save.
+            if (_onDone) _onDone(notes ? 'saved' : 'removed', _ticker, notes);
             _ticker = null;
         };
 
-        window._wlRemove = async function() {
+        window._notesDelete = async function() {
             if (!_ticker) return;
             try {
-                await fetch('/api/frontend/abi-watchlist/' + _ticker, {method:'DELETE'});
-            } catch(e) { console.error('Watchlist remove error', e); }
+                await fetch('/api/frontend/abi-comments/' + _ticker, {method:'DELETE'});
+            } catch(e) { console.error('Notes delete error', e); }
             overlay.classList.remove('visible');
-            if (_onDone) _onDone('removed', _ticker);
+            if (_onDone) _onDone('removed', _ticker, '');
             _ticker = null;
         };
 
         overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) window._wlClose();
+            if (e.target === overlay) window._notesClose();
         });
     })();
     </script>
 
+    <!-- Backwards-compat shims for legacy `_wlOpen` callers. The watchlist
+         modal has been replaced by the notes modal (notes are decoupled
+         from membership). Pages that still call `_wlOpen(ticker, notes,
+         inWl, cb)` get rerouted to the notes modal so the trader can edit
+         their note; watchlist membership is left untouched. -->
+    <script>
+    window._wlOpen = function(ticker, currentNotes, inWatchlist, onDone) {
+        const had = !!(currentNotes && String(currentNotes).trim());
+        window._notesOpen(ticker, currentNotes || '', had, onDone || null);
+    };
+    window._wlClose = function() { window._notesClose(); };
+    window._wlSave = function() { window._notesSave(); };
+    window._wlRemove = function() { window._notesDelete(); };
+    </script>
+
+    <!-- Watchlist toggle (no modal). Adds the ticker if it isn't on the
+         watchlist, removes it if it is. The optional `onDone` callback is
+         invoked with the new boolean state so the page can update its UI. -->
+    <script>
+    window._wlToggle = async function(ticker, currentlyIn, onDone) {
+        if (!ticker) return;
+        try {
+            if (currentlyIn) {
+                await fetch('/api/frontend/abi-watchlist/' + ticker, {method: 'DELETE'});
+                if (onDone) onDone(false, ticker);
+            } else {
+                await fetch('/api/frontend/abi-watchlist', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ticker})
+                });
+                if (onDone) onDone(true, ticker);
+            }
+        } catch (e) {
+            console.error('Watchlist toggle error', e);
+        }
+    };
+
+    // Open the notes modal for a ticker, looking up any existing comment
+    // first so the textarea is pre-filled. Mirrors `_dlOpenForTicker`.
+    window._notesOpenForTicker = async function(ticker, onDone) {
+        if (!ticker) return;
+        let currentNotes = '';
+        let hasNote = false;
+        try {
+            const resp = await fetch('/api/frontend/abi-comments/' + ticker);
+            if (resp.ok) {
+                const data = await resp.json();
+                if (data && data.notes) {
+                    currentNotes = data.notes;
+                    hasNote = true;
+                }
+            }
+        } catch (e) { console.error('Note lookup failed', e); }
+        window._notesOpen(ticker, currentNotes, hasNote, onDone || null);
+    };
+    </script>
+
     <!-- Abi Dislike Modal (shared across pages) -->
+    <!-- Membership in `abi_dislikes.json` is the veto signal for the daily
+         screener. The textarea here is the per-ticker comment - it's saved
+         to `abi_comments.json` via the unified comments endpoint, not to
+         the dislikes file (notes are decoupled from membership). -->
     <div class="wl-modal-overlay" id="dlModalOverlay">
         <div class="wl-modal dl-theme">
             <div class="wl-modal-title" id="dlModalTitleEl">Block <span class="ticker-hl" id="dlModalTicker"></span> from screeners</div>

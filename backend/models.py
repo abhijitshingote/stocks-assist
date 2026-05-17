@@ -578,10 +578,10 @@ class SharesFloat(Base):
 
 
 # ------------------------------------------------------------
-# 18. AbiNotes (user-entered free-form notes by date)
+# 18. AbiGeneralNotes (user-entered free-form general notes by date)
 # ------------------------------------------------------------
-class AbiNotes(Base):
-    __tablename__ = "abi_notes"
+class AbiGeneralNotes(Base):
+    __tablename__ = "abi_general_notes"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     

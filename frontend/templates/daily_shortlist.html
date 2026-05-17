@@ -973,8 +973,20 @@ function renderRow(r) {
     const wlBtn = document.createElement('button');
     wlBtn.className = 'abi-wl-btn' + (wl.in_watchlist ? ' in-watchlist' : '');
     wlBtn.textContent = wl.in_watchlist ? '★ Watchlist' : '+ Watchlist';
-    wlBtn.onclick = () => openWatchlist(r);
+    wlBtn.title = wl.in_watchlist ? 'Remove from watchlist' : 'Add to watchlist';
+    wlBtn.onclick = () => toggleWatchlist(r, wlBtn);
     actions.appendChild(wlBtn);
+
+    // Notes button (decoupled from watchlist) - opens the notes modal which
+    // saves to abi_comments.json regardless of watchlist/dislike state.
+    const cmt = r.comment || {};
+    const notesBtn = document.createElement('button');
+    const hasNote = !!(cmt.has_comment || (r.watchlist && r.watchlist.notes));
+    notesBtn.className = 'abi-wl-btn' + (hasNote ? ' in-watchlist' : '');
+    notesBtn.textContent = hasNote ? '📝 Note' : '📝 Notes';
+    notesBtn.title = hasNote ? 'Edit your note for ' + r.ticker : 'Add a note for ' + r.ticker;
+    notesBtn.onclick = () => openNotesForRow(r, notesBtn);
+    actions.appendChild(notesBtn);
 
     const dl = r.dislike || {};
     const dlBtn = document.createElement('button');
@@ -1062,17 +1074,44 @@ function scoreLine(label, value, max, verdict) {
     return w;
 }
 
-function openWatchlist(r) {
+// Instant watchlist toggle (no modal). Notes are unaffected.
+function toggleWatchlist(r, btn) {
     const wl = r.watchlist || {};
-    window._wlOpen(r.ticker, wl.notes || '', !!wl.in_watchlist, (action, ticker, notes) => {
-        // Optimistic local update
-        if (action === 'saved') {
-            r.watchlist = { in_watchlist: true, notes: notes || '', stars: wl.stars || 0 };
-        } else if (action === 'removed') {
-            r.watchlist = { in_watchlist: false, notes: '', stars: 0 };
+    window._wlToggle(r.ticker, !!wl.in_watchlist, function(nowIn, ticker) {
+        r.watchlist = {
+            in_watchlist: nowIn,
+            notes: wl.notes || '',
+            stars: wl.stars || 0,
+        };
+        if (btn) {
+            btn.classList.toggle('in-watchlist', nowIn);
+            btn.textContent = nowIn ? '★ Watchlist' : '+ Watchlist';
+            btn.title = nowIn ? 'Remove from watchlist' : 'Add to watchlist';
         }
-        render();
-        toast(action === 'saved' ? 'Saved to watchlist' : 'Removed from watchlist');
+        toast(nowIn ? 'Added to watchlist' : 'Removed from watchlist');
+    });
+}
+
+// Open the notes modal for a daily-shortlist row. Saves to the (decoupled)
+// comments file - watchlist membership is untouched.
+function openNotesForRow(r, btn) {
+    const currentNotes = (r.comment && r.comment.notes) || (r.watchlist && r.watchlist.notes) || '';
+    const had = !!currentNotes;
+    window._notesOpen(r.ticker, currentNotes, had, function(action, ticker, newNotes) {
+        const isSet = action === 'saved' && !!(newNotes && newNotes.trim());
+        r.comment = {
+            notes: isSet ? newNotes : '',
+            has_comment: isSet,
+        };
+        // Mirror into watchlist.notes for any old code still reading there.
+        r.watchlist = r.watchlist || { in_watchlist: false, stars: 0 };
+        r.watchlist.notes = isSet ? newNotes : '';
+        if (btn) {
+            btn.classList.toggle('in-watchlist', isSet);
+            btn.textContent = isSet ? '📝 Note' : '📝 Notes';
+            btn.title = isSet ? 'Edit your note for ' + ticker : 'Add a note for ' + ticker;
+        }
+        toast(isSet ? 'Note saved' : 'Note removed');
     });
 }
 

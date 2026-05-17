@@ -935,7 +935,8 @@
                     <span id="detailTi65"></span>
                     <span id="detailLowFloat"></span>
                     <div class="detail-actions">
-                        <button class="abi-wl-btn in-watchlist" id="detailWlBtn" title="Edit watchlist notes" onclick="openWatchlistModal()">★ Watchlist</button>
+                        <button class="abi-wl-btn in-watchlist" id="detailWlBtn" title="Remove from watchlist" onclick="toggleWatchlistForSelected()">★ Watchlist</button>
+                        <button class="abi-wl-btn" id="detailNotesBtn" title="Edit notes for this ticker" onclick="openWatchlistModal()">📝 Notes</button>
                         <button class="abi-dl-btn" id="detailDlBtn" title="Move to dislikes (blocks from screeners)" onclick="window._dlOpenForTicker(selectedTicker)">👎</button>
                     </div>
                     <div class="chart-timeframes" id="chartTimeframes">
@@ -1306,20 +1307,37 @@
         }
     }
 
+    // Open the notes modal for the selected ticker. Saves to abi_comments.json
+    // - watchlist membership is independent and is changed via the watchlist
+    // toggle button instead.
     window.openWatchlistModal = function() {
         if (!selectedTicker) return;
         const wl = watchlistData[selectedTicker];
-        window._wlOpen(selectedTicker, wl ? wl.notes : '', true, function(action, ticker, notes) {
-            if (action === 'saved') {
-                const prev = watchlistData[ticker] || {};
-                watchlistData[ticker] = {
-                    ...prev,
-                    notes: notes || '',
-                    stars: Number.isFinite(prev.stars) ? prev.stars : 0,
-                };
-                updateWatchlistNotes(ticker);
-            } else if (action === 'removed') {
-                delete watchlistData[ticker];
+        const currentNotes = (wl && wl.notes) || '';
+        const had = !!currentNotes;
+        window._notesOpen(selectedTicker, currentNotes, had, function(action, ticker, notes) {
+            const prev = watchlistData[ticker] || { stars: 0 };
+            const newNotes = action === 'saved' ? (notes || '') : '';
+            watchlistData[ticker] = {
+                ...prev,
+                notes: newNotes,
+                stars: Number.isFinite(prev.stars) ? prev.stars : 0,
+            };
+            updateWatchlistNotes(ticker);
+        });
+    };
+
+    // Toggle watchlist membership for the selected ticker. Removing from the
+    // watchlist no longer wipes the ticker's comment - that lives in
+    // abi_comments.json and stays available everywhere else.
+    window.toggleWatchlistForSelected = function() {
+        if (!selectedTicker) return;
+        const ticker = selectedTicker;
+        // We're on the watchlist page so the only meaningful action is REMOVE.
+        window._wlToggle(ticker, true, function(nowIn) {
+            if (!nowIn) {
+                // Drop from this page's local list. The comment (if any) is
+                // preserved server-side.
                 allStocks = allStocks.filter(s => s.ticker !== ticker);
                 renderList();
                 if (allStocks.length > 0) {

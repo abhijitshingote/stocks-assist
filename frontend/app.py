@@ -1,6 +1,6 @@
 """Frontend Flask app - renders templates and proxies API calls to backend."""
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect
 import os
 import json
 import requests
@@ -618,72 +618,78 @@ def api_list_stock_preferences(preference_type):
 
 
 # ============================================================
-# Abi Notes Endpoints
+# Abi General Notes Endpoints
 # ============================================================
 
 @app.route('/abi-notes')
-def abi_notes_page():
-    """Abi Notes page - personal date-based notes"""
-    return render_template('abi_notes.html')
+def abi_notes_legacy_redirect():
+    """Old URL; permanent redirect to Abi General Notes."""
+    return redirect('/abi-general-notes', code=301)
 
 
-@app.route('/api/frontend/abi-notes', methods=['GET'])
-def api_get_abi_notes():
-    """Proxy endpoint to get all abi notes"""
+@app.route('/abi-general-notes')
+def abi_general_notes_page():
+    """Abi General Notes page - personal date-based notes"""
+    return render_template('abi_general_notes.html')
+
+
+@app.route('/api/frontend/abi-general-notes', methods=['GET'])
+def api_get_abi_general_notes():
+    """Proxy endpoint to get all abi general notes"""
     # Pass through query parameters
     params = request.args.to_dict()
     query_string = '&'.join(f'{k}={v}' for k, v in params.items())
-    endpoint = f'/api/abi-notes?{query_string}' if query_string else '/api/abi-notes'
+    endpoint = f'/api/abi-general-notes?{query_string}' if query_string else '/api/abi-general-notes'
     data, status_code = make_backend_request(endpoint)
     if data is None:
-        return jsonify({'error': 'Failed to fetch abi notes'}), status_code
+        return jsonify({'error': 'Failed to fetch abi general notes'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes', methods=['POST'])
-def api_create_abi_note():
-    """Proxy endpoint to create a new abi note"""
+@app.route('/api/frontend/abi-general-notes', methods=['POST'])
+def api_create_abi_general_note():
+    """Proxy endpoint to create a new abi general note"""
     json_data = request.get_json()
-    data, status_code = make_backend_request('/api/abi-notes', method='POST', json_data=json_data)
+    data, status_code = make_backend_request('/api/abi-general-notes', method='POST', json_data=json_data)
     if data is None:
-        return jsonify({'error': 'Failed to create abi note'}), status_code
+        return jsonify({'error': 'Failed to create abi general note'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes/<int:note_id>', methods=['GET'])
-def api_get_abi_note(note_id):
-    """Proxy endpoint to get a specific abi note"""
-    data, status_code = make_backend_request(f'/api/abi-notes/{note_id}')
+@app.route('/api/frontend/abi-general-notes/<int:note_id>', methods=['GET'])
+def api_get_abi_general_note(note_id):
+    """Proxy endpoint to get a specific abi general note"""
+    data, status_code = make_backend_request(f'/api/abi-general-notes/{note_id}')
     if data is None:
-        return jsonify({'error': 'Failed to fetch abi note'}), status_code
+        return jsonify({'error': 'Failed to fetch abi general note'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes/<int:note_id>', methods=['PUT'])
-def api_update_abi_note(note_id):
-    """Proxy endpoint to update an abi note"""
+@app.route('/api/frontend/abi-general-notes/<int:note_id>', methods=['PUT'])
+def api_update_abi_general_note(note_id):
+    """Proxy endpoint to update an abi general note"""
     json_data = request.get_json()
-    data, status_code = make_backend_request(f'/api/abi-notes/{note_id}', method='PUT', json_data=json_data)
+    data, status_code = make_backend_request(f'/api/abi-general-notes/{note_id}', method='PUT', json_data=json_data)
     if data is None:
-        return jsonify({'error': 'Failed to update abi note'}), status_code
+        return jsonify({'error': 'Failed to update abi general note'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes/<int:note_id>', methods=['DELETE'])
-def api_delete_abi_note(note_id):
-    """Proxy endpoint to delete an abi note"""
-    data, status_code = make_backend_request(f'/api/abi-notes/{note_id}', method='DELETE', json_data={})
+@app.route('/api/frontend/abi-general-notes/<int:note_id>', methods=['DELETE'])
+def api_delete_abi_general_note(note_id):
+    """Proxy endpoint to delete an abi general note"""
+    data, status_code = make_backend_request(f'/api/abi-general-notes/{note_id}', method='DELETE', json_data={})
     if data is None:
-        return jsonify({'error': 'Failed to delete abi note'}), status_code
+        return jsonify({'error': 'Failed to delete abi general note'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes/tags', methods=['GET'])
-def api_get_abi_notes_tags():
+@app.route('/api/frontend/abi-general-notes/tags', methods=['GET'])
+def api_get_abi_general_notes_tags():
     """Proxy endpoint to get all unique tags"""
-    data, status_code = make_backend_request('/api/abi-notes/tags')
+    data, status_code = make_backend_request('/api/abi-general-notes/tags')
     if data is None:
-        return jsonify({'error': 'Failed to fetch abi notes tags'}), status_code
+        return jsonify({'error': 'Failed to fetch abi general notes tags'}), status_code
     return jsonify(data), status_code
 
 
@@ -920,6 +926,68 @@ def api_batch_check_abi_dislikes():
     data, status_code = make_backend_request('/api/abi-dislikes/batch-check', method='POST', json_data=json_data)
     if data is None:
         return jsonify({'error': 'Failed to check dislikes'}), status_code
+    return jsonify(data), status_code
+
+
+# ============================================================
+# Abi Comments Endpoints (per-ticker free-form notes, decoupled from
+# watchlist/dislike membership)
+# ============================================================
+# A comment can be attached to any ticker regardless of whether it's on the
+# watchlist or the dislikes list. The daily screener pipeline only consumes
+# comments whose ticker is on the watchlist, so unaffiliated comments don't
+# leak into the screener output.
+
+@app.route('/api/frontend/abi-comments', methods=['GET'])
+def api_get_abi_comments():
+    """Proxy endpoint to get all comments."""
+    data, status_code = make_backend_request('/api/abi-comments')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch comments'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-comments/<ticker>', methods=['GET'])
+def api_get_abi_comment(ticker):
+    """Proxy endpoint to get the comment for a single ticker."""
+    data, status_code = make_backend_request(f'/api/abi-comments/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch comment'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-comments/<ticker>', methods=['PUT'])
+def api_upsert_abi_comment(ticker):
+    """Proxy endpoint to create or update a ticker's comment."""
+    json_data = request.get_json()
+    data, status_code = make_backend_request(
+        f'/api/abi-comments/{ticker}', method='PUT', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to save comment'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-comments/<ticker>', methods=['DELETE'])
+def api_delete_abi_comment(ticker):
+    """Proxy endpoint to delete a ticker's comment."""
+    data, status_code = make_backend_request(
+        f'/api/abi-comments/{ticker}', method='DELETE', json_data={}
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to delete comment'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-comments/batch-check', methods=['POST'])
+def api_batch_check_abi_comments():
+    """Proxy endpoint to fetch comments for a list of tickers."""
+    json_data = request.get_json()
+    data, status_code = make_backend_request(
+        '/api/abi-comments/batch-check', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to fetch comments'}), status_code
     return jsonify(data), status_code
 
 

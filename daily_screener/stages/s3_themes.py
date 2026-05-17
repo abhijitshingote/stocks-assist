@@ -22,6 +22,7 @@ from typing import Any
 
 from daily_screener import config
 from daily_screener.utils import io
+from daily_screener.utils.comments import load_watchlist_with_notes
 from daily_screener.utils.llm import LLMError, call_llm_json, extract_json
 from daily_screener.utils.perplexity import PerplexityError, call_perplexity
 
@@ -83,10 +84,13 @@ def _watchlist_hash(wl: dict) -> str:
 
 
 def _load_watchlist() -> dict[str, Any]:
-    if not config.ABI_WATCHLIST_FILE.exists():
-        return {}
-    with config.ABI_WATCHLIST_FILE.open("r") as f:
-        return json.load(f) or {}
+    """Return watchlisted tickers joined with their (optional) comments.
+
+    Notes are sourced from `user_data/abi_comments.json` and included only
+    for tickers that are on the watchlist (so free-floating comments outside
+    the watchlist never reach the user-theme extractor).
+    """
+    return load_watchlist_with_notes()
 
 
 def _extract_user_themes(date_str: str, force: bool = False) -> dict[str, Any]:

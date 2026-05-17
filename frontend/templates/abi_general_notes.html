@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Abi Notes - Stocks Assist{% endblock %}
+{% block title %}Abi General Notes - Stocks Assist{% endblock %}
 
 {% block extra_styles %}
 <style>
@@ -427,7 +427,7 @@
 
 {% block content %}
 <h1 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 1.25rem;">
-    <span class="mono text-purple">📝</span> Abi Notes
+    <span class="mono text-purple">📝</span> Abi General Notes
 </h1>
 
 <div class="notes-container" style="display: flex; flex-direction: row; gap: 0.75rem;">
@@ -515,7 +515,7 @@
         if (activeTag) params.append('tag', activeTag);
         
         try {
-            const response = await fetch(`/api/frontend/abi-notes?${params.toString()}`);
+            const response = await fetch(`/api/frontend/abi-general-notes?${params.toString()}`);
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
@@ -541,7 +541,7 @@
 
     async function loadTags() {
         try {
-            const response = await fetch('/api/frontend/abi-notes/tags');
+            const response = await fetch('/api/frontend/abi-general-notes/tags');
             if (!response.ok) return;
             
             const data = await response.json();
@@ -674,13 +674,13 @@
         try {
             let response;
             if (currentNoteId) {
-                response = await fetch(`/api/frontend/abi-notes/${currentNoteId}`, {
+                response = await fetch(`/api/frontend/abi-general-notes/${currentNoteId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
             } else {
-                response = await fetch('/api/frontend/abi-notes', {
+                response = await fetch('/api/frontend/abi-general-notes', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -713,7 +713,7 @@
         if (!confirm('Are you sure you want to delete this note?')) return;
         
         try {
-            const response = await fetch(`/api/frontend/abi-notes/${currentNoteId}`, {
+            const response = await fetch(`/api/frontend/abi-general-notes/${currentNoteId}`, {
                 method: 'DELETE'
             });
             

@@ -37,7 +37,7 @@ def initialize_database(reset=False, schema='public'):
     16. stock_notes - User notes for stocks
     17. stock_preferences - User favorite/dislike status for stocks
     18. shares_float - Company share float and liquidity data
-    19. abi_notes - User personal notes by date
+    19. abi_general_notes - User personal general notes by date
     20. rs_screener - Multi-timeframe relative strength vs SPY
     
     Args:
@@ -65,7 +65,7 @@ def initialize_database(reset=False, schema='public'):
             logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
             connection.execute(text("DROP TABLE IF EXISTS rs_screener CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS abi_notes CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS abi_general_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS main_view CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_preferences CASCADE;"))
@@ -474,9 +474,9 @@ def initialize_database(reset=False, schema='public'):
             )
         """))
 
-        # 19. abi_notes - User personal notes by date
+        # 19. abi_general_notes - User personal general notes by date
         connection.execute(text(f"""
-            {table_clause} abi_notes (
+            {table_clause} abi_general_notes (
                 id SERIAL PRIMARY KEY,
                 note_date DATE NOT NULL,
                 title VARCHAR(255),
@@ -548,7 +548,7 @@ def initialize_database(reset=False, schema='public'):
             {idx_clause} idx_main_view_dr_20 ON main_view(dr_20);
             {idx_clause} idx_main_view_dr_60 ON main_view(dr_60);
             {idx_clause} idx_main_view_dr_120 ON main_view(dr_120);
-            {idx_clause} idx_abi_notes_note_date ON abi_notes(note_date);
+            {idx_clause} idx_abi_general_notes_note_date ON abi_general_notes(note_date);
             {idx_clause} idx_rs_screener_market_cap ON rs_screener(market_cap);
         """))
         
@@ -581,7 +581,7 @@ def initialize_database(reset=False, schema='public'):
         logger.info("  - stock_notes (user notes for stocks)")
         logger.info("  - stock_preferences (user favorite/dislike status for stocks)")
         logger.info("  - shares_float (company share float and liquidity data)")
-        logger.info("  - abi_notes (user personal notes by date)")
+        logger.info("  - abi_general_notes (user personal general notes by date)")
         logger.info("  - rs_screener (multi-timeframe relative strength vs SPY)")
         
         flush_logger(SCRIPT_NAME)

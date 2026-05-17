@@ -1742,7 +1742,8 @@
                 <button class="pref-btn dislike" id="dislikeBtn" onclick="togglePreference('dislike')">
                     <span class="icon">👎</span> Dislike
                 </button>
-                <button class="abi-wl-btn" id="detailWlBtn" title="Abi Watchlist" onclick="openWatchlistModal()" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">+ Watchlist</button>
+                <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership" onclick="toggleWatchlist()" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">+ Watchlist</button>
+                <button class="abi-wl-btn" id="detailNotesBtn" title="Edit notes for this ticker" onclick="openNotesModalForStock()" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">📝 Notes</button>
                 <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners" onclick="window._dlOpenForTicker(ticker)" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">👎</button>
             </div>
             <div class="pref-status" id="prefStatus"></div>
@@ -2765,17 +2766,23 @@ function updateWatchlistBtn() {
     btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
 }
 
-function openWatchlistModal() {
+// Instant watchlist toggle (no modal). Watchlist membership and per-ticker
+// notes are independent now - notes are managed via `openNotesModalForStock`.
+function toggleWatchlist() {
     const inWl = !!watchlistStatus[ticker];
-    const notes = inWl ? (watchlistStatus[ticker].notes || '') : '';
-    window._wlOpen(ticker, notes, inWl, function(action, t, newNotes) {
-        if (action === 'saved') {
-            watchlistStatus[t] = { notes: newNotes || '' };
-        } else if (action === 'removed') {
-            delete watchlistStatus[t];
-        }
+    window._wlToggle(ticker, inWl, function(nowIn) {
+        if (nowIn) watchlistStatus[ticker] = watchlistStatus[ticker] || {};
+        else delete watchlistStatus[ticker];
         updateWatchlistBtn();
     });
+}
+
+// Open the notes modal for the current ticker. Saves to the (decoupled)
+// comments file - this is a quick header-bar comment that shows up on the
+// screener pages, separate from the long-form Notes section below which is
+// backed by the database.
+function openNotesModalForStock() {
+    window._notesOpenForTicker(ticker);
 }
 
 // ============================================
