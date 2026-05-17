@@ -5709,5 +5709,103 @@ def daily_shortlist_theme_dates():
     return jsonify({'dates': entries})
 
 
+# ============================================================
+# Market Brief Endpoints
+# ============================================================
+
+MARKET_BRIEF_OUTPUTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'market_brief', 'outputs')
+
+
+@app.route('/api/market-brief/dates', methods=['GET'])
+def market_brief_dates():
+    """List dates that have market brief outputs."""
+    if not os.path.isdir(MARKET_BRIEF_OUTPUTS_DIR):
+        return jsonify({'dates': []})
+    entries = []
+    for name in os.listdir(MARKET_BRIEF_OUTPUTS_DIR):
+        full = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, name)
+        if not os.path.isdir(full):
+            continue
+        try:
+            datetime.strptime(name, '%Y-%m-%d')
+        except ValueError:
+            continue
+        brief_md = os.path.join(full, '02_brief.md')
+        brief_json = os.path.join(full, '02_brief.json')
+        if os.path.exists(brief_md) or os.path.exists(brief_json):
+            try:
+                mtime = os.path.getmtime(brief_json if os.path.exists(brief_json) else brief_md)
+            except OSError:
+                mtime = None
+            entries.append({'date': name, 'mtime': mtime})
+    entries.sort(key=lambda e: e['date'], reverse=True)
+    return jsonify({'dates': entries})
+
+
+@app.route('/api/market-brief/<date_str>', methods=['GET'])
+def market_brief_for_date(date_str):
+    """Get market brief content for a specific date."""
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+    if not os.path.isdir(brief_dir):
+        return jsonify({'error': 'No brief found for this date'}), 404
+
+    result = {'date': date_str}
+
+    brief_md_path = os.path.join(brief_dir, '02_brief.md')
+    if os.path.exists(brief_md_path):
+        with open(brief_md_path, 'r', encoding='utf-8') as f:
+            result['markdown'] = f.read()
+
+    brief_json_path = os.path.join(brief_dir, '02_brief.json')
+    if os.path.exists(brief_json_path):
+        with open(brief_json_path, 'r', encoding='utf-8') as f:
+            result['json'] = json.load(f)
+
+    usage_path = os.path.join(brief_dir, 'usage.json')
+    if os.path.exists(usage_path):
+        with open(usage_path, 'r', encoding='utf-8') as f:
+            result['usage'] = json.load(f)
+
+    return jsonify(result)
+
+
+@app.route('/api/market-brief/run', methods=['POST'])
+def market_brief_run():
+    """Trigger a new market brief run."""
+    import subprocess
+    import threading
+
+    data = request.get_json() or {}
+    asof = data.get('asof')
+
+    cmd = ['python', '-m', 'market_brief.run']
+    if asof:
+        try:
+            datetime.strptime(asof, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid asof date format. Use YYYY-MM-DD'}), 400
+        cmd.extend(['--asof', asof])
+
+    def run_brief():
+        try:
+            subprocess.run(cmd, cwd=os.path.dirname(os.path.dirname(__file__)), check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Market brief run failed: {e}")
+
+    thread = threading.Thread(target=run_brief, daemon=True)
+    thread.start()
+
+    return jsonify({
+        'status': 'started',
+        'message': 'Market brief generation started in background',
+        'asof': asof or 'today'
+    })
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1191,5 +1191,43 @@ def api_get_log(filename):
         return jsonify({'error': str(e)}), 500
 
 
+# ============================================================
+# Market Brief Endpoints
+# ============================================================
+
+@app.route('/market-brief')
+def market_brief_page():
+    """Market Brief page - daily AI-generated market summary"""
+    return render_template('market_brief.html')
+
+
+@app.route('/api/frontend/market-brief/dates', methods=['GET'])
+def api_market_brief_dates():
+    """Proxy endpoint to list market brief dates"""
+    data, status_code = make_backend_request('/api/market-brief/dates')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch market brief dates'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief/<date_str>', methods=['GET'])
+def api_market_brief_for_date(date_str):
+    """Proxy endpoint to get market brief for a specific date"""
+    data, status_code = make_backend_request(f'/api/market-brief/{date_str}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch market brief'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief/run', methods=['POST'])
+def api_market_brief_run():
+    """Proxy endpoint to trigger market brief generation"""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request('/api/market-brief/run', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to start market brief run'}), status_code
+    return jsonify(data), status_code
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1,0 +1,826 @@
+{% extends "base.html" %}
+
+{% block title %}Market Brief - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .brief-container {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 0.75rem;
+        min-height: calc(100vh - 160px);
+        width: 100%;
+    }
+
+    .brief-container > .date-list {
+        flex: 0 0 140px !important;
+        width: 140px !important;
+        min-width: 140px !important;
+        max-width: 140px !important;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .date-list-header {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 600;
+        font-size: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .date-list-items {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    .date-item {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .date-item:hover {
+        background: var(--bg-card-hover);
+    }
+
+    .date-item.active {
+        background: var(--bg-card-hover);
+        border-left: 2px solid var(--accent-green);
+    }
+
+    .date-item-date {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        color: var(--text-primary);
+    }
+
+    .date-item-meta {
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        margin-top: 0.1rem;
+    }
+
+    .brief-container > .brief-viewer {
+        flex: 1 1 auto !important;
+        min-width: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .brief-viewer-header {
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .brief-viewer-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+    }
+
+    .brief-viewer-actions {
+        display: flex;
+        gap: 0.4rem;
+    }
+
+    .brief-viewer-actions button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .brief-viewer-actions button:hover {
+        background: var(--bg-card-hover);
+        color: var(--text-primary);
+        border-color: var(--accent-blue);
+    }
+
+    .brief-viewer-actions button.active {
+        background: var(--accent-blue);
+        color: var(--bg-dark);
+        border-color: var(--accent-blue);
+    }
+
+    .brief-viewer-actions button.run-btn {
+        background: var(--accent-green);
+        color: var(--bg-dark);
+        border-color: var(--accent-green);
+        font-weight: 600;
+    }
+
+    .brief-viewer-actions button.run-btn:hover {
+        background: #4eca5f;
+    }
+
+    .brief-viewer-actions button.run-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .brief-content {
+        flex: 1;
+        overflow: auto;
+        padding: 1.5rem 2rem;
+        max-height: calc(100vh - 200px);
+    }
+
+    .brief-content .markdown-body {
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+
+    .brief-content .markdown-body h1 {
+        font-size: 1.6rem;
+        margin-bottom: 0.75rem;
+        color: var(--accent-green);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.75rem;
+    }
+
+    .brief-content .markdown-body h2 {
+        font-size: 1.3rem;
+        margin-top: 1.75rem;
+        margin-bottom: 0.75rem;
+        color: var(--accent-blue);
+        font-weight: 600;
+    }
+
+    .brief-content .markdown-body h3 {
+        font-size: 1.1rem;
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .brief-content .markdown-body p {
+        margin-bottom: 1rem;
+        letter-spacing: 0.3px;
+    }
+
+    .brief-content .markdown-body ul {
+        padding-left: 1.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .brief-content .markdown-body li {
+        margin-bottom: 0.5rem;
+        line-height: 1.8;
+    }
+
+    .brief-content .markdown-body strong {
+        color: var(--text-primary);
+    }
+
+    .brief-content .markdown-body em {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .brief-content .markdown-body code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        background: var(--bg-dark);
+        padding: 0.15rem 0.4rem;
+        border-radius: 3px;
+        letter-spacing: 0.3px;
+    }
+
+    .brief-content .markdown-body hr {
+        border: none;
+        border-top: 1px solid var(--border-color);
+        margin: 1rem 0;
+    }
+
+    .brief-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    .loading::after {
+        content: '';
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--border-color);
+        border-top-color: var(--accent-blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 0.5rem;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .refresh-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 0.2rem;
+        transition: color 0.2s;
+    }
+
+    .refresh-btn:hover {
+        color: var(--accent-blue);
+    }
+
+    .refresh-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 1rem;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+    }
+
+    .tldr-section {
+        background: rgba(63, 185, 80, 0.1);
+        border: 1px solid rgba(63, 185, 80, 0.3);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .tldr-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--accent-green);
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .tldr-item {
+        font-size: 0.95rem;
+        margin-bottom: 0.6rem;
+        padding-left: 0.75rem;
+        border-left: 2px solid var(--accent-green);
+        line-height: 1.7;
+    }
+
+    .ticker-tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        background: var(--bg-dark);
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        color: var(--accent-blue);
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 600;
+        border: 1px solid var(--border-color);
+        display: inline-block;
+    }
+
+    .ticker-tag:hover {
+        background: var(--accent-blue);
+        color: var(--bg-dark);
+        border-color: var(--accent-blue);
+    }
+
+    .topic-card {
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .topic-title {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--accent-blue);
+        margin-bottom: 0.75rem;
+    }
+
+    .topic-bullet {
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        padding-left: 0.75rem;
+        position: relative;
+        line-height: 1.7;
+    }
+
+    .topic-bullet::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: var(--text-muted);
+    }
+
+    .callout-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .callout-ticker {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--accent-yellow);
+        min-width: 50px;
+    }
+
+    .callout-summary {
+        font-size: 0.95rem;
+        flex: 1;
+        line-height: 1.7;
+    }
+
+    .callout-angle {
+        font-size: 0.75rem;
+        background: rgba(88, 166, 255, 0.2);
+        color: var(--accent-blue);
+        padding: 0.15rem 0.4rem;
+        border-radius: 3px;
+        text-transform: uppercase;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .watch-item {
+        font-size: 0.95rem;
+        margin-bottom: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        background: var(--bg-dark);
+        border-radius: 4px;
+        border-left: 3px solid var(--accent-purple);
+        line-height: 1.7;
+    }
+
+    .usage-info {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-color);
+        line-height: 1.7;
+    }
+
+    .view-toggle {
+        display: flex;
+        gap: 0.25rem;
+        background: var(--bg-dark);
+        padding: 0.15rem;
+        border-radius: 5px;
+    }
+
+    .view-toggle button {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.65rem;
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        border-radius: 3px;
+        transition: all 0.15s;
+    }
+
+    .view-toggle button.active {
+        background: var(--bg-card);
+        color: var(--text-primary);
+    }
+
+    .view-toggle button:hover:not(.active) {
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 768px) {
+        .brief-container {
+            flex-direction: column;
+        }
+
+        .date-list {
+            flex: 0 0 auto;
+            min-width: 100%;
+            max-width: 100%;
+        }
+
+        .date-list-items, .brief-content {
+            max-height: 300px;
+        }
+    }
+
+    /* Light box theme */
+    body.light-boxes .topic-card {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        color: #333;
+    }
+
+    body.light-boxes .topic-title {
+        color: #0066cc;
+    }
+
+    body.light-boxes .topic-bullet {
+        color: #333;
+    }
+
+    body.light-boxes .topic-bullet::before {
+        color: #666;
+    }
+
+    body.light-boxes .callout-card {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        color: #333;
+    }
+
+    body.light-boxes .callout-summary {
+        color: #333;
+    }
+
+    body.light-boxes .watch-item {
+        background: #f5f5f5;
+        border-left: 3px solid #9966ff;
+        color: #333;
+    }
+
+    body.light-boxes .tldr-section {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #333;
+    }
+
+    body.light-boxes .tldr-item {
+        color: #333;
+        border-left-color: #22c55e;
+    }
+
+    body.light-boxes .tldr-title {
+        color: #16a34a;
+    }
+
+    body.light-boxes .ticker-tag {
+        background: #fff;
+        border: 1px solid #ddd;
+        color: #0066cc;
+    }
+
+    body.light-boxes .ticker-tag:hover {
+        background: #0066cc;
+        color: #fff;
+    }
+
+    .box-theme-toggle {
+        display: flex;
+        gap: 0.25rem;
+        background: var(--bg-dark);
+        padding: 0.15rem;
+        border-radius: 5px;
+    }
+
+    .box-theme-toggle button {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.65rem;
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        border-radius: 3px;
+        transition: all 0.15s;
+    }
+
+    .box-theme-toggle button.active {
+        background: var(--bg-card);
+        color: var(--text-primary);
+    }
+
+    .box-theme-toggle button:hover:not(.active) {
+        color: var(--text-secondary);
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 1.25rem;">
+    <span class="mono text-green">$</span> Market Brief
+</h1>
+
+<div class="brief-container" style="display: flex; flex-direction: row; gap: 0.75rem;">
+    <div class="date-list" style="flex: 0 0 140px; width: 140px;">
+        <div class="date-list-header">
+            <span>Dates</span>
+            <button class="refresh-btn" onclick="loadDateList()" title="Refresh list">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 4v6h-6M1 20v-6h6"/>
+                    <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                </svg>
+            </button>
+        </div>
+        <div class="date-list-items" id="date-list">
+            <div class="loading">Loading...</div>
+        </div>
+    </div>
+
+    <div class="brief-viewer" style="flex: 1;">
+        <div class="brief-viewer-header">
+            <span class="brief-viewer-title" id="current-brief-date">Select a date</span>
+            <div class="brief-viewer-actions">
+                <div class="view-toggle">
+                    <button id="btn-view-formatted" class="active" onclick="setView('formatted')">Formatted</button>
+                    <button id="btn-view-markdown" onclick="setView('markdown')">Markdown</button>
+                    <button id="btn-view-json" onclick="setView('json')">JSON</button>
+                </div>
+                <div class="box-theme-toggle">
+                    <button id="btn-boxes-dark" class="active" onclick="setBoxTheme('dark')" title="Dark boxes">Dark</button>
+                    <button id="btn-boxes-light" onclick="setBoxTheme('light')" title="Light boxes">Light</button>
+                </div>
+                <button class="run-btn" id="btn-run" onclick="runBrief()">Generate New</button>
+            </div>
+        </div>
+        <div class="brief-content" id="brief-content">
+            <div class="brief-placeholder">Select a date from the list to view the market brief</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let currentDate = null;
+    let currentData = null;
+    let currentView = 'formatted';
+
+    async function loadDateList() {
+        const listEl = document.getElementById('date-list');
+        listEl.innerHTML = '<div class="loading">Loading...</div>';
+
+        try {
+            const response = await fetch('/api/frontend/market-brief/dates');
+            const data = await response.json();
+
+            if (data.dates && data.dates.length > 0) {
+                listEl.innerHTML = data.dates.map(item => {
+                    const dateObj = new Date(item.date + 'T12:00:00');
+                    const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+                    const dateStr = item.date;
+
+                    return `
+                        <div class="date-item${currentDate === item.date ? ' active' : ''}" onclick="loadBrief('${item.date}')">
+                            <div class="date-item-date">${dateStr}</div>
+                            <div class="date-item-meta">${dayName}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                if (!currentDate && data.dates.length > 0) {
+                    loadBrief(data.dates[0].date);
+                }
+            } else {
+                listEl.innerHTML = '<div class="empty-state">No briefs found. Click "Generate New" to create one.</div>';
+            }
+        } catch (error) {
+            listEl.innerHTML = `<div class="empty-state">Error loading dates: ${error.message}</div>`;
+        }
+    }
+
+    async function loadBrief(dateStr) {
+        currentDate = dateStr;
+        const contentEl = document.getElementById('brief-content');
+        const titleEl = document.getElementById('current-brief-date');
+
+        titleEl.textContent = `Brief for ${dateStr}`;
+        contentEl.innerHTML = '<div class="loading">Loading...</div>';
+
+        document.querySelectorAll('.date-item').forEach(el => {
+            el.classList.toggle('active', el.querySelector('.date-item-date').textContent === dateStr);
+        });
+
+        try {
+            const response = await fetch(`/api/frontend/market-brief/${dateStr}`);
+            currentData = await response.json();
+
+            renderView();
+        } catch (error) {
+            contentEl.innerHTML = `<div class="brief-placeholder">Error loading brief: ${error.message}</div>`;
+        }
+    }
+
+    function setView(view) {
+        currentView = view;
+        document.getElementById('btn-view-formatted').classList.toggle('active', view === 'formatted');
+        document.getElementById('btn-view-markdown').classList.toggle('active', view === 'markdown');
+        document.getElementById('btn-view-json').classList.toggle('active', view === 'json');
+        renderView();
+    }
+
+    function setBoxTheme(theme) {
+        document.getElementById('btn-boxes-dark').classList.toggle('active', theme === 'dark');
+        document.getElementById('btn-boxes-light').classList.toggle('active', theme === 'light');
+        
+        if (theme === 'light') {
+            document.body.classList.add('light-boxes');
+            localStorage.setItem('brief-box-theme', 'light');
+        } else {
+            document.body.classList.remove('light-boxes');
+            localStorage.setItem('brief-box-theme', 'dark');
+        }
+    }
+
+    function restoreBoxTheme() {
+        const savedTheme = localStorage.getItem('brief-box-theme') || 'dark';
+        setBoxTheme(savedTheme);
+    }
+
+    function renderView() {
+        const contentEl = document.getElementById('brief-content');
+        if (!currentData) {
+            contentEl.innerHTML = '<div class="brief-placeholder">No data loaded</div>';
+            return;
+        }
+
+        if (currentView === 'json') {
+            const jsonData = currentData.json || {};
+            contentEl.innerHTML = `<pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; white-space: pre-wrap;">${JSON.stringify(jsonData, null, 2)}</pre>`;
+        } else if (currentView === 'markdown') {
+            const md = currentData.markdown || '(No markdown content)';
+            contentEl.innerHTML = `<pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; white-space: pre-wrap;">${escapeHtml(md)}</pre>`;
+        } else {
+            renderFormatted();
+        }
+    }
+
+    function renderFormatted() {
+        const contentEl = document.getElementById('brief-content');
+        const json = currentData.json;
+
+        if (!json || json._error || json._parse_error) {
+            const md = currentData.markdown || '(No content)';
+            contentEl.innerHTML = `<div class="markdown-body">${simpleMarkdown(md)}</div>`;
+            return;
+        }
+
+        let html = '';
+
+        if (json.tldr && json.tldr.length > 0) {
+            html += `<div class="tldr-section">
+                <div class="tldr-title">TL;DR</div>`;
+            json.tldr.forEach(item => {
+                const tickers = (item.tickers || []).map(t =>
+                    `<a href="/stock/${t}" class="ticker-tag">${t}</a>`
+                ).join(' ');
+                html += `<div class="tldr-item">${escapeHtml(item.text)} ${tickers}</div>`;
+            });
+            html += `</div>`;
+        }
+
+        if (json.topics && json.topics.length > 0) {
+            html += `<h2 style="font-size: 1rem; color: var(--accent-blue); margin: 1rem 0 0.5rem;">Topics</h2>`;
+            json.topics.forEach(topic => {
+                html += `<div class="topic-card">
+                    <div class="topic-title">${escapeHtml(topic.name)}</div>`;
+                (topic.bullets || []).forEach(bullet => {
+                    const tickers = (bullet.tickers || []).map(t =>
+                        `<a href="/stock/${t}" class="ticker-tag">${t}</a>`
+                    ).join(' ');
+                    html += `<div class="topic-bullet">${escapeHtml(bullet.text)} ${tickers}</div>`;
+                });
+                html += `</div>`;
+            });
+        }
+
+        if (json.callouts && json.callouts.length > 0) {
+            html += `<h2 style="font-size: 1rem; color: var(--accent-yellow); margin: 1rem 0 0.5rem;">Stock Callouts</h2>`;
+            json.callouts.forEach(c => {
+                html += `<div class="callout-card">
+                    <a href="/stock/${c.ticker}" class="callout-ticker">${c.ticker}</a>
+                    <div class="callout-summary">${escapeHtml(c.summary)}</div>
+                    ${c.angle ? `<span class="callout-angle">${c.angle}</span>` : ''}
+                </div>`;
+            });
+        }
+
+        if (json.watch_tomorrow && json.watch_tomorrow.length > 0) {
+            html += `<h2 style="font-size: 1rem; color: var(--accent-purple); margin: 1rem 0 0.5rem;">Watch Next Session</h2>`;
+            json.watch_tomorrow.forEach(item => {
+                const tickers = (item.tickers || []).map(t =>
+                    `<a href="/stock/${t}" class="ticker-tag">${t}</a>`
+                ).join(' ');
+                html += `<div class="watch-item">${escapeHtml(item.text)} ${tickers}</div>`;
+            });
+        }
+
+        if (currentData.usage) {
+            const u = currentData.usage;
+            html += `<div class="usage-info">
+                <strong>API Usage:</strong>
+                ${u.total_requests || 0} requests •
+                ${((u.total_prompt_tokens || 0) + (u.total_completion_tokens || 0)).toLocaleString()} tokens •
+                $${(u.cost_usd_total || 0).toFixed(4)}
+            </div>`;
+        }
+
+        contentEl.innerHTML = html || '<div class="brief-placeholder">No structured data available</div>';
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function simpleMarkdown(md) {
+        let html = escapeHtml(md);
+        html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+        html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+        html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+        html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+        html = html.replace(/\n/g, '<br>');
+        return html;
+    }
+
+    async function runBrief() {
+        const btn = document.getElementById('btn-run');
+        btn.disabled = true;
+        btn.textContent = 'Starting...';
+
+        try {
+            const response = await fetch('/api/frontend/market-brief/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            const data = await response.json();
+
+            if (data.status === 'started') {
+                btn.textContent = 'Running...';
+                setTimeout(() => {
+                    btn.textContent = 'Generate New';
+                    btn.disabled = false;
+                    loadDateList();
+                }, 60000);
+
+                let pollCount = 0;
+                const pollInterval = setInterval(() => {
+                    pollCount++;
+                    loadDateList();
+                    if (pollCount >= 12) {
+                        clearInterval(pollInterval);
+                    }
+                }, 10000);
+            } else {
+                alert('Failed to start: ' + (data.error || 'Unknown error'));
+                btn.textContent = 'Generate New';
+                btn.disabled = false;
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+            btn.textContent = 'Generate New';
+            btn.disabled = false;
+        }
+    }
+
+    restoreBoxTheme();
+    loadDateList();
+
+</script>
+{% endblock %}
