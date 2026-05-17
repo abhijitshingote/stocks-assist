@@ -977,14 +977,14 @@ function renderRow(r) {
     wlBtn.onclick = () => toggleWatchlist(r, wlBtn);
     actions.appendChild(wlBtn);
 
-    // Notes button (decoupled from watchlist) - opens the notes modal which
-    // saves to abi_comments.json regardless of watchlist/dislike state.
-    const cmt = r.comment || {};
+    // Notes button (decoupled from watchlist) - opens the Abi ticker notes modal which
+    // saves to abi_ticker_notes.json regardless of watchlist/dislike state.
+    const cmt = r.ticker_note || {};
     const notesBtn = document.createElement('button');
-    const hasNote = !!(cmt.has_comment || (r.watchlist && r.watchlist.notes));
+    const hasNote = !!(cmt.has_ticker_note || (r.watchlist && r.watchlist.notes));
     notesBtn.className = 'abi-wl-btn' + (hasNote ? ' in-watchlist' : '');
-    notesBtn.textContent = hasNote ? '📝 Note' : '📝 Notes';
-    notesBtn.title = hasNote ? 'Edit your note for ' + r.ticker : 'Add a note for ' + r.ticker;
+    notesBtn.textContent = hasNote ? '📝 Abi ticker note' : '📝 Abi ticker notes';
+    notesBtn.title = hasNote ? 'Edit Abi ticker notes for ' + r.ticker : 'Add Abi ticker notes for ' + r.ticker;
     notesBtn.onclick = () => openNotesForRow(r, notesBtn);
     actions.appendChild(notesBtn);
 
@@ -994,7 +994,7 @@ function renderRow(r) {
     dlBtn.setAttribute('data-ticker', r.ticker);
     dlBtn.textContent = dl.is_disliked ? '👎 Blocked' : '👎';
     dlBtn.title = dl.is_disliked
-        ? 'Edit dislike notes for ' + r.ticker
+        ? 'Edit dislike rationale for ' + r.ticker
         : 'Block ' + r.ticker + ' from screeners';
     dlBtn.onclick = () => window._dlOpenForTicker(r.ticker, function(action, t) {
         if (action === 'saved') { dlBtn.textContent = '👎 Blocked'; dlBtn.classList.add('is-disliked'); }
@@ -1092,26 +1092,26 @@ function toggleWatchlist(r, btn) {
     });
 }
 
-// Open the notes modal for a daily-shortlist row. Saves to the (decoupled)
-// comments file - watchlist membership is untouched.
+// Open the Abi ticker notes modal for a daily-shortlist row. Saves to the (decoupled)
+// Abi ticker notes file - watchlist membership is untouched.
 function openNotesForRow(r, btn) {
-    const currentNotes = (r.comment && r.comment.notes) || (r.watchlist && r.watchlist.notes) || '';
+    const currentNotes = (r.ticker_note && r.ticker_note.notes) || (r.watchlist && r.watchlist.notes) || '';
     const had = !!currentNotes;
     window._notesOpen(r.ticker, currentNotes, had, function(action, ticker, newNotes) {
         const isSet = action === 'saved' && !!(newNotes && newNotes.trim());
-        r.comment = {
+        r.ticker_note = {
             notes: isSet ? newNotes : '',
-            has_comment: isSet,
+            has_ticker_note: isSet,
         };
         // Mirror into watchlist.notes for any old code still reading there.
         r.watchlist = r.watchlist || { in_watchlist: false, stars: 0 };
         r.watchlist.notes = isSet ? newNotes : '';
         if (btn) {
             btn.classList.toggle('in-watchlist', isSet);
-            btn.textContent = isSet ? '📝 Note' : '📝 Notes';
-            btn.title = isSet ? 'Edit your note for ' + ticker : 'Add a note for ' + ticker;
+            btn.textContent = isSet ? '📝 Abi ticker note' : '📝 Abi ticker notes';
+            btn.title = isSet ? 'Edit Abi ticker notes for ' + ticker : 'Add Abi ticker notes for ' + ticker;
         }
-        toast(isSet ? 'Note saved' : 'Note removed');
+        toast(isSet ? 'Abi ticker note saved' : 'Abi ticker note removed');
     });
 }
 

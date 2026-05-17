@@ -84,11 +84,11 @@ def _watchlist_hash(wl: dict) -> str:
 
 
 def _load_watchlist() -> dict[str, Any]:
-    """Return watchlisted tickers joined with their (optional) comments.
+    """Return watchlisted tickers joined with their (optional) Abi ticker notes.
 
-    Notes are sourced from `user_data/abi_comments.json` and included only
-    for tickers that are on the watchlist (so free-floating comments outside
-    the watchlist never reach the user-theme extractor).
+    Notes are sourced from ``user_data/abi_ticker_notes.json`` and included only
+    for tickers on the watchlist (so notes on non-watchlist tickers never reach
+    the user-theme extractor).
     """
     return load_watchlist_with_notes()
 

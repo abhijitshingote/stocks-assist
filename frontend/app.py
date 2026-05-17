@@ -903,15 +903,6 @@ def api_add_to_abi_dislikes():
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-dislikes/<ticker>', methods=['PUT'])
-def api_update_abi_dislikes(ticker):
-    json_data = request.get_json()
-    data, status_code = make_backend_request(f'/api/abi-dislikes/{ticker}', method='PUT', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to update dislike'}), status_code
-    return jsonify(data), status_code
-
-
 @app.route('/api/frontend/abi-dislikes/<ticker>', methods=['DELETE'])
 def api_delete_from_abi_dislikes(ticker):
     data, status_code = make_backend_request(f'/api/abi-dislikes/{ticker}', method='DELETE', json_data={})
@@ -930,64 +921,62 @@ def api_batch_check_abi_dislikes():
 
 
 # ============================================================
-# Abi Comments Endpoints (per-ticker free-form notes, decoupled from
+# Abi Ticker Notes Endpoints (per-ticker notes, decoupled from
 # watchlist/dislike membership)
 # ============================================================
-# A comment can be attached to any ticker regardless of whether it's on the
-# watchlist or the dislikes list. The daily screener pipeline only consumes
-# comments whose ticker is on the watchlist, so unaffiliated comments don't
-# leak into the screener output.
+# Abi ticker notes can exist for any ticker. The daily screener only consumes
+# notes for tickers on the watchlist.
 
-@app.route('/api/frontend/abi-comments', methods=['GET'])
-def api_get_abi_comments():
-    """Proxy endpoint to get all comments."""
-    data, status_code = make_backend_request('/api/abi-comments')
+@app.route('/api/frontend/abi-ticker-notes', methods=['GET'])
+def api_get_abi_ticker_notes_all():
+    """Proxy endpoint to get all Abi ticker notes."""
+    data, status_code = make_backend_request('/api/abi-ticker-notes')
     if data is None:
-        return jsonify({'error': 'Failed to fetch comments'}), status_code
+        return jsonify({'error': 'Failed to fetch Abi ticker notes'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-comments/<ticker>', methods=['GET'])
-def api_get_abi_comment(ticker):
-    """Proxy endpoint to get the comment for a single ticker."""
-    data, status_code = make_backend_request(f'/api/abi-comments/{ticker}')
+@app.route('/api/frontend/abi-ticker-notes/<ticker>', methods=['GET'])
+def api_get_abi_ticker_note(ticker):
+    """Proxy endpoint to get Abi ticker notes for a single ticker."""
+    data, status_code = make_backend_request(f'/api/abi-ticker-notes/{ticker}')
     if data is None:
-        return jsonify({'error': 'Failed to fetch comment'}), status_code
+        return jsonify({'error': 'Failed to fetch Abi ticker notes'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-comments/<ticker>', methods=['PUT'])
-def api_upsert_abi_comment(ticker):
-    """Proxy endpoint to create or update a ticker's comment."""
+@app.route('/api/frontend/abi-ticker-notes/<ticker>', methods=['PUT'])
+def api_upsert_abi_ticker_note(ticker):
+    """Proxy endpoint to create or update Abi ticker notes for a ticker."""
     json_data = request.get_json()
     data, status_code = make_backend_request(
-        f'/api/abi-comments/{ticker}', method='PUT', json_data=json_data
+        f'/api/abi-ticker-notes/{ticker}', method='PUT', json_data=json_data
     )
     if data is None:
-        return jsonify({'error': 'Failed to save comment'}), status_code
+        return jsonify({'error': 'Failed to save Abi ticker notes'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-comments/<ticker>', methods=['DELETE'])
-def api_delete_abi_comment(ticker):
-    """Proxy endpoint to delete a ticker's comment."""
+@app.route('/api/frontend/abi-ticker-notes/<ticker>', methods=['DELETE'])
+def api_delete_abi_ticker_note(ticker):
+    """Proxy endpoint to delete Abi ticker notes for a ticker."""
     data, status_code = make_backend_request(
-        f'/api/abi-comments/{ticker}', method='DELETE', json_data={}
+        f'/api/abi-ticker-notes/{ticker}', method='DELETE', json_data={}
     )
     if data is None:
-        return jsonify({'error': 'Failed to delete comment'}), status_code
+        return jsonify({'error': 'Failed to delete Abi ticker notes'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-comments/batch-check', methods=['POST'])
-def api_batch_check_abi_comments():
-    """Proxy endpoint to fetch comments for a list of tickers."""
+@app.route('/api/frontend/abi-ticker-notes/batch-check', methods=['POST'])
+def api_batch_check_abi_ticker_notes():
+    """Proxy endpoint to fetch Abi ticker notes for a list of tickers."""
     json_data = request.get_json()
     data, status_code = make_backend_request(
-        '/api/abi-comments/batch-check', method='POST', json_data=json_data
+        '/api/abi-ticker-notes/batch-check', method='POST', json_data=json_data
     )
     if data is None:
-        return jsonify({'error': 'Failed to fetch comments'}), status_code
+        return jsonify({'error': 'Failed to fetch Abi ticker notes'}), status_code
     return jsonify(data), status_code
 
 

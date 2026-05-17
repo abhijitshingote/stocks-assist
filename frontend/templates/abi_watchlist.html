@@ -936,7 +936,7 @@
                     <span id="detailLowFloat"></span>
                     <div class="detail-actions">
                         <button class="abi-wl-btn in-watchlist" id="detailWlBtn" title="Remove from watchlist" onclick="toggleWatchlistForSelected()">★ Watchlist</button>
-                        <button class="abi-wl-btn" id="detailNotesBtn" title="Edit notes for this ticker" onclick="openWatchlistModal()">📝 Notes</button>
+                        <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes for this ticker" onclick="openWatchlistModal()">📝 Abi ticker notes</button>
                         <button class="abi-dl-btn" id="detailDlBtn" title="Move to dislikes (blocks from screeners)" onclick="window._dlOpenForTicker(selectedTicker)">👎</button>
                     </div>
                     <div class="chart-timeframes" id="chartTimeframes">
@@ -1008,10 +1008,10 @@
             <div class="mv-metrics-body side-metrics-body" id="sideMetricsBody">
                 <div class="wl-notes-section" id="wlNotesSection" style="display:none;">
                     <span class="ms-section-title">
-                        <span>Watchlist Notes</span>
+                        <span>Abi ticker notes</span>
                         <a class="wl-notes-edit" onclick="openWatchlistModal()">Edit</a>
                     </span>
-                    <div class="wl-notes-text empty" id="wlNotesText">No notes</div>
+                    <div class="wl-notes-text empty" id="wlNotesText">No Abi ticker notes</div>
                 </div>
                 <div class="ms-tags" id="tagsStrip"></div>
                 <div id="metricsContent"></div>
@@ -1302,12 +1302,12 @@
             textEl.innerHTML = marked.parse(wl.notes);
             textEl.classList.remove('empty');
         } else {
-            textEl.innerHTML = '<em>No notes</em>';
+            textEl.innerHTML = '<em>No Abi ticker notes</em>';
             textEl.classList.add('empty');
         }
     }
 
-    // Open the notes modal for the selected ticker. Saves to abi_comments.json
+    // Open the Abi ticker notes modal for the selected ticker. Saves to abi_ticker_notes.json
     // - watchlist membership is independent and is changed via the watchlist
     // toggle button instead.
     window.openWatchlistModal = function() {
@@ -1329,7 +1329,7 @@
 
     // Toggle watchlist membership for the selected ticker. Removing from the
     // watchlist no longer wipes the ticker's comment - that lives in
-    // abi_comments.json and stays available everywhere else.
+    // abi_ticker_notes.json and stays available everywhere else.
     window.toggleWatchlistForSelected = function() {
         if (!selectedTicker) return;
         const ticker = selectedTicker;

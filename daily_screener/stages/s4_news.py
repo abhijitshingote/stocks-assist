@@ -125,13 +125,12 @@ _STRONG_DRIVER_RE = re.compile("|".join(_STRONG_DRIVER_PATTERNS), re.IGNORECASE)
 # ---------------------------------------------------------------------------
 
 def _load_watchlist_notes() -> dict[str, str]:
-    """Return ``{TICKER: note}`` for tickers that BOTH appear on the
-    watchlist AND have a non-empty comment in ``user_data/abi_comments.json``.
+    """Return ``{TICKER: note}`` for tickers that BOTH appear on the watchlist
+    AND have a non-empty Abi ticker note in ``user_data/abi_ticker_notes.json``.
 
-    Comments outside the watchlist are intentionally excluded - free-floating
-    notes (e.g. on a stock the trader hasn't formally added to the watchlist)
-    must NOT influence Stage 4. Used as an OPTIONAL hint only; Stage 4 is
-    designed to work without any notes.
+    Notes outside the watchlist are intentionally excluded - free-floating
+    Abi ticker notes must NOT influence Stage 4. Used as an OPTIONAL hint
+    only; Stage 4 is designed to work without any notes.
     """
     notes = watchlist_notes_only()
     return {tk: note[:_WATCHLIST_NOTE_CHAR_CAP] for tk, note in notes.items()}

@@ -533,16 +533,16 @@
     </script>
 
     <!-- Notes Modal (shared across pages) -->
-    <!-- Per-ticker comments are decoupled from the watchlist: this modal
-         saves notes for ANY ticker without touching watchlist or dislike
+    <!-- Abi ticker notes are decoupled from the watchlist: this modal saves
+         notes for ANY ticker without touching watchlist or dislike
          membership. Watchlist toggling is handled separately by
          `window._wlToggle` (no modal). -->
     <div class="wl-modal-overlay" id="notesModalOverlay">
         <div class="wl-modal">
-            <div class="wl-modal-title">Notes for <span class="ticker-hl" id="notesModalTicker"></span></div>
-            <textarea id="notesModalNotes" placeholder="Notes (markdown supported)..."></textarea>
+            <div class="wl-modal-title">Abi ticker notes for <span class="ticker-hl" id="notesModalTicker"></span></div>
+            <textarea id="notesModalNotes" placeholder="Abi ticker notes (markdown supported)..."></textarea>
             <div class="wl-modal-actions">
-                <button class="wl-remove" id="notesModalRemoveBtn" style="display:none;" onclick="window._notesDelete()">Delete note</button>
+                <button class="wl-remove" id="notesModalRemoveBtn" style="display:none;" onclick="window._notesDelete()">Delete Abi ticker note</button>
                 <button class="wl-cancel" onclick="window._notesClose()">Cancel</button>
                 <button class="wl-save" id="notesModalSaveBtn" onclick="window._notesSave()">Save</button>
             </div>
@@ -582,12 +582,12 @@
             if (!_ticker) return;
             const notes = notesEl.value.trim();
             try {
-                await fetch('/api/frontend/abi-comments/' + _ticker, {
+                await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {
                     method: 'PUT',
                     headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({notes})
                 });
-            } catch(e) { console.error('Notes save error', e); }
+            } catch(e) { console.error('Abi ticker notes save error', e); }
             overlay.classList.remove('visible');
             // If the user cleared the textarea, treat it as a removal so
             // callers can update their UI accordingly. Otherwise it's a save.
@@ -598,8 +598,8 @@
         window._notesDelete = async function() {
             if (!_ticker) return;
             try {
-                await fetch('/api/frontend/abi-comments/' + _ticker, {method:'DELETE'});
-            } catch(e) { console.error('Notes delete error', e); }
+                await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {method:'DELETE'});
+            } catch(e) { console.error('Abi ticker notes delete error', e); }
             overlay.classList.remove('visible');
             if (_onDone) _onDone('removed', _ticker, '');
             _ticker = null;
@@ -612,10 +612,10 @@
     </script>
 
     <!-- Backwards-compat shims for legacy `_wlOpen` callers. The watchlist
-         modal has been replaced by the notes modal (notes are decoupled
+         modal has been replaced by the Abi ticker notes modal (notes are decoupled
          from membership). Pages that still call `_wlOpen(ticker, notes,
-         inWl, cb)` get rerouted to the notes modal so the trader can edit
-         their note; watchlist membership is left untouched. -->
+         inWl, cb)` get rerouted to the Abi ticker notes modal so the trader can edit
+         their Abi ticker note; watchlist membership is left untouched. -->
     <script>
     window._wlOpen = function(ticker, currentNotes, inWatchlist, onDone) {
         const had = !!(currentNotes && String(currentNotes).trim());
@@ -649,14 +649,14 @@
         }
     };
 
-    // Open the notes modal for a ticker, looking up any existing comment
+    // Open the Abi ticker notes modal for a ticker, looking up any existing note
     // first so the textarea is pre-filled. Mirrors `_dlOpenForTicker`.
     window._notesOpenForTicker = async function(ticker, onDone) {
         if (!ticker) return;
         let currentNotes = '';
         let hasNote = false;
         try {
-            const resp = await fetch('/api/frontend/abi-comments/' + ticker);
+            const resp = await fetch('/api/frontend/abi-ticker-notes/' + ticker);
             if (resp.ok) {
                 const data = await resp.json();
                 if (data && data.notes) {
@@ -664,16 +664,16 @@
                     hasNote = true;
                 }
             }
-        } catch (e) { console.error('Note lookup failed', e); }
+        } catch (e) { console.error('Abi ticker note lookup failed', e); }
         window._notesOpen(ticker, currentNotes, hasNote, onDone || null);
     };
     </script>
 
     <!-- Abi Dislike Modal (shared across pages) -->
     <!-- Membership in `abi_dislikes.json` is the veto signal for the daily
-         screener. The textarea here is the per-ticker comment - it's saved
-         to `abi_comments.json` via the unified comments endpoint, not to
-         the dislikes file (notes are decoupled from membership). -->
+         screener. The textarea here is the optional rationale; it is saved to
+         `abi_ticker_notes.json` via the Abi ticker notes endpoint, not to the
+         dislikes file (notes are decoupled from membership). -->
     <div class="wl-modal-overlay" id="dlModalOverlay">
         <div class="wl-modal dl-theme">
             <div class="wl-modal-title" id="dlModalTitleEl">Block <span class="ticker-hl" id="dlModalTicker"></span> from screeners</div>
@@ -720,7 +720,7 @@
             const notes = notesEl.value.trim();
             try {
                 if (_isDisliked) {
-                    await fetch('/api/frontend/abi-dislikes/' + _ticker, {
+                    await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {
                         method: 'PUT',
                         headers: {'Content-Type':'application/json'},
                         body: JSON.stringify({notes})
@@ -729,8 +729,15 @@
                     await fetch('/api/frontend/abi-dislikes', {
                         method: 'POST',
                         headers: {'Content-Type':'application/json'},
-                        body: JSON.stringify({ticker: _ticker, notes})
+                        body: JSON.stringify({ticker: _ticker})
                     });
+                    if (notes) {
+                        await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {
+                            method: 'PUT',
+                            headers: {'Content-Type':'application/json'},
+                            body: JSON.stringify({notes})
+                        });
+                    }
                 }
             } catch(e) { console.error('Dislike save error', e); }
             overlay.classList.remove('visible');

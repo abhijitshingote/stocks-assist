@@ -212,7 +212,7 @@ function render() {
                     <div class="dl-ticker"><a href="/stock/${t}">${t}</a></div>
                     <div class="dl-meta">Added ${fmtDate(entry.added_at)}</div>
                 </div>
-                <div class="dl-notes ${notes ? '' : 'empty'}">${notes ? escapeHtml(notes) : 'No notes'}</div>
+                <div class="dl-notes ${notes ? '' : 'empty'}">${notes ? escapeHtml(notes) : 'No Abi ticker notes'}</div>
                 <div class="dl-actions">
                     <button onclick="editDislike('${t}')">Edit</button>
                     <button class="dl-remove-btn" onclick="removeDislike('${t}')">Remove</button>

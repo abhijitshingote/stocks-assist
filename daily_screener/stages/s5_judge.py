@@ -35,11 +35,10 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 def _load_watchlist() -> dict:
-    """Return watchlisted tickers joined with their (optional) comments.
+    """Return watchlisted tickers joined with their (optional) Abi ticker notes.
 
-    Notes are sourced from `user_data/abi_comments.json` and included only
-    for tickers that are on the watchlist (so free-floating comments outside
-    the watchlist never reach the judge prompt).
+    Notes are sourced from ``user_data/abi_ticker_notes.json`` and included only
+    for tickers on the watchlist.
     """
     return load_watchlist_with_notes()
 

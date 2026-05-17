@@ -1252,14 +1252,14 @@
                             <span class="notes-icon-btn" id="detailNotesIcon" title="Notes">📝</span>
                             <div class="notes-tooltip">
                                 <div class="notes-tooltip-header">
-                                    <span id="notesTooltipTitle">Notes</span>
+                                    <span id="notesTooltipTitle">Abi ticker notes</span>
                                     <a class="notes-edit-link" id="notesEditLink" href="#">Edit →</a>
                                 </div>
                                 <div class="notes-tooltip-content empty" id="notesTooltipContent">Loading...</div>
                             </div>
                         </div>
                         <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership" onclick="toggleWatchlistForSelected()">+ Watchlist</button>
-                        <button class="abi-wl-btn" id="detailNotesBtn" title="Edit notes for this ticker" onclick="openNotesModalForSelected()">📝 Notes</button>
+                        <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes for this ticker" onclick="openNotesModalForSelected()">📝 Abi ticker notes</button>
                     </div>
                     <div class="chart-timeframes" id="chartTimeframes">
                         <button data-days="30">1M</button>
@@ -1333,10 +1333,10 @@
             <div class="mv-metrics-body side-metrics-body" id="sideMetricsBody">
                 <div class="wl-notes-section" id="wlNotesSection" style="display:none;">
                     <span class="ms-section-title">
-                        <span>Notes</span>
+                        <span>Abi ticker notes</span>
                         <a class="wl-notes-edit" onclick="openNotesModalForSelected()">Edit</a>
                     </span>
-                    <div class="wl-notes-text empty" id="wlNotesText">No notes</div>
+                    <div class="wl-notes-text empty" id="wlNotesText">No Abi ticker notes</div>
                 </div>
                 <div class="ms-tags" id="tagsStrip"></div>
                 <div id="metricsContent"></div>
@@ -1711,7 +1711,7 @@
         document.getElementById('detailLink').href = '/stock/' + ticker;
         document.getElementById('metricsTicker').textContent = ticker;
         document.getElementById('metricsCompany').textContent = stock.company_name || '';
-        document.getElementById('notesTooltipTitle').textContent = 'Notes for ' + ticker;
+        document.getElementById('notesTooltipTitle').textContent = 'Abi ticker notes for ' + ticker;
         document.getElementById('notesEditLink').href = '/stock/' + ticker;
 
         // TI65 badge (in chart header)
@@ -2149,12 +2149,12 @@
         }
     }
 
-    // ── Watchlist + comments functions ──
+    // ── Watchlist + Abi ticker notes functions ──
     // `watchlistStatus` tracks list membership + stars only (notes are no
-    // longer stored in the watchlist file). `commentsStatus` is the source
+    // longer stored in the watchlist file). `abiTickerNotesStatus` is the source
     // of truth for per-ticker notes regardless of watchlist state.
     let watchlistStatus = {};
-    let commentsStatus = {};
+    let abiTickerNotesStatus = {};
 
     function getStars(ticker) {
         const wl = watchlistStatus[ticker];
@@ -2202,14 +2202,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tickers }),
                 }),
-                fetch('/api/frontend/abi-comments/batch-check', {
+                fetch('/api/frontend/abi-ticker-notes/batch-check', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tickers }),
                 }),
             ]);
             if (wlResp.ok) watchlistStatus = await wlResp.json();
-            if (cmtResp.ok) commentsStatus = await cmtResp.json();
+            if (cmtResp.ok) abiTickerNotesStatus = await cmtResp.json();
             renderList();
             if (selectedTicker) {
                 updateWatchlistBtn(selectedTicker);
@@ -2228,18 +2228,18 @@
 
     function updateWatchlistNotes(ticker) {
         // Always show the notes section when a ticker is selected; the note
-        // itself is sourced from the (decoupled) comments file, so it's
+        // itself is sourced from Abi ticker notes (decoupled file), so it's
         // available regardless of watchlist membership.
         const section = document.getElementById('wlNotesSection');
         const textEl = document.getElementById('wlNotesText');
         if (!ticker) { section.style.display = 'none'; return; }
         section.style.display = 'block';
-        const cmt = commentsStatus[ticker];
+        const cmt = abiTickerNotesStatus[ticker];
         if (cmt && cmt.notes) {
             textEl.innerHTML = marked.parse(cmt.notes);
             textEl.classList.remove('empty');
         } else {
-            textEl.innerHTML = '<em>No notes</em>';
+            textEl.innerHTML = '<em>No Abi ticker notes</em>';
             textEl.classList.add('empty');
         }
     }
@@ -2260,18 +2260,18 @@
         });
     };
 
-    // Open the notes modal for the selected ticker. Saving updates the
-    // (decoupled) comments file only - watchlist membership is untouched.
+    // Open the Abi ticker notes modal for the selected ticker. Saving updates the
+    // (decoupled) Abi ticker notes file only - watchlist membership is untouched.
     window.openNotesModalForSelected = function() {
         if (!selectedTicker) return;
-        const cmt = commentsStatus[selectedTicker];
+        const cmt = abiTickerNotesStatus[selectedTicker];
         const currentNotes = (cmt && cmt.notes) || '';
         const had = !!currentNotes;
         window._notesOpen(selectedTicker, currentNotes, had, function(action, ticker, newNotes) {
             if (action === 'saved') {
-                commentsStatus[ticker] = { notes: newNotes || '' };
+                abiTickerNotesStatus[ticker] = { notes: newNotes || '' };
             } else if (action === 'removed') {
-                delete commentsStatus[ticker];
+                delete abiTickerNotesStatus[ticker];
             }
             updateWatchlistNotes(ticker);
         });
