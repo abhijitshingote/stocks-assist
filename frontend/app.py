@@ -1229,5 +1229,29 @@ def api_market_brief_run():
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/auto-commit', methods=['POST'])
+def api_auto_commit():
+    """Proxy to backend: run auto_commit.sh for user_data backup."""
+    json_data = request.get_json() or {}
+    try:
+        url = f'{BACKEND_URL}/api/auto-commit'
+        r = requests.post(url, json=json_data, timeout=45)
+        try:
+            payload = r.json()
+        except ValueError:
+            payload = {
+                'status': 'error',
+                'message': 'Unexpected response from backend',
+                'error': (r.text or '')[:500],
+            }
+        return jsonify(payload), r.status_code
+    except requests.Timeout:
+        logger.error('Auto-commit proxy: backend request timed out')
+        return jsonify({'status': 'error', 'message': 'Backend timed out'}), 504
+    except requests.RequestException as e:
+        logger.error('Auto-commit proxy: %s', e)
+        return jsonify({'status': 'error', 'message': str(e)}), 502
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

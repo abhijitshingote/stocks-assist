@@ -933,25 +933,36 @@
         const autoCommitBtn = document.getElementById('autoCommitBtn');
         const autoCommitIcon = document.getElementById('autoCommitIcon');
         const autoCommitLabel = document.getElementById('autoCommitLabel');
-        const BACKEND_URL = window.BACKEND_URL || (window.location.origin.includes(':3000') ? 'http://localhost:5001' : '/api');
-        
+
         if (!autoCommitBtn) return;
-        
+
         autoCommitBtn.addEventListener('click', async function() {
             if (autoCommitBtn.disabled) return;
-            
+
             autoCommitBtn.disabled = true;
             autoCommitIcon.textContent = '⏳';
             autoCommitLabel.textContent = 'Saving...';
-            
+
             try {
-                const response = await fetch('/api/auto-commit', {
+                const response = await fetch('/api/frontend/auto-commit', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'}
+                    headers: {'Content-Type': 'application/json'},
+                    body: '{}'
                 });
-                
-                const data = await response.json();
-                
+
+                let data = {};
+                const ct = response.headers.get('content-type') || '';
+                if (ct.includes('application/json')) {
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        console.error('Auto-commit: invalid JSON response', e);
+                    }
+                } else {
+                    const text = await response.text();
+                    if (text) console.error('Auto-commit non-JSON response:', response.status, text.slice(0, 500));
+                }
+
                 if (response.ok) {
                     autoCommitIcon.textContent = '✅';
                     autoCommitLabel.textContent = 'Saved!';
