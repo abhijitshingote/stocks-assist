@@ -13,9 +13,13 @@ from pathlib import Path
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PACKAGE_DIR.parent
-OUTPUTS_DIR = PACKAGE_DIR / "outputs"
-PROMPTS_DIR = PACKAGE_DIR / "prompts"
 USER_DATA_DIR = PROJECT_ROOT / "user_data"
+# Run artifacts live under user_data/ so the auto_commit.sh backup (which
+# git-pushes user_data/) preserves them across app/container resets. The old
+# location (daily_screener/outputs/) is ephemeral repo state; this one is
+# treated as preservable user data.
+OUTPUTS_DIR = USER_DATA_DIR / "daily_screener"
+PROMPTS_DIR = PACKAGE_DIR / "prompts"
 
 ABI_WATCHLIST_FILE = USER_DATA_DIR / "abi_watchlist.json"
 # Explicit thumbs-down list. Separate from the watchlist on purpose:

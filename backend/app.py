@@ -5218,13 +5218,16 @@ def get_technical_reversal_mega():
 # Daily Shortlist (Screening Agent) Endpoints
 # ============================================================================
 
+# Daily screener artifacts live under user_data/ so the auto_commit.sh
+# backup (which git-pushes user_data/) preserves them across resets.
+# Must stay in sync with daily_screener/config.py: OUTPUTS_DIR.
 DAILY_SCREENER_OUTPUTS_DIR = os.path.join(
-    os.path.dirname(__file__), '..', 'daily_screener', 'outputs'
+    os.path.dirname(__file__), '..', 'user_data', 'daily_screener'
 )
 
 
 def _compute_daily_shortlist_funnel(date: str):
-    """Read per-stage artifacts under daily_screener/outputs/<date>/ and
+    """Read per-stage artifacts under user_data/daily_screener/<date>/ and
     construct a compact funnel summary the UI can render. Works retroactively
     even if s6_audit didn't write a funnel block."""
     base = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date)
@@ -5304,7 +5307,7 @@ def _compute_daily_shortlist_funnel(date: str):
 
 
 def _list_daily_shortlist_dates():
-    """List YYYY-MM-DD folders under daily_screener/outputs that contain a 05_audit.json."""
+    """List YYYY-MM-DD folders under user_data/daily_screener/ that contain a 05_audit.json."""
     if not os.path.isdir(DAILY_SCREENER_OUTPUTS_DIR):
         return []
     entries = []
@@ -5713,7 +5716,12 @@ def daily_shortlist_theme_dates():
 # Market Brief Endpoints
 # ============================================================
 
-MARKET_BRIEF_OUTPUTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'market_brief', 'outputs')
+# Market brief artifacts live under user_data/ so the auto_commit.sh
+# backup preserves them across resets. Must stay in sync with
+# market_brief/config.py: OUTPUTS_DIR.
+MARKET_BRIEF_OUTPUTS_DIR = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'market_brief'
+)
 
 
 @app.route('/api/market-brief/dates', methods=['GET'])

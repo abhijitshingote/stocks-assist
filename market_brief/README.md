@@ -10,8 +10,15 @@ picks tickers to trade today; this one builds the morning context.
 
 ## Output
 
+Artifacts land under `user_data/market_brief/` (NOT under
+`market_brief/` itself). This is intentional: `user_data/` is what the
+`auto_commit.sh` backup pushes to git, so daily briefs survive container
+rebuilds and environment resets. The path is defined once in
+`market_brief/config.py: OUTPUTS_DIR` and mirrored in
+`backend/app.py: MARKET_BRIEF_OUTPUTS_DIR`.
+
 ```
-market_brief/outputs/<YYYY-MM-DD>/
+user_data/market_brief/<YYYY-MM-DD>/
 ├── 01_probes/
 │   ├── semiconductors__overview.md
 │   ├── semiconductors__catalyst.md

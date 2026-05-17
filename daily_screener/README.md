@@ -17,8 +17,13 @@ rationale, so you can QA exactly why something was — or wasn't — surfaced.
    (DB query)     (rule-based)      (Claude+Pplx)    (~30-60 calls)            (taste-calibrated)      (roll-up)
 ```
 
-Every stage reads JSON in and writes JSON out under `outputs/<YYYY-MM-DD>/`,
-so you can re-run any later stage without redoing earlier work.
+Every stage reads JSON in and writes JSON out under
+`user_data/daily_screener/<YYYY-MM-DD>/`, so you can re-run any later stage
+without redoing earlier work. The path lives under `user_data/` because that
+folder is what `auto_commit.sh` backs up to git — daily artifacts survive
+container rebuilds and environment resets. The path is defined once in
+`daily_screener/config.py: OUTPUTS_DIR` and mirrored in
+`backend/app.py: DAILY_SCREENER_OUTPUTS_DIR`.
 
 ## Layout
 
@@ -44,7 +49,12 @@ daily_screener/
     perplexity.py
     claude.py
     io.py
-  outputs/<YYYY-MM-DD>/
+```
+
+Run artifacts (NOT inside `daily_screener/`):
+
+```
+user_data/daily_screener/<YYYY-MM-DD>/
     00_universe.json
     01_momentum.json
     02_theme_vector.json

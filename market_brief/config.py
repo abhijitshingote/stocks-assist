@@ -15,8 +15,12 @@ from pathlib import Path
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PACKAGE_DIR.parent
-OUTPUTS_DIR = PACKAGE_DIR / "outputs"
 USER_DATA_DIR = PROJECT_ROOT / "user_data"
+# Run artifacts live under user_data/ so the auto_commit.sh backup (which
+# git-pushes user_data/) preserves them across app/container resets. The old
+# location (market_brief/outputs/) is ephemeral repo state; this one is
+# treated as preservable user data.
+OUTPUTS_DIR = USER_DATA_DIR / "market_brief"
 THEMES_FILE = USER_DATA_DIR / "themes.json"
 
 # ---------------------------------------------------------------------------
