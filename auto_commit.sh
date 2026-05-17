@@ -1,5 +1,5 @@
 #!/bin/bash
 cd /home/ubuntu/stocks-assist
 git add user_data/
-git commit -m "Auto-backup user_data - $(date)" --allow-empty
-git push --force origin main
+git commit -m "Auto-backup user_data - $(date)" 
+git push --force origin 
