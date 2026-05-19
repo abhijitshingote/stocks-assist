@@ -505,33 +505,6 @@ case $ACTION in
             fi
         done
 
-        # Step 3: Preserve user data from live
-        echo ""
-        echo "📋 Step 2.5: Preserving user data from live..." | tee -a $LOG_FILE
-        docker-compose -f $COMPOSE_FILE exec -T $BACKEND_SERVICE python -c "
-from sqlalchemy import create_engine, text
-import os
-engine = create_engine(os.getenv('DATABASE_URL'))
-with engine.connect() as conn:
-    try:
-        # stock_notes intentionally omitted: removed entirely. Per-ticker
-        # notes are now in file-only user_data/abi_ticker_notes.json.
-        # stock_preferences intentionally omitted: removed entirely. The
-        # favorite/dislike UX is now in file-only stores (abi_watchlist.json
-        # + abi_dislikes.json). No DB rows to preserve.
-        # abi_general_notes intentionally omitted: it's now a file-only store
-        # at user_data/abi_general_notes.json. No DB rows to preserve.
-        # NOTE: this whole user-data preservation block is now a no-op since
-        # every user-editable store lives in user_data/ on disk and is
-        # backed up via auto_commit.sh. Left in place as a placeholder in
-        # case new DB-backed user data is added later.
-        conn.commit()
-        print('User data preserved')
-    except Exception as e:
-        print(f'Could not preserve user data (may not exist): {e}')
-" >> $LOG_FILE 2>&1
-        echo "✅ User data preserved" | tee -a $LOG_FILE
-
         # Step 4: Swap schemas (unless --no-swap)
         if [ "$NO_SWAP" = "true" ]; then
             echo ""
