@@ -1,0 +1,714 @@
+{
+  "asof": "2026-05-19",
+  "tldr": [
+    {
+      "text": "SPY -0.08%, QQQ -0.43%, SOXX -2.49%, XLK -1.08%, IGV +1.19% on Monday May 18, 2026; a modestly risk-off tape with semis, AI compute, WFE, memory, and packaging sold while software was bid.",
+      "tickers": [
+        "SPY",
+        "QQQ",
+        "SOXX",
+        "XLK",
+        "IGV"
+      ]
+    },
+    {
+      "text": "MU closed -8.30% on softer DRAM/HBM price checks and chatter on push-outs to GPU-memory orders; sell-side and industry checks flagged weaker 2H26 pricing.",
+      "tickers": [
+        "MU"
+      ]
+    },
+    {
+      "text": "VRT closed -9.99% on heavy liquidation in AI power/cooling; no company-specific headline, just de-rating and positioning unwind.",
+      "tickers": [
+        "VRT"
+      ]
+    },
+    {
+      "text": "NOW closed +8.26% on strong buy interest tied to GenAI \"Now Assist\" traction and platform-layer workflow demand.",
+      "tickers": [
+        "NOW"
+      ]
+    },
+    {
+      "text": "ZS closed +8.53% on zero-trust / secure access positioning and AI-enhanced threat detection commentary.",
+      "tickers": [
+        "ZS"
+      ]
+    },
+    {
+      "text": "AMAT closed -6.01% on follow-through selling after earnings digestion and a China export-control overhang on WFE.",
+      "tickers": [
+        "AMAT"
+      ]
+    },
+    {
+      "text": "NVDA closed -2.27% on de-risking ahead of Wednesday earnings, with position-squaring across the AI stack.",
+      "tickers": [
+        "NVDA"
+      ]
+    },
+    {
+      "text": "RBLX closed +8.98% as a standout internet momentum bid, with no single official catalyst cited in the tape.",
+      "tickers": [
+        "RBLX"
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "name": "Semiconductors",
+      "bullets": [
+        {
+          "text": "SOXX -2.49% as semis led the downside; traders sold AI hardware, memory, and WFE.",
+          "tickers": [
+            "SOXX"
+          ]
+        },
+        {
+          "text": "NVDA -2.27% ahead of Wednesday earnings; de-risking dominated trading.",
+          "tickers": [
+            "NVDA"
+          ]
+        },
+        {
+          "text": "AMD -2.43% on an AI GPU positioning reset.",
+          "tickers": [
+            "AMD"
+          ]
+        },
+        {
+          "text": "MU -8.30% on weaker DRAM/HBM price checks.",
+          "tickers": [
+            "MU"
+          ]
+        },
+        {
+          "text": "AMAT -6.01% on post-earnings digestion and China exposure.",
+          "tickers": [
+            "AMAT"
+          ]
+        },
+        {
+          "text": "LRCX -3.27% on memory/WFE profit-taking.",
+          "tickers": [
+            "LRCX"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI Infrastructure",
+      "bullets": [
+        {
+          "text": "VRT -9.99% on AI power/cooling liquidation.",
+          "tickers": [
+            "VRT"
+          ]
+        },
+        {
+          "text": "ETN -5.46% on AI power de-rating.",
+          "tickers": [
+            "ETN"
+          ]
+        },
+        {
+          "text": "DELL -3.57% on AI server margin and backlog questions.",
+          "tickers": [
+            "DELL"
+          ]
+        },
+        {
+          "text": "SMCI -1.53% on AI server basket weakness.",
+          "tickers": [
+            "SMCI"
+          ]
+        },
+        {
+          "text": "ORCL -4.38% on OCI capex and competition worries.",
+          "tickers": [
+            "ORCL"
+          ]
+        },
+        {
+          "text": "ANET -1.21% on AI networking spend cyclicality.",
+          "tickers": [
+            "ANET"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Software & SaaS",
+      "bullets": [
+        {
+          "text": "IGV +1.19% as software outperformed on rotation.",
+          "tickers": [
+            "IGV"
+          ]
+        },
+        {
+          "text": "NOW +8.26% on strong GenAI workflow buying.",
+          "tickers": [
+            "NOW"
+          ]
+        },
+        {
+          "text": "ZS +8.53% on zero-trust and AI security demand.",
+          "tickers": [
+            "ZS"
+          ]
+        },
+        {
+          "text": "CRM +3.22% on AI data-cloud / workflow rotation.",
+          "tickers": [
+            "CRM"
+          ]
+        },
+        {
+          "text": "SNOW +3.99% on earnings / summit anticipation.",
+          "tickers": [
+            "SNOW"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Communications & Networking",
+      "bullets": [
+        {
+          "text": "LITE -10.84% on optical de-risking.",
+          "tickers": [
+            "LITE"
+          ]
+        },
+        {
+          "text": "AAOI -12.18% on optical de-risking.",
+          "tickers": [
+            "AAOI"
+          ]
+        },
+        {
+          "text": "CIEN -6.21% on networking / optical selloff.",
+          "tickers": [
+            "CIEN"
+          ]
+        },
+        {
+          "text": "ANET -1.21% as the AI networking bellwether came under pressure.",
+          "tickers": [
+            "ANET"
+          ]
+        },
+        {
+          "text": "ERIC +2.12% as a relative-strength pocket in telecom gear.",
+          "tickers": [
+            "ERIC"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Internet & Platforms",
+      "bullets": [
+        {
+          "text": "RBLX +8.98% on a momentum bid in consumer internet.",
+          "tickers": [
+            "RBLX"
+          ]
+        },
+        {
+          "text": "TTD +4.87% on ad-tech strength.",
+          "tickers": [
+            "TTD"
+          ]
+        },
+        {
+          "text": "PINS +2.41% on ad-tech strength.",
+          "tickers": [
+            "PINS"
+          ]
+        },
+        {
+          "text": "SNAP +2.08% on ad-supported internet strength.",
+          "tickers": [
+            "SNAP"
+          ]
+        },
+        {
+          "text": "NFLX +2.84% on engagement / profitability bid.",
+          "tickers": [
+            "NFLX"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EdgeAI",
+      "bullets": [
+        {
+          "text": "NET +1.47% on edge-security / AI platform strength.",
+          "tickers": [
+            "NET"
+          ]
+        },
+        {
+          "text": "AKAM -0.86% on edge/CDN softness.",
+          "tickers": [
+            "AKAM"
+          ]
+        },
+        {
+          "text": "AMBQ -1.01% as small-cap edgeAI beta.",
+          "tickers": [
+            "AMBQ"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI Compute",
+      "bullets": [
+        {
+          "text": "NVDA -2.27% on earnings de-risking.",
+          "tickers": [
+            "NVDA"
+          ]
+        },
+        {
+          "text": "AMD -2.43% on AI compute beta reset.",
+          "tickers": [
+            "AMD"
+          ]
+        },
+        {
+          "text": "INTC -2.15% on foundry and AI skepticism.",
+          "tickers": [
+            "INTC"
+          ]
+        },
+        {
+          "text": "ARM +0.09% on slight relative strength.",
+          "tickers": [
+            "ARM"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Optical & Photonics",
+      "bullets": [
+        {
+          "text": "LWLG -15.31% on a speculative photonics washout.",
+          "tickers": [
+            "LWLG"
+          ]
+        },
+        {
+          "text": "AAOI -12.18% on merchant optics de-risking.",
+          "tickers": [
+            "AAOI"
+          ]
+        },
+        {
+          "text": "LITE -10.84% on coherent-optic and module de-rating.",
+          "tickers": [
+            "LITE"
+          ]
+        },
+        {
+          "text": "POET -11.77% as roadmap-heavy optics sold off.",
+          "tickers": [
+            "POET"
+          ]
+        },
+        {
+          "text": "IPGP +2.66% as a more established photonics name bid higher.",
+          "tickers": [
+            "IPGP"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Memory & Interconnect",
+      "bullets": [
+        {
+          "text": "MU -8.30% on HBM/DRAM pricing pressure.",
+          "tickers": [
+            "MU"
+          ]
+        },
+        {
+          "text": "RMBS -3.75% on memory-interface de-risking ahead of NVDA.",
+          "tickers": [
+            "RMBS"
+          ]
+        },
+        {
+          "text": "GSIT -6.64% on niche memory/IP de-risking.",
+          "tickers": [
+            "GSIT"
+          ]
+        },
+        {
+          "text": "MRAM -12.19% on a small-cap memory flush.",
+          "tickers": [
+            "MRAM"
+          ]
+        },
+        {
+          "text": "SIMO -8.32% on storage controller volatility.",
+          "tickers": [
+            "SIMO"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chip Equipment",
+      "bullets": [
+        {
+          "text": "AMAT -6.01% on WFE selling after earnings digestion.",
+          "tickers": [
+            "AMAT"
+          ]
+        },
+        {
+          "text": "KLAC -3.43% on process-control multiple compression.",
+          "tickers": [
+            "KLAC"
+          ]
+        },
+        {
+          "text": "LRCX -3.27% on memory/WFE profit-taking.",
+          "tickers": [
+            "LRCX"
+          ]
+        },
+        {
+          "text": "UCTT -10.24% on WFE sub-system beta hit.",
+          "tickers": [
+            "UCTT"
+          ]
+        },
+        {
+          "text": "ICHR -9.22% on WFE sub-system beta hit.",
+          "tickers": [
+            "ICHR"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wireless & Mobile",
+      "bullets": [
+        {
+          "text": "SYNA -8.43% on weaker Android midrange builds.",
+          "tickers": [
+            "SYNA"
+          ]
+        },
+        {
+          "text": "HIMX -5.88% on China handset and LCD driver pressure.",
+          "tickers": [
+            "HIMX"
+          ]
+        },
+        {
+          "text": "MXL -7.10% on connectivity / broadband rotation out.",
+          "tickers": [
+            "MXL"
+          ]
+        },
+        {
+          "text": "QCOM -0.10% and essentially flat.",
+          "tickers": [
+            "QCOM"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analog & Mixed-Signal",
+      "bullets": [
+        {
+          "text": "POWI -10.03% on power-management de-risking.",
+          "tickers": [
+            "POWI"
+          ]
+        },
+        {
+          "text": "ON -5.03% on EV / industrial demand concerns.",
+          "tickers": [
+            "ON"
+          ]
+        },
+        {
+          "text": "MPWR -5.35% on AI-adjacent power-management de-rating.",
+          "tickers": [
+            "MPWR"
+          ]
+        },
+        {
+          "text": "ALGM -4.99% on EV / motor-control pressure.",
+          "tickers": [
+            "ALGM"
+          ]
+        },
+        {
+          "text": "TXN -1.84% on broad analog de-risking.",
+          "tickers": [
+            "TXN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Power & Wide-Bandgap",
+      "bullets": [
+        {
+          "text": "AEHR -15.98% on SiC test capacity overbuild fears.",
+          "tickers": [
+            "AEHR"
+          ]
+        },
+        {
+          "text": "NVTS -9.73% on GaN de-risking.",
+          "tickers": [
+            "NVTS"
+          ]
+        },
+        {
+          "text": "SMTC -4.90% on power-management / AI power de-rating.",
+          "tickers": [
+            "SMTC"
+          ]
+        },
+        {
+          "text": "WOLF -3.73% on SiC ramp skepticism and EV pricing pressure.",
+          "tickers": [
+            "WOLF"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Test & Advanced Packaging",
+      "bullets": [
+        {
+          "text": "CAMT -9.12% on advanced packaging inspection de-risking.",
+          "tickers": [
+            "CAMT"
+          ]
+        },
+        {
+          "text": "FORM -8.24% on probe / AI test profit-taking.",
+          "tickers": [
+            "FORM"
+          ]
+        },
+        {
+          "text": "TER -6.09% on AI test / capex de-risking.",
+          "tickers": [
+            "TER"
+          ]
+        },
+        {
+          "text": "COHU -6.55% on back-end test weakness.",
+          "tickers": [
+            "COHU"
+          ]
+        },
+        {
+          "text": "SKYT -1.96% on socket/burn-in beta.",
+          "tickers": [
+            "SKYT"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fab & Foundry",
+      "bullets": [
+        {
+          "text": "TSEM -10.98% on deal skepticism and analog/mixed-signal softness.",
+          "tickers": [
+            "TSEM"
+          ]
+        },
+        {
+          "text": "ASX -7.36% on OSAT / advanced packaging pressure.",
+          "tickers": [
+            "ASX"
+          ]
+        },
+        {
+          "text": "GFS -5.75% on mature-node / U.S. fab ROI questions.",
+          "tickers": [
+            "GFS"
+          ]
+        },
+        {
+          "text": "TSM -2.87% on AI capex digestion and geopolitics.",
+          "tickers": [
+            "TSM"
+          ]
+        },
+        {
+          "text": "UMC -0.76% on mild foundry weakness.",
+          "tickers": [
+            "UMC"
+          ]
+        },
+        {
+          "text": "SLAB +0.06% as relative strength in embedded/connectivity.",
+          "tickers": [
+            "SLAB"
+          ]
+        }
+      ]
+    }
+  ],
+  "callouts": [
+    {
+      "ticker": "NOW",
+      "summary": "Monday May 18, 2026 close: +8.26% on GenAI \"Now Assist\" traction and workflow-layer buying.",
+      "angle": "product",
+      "confidence": "sell_side"
+    },
+    {
+      "ticker": "ZS",
+      "summary": "Monday May 18, 2026 close: +8.53% on zero-trust and AI-enhanced security demand.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "MU",
+      "summary": "Monday May 18, 2026 close: -8.30% on weaker DRAM/HBM price checks and volume push-out chatter.",
+      "angle": "supply_chain",
+      "confidence": "sell_side"
+    },
+    {
+      "ticker": "VRT",
+      "summary": "Monday May 18, 2026 close: -9.99% on AI power/cooling liquidation.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "AMAT",
+      "summary": "Monday May 18, 2026 close: -6.01% on post-earnings digestion and China export-control overhang.",
+      "angle": "regulatory",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "NVDA",
+      "summary": "Monday May 18, 2026 close: -2.27% ahead of Wednesday earnings.",
+      "angle": "earnings",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "CRM",
+      "summary": "Monday May 18, 2026 close: +3.22% on AI Data Cloud / Einstein Copilot positioning.",
+      "angle": "product",
+      "confidence": "sell_side"
+    },
+    {
+      "ticker": "MDB",
+      "summary": "Monday May 18, 2026 close: +7.17% on AI-app development / vector search interest.",
+      "angle": "product",
+      "confidence": "sell_side"
+    },
+    {
+      "ticker": "ESTC",
+      "summary": "Monday May 18, 2026 close: +6.25% on vector / semantic search and observability.",
+      "angle": "product",
+      "confidence": "sell_side"
+    },
+    {
+      "ticker": "CRWD",
+      "summary": "Monday May 18, 2026 close: +3.73% on Falcon AI-native architecture and module adoption.",
+      "angle": "product",
+      "confidence": "sell_side"
+    },
+    {
+      "ticker": "RBLX",
+      "summary": "Monday May 18, 2026 close: +8.98% on a platform momentum bid with no single catalyst cited.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "LITE",
+      "summary": "Monday May 18, 2026 close: -10.84% on optical / AI infrastructure de-rating.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "AAOI",
+      "summary": "Monday May 18, 2026 close: -12.18% on merchant optics de-risking and stop-loss flushes.",
+      "angle": "other",
+      "confidence": "sell_side"
+    },
+    {
+      "ticker": "AEHR",
+      "summary": "Monday May 18, 2026 close: -15.98% on SiC test overbuild fears.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    }
+  ],
+  "watch_tomorrow": [
+    {
+      "text": "NVDA earnings and guidance will drive AI compute, memory, packaging, and WFE sentiment.",
+      "tickers": [
+        "NVDA"
+      ]
+    },
+    {
+      "text": "Watch whether Monday’s semi-led selloff in SOXX, XLK, and QQQ extends or stabilizes.",
+      "tickers": [
+        "SOXX",
+        "XLK",
+        "QQQ"
+      ]
+    },
+    {
+      "text": "MU, RMBS, AMAT, LRCX, and KLAC may react first to NVDA and any HBM commentary.",
+      "tickers": [
+        "MU",
+        "RMBS",
+        "AMAT",
+        "LRCX",
+        "KLAC"
+      ]
+    },
+    {
+      "text": "VRT, ETN, DELL, SMCI, and ANET remain vulnerable to any post-NVDA de-risking.",
+      "tickers": [
+        "VRT",
+        "ETN",
+        "DELL",
+        "SMCI",
+        "ANET"
+      ]
+    },
+    {
+      "text": "NOW, ZS, CRWD, MDB, and SNOW can keep leading if the market continues to favor software rotation.",
+      "tickers": [
+        "NOW",
+        "ZS",
+        "CRWD",
+        "MDB",
+        "SNOW"
+      ]
+    },
+    {
+      "text": "AEHR, NVTS, WOLF, ON, and STM need evidence that the recent de-risking was only positioning.",
+      "tickers": [
+        "AEHR",
+        "NVTS",
+        "WOLF",
+        "ON",
+        "STM"
+      ]
+    }
+  ]
+}
