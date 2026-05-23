@@ -1,0 +1,28 @@
+{
+  "ticker": "NBIS",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Major multiyear AI compute deal with Microsoft announced September 2025 (Morningstar cites $17B revenue agreement for GPU cloud capacity, underpinning long-term growth and credibility with hyperscalers).",
+    "Ongoing AI/HPC infrastructure buildout and Bloom Energy partnership to deploy ~328 MW of clean fuel power for data centers (reported in recent pre-market commentary), reinforcing Nebius as a scaled AI cloud / power user and attracting AI-infrastructure momentum flows.",
+    "Rapid post-IPO / carve\u2011out rerating as a pure-play AI cloud provider (ex-Yandex Nebius) with very high growth and very high cash burn, driving \u2018story stock\u2019 behavior and elevated volatility as AI-infrastructure names re-rate together."
+  ],
+  "latest_material_date": "2026-05-21",
+  "theme_tags": [
+    "ai-hyperscaler-deals",
+    "ai-infrastructure-enablers",
+    "ai-compute",
+    "ai-infrastructure-and-power-buildout",
+    "story-driven-momentum",
+    "spin-and-sum-of-parts"
+  ],
+  "summary": "The recent 40\u2013100%+ ramp in Nebius over the last 1\u20132 months is primarily a rerating on its AI-cloud narrative rather than a single new headline: investors are extrapolating the previously disclosed multiyear $17B Microsoft GPU-capacity deal and newer reports of a large Bloom Energy-backed 328 MW clean-power buildout into a long runway of AI-compute demand. As a vertically integrated, ex\u2011Yandex carve\u2011out positioned as an AI/HPC cloud specialist, NBIS is trading like a high-beta proxy on hyperscaler AI capex, with strong momentum (RSI in the 96th percentile) and low recent volume suggesting momentum/trend followers and AI-infrastructure flows are the main marginal buyers. The 1-day pullback despite still-elevated levels looks more like digestion/mean reversion after a parabolic multi-week move than a reaction to negative fundamental news.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"NBIS\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Major multiyear AI compute deal with Microsoft announced September 2025 (Morningstar cites $17B revenue agreement for GPU cloud capacity, underpinning long-term growth and credibility with hyperscalers).\",\n    \"Ongoing AI/HPC infrastructure buildout and Bloom Energy partnership to deploy ~328 MW of clean fuel power for data centers (reported in recent pre-market commentary), reinforcing Nebius as a scaled AI cloud / power user and attracting AI-infrastructure momentum flows.\",\n    \"Rapid post-IPO / carve\u2011out rerating as a pure-play AI cloud provider (ex-Yandex Nebius) with very high growth and very high cash burn, driving \u2018story stock\u2019 behavior and elevated volatility as AI-infrastructure names re-rate together.\"\n  ],\n  \"latest_material_date\": \"2026-05-21\",\n  \"theme_tags\": [\n    \"ai-hyperscaler-deals\",\n    \"ai-infrastructure-enablers\",\n    \"ai-compute\",\n    \"ai-infrastructure-and-power-buildout\",\n    \"story-driven-momentum\",\n    \"spin-and-sum-of-parts\"\n  ],\n  \"summary\": \"The recent 40\u2013100%+ ramp in Nebius over the last 1\u20132 months is primarily a rerating on its AI-cloud narrative rather than a single new headline: investors are extrapolating the previously disclosed multiyear $17B Microsoft GPU-capacity deal and newer reports of a large Bloom Energy-backed 328 MW clean-power buildout into a long runway of AI-compute demand. As a vertically integrated, ex\u2011Yandex carve\u2011out positioned as an AI/HPC cloud specialist, NBIS is trading like a high-beta proxy on hyperscaler AI capex, with strong momentum (RSI in the 96th percentile) and low recent volume suggesting momentum/trend followers and AI-infrastructure flows are the main marginal buyers. The 1-day pullback despite still-elevated levels looks more like digestion/mean reversion after a parabolic multi-week move than a reaction to negative fundamental news.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

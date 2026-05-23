@@ -1,0 +1,24 @@
+{
+  "ticker": "HLIT",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Follow\u2011through buying after a strong post\u2011earnings re\u2011rating: shares are now up ~40%+ over 1\u20132 months with repeated high\u2011volume spikes as investors price in improving video\u2011access and broadband demand (earnings earlier in May 2026; no new 8\u2011K since then but continuing reaction).",
+    "Analyst/market commentary highlighting better\u2011than\u2011feared fundamentals and increased price targets: multiple outlets (e.g., Nasdaq/Motley Fool item 'Harmonic (HLIT) Price Target Increased by 20.22%') point to a more constructive sell\u2011side stance, helping drive incremental institutional interest.",
+    "Technical and positioning dynamics: a 4\u20135x volume spike, RSI in the 95\u2013100th percentile, and the stock showing up on top\u20111d / vol\u2011spike screens suggest a feedback loop of momentum\u2011chasing and short\u2011covering on a relatively underowned mid\u2011cap name rather than a single fresh fundamental announcement on the day."
+  ],
+  "latest_material_date": "2026-05-22",
+  "theme_tags": [
+    "margin-and-growth-inflection",
+    "story-driven-momentum"
+  ],
+  "summary": "The latest 19%+ jump in HLIT appears to be a continuation of a multi\u2011week re\u2011rating that began after its early\u2011May earnings, as investors grow more comfortable with Harmonic\u2019s growth and margin trajectory and analysts respond with higher price targets. Over the past few sessions there has been no new marquee contract, M&A, regulatory, or hyperscaler\u2011AI announcement; instead, the move is being amplified by technical factors \u2014 very high volume, elevated RSI, and appearance on momentum/volume\u2011spike screens \u2014 that point to momentum\u2011driven buying and some short\u2011covering on top of earlier fundamental improvements rather than a brand\u2011new single catalyst.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"HLIT\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Follow\u2011through buying after a strong post\u2011earnings re\u2011rating: shares are now up ~40%+ over 1\u20132 months with repeated high\u2011volume spikes as investors price in improving video\u2011access and broadband demand (earnings earlier in May 2026; no new 8\u2011K since then but continuing reaction).\",\n    \"Analyst/market commentary highlighting better\u2011than\u2011feared fundamentals and increased price targets: multiple outlets (e.g., Nasdaq/Motley Fool item 'Harmonic (HLIT) Price Target Increased by 20.22%') point to a more constructive sell\u2011side stance, helping drive incremental institutional interest.\",\n    \"Technical and positioning dynamics: a 4\u20135x volume spike, RSI in the 95\u2013100th percentile, and the stock showing up on top\u20111d / vol\u2011spike screens suggest a feedback loop of momentum\u2011chasing and short\u2011covering on a relatively underowned mid\u2011cap name rather than a single fresh fundamental announcement on the day.\"\n  ],\n  \"latest_material_date\": \"2026-05-22\",\n  \"theme_tags\": [\n    \"margin-and-growth-inflection\",\n    \"story-driven-momentum\"\n  ],\n  \"summary\": \"The latest 19%+ jump in HLIT appears to be a continuation of a multi\u2011week re\u2011rating that began after its early\u2011May earnings, as investors grow more comfortable with Harmonic\u2019s growth and margin trajectory and analysts respond with higher price targets. Over the past few sessions there has been no new marquee contract, M&A, regulatory, or hyperscaler\u2011AI announcement; instead, the move is being amplified by technical factors \u2014 very high volume, elevated RSI, and appearance on momentum/volume\u2011spike screens \u2014 that point to momentum\u2011driven buying and some short\u2011covering on top of earlier fundamental improvements rather than a brand\u2011new single catalyst.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

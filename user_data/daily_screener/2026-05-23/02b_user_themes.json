@@ -1,0 +1,161 @@
+{
+  "watchlist_hash": "2911a92861a1",
+  "themes": [
+    {
+      "tag": "ai-hyperscaler-deals",
+      "label": "Ai Hyperscaler Deals",
+      "description": "This trader likes clear, named enterprise or hyperscaler wins tied to AI infrastructure, especially when the contract size, customer type, or rollout timing is explicit. Big dollar figures and long-duration commitments make the story feel real rather than promotional.",
+      "example_tickers": [
+        "AKAM",
+        "FLNC",
+        "INOD",
+        "FROG",
+        "DDOG",
+        "BAND"
+      ],
+      "anti_pattern": "Generic AI partnership chatter without a named customer, contract value, or concrete deployment/use case.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "earnings-beat-and-raise",
+      "label": "Earnings Beat And Raise",
+      "description": "A recurring pattern is strong quarters with raised guidance, especially when the notes cite exact growth rates, margin improvement, or EPS surprises. The trader seems to reward proof that the story is already translating into numbers.",
+      "example_tickers": [
+        "MXL",
+        "TEAM",
+        "BAND",
+        "INOD",
+        "AXTI",
+        "AKAM"
+      ],
+      "anti_pattern": "One-time beat with no guide raise, or a guide raise unsupported by improving operating metrics.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "ai-infrastructure-enablers",
+      "label": "Ai Infrastructure Enablers",
+      "description": "The watchlist heavily favors picks-and-shovels names serving AI buildout: chips, substrates, optical networking, power, racks, and datacenter-adjacent infrastructure. The trader appears especially drawn to companies that become more valuable as AI capex scales.",
+      "example_tickers": [
+        "AXTI",
+        "MXL",
+        "SIMO",
+        "MRVL",
+        "NXPI",
+        "HIMX",
+        "FLNC",
+        "FLEX",
+        "RXT"
+      ],
+      "anti_pattern": "Consumer-facing AI branding or software-only AI narratives with no clear infrastructure tie-in.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "optical-photonics-inflection",
+      "label": "Optical Photonics Inflection",
+      "description": "Several notes focus on optical transceivers, InP substrates, smart networking, and the idea that optical demand is at an inflection point. The trader seems to like stories where a niche component becomes mission-critical to AI data-center bandwidth.",
+      "example_tickers": [
+        "MXL",
+        "AXTI",
+        "HIMX",
+        "MRVL",
+        "SIMO"
+      ],
+      "anti_pattern": "Broad semis exposure without an optical/data-center bandwidth catalyst.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "margin-and-growth-inflection",
+      "label": "Margin And Growth Inflection",
+      "description": "The trader repeatedly highlights revenue acceleration, positive EPS turns, and margin recovery from weak or negative levels. The appeal is the visible transition from stagnation to operating leverage.",
+      "example_tickers": [
+        "MXL",
+        "AXTI",
+        "FLNC",
+        "INOD",
+        "HIMX",
+        "DDOG"
+      ],
+      "anti_pattern": "Companies with only narrative potential but no visible inflection in revenue, gross margin, or EPS.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "story-driven-momentum",
+      "label": "Story Driven Momentum",
+      "description": "These notes often ask 'what's the story?' or 'why did it spike?', showing a taste for momentum backed by a clear catalyst. The trader seems to prefer names where price strength can be explained by a real fundamental or thematic driver.",
+      "example_tickers": [
+        "MXL",
+        "INTC",
+        "AIP",
+        "RMAX",
+        "BULL",
+        "SNDK",
+        "CRML"
+      ],
+      "anti_pattern": "Pure chart chase with no identifiable fundamental, product, or event catalyst.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "breakout-and-new-highs",
+      "label": "Breakout And New Highs",
+      "description": "The trader likes fresh breakouts, strength after consolidation, and stocks making new highs on improving fundamentals. Price action matters, but it is usually paired with a business catalyst or positive revision trend.",
+      "example_tickers": [
+        "SIMO",
+        "AXTI",
+        "MXL",
+        "SNDK",
+        "INOD"
+      ],
+      "anti_pattern": "Late-stage extended charts with no evidence of a recent breakout, catalyst, or trend change.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "spin-and-sum-of-parts",
+      "label": "Spin And Sum Of Parts",
+      "description": "There is a clear interest in valuation re-rating stories where a hidden asset, spin-off, or segment separation could unlock value. The trader likes when a boring parent can be revalued because the market is missing the quality of a faster-growing piece.",
+      "example_tickers": [
+        "FLEX",
+        "RXT",
+        "AKAM"
+      ],
+      "anti_pattern": "Traditional value argument without a catalyst that could change the market's valuation framework.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "big-contract-and-backlog",
+      "label": "Big Contract And Backlog",
+      "description": "Large backlog, multi-year orders, and explicit pipeline metrics show up repeatedly as proof of durability. This trader seems to like visibility into future revenue more than vague top-line hopes.",
+      "example_tickers": [
+        "FLNC",
+        "AKAM",
+        "CRML",
+        "MXL",
+        "AXTI"
+      ],
+      "anti_pattern": "Backlog claims without size, customer specificity, or a believable path to revenue conversion.",
+      "source": "user_taste",
+      "weight": 3.0
+    },
+    {
+      "tag": "special-situations-with-optional-downside",
+      "label": "Special Situations With Optional Downside",
+      "description": "Some picks are driven by a unique angle such as regulatory change, governance setup, or a one-off market structure catalyst, especially if it can rerate the business. The trader appears comfortable with nuanced catalysts as long as the setup is concrete.",
+      "example_tickers": [
+        "BULL",
+        "RXT",
+        "XNDU",
+        "CRML"
+      ],
+      "anti_pattern": "Macro speculation or opaque special-situation setup with no identifiable mechanism for rerating.",
+      "source": "user_taste",
+      "weight": 3.0
+    }
+  ]
+}

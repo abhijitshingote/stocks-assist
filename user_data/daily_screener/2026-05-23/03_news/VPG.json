@@ -1,0 +1,37 @@
+{
+  "ticker": "VPG",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Fiscal Q1 2026 earnings / 8-K on 2026-05-13: net revenues of $84.353M, up 17.6% y/y; bookings of $102.1M; consolidated book-to-bill of 1.21; management cited strength in semicap, data centers, avionics, military and space",
+    "Sensors segment outperformed in Q1 2026: revenue $33.314M (+23.1% y/y) with bookings of $45.2M, up 29% sequentially and the highest in 15 quarters; book-to-bill 1.36",
+    "Company commentary on 2026-05-13: executives highlighted humanoid robotics as a new growth initiative, with about $1.0M of Q1 orders, and raised/confirmed Q2 2026 revenue guidance of $85M-$90M at constant currency",
+    "No evidence found in the supplied material of a separate named-customer rumor, patent catalyst, or acquisition lead; the stock move looks primarily like a post-earnings/order re-rating plus technical momentum",
+    "VPG reported Fiscal 2026 Q1 results on 2026-05-13, with orders exceeding $100 million and revenue of $84.4 million, up 17.6% year over year; management highlighted strong demand in semiconductor equipment, data centers, avionics, military and space, plus bookings up 25% sequentially.",
+    "The same release indicated expanding momentum on the bottom line: the recent quarter cited in market coverage showed adjusted EPS of $0.07 versus $0.21 expected and a weaker Q1 guide around $77 million, but the stock\u2019s much larger multi-week move appears to be driven by a sharp re-rating after the later 2026-05-13 earnings/update and order surge rather than the earlier miss alone.",
+    "Market commentary and coverage also point to the stock breaking into new highs after the order and revenue acceleration, with the move amplified by very high relative strength (RSI mktcap percentile 98) and a volume spike on 2026-05-13."
+  ],
+  "latest_material_date": "2026-05-13",
+  "theme_tags": [
+    "industrial-sensors",
+    "semicap-equipment",
+    "aerospace-defense",
+    "data-centers",
+    "robotics",
+    "post-earnings-rerating",
+    "earnings-beat-and-raise",
+    "margin-and-growth-inflection",
+    "breakout-and-new-highs",
+    "ai-infrastructure-enablers",
+    "defense-and-geopolitical-tension"
+  ],
+  "summary": "Verification supports that VPG's recent surge is real and is best explained by the 2026-05-13 Q1 FY2026 update rather than a separate rumor. The company reported $84.353M in revenue (+17.6% y/y), $102.1M in bookings, and a 1.21 book-to-bill, with Sensors especially strong at $33.314M revenue (+23.1% y/y) and $45.2M bookings (+29% sequentially, 15-quarter high). Management specifically called out demand from semiconductor equipment, data centers, avionics, military, space, and early humanoid robotics orders (~$1.0M). I did not find a denied rumor or an external named-counterparty lead in the provided sources, so the current read is post-earnings re-rating / sympathy with strong technical follow-through, not a separate catalyst.",
+  "ok": true,
+  "raw": "{\"ticker\":\"VPG\",\"has_material_news\":true,\"headline_drivers\":[\"VPG reported Fiscal 2026 Q1 results on 2026-05-13, with orders exceeding $100 million and revenue of $84.4 million, up 17.6% year over year; management highlighted strong demand in semiconductor equipment, data centers, avionics, military and space, plus bookings up 25% sequentially.\",\"The same release indicated expanding momentum on the bottom line: the recent quarter cited in market coverage showed adjusted EPS of $0.07 versus $0.21 expected and a weaker Q1 guide around $77 million, but the stock\u2019s much larger multi-week move appears to be driven by a sharp re-rating after the later 2026-05-13 earnings/update and order surge rather than the earlier miss alone.\",\"Market commentary and coverage also point to the stock breaking into new highs after the order and revenue acceleration, with the move amplified by very high relative strength (RSI mktcap percentile 98) and a volume spike on 2026-05-13.\"],\"latest_material_date\":\"2026-05-13\",\"theme_tags\":[\"earnings-beat-and-raise\",\"margin-and-growth-inflection\",\"breakout-and-new-highs\",\"ai-infrastructure-enablers\",\"defense-and-geopolitical-tension\"],\"summary\":\"VPG\u2019s move looks primarily like a post-earnings re-rating tied to its 2026-05-13 update: orders topped $100 million, revenue accelerated to $84.4 million (+17.6% y/y), and management called out strength in semicap, data centers, avionics, military, and space. That combination gave the market a growth-and-order-inflation story, and the stock then fed on technical momentum as it broke to new highs. I did not find evidence in the provided material of a separate named-customer rumor or acquisition catalyst large enough to better explain the 20d/60d surge.\"}",
+  "_verify": {
+    "triggered": true,
+    "reason": "rumor_lead_detected",
+    "pass2_ok": true,
+    "pass2_error": null,
+    "pass2_raw": "{\n  \"ticker\": \"VPG\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Fiscal Q1 2026 earnings / 8-K on 2026-05-13: net revenues of $84.353M, up 17.6% y/y; bookings of $102.1M; consolidated book-to-bill of 1.21; management cited strength in semicap, data centers, avionics, military and space\",\n    \"Sensors segment outperformed in Q1 2026: revenue $33.314M (+23.1% y/y) with bookings of $45.2M, up 29% sequentially and the highest in 15 quarters; book-to-bill 1.36\",\n    \"Company commentary on 2026-05-13: executives highlighted humanoid robotics as a new growth initiative, with about $1.0M of Q1 orders, and raised/confirmed Q2 2026 revenue guidance of $85M-$90M at constant currency\",\n    \"No evidence found in the supplied material of a separate named-customer rumor, patent catalyst, or acquisition lead; the stock move looks primarily like a post-earnings/order re-rating plus technical momentum\"\n  ],\n  \"latest_material_date\": \"2026-05-13\",\n  \"theme_tags\": [\n    \"industrial-sensors\",\n    \"semicap-equipment\",\n    \"aerospace-defense\",\n    \"data-centers\",\n    \"robotics\",\n    \"post-earnings-rerating\"\n  ],\n  \"summary\": \"Verification supports that VPG's recent surge is real and is best explained by the 2026-05-13 Q1 FY2026 update rather than a separate rumor. The company reported $84.353M in revenue (+17.6% y/y), $102.1M in bookings, and a 1.21 book-to-bill, with Sensors especially strong at $33.314M revenue (+23.1% y/y) and $45.2M bookings (+29% sequentially, 15-quarter high). Management specifically called out demand from semiconductor equipment, data centers, avionics, military, space, and early humanoid robotics orders (~$1.0M). I did not find a denied rumor or an external named-counterparty lead in the provided sources, so the current read is post-earnings re-rating / sympathy with strong technical follow-through, not a separate catalyst.\"\n}"
+  }
+}
