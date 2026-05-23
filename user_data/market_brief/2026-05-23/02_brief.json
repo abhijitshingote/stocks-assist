@@ -1,0 +1,609 @@
+{
+  "asof": "2026-05-23",
+  "tldr": [
+    {
+      "text": "Tech led a broadly positive tape with AI-capex and AI-infrastructure themes driving performance; major ETFs SPY, QQQ, SOXX, IGV, and XLK all closed higher while flows rotated within AI winners and funding sources.",
+      "tickers": [
+        "SPY",
+        "QQQ",
+        "SOXX",
+        "IGV",
+        "XLK"
+      ]
+    },
+    {
+      "text": "QCOM sharply rerated as investors embraced an AI-on-device and handset recovery narrative, repositioning it as a core AI PC/phone play rather than a mature handset cyclical.",
+      "tickers": [
+        "QCOM"
+      ]
+    },
+    {
+      "text": "DELL delivered a major move on blockbuster AI server demand for AI-optimized PowerEdge systems, driving sympathy strength in HPE and SMCI as investors chased AI server and infrastructure plays.",
+      "tickers": [
+        "DELL",
+        "HPE",
+        "SMCI",
+        "NVDA",
+        "AMD"
+      ]
+    },
+    {
+      "text": "NVDA traded down despite a strong semiconductor tape as crowded AI GPU longs were used as funding for the next leg of AI infrastructure and alternative compute trades such as AMD, DELL, HPE, SMCI, and QCOM.",
+      "tickers": [
+        "NVDA",
+        "AMD",
+        "DELL",
+        "HPE",
+        "SMCI",
+        "QCOM"
+      ]
+    },
+    {
+      "text": "Semicap and packaging names rallied on persistent AI and HBM-driven demand, with ASML, advanced packaging OSAT ASX, and several WFE and metrology suppliers benefitting from tight AI supply-chain bottlenecks.",
+      "tickers": [
+        "ASML",
+        "ASX",
+        "KLAC",
+        "LRCX",
+        "AMAT",
+        "CAMT",
+        "KLIC",
+        "ONTO",
+        "FORM"
+      ]
+    },
+    {
+      "text": "Cybersecurity and software saw broad strength with ZS a standout, while select internet names like SPOT and AAPL outperformed on pricing power and AI roadmap narratives.",
+      "tickers": [
+        "ZS",
+        "IGV",
+        "MSFT",
+        "SPOT",
+        "AAPL",
+        "META"
+      ]
+    },
+    {
+      "text": "Power, analog, and wide-bandgap semis rallied strongly on AI-power and auto/industrial demand themes, with NVTS, AEHR, AXTI, and VSH among the largest individual movers.",
+      "tickers": [
+        "NVTS",
+        "AEHR",
+        "AXTI",
+        "VSH",
+        "ON",
+        "NVDA"
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "name": "Index and sector tape",
+      "bullets": [
+        {
+          "text": "SPY, QQQ, SOXX, IGV, and XLK all finished higher with tech leading and semiconductors particularly strong, reflecting continued enthusiasm for AI and related capex themes.",
+          "tickers": [
+            "SPY",
+            "QQQ",
+            "SOXX",
+            "IGV",
+            "XLK"
+          ]
+        },
+        {
+          "text": "Despite the risk-on tone in tech, several megacap AI leaders such as NVDA, MSFT, GOOGL, and AMZN traded lower as investors used them as funding sources for more leveraged AI infrastructure and component plays.",
+          "tickers": [
+            "NVDA",
+            "MSFT",
+            "GOOGL",
+            "AMZN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Semiconductors and AI compute",
+      "bullets": [
+        {
+          "text": "NVDA fell in a strong semiconductor session as investors rotated away from a crowded AI GPU leader into alternative compute and infrastructure names, with no new company-specific negative disclosures.",
+          "tickers": [
+            "NVDA"
+          ]
+        },
+        {
+          "text": "AMD rallied on stronger AI GPU backlog commentary, a reinforced narrative as the primary alternative AI GPU source, and hyperscaler dual-sourcing themes.",
+          "tickers": [
+            "AMD",
+            "NVDA"
+          ]
+        },
+        {
+          "text": "QCOM saw the largest move among large-cap semis as the market leaned into AI PC and AI handset content, reframing the stock as a core AI-on-device beneficiary.",
+          "tickers": [
+            "QCOM"
+          ]
+        },
+        {
+          "text": "ARM, INTC, ALAB, AIP, CEVA, and SIMO participated in the AI compute rotation, with investors focusing on custom AI SoCs, accelerators, orchestration, and AI-driven storage demand.",
+          "tickers": [
+            "ARM",
+            "INTC",
+            "ALAB",
+            "AIP",
+            "CEVA",
+            "SIMO"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI infrastructure, servers and data center",
+      "bullets": [
+        {
+          "text": "DELL surged on evidence of a step-function increase in AI-optimized PowerEdge server orders and backlog using NVDA and AMD GPUs, extending earlier bullish earnings commentary.",
+          "tickers": [
+            "DELL",
+            "NVDA",
+            "AMD"
+          ]
+        },
+        {
+          "text": "HPE and SMCI rallied in sympathy with DELL as investors chased diversified AI server vendors with strong cluster, liquid-cooling, and fast GPU platform deployment capabilities.",
+          "tickers": [
+            "HPE",
+            "SMCI",
+            "DELL"
+          ]
+        },
+        {
+          "text": "Power and thermal infrastructure names ETN and VRT gained as the market priced in elevated AI datacenter power distribution, backup, and thermal management spending.",
+          "tickers": [
+            "ETN",
+            "VRT"
+          ]
+        },
+        {
+          "text": "Networking names ANET, MRVL, and CSCO advanced on expectations for sustained AI datacenter switching, custom ASIC, and security growth tied to elevated hyperscaler capex.",
+          "tickers": [
+            "ANET",
+            "MRVL",
+            "CSCO"
+          ]
+        },
+        {
+          "text": "Recent commentary from MSFT, AMZN, and GOOGL reiterated elevated AI infrastructure capex, which is increasingly viewed as bullish for server, networking, power, and component suppliers but mixed for hyperscaler equity margins.",
+          "tickers": [
+            "MSFT",
+            "AMZN",
+            "GOOGL",
+            "DELL",
+            "HPE",
+            "SMCI",
+            "ETN",
+            "VRT",
+            "NVDA",
+            "AMD",
+            "QCOM"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Software, SaaS and cybersecurity",
+      "bullets": [
+        {
+          "text": "The IGV software ETF moved higher with broad participation across applications, data platforms, and cybersecurity names.",
+          "tickers": [
+            "IGV"
+          ]
+        },
+        {
+          "text": "ZS was a top cybersecurity mover without a single defining headline, suggesting aggressive positioning and possible post-earnings momentum as investors sought zero-trust and cyber exposure.",
+          "tickers": [
+            "ZS"
+          ]
+        },
+        {
+          "text": "Application and infrastructure software names including TEAM, SNOW, INTU, PANW, CRM, CRWD, DDOG, NOW, MDB, ESTC, ORCL, and ADBE generally traded higher on AI productivity, data infrastructure, and durable SaaS narratives.",
+          "tickers": [
+            "TEAM",
+            "SNOW",
+            "INTU",
+            "PANW",
+            "CRM",
+            "CRWD",
+            "DDOG",
+            "NOW",
+            "MDB",
+            "ESTC",
+            "ORCL",
+            "ADBE"
+          ]
+        },
+        {
+          "text": "MSFT was marginally red despite ongoing Copilot and AI optimism, reflecting some trimming in a crowded AI leader after strong prior performance.",
+          "tickers": [
+            "MSFT"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Internet and consumer platforms",
+      "bullets": [
+        {
+          "text": "AAPL outperformed other megacap internet and platform names on AI-iPhone and WWDC-season AI roadmap chatter, with Services growth also in focus.",
+          "tickers": [
+            "AAPL"
+          ]
+        },
+        {
+          "text": "META, SPOT, TTD, RBLX, and PINS traded higher on a mix of AI-driven ad improvements, pricing power, CTV and retail media optimism, and improving monetization narratives.",
+          "tickers": [
+            "META",
+            "SPOT",
+            "TTD",
+            "RBLX",
+            "PINS"
+          ]
+        },
+        {
+          "text": "NFLX, AMZN, GOOGL, SNAP, and UBER were down as investors weighed streaming and AI capex pressures, regulatory risk, and used these names as relative funding sources versus semis and AI infrastructure.",
+          "tickers": [
+            "NFLX",
+            "AMZN",
+            "GOOGL",
+            "SNAP",
+            "UBER"
+          ]
+        },
+        {
+          "text": "UBER in particular was pressured by DOJ pricing-algorithm scrutiny and worker-classification debates alongside rotation into semiconductors.",
+          "tickers": [
+            "UBER"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Edge AI, networking and optical",
+      "bullets": [
+        {
+          "text": "Edge compute platforms NET and AKAM edged higher as investors leaned into programmable edge and inference messaging tied to broader edge AI commentary from ecosystem players.",
+          "tickers": [
+            "NET",
+            "AKAM"
+          ]
+        },
+        {
+          "text": "AMBQ rallied as a high-beta edge AI and optical hardware/software play, framed as a next-leg AI trade by market participants.",
+          "tickers": [
+            "AMBQ"
+          ]
+        },
+        {
+          "text": "Telecom equipment names NOK and ERIC gained, with NOK a standout on reports of 5G/6G and Open RAN wins and AI-optimized routing and optical roles, aided by short-covering.",
+          "tickers": [
+            "NOK",
+            "ERIC"
+          ]
+        },
+        {
+          "text": "Optical names LITE, CIEN, and COHR traded lower on concerns around pricing pressure, inventory, and lumpiness in telco and subsea demand despite broader AI networking enthusiasm, while AAOI rose with AI optics demand at 800G and 1.6T.",
+          "tickers": [
+            "LITE",
+            "CIEN",
+            "COHR",
+            "AAOI"
+          ]
+        },
+        {
+          "text": "Industry commentary emphasized edge AI and on-device inference, supporting names such as NET, AKAM, AMBQ, CEVA, and ARM through expectations of growing edge compute and IP demand.",
+          "tickers": [
+            "NET",
+            "AKAM",
+            "AMBQ",
+            "CEVA",
+            "ARM"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Optical, photonics and specialty materials",
+      "bullets": [
+        {
+          "text": "Speculative electro-optic polymer name LWLG pulled back on continued frustration over the lack of concrete AI datacenter contracts despite prior enthusiasm.",
+          "tickers": [
+            "LWLG"
+          ]
+        },
+        {
+          "text": "AXTI surged on AI-driven demand for InP and GaAs substrates used in 800G and 1.6T optics, with short-covering adding to the move.",
+          "tickers": [
+            "AXTI"
+          ]
+        },
+        {
+          "text": "IPGP, LASR, and POET had mixed performance as investors differentiated between industrial laser exposure, AI datacenter laser relevance, and skepticism about scaling photonic chiplet IP into volume products.",
+          "tickers": [
+            "IPGP",
+            "LASR",
+            "POET"
+          ]
+        },
+        {
+          "text": "Specialty materials and IP names ATOM, NVMI, RMBS, OLED, and ALMU moved on flows into niche process and IP beneficiaries of AI chip and advanced-node demand, with ALMU seeing rotation out despite broader semi strength.",
+          "tickers": [
+            "ATOM",
+            "NVMI",
+            "RMBS",
+            "OLED",
+            "ALMU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chip equipment, test and advanced packaging",
+      "bullets": [
+        {
+          "text": "Front-end WFE leaders ASML, KLAC, LRCX, and AMAT gained on expectations of multi-year AI and HBM-driven demand, with reports of customers trying to pull in EUV slots at leading-edge fabs.",
+          "tickers": [
+            "ASML",
+            "KLAC",
+            "LRCX",
+            "AMAT"
+          ]
+        },
+        {
+          "text": "High-beta equipment and subsystems names ACLS, ICHR, UCTT, ACMR, VECO, and ENTG rallied as investors positioned for an AI-driven WFE upcycle and rising process complexity.",
+          "tickers": [
+            "ACLS",
+            "ICHR",
+            "UCTT",
+            "ACMR",
+            "VECO",
+            "ENTG"
+          ]
+        },
+        {
+          "text": "HBM and advanced packaging commentary highlighted bottlenecks into 2027, supporting OSAT and packaging plays such as ASX and AMKR as well as test and inspection vendors FORM, CAMT, KLIC, ONTO, PLAB, and COHU.",
+          "tickers": [
+            "ASX",
+            "AMKR",
+            "FORM",
+            "CAMT",
+            "KLIC",
+            "ONTO",
+            "PLAB",
+            "COHU"
+          ]
+        },
+        {
+          "text": "Test and packaging names TER, CAMT, KLIC, PLAB, FORM, COHU, ONTO, LSCC, and SKYT showed a preference for packaging and inspection over broad SoC test, reflecting tight AI packaging and interface capacity.",
+          "tickers": [
+            "TER",
+            "CAMT",
+            "KLIC",
+            "PLAB",
+            "FORM",
+            "COHU",
+            "ONTO",
+            "LSCC",
+            "SKYT"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analog, power and wide-bandgap",
+      "bullets": [
+        {
+          "text": "Analog and power semis including ON, AOSL, NXPI, TXN, ADI, DIOD, ALGM, MCHP, MTSI, STM, POWI, MPWR, and VSH rallied on auto, industrial, and AI power content themes, with VSH posting the largest analog move of the day.",
+          "tickers": [
+            "ON",
+            "AOSL",
+            "NXPI",
+            "TXN",
+            "ADI",
+            "DIOD",
+            "ALGM",
+            "MCHP",
+            "MTSI",
+            "STM",
+            "POWI",
+            "MPWR",
+            "VSH"
+          ]
+        },
+        {
+          "text": "Wide-bandgap plays NVTS, SMTC, AEHR, and WOLF moved higher, led by a sharp gain in NVTS on bullish GaN commentary, fast-charger adoption, and short-covering, while AEHR benefited from expectations of tight SiC device supply and testing needs.",
+          "tickers": [
+            "NVTS",
+            "SMTC",
+            "AEHR",
+            "WOLF"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Memory, foundry and interconnect",
+      "bullets": [
+        {
+          "text": "Mature-node foundry UMC and OSAT AMKR edged lower on rotation into specialty and onshore capacity plays despite the broader AI packaging theme.",
+          "tickers": [
+            "UMC",
+            "AMKR"
+          ]
+        },
+        {
+          "text": "GFS, ASX, and TSEM gained on expectations that CHIPS Act and EU subsidies, along with AI server and RF/auto demand, favor specialty and onshore foundries and advanced packaging providers.",
+          "tickers": [
+            "GFS",
+            "ASX",
+            "TSEM",
+            "TSM",
+            "UMC"
+          ]
+        },
+        {
+          "text": "Specialty memory and interface IP names MRAM, RMBS, MU, and GSIT traded higher on tight HBM supply narratives and speculation about AI, auto, and industrial design-ins.",
+          "tickers": [
+            "MRAM",
+            "RMBS",
+            "MU",
+            "GSIT"
+          ]
+        },
+        {
+          "text": "HBM and AI packaging were repeatedly cited as key bottlenecks through at least 2027, reinforcing bullish sentiment toward DRAM and packaging tool suppliers.",
+          "tickers": [
+            "MU",
+            "ASML",
+            "KLAC",
+            "LRCX",
+            "AMAT",
+            "ASX",
+            "AMKR",
+            "FORM",
+            "CAMT",
+            "KLIC",
+            "ONTO"
+          ]
+        }
+      ]
+    }
+  ],
+  "callouts": [
+    {
+      "ticker": "DELL",
+      "summary": "DELL jumped 17.19% to $296.01 on strong AI server momentum, with commentary emphasizing a step-function in AI-optimized PowerEdge orders and backlog using NVDA and AMD GPUs.",
+      "angle": "earnings",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "HPE",
+      "summary": "HPE rose 10.98% to $37.44 in sympathy with DELL as the market reinforced its positioning in AI clusters, HPC, and liquid-cooling and interconnect solutions.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "QCOM",
+      "summary": "QCOM gained 12.48% to $236.80 as investors intensified AI-on-device and Snapdragon-centric narratives alongside handset recovery expectations without a new formal filing.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "NVDA",
+      "summary": "NVDA declined 2.27% to $215.23 amid crowding and valuation concerns and rotation into alternative AI compute and infrastructure names, with no new company-specific negative catalyst.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "AMD",
+      "summary": "AMD advanced 4.98% to $466.49 on bullish MI300-class AI GPU backlog and data center commentary, reinforcing its status as the prime Nvidia alternative.",
+      "angle": "earnings",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "ASML",
+      "summary": "ASML climbed 2.85% to $1,633.41 on reports that leading-edge customers are pulling in EUV tool deliveries for AI and HPC nodes amid high WFE budget commitments.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "ASX",
+      "summary": "ASX increased 6.62% to $34.81 as repeated industry commentary highlighted advanced packaging as a key constraint for AI GPUs, positioning the company as a major OSAT beneficiary.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "ZS",
+      "summary": "ZS surged 7.20% to $181.22 with flows suggesting strong cybersecurity demand and likely post-earnings momentum despite the absence of a discrete headline catalyst.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "NVTS",
+      "summary": "NVTS spiked 18.84% to $29.21 as a GaN power leader aided by bullish wide-bandgap commentary, growing GaN charger adoption, and apparent short-covering activity.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "AEHR",
+      "summary": "AEHR rose 5.67% to $94.31 as investors extrapolated tight SiC device supply and rising EV charger volumes into higher demand for its SiC and GaN burn-in test capacity.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "AXTI",
+      "summary": "AXTI gained 12.28% to $135.79 on AI-related demand for InP and GaAs substrates used in high-speed optics, with thin-float dynamics contributing to short-covering.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "VSH",
+      "summary": "VSH advanced 12.97% to $47.38 as the largest analog move of the day, with price action suggesting a specific catalyst or positioning reset even though the headline driver was not clearly identified.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "SPOT",
+      "summary": "SPOT climbed 5.49% to $516.23 on commentary around price increases, margin expansion, and higher audiobook and podcast penetration driving sell-side EBITDA estimate revisions.",
+      "angle": "earnings",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "UBER",
+      "summary": "UBER fell 2.54% to $71.95 amid DOJ scrutiny of pricing algorithms, worker-classification debates, and rotation away from the name into semiconductors and AI infrastructure plays.",
+      "angle": "regulatory",
+      "confidence": "confirmed"
+    }
+  ],
+  "watch_tomorrow": [
+    {
+      "text": "Monitor DELL, HPE, and SMCI for follow-through in AI server momentum, potential weekend sell-side upgrades, and confirmation of strength via pre-market volume and order commentary.",
+      "tickers": [
+        "DELL",
+        "HPE",
+        "SMCI"
+      ]
+    },
+    {
+      "text": "Watch QCOM and key RF and handset ecosystem names for continuation or reversal of the handset and RF squeeze as new Android build-plan datapoints emerge.",
+      "tickers": [
+        "QCOM",
+        "SWKS",
+        "QRVO",
+        "SYNA",
+        "HIMX",
+        "INDI"
+      ]
+    },
+    {
+      "text": "Track NVDA, AMD, ARM, ALAB, AIP, CEVA, and AMBA to see whether rotation out of NVDA into alternative AI compute persists and whether any new AI roadmap commentary shifts investor preference.",
+      "tickers": [
+        "NVDA",
+        "AMD",
+        "ARM",
+        "ALAB",
+        "AIP",
+        "CEVA",
+        "AMBA"
+      ]
+    },
+    {
+      "text": "Follow leading WFE, packaging, and specialty foundry names such as ASML, KLAC, LRCX, AMAT, ASX, GFS, and TSEM for additional confirmation of HBM, advanced packaging, and subsidy-driven AI capex tailwinds.",
+      "tickers": [
+        "ASML",
+        "KLAC",
+        "LRCX",
+        "AMAT",
+        "ASX",
+        "GFS",
+        "TSEM"
+      ]
+    }
+  ]
+}

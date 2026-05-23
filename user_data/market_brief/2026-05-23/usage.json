@@ -1,0 +1,18 @@
+{
+  "per_model": {
+    "sonar-pro": {
+      "requests": 18,
+      "prompt_tokens": 66287,
+      "completion_tokens": 47357,
+      "reported_cost_usd": 1.0172,
+      "fallback_cost_usd": 0.0,
+      "cost_usd": 1.0172,
+      "missing_cost_requests": 0
+    }
+  },
+  "total_requests": 18,
+  "total_prompt_tokens": 66287,
+  "total_completion_tokens": 47357,
+  "cost_usd_total": 1.0172,
+  "pricing_note": "Uses Perplexity's API-reported `usage.cost.total_cost` per response where available (authoritative). Falls back to the _PRICING table in utils/perplexity.py for any response that did not include a cost field."
+}
