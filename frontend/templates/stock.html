@@ -1081,6 +1081,19 @@
     color: #66bb6a;
     border: 1px solid rgba(76, 175, 80, 0.35);
 }
+
+.news-source-badge.source-benzinga {
+    background: rgba(88, 166, 255, 0.15);
+    color: #58a6ff;
+    border: 1px solid rgba(88, 166, 255, 0.35);
+}
+
+.news-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+}
 {% endblock %}
 
 {% block content %}
@@ -1405,7 +1418,10 @@
     <div class="news-section">
         <div class="news-header">
             <h2><span class="card-icon">📰</span> News</h2>
-            <button class="news-load-btn" id="loadNewsBtn" onclick="loadStockNews()">Load News</button>
+            <div class="news-header-actions">
+                <button type="button" class="news-load-btn" id="loadNewsBtn">Load News</button>
+                <button type="button" class="news-benzinga-btn" id="benzingaNewsBtn">Get Benzinga News</button>
+            </div>
         </div>
         <div id="newsContent"></div>
     </div>
@@ -1421,6 +1437,8 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
 <!-- Lightweight Charts by TradingView -->
 <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
 <!-- Markdown Parser -->
@@ -2166,114 +2184,21 @@ function formatCompactNumber(num) {
 }
 
 // ============================================
-// News Functions
+// News (shared panel + Benzinga)
 // ============================================
 
-let _allNewsArticles = [];
-let _activeNewsSource = 'All';
-
-async function loadStockNews() {
-    const btn = document.getElementById('loadNewsBtn');
-    const container = document.getElementById('newsContent');
-
-    btn.disabled = true;
-    btn.classList.add('loading');
-    btn.textContent = 'Loading';
-    container.innerHTML = '<div class="detail-loading">Fetching news from FMP, Yahoo, Seeking Alpha...</div>';
-
-    try {
-        const response = await fetch(`/api/frontend/stock-news/${ticker}?limit=40`);
-        const data = await response.json();
-
-        if (data.error) {
-            container.innerHTML = '<div class="news-empty">Failed to load news.</div>';
-            return;
-        }
-
-        if (!data.articles || data.articles.length === 0) {
-            container.innerHTML = '<div class="news-empty">No news found for this stock.</div>';
-            return;
-        }
-
-        _allNewsArticles = data.articles;
-        _activeNewsSource = 'All';
-        renderNews(_allNewsArticles, data.source_counts || {});
-        btn.textContent = 'Refresh News';
-    } catch (error) {
-        console.error('Error loading news:', error);
-        container.innerHTML = '<div class="news-empty">Error fetching news.</div>';
-    } finally {
-        btn.disabled = false;
-        btn.classList.remove('loading');
-    }
-}
-
-function _sourceBadgeClass(source) {
-    if (source === 'Seeking Alpha') return 'source-sa';
-    if (source === 'Yahoo Finance') return 'source-yahoo';
-    if (source === 'FMP') return 'source-fmp';
-    return '';
-}
-
-function _filterNewsBySource(source) {
-    _activeNewsSource = source;
-    const counts = {
-        'FMP': _allNewsArticles.filter(a => a.source === 'FMP').length,
-        'Yahoo Finance': _allNewsArticles.filter(a => a.source === 'Yahoo Finance').length,
-        'Seeking Alpha': _allNewsArticles.filter(a => a.source === 'Seeking Alpha').length,
-    };
-    renderNews(_allNewsArticles, counts);
-}
-
-function renderNews(articles, sourceCounts) {
-    const container = document.getElementById('newsContent');
-
-    const sources = ['All', 'Seeking Alpha', 'Yahoo Finance', 'FMP'];
-    const total = articles.length;
-
-    const chipsHtml = '<div class="news-source-filters">' + sources.map(s => {
-        const count = s === 'All' ? total : (sourceCounts[s] || 0);
-        const active = s === _activeNewsSource ? ' active' : '';
-        const disabled = s !== 'All' && count === 0;
-        if (disabled) return '';
-        return `<button class="news-filter-chip${active}" onclick="_filterNewsBySource('${s.replace(/'/g, "\\'")}')">${s} (${count})</button>`;
-    }).join('') + '</div>';
-
-    const filtered = _activeNewsSource === 'All'
-        ? articles
-        : articles.filter(a => a.source === _activeNewsSource);
-
-    if (filtered.length === 0) {
-        container.innerHTML = chipsHtml + '<div class="news-empty">No articles from ' + _activeNewsSource + '.</div>';
-        return;
-    }
-
-    const listHtml = '<div class="news-list">' + filtered.map(a => {
-        const date = a.published_date ? new Date(a.published_date).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}) : '';
-        const thumb = a.image ? `<img class="news-article-thumb" src="${a.image}" alt="" onerror="this.style.display='none'">` : '';
-        const snippet = a.text ? a.text.substring(0, 200) : '';
-        const badge = a.source ? `<span class="news-source-badge ${_sourceBadgeClass(a.source)}">${a.source}</span>` : '';
-
-        return `
-            <div class="news-article">
-                ${thumb}
-                <div class="news-article-body">
-                    <div class="news-article-title"><a href="${a.url || '#'}" target="_blank" rel="noopener">${a.title || 'Untitled'}</a></div>
-                    <div class="news-article-meta">
-                        ${badge}
-                        ${a.site && a.source !== a.site ? `<span>${a.site}</span>` : ''}
-                        ${date ? `<span>${date}</span>` : ''}
-                    </div>
-                    ${snippet ? `<div class="news-article-snippet">${snippet}</div>` : ''}
-                </div>
-            </div>
-        `;
-    }).join('') + '</div>';
-
-    container.innerHTML = chipsHtml + listHtml;
-}
+let _stockNewsPanel = null;
 
 document.addEventListener('DOMContentLoaded', function() {
+    _stockNewsPanel = window.StockNewsShared.createNewsPanel({
+        contentId: 'newsContent',
+        loadBtnId: 'loadNewsBtn',
+        benzingaBtnId: 'benzingaNewsBtn',
+        getTicker: () => ticker,
+    });
+    _stockNewsPanel.setup();
+    _stockNewsPanel.onTickerChange();
+
     loadStockData();
     loadWatchlistStatus();
     loadEarningsData();

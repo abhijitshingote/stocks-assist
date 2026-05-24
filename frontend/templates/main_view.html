@@ -1270,7 +1270,10 @@
                     <span class="side-chevron" aria-hidden="true">▼</span>
                 </button>
                 <span class="side-stack-title"><span class="notes-icon">📰</span> News</span>
-                <button type="button" class="news-load-btn" id="sideLoadNewsBtn">Load News</button>
+                <div class="news-actions-row">
+                    <button type="button" class="news-load-btn" id="sideLoadNewsBtn">Load News</button>
+                    <button type="button" class="news-benzinga-btn" id="sideBenzingaNewsBtn">Get Benzinga News</button>
+                </div>
             </div>
             <div class="side-stack-body" id="sideNewsStackBody">
                 <div class="side-news-inner" id="sideNewsInner">
@@ -1307,6 +1310,8 @@
 <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="/static/js/stock-chart.js"></script>
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
 <script src="/static/js/side-news-panel.js"></script>
 <script>
 (function() {

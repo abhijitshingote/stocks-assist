@@ -1,5 +1,7 @@
 import os
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, Boolean, ForeignKey, UniqueConstraint, BigInteger
+from sqlalchemy import Index as sa_Index
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -619,3 +621,34 @@ class RsScreener(Base):
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
     ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 21. BenzingaArticle (Polygon/Massive Benzinga news, per fetch ticker)
+# ------------------------------------------------------------
+class BenzingaArticle(Base):
+    __tablename__ = "benzinga_articles"
+    __table_args__ = (
+        UniqueConstraint("benzinga_id", name="uq_benzinga_articles_benzinga_id"),
+        sa_Index("ix_benzinga_articles_ticker_published", "ticker", "published"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    benzinga_id = Column(BigInteger, nullable=False)
+    ticker = Column(String(20), nullable=False, index=True)
+    title = Column(Text)
+    teaser = Column(Text)
+    body_html = Column(Text)
+    body_text = Column(Text)
+    url = Column(Text)
+    author = Column(String(255))
+    published = Column(DateTime(timezone=True), index=True)
+    last_updated = Column(DateTime(timezone=True))
+    channels = Column(JSONB)
+    tags = Column(JSONB)
+    tickers = Column(JSONB)
+    images = Column(JSONB)
+    fetched_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+    )

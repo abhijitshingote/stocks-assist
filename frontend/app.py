@@ -638,6 +638,29 @@ def api_stock_news(ticker):
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/benzinga-news/<ticker>', methods=['GET'])
+def api_benzinga_news_get(ticker):
+    """Proxy: cached Benzinga news from database."""
+    limit = request.args.get('limit', 40, type=int)
+    data, status_code = make_backend_request(f'/api/benzinga-news/{ticker}?limit={limit}')
+    if data is None:
+        return jsonify({'error': 'Failed to load Benzinga news'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/benzinga-news/<ticker>', methods=['POST'])
+def api_benzinga_news_refresh(ticker):
+    """Proxy: refresh Benzinga news from API and store in database."""
+    limit = request.args.get('limit', 40, type=int)
+    data, status_code = make_backend_request(
+        f'/api/benzinga-news/{ticker}?limit={limit}',
+        method='POST',
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to refresh Benzinga news'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/latest-date')
 def api_latest_date():
     """Proxy endpoint for latest OHLC date from backend"""

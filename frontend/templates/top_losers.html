@@ -697,6 +697,11 @@
         color: #66bb6a;
         border: 1px solid rgba(76, 175, 80, 0.35);
     }
+    .page-top-losers .tp-news-inner .news-source-badge.source-benzinga {
+        background: rgba(88, 166, 255, 0.15);
+        color: #58a6ff;
+        border: 1px solid rgba(88, 166, 255, 0.35);
+    }
 
     .page-top-losers .tp-news-inner .detail-loading {
         text-align: center;
@@ -1152,7 +1157,10 @@
                     <span class="tp-chevron" aria-hidden="true">▼</span>
                 </button>
                 <span class="tp-stack-title"><span class="notes-icon">📰</span> News</span>
-                <button type="button" class="news-load-btn" id="tpLoadNewsBtn">Load News</button>
+                <div class="news-actions-row">
+                    <button type="button" class="news-load-btn" id="tpLoadNewsBtn">Load News</button>
+                    <button type="button" class="news-benzinga-btn" id="tpBenzingaNewsBtn">Get Benzinga News</button>
+                </div>
             </div>
             <div class="tp-stack-body" id="tpNewsStackBody">
                 <div class="tp-news-inner" id="tpNewsInner">
@@ -1186,6 +1194,8 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
 <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="/static/js/stock-chart.js"></script>
@@ -1241,8 +1251,7 @@
             .replace(/>/g, '&gt;');
     }
 
-    let tpAllNewsArticles = [];
-    let tpActiveNewsSource = 'All';
+    let tpNewsPanel = null;
 
     function tpRafResize() {
         requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
@@ -1270,127 +1279,23 @@
     }
 
     function tpResetNewsPanel() {
-        tpAllNewsArticles = [];
-        tpActiveNewsSource = 'All';
-        const c = document.getElementById('tpNewsContent');
-        if (c) c.innerHTML = '<div class="news-empty">Click Load News to fetch headlines.</div>';
-        const btn = document.getElementById('tpLoadNewsBtn');
-        if (btn) {
-            btn.disabled = false;
-            btn.classList.remove('loading');
-            btn.textContent = 'Load News';
-        }
-    }
-
-    function tpComputeSourceCounts(articles) {
-        return {
-            'FMP': articles.filter(a => a.source === 'FMP').length,
-            'Yahoo Finance': articles.filter(a => a.source === 'Yahoo Finance').length,
-            'Seeking Alpha': articles.filter(a => a.source === 'Seeking Alpha').length,
-        };
-    }
-
-    function tpSourceBadgeClass(source) {
-        if (source === 'Seeking Alpha') return 'source-sa';
-        if (source === 'Yahoo Finance') return 'source-yahoo';
-        if (source === 'FMP') return 'source-fmp';
-        return '';
-    }
-
-    function tpRenderNews(articles, sourceCounts) {
-        const container = document.getElementById('tpNewsContent');
-        if (!container) return;
-
-        const sources = ['All', 'Seeking Alpha', 'Yahoo Finance', 'FMP'];
-        const total = articles.length;
-
-        const chipsHtml = '<div class="news-source-filters">' + sources.map(s => {
-            const count = s === 'All' ? total : (sourceCounts[s] || 0);
-            const active = s === tpActiveNewsSource ? ' active' : '';
-            const disabled = s !== 'All' && count === 0;
-            if (disabled) return '';
-            return `<button type="button" class="news-filter-chip${active}" data-news-source="${escAttr(s)}">${escAttr(s)} (${count})</button>`;
-        }).join('') + '</div>';
-
-        const filtered = tpActiveNewsSource === 'All'
-            ? articles
-            : articles.filter(a => a.source === tpActiveNewsSource);
-
-        if (filtered.length === 0) {
-            container.innerHTML = chipsHtml + '<div class="news-empty">No articles from ' + escAttr(tpActiveNewsSource) + '.</div>';
-            return;
-        }
-
-        const listHtml = '<div class="news-list">' + filtered.map(a => {
-            const date = a.published_date ? new Date(a.published_date).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}) : '';
-            const thumb = a.image ? `<img class="news-article-thumb" src="${escAttr(a.image)}" alt="" onerror="this.style.display='none'">` : '';
-            const snippet = a.text ? a.text.substring(0, 200) : '';
-            const badge = a.source ? `<span class="news-source-badge ${tpSourceBadgeClass(a.source)}">${escAttr(a.source)}</span>` : '';
-            const title = escAttr(a.title || 'Untitled');
-            const url = a.url ? escAttr(a.url) : '#';
-            const siteSpan = a.site && a.source !== a.site ? `<span>${escAttr(a.site)}</span>` : '';
-
-            return `
-            <div class="news-article">
-                ${thumb}
-                <div class="news-article-body">
-                    <div class="news-article-title"><a href="${url}" target="_blank" rel="noopener">${title}</a></div>
-                    <div class="news-article-meta">
-                        ${badge}
-                        ${siteSpan}
-                        ${date ? `<span>${escAttr(date)}</span>` : ''}
-                    </div>
-                    ${snippet ? `<div class="news-article-snippet">${escAttr(snippet)}</div>` : ''}
-                </div>
-            </div>
-        `;
-        }).join('') + '</div>';
-
-        container.innerHTML = chipsHtml + listHtml;
-    }
-
-    async function tpLoadStockNews() {
-        if (!selectedTicker) return;
-        const btn = document.getElementById('tpLoadNewsBtn');
-        const container = document.getElementById('tpNewsContent');
-        if (!btn || !container) return;
-
-        btn.disabled = true;
-        btn.classList.add('loading');
-        btn.textContent = 'Loading';
-        container.innerHTML = '<div class="detail-loading">Fetching news from FMP, Yahoo, Seeking Alpha...</div>';
-
-        try {
-            const response = await fetch(`/api/frontend/stock-news/${selectedTicker}?limit=40`);
-            const data = await response.json();
-
-            if (data.error) {
-                container.innerHTML = '<div class="news-empty">Failed to load news.</div>';
-                return;
-            }
-
-            if (!data.articles || data.articles.length === 0) {
-                container.innerHTML = '<div class="news-empty">No news found for this stock.</div>';
-                return;
-            }
-
-            tpAllNewsArticles = data.articles;
-            tpActiveNewsSource = 'All';
-            tpRenderNews(tpAllNewsArticles, data.source_counts || tpComputeSourceCounts(tpAllNewsArticles));
-            btn.textContent = 'Refresh News';
-        } catch (error) {
-            console.error('Error loading news:', error);
-            container.innerHTML = '<div class="news-empty">Error fetching news.</div>';
-        } finally {
-            btn.disabled = false;
-            btn.classList.remove('loading');
+        if (tpNewsPanel) {
+            tpNewsPanel.reset();
+            tpNewsPanel.onTickerChange();
         }
     }
 
     function setupTopLosersNewsAndPanels() {
+        tpNewsPanel = window.StockNewsShared.createNewsPanel({
+            contentId: 'tpNewsContent',
+            loadBtnId: 'tpLoadNewsBtn',
+            benzingaBtnId: 'tpBenzingaNewsBtn',
+            getTicker: () => selectedTicker,
+        });
+        tpNewsPanel.setup();
+
         const newsStack = document.getElementById('tpNewsStack');
         const newsCollapseBtn = document.getElementById('tpNewsCollapseBtn');
-        const loadBtn = document.getElementById('tpLoadNewsBtn');
         if (newsStack && newsCollapseBtn) {
             const toggleNews = () => {
                 newsStack.classList.toggle('collapsed');
@@ -1405,26 +1310,10 @@
                 }
             });
         }
-        if (loadBtn) {
-            loadBtn.addEventListener('click', () => tpLoadStockNews());
-        }
 
         const metricsStack = document.getElementById('tpMetricsStack');
         const metricsHead = document.getElementById('tpMetricsHead');
         tpBindCollapsibleHead(metricsStack, metricsHead);
-
-        const newsInner = document.getElementById('tpNewsInner');
-        if (newsInner) {
-            newsInner.addEventListener('click', (e) => {
-                const chip = e.target.closest('.news-filter-chip[data-news-source]');
-                if (!chip) return;
-                e.preventDefault();
-                tpActiveNewsSource = chip.getAttribute('data-news-source') || 'All';
-                tpRenderNews(tpAllNewsArticles, tpComputeSourceCounts(tpAllNewsArticles));
-            });
-        }
-
-        tpResetNewsPanel();
     }
 
     function passesSectorIndustry(s) {

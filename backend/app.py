@@ -8,8 +8,9 @@ from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
     StockVolspikeGapper, MainView, SharesFloat, MarketBreadth,
-    RsScreener
+    RsScreener, BenzingaArticle,
 )
+import benzinga_news as benzinga_news_service
 import os
 import json
 import logging
@@ -2847,6 +2848,66 @@ def get_stock_news(ticker):
 
     except Exception as e:
         logger.error(f"Error fetching stock news for {ticker}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+# ============================================================
+# Benzinga News (Polygon/Massive API + Postgres cache)
+# ============================================================
+
+def _ensure_benzinga_table():
+    BenzingaArticle.__table__.create(engine, checkfirst=True)
+
+
+@app.route('/api/benzinga-news/<ticker>', methods=['GET'])
+def get_benzinga_news_cached(ticker):
+    """Return Benzinga articles for a ticker from the database."""
+    ticker = ticker.upper()
+    limit = request.args.get('limit', 40, type=int)
+    try:
+        _ensure_benzinga_table()
+        session = Session()
+        try:
+            articles = benzinga_news_service.get_cached_benzinga_news(
+                session, ticker, limit=limit
+            )
+            return jsonify({
+                'ticker': ticker,
+                'count': len(articles),
+                'from_cache': True,
+                'articles': articles,
+            })
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error(f"Error loading cached Benzinga news for {ticker}: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/benzinga-news/<ticker>', methods=['POST'])
+def refresh_benzinga_news(ticker):
+    """Fetch Benzinga news from API, upsert to DB, return fresh articles."""
+    ticker = ticker.upper()
+    limit = request.args.get('limit', 40, type=int)
+    try:
+        _ensure_benzinga_table()
+        session = Session()
+        try:
+            articles = benzinga_news_service.refresh_benzinga_news(
+                session, ticker, limit=limit
+            )
+            return jsonify({
+                'ticker': ticker,
+                'count': len(articles),
+                'from_cache': False,
+                'articles': articles,
+            })
+        finally:
+            session.close()
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error refreshing Benzinga news for {ticker}: {e}")
         return jsonify({'error': str(e)}), 500
 
 
