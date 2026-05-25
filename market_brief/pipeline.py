@@ -372,6 +372,15 @@ def run_brief(asof: str | None = None, *, qa_log: bool | None = None) -> Path:
             funnel_report.usage = usage
             write_funnel_md(funnel_report, outdir / "qa_funnel.md")
             logger.info("QA funnel log: %s", outdir / "qa_funnel.md")
+        if config.DISCOVER_THEMES_AFTER_RUN:
+            from market_brief.discover_themes import discover_after_brief
+
+            prop_path = discover_after_brief(outdir)
+            if prop_path:
+                logger.info(
+                    "Theme discovery proposals: %s (review, approve, then discover_themes --apply)",
+                    prop_path,
+                )
         return outdir
     except Exception as e:
         logger.exception("market brief run failed: %s", e)

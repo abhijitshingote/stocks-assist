@@ -79,6 +79,17 @@ USE_USER_THEMES = True
 # Optional cap to avoid runaway fan-out if themes.json gets long.
 MAX_THEMES = 20
 
+# Theme discovery (``python -m market_brief.discover_themes``) writes proposals
+# here; themes.json is updated only with ``--apply`` after you set approved: true.
+THEME_DISCOVERY_DIR = USER_DATA_DIR / "theme_discovery"
+THEME_DISCOVERY_MIN_ARTICLES = 2
+# Set MARKET_BRIEF_DISCOVER_THEMES=1 to write proposals.json after each brief run.
+DISCOVER_THEMES_AFTER_RUN = os.getenv("MARKET_BRIEF_DISCOVER_THEMES", "").lower() in (
+    "1",
+    "true",
+    "yes",
+)
+
 # ---------------------------------------------------------------------------
 # Catalyst angles
 # ---------------------------------------------------------------------------

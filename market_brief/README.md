@@ -95,6 +95,33 @@ docker compose exec backend python -m market_brief.discover_channels
 
 ---
 
+## Theme discovery (why quantum missed until you added it)
+
+**Themes are not inferred at runtime.** `topics.load_topics()` reads only `config.SECTORS` and `user_data/themes.json`. Routing is ticker overlap on each article's Benzinga `tickers` field. If `IONQ` / `QBTS` are not in any theme basket, quantum stories go to `_unassigned.json` — they still get summarized once, but there is no **Quantum Computing** topic file or dedicated brief section.
+
+`daily_screener` stage 3 does fetch **hot market themes** via Perplexity (`02a_market_themes.json`), but that does **not** update `themes.json` or the market brief.
+
+After each brief run (or on demand), scan unassigned clusters and write proposals:
+
+```bash
+docker compose exec backend python -m market_brief.discover_themes
+docker compose exec backend python -m market_brief.discover_themes --web   # optional Perplexity gap scan
+```
+
+Output: `user_data/theme_discovery/proposals.json`. Set `"approved": true` on items you want, then:
+
+```bash
+docker compose exec backend python -m market_brief.discover_themes --approve new-quantum_computing --apply
+```
+
+Auto-write proposals after every run (never auto-apply):
+
+```bash
+MARKET_BRIEF_DISCOVER_THEMES=1 docker compose exec backend python -m market_brief.run
+```
+
+---
+
 ## Step 3 — Route articles to `00_news/`
 
 Routing uses **Benzinga’s `tickers` field on each article**, normalized (`X:NVDA` → `NVDA`). It does **not** use “which API call found this story.”
@@ -209,4 +236,7 @@ UI **Run brief** → `POST /api/market-brief/run` (optional body `{"qa_log": tru
 | `persist.py` | Write `01_summaries/` |
 | `funnel_log.py` | `qa_funnel.md` |
 | `discover_channels.py` | Probe Polygon channel slugs |
+| `discover_themes.py` | Propose `themes.json` updates from unassigned routing |
+| `theme_discovery.py` | Clustering / proposal builder |
+| `themes_io.py` | Load/save themes + apply approved proposals |
 | `backend/benzinga_news.py` | Polygon API + DB |

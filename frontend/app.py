@@ -185,6 +185,28 @@ def api_save_themes():
         return jsonify({'error': 'Failed to save themes'}), 500
 
 
+@app.route('/api/frontend/theme-proposals', methods=['GET'])
+def api_get_theme_proposals():
+    """Proxy: theme discovery proposals from backend."""
+    data, status_code = make_backend_request('/api/theme-proposals')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch theme proposals'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/theme-proposals/apply', methods=['POST'])
+def api_apply_theme_proposals():
+    """Proxy: apply approved theme proposals to themes.json."""
+    data, status_code = make_backend_request(
+        '/api/theme-proposals/apply',
+        method='POST',
+        json_data=request.get_json() or {},
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to apply theme proposals'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/main-view/by-tickers')
 def api_main_view_by_tickers():
     """Proxy endpoint for MainView data filtered to a specific ticker list"""

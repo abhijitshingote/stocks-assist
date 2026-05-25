@@ -16,7 +16,7 @@ import json
 import logging
 import time
 import pytz
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timezone
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -2859,56 +2859,6 @@ def _ensure_benzinga_table():
     BenzingaArticle.__table__.create(engine, checkfirst=True)
 
 
-# In-memory feed cache (no DB / file writes) for the experimental news page.
-_BENZINGA_FEED_CACHE: dict = {"fetched_at": None, "days": 7, "articles": []}
-_BENZINGA_FEED_TTL = timedelta(minutes=10)
-
-
-@app.route('/api/benzinga-news/feed', methods=['GET'])
-def get_benzinga_news_feed():
-    """Last-week Benzinga market feed; cached in process memory only."""
-    days = max(1, min(request.args.get('days', 7, type=int), 30))
-    limit = max(10, min(request.args.get('limit', 100, type=int), 100))
-    force = request.args.get('refresh', '0').lower() in ('1', 'true', 'yes')
-
-    now = datetime.now(timezone.utc)
-    cache = _BENZINGA_FEED_CACHE
-    fetched_at = cache.get("fetched_at")
-    cache_ok = (
-        not force
-        and fetched_at is not None
-        and cache.get("days") == days
-        and (now - fetched_at) < _BENZINGA_FEED_TTL
-    )
-    if cache_ok:
-        articles = cache.get("articles") or []
-        return jsonify({
-            'days': days,
-            'count': len(articles),
-            'from_cache': True,
-            'fetched_at': fetched_at.isoformat(),
-            'articles': articles,
-        })
-
-    try:
-        articles = benzinga_news_service.fetch_feed_articles(days=days, limit=limit)
-        cache["fetched_at"] = now
-        cache["days"] = days
-        cache["articles"] = articles
-        return jsonify({
-            'days': days,
-            'count': len(articles),
-            'from_cache': False,
-            'fetched_at': now.isoformat(),
-            'articles': articles,
-        })
-    except ValueError as e:
-        return jsonify({'error': str(e)}), 400
-    except Exception as e:
-        logger.error(f"Error fetching Benzinga news feed: {e}")
-        return jsonify({'error': str(e)}), 500
-
-
 @app.route('/api/benzinga-news/<ticker>', methods=['GET'])
 def get_benzinga_news_cached(ticker):
     """Return Benzinga articles for a ticker from the database."""
@@ -2958,56 +2908,6 @@ def refresh_benzinga_news(ticker):
         return jsonify({'error': str(e)}), 400
     except Exception as e:
         logger.error(f"Error refreshing Benzinga news for {ticker}: {e}")
-        return jsonify({'error': str(e)}), 500
-
-
-# In-memory feed cache (no DB / file writes) for the experimental news page.
-_BENZINGA_FEED_CACHE: dict = {"fetched_at": None, "days": 7, "articles": []}
-_BENZINGA_FEED_TTL = timedelta(minutes=10)
-
-
-@app.route('/api/benzinga-news/feed', methods=['GET'])
-def get_benzinga_news_feed():
-    """Last-week Benzinga market feed; cached in process memory only."""
-    days = max(1, min(request.args.get('days', 7, type=int), 30))
-    limit = max(10, min(request.args.get('limit', 100, type=int), 100))
-    force = request.args.get('refresh', '0').lower() in ('1', 'true', 'yes')
-
-    now = datetime.now(timezone.utc)
-    cache = _BENZINGA_FEED_CACHE
-    fetched_at = cache.get("fetched_at")
-    cache_ok = (
-        not force
-        and fetched_at is not None
-        and cache.get("days") == days
-        and (now - fetched_at) < _BENZINGA_FEED_TTL
-    )
-    if cache_ok:
-        articles = cache.get("articles") or []
-        return jsonify({
-            'days': days,
-            'count': len(articles),
-            'from_cache': True,
-            'fetched_at': fetched_at.isoformat(),
-            'articles': articles,
-        })
-
-    try:
-        articles = benzinga_news_service.fetch_feed_articles(days=days, limit=limit)
-        cache["fetched_at"] = now
-        cache["days"] = days
-        cache["articles"] = articles
-        return jsonify({
-            'days': days,
-            'count': len(articles),
-            'from_cache': False,
-            'fetched_at': now.isoformat(),
-            'articles': articles,
-        })
-    except ValueError as e:
-        return jsonify({'error': str(e)}), 400
-    except Exception as e:
-        logger.error(f"Error fetching Benzinga news feed: {e}")
         return jsonify({'error': str(e)}), 500
 
 
