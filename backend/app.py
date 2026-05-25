@@ -16,7 +16,7 @@ import json
 import logging
 import time
 import pytz
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -2859,6 +2859,56 @@ def _ensure_benzinga_table():
     BenzingaArticle.__table__.create(engine, checkfirst=True)
 
 
+# In-memory feed cache (no DB / file writes) for the experimental news page.
+_BENZINGA_FEED_CACHE: dict = {"fetched_at": None, "days": 7, "articles": []}
+_BENZINGA_FEED_TTL = timedelta(minutes=10)
+
+
+@app.route('/api/benzinga-news/feed', methods=['GET'])
+def get_benzinga_news_feed():
+    """Last-week Benzinga market feed; cached in process memory only."""
+    days = max(1, min(request.args.get('days', 7, type=int), 30))
+    limit = max(10, min(request.args.get('limit', 100, type=int), 100))
+    force = request.args.get('refresh', '0').lower() in ('1', 'true', 'yes')
+
+    now = datetime.now(timezone.utc)
+    cache = _BENZINGA_FEED_CACHE
+    fetched_at = cache.get("fetched_at")
+    cache_ok = (
+        not force
+        and fetched_at is not None
+        and cache.get("days") == days
+        and (now - fetched_at) < _BENZINGA_FEED_TTL
+    )
+    if cache_ok:
+        articles = cache.get("articles") or []
+        return jsonify({
+            'days': days,
+            'count': len(articles),
+            'from_cache': True,
+            'fetched_at': fetched_at.isoformat(),
+            'articles': articles,
+        })
+
+    try:
+        articles = benzinga_news_service.fetch_feed_articles(days=days, limit=limit)
+        cache["fetched_at"] = now
+        cache["days"] = days
+        cache["articles"] = articles
+        return jsonify({
+            'days': days,
+            'count': len(articles),
+            'from_cache': False,
+            'fetched_at': now.isoformat(),
+            'articles': articles,
+        })
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error fetching Benzinga news feed: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/benzinga-news/<ticker>', methods=['GET'])
 def get_benzinga_news_cached(ticker):
     """Return Benzinga articles for a ticker from the database."""
@@ -2908,6 +2958,56 @@ def refresh_benzinga_news(ticker):
         return jsonify({'error': str(e)}), 400
     except Exception as e:
         logger.error(f"Error refreshing Benzinga news for {ticker}: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+# In-memory feed cache (no DB / file writes) for the experimental news page.
+_BENZINGA_FEED_CACHE: dict = {"fetched_at": None, "days": 7, "articles": []}
+_BENZINGA_FEED_TTL = timedelta(minutes=10)
+
+
+@app.route('/api/benzinga-news/feed', methods=['GET'])
+def get_benzinga_news_feed():
+    """Last-week Benzinga market feed; cached in process memory only."""
+    days = max(1, min(request.args.get('days', 7, type=int), 30))
+    limit = max(10, min(request.args.get('limit', 100, type=int), 100))
+    force = request.args.get('refresh', '0').lower() in ('1', 'true', 'yes')
+
+    now = datetime.now(timezone.utc)
+    cache = _BENZINGA_FEED_CACHE
+    fetched_at = cache.get("fetched_at")
+    cache_ok = (
+        not force
+        and fetched_at is not None
+        and cache.get("days") == days
+        and (now - fetched_at) < _BENZINGA_FEED_TTL
+    )
+    if cache_ok:
+        articles = cache.get("articles") or []
+        return jsonify({
+            'days': days,
+            'count': len(articles),
+            'from_cache': True,
+            'fetched_at': fetched_at.isoformat(),
+            'articles': articles,
+        })
+
+    try:
+        articles = benzinga_news_service.fetch_feed_articles(days=days, limit=limit)
+        cache["fetched_at"] = now
+        cache["days"] = days
+        cache["articles"] = articles
+        return jsonify({
+            'days': days,
+            'count': len(articles),
+            'from_cache': False,
+            'fetched_at': now.isoformat(),
+            'articles': articles,
+        })
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error fetching Benzinga news feed: {e}")
         return jsonify({'error': str(e)}), 500
 
 
@@ -4983,9 +5083,44 @@ MARKET_BRIEF_OUTPUTS_DIR = os.path.join(
 )
 
 
+def _market_brief_run_status(brief_dir: str) -> str:
+    """Return complete | running | error | failed for a dated output folder."""
+    brief_md = os.path.join(brief_dir, '02_brief.md')
+    brief_json = os.path.join(brief_dir, '02_brief.json')
+    if os.path.exists(brief_md) or os.path.exists(brief_json):
+        return 'complete'
+
+    status_path = os.path.join(brief_dir, 'status.json')
+    if os.path.exists(status_path):
+        try:
+            with open(status_path, 'r', encoding='utf-8') as f:
+                payload = json.load(f)
+            status = payload.get('status') or 'running'
+            if status == 'failed':
+                return 'failed'
+            if status in ('complete', 'running', 'error'):
+                return status
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    run_log = os.path.join(brief_dir, 'run.log')
+    if os.path.exists(run_log):
+        try:
+            age_s = time.time() - os.path.getmtime(run_log)
+            if age_s < 1800:
+                return 'running'
+        except OSError:
+            pass
+        return 'failed'
+
+    if os.path.isdir(os.path.join(brief_dir, '00_news')):
+        return 'running'
+    return 'failed'
+
+
 @app.route('/api/market-brief/dates', methods=['GET'])
 def market_brief_dates():
-    """List dates that have market brief outputs."""
+    """List dates that have market brief outputs (including in-progress runs)."""
     if not os.path.isdir(MARKET_BRIEF_OUTPUTS_DIR):
         return jsonify({'dates': []})
     entries = []
@@ -4997,14 +5132,35 @@ def market_brief_dates():
             datetime.strptime(name, '%Y-%m-%d')
         except ValueError:
             continue
+
+        status = _market_brief_run_status(full)
         brief_md = os.path.join(full, '02_brief.md')
         brief_json = os.path.join(full, '02_brief.json')
-        if os.path.exists(brief_md) or os.path.exists(brief_json):
+        mtime_path = (
+            brief_json if os.path.exists(brief_json)
+            else brief_md if os.path.exists(brief_md)
+            else os.path.join(full, 'run.log')
+        )
+        try:
+            mtime = os.path.getmtime(mtime_path) if os.path.exists(mtime_path) else None
+        except OSError:
+            mtime = None
+
+        stage = None
+        status_path = os.path.join(full, 'status.json')
+        if os.path.exists(status_path):
             try:
-                mtime = os.path.getmtime(brief_json if os.path.exists(brief_json) else brief_md)
-            except OSError:
-                mtime = None
-            entries.append({'date': name, 'mtime': mtime})
+                with open(status_path, 'r', encoding='utf-8') as f:
+                    stage = json.load(f).get('stage')
+            except (json.JSONDecodeError, OSError):
+                pass
+
+        entries.append({
+            'date': name,
+            'mtime': mtime,
+            'status': status,
+            'stage': stage,
+        })
     entries.sort(key=lambda e: e['date'], reverse=True)
     return jsonify({'dates': entries})
 
@@ -5043,34 +5199,59 @@ def market_brief_for_date(date_str):
 
 @app.route('/api/market-brief/run', methods=['POST'])
 def market_brief_run():
-    """Trigger a new market brief run."""
+    """Trigger a new market brief run (detached subprocess survives Flask reload)."""
     import subprocess
-    import threading
 
     data = request.get_json() or {}
     asof = data.get('asof')
-
-    cmd = ['python', '-m', 'market_brief.run']
-    if asof:
+    if not asof:
+        asof = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+    else:
         try:
             datetime.strptime(asof, '%Y-%m-%d')
         except ValueError:
             return jsonify({'error': 'Invalid asof date format. Use YYYY-MM-DD'}), 400
-        cmd.extend(['--asof', asof])
 
-    def run_brief():
-        try:
-            subprocess.run(cmd, cwd=os.path.dirname(os.path.dirname(__file__)), check=True)
-        except subprocess.CalledProcessError as e:
-            logger.error(f"Market brief run failed: {e}")
+    project_root = os.path.dirname(os.path.dirname(__file__))
+    outdir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, asof)
+    os.makedirs(outdir, exist_ok=True)
 
-    thread = threading.Thread(target=run_brief, daemon=True)
-    thread.start()
+    existing = _market_brief_run_status(outdir)
+    if existing == 'running':
+        return jsonify({
+            'status': 'already_running',
+            'message': f'Market brief for {asof} is already running',
+            'asof': asof,
+        }), 409
+
+    with open(os.path.join(outdir, 'status.json'), 'w', encoding='utf-8') as f:
+        json.dump({
+            'status': 'running',
+            'stage': 'queued',
+            'updated_at': datetime.now(timezone.utc).isoformat(),
+        }, f)
+
+    cmd = ['python', '-m', 'market_brief.run', '--asof', asof]
+    if data.get('qa_log') in (True, 'true', '1', 1):
+        cmd.append('--qa-log')
+    log_path = os.path.join(outdir, 'subprocess.log')
+    try:
+        log_file = open(log_path, 'a', encoding='utf-8')
+        subprocess.Popen(
+            cmd,
+            cwd=project_root,
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
+    except OSError as e:
+        logger.error(f"Failed to start market brief subprocess: {e}")
+        return jsonify({'error': str(e)}), 500
 
     return jsonify({
         'status': 'started',
         'message': 'Market brief generation started in background',
-        'asof': asof or 'today'
+        'asof': asof,
     })
 
 

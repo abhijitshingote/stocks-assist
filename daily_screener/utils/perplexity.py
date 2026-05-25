@@ -176,6 +176,8 @@ def call_perplexity(
     max_tokens: int = 1500,
     temperature: float = 0.1,
     timeout: int | None = None,
+    *,
+    log_label: str | None = None,
 ) -> str:
     """Call Perplexity and return the raw text content.
 
@@ -204,8 +206,19 @@ def call_perplexity(
         "return_citations": False,
     }
 
+    attempts_total = config.NEWS_RETRY_ATTEMPTS + 1
+    if log_label:
+        logger.info(
+            "PERPLEXITY START | %s | model=%s | prompt_chars=%d | max_tokens=%d | timeout=%ds",
+            log_label,
+            model,
+            len(prompt),
+            max_tokens,
+            timeout,
+        )
+
     last_err: str | None = None
-    for attempt in range(config.NEWS_RETRY_ATTEMPTS + 1):
+    for attempt in range(attempts_total):
         try:
             r = requests.post(_API_URL, headers=headers, json=payload, timeout=timeout)
             if r.status_code == 200:
@@ -224,7 +237,14 @@ def call_perplexity(
                 )
                 choices = data.get("choices") or []
                 if choices:
-                    return choices[0].get("message", {}).get("content", "") or ""
+                    text = choices[0].get("message", {}).get("content", "") or ""
+                    if log_label:
+                        logger.info(
+                            "PERPLEXITY OK | %s | response_chars=%d",
+                            log_label,
+                            len(text),
+                        )
+                    return text
                 raise PerplexityError("Perplexity returned no choices")
             if r.status_code == 402:
                 raise PerplexityError("INSUFFICIENT_CREDITS")
@@ -238,23 +258,43 @@ def call_perplexity(
                 raise PerplexityError("AUTH_FAILED")
             if r.status_code in (429,) or 500 <= r.status_code < 600:
                 last_err = f"http {r.status_code}: {r.text[:300]}"
-                logger.warning(
-                    "perplexity transient error (attempt %s/%s): %s",
-                    attempt + 1,
-                    config.NEWS_RETRY_ATTEMPTS + 1,
-                    last_err,
-                )
+                _log_perplexity_retry(log_label, attempt + 1, attempts_total, last_err)
                 time.sleep(config.REQUEST_RETRY_BACKOFF_SECONDS * (attempt + 1))
                 continue
             raise PerplexityError(f"http {r.status_code}: {r.text[:300]}")
         except requests.RequestException as e:
             last_err = str(e)
-            logger.warning(
-                "perplexity request exception (attempt %s/%s): %s",
-                attempt + 1,
-                config.NEWS_RETRY_ATTEMPTS + 1,
-                last_err,
-            )
+            _log_perplexity_retry(log_label, attempt + 1, attempts_total, last_err)
             time.sleep(config.REQUEST_RETRY_BACKOFF_SECONDS * (attempt + 1))
 
+    if log_label:
+        logger.error(
+            "PERPLEXITY FAILED | %s | after %d attempts | %s",
+            log_label,
+            attempts_total,
+            last_err,
+        )
     raise PerplexityError(f"Perplexity failed after retries: {last_err}")
+
+
+def _log_perplexity_retry(
+    log_label: str | None,
+    attempt: int,
+    attempts_total: int,
+    err: str,
+) -> None:
+    if log_label:
+        logger.warning(
+            "PERPLEXITY RETRY | %s | attempt %d/%d | %s",
+            log_label,
+            attempt,
+            attempts_total,
+            err,
+        )
+    else:
+        logger.warning(
+            "perplexity request exception (attempt %s/%s): %s",
+            attempt,
+            attempts_total,
+            err,
+        )

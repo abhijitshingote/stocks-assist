@@ -67,6 +67,27 @@
         margin-top: 0.1rem;
     }
 
+    .date-item.running {
+        border-left: 2px solid var(--accent-blue);
+    }
+
+    .date-item.failed,
+    .date-item.error {
+        border-left: 2px solid #c45c5c;
+    }
+
+    .date-item-status {
+        font-size: 0.55rem;
+        margin-top: 0.15rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .date-item-status.running { color: var(--accent-blue); }
+    .date-item-status.complete { color: var(--accent-green); }
+    .date-item-status.failed,
+    .date-item-status.error { color: #c45c5c; }
+
     .brief-container > .brief-viewer {
         flex: 1 1 auto !important;
         min-width: 0;
@@ -601,17 +622,25 @@
                     const dateObj = new Date(item.date + 'T12:00:00');
                     const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
                     const dateStr = item.date;
+                    const st = item.status || 'complete';
+                    const statusLabel = st === 'running'
+                        ? (item.stage ? `Running · ${item.stage}` : 'Running…')
+                        : st === 'complete' ? 'Ready'
+                        : st === 'error' ? 'Error'
+                        : 'Incomplete';
 
                     return `
-                        <div class="date-item${currentDate === item.date ? ' active' : ''}" onclick="loadBrief('${item.date}')">
+                        <div class="date-item ${st}${currentDate === item.date ? ' active' : ''}" onclick="loadBrief('${item.date}', '${st}')">
                             <div class="date-item-date">${dateStr}</div>
                             <div class="date-item-meta">${dayName}</div>
+                            <div class="date-item-status ${st}">${statusLabel}</div>
                         </div>
                     `;
                 }).join('');
 
                 if (!currentDate && data.dates.length > 0) {
-                    loadBrief(data.dates[0].date);
+                    const first = data.dates[0];
+                    loadBrief(first.date, first.status || 'complete');
                 }
             } else {
                 listEl.innerHTML = '<div class="empty-state">No briefs found. Click "Generate New" to create one.</div>';
@@ -621,20 +650,32 @@
         }
     }
 
-    async function loadBrief(dateStr) {
+    async function loadBrief(dateStr, status) {
         currentDate = dateStr;
         const contentEl = document.getElementById('brief-content');
         const titleEl = document.getElementById('current-brief-date');
 
         titleEl.textContent = `Brief for ${dateStr}`;
-        contentEl.innerHTML = '<div class="loading">Loading...</div>';
-
         document.querySelectorAll('.date-item').forEach(el => {
             el.classList.toggle('active', el.querySelector('.date-item-date').textContent === dateStr);
         });
 
+        if (status === 'running') {
+            contentEl.innerHTML = '<div class="brief-placeholder">Brief is still generating… This usually takes 10–20 minutes. The list will update automatically.</div>';
+            return;
+        }
+        if (status === 'failed' || status === 'error') {
+            contentEl.innerHTML = '<div class="brief-placeholder">This run did not finish. Check <code>user_data/market_brief/' + dateStr + '/run.log</code> or click Generate New to retry.</div>';
+            return;
+        }
+
+        contentEl.innerHTML = '<div class="loading">Loading...</div>';
+
         try {
             const response = await fetch(`/api/frontend/market-brief/${dateStr}`);
+            if (!response.ok) {
+                throw new Error(response.status === 404 ? 'Brief not ready yet' : `HTTP ${response.status}`);
+            }
             currentData = await response.json();
 
             renderView();
@@ -778,10 +819,62 @@
         return html;
     }
 
+    let briefPollTimer = null;
+
+    function stopBriefPolling() {
+        if (briefPollTimer) {
+            clearInterval(briefPollTimer);
+            briefPollTimer = null;
+        }
+    }
+
+    function startBriefPolling(targetDate) {
+        stopBriefPolling();
+        let pollCount = 0;
+        const maxPolls = 120; // 30 min @ 15s
+
+        briefPollTimer = setInterval(async () => {
+            pollCount++;
+            await loadDateList();
+
+            try {
+                const response = await fetch('/api/frontend/market-brief/dates');
+                const data = await response.json();
+                const entry = (data.dates || []).find(d => d.date === targetDate);
+                if (entry && entry.status === 'complete') {
+                    stopBriefPolling();
+                    const btn = document.getElementById('btn-run');
+                    btn.textContent = 'Generate New';
+                    btn.disabled = false;
+                    await loadBrief(targetDate, 'complete');
+                    return;
+                }
+                if (entry && (entry.status === 'failed' || entry.status === 'error')) {
+                    stopBriefPolling();
+                    const btn = document.getElementById('btn-run');
+                    btn.textContent = 'Generate New';
+                    btn.disabled = false;
+                    await loadBrief(targetDate, entry.status);
+                    return;
+                }
+            } catch (e) {
+                console.warn('brief poll failed', e);
+            }
+
+            if (pollCount >= maxPolls) {
+                stopBriefPolling();
+                const btn = document.getElementById('btn-run');
+                btn.textContent = 'Generate New';
+                btn.disabled = false;
+            }
+        }, 15000);
+    }
+
     async function runBrief() {
         const btn = document.getElementById('btn-run');
         btn.disabled = true;
         btn.textContent = 'Starting...';
+        stopBriefPolling();
 
         try {
             const response = await fetch('/api/frontend/market-brief/run', {
@@ -791,24 +884,26 @@
             });
             const data = await response.json();
 
-            if (data.status === 'started') {
-                btn.textContent = 'Running...';
-                setTimeout(() => {
-                    btn.textContent = 'Generate New';
-                    btn.disabled = false;
-                    loadDateList();
-                }, 60000);
+            if (response.status === 409) {
+                alert(data.message || 'A brief for today is already running.');
+                btn.textContent = 'Generate New';
+                btn.disabled = false;
+                await loadDateList();
+                if (data.asof) startBriefPolling(data.asof);
+                return;
+            }
 
-                let pollCount = 0;
-                const pollInterval = setInterval(() => {
-                    pollCount++;
-                    loadDateList();
-                    if (pollCount >= 12) {
-                        clearInterval(pollInterval);
-                    }
-                }, 10000);
+            if (data.status === 'started') {
+                btn.textContent = 'Running… (10–20 min)';
+                const targetDate = data.asof;
+                await loadDateList();
+                if (targetDate) {
+                    currentDate = targetDate;
+                    await loadBrief(targetDate, 'running');
+                    startBriefPolling(targetDate);
+                }
             } else {
-                alert('Failed to start: ' + (data.error || 'Unknown error'));
+                alert('Failed to start: ' + (data.error || data.message || 'Unknown error'));
                 btn.textContent = 'Generate New';
                 btn.disabled = false;
             }

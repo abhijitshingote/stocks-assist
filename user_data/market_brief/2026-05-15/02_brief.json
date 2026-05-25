@@ -1,0 +1,689 @@
+{
+  "asof": "2026-05-25",
+  "tldr": [
+    {
+      "text": "Risk-on session with Dow at record highs as flows rotated within AI from GPUs into CPUs, servers, networking, power, and software; semis and software outperformed while some mega-cap platforms lagged.",
+      "tickers": [
+        "SPY",
+        "QQQ",
+        "SOXX",
+        "IGV",
+        "XLK"
+      ]
+    },
+    {
+      "text": "Nvidia sold off post-earnings despite a blowout quarter and major capital-return package, as investors took profits and rotated into secondary AI hardware and infrastructure.",
+      "tickers": [
+        "NVDA"
+      ]
+    },
+    {
+      "text": "AI CPUs, RF, analog, and AI networking rallied, led by AMD, QCOM, TXN, MRVL, and Nokia on AI infrastructure, auto, and networking optimism plus analyst upgrades.",
+      "tickers": [
+        "AMD",
+        "QCOM",
+        "TXN",
+        "MRVL",
+        "NOK"
+      ]
+    },
+    {
+      "text": "AI server and datacenter power names surged on backlog commentary, sovereign-AI demand, and trillions in forecasted AI infrastructure spend.",
+      "tickers": [
+        "DELL",
+        "HPE",
+        "SMCI",
+        "VRT",
+        "ETN"
+      ]
+    },
+    {
+      "text": "Cybersecurity and broader software outperformed into upcoming earnings, with ZS and CRM highlighted as key catalysts.",
+      "tickers": [
+        "ZS",
+        "CRM",
+        "PANW",
+        "CRWD",
+        "SNOW"
+      ]
+    },
+    {
+      "text": "Internet and platform names were mixed, with SPOT and creator platforms strong while GOOGL and several mega-caps underperformed amid antitrust and privacy headlines.",
+      "tickers": [
+        "GOOGL",
+        "META",
+        "AAPL",
+        "SPOT",
+        "NFLX",
+        "UBER"
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "name": "Macro & Indices",
+      "bullets": [
+        {
+          "text": "Broad U.S. equities closed higher with SPY +0.39% and QQQ +0.42% as the Dow hit record levels, supported by strength in technology, PCs, and semiconductors.",
+          "tickers": [
+            "SPY",
+            "QQQ"
+          ]
+        },
+        {
+          "text": "Sector leadership came from semiconductors and technology, with SOXX +2.33%, IGV +1.65%, and XLK +1.00% outperforming the broader market.",
+          "tickers": [
+            "SOXX",
+            "IGV",
+            "XLK"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI Rotation & Semiconductors",
+      "bullets": [
+        {
+          "text": "Flows rotated within AI from GPU leaders into CPUs, servers, networking, and datacenter power as semis led the tape with strength in AI compute, RF, analog, and equipment.",
+          "tickers": [
+            "SOXX",
+            "NVDA",
+            "AMD",
+            "INTC",
+            "QCOM",
+            "TXN"
+          ]
+        },
+        {
+          "text": "Nvidia fell 2.27% despite FQ1 revenue of $81.6B (+85% Y/Y), Q2 revenue guide near $91B, a 25x dividend hike to $0.25 per quarter, and an $80B buyback expansion, with commentary highlighting tight HBM supply, supply-constrained VeraRubin, and China AI-chip revenue going from ~90% share to zero under U.S. controls.",
+          "tickers": [
+            "NVDA"
+          ]
+        },
+        {
+          "text": "AMD gained 4.98% after Lisa Su outlined plans to invest over $10B into Taiwan’s AI ecosystem, ramp Venice CPUs on TSMC 2nm, and projected AI CPU demand growing above 35% annually over five years, while noting China is ~20% of revenue but not a driver for advanced China chip sales.",
+          "tickers": [
+            "AMD",
+            "TSM"
+          ]
+        },
+        {
+          "text": "TSMC lagged at -0.95% despite being AMD’s 2nm partner, as notes highlighted Asia’s AI trade broadening beyond TSM into memory, CPUs, robotics, and infrastructure, with Street models calling for strong July earnings growth and PTs clustered around the low-to-mid $400s.",
+          "tickers": [
+            "TSM",
+            "AMD"
+          ]
+        },
+        {
+          "text": "Qualcomm rallied 12.48% as one of the largest semiconductor movers, helped by an expanded Snapdragon Digital Chassis deal with Stellantis on top of a prior Q2 beat, dividend hike, and buyback, with options flow active in June 2026 $250 calls.",
+          "tickers": [
+            "QCOM",
+            "STLA"
+          ]
+        },
+        {
+          "text": "Analog and power names outperformed, including TXN +4.20% on a Seaport Global upgrade to Buy with a $400 PT, and broad gains in ADI, NXPI, ON, and others tied to AI and industrial demand.",
+          "tickers": [
+            "TXN",
+            "ADI",
+            "NXPI",
+            "ON",
+            "MPWR",
+            "MCHP",
+            "ALGM",
+            "DIOD",
+            "POWI",
+            "VSH",
+            "MTSI",
+            "STM",
+            "AOSL"
+          ]
+        },
+        {
+          "text": "AI networking and communications semis such as MRVL, ANET, CSCO, and NOK rose on expectations for AI-driven network build-outs, with Marvell seeing multiple PT hikes up to $215 and Nokia benefitting from an AI Networking Innovation Lab launch and an FCC approval.",
+          "tickers": [
+            "MRVL",
+            "ANET",
+            "AAOI",
+            "ERIC",
+            "CSCO",
+            "NOK"
+          ]
+        },
+        {
+          "text": "Foundry and packaging plays were mixed as TSM and UMC lagged while GFS and ASX advanced on CHIPS/quantum funding, UCLA hub participation, and read-through from advanced-packaging bottleneck commentary.",
+          "tickers": [
+            "TSM",
+            "UMC",
+            "GFS",
+            "ASX",
+            "TSEM",
+            "SLAB",
+            "SITM"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI Infrastructure: Servers, Power & Sovereign AI",
+      "bullets": [
+        {
+          "text": "AI server OEMs DELL, HPE, and SMCI surged on AI server backlog commentary and sovereign-AI demand, with Dell hitting record highs ahead of earnings on expectations for $35.75B in revenue (+52% Y/Y) and positioning versus more than $725B in 2026 hyperscaler capex.",
+          "tickers": [
+            "DELL",
+            "HPE",
+            "SMCI"
+          ]
+        },
+        {
+          "text": "HPE gained 10.98% after CNAS research showed an NVDA-led U.S. stack, including HPE and DELL, is supplying the majority of sovereign AI projects globally, highlighting recurring server demand from national AI builds.",
+          "tickers": [
+            "HPE",
+            "DELL",
+            "NVDA"
+          ]
+        },
+        {
+          "text": "Datacenter power and cooling names VRT and ETN moved higher as Vertiv was highlighted with a 1,110% 5-year gain, expected revenue growth of 35% this year and 28% next year, and tailwinds from parabolic AI demand and grid constraints.",
+          "tickers": [
+            "VRT",
+            "ETN"
+          ]
+        },
+        {
+          "text": "CSCO was cited as a key networking vendor embedded in sovereign AI projects alongside NVDA, AMD, INTC, DELL, HPE, ORCL, and AMZN, underscoring its role in national AI networks.",
+          "tickers": [
+            "CSCO",
+            "NVDA",
+            "AMD",
+            "INTC",
+            "DELL",
+            "HPE",
+            "ORCL",
+            "AMZN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Software, Cybersecurity & SaaS",
+      "bullets": [
+        {
+          "text": "Software rallied with IGV +1.65% as ZS, TEAM, SNOW, INTU, PANW, CRWD, CRM, NOW, DDOG, MDB, ORCL, and ADBE broadly finished higher while MSFT was modestly lower.",
+          "tickers": [
+            "IGV",
+            "ZS",
+            "TEAM",
+            "SNOW",
+            "INTU",
+            "PANW",
+            "CRWD",
+            "CRM",
+            "NOW",
+            "DDOG",
+            "MDB",
+            "ESTC",
+            "ORCL",
+            "ADBE",
+            "MSFT"
+          ]
+        },
+        {
+          "text": "Salesforce rose 2.94% into earnings on expectations for Q1 revenue of $11.06B (+12.48% Y/Y) and Q2 revenue of $11.36B (+11% Y/Y), with Agentforce + Data 360 ARR up 200% Y/Y to $2.9B and the stock framed as a dual Dow/Nasdaq 100 catalyst.",
+          "tickers": [
+            "CRM"
+          ]
+        },
+        {
+          "text": "Zscaler climbed 7.20% leading the cyber cohort into its upcoming earnings slot, with PANW and CRWD also bid and Wells Fargo lifting CRWD’s price target to $700 while flagging overbought technicals.",
+          "tickers": [
+            "ZS",
+            "PANW",
+            "CRWD"
+          ]
+        },
+        {
+          "text": "Intuit rebounded 3.61% after a prior selloff tied to earnings, guidance, and a 17% workforce reduction, and was cited as an example of downside risk even among perceived AI software winners.",
+          "tickers": [
+            "INTU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Internet, Platforms & Consumer Tech",
+      "bullets": [
+        {
+          "text": "Internet and platform stocks were mixed, with AAPL, META, TTD, RBLX, SPOT, and PINS higher while GOOGL, AMZN, MSFT, NFLX, SNAP, and UBER underperformed amid regulatory, privacy, and M&A concerns.",
+          "tickers": [
+            "AAPL",
+            "META",
+            "TTD",
+            "RBLX",
+            "SPOT",
+            "PINS",
+            "GOOGL",
+            "AMZN",
+            "MSFT",
+            "NFLX",
+            "SNAP",
+            "UBER"
+          ]
+        },
+        {
+          "text": "Alphabet fell 1.70% after appealing a 2024 U.S. antitrust ruling over default-search deals that found it illegally maintained search dominance and proposed remedies including mandated data-sharing with rivals and AI firms.",
+          "tickers": [
+            "GOOGL",
+            "AAPL"
+          ]
+        },
+        {
+          "text": "Meta inched up 0.31% as it reiterated a 2026 capex plan of $125–$145B focused on AI, detailed deployment of over 1 GW of custom silicon co-developed with AVGO and others, and co-launched a $125M UCLA Semiconductor Hub while also facing a Texas lawsuit over WhatsApp encryption claims.",
+          "tickers": [
+            "META",
+            "AVGO",
+            "AMAT",
+            "GFS",
+            "SNPS"
+          ]
+        },
+        {
+          "text": "Apple gained 1.15% after unveiling AI-driven accessibility and Apple Intelligence features across hardware platforms and was cited as having bucked a broader smartphone slump amid weak Samsung April unit data.",
+          "tickers": [
+            "AAPL",
+            "SSNLF"
+          ]
+        },
+        {
+          "text": "Spotify jumped 5.49% on multiple price target increases, including a JPMorgan hike to $650, and a Live Nation ticketing partnership called \"Reserved by Spotify\" that integrates SPOT into live event ticket access.",
+          "tickers": [
+            "SPOT",
+            "LYV"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Communications, Networking & Chip Equipment",
+      "bullets": [
+        {
+          "text": "AI networking beneficiaries including MRVL, ANET, AAOI, ERIC, CSCO, and NOK were broadly bid on expectations for next-gen AI networks and increased data traffic.",
+          "tickers": [
+            "MRVL",
+            "ANET",
+            "AAOI",
+            "ERIC",
+            "CSCO",
+            "NOK"
+          ]
+        },
+        {
+          "text": "Marvell extended a nine-week run to fresh highs as multiple brokers raised price targets up to $215, with Street estimates calling for EPS of $0.75 and revenue of $2.40B into a confirmed May 27 print, even as valuation metrics flagged elevated risk.",
+          "tickers": [
+            "MRVL"
+          ]
+        },
+        {
+          "text": "Nokia gained 9.27% to 52-week highs after launching an AI Networking Innovation Lab and securing an FCC approval for in-home broadband devices, despite trading at a rich P/E versus modest EPS expectations and consensus price targets.",
+          "tickers": [
+            "NOK"
+          ]
+        },
+        {
+          "text": "UCLA announced a $125M AI Semiconductor Hub co-funded by AVGO, AMAT, META, SNPS, and GFS to accelerate AI-native hardware, advanced packaging, thermal, and ultra-broadband communications, viewed as a positive capex signal for chip equipment and advanced nodes.",
+          "tickers": [
+            "AVGO",
+            "AMAT",
+            "META",
+            "SNPS",
+            "GFS"
+          ]
+        },
+        {
+          "text": "Wafer-fab tools and materials names like ASML, LRCX, AMAT, KLAC, ENTG, UCTT, ICHR, ACMR, VECO, and ACLS traded higher on AI-related capex momentum and the UCLA hub announcement.",
+          "tickers": [
+            "ASML",
+            "LRCX",
+            "AMAT",
+            "KLAC",
+            "ENTG",
+            "UCTT",
+            "ICHR",
+            "ACMR",
+            "VECO",
+            "ACLS"
+          ]
+        },
+        {
+          "text": "Optical names CIEN, LITE, and COHR were softer despite broader AI networking optimism, while AVGO slightly underperformed even as it co-funded the UCLA Semiconductor Hub.",
+          "tickers": [
+            "CIEN",
+            "LITE",
+            "COHR",
+            "AVGO"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI Compute: GPUs, CPUs & Accelerators",
+      "bullets": [
+        {
+          "text": "Nvidia’s valuation and market leadership were debated as prediction markets assigned a 66% probability it will be the largest company by year-end versus 19% for GOOGL and 8% for AAPL, while commentary highlighted rotation toward INTC after its strong year-to-date performance.",
+          "tickers": [
+            "NVDA",
+            "GOOGL",
+            "AAPL",
+            "INTC"
+          ]
+        },
+        {
+          "text": "Bloomberg-sourced reports indicated Intel is exploring an acquisition of AI inference startup Tenstorrent, potentially valuing it above $5B, with Qualcomm also in talks as part of a broader race to secure AI acceleration technology.",
+          "tickers": [
+            "INTC",
+            "QCOM"
+          ]
+        },
+        {
+          "text": "AI and edge compute beneficiaries such as ARM, ALAB, CEVA, AMBA, SIMO, AIP, and others traded higher alongside the sector as investors broadened exposure beyond GPU leaders.",
+          "tickers": [
+            "ARM",
+            "ALAB",
+            "CEVA",
+            "AMBA",
+            "SIMO",
+            "AIP"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Memory, Packaging & Specialty Materials",
+      "bullets": [
+        {
+          "text": "Micron advanced on the start of 1α DRAM manufacturing at its Manassas, VA fab as part of a >$2B expansion within a planned $200B U.S. investment, with expectations to quadruple DDR4 wafer supply and technicals showing the stock near 52-week highs with aggressive earnings and revenue growth estimates.",
+          "tickers": [
+            "MU"
+          ]
+        },
+        {
+          "text": "GlobalFoundries gained 6.28% on a $375M CHIPS and quantum funding LOI plus a ~1% U.S. equity stake and the launch of Quantum Technology Solutions, and was also noted as a UCLA hub co-funder and weekly gainer.",
+          "tickers": [
+            "GFS"
+          ]
+        },
+        {
+          "text": "Amkor was modestly lower despite its CEO emphasizing that advanced packaging remains a major bottleneck for AI chips and highlighting work with AMD and TSMC Arizona on advanced packages.",
+          "tickers": [
+            "AMKR",
+            "AMD",
+            "TSM"
+          ]
+        },
+        {
+          "text": "Memory and interconnect-related names including RMBS, GSIT, MRAM, TSEM, ASX, and others were generally strong, aided by CHIPS-related headlines and packaging bottleneck themes.",
+          "tickers": [
+            "RMBS",
+            "GSIT",
+            "MRAM",
+            "TSEM",
+            "ASX"
+          ]
+        },
+        {
+          "text": "Specialty materials and IP licensing stocks such as ATOM, NVMI, OLED, AXTI, and GSIT moved higher in a strong semi/IP tape, while ALMU was the notable decliner without a specific catalyst.",
+          "tickers": [
+            "ATOM",
+            "NVMI",
+            "OLED",
+            "AXTI",
+            "GSIT",
+            "ALMU"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Power & Wide-Bandgap",
+      "bullets": [
+        {
+          "text": "Power and wide-bandgap beneficiaries including NVTS, SMTC, AEHR, and WOLF outperformed as investors looked further down the AI hardware stack into power conversion and testing.",
+          "tickers": [
+            "NVTS",
+            "SMTC",
+            "AEHR",
+            "WOLF"
+          ]
+        },
+        {
+          "text": "Navitas surged 18.84% after an SEC filing detailed a May 18 settlement with Live Oak Sponsor involving the transfer of 726,225 sponsor earnout shares, forfeiture of 115,775 sponsor earnout shares, and mutual release of claims.",
+          "tickers": [
+            "NVTS"
+          ]
+        },
+        {
+          "text": "Semtech gained 6.36% following an Oppenheimer price target hike from $110 to $150 and bullish options flow in June 2026 $200 calls.",
+          "tickers": [
+            "SMTC"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wireless & Mobile",
+      "bullets": [
+        {
+          "text": "RF, mobile, and auto-semi names QCOM, SWKS, QRVO, INDI, SYNA, and HIMX rallied strongly as part of the broader semi move, with INDI named among top IT gainers on a high-beta intraday spike without a fundamental catalyst.",
+          "tickers": [
+            "QCOM",
+            "SWKS",
+            "QRVO",
+            "INDI",
+            "SYNA",
+            "HIMX"
+          ]
+        },
+        {
+          "text": "MaxLinear underperformed at -1.65% despite strength in the broader RF and connectivity complex, with no name-specific news cited.",
+          "tickers": [
+            "MXL"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Test & Advanced Packaging",
+      "bullets": [
+        {
+          "text": "Lattice Semiconductor gained 3.49% after Deutsche Bank reiterated Buy and raised its price target from $150 to $175, with the name used as a read-through for FPGA demand and advanced packaging and test.",
+          "tickers": [
+            "LSCC"
+          ]
+        },
+        {
+          "text": "Test and packaging equipment names including CAMT, KLIC, PLAB, COHU, FORM, SKYT, and ONTO traded higher, while TER was the only notable decliner in the group without a specific catalyst.",
+          "tickers": [
+            "CAMT",
+            "KLIC",
+            "PLAB",
+            "COHU",
+            "FORM",
+            "SKYT",
+            "ONTO",
+            "TER"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Single-Name Highlights & Other Sectors",
+      "bullets": [
+        {
+          "text": "NIO dropped 6.96% after Q1 earnings despite revenue growing 112% Y/Y and deliveries rising 98%, with pressure linked to CSRC crackdowns on cross-border trading and elevated sector risk ahead of LI and XPEV reports.",
+          "tickers": [
+            "NIO",
+            "FUTU",
+            "LI",
+            "XPEV"
+          ]
+        },
+        {
+          "text": "Ross Stores climbed roughly 7% to a 52-week high around $233 following a Q1 beat and FY26 EPS raise that drove multiple price target increases.",
+          "tickers": [
+            "ROST"
+          ]
+        }
+      ]
+    }
+  ],
+  "callouts": [
+    {
+      "ticker": "NVDA",
+      "summary": "Posted an 85% Y/Y revenue surge with $81.6B in FQ1 sales, guided Q2 revenue near $91B, hiked its dividend 25x to $0.25, and added $80B to its buyback, yet the stock fell on profit-taking, tight HBM and VeraRubin supply commentary, and rotation away from GPU leaders amid China AI-chip revenue going to zero under U.S. controls.",
+      "angle": "earnings",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "AMD",
+      "summary": "Rallied nearly 5% after Lisa Su outlined more than $10B of planned investments in Taiwan’s AI supply chain, a ramp of Venice CPUs on TSMC 2nm, and expectations for AI CPU demand to grow over 35% annually for five years, positioning AMD as a key CPU beneficiary of AI workloads.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "QCOM",
+      "summary": "Jumped over 12% as investors responded to an expanded Snapdragon Digital Chassis partnership with Stellantis, building on prior quarterly beats, a dividend hike, and buyback expansion, with bullish options activity concentrated in June 2026 $250 calls.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "DELL",
+      "summary": "Hit record highs on AI server backlog commentary and a Wells Fargo Overweight rating with a $270 PT ahead of earnings, as previews call for 52% Y/Y revenue growth and frame Dell as a key beneficiary of more than $725B in hyperscaler capex and multi-trillion-dollar AI infrastructure spend by 2030.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "HPE",
+      "summary": "Spiked about 11% after CNAS research highlighted HPE as part of an NVDA-led U.S. hardware stack supplying most sovereign AI projects, reinforcing its positioning as a recurring server vendor in national AI infrastructure builds.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "MRVL",
+      "summary": "Extended a multi-week rally to fresh highs as multiple brokers raised price targets up to $215 on AI networking and custom ASIC growth expectations, even as valuation screens flagged a forward P/E near 98 and overbought technicals ahead of its May 27 earnings report.",
+      "angle": "earnings",
+      "confidence": "sell_side"
+    },
+    {
+      "ticker": "ZS",
+      "summary": "Rose more than 7% leading cyber peers as traders positioned ahead of its upcoming earnings, with Zscaler seen as a key beneficiary of AI-driven security demand and broader strength across PANW and CRWD.",
+      "angle": "earnings",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "CRM",
+      "summary": "Gained nearly 3% into earnings on expectations for low-teens revenue growth and rapidly scaling AI products like Agentforce and Data 360, with ARR up 200% Y/Y to $2.9B and the stock framed as an index catalyst for both the Dow and Nasdaq 100.",
+      "angle": "earnings",
+      "confidence": "sell_side"
+    },
+    {
+      "ticker": "META",
+      "summary": "Inched higher as it reiterated massive 2026 AI capex plans of $125–$145B, detailed deployment of over 1 GW of custom silicon co-developed with Broadcom and others, and co-funded a $125M UCLA Semiconductor Hub, while also facing a Texas lawsuit over alleged misrepresentations of WhatsApp’s encryption.",
+      "angle": "regulatory",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "GOOGL",
+      "summary": "Declined about 1.7% after Alphabet appealed a 2024 U.S. antitrust ruling on default-search deals that could force data-sharing with search and AI rivals, adding regulatory overhang that may extend to the Supreme Court.",
+      "angle": "regulatory",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "SPOT",
+      "summary": "Surged more than 5% on a string of analyst price target hikes, including JPMorgan to $650, and the announcement of a \"Reserved by Spotify\" ticket-access program with Live Nation that more tightly links its platform to live event ticketing.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "MU",
+      "summary": "Edged higher as it began manufacturing 1α DRAM in Manassas, VA as part of a multibillion-dollar U.S. expansion expected to quadruple DDR4 wafer supply, while analysts project a sharp earnings and revenue ramp and note the stock’s strong technical uptrend.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "NOK",
+      "summary": "Rallied over 9% to 52-week highs on the launch of an AI Networking Innovation Lab and an FCC approval for in-home broadband devices, with investors weighing rich valuation against AI networking growth prospects.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "INTC",
+      "summary": "Traded higher as reports indicated Intel is exploring a potential acquisition of AI inference startup Tenstorrent valued above $5B, with Qualcomm also interested, underscoring its drive to bolster AI compute capabilities beyond CPUs.",
+      "angle": "supply_chain",
+      "confidence": "rumor"
+    },
+    {
+      "ticker": "NIO",
+      "summary": "Dropped nearly 7% post-earnings despite triple-digit revenue and delivery growth, as a remaining net loss, Chinese regulatory crackdowns on cross-border trading, and upcoming sector earnings for LI and XPEV weighed on sentiment.",
+      "angle": "other",
+      "confidence": "confirmed"
+    }
+  ],
+  "watch_tomorrow": [
+    {
+      "text": "Monitor Nvidia and AI GPU leaders for follow-through after the post-earnings selloff and continued rotation into CPUs, servers, networking, and power.",
+      "tickers": [
+        "NVDA",
+        "AMD",
+        "INTC",
+        "MRVL",
+        "DELL",
+        "HPE",
+        "VRT"
+      ]
+    },
+    {
+      "text": "Watch AI server and infrastructure names into Dell’s upcoming earnings and sovereign-AI headlines, with Street expecting strong top-line growth and large hyperscaler capex tailwinds.",
+      "tickers": [
+        "DELL",
+        "HPE",
+        "SMCI",
+        "CSCO",
+        "VRT",
+        "ETN"
+      ]
+    },
+    {
+      "text": "Track cybersecurity and software leaders ahead of Zscaler and Salesforce earnings as positioning remains bullish across AI and cloud software.",
+      "tickers": [
+        "ZS",
+        "CRM",
+        "PANW",
+        "CRWD",
+        "SNOW",
+        "NOW"
+      ]
+    },
+    {
+      "text": "Keep an eye on Marvell and broader AI networking plays as they approach key earnings and trade at elevated valuations relative to sector averages.",
+      "tickers": [
+        "MRVL",
+        "NOK",
+        "ANET",
+        "CSCO",
+        "AAOI"
+      ]
+    },
+    {
+      "text": "Monitor internet and platform names for reactions to ongoing antitrust and privacy developments at Alphabet and Meta, alongside momentum in SPOT and creator platforms.",
+      "tickers": [
+        "GOOGL",
+        "META",
+        "AAPL",
+        "SPOT",
+        "TTD",
+        "RBLX",
+        "PINS"
+      ]
+    }
+  ]
+}

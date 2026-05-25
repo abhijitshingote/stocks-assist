@@ -27,26 +27,14 @@ def _today_str() -> str:
 
 
 def _prior_session_label(asof: str) -> str:
-    """Best-effort label for the most recent US trading session relative to `asof`.
+    """NYSE session date covered by the ingest window (matches 5 AM ET anchor)."""
+    from market_brief.trading_calendar import prior_session_for_brief
 
-    `asof` is when the brief is *written*, which is typically the morning
-    after the session it covers. We don't have a market-calendar dep, so
-    we just walk back to the previous weekday. (Holidays will occasionally
-    label a session a day early; the prompt instructs the model to verify
-    its own dates, so this is a hint, not a hard constraint.)
-    """
     try:
-        d = datetime.strptime(asof, "%Y-%m-%d").date()
+        session = prior_session_for_brief(asof or None)
+        return session.strftime("%A %B %-d, %Y")
     except ValueError:
         return "the most recent US trading session"
-
-    # Walk back at least 1 day; if we land on Sat/Sun, keep going to Fri.
-    delta = 1
-    while True:
-        candidate = d - timedelta(days=delta)
-        if candidate.weekday() < 5:  # Mon=0..Fri=4
-            return candidate.strftime("%A %B %-d, %Y")
-        delta += 1
 
 
 # ---------------------------------------------------------------------------
@@ -210,6 +198,125 @@ For each confirmed item above, name the 2-3 OTHER tickers it implicates and the 
 
 
 # ---------------------------------------------------------------------------
+# Benzinga → per-topic summary (no web search; source text is provided)
+# ---------------------------------------------------------------------------
+
+
+def build_benzinga_chunk_prompt(
+    topic: dict,
+    articles_text: str,
+    asof: str | None = None,
+    tape_block: str | None = None,
+    *,
+    chunk_index: int = 1,
+    chunk_total: int = 1,
+) -> str:
+    asof = asof or _today_str()
+    prior_session = _prior_session_label(asof)
+    header = topic_header(topic)
+    tape_section = (tape_block or "VERIFIED TAPE: (none provided)").strip()
+    chunk_note = (
+        f"(Part {chunk_index} of {chunk_total} of Benzinga articles for this topic.)"
+        if chunk_total > 1
+        else ""
+    )
+
+    return f"""You are a senior equity analyst preparing a pre-market briefing section.
+Brief written: {asof}
+Trading session being covered: {prior_session}.
+
+DO NOT search the web. Use ONLY the Benzinga articles below plus the verified tape.
+Every factual claim must come from an article below — cite the article URL.
+If the articles do not support a claim, do not write it.
+
+{tape_section}
+
+{header}
+{chunk_note}
+
+Summarize the material below into actionable, stock-specific bullets for a US equity trader.
+Use the VERIFIED TAPE for price signs/magnitudes when a ticker appears in both tape and articles.
+
+Rules:
+- Every bullet names at least one TICKER.
+- Include concrete numbers from the articles (%, $, EPS, contract size, PT changes).
+- Tag each bullet: [confirmed] for press releases / filings / company statements,
+  [sell-side] for analyst actions, [chatter] for unconfirmed claims.
+- Distinguish session date on moves using the verified tape when available.
+- Do NOT write sell-side filler ("remains a beneficiary", "in the sweet spot").
+
+Structure as markdown:
+
+## Tape on {prior_session}
+One line on how names in the verified tape moved (if tape provided).
+
+## Decliners / Advancers on {prior_session}
+From verified tape + article explanations. Signed % from tape verbatim.
+
+## News & flow
+Stories from the articles with TICKER, date, numbers, and *Benzinga URL*.
+
+## Cross-currents
+Read-throughs to other tickers named in the articles.
+
+Benzinga articles:
+{articles_text}
+"""
+
+
+def build_benzinga_merge_prompt(
+    topic: dict,
+    partial_summaries: list[str],
+    asof: str | None = None,
+    tape_block: str | None = None,
+) -> str:
+    asof = asof or _today_str()
+    header = topic_header(topic)
+    tape_section = (tape_block or "VERIFIED TAPE: (none provided)").strip()
+    body = "\n\n---\n\n".join(
+        f"### Partial summary {i}\n\n{text}"
+        for i, text in enumerate(partial_summaries, start=1)
+    )
+    return f"""Merge the partial Benzinga summaries below into ONE coherent topic section.
+DO NOT search the web. Do not add facts not present in the partials.
+
+Brief written: {asof}
+{header}
+
+{tape_section}
+
+Deduplicate stories, keep the richest version of each (numbers, URLs, dates).
+Preserve Benzinga URLs and [confirmed]/[sell-side]/[chatter] tags.
+
+Partials:
+{body}
+"""
+
+
+def build_watch_tomorrow_prompt(tickers: list[str], asof: str | None = None) -> str:
+    asof = asof or _today_str()
+    ticker_block = ", ".join(sorted(set(tickers))[:120])
+    return f"""Search the web for US equity calendar events in the next 24-48 hours after {asof}.
+
+Universe (prioritize these tickers): {ticker_block}
+
+Find: earnings reports, investor days, FDA/FTC decisions, product launches,
+conference presentations, ex-dividend, lockup expiries, index rebalances.
+
+HARD RULES:
+- Each line: **TICKER** — DATE/TIME (ET if known) — event — why it matters (one phrase).
+- Only include events with a specific date in the next 48h.
+- Cite source (company IR calendar, Earnings Whispers, Bloomberg, etc.).
+
+If nothing material, write: "No major scheduled catalysts found for this universe."
+
+Structure as markdown:
+
+## Watch next session
+"""
+
+
+# ---------------------------------------------------------------------------
 # Synthesis — fold all probe outputs into a tiered brief
 # ---------------------------------------------------------------------------
 
@@ -245,8 +352,8 @@ Trading session covered: {prior_session}.
 
 {tape_section}
 
-Below are research probes on multiple sectors and themes.
-Your job is to ASSEMBLE them into a tiered brief — NOT to summarize them.
+Below are Benzinga-sourced topic summaries (and a calendar watch probe).
+Your job is to ASSEMBLE them into a tiered brief — NOT to re-summarize into bland prose.
 
 CORE PRINCIPLE: PRESERVE THE DETAIL. The probes contain specific numbers, source names,
 dates, and quoted moves. Those are the WHOLE POINT of the brief. If you replace
@@ -324,7 +431,8 @@ If a topic's probes did not include a verified session move for a ticker, do NOT
 here — list it under "News & flow" below.
 
 ## Per-sector / per-theme
-For each topic with material findings:
+For each topic with material findings (including **Unassigned (no theme/sector)** if
+that probe has content — these are real stories that must appear in the brief):
 
 ### {{topic name}}
 3-5 bullets max. Each bullet is a SPECIFIC event with TICKER, SIGNED NUMBER, SOURCE,
@@ -343,10 +451,11 @@ The 10-15 most actionable single-name stories. Format:
 confidence (confirmed / sell-side / rumor).
 
 ## Watch next session
-Specific named-ticker events expected in the next 24-48h after {asof}. Each line:
-**TICKER** — what to watch — why it matters in one phrase.
+Use the dedicated "Watch next session" probe if provided; otherwise pull only
+calendar items already mentioned in the topic summaries. Each line:
+**TICKER** — DATE — event — why it matters — *source*.
 
-Probes follow.
+Topic summaries follow.
 {body}
 """
 

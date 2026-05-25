@@ -118,15 +118,17 @@ def _fetch_index(session, symbol: str, asof_date: str) -> Quote | None:
 
 
 def _resolve_session_date(asof: str) -> str:
-    """`asof` is the brief's run date. Return the date of the most recent
-    OHLC entry on or before `asof` (handles weekends / holidays)."""
+    """OHLC session date aligned with the news ingest anchor (NYSE calendar)."""
+    from market_brief.trading_calendar import prior_session_for_brief
+
+    target = prior_session_for_brief(asof or None).isoformat()
     session = get_session()
     try:
         row = session.execute(
             text("SELECT max(date)::text FROM ohlc WHERE date <= :d"),
-            {"d": asof},
+            {"d": target},
         ).fetchone()
-        return row[0] if row and row[0] else asof
+        return row[0] if row and row[0] else target
     finally:
         session.close()
 

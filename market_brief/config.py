@@ -114,12 +114,75 @@ CATALYST_ANGLES: list[dict[str, str]] = [
 ]
 
 # ---------------------------------------------------------------------------
-# Perplexity
+# Benzinga ingest
 # ---------------------------------------------------------------------------
-# `sonar-pro` digs deeper across sources; the cheaper `sonar` is fine for
-# the synthesis pass since that's pure summarization on text we provide.
 
+# Deprecated: ingest uses trading_calendar (5:00 AM ET anchor). Kept for empty-topic copy fallback.
+NEWS_WINDOW_HOURS = 24
+PER_TICKER_LIMIT = 25
+GENERAL_NEWS_LIMIT = 100
+# Extra channel-scoped pulls (Polygon ``channels=``).
+# Run ``python -m market_brief.discover_channels`` to reprobe; comment out to save API calls.
+# Empirical probe 2026-05-24: all below returned rows; ``wiim`` returned 0 (omit).
+GENERAL_CHANNEL_FETCHES: list[tuple[str, int]] = [
+    ("news", 50),
+    ("markets", 50),
+    ("equities", 50),
+    # ("politics", 50),
+    ("tech", 50),
+    # ("global", 50),
+    # ("government", 50),
+    # ("general", 50),
+    ("commodities", 50),
+    ("earnings", 50),
+    ("movers", 50),
+    ("macro economic events", 50),
+    # ("cryptocurrency", 50),
+    # ("etfs", 50),
+    # ("health care", 50),
+    # ("large cap", 50),
+    # ("sector etfs", 50),
+    # ("top stories", 50),
+]
+# Per-run QA funnel markdown (``qa_funnel.md``). Off by default (storage).
+QA_LOG_ENABLED = os.getenv("MARKET_BRIEF_QA_LOG", "").lower() in (
+    "1",
+    "true",
+    "yes",
+)
+INGEST_CONCURRENCY = 5
+ARTICLE_RETENTION_DAYS = 7
+
+# Summarize + brief input for stories that matched no theme or sector bucket.
+UNASSIGNED_TOPIC_NAME = "Unassigned (no theme/sector)"
+UNASSIGNED_TOPIC_DESC = (
+    "Benzinga articles in the ingest window that did not match any "
+    "theme or sector ticker assignment — still summarized for the brief."
+)
+
+# ---------------------------------------------------------------------------
+# Perplexity — topic summaries + synthesis (news from Benzinga, not web probes)
+# ---------------------------------------------------------------------------
+
+TOPIC_SUMMARY_MODEL = os.getenv("MARKET_BRIEF_TOPIC_SUMMARY_MODEL", "sonar-pro")
+TOPIC_SUMMARY_MAX_TOKENS = 3500
+TOPIC_SUMMARY_TEMPERATURE = 0.15
+TOPIC_SUMMARY_TIMEOUT_SECONDS = 120
+# Split large article bundles so full bodies fit in context.
+CHUNK_MAX_CHARS = 55_000
+
+WATCH_PROBE_MODEL = os.getenv("MARKET_BRIEF_WATCH_MODEL", "sonar-pro")
+WATCH_PROBE_MAX_TOKENS = 2000
+WATCH_PROBE_TEMPERATURE = 0.1
+WATCH_PROBE_TIMEOUT_SECONDS = 90
+
+# Legacy web-search probes (disabled; kept for env overrides / experiments).
 PROBE_MODEL = os.getenv("MARKET_BRIEF_PROBE_MODEL", "sonar-pro")
+USE_WEB_PROBES = os.getenv("MARKET_BRIEF_USE_WEB_PROBES", "").lower() in (
+    "1",
+    "true",
+    "yes",
+)
 # Synthesis used to default to plain `sonar`, but it ground the rich
 # probe outputs (specific numbers, sources, moves) into bland sell-side
 # prose — losing the actionable detail. `sonar-pro` preserves quoted

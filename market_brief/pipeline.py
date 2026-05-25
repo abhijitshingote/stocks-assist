@@ -2,13 +2,12 @@
 
 Stages:
 
-1. Load topics (sectors from config + themes from user_data/themes.json).
-2. Fan out Perplexity probes (overview + catalyst) in parallel, with
-   bounded concurrency to respect `sonar-pro` rate limits.
-3. Persist every raw probe response to `outputs/<date>/01_probes/`.
-4. Synthesize all probes into a single markdown brief (`02_brief.md`).
-5. Convert that brief to JSON for future UI wiring (`02_brief.json`).
-6. Write usage/cost snapshot from the shared Perplexity USAGE accumulator.
+1. Ingest Benzinga news (full ticker universe + general/channel feeds, 24h window).
+2. Persist raw snapshots to ``00_news/`` and upsert into ``benzinga_articles``.
+3. Summarize per topic (chunked full-body articles → Perplexity, no web search).
+4. Run a Perplexity **watch** probe for forward calendar events.
+5. Synthesize into ``02_brief.md`` / ``02_brief.json``.
+6. Write usage/cost snapshot.
 """
 
 from __future__ import annotations
@@ -16,9 +15,7 @@ from __future__ import annotations
 import concurrent.futures
 import json
 import logging
-import re
 import time
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -28,96 +25,31 @@ from daily_screener.utils.perplexity import (
     call_perplexity,
 )
 
-from market_brief import config, prompts, tape as tape_mod
+from market_brief import config, ingest, ingest_report, prompts, summarize, status as status_mod, tape as tape_mod
+from market_brief.funnel_log import (
+    FunnelReport,
+    IngestFunnelData,
+    write_funnel_md,
+)
+from market_brief.persist import persist_summaries
+from market_brief.topics import Topic, load_topics
 
 logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# Topic loading
+# Legacy web probes (optional)
 # ---------------------------------------------------------------------------
 
 
-@dataclass
-class Topic:
-    name: str
-    desc: str
-    tickers: list[str]
-    kind: str  # "sector" or "theme"
-
-    def as_dict(self) -> dict:
-        return {
-            "name": self.name,
-            "desc": self.desc,
-            "tickers": self.tickers,
-            "kind": self.kind,
-        }
+from market_brief.types import ProbeResult
 
 
-def load_topics() -> list[Topic]:
-    topics: list[Topic] = []
-
-    for s in config.SECTORS:
-        topics.append(
-            Topic(
-                name=s["name"],
-                desc=s.get("desc", ""),
-                tickers=[],
-                kind="sector",
-            )
-        )
-
-    if config.USE_USER_THEMES and config.THEMES_FILE.exists():
-        with config.THEMES_FILE.open("r", encoding="utf-8") as f:
-            raw = json.load(f) or []
-        for t in raw[: config.MAX_THEMES]:
-            topics.append(
-                Topic(
-                    name=t.get("name", "").strip(),
-                    desc=(t.get("desc") or "").strip(),
-                    tickers=t.get("tickers") or [],
-                    kind="theme",
-                )
-            )
-
-    # De-dupe by lowercase name (sector + theme could collide).
-    seen: set[str] = set()
-    deduped: list[Topic] = []
-    for t in topics:
-        key = t.name.lower()
-        if not key or key in seen:
-            continue
-        seen.add(key)
-        deduped.append(t)
-    return deduped
-
-
-# ---------------------------------------------------------------------------
-# Probes
-# ---------------------------------------------------------------------------
-
-
-@dataclass
-class ProbeResult:
-    topic_name: str
-    topic_kind: str  # "sector" | "theme"
-    kind: str  # "overview" | "catalyst"
-    content: str
-    error: str | None = None
-    elapsed_s: float = 0.0
-
-
-def _slugify(s: str) -> str:
-    s = s.lower().strip()
-    s = re.sub(r"[^a-z0-9]+", "_", s)
-    return s.strip("_") or "topic"
-
-
-def _run_probe(topic: Topic, kind: str, asof: str) -> ProbeResult:
+def _run_web_probe(topic: Topic, kind: str, asof: str) -> ProbeResult:
     if kind == "overview":
         try:
             tape_block = tape_mod.get_topic_tape_block(topic.as_dict(), asof)
-        except Exception as e:  # noqa: BLE001 — tape is best-effort
+        except Exception as e:  # noqa: BLE001
             logger.warning("tape lookup failed for %s: %s", topic.name, e)
             tape_block = None
         prompt = prompts.build_overview_prompt(
@@ -136,6 +68,10 @@ def _run_probe(topic: Topic, kind: str, asof: str) -> ProbeResult:
             max_tokens=config.PROBE_MAX_TOKENS,
             temperature=config.PROBE_TEMPERATURE,
             timeout=config.PROBE_TIMEOUT_SECONDS,
+            log_label=(
+                f"WEB_PROBE | [{topic.kind}] {topic.name} | {kind} "
+                f"| task: legacy web-search probe (USE_WEB_PROBES)"
+            ),
         )
         return ProbeResult(
             topic_name=topic.name,
@@ -156,8 +92,7 @@ def _run_probe(topic: Topic, kind: str, asof: str) -> ProbeResult:
         )
 
 
-def run_probes(topics: list[Topic], asof: str) -> list[ProbeResult]:
-    """Fan out probes per topic (kinds controlled by config)."""
+def run_web_probes(topics: list[Topic], asof: str) -> list[ProbeResult]:
     jobs: list[tuple[Topic, str]] = []
     for t in topics:
         for kind in config.ENABLED_PROBE_KINDS:
@@ -168,23 +103,14 @@ def run_probes(topics: list[Topic], asof: str) -> list[ProbeResult]:
         max_workers=config.PROBE_CONCURRENCY
     ) as pool:
         futures = {
-            pool.submit(_run_probe, topic, kind, asof): (topic.name, kind)
+            pool.submit(_run_web_probe, topic, kind, asof): (topic.name, kind)
             for topic, kind in jobs
         }
         for fut in concurrent.futures.as_completed(futures):
             name, kind = futures[fut]
             try:
-                res = fut.result()
-                logger.info(
-                    "probe done: %s/%s (%.1fs%s)",
-                    name,
-                    kind,
-                    res.elapsed_s,
-                    f", err={res.error}" if res.error else "",
-                )
-                results.append(res)
-            except Exception as e:  # noqa: BLE001 — surface as failed probe
-                logger.exception("probe crashed: %s/%s", name, kind)
+                results.append(fut.result())
+            except Exception as e:  # noqa: BLE001
                 results.append(
                     ProbeResult(
                         topic_name=name,
@@ -198,53 +124,43 @@ def run_probes(topics: list[Topic], asof: str) -> list[ProbeResult]:
 
 
 # ---------------------------------------------------------------------------
-# Persistence
-# ---------------------------------------------------------------------------
-
-
-def persist_probes(results: list[ProbeResult], outdir: Path) -> None:
-    probes_dir = outdir / "01_probes"
-    probes_dir.mkdir(parents=True, exist_ok=True)
-    for r in results:
-        slug = _slugify(r.topic_name)
-        fname = f"{slug}__{r.kind}.md"
-        body = (
-            f"# {r.topic_name} — {r.kind}\n\n"
-            f"_kind: {r.topic_kind} · elapsed: {r.elapsed_s:.1f}s_\n\n"
-        )
-        if r.error:
-            body += f"> **ERROR**: {r.error}\n\n"
-        body += r.content or "_(no content)_\n"
-        (probes_dir / fname).write_text(body, encoding="utf-8")
-
-
-# ---------------------------------------------------------------------------
 # Synthesis
 # ---------------------------------------------------------------------------
 
 
-def synthesize(results: list[ProbeResult], asof: str) -> str:
+def synthesize(
+    topic_results: list[ProbeResult],
+    watch_result: ProbeResult | None,
+    asof: str,
+) -> str:
     payload = [
         {
             "topic_name": r.topic_name,
             "kind": r.kind,
             "content": r.content,
         }
-        for r in results
-        if r.content
+        for r in topic_results
+        if r.content and r.kind != "watch"
     ]
-    if not payload:
-        return f"# Daily Market Brief — {asof}\n\n_(all probes failed; see 01_probes/)_\n"
+    if watch_result and watch_result.content:
+        payload.append(
+            {
+                "topic_name": watch_result.topic_name,
+                "kind": watch_result.kind,
+                "content": watch_result.content,
+            }
+        )
 
-    # Build a global tape block: indices + the union of every topic's tickers.
+    if not payload:
+        return f"# Daily Market Brief — {asof}\n\n_(all summaries failed)_\n"
+
     try:
         all_tickers: list[str] = []
         for sect_tickers in tape_mod.SECTOR_TICKERS.values():
             all_tickers.extend(sect_tickers)
         if config.USE_USER_THEMES and config.THEMES_FILE.exists():
-            import json as _json
             with config.THEMES_FILE.open("r", encoding="utf-8") as f:
-                for t in _json.load(f) or []:
+                for t in json.load(f) or []:
                     all_tickers.extend(t.get("tickers") or [])
         session_date, t_quotes, i_quotes = tape_mod.get_tape(all_tickers, asof)
         tape_block = tape_mod.format_tape_block(session_date, t_quotes, i_quotes)
@@ -253,12 +169,21 @@ def synthesize(results: list[ProbeResult], asof: str) -> str:
         tape_block = None
 
     prompt = prompts.build_synthesis_prompt(payload, asof=asof, tape_block=tape_block)
+    topics_in = ", ".join(p["topic_name"] for p in payload[:8])
+    if len(payload) > 8:
+        topics_in += f", … (+{len(payload) - 8} more)"
+    label = (
+        f"SYNTHESIZE | 02_brief.md | {len(payload)} summary block(s) in "
+        f"| topics: {topics_in} "
+        f"| task: assemble tiered morning brief from summaries (no new facts)"
+    )
     return call_perplexity(
         prompt,
         model=config.SYNTH_MODEL,
         max_tokens=config.SYNTH_MAX_TOKENS,
         temperature=config.SYNTH_TEMPERATURE,
         timeout=config.SYNTH_TIMEOUT_SECONDS,
+        log_label=label,
     )
 
 
@@ -270,6 +195,10 @@ def synthesize_json(brief_md: str, asof: str) -> dict:
         max_tokens=config.SYNTH_MAX_TOKENS,
         temperature=0.0,
         timeout=config.SYNTH_TIMEOUT_SECONDS,
+        log_label=(
+            f"SYNTHESIZE | 02_brief.json | brief_chars={len(brief_md)} "
+            f"| task: restructure 02_brief.md into JSON (no new content)"
+        ),
     )
     cleaned = _strip_code_fence(raw).strip()
     try:
@@ -280,10 +209,8 @@ def synthesize_json(brief_md: str, asof: str) -> dict:
 
 
 def _strip_code_fence(text: str) -> str:
-    """Remove ```json ... ``` wrappers if the model added them anyway."""
     text = text.strip()
     if text.startswith("```"):
-        # Drop first line (``` or ```json) and trailing fence.
         lines = text.splitlines()
         if lines and lines[0].startswith("```"):
             lines = lines[1:]
@@ -298,7 +225,7 @@ def _strip_code_fence(text: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def run_brief(asof: str | None = None) -> Path:
+def run_brief(asof: str | None = None, *, qa_log: bool | None = None) -> Path:
     """Run the full pipeline. Returns the output directory path."""
     USAGE.reset()
 
@@ -306,7 +233,11 @@ def run_brief(asof: str | None = None) -> Path:
     outdir = config.OUTPUTS_DIR / asof
     outdir.mkdir(parents=True, exist_ok=True)
 
-    # File-based logging for this run (in addition to stdout).
+    write_qa = config.QA_LOG_ENABLED if qa_log is None else qa_log
+    funnel_report: FunnelReport | None = (
+        FunnelReport(asof=asof, outdir=outdir) if write_qa else None
+    )
+
     log_path = outdir / "run.log"
     file_handler = logging.FileHandler(log_path, mode="w")
     file_handler.setFormatter(
@@ -317,6 +248,8 @@ def run_brief(asof: str | None = None) -> Path:
     if root.level > logging.INFO:
         root.setLevel(logging.INFO)
 
+    status_mod.write_status(outdir, "running", stage="starting")
+
     try:
         topics = load_topics()
         logger.info(
@@ -325,51 +258,131 @@ def run_brief(asof: str | None = None) -> Path:
             sum(1 for t in topics if t.kind == "sector"),
             sum(1 for t in topics if t.kind == "theme"),
         )
-        for t in topics:
-            logger.info("  · %s [%s]", t.name, t.kind)
 
-        # Stage 1: probes
-        t0 = time.time()
-        results = run_probes(topics, asof)
+        if config.USE_WEB_PROBES:
+            logger.info("using legacy web-search probes")
+            t0 = time.time()
+            topic_results = run_web_probes(topics, asof)
+            watch_result = None
+            logger.info("web probes done in %.1fs", time.time() - t0)
+        else:
+            status_mod.write_status(outdir, "running", stage="ingest")
+            logger.info("")
+            logger.info("=== STAGE: INGEST — Polygon/Benzinga news fetch + dedupe ===")
+            t0 = time.time()
+            ingest_funnel = IngestFunnelData()
+            articles, ingest_stats = ingest.ingest_all(
+                asof, topics, funnel=ingest_funnel
+            )
+            ingest_report.log_ingest_report(
+                ingest_funnel,
+                ingest_stats,
+                window=ingest.news_window_for_run(asof),
+            )
+            ingest.persist_news_snapshots(articles, topics, outdir, asof=asof)
+            ingest_report.log_routing_report(articles, topics)
+            if funnel_report:
+                funnel_report.ingest = ingest_funnel
+            logger.info(
+                "INGEST complete in %.1fs — %d unique stories in corpus",
+                time.time() - t0,
+                ingest_stats.unique_articles,
+            )
+            (outdir / "ingest_stats.json").write_text(
+                json.dumps(ingest_stats.__dict__, indent=2),
+                encoding="utf-8",
+            )
+
+            status_mod.write_status(outdir, "running", stage="summarize")
+            logger.info("")
+            logger.info(
+                "=== STAGE: SUMMARIZE — Perplexity reads Benzinga bodies per topic (no web) ==="
+            )
+            t0 = time.time()
+            topic_results = summarize.run_topic_summaries(
+                articles,
+                topics,
+                asof,
+                tape_mod=tape_mod,
+                outdir=outdir,
+                funnel=funnel_report,
+            )
+            logger.info(
+                "topic summaries done: %d blocks, %.1fs",
+                len(topic_results),
+                time.time() - t0,
+            )
+
+            status_mod.write_status(outdir, "running", stage="watch")
+            logger.info("")
+            logger.info(
+                "=== STAGE: WATCH — Perplexity web search for calendar next 24-48h ==="
+            )
+            watch_result = summarize.run_watch_probe(topics, asof)
+            if funnel_report and watch_result:
+                funnel_report.watch = {
+                    "elapsed_s": watch_result.elapsed_s,
+                    "error": watch_result.error,
+                    "content_chars": len(watch_result.content or ""),
+                }
+
+        persist_summaries(topic_results + ([watch_result] if watch_result else []), outdir)
+
+        status_mod.write_status(outdir, "running", stage="synthesize")
+        logger.info("")
         logger.info(
-            "probes complete: %d total, %d failed, %.1fs wall",
-            len(results),
-            sum(1 for r in results if r.error),
-            time.time() - t0,
+            "=== STAGE: SYNTHESIZE — Perplexity assembles 02_brief.md from topic summaries ==="
         )
-        persist_probes(results, outdir)
-
-        # Stage 2: synthesis (markdown)
-        logger.info("synthesizing markdown brief…")
-        brief_md = synthesize(results, asof)
+        brief_md = synthesize(topic_results, watch_result, asof)
         (outdir / "02_brief.md").write_text(brief_md, encoding="utf-8")
 
-        # Stage 3: synthesis (json)
-        logger.info("synthesizing JSON brief…")
+        logger.info(
+            "=== STAGE: SYNTHESIZE JSON — Perplexity structures 02_brief.md → 02_brief.json ==="
+        )
         try:
             brief_json = synthesize_json(brief_md, asof)
         except PerplexityError as e:
-            logger.error("json synth failed: %s", e)
+            logger.error("SYNTHESIZE FAILED | 02_brief.json | %s", e)
             brief_json = {"_error": str(e)}
+        if funnel_report:
+            funnel_report.synth = {
+                "brief_md_chars": len(brief_md),
+                "json_parse_error": bool(
+                    isinstance(brief_json, dict) and brief_json.get("_parse_error")
+                ),
+            }
         (outdir / "02_brief.json").write_text(
             json.dumps(brief_json, indent=2, ensure_ascii=False),
             encoding="utf-8",
         )
 
-        # Usage snapshot
         usage = USAGE.snapshot()
         (outdir / "usage.json").write_text(
             json.dumps(usage, indent=2),
             encoding="utf-8",
         )
         logger.info(
-            "DONE: %s · %d probes · $%.4f · %d tokens",
+            "DONE: %s · $%.4f · %d tokens",
             outdir,
-            len(results),
             usage["cost_usd_total"],
             usage["total_prompt_tokens"] + usage["total_completion_tokens"],
         )
+        status_mod.write_status(outdir, "complete", stage="done")
+        if funnel_report:
+            funnel_report.usage = usage
+            write_funnel_md(funnel_report, outdir / "qa_funnel.md")
+            logger.info("QA funnel log: %s", outdir / "qa_funnel.md")
         return outdir
+    except Exception as e:
+        logger.exception("market brief run failed: %s", e)
+        if funnel_report:
+            funnel_report.errors.append(str(e))
+            try:
+                write_funnel_md(funnel_report, outdir / "qa_funnel.md")
+            except OSError:
+                pass
+        status_mod.write_status(outdir, "error", stage="failed", error=str(e))
+        raise
     finally:
         root.removeHandler(file_handler)
         file_handler.close()
