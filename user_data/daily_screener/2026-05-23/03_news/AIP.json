@@ -1,0 +1,28 @@
+{
+  "ticker": "AIP",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Arteris shares appear to be reacting to a sharp AI-chip-sector re-rating and momentum in the stock itself rather than a single new company-specific disclosure; recent market coverage noted AIP near its 52-week high after a 7.1% jump on continued AI-driven semiconductor enthusiasm (2026-05-22).",
+    "A cited chatter/notes stream on 2026-05-21 tied the move to the AMD\u2013OpenAI data-center deal, with users speculating that additional licensing revenue could flow to interconnect/IP suppliers like Arteris in 2026; this is more of a sympathy/second-order trade than a confirmed customer win for AIP.",
+    "The stock has also been showing classic breakout characteristics: up 36.4% over 20 days, 111.6% over 60 days, RSI in the 94th percentile, and a prior volume spike on 2026-05-13 (magnitude 3.62), suggesting the market is chasing a momentum breakout with relatively light recent volume (0.61x 10d avg) rather than pricing a fresh earnings surprise."
+  ],
+  "latest_material_date": "2026-05-22",
+  "theme_tags": [
+    "ai-compute",
+    "ai-infrastructure-enablers",
+    "memory-and-interconnect",
+    "story-driven-momentum",
+    "breakout-and-new-highs",
+    "ai-megacap-and-nvidia-lead"
+  ],
+  "summary": "The market appears to be reacting mainly to a sympathy/momentum rerating in AI semis, not to a clearly identified new AIP-specific contract or earnings event. The most visible fundamental-ish hook is chatter around the AMD\u2013OpenAI data-center buildout, which investors are extrapolating to interconnect/IP suppliers, but I could not verify a direct named customer win for Arteris in the material I reviewed. The rest of the move looks like a breakout/new-highs trade with strong trend persistence and high RSI, amplified by sector enthusiasm.",
+  "ok": true,
+  "raw": "{\"ticker\":\"AIP\",\"has_material_news\":true,\"headline_drivers\":[\"Arteris shares appear to be reacting to a sharp AI-chip-sector re-rating and momentum in the stock itself rather than a single new company-specific disclosure; recent market coverage noted AIP near its 52-week high after a 7.1% jump on continued AI-driven semiconductor enthusiasm (2026-05-22).\",\"A cited chatter/notes stream on 2026-05-21 tied the move to the AMD\u2013OpenAI data-center deal, with users speculating that additional licensing revenue could flow to interconnect/IP suppliers like Arteris in 2026; this is more of a sympathy/second-order trade than a confirmed customer win for AIP.\",\"The stock has also been showing classic breakout characteristics: up 36.4% over 20 days, 111.6% over 60 days, RSI in the 94th percentile, and a prior volume spike on 2026-05-13 (magnitude 3.62), suggesting the market is chasing a momentum breakout with relatively light recent volume (0.61x 10d avg) rather than pricing a fresh earnings surprise.\"],\"latest_material_date\":\"2026-05-22\",\"theme_tags\":[\"ai-compute\",\"ai-infrastructure-enablers\",\"memory-and-interconnect\",\"story-driven-momentum\",\"breakout-and-new-highs\",\"ai-megacap-and-nvidia-lead\"],\"summary\":\"The market appears to be reacting mainly to a sympathy/momentum rerating in AI semis, not to a clearly identified new AIP-specific contract or earnings event. The most visible fundamental-ish hook is chatter around the AMD\u2013OpenAI data-center buildout, which investors are extrapolating to interconnect/IP suppliers, but I could not verify a direct named customer win for Arteris in the material I reviewed. The rest of the move looks like a breakout/new-highs trade with strong trend persistence and high RSI, amplified by sector enthusiasm.\"}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "ticker": "IMAX",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Wall Street Journal report on May 21, 2026 said IMAX is exploring strategic alternatives, including a potential sale; shares jumped about 14-16% intraday to roughly $38.7-$39.3 on heavy volume.",
+    "Investing.com reported the stock was up 14.3% on May 21, 2026 after the WSJ sale report, confirming the move was tied to M&A/speculation rather than an operating update."
+  ],
+  "latest_material_date": "2026-05-21",
+  "theme_tags": [
+    "spin-and-sum-of-parts",
+    "special-situations-with-optional-downside",
+    "story-driven-momentum"
+  ],
+  "summary": "The market is reacting to a potential sale / strategic alternatives process for IMAX, not to earnings or a product cycle. The move is a classic special-situation re-rating: a liquid name with a sharp gap-up on >3x volume as investors price in a possible takeover premium. I did not find evidence in the provided results of a newer operating catalyst, named customer win, or guidance change driving this jump.",
+  "ok": true,
+  "raw": "{\"ticker\":\"IMAX\",\"has_material_news\":true,\"headline_drivers\":[\"Wall Street Journal report on May 21, 2026 said IMAX is exploring strategic alternatives, including a potential sale; shares jumped about 14-16% intraday to roughly $38.7-$39.3 on heavy volume.\",\"Investing.com reported the stock was up 14.3% on May 21, 2026 after the WSJ sale report, confirming the move was tied to M&A/speculation rather than an operating update.\"],\"latest_material_date\":\"2026-05-21\",\"theme_tags\":[\"spin-and-sum-of-parts\",\"special-situations-with-optional-downside\",\"story-driven-momentum\"],\"summary\":\"The market is reacting to a potential sale / strategic alternatives process for IMAX, not to earnings or a product cycle. The move is a classic special-situation re-rating: a liquid name with a sharp gap-up on >3x volume as investors price in a possible takeover premium. I did not find evidence in the provided results of a newer operating catalyst, named customer win, or guidance change driving this jump.\"}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}
