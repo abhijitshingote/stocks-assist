@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Market News - Stocks Assist{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<link rel="stylesheet" href="/static/css/market-news.css">
+{% endblock %}
+
+{% block content %}
+<div class="market-news-page">
+    <div class="market-news-header">
+        <h1>Market News</h1>
+        <p class="market-news-hint">Headlines from multiple news sources — click a card for full text.</p>
+    </div>
+    
+    <div class="news-source-tabs">
+        <button class="news-tab active" data-source="benzinga">
+            <span class="tab-icon">📰</span>
+            <span class="tab-label">Benzinga</span>
+            <span class="tab-count" id="benzingaCount">0</span>
+        </button>
+        <button class="news-tab" data-source="fmp">
+            <span class="tab-icon">💼</span>
+            <span class="tab-label">FMP</span>
+            <span class="tab-count" id="fmpCount">0</span>
+        </button>
+        <button class="news-tab" data-source="seeking-alpha">
+            <span class="tab-icon">📈</span>
+            <span class="tab-label">Seeking Alpha</span>
+            <span class="tab-count" id="seekingAlphaCount">0</span>
+        </button>
+    </div>
+    
+    <div class="news-source-section active" id="benzingaSection">
+        <div class="market-news-toolbar">
+            <p class="market-news-window" id="benzingaWindow">Loading…</p>
+            <button type="button" class="news-benzinga-btn" id="benzingaRefresh" title="Fetch fresh news from Polygon/Benzinga API">Refresh from API</button>
+        </div>
+        <div id="benzingaChannels" class="news-source-filters"></div>
+        <div id="benzingaContent" class="news-content">
+            <div class="news-empty">Loading Benzinga articles…</div>
+        </div>
+    </div>
+    
+    <div class="news-source-section" id="fmpSection">
+        <div class="market-news-toolbar">
+            <p class="market-news-window">General market news from Financial Modeling Prep</p>
+            <button type="button" class="news-benzinga-btn" id="fmpRefresh">Refresh</button>
+        </div>
+        <div id="fmpContent" class="news-content">
+            <div class="news-empty">Click Refresh to load FMP news…</div>
+        </div>
+    </div>
+    
+    <div class="news-source-section" id="seekingAlphaSection">
+        <div class="market-news-toolbar">
+            <p class="market-news-window">Market news from Seeking Alpha</p>
+            <button type="button" class="news-benzinga-btn" id="seekingAlphaRefresh">Refresh</button>
+        </div>
+        <div id="seekingAlphaContent" class="news-content">
+            <div class="news-empty">Click Refresh to load Seeking Alpha news…</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/stock-news-shared.js"></script>
+<script src="/static/js/market-news.js"></script>
+{% endblock %}

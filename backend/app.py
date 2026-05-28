@@ -2911,6 +2911,164 @@ def refresh_benzinga_news(ticker):
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/api/benzinga-news/market', methods=['GET'])
+def get_market_benzinga_news():
+    """Return market-wide Benzinga articles from database cache."""
+    limit = request.args.get('limit', 200, type=int)
+    channel = request.args.get('channel', None)
+    try:
+        _ensure_benzinga_table()
+        session = Session()
+        try:
+            # Load articles from the last 7 days that aren't ticker-specific
+            from datetime import timedelta
+            since = datetime.now(timezone.utc) - timedelta(days=7)
+            articles_rows = benzinga_news_service.load_articles_since(
+                session, since, limit=limit
+            )
+            
+            # Filter by channel if requested
+            if channel:
+                articles_rows = [
+                    row for row in articles_rows
+                    if row.channels and channel in row.channels
+                ]
+            
+            # Convert to JSON
+            articles = [benzinga_news_service.article_to_json(row) for row in articles_rows]
+            
+            # Get available channels
+            channels_available = set()
+            for row in articles_rows:
+                if row.channels:
+                    channels_available.update(row.channels)
+            
+            return jsonify({
+                'count': len(articles),
+                'articles': articles,
+                'channels_available': sorted(list(channels_available)),
+                'window': {
+                    'label': 'Last 7 days',
+                    'start_utc': since.isoformat(),
+                    'end_utc': datetime.now(timezone.utc).isoformat(),
+                }
+            })
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error(f"Error loading market Benzinga news: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/benzinga-news/market', methods=['POST'])
+def refresh_market_benzinga_news():
+    """Fetch fresh market-wide Benzinga news from Polygon API, upsert to DB,
+    and return the refreshed cache window."""
+    limit = request.args.get('limit', 200, type=int)
+    api_limit = min(max(request.args.get('api_limit', 100, type=int), 1), 100)
+    try:
+        _ensure_benzinga_table()
+        session = Session()
+        try:
+            from datetime import timedelta
+            since = datetime.now(timezone.utc) - timedelta(days=7)
+            raw = benzinga_news_service.fetch_benzinga_general(
+                limit=api_limit, published_gte=since
+            )
+            inserted = benzinga_news_service.upsert_articles(session, raw)
+
+            articles_rows = benzinga_news_service.load_articles_since(
+                session, since, limit=limit
+            )
+            articles = [benzinga_news_service.article_to_json(row) for row in articles_rows]
+
+            channels_available = set()
+            for row in articles_rows:
+                if row.channels:
+                    channels_available.update(row.channels)
+
+            return jsonify({
+                'count': len(articles),
+                'fetched_from_api': inserted,
+                'articles': articles,
+                'channels_available': sorted(list(channels_available)),
+                'window': {
+                    'label': 'Last 7 days',
+                    'start_utc': since.isoformat(),
+                    'end_utc': datetime.now(timezone.utc).isoformat(),
+                },
+            })
+        finally:
+            session.close()
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error refreshing market Benzinga news: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/market-news/fmp', methods=['GET'])
+def get_market_fmp_news():
+    """Fetch general market news from FMP (not ticker-specific)."""
+    limit = request.args.get('limit', 100, type=int)
+    fmp_api_key = os.getenv('FMP_API_KEY')
+    
+    if not fmp_api_key:
+        return jsonify({'error': 'FMP_API_KEY not configured'}), 400
+    
+    try:
+        import requests as req
+        resp = req.get(
+            'https://financialmodelingprep.com/api/v3/fmp/articles',
+            params={'limit': limit, 'apikey': fmp_api_key},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        articles = resp.json()
+        
+        if not isinstance(articles, list):
+            return jsonify({'error': 'Invalid response from FMP'}), 500
+        
+        results = []
+        for a in articles:
+            results.append({
+                'title': a.get('title'),
+                'url': a.get('link'),
+                'published_date': a.get('date'),
+                'site': a.get('site', 'FMP'),
+                'text': a.get('content', '')[:300] if a.get('content') else '',
+                'image': a.get('image'),
+                'source': 'FMP',
+            })
+        
+        return jsonify({
+            'count': len(results),
+            'articles': results,
+        })
+    except Exception as e:
+        logger.error(f"Error fetching FMP market news: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/market-news/seeking-alpha', methods=['GET'])
+def get_market_seeking_alpha_news():
+    """Fetch general market news from Seeking Alpha RSS."""
+    limit = request.args.get('limit', 100, type=int)
+    
+    try:
+        # General market news feed from Seeking Alpha
+        url = 'https://seekingalpha.com/market_currents.xml'
+        articles = _fetch_rss_items(url, 'Seeking Alpha', None, limit)
+        
+        return jsonify({
+            'count': len(articles),
+            'articles': articles,
+        })
+    except Exception as e:
+        logger.error(f"Error fetching Seeking Alpha market news: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 # ============================================================
 # Abi General Notes API Endpoints (date-based personal notes)
 # ============================================================

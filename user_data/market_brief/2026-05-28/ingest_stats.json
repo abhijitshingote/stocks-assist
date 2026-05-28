@@ -1,0 +1,13 @@
+{
+  "ticker_api_calls": 123,
+  "general_api_calls": 9,
+  "general_channel_rows": 300,
+  "ticker_rows": 258,
+  "raw_articles": 558,
+  "duplicate_rows_removed": 247,
+  "dropped_no_benzinga_id": 0,
+  "unique_articles": 311,
+  "db_upserted": 311,
+  "purged": 13,
+  "per_ticker_limit": 25
+}

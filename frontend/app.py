@@ -683,6 +683,54 @@ def api_benzinga_news_refresh(ticker):
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/benzinga-news/market', methods=['GET'])
+def api_benzinga_market_news():
+    """Proxy: market-wide Benzinga news from database cache."""
+    limit = request.args.get('limit', 200, type=int)
+    channel = request.args.get('channel', '')
+    params = f'limit={limit}'
+    if channel:
+        params += f'&channel={channel}'
+    data, status_code = make_backend_request(f'/api/benzinga-news/market?{params}')
+    if data is None:
+        return jsonify({'error': 'Failed to load market Benzinga news'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/benzinga-news/market', methods=['POST'])
+def api_benzinga_market_news_refresh():
+    """Proxy: fetch fresh market Benzinga news from API and upsert to DB."""
+    limit = request.args.get('limit', 200, type=int)
+    api_limit = request.args.get('api_limit', 100, type=int)
+    data, status_code = make_backend_request(
+        f'/api/benzinga-news/market?limit={limit}&api_limit={api_limit}',
+        method='POST',
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to refresh Benzinga news from API'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-news/fmp', methods=['GET'])
+def api_market_fmp_news():
+    """Proxy: general market news from FMP."""
+    limit = request.args.get('limit', 100, type=int)
+    data, status_code = make_backend_request(f'/api/market-news/fmp?limit={limit}')
+    if data is None:
+        return jsonify({'error': 'Failed to load FMP market news'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-news/seeking-alpha', methods=['GET'])
+def api_market_seeking_alpha_news():
+    """Proxy: general market news from Seeking Alpha."""
+    limit = request.args.get('limit', 100, type=int)
+    data, status_code = make_backend_request(f'/api/market-news/seeking-alpha?limit={limit}')
+    if data is None:
+        return jsonify({'error': 'Failed to load Seeking Alpha market news'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/latest-date')
 def api_latest_date():
     """Proxy endpoint for latest OHLC date from backend"""
@@ -1129,6 +1177,16 @@ def api_get_log(filename):
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# ============================================================
+# Market News Page
+# ============================================================
+
+@app.route('/market-news')
+def market_news_page():
+    """Market News page - aggregated news from multiple sources"""
+    return render_template('market_news.html')
 
 
 # ============================================================
