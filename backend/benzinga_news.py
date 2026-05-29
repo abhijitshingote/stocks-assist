@@ -126,6 +126,36 @@ def _row_ticker(raw: dict, fetch_ticker: str | None) -> str:
     return "GENERAL"
 
 
+def article_dict_from_api_raw(raw: dict, *, fetch_ticker: str | None = None) -> dict:
+    """Normalize a Polygon API news row to the market-brief article dict shape."""
+    row = article_row_from_api(raw, fetch_ticker=fetch_ticker)
+    published = row["published"].isoformat() if row["published"] else None
+    images = row.get("images") or []
+    image = images[0] if images else None
+    if isinstance(image, dict):
+        image = image.get("url")
+    snippet = row["teaser"] or ((row["body_text"] or "")[:200])
+    return {
+        "benzinga_id": row["benzinga_id"],
+        "title": row["title"],
+        "url": row["url"],
+        "published": published,
+        "published_date": published,
+        "site": "Benzinga",
+        "text": snippet,
+        "image": image,
+        "symbol": row["ticker"],
+        "source": "Benzinga",
+        "author": row["author"],
+        "teaser": row["teaser"],
+        "body_text": row["body_text"],
+        "body_html": row["body_html"],
+        "channels": row.get("channels") or [],
+        "tags": row.get("tags") or [],
+        "tickers": row.get("tickers") or [],
+    }
+
+
 def article_row_from_api(raw: dict, *, fetch_ticker: str | None = None) -> dict:
     body_html = raw.get("body")
     teaser_html = raw.get("teaser")
@@ -161,13 +191,22 @@ def filter_since(raw_articles: list[dict], since: datetime) -> list[dict]:
     return out
 
 
+def _dedupe_raw_by_benzinga_id(raw_articles: list[dict]) -> list[dict]:
+    """Polygon may return the same benzinga_id twice in one page; Postgres rejects that."""
+    by_id: dict[int, dict] = {}
+    for raw in raw_articles:
+        bid = raw.get("benzinga_id")
+        if bid is not None:
+            by_id[int(bid)] = raw
+    return list(by_id.values())
+
+
 def upsert_articles(session, raw_articles: list[dict], *, fetch_ticker: str | None = None) -> int:
     if not raw_articles:
         return 0
     rows = [
         article_row_from_api(raw, fetch_ticker=fetch_ticker)
-        for raw in raw_articles
-        if raw.get("benzinga_id") is not None
+        for raw in _dedupe_raw_by_benzinga_id(raw_articles)
     ]
     if not rows:
         return 0
