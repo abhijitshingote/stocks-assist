@@ -171,6 +171,16 @@
         cursor: not-allowed;
     }
 
+    .brief-viewer-actions button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+
+    .brief-viewer-actions button.export-pdf-btn:not(:disabled):hover {
+        border-color: var(--accent-green);
+        color: var(--accent-green);
+    }
+
     .brief-content {
         flex: 1;
         overflow: auto;
@@ -767,6 +777,7 @@
                     <button id="btn-boxes-dark" class="active" onclick="setBoxTheme('dark')" title="Dark boxes">Dark</button>
                     <button id="btn-boxes-light" onclick="setBoxTheme('light')" title="Light boxes">Light</button>
                 </div>
+                <button class="export-pdf-btn" id="btn-export-pdf" onclick="exportBriefPdf()" title="Download brief as PDF" disabled>Export PDF</button>
                 <button class="run-btn" id="btn-run" onclick="runBrief()" title="Generate brief for today (US Eastern)">Generate today</button>
             </div>
         </div>
@@ -798,6 +809,47 @@
 
     function briefToday() {
         return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+    }
+
+    function updatePdfButton() {
+        const btn = document.getElementById('btn-export-pdf');
+        if (!btn) return;
+        btn.disabled = !(currentData && currentData.markdown);
+    }
+
+    async function exportBriefPdf() {
+        if (!currentDate || !(currentData && currentData.markdown)) {
+            return;
+        }
+        const btn = document.getElementById('btn-export-pdf');
+        const label = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Exporting…';
+        try {
+            const response = await fetch(`/api/frontend/market-brief/${currentDate}/pdf`);
+            if (!response.ok) {
+                let msg = `HTTP ${response.status}`;
+                try {
+                    const err = await response.json();
+                    if (err.error) msg = err.error;
+                } catch (_) { /* not JSON */ }
+                throw new Error(msg);
+            }
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `market-brief-${currentDate}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            alert('PDF export failed: ' + error.message);
+        } finally {
+            btn.textContent = label;
+            updatePdfButton();
+        }
     }
 
     async function loadDateList() {
@@ -873,6 +925,7 @@
         });
 
         stopRunPolling();
+        updatePdfButton();
 
         contentEl.innerHTML = '<div class="loading">Loading...</div>';
 
@@ -895,11 +948,13 @@
             if (currentRunStatus === 'running' || status === 'running') {
                 startRunPolling(dateStr);
                 contentEl.innerHTML = '<div class="brief-placeholder">Pipeline running — see progress above. This usually takes 15–25 minutes.</div>';
+                updatePdfButton();
                 return;
             }
 
             if (currentRunStatus === 'failed' || currentRunStatus === 'error') {
                 contentEl.innerHTML = '<div class="brief-placeholder">This run did not finish. Check <code>user_data/market_brief/' + dateStr + '/subprocess.log</code> or click Generate to retry.</div>';
+                updatePdfButton();
                 return;
             }
 
@@ -908,6 +963,7 @@
                     <p>No brief for <strong>${dateStr}</strong> yet.</p>
                     <button id="btn-generate-inline" onclick="runBrief('${dateStr}')">Generate today's brief</button>
                 </div>`;
+                updatePdfButton();
                 return;
             }
 
@@ -916,17 +972,21 @@
                     <p>Brief not yet generated. Source news data is on disk.</p>
                     <button id="btn-generate-inline" onclick="runBrief('${dateStr}')">Generate brief</button>
                 </div>`;
+                updatePdfButton();
                 return;
             }
 
             if (!currentData.markdown) {
                 contentEl.innerHTML = '<div class="brief-placeholder">No data for this date.</div>';
+                updatePdfButton();
                 return;
             }
 
             renderView();
+            updatePdfButton();
         } catch (error) {
             contentEl.innerHTML = `<div class="brief-placeholder">Error loading brief: ${error.message}</div>`;
+            updatePdfButton();
         }
     }
 

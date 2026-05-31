@@ -1,6 +1,6 @@
 """Frontend Flask app - renders templates and proxies API calls to backend."""
 
-from flask import Flask, render_template, jsonify, request, redirect
+from flask import Flask, render_template, jsonify, request, redirect, Response
 import os
 import json
 import requests
@@ -1224,6 +1224,29 @@ def api_market_brief_costs(date_str):
     if data is None:
         return jsonify({'error': 'Failed to fetch run costs'}), status_code
     return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief/<date_str>/pdf', methods=['GET'])
+def api_market_brief_pdf(date_str):
+    """Proxy PDF download from backend."""
+    try:
+        url = f"{BACKEND_URL}/api/market-brief/{date_str}/pdf"
+        response = requests.get(url, timeout=180)
+        if response.status_code >= 400:
+            try:
+                err = response.json()
+                msg = err.get('error', response.text)
+            except ValueError:
+                msg = response.text or 'PDF export failed'
+            return jsonify({'error': msg}), response.status_code
+        headers = {}
+        cd = response.headers.get('Content-Disposition')
+        if cd:
+            headers['Content-Disposition'] = cd
+        return Response(response.content, mimetype='application/pdf', headers=headers)
+    except requests.RequestException as e:
+        logger.error('PDF proxy error: %s', e)
+        return jsonify({'error': 'Failed to export PDF'}), 500
 
 
 @app.route('/api/frontend/market-brief/generate', methods=['POST'])

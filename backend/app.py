@@ -1,6 +1,9 @@
 """Flask API for stocks database."""
 
-from flask import Flask, jsonify, request
+from __future__ import annotations
+
+from flask import Flask, jsonify, request, send_file
+import io
 from flask_cors import CORS
 from sqlalchemy import create_engine, func, desc, asc, text, or_
 from sqlalchemy.orm import sessionmaker
@@ -5381,6 +5384,43 @@ def market_brief_for_date(date_str):
             result['run_costs'] = json.load(f)
 
     return jsonify(result)
+
+
+@app.route('/api/market-brief/<date_str>/pdf', methods=['GET'])
+def market_brief_pdf(date_str):
+    """Download 02_brief.md as a PDF."""
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+    brief_md_path = os.path.join(brief_dir, '02_brief.md')
+    if not os.path.isfile(brief_md_path):
+        return jsonify({'error': 'No brief markdown for this date'}), 404
+
+    with open(brief_md_path, 'r', encoding='utf-8') as f:
+        md = f.read()
+
+    import sys
+
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if root not in sys.path:
+        sys.path.insert(0, root)
+    from market_brief.pdf_export import markdown_to_pdf_bytes
+
+    try:
+        pdf_bytes = markdown_to_pdf_bytes(md, title=f'Market Brief — {date_str}')
+    except Exception as e:  # noqa: BLE001
+        logger.exception('PDF export failed for %s: %s', date_str, e)
+        return jsonify({'error': f'PDF export failed: {e}'}), 500
+
+    return send_file(
+        io.BytesIO(pdf_bytes),
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name=f'market-brief-{date_str}.pdf',
+    )
 
 
 @app.route('/api/market-brief/<date_str>/costs', methods=['GET'])
