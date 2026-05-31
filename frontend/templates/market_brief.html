@@ -1,23 +1,32 @@
 {% extends "base.html" %}
 
+{% block body_class %}page-market-brief{% endblock %}
+
 {% block title %}Market Brief - Stocks Assist{% endblock %}
 
 {% block extra_styles %}
 <style>
+    body.page-market-brief main {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
     .brief-container {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
         gap: 0.75rem;
         min-height: calc(100vh - 160px);
         width: 100%;
+        max-width: 100%;
+        min-width: 0;
     }
 
     .brief-container > .date-list {
-        flex: 0 0 140px !important;
-        width: 140px !important;
-        min-width: 140px !important;
-        max-width: 140px !important;
+        flex: 0 0 140px;
+        width: 140px;
+        min-width: 0;
+        max-width: 140px;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 8px;
@@ -129,7 +138,11 @@
 
     .brief-viewer-actions {
         display: flex;
+        flex-wrap: wrap;
         gap: 0.4rem;
+        align-items: center;
+        justify-content: flex-end;
+        max-width: 100%;
     }
 
     .brief-viewer-actions button {
@@ -184,13 +197,67 @@
     .brief-content {
         flex: 1;
         overflow: auto;
+        overflow-x: auto;
         padding: 1.5rem 2rem;
         max-height: calc(100vh - 200px);
+        max-width: 100%;
+        min-width: 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .brief-content pre {
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
     }
 
     .brief-content .markdown-body {
         font-size: 1rem;
         line-height: 1.8;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .brief-table-wrap {
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0.75rem 0;
+    }
+
+    .brief-data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .brief-data-table th,
+    .brief-data-table td {
+        padding: 0.4rem 0.5rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: top;
+    }
+
+    .brief-data-table th {
+        color: var(--text-muted);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .brief-data-table td {
+        color: var(--text-secondary);
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    .brief-data-table td:first-child {
+        font-weight: 700;
+        color: var(--accent-blue);
+        white-space: nowrap;
     }
 
     .brief-content .markdown-body h1 {
@@ -393,12 +460,14 @@
     .callout-card {
         display: flex;
         align-items: flex-start;
+        flex-wrap: wrap;
         gap: 0.75rem;
         background: var(--bg-dark);
         border: 1px solid var(--border-color);
         border-radius: 6px;
         padding: 0.75rem 1rem;
         margin-bottom: 0.75rem;
+        max-width: 100%;
     }
 
     .callout-ticker {
@@ -475,19 +544,106 @@
 
     @media (max-width: 768px) {
         .brief-container {
-            flex-direction: column !important;
-            flex-wrap: wrap !important;
+            flex-direction: column;
         }
 
         .brief-container > .date-list {
-            flex: 0 0 auto !important;
-            width: 100% !important;
-            min-width: 0 !important;
-            max-width: 100% !important;
+            flex: 0 0 auto;
+            width: 100%;
+            max-width: 100%;
         }
 
-        .date-list-items, .brief-content {
-            max-height: 300px;
+        .date-list-items {
+            max-height: 160px;
+        }
+
+        .brief-content {
+            padding: 1rem 0.75rem;
+            max-height: none;
+        }
+
+        .brief-viewer-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .brief-viewer-title {
+            font-size: 0.8rem;
+            line-height: 1.35;
+        }
+
+        .brief-viewer-actions {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .brief-viewer-actions button.run-btn {
+            flex: 1 1 100%;
+            text-align: center;
+            padding: 0.55rem 0.75rem;
+        }
+
+        /* Top Movers etc.: card layout instead of wide table */
+        .brief-table-wrap {
+            overflow-x: visible;
+        }
+
+        .brief-data-table thead {
+            display: none;
+        }
+
+        .brief-data-table tbody tr {
+            display: block;
+            margin-bottom: 0.65rem;
+            padding: 0.65rem 0.75rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .brief-data-table tbody tr:last-child {
+            margin-bottom: 0;
+        }
+
+        .brief-data-table td {
+            display: block;
+            padding: 0.2rem 0;
+            border-bottom: none;
+        }
+
+        .brief-data-table td::before {
+            content: attr(data-label);
+            display: block;
+            font-size: 0.58rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            margin-bottom: 0.1rem;
+            font-weight: 600;
+        }
+
+        .brief-data-table td:first-child {
+            font-size: 0.95rem;
+            margin-bottom: 0.35rem;
+            padding-bottom: 0.35rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brief-data-table td:first-child::before {
+            display: none;
+        }
+
+        .callout-card {
+            flex-direction: column;
+        }
+
+        .callout-angle {
+            white-space: normal;
+            align-self: flex-start;
+        }
+
+        .cost-metrics {
+            flex-direction: column;
         }
     }
 
@@ -750,8 +906,8 @@
     <span class="mono text-green">$</span> Market Brief
 </h1>
 
-<div class="brief-container" style="display: flex; flex-direction: row; gap: 0.75rem;">
-    <div class="date-list" style="flex: 0 0 140px; width: 140px;">
+<div class="brief-container">
+    <div class="date-list">
         <div class="date-list-header">
             <span>Dates</span>
             <button class="refresh-btn" onclick="loadDateList()" title="Refresh list">
@@ -766,7 +922,7 @@
         </div>
     </div>
 
-    <div class="brief-viewer" style="flex: 1;">
+    <div class="brief-viewer">
         <div class="brief-viewer-header">
             <span class="brief-viewer-title" id="current-brief-date">Select a date</span>
             <div class="brief-viewer-actions">
@@ -1363,15 +1519,19 @@
             .filter(l => !/^\|[\s\-:|]+\|$/.test(l.trim()))
             .map(l => l.split('|').slice(1, -1).map(c => c.trim()));
         if (!rows.length) return '';
-        let html = '<table class="cost-table" style="margin:0.75rem 0"><thead><tr>';
+        const headers = rows[0].map(h => h.replace(/\*\*/g, '').trim());
+        let html = '<div class="brief-table-wrap"><table class="brief-data-table"><thead><tr>';
         rows[0].forEach(c => { html += '<th>' + inlineMarkdown(c) + '</th>'; });
         html += '</tr></thead><tbody>';
         for (let r = 1; r < rows.length; r++) {
             html += '<tr>';
-            rows[r].forEach(c => { html += '<td>' + inlineMarkdown(c) + '</td>'; });
+            rows[r].forEach((c, ci) => {
+                const label = escapeHtml(headers[ci] || '');
+                html += '<td data-label="' + label + '">' + inlineMarkdown(c) + '</td>';
+            });
             html += '</tr>';
         }
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
         return html;
     }
 

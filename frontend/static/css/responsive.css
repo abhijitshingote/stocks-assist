@@ -153,17 +153,15 @@ body {
         font-size: 0.8rem !important;
     }
 
-    /* Market brief: override desktop nowrap */
-    .brief-container {
-        flex-direction: column !important;
-        flex-wrap: wrap !important;
+    body.page-market-brief {
+        overflow-x: clip;
     }
 
-    .brief-container > .date-list {
-        flex: 0 0 auto !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
+    body.page-market-brief .brief-container,
+    body.page-market-brief .brief-viewer,
+    body.page-market-brief .brief-content {
+        max-width: 100%;
+        min-width: 0;
     }
 
     /* Themes page */
@@ -205,13 +203,4 @@ body {
         font-size: 0.72rem;
     }
 
-    .brief-viewer-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .brief-viewer-actions {
-        width: 100%;
-        flex-wrap: wrap;
-    }
 }
