@@ -1,0 +1,217 @@
+/**
+ * Shared mobile / small-screen styles for Stocks Assist.
+ * Loaded from base.html on every page.
+ */
+
+html {
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    overflow-x: clip;
+    max-width: 100%;
+}
+
+/* ── Tablet and below ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem 0.75rem !important;
+    }
+
+    .page-header {
+        margin-bottom: 1.25rem !important;
+    }
+
+    .page-header h1 {
+        font-size: 1.65rem !important;
+        line-height: 1.2;
+    }
+
+    .page-header p {
+        font-size: 0.95rem !important;
+    }
+
+    /* Toolbars: meta labels should not squeeze controls off-screen */
+    .ds-toolbar .ds-meta,
+    .dt-toolbar .dt-meta,
+    .ds-filter-row span[id="feedbackCount"] {
+        margin-left: 0 !important;
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+    .ds-filter-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .ds-filter-row label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        width: 100%;
+    }
+
+    .ds-filter-row input[type="text"] {
+        width: 100% !important;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .ds-tabs,
+    .dt-source-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+    .ds-tab,
+    .dt-source-tab {
+        flex-shrink: 0;
+    }
+
+    /* Daily themes */
+    .dt-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .dt-card-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Sector RSI */
+    .sector-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .sector-header {
+        flex-wrap: wrap;
+    }
+
+    /* Abi dislikes */
+    .dl-page {
+        padding: 0.75rem 0.5rem !important;
+    }
+
+    .dl-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dl-row {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem;
+    }
+
+    .dl-actions {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .dl-add-bar {
+        flex-wrap: wrap;
+    }
+
+    .dl-add-bar input {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    /* Screener pages (main view, top returns, technical, etc.) */
+    .mv-top-bar,
+    .tp-top-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .stats-compact {
+        flex-wrap: wrap;
+        gap: 0.35rem 0.75rem;
+    }
+
+    /* RSI tables */
+    .rsi-table-container {
+        -webkit-overflow-scrolling: touch;
+        border-radius: 10px;
+    }
+
+    .rsi-table {
+        min-width: 520px;
+    }
+
+    .cap-tabs {
+        gap: 0.35rem;
+    }
+
+    .cap-tab {
+        padding: 0.5rem 0.65rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Market brief: override desktop nowrap */
+    .brief-container {
+        flex-direction: column !important;
+        flex-wrap: wrap !important;
+    }
+
+    .brief-container > .date-list {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* Themes page */
+    .themes-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .th-top-bar .th-controls {
+        margin-left: 0;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    /* Context pages */
+    .context-chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+}
+
+/* ── Phone ──────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .page-header h1 {
+        font-size: 1.35rem !important;
+    }
+
+    .cap-tab .cap-label {
+        display: none;
+    }
+
+    .nav-indicator-card {
+        min-width: 58px;
+        padding: 0.2rem 0.35rem;
+    }
+
+    .nav-indicator-value {
+        font-size: 0.72rem;
+    }
+
+    .brief-viewer-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .brief-viewer-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}

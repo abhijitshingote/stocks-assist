@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Stocks Assist{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
     <style>
         :root {
             --bg-dark: #0d1117;
@@ -267,29 +268,103 @@
         .nav-indicator-change.up { color: var(--accent-green); }
         .nav-indicator-change.down { color: var(--accent-red); }
 
+        .nav-menu-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            margin-left: auto;
+            padding: 0.35rem 0.65rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .nav-menu-toggle:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-green);
+        }
+
+        .nav-menu-toggle .nav-menu-icon {
+            font-size: 0.85rem;
+            line-height: 1;
+        }
+
         @media (max-width: 900px) {
             nav .container {
                 flex-wrap: wrap;
                 gap: 0.5rem;
             }
-            
+
             .nav-search {
                 order: 3;
                 width: 100%;
                 margin-left: 0;
             }
-            
+
             .nav-search input {
                 width: 100%;
             }
-            
-            .nav-links {
-                order: 2;
-                width: 100%;
-            }
-            
+
             .nav-row {
                 gap: 0.5rem 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 0.35rem 0.75rem;
+            }
+
+            .nav-menu-toggle {
+                display: inline-flex;
+                order: 2;
+            }
+
+            .nav-links {
+                display: none;
+                order: 5;
+                width: 100%;
+                max-height: min(55vh, 420px);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 0.25rem 0 0.5rem;
+                border-top: 1px solid var(--border-color);
+            }
+
+            body.nav-menu-open .nav-links {
+                display: flex;
+            }
+
+            .nav-indicators {
+                order: 4;
+                width: 100%;
+                margin-left: 0;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                gap: 0.35rem;
+            }
+
+            #autoCommitLabel,
+            #themeLabelShort {
+                display: none;
+            }
+
+            #autoCommitBtn,
+            .theme-toggle {
+                margin-right: 0 !important;
+                padding: 0.3rem 0.5rem !important;
+            }
+
+            .nav-indicator-card {
+                min-width: 62px;
+                padding: 0.2rem 0.45rem;
             }
         }
 
@@ -506,7 +581,11 @@
             <div class="nav-search">
                 <input type="text" id="navTickerInput" placeholder="Ticker..." maxlength="10" onkeypress="navGoToStock(event)">
             </div>
-            <div class="nav-links">
+            <button type="button" class="nav-menu-toggle" id="navMenuToggle" aria-expanded="false" aria-controls="navLinksPanel" title="Show navigation links">
+                <span class="nav-menu-icon" aria-hidden="true">☰</span>
+                <span>Menu</span>
+            </button>
+            <div class="nav-links" id="navLinksPanel">
                 <div class="nav-row">
                     <a href="/daily-shortlist" class="nav-highlight">Daily Shortlist</a>
                     <a href="/daily-themes">Daily Themes</a>
@@ -604,6 +683,25 @@
                 }
             })
             .catch(() => {});
+
+        // Mobile nav menu toggle
+        (function() {
+            const btn = document.getElementById('navMenuToggle');
+            const panel = document.getElementById('navLinksPanel');
+            if (!btn || !panel) return;
+
+            btn.addEventListener('click', function() {
+                const open = document.body.classList.toggle('nav-menu-open');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+
+            panel.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    document.body.classList.remove('nav-menu-open');
+                    btn.setAttribute('aria-expanded', 'false');
+                });
+            });
+        })();
 
         // Navbar ticker search
         function navGoToStock(event) {

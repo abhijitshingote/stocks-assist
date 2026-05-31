@@ -475,13 +475,15 @@
 
     @media (max-width: 768px) {
         .brief-container {
-            flex-direction: column;
+            flex-direction: column !important;
+            flex-wrap: wrap !important;
         }
 
-        .date-list {
-            flex: 0 0 auto;
-            min-width: 100%;
-            max-width: 100%;
+        .brief-container > .date-list {
+            flex: 0 0 auto !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
         }
 
         .date-list-items, .brief-content {
