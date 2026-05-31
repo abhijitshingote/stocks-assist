@@ -1,0 +1,31 @@
+{
+  "source_kind": "ticker",
+  "source_key": "LOGI",
+  "window": "2026-05-21 05:00 EDT → 2026-05-26 06:00 EDT (session 2026-05-22, ticker −24h vs general)",
+  "anchor_session": "2026-05-22",
+  "published_gte_utc": "2026-05-21T09:00:00+00:00",
+  "published_lte_utc": "2026-05-26T10:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 1,
+  "articles": [
+    {
+      "benzinga_id": 52769288,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-26T07:06:08Z",
+      "last_updated": "2026-05-26T07:06:08Z",
+      "title": "Logitech Launches Signature Comfort Plus Lineup With First-Ever Palm Cushion Mouse And Comfort Keyboard",
+      "url": "https://www.benzinga.com/news/26/05/52769288/logitech-launches-signature-comfort-plus-lineup-with-first-ever-palm-cushion-mouse-and-comfort-keybo",
+      "images": [],
+      "channels": [
+        "news"
+      ],
+      "tickers": [
+        "LOGI"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "vol_spike_5d/mid_small",
+  "label": "Vol spike / gapper · last 5D · Mid & small cap",
+  "rank": 6
+}

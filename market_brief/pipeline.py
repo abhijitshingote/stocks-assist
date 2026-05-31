@@ -225,7 +225,24 @@ def _strip_code_fence(text: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def run_brief(asof: str | None = None, *, qa_log: bool | None = None) -> Path:
+def _load_articles_from_snapshots(outdir: Path) -> list[dict]:
+    from market_brief.theme_discovery import load_run_articles
+
+    corpus, _, _ = load_run_articles(outdir)
+    if not corpus:
+        raise FileNotFoundError(
+            f"No articles under {outdir / '00_news'} — run ingest first or drop --skip-ingest"
+        )
+    return corpus
+
+
+def run_brief(
+    asof: str | None = None,
+    *,
+    qa_log: bool | None = None,
+    resume_summarize: bool = False,
+    skip_ingest: bool = False,
+) -> Path:
     """Run the full pipeline. Returns the output directory path."""
     USAGE.reset()
 
@@ -266,38 +283,65 @@ def run_brief(asof: str | None = None, *, qa_log: bool | None = None) -> Path:
             watch_result = None
             logger.info("web probes done in %.1fs", time.time() - t0)
         else:
-            status_mod.write_status(outdir, "running", stage="ingest")
-            logger.info("")
-            logger.info("=== STAGE: INGEST — Polygon/Benzinga news fetch + dedupe ===")
-            t0 = time.time()
-            ingest_funnel = IngestFunnelData()
-            articles, ingest_stats = ingest.ingest_all(
-                asof, topics, funnel=ingest_funnel
-            )
-            ingest_report.log_ingest_report(
-                ingest_funnel,
-                ingest_stats,
-                window=ingest.news_window_for_run(asof),
-            )
-            ingest.persist_news_snapshots(articles, topics, outdir, asof=asof)
-            ingest_report.log_routing_report(articles, topics)
-            if funnel_report:
-                funnel_report.ingest = ingest_funnel
-            logger.info(
-                "INGEST complete in %.1fs — %d unique stories in corpus",
-                time.time() - t0,
-                ingest_stats.unique_articles,
-            )
-            (outdir / "ingest_stats.json").write_text(
-                json.dumps(ingest_stats.__dict__, indent=2),
-                encoding="utf-8",
-            )
+            if skip_ingest:
+                status_mod.write_status(outdir, "running", stage="summarize")
+                logger.info("")
+                logger.info(
+                    "=== SKIP INGEST — loading corpus from %s ===",
+                    outdir / "00_news",
+                )
+                articles = _load_articles_from_snapshots(outdir)
+                logger.info("loaded %d unique articles from snapshots", len(articles))
+            else:
+                status_mod.write_status(outdir, "running", stage="ingest")
+                logger.info("")
+                logger.info(
+                    "=== STAGE: INGEST — Polygon/Benzinga → benzinga_articles (Postgres) ==="
+                )
+                t0 = time.time()
+                ingest_funnel = IngestFunnelData()
+                articles, ingest_stats, source_slices = ingest.ingest_all(
+                    asof, topics, funnel=ingest_funnel
+                )
+                ingest_report.log_ingest_report(
+                    ingest_funnel,
+                    ingest_stats,
+                    window=ingest.news_window_for_run(asof),
+                )
+                ingest.persist_source_snapshots(
+                    source_slices, outdir, topics, asof=asof
+                )
+                ingest.persist_news_snapshots(articles, topics, outdir, asof=asof)
+                ingest_report.log_routing_report(articles, topics)
+                if funnel_report:
+                    funnel_report.ingest = ingest_funnel
+                logger.info(
+                    "INGEST complete in %.1fs — %d unique stories in corpus",
+                    time.time() - t0,
+                    ingest_stats.unique_articles,
+                )
+                (outdir / "ingest_stats.json").write_text(
+                    json.dumps(ingest_stats.__dict__, indent=2),
+                    encoding="utf-8",
+                )
 
             status_mod.write_status(outdir, "running", stage="summarize")
+            summarize_backend = config.SUMMARIZE_BACKEND
+            if summarize_backend == "ollama":
+                summarize_label = (
+                    f"Ollama per-article snippets ({config.OLLAMA_MODEL}, no web)"
+                )
+            else:
+                summarize_label = (
+                    "Perplexity reads Benzinga bodies per topic (no web)"
+                )
             logger.info("")
-            logger.info(
-                "=== STAGE: SUMMARIZE — Perplexity reads Benzinga bodies per topic (no web) ==="
-            )
+            logger.info("=== STAGE: SUMMARIZE — %s ===", summarize_label)
+            if summarize_backend == "ollama":
+                from market_brief import ollama as ollama_mod
+
+                logger.info("Ollama endpoint: %s", config.OLLAMA_BASE_URL)
+                ollama_mod.check_model_available()
             t0 = time.time()
             topic_results = summarize.run_topic_summaries(
                 articles,
@@ -306,6 +350,7 @@ def run_brief(asof: str | None = None, *, qa_log: bool | None = None) -> Path:
                 tape_mod=tape_mod,
                 outdir=outdir,
                 funnel=funnel_report,
+                resume=resume_summarize,
             )
             logger.info(
                 "topic summaries done: %d blocks, %.1fs",

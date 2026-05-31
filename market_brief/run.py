@@ -1,9 +1,12 @@
-"""CLI entrypoint for the market brief.
+"""CLI entrypoint for the market brief (delegates to run_pipeline).
 
-Run inside the backend container (repo mounted at /app):
+Run inside the backend container:
 
     docker compose exec backend python -m market_brief.run
-    docker compose exec backend python -m market_brief.run --asof 2026-05-15
+    docker compose exec backend python -m market_brief.run --asof 2026-05-31
+    docker compose exec backend python -m market_brief.run --skip-ingest
+    docker compose exec backend python -m market_brief.run --skip-llm-summary
+    docker compose exec backend python -m market_brief.run --asof 2026-05-31 --resume
     docker compose exec backend python -m market_brief.run --dry-run
 """
 
@@ -12,9 +15,8 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+from datetime import datetime, timezone
 
-from market_brief import config
-from market_brief.pipeline import run_brief
 from market_brief.topics import load_topics
 
 
@@ -28,45 +30,69 @@ def _setup_logging(verbose: bool) -> None:
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Daily market brief generator")
-    p.add_argument("--asof", help="Date label for the run (YYYY-MM-DD). Defaults to today (UTC).")
+    p.add_argument("--asof", "--date", dest="date", help="YYYY-MM-DD (default: today UTC)")
     p.add_argument(
         "--dry-run",
         action="store_true",
-        help="Print the topic list and exit without making API calls.",
+        help="Print screener universe and exit without API calls.",
+    )
+    p.add_argument(
+        "--skip-ingest",
+        action="store_true",
+        help="Skip Benzinga ingest; run Anthropic Steps 3–4 on existing source/",
+    )
+    p.add_argument(
+        "--skip-llm-summary",
+        action="store_true",
+        help="Ingest only (rewrite source/); skip Anthropic Steps 3–4",
+    )
+    p.add_argument(
+        "--resume",
+        action="store_true",
+        help="Retry failed summaries + synthesis on existing source/ (implies --skip-ingest)",
     )
     p.add_argument("-v", "--verbose", action="store_true")
-    p.add_argument(
-        "--qa-log",
-        action="store_true",
-        help="Write qa_funnel.md with ingest/summarize funnel detail (off by default).",
-    )
     args = p.parse_args()
 
     _setup_logging(args.verbose)
 
     if args.dry_run:
-        from market_brief.ingest import collect_ticker_universe
+        from market_brief.screener_universe import build_screener_universe
 
+        asof = args.date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
         topics = load_topics()
-        universe = collect_ticker_universe(topics)
-        mode = "web probes" if config.USE_WEB_PROBES else "Benzinga ingest"
-        print(f"Would run {mode} for {len(topics)} topics, {len(universe)} tickers:")
-        for t in topics:
-            tickers = f" [{', '.join(t.tickers[:6])}{'…' if len(t.tickers) > 6 else ''}]" if t.tickers else ""
-            print(f"  · [{t.kind:6s}] {t.name}{tickers}")
+        slices, lineage, fetch_syms = build_screener_universe(asof)
+        print(f"Would run Benzinga ingest + Anthropic brief for {asof}")
+        print(
+            f"  Ticker universe: {lineage['unique_tickers_assigned']} symbols "
+            f"({lineage['slice_count']} sections, exclusive dedupe)"
+        )
+        print(f"  Benzinga per-ticker pulls: {len(fetch_syms)} → source/ticker/<SYM>/")
+        print(f"  Overview: user_data/market_brief/{asof}/source/ticker_universe/overview.md")
+        for sl in slices:
+            if not sl.selection:
+                continue
+            tickers = ", ".join(r["ticker"] for r in sl.selection)
+            print(f"  · {sl.label}: {tickers}")
+        print(f"  Themes loaded: {len(topics)}")
         return 0
 
-    qa_log = args.qa_log or config.QA_LOG_ENABLED
-    outdir = run_brief(asof=args.asof, qa_log=qa_log)
-    print(f"\nBrief written to: {outdir}")
-    print(f"  Markdown:   {outdir / '02_brief.md'}")
-    print(f"  JSON:       {outdir / '02_brief.json'}")
-    print(f"  Raw news:   {outdir / '00_news/'}")
-    print(f"  Summaries:  {outdir / '01_summaries/'}")
-    print(f"  Usage:      {outdir / 'usage.json'}")
-    if qa_log:
-        print(f"  QA funnel:  {outdir / 'qa_funnel.md'}")
-    return 0
+    if args.skip_ingest and args.skip_llm_summary:
+        print("Error: cannot use --skip-ingest and --skip-llm-summary together", file=sys.stderr)
+        return 1
+    if args.resume and args.skip_llm_summary:
+        print("Error: cannot use --resume with --skip-llm-summary", file=sys.stderr)
+        return 1
+
+    from market_brief.run_pipeline import main as pipeline_main
+
+    return pipeline_main(
+        date=args.date,
+        skip_ingest=args.skip_ingest,
+        skip_llm_summary=args.skip_llm_summary,
+        resume=args.resume,
+        verbose=args.verbose,
+    )
 
 
 if __name__ == "__main__":

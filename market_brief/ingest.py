@@ -6,6 +6,7 @@ import concurrent.futures
 import json
 import logging
 import re
+import shutil
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -13,7 +14,11 @@ from pathlib import Path
 from daily_screener.utils.db import get_session
 from market_brief import config, tape as tape_mod
 from market_brief.funnel_log import FetchSlice, IngestFunnelData
-from market_brief.ingest_window import filter_published_window, get_news_window
+from market_brief.ingest_window import (
+    filter_published_window,
+    get_news_window,
+    get_ticker_news_window,
+)
 from market_brief.topics import Topic, load_topics
 from market_brief.trading_calendar import NewsWindow
 
@@ -37,6 +42,17 @@ class IngestStats:
     per_ticker_limit: int = 0
 
 
+@dataclass
+class IngestSourceSlices:
+    """Per-API-pull article lists (after published-window filter, before corpus dedupe)."""
+
+    general: list[dict]
+    channels: dict[str, list[dict]]
+    ticker_universe_slices: list  # market_brief.screener_universe.UniverseSlice
+    ticker_articles: dict[str, list[dict]]
+    ticker_lineage: dict
+
+
 def news_window_start(asof: str | None = None) -> datetime:
     """UTC instant where the ingest window opens (5:00 AM ET on anchor session)."""
     return get_news_window(asof).start_utc
@@ -47,12 +63,39 @@ def news_window_for_run(asof: str | None = None) -> NewsWindow:
     return get_news_window(asof)
 
 
-def collect_ticker_universe(topics: list[Topic]) -> list[str]:
-    tickers: set[str] = set()
-    for topic in topics:
-        tickers.update(t.upper() for t in (topic.tickers or []))
-        tickers.update(tape_mod.SECTOR_TICKERS.get(topic.name, []))
-    return sorted(tickers)
+def collect_ticker_universe(
+    topics: list[Topic] | None = None, *, asof: str | None = None
+) -> list[str]:
+    """Per-ticker Benzinga symbols from DB screener slices (not themes.json)."""
+    from market_brief.screener_universe import collect_ticker_symbols
+
+    asof = asof or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return collect_ticker_symbols(asof)
+
+
+def persist_ticker_lineage(
+    lineage: dict,
+    exclusive_slices: list,
+    outdir: Path,
+) -> None:
+    """Write ``overview.md`` + ``lineage.json`` under ``source/ticker_universe/``."""
+    from market_brief.screener_universe import render_overview_markdown
+
+    root = outdir / "source" / "ticker_universe"
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "lineage.json").write_text(
+        json.dumps(lineage, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    (root / "overview.md").write_text(
+        render_overview_markdown(exclusive_slices, lineage),
+        encoding="utf-8",
+    )
+    logger.info(
+        "ticker universe overview: %d symbols → %s",
+        lineage.get("unique_tickers_assigned", 0),
+        root / "overview.md",
+    )
 
 
 def _slugify(name: str) -> str:
@@ -197,8 +240,10 @@ def _fetch_ticker(ticker: str, window: NewsWindow) -> tuple[str, list[dict]]:
 def _fetch_general(
     window: NewsWindow,
     funnel: IngestFunnelData | None = None,
-) -> list[dict]:
-    combined: list[dict] = []
+) -> tuple[list[dict], dict[str, list[dict]]]:
+    """Return (general-only rows, channel name → rows)."""
+    general_rows: list[dict] = []
+    channel_rows: dict[str, list[dict]] = {}
     seen_ids: set[int] = set()
 
     try:
@@ -207,7 +252,7 @@ def _fetch_general(
             published_gte=window.start_utc,
         )
         filtered = filter_published_window(raw, window)
-        combined.extend(filtered)
+        general_rows = filtered
         if funnel is not None:
             funnel.general = FetchSlice(
                 label="general (no channel)",
@@ -232,16 +277,17 @@ def _fetch_general(
                 channels=channel,
             )
             filtered = filter_published_window(raw, window)
-            combined.extend(filtered)
+            channel_rows[channel] = filtered
             slice_row.api_rows = len(raw)
             slice_row.after_filter = len(filtered)
             slice_row.new_unique_ids = _count_new_ids(filtered, seen_ids)
         except Exception as e:  # noqa: BLE001
             slice_row.error = str(e)
+            channel_rows[channel] = []
             logger.error("channel fetch failed for %s: %s", channel, e)
         if funnel is not None:
             funnel.channels.append(slice_row)
-    return combined
+    return general_rows, channel_rows
 
 
 def ingest_all(
@@ -249,16 +295,19 @@ def ingest_all(
     topics: list[Topic] | None = None,
     *,
     funnel: IngestFunnelData | None = None,
-) -> tuple[list[dict], IngestStats]:
+) -> tuple[list[dict], IngestStats, IngestSourceSlices]:
     """Pull Benzinga news for the full ticker universe + general feeds."""
     topics = topics or load_topics()
-    window = news_window_for_run(asof)
+    general_window = news_window_for_run(asof)
+    ticker_window = get_ticker_news_window(asof)
     stats = IngestStats()
     if funnel is not None:
-        funnel.since_iso = window.start_utc.isoformat()
-        funnel.end_iso = window.end_utc.isoformat()
-        funnel.window_label = window.label
-        funnel.anchor_session = window.anchor_session.isoformat()
+        funnel.since_iso = general_window.start_utc.isoformat()
+        funnel.end_iso = general_window.end_utc.isoformat()
+        funnel.window_label = (
+            f"general: {general_window.label} | ticker: {ticker_window.label}"
+        )
+        funnel.anchor_session = general_window.anchor_session.isoformat()
 
     session = get_session()
     try:
@@ -272,7 +321,9 @@ def ingest_all(
             funnel.purge_count = stats.purged
         logger.info("purged %d benzinga rows older than %d days", stats.purged, config.ARTICLE_RETENTION_DAYS)
 
-        universe = collect_ticker_universe(topics)
+        from market_brief.screener_universe import build_screener_universe
+
+        universe_slices, ticker_lineage, universe = build_screener_universe(asof)
         stats.per_ticker_limit = config.PER_TICKER_LIMIT
         if funnel is not None:
             funnel.universe_size = len(universe)
@@ -280,17 +331,22 @@ def ingest_all(
 
         all_raw: list[dict] = []
 
-        general = _fetch_general(window, funnel=funnel)
+        general_rows, channel_rows = _fetch_general(general_window, funnel=funnel)
         stats.general_api_calls = 1 + len(config.GENERAL_CHANNEL_FETCHES)
-        stats.general_channel_rows = len(general)
-        all_raw.extend(general)
+        stats.general_channel_rows = len(general_rows) + sum(
+            len(rows) for rows in channel_rows.values()
+        )
+        all_raw.extend(general_rows)
+        for rows in channel_rows.values():
+            all_raw.extend(rows)
 
+        ticker_articles: dict[str, list[dict]] = {}
         ticker_counts: dict[str, int] = {}
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=config.INGEST_CONCURRENCY
         ) as pool:
             futures = {
-                pool.submit(_fetch_ticker, ticker, window): ticker
+                pool.submit(_fetch_ticker, ticker, ticker_window): ticker
                 for ticker in universe
             }
             for fut in concurrent.futures.as_completed(futures):
@@ -299,9 +355,11 @@ def ingest_all(
                     _, rows = fut.result()
                     stats.ticker_api_calls += 1
                     ticker_counts[ticker] = len(rows)
+                    ticker_articles[ticker] = rows
                     all_raw.extend(rows)
                 except Exception as e:  # noqa: BLE001
                     logger.error("benzinga fetch failed for %s: %s", ticker, e)
+                    ticker_articles[ticker] = []
                     if funnel is not None:
                         funnel.ticker_failed.append(ticker)
 
@@ -324,11 +382,12 @@ def ingest_all(
         if funnel is not None:
             funnel.db_upserted = stats.db_upserted
 
-        db_rows = bz.load_articles_since(session, window.start_utc, limit=10000)
+        corpus_start = min(general_window.start_utc, ticker_window.start_utc)
+        db_rows = bz.load_articles_since(session, corpus_start, limit=10000)
         db_rows = [
             r
             for r in db_rows
-            if r.published is not None and r.published <= window.end_utc
+            if r.published is not None and r.published <= general_window.end_utc
         ]
         articles = [bz.article_to_json(r) for r in db_rows]
         if funnel is not None:
@@ -347,9 +406,167 @@ def ingest_all(
             funnel.assigned_content_ids = len(
                 assigned_content_topic_ids(articles, topics)
             )
-        return articles, stats
+        slices = IngestSourceSlices(
+            general=general_rows,
+            channels=channel_rows,
+            ticker_universe_slices=universe_slices,
+            ticker_articles=ticker_articles,
+            ticker_lineage=ticker_lineage,
+        )
+        return articles, stats, slices
     finally:
         session.close()
+
+
+def _write_source_slice(
+    base: Path,
+    articles: list[dict],
+    *,
+    source_kind: str,
+    source_key: str,
+    window: NewsWindow,
+    limit: int | None = None,
+    selection: list[dict] | None = None,
+    extra: dict | None = None,
+) -> None:
+    base.mkdir(parents=True, exist_ok=True)
+    payload: dict = {
+        "source_kind": source_kind,
+        "source_key": source_key,
+        "window": window.label,
+        "anchor_session": window.anchor_session.isoformat(),
+        "published_gte_utc": window.start_utc.isoformat(),
+        "published_lte_utc": window.end_utc.isoformat(),
+        "api_limit": limit,
+        "article_count": len(articles),
+        "articles": articles,
+    }
+    if selection is not None:
+        payload["selection"] = selection
+        payload["selection_count"] = len(selection)
+    if extra:
+        payload.update(extra)
+    (base / "articles.json").write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+
+def _prune_stale_source_dirs(root: Path, active_tickers: set[str]) -> None:
+    """Drop per-ticker dirs and legacy slice folders not in this run."""
+    ticker_root = root / "ticker"
+    if ticker_root.is_dir():
+        for path in ticker_root.iterdir():
+            if path.is_dir() and path.name.upper() not in active_tickers:
+                shutil.rmtree(path, ignore_errors=True)
+
+    tu_root = root / "ticker_universe"
+    if tu_root.is_dir():
+        for name in ("r1d", "vol_spike_5d", "main_view_ti65"):
+            legacy = tu_root / name
+            if legacy.is_dir():
+                shutil.rmtree(legacy, ignore_errors=True)
+
+    for stale in ("ticker_universe_map.md", "ticker_universe_map.json", "lineage.md"):
+        p = root / stale
+        if p.is_file():
+            p.unlink()
+
+
+def persist_source_snapshots(
+    slices: IngestSourceSlices,
+    outdir: Path,
+    topics: list[Topic] | None = None,
+    *,
+    asof: str | None = None,
+) -> None:
+    """Write ``source/general``, ``source/channel/…``, ``source/ticker/<SYM>/``."""
+    general_window = news_window_for_run(asof)
+    ticker_window = get_ticker_news_window(asof)
+    root = outdir / "source"
+    root.mkdir(parents=True, exist_ok=True)
+
+    active_tickers = {sym.upper() for sym in slices.ticker_articles}
+    _prune_stale_source_dirs(root, active_tickers)
+
+    persist_ticker_lineage(
+        slices.ticker_lineage, slices.ticker_universe_slices, outdir
+    )
+
+    _write_source_slice(
+        root / "general",
+        slices.general,
+        source_kind="general",
+        source_key="general",
+        window=general_window,
+        limit=config.GENERAL_NEWS_LIMIT,
+    )
+
+    channel_limits = dict(config.GENERAL_CHANNEL_FETCHES)
+    for channel, articles in slices.channels.items():
+        slug = _slugify(channel)
+        _write_source_slice(
+            root / "channel" / slug,
+            articles,
+            source_kind="channel",
+            source_key=channel,
+            window=general_window,
+            limit=channel_limits.get(channel),
+        )
+
+    by_ticker = slices.ticker_lineage.get("by_ticker") or {}
+    for sym in sorted(slices.ticker_articles):
+        meta = by_ticker.get(sym) or {}
+        _write_source_slice(
+            root / "ticker" / sym,
+            slices.ticker_articles[sym],
+            source_kind="ticker",
+            source_key=sym,
+            window=ticker_window,
+            limit=config.PER_TICKER_LIMIT,
+            extra={
+                "section": meta.get("section"),
+                "label": meta.get("label"),
+                "rank": meta.get("rank"),
+            },
+        )
+
+    slice_manifest = [
+        {
+            "slice_id": sl.slice_id,
+            "cap_bucket": sl.cap_bucket,
+            "label": sl.label,
+            "selection_count": len(sl.selection),
+            "tickers": [r["ticker"] for r in sl.selection],
+        }
+        for sl in slices.ticker_universe_slices
+    ]
+
+    manifest = {
+        "general_window": general_window.label,
+        "ticker_window": ticker_window.label,
+        "anchor_session": general_window.anchor_session.isoformat(),
+        "general_published_gte_utc": general_window.start_utc.isoformat(),
+        "ticker_published_gte_utc": ticker_window.start_utc.isoformat(),
+        "published_lte_utc": general_window.end_utc.isoformat(),
+        "general_count": len(slices.general),
+        "channels": {name: len(rows) for name, rows in slices.channels.items()},
+        "ticker_count": len(slices.ticker_articles),
+        "ticker_rows_total": sum(len(rows) for rows in slices.ticker_articles.values()),
+        "ticker_universe_slices": slice_manifest,
+        "overview": "ticker_universe/overview.md",
+    }
+    (root / "_manifest.json").write_text(
+        json.dumps(manifest, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    logger.info(
+        "source snapshots: general=%d channels=%d tickers=%d → %s",
+        len(slices.general),
+        len(slices.channels),
+        len(slices.ticker_articles),
+        root,
+    )
 
 
 def persist_news_snapshots(

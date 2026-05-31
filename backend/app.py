@@ -17,6 +17,7 @@ import logging
 import time
 import pytz
 from datetime import date, datetime, timezone
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -5139,40 +5140,127 @@ def daily_shortlist_theme_dates():
 MARKET_BRIEF_OUTPUTS_DIR = os.path.join(
     os.path.dirname(__file__), '..', 'user_data', 'market_brief'
 )
+MARKET_BRIEF_TZ = ZoneInfo('America/New_York')
+
+
+def _market_brief_today() -> str:
+    """Calendar date for the market brief (US Eastern, pre-market context)."""
+    return datetime.now(MARKET_BRIEF_TZ).strftime('%Y-%m-%d')
+
+
+def _market_brief_has_source(brief_dir: str) -> bool:
+    source_dir = os.path.join(brief_dir, 'source')
+    return os.path.isdir(source_dir) and bool(os.listdir(source_dir))
+
+
+def _market_brief_run_stale(brief_dir: str, status_payload: dict) -> bool:
+    """True if status says running but nothing has updated recently (crashed run)."""
+    stale_after_s = 900  # 15 minutes without log/cost activity
+    now = time.time()
+    candidates = [
+        os.path.join(brief_dir, 'subprocess.log'),
+        os.path.join(brief_dir, 'run.log'),
+        os.path.join(brief_dir, 'run_costs.json'),
+        os.path.join(brief_dir, 'status.json'),
+    ]
+    latest_mtime = None
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                mtime = os.path.getmtime(path)
+                latest_mtime = mtime if latest_mtime is None else max(latest_mtime, mtime)
+            except OSError:
+                pass
+    if latest_mtime is None:
+        updated_at = status_payload.get('updated_at')
+        if updated_at:
+            try:
+                dt = datetime.fromisoformat(updated_at.replace('Z', '+00:00'))
+                latest_mtime = dt.timestamp()
+            except ValueError:
+                return False
+        else:
+            return True
+    return (now - latest_mtime) > stale_after_s
+
+
+def _mark_market_brief_stale_failed(brief_dir: str, status_payload: dict) -> None:
+    """Persist failed status when a run stopped updating (crashed subprocess)."""
+    status_path = os.path.join(brief_dir, 'status.json')
+    payload = {
+        'status': 'failed',
+        'stage': 'stale',
+        'error': 'Run stopped responding (no log activity for 15+ minutes)',
+        'updated_at': datetime.now(timezone.utc).isoformat(),
+        'previous': status_payload,
+    }
+    try:
+        with open(status_path, 'w', encoding='utf-8') as f:
+            json.dump(payload, f, indent=2)
+    except OSError:
+        pass
+
+
+def _read_market_brief_status_file(brief_dir: str) -> dict | None:
+    status_path = os.path.join(brief_dir, 'status.json')
+    if not os.path.exists(status_path):
+        return None
+    try:
+        with open(status_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return None
 
 
 def _market_brief_run_status(brief_dir: str) -> str:
-    """Return complete | running | error | failed for a dated output folder."""
+    """Return complete | running | ready | error | failed for a dated output folder."""
+    status_payload = _read_market_brief_status_file(brief_dir)
+    if status_payload:
+        status = status_payload.get('status')
+        if status == 'running':
+            if _market_brief_run_stale(brief_dir, status_payload):
+                _mark_market_brief_stale_failed(brief_dir, status_payload)
+                return 'failed'
+            return 'running'
+        if status == 'failed':
+            return 'failed'
+        if status == 'error':
+            return 'error'
+
+    if status_payload and status_payload.get('status') == 'complete':
+        return 'complete'
+
     brief_md = os.path.join(brief_dir, '02_brief.md')
     brief_json = os.path.join(brief_dir, '02_brief.json')
     if os.path.exists(brief_md) or os.path.exists(brief_json):
         return 'complete'
 
-    status_path = os.path.join(brief_dir, 'status.json')
-    if os.path.exists(status_path):
-        try:
-            with open(status_path, 'r', encoding='utf-8') as f:
-                payload = json.load(f)
-            status = payload.get('status') or 'running'
-            if status == 'failed':
-                return 'failed'
-            if status in ('complete', 'running', 'error'):
-                return status
-        except (json.JSONDecodeError, OSError):
-            pass
-
     run_log = os.path.join(brief_dir, 'run.log')
-    if os.path.exists(run_log):
+    subprocess_log = os.path.join(brief_dir, 'subprocess.log')
+    for log_path in (run_log, subprocess_log):
+        if os.path.exists(log_path):
+            try:
+                age_s = time.time() - os.path.getmtime(log_path)
+                if age_s < 1800:
+                    return 'running'
+            except OSError:
+                pass
+
+    costs_path = os.path.join(brief_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
         try:
-            age_s = time.time() - os.path.getmtime(run_log)
+            age_s = time.time() - os.path.getmtime(costs_path)
             if age_s < 1800:
                 return 'running'
         except OSError:
             pass
-        return 'failed'
 
     if os.path.isdir(os.path.join(brief_dir, '00_news')):
         return 'running'
+
+    if _market_brief_has_source(brief_dir):
+        return 'ready'
+
     return 'failed'
 
 
@@ -5220,7 +5308,22 @@ def market_brief_dates():
             'stage': stage,
         })
     entries.sort(key=lambda e: e['date'], reverse=True)
-    return jsonify({'dates': entries})
+
+    today = _market_brief_today()
+    if not any(e['date'] == today for e in entries):
+        entries.insert(0, {
+            'date': today,
+            'mtime': None,
+            'status': 'empty',
+            'stage': None,
+            'is_today': True,
+        })
+    else:
+        for e in entries:
+            if e['date'] == today:
+                e['is_today'] = True
+
+    return jsonify({'dates': entries, 'today': today})
 
 
 @app.route('/api/market-brief/<date_str>', methods=['GET'])
@@ -5233,9 +5336,29 @@ def market_brief_for_date(date_str):
 
     brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
     if not os.path.isdir(brief_dir):
+        if date_str == _market_brief_today():
+            return jsonify({
+                'date': date_str,
+                'status': 'empty',
+                'has_source': False,
+                'is_today': True,
+            })
         return jsonify({'error': 'No brief found for this date'}), 404
 
-    result = {'date': date_str}
+    result = {
+        'date': date_str,
+        'status': _market_brief_run_status(brief_dir),
+        'has_source': _market_brief_has_source(brief_dir),
+        'is_today': date_str == _market_brief_today(),
+    }
+
+    status_path = os.path.join(brief_dir, 'status.json')
+    if os.path.exists(status_path):
+        try:
+            with open(status_path, 'r', encoding='utf-8') as f:
+                result['run_status'] = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            pass
 
     brief_md_path = os.path.join(brief_dir, '02_brief.md')
     if os.path.exists(brief_md_path):
@@ -5252,35 +5375,48 @@ def market_brief_for_date(date_str):
         with open(usage_path, 'r', encoding='utf-8') as f:
             result['usage'] = json.load(f)
 
+    costs_path = os.path.join(brief_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
+        with open(costs_path, 'r', encoding='utf-8') as f:
+            result['run_costs'] = json.load(f)
+
     return jsonify(result)
 
 
-@app.route('/api/market-brief/run', methods=['POST'])
-def market_brief_run():
-    """Trigger a new market brief run (detached subprocess survives Flask reload)."""
+@app.route('/api/market-brief/<date_str>/costs', methods=['GET'])
+def market_brief_costs(date_str):
+    """Return run status + optional run_costs.json for live progress polling."""
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+    if not os.path.isdir(brief_dir):
+        return jsonify({'error': 'No brief folder for this date'}), 404
+
+    result = {
+        'date': date_str,
+        'status': _market_brief_run_status(brief_dir),
+    }
+    status_payload = _read_market_brief_status_file(brief_dir)
+    if status_payload:
+        result['run_status'] = status_payload
+
+    costs_path = os.path.join(brief_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
+        with open(costs_path, 'r', encoding='utf-8') as f:
+            result['run_costs'] = json.load(f)
+
+    return jsonify(result)
+
+
+def _start_market_brief_subprocess(cmd: list, outdir: str, asof: str):
+    """Launch a detached market-brief subprocess; return error message or None."""
     import subprocess
 
-    data = request.get_json() or {}
-    asof = data.get('asof')
-    if not asof:
-        asof = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-    else:
-        try:
-            datetime.strptime(asof, '%Y-%m-%d')
-        except ValueError:
-            return jsonify({'error': 'Invalid asof date format. Use YYYY-MM-DD'}), 400
-
     project_root = os.path.dirname(os.path.dirname(__file__))
-    outdir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, asof)
     os.makedirs(outdir, exist_ok=True)
-
-    existing = _market_brief_run_status(outdir)
-    if existing == 'running':
-        return jsonify({
-            'status': 'already_running',
-            'message': f'Market brief for {asof} is already running',
-            'asof': asof,
-        }), 409
 
     with open(os.path.join(outdir, 'status.json'), 'w', encoding='utf-8') as f:
         json.dump({
@@ -5289,9 +5425,6 @@ def market_brief_run():
             'updated_at': datetime.now(timezone.utc).isoformat(),
         }, f)
 
-    cmd = ['python', '-m', 'market_brief.run', '--asof', asof]
-    if data.get('qa_log') in (True, 'true', '1', 1):
-        cmd.append('--qa-log')
     log_path = os.path.join(outdir, 'subprocess.log')
     try:
         log_file = open(log_path, 'a', encoding='utf-8')
@@ -5304,13 +5437,68 @@ def market_brief_run():
         )
     except OSError as e:
         logger.error(f"Failed to start market brief subprocess: {e}")
-        return jsonify({'error': str(e)}), 500
+        return str(e)
+    return None
+
+
+@app.route('/api/market-brief/generate', methods=['POST'])
+def market_brief_generate():
+    """Run full pipeline: Benzinga fetch + Anthropic Steps 3–4."""
+    data = request.get_json() or {}
+    asof = data.get('asof') or data.get('date')
+    if not asof:
+        asof = _market_brief_today()
+    else:
+        try:
+            datetime.strptime(asof, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    outdir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, asof)
+
+    existing = _market_brief_run_status(outdir)
+    if existing == 'running':
+        return jsonify({
+            'status': 'already_running',
+            'message': f'Market brief pipeline for {asof} is already running',
+            'asof': asof,
+        }), 409
+
+    cmd = ['python', '-m', 'market_brief.run_pipeline', '--date', asof]
+    if data.get('skip_ingest') in (True, 'true', '1', 1):
+        if not _market_brief_has_source(outdir):
+            return jsonify({
+                'error': 'No source data for this date',
+                'message': 'Cannot skip ingest without existing source/',
+                'asof': asof,
+            }), 400
+        cmd.append('--skip-ingest')
+    elif data.get('skip_llm_summary') in (True, 'true', '1', 1):
+        cmd.append('--skip-llm-summary')
+    elif data.get('resume') in (True, 'true', '1', 1):
+        cmd.append('--skip-ingest')
+        cmd.append('--resume')
+
+    err = _start_market_brief_subprocess(cmd, outdir, asof)
+    if err:
+        return jsonify({'error': err}), 500
 
     return jsonify({
         'status': 'started',
-        'message': 'Market brief generation started in background',
+        'message': 'Market brief pipeline started',
         'asof': asof,
     })
+
+
+@app.route('/api/market-brief/run', methods=['POST'])
+def market_brief_run():
+    """Trigger full market brief run (ingest + legacy pipeline, or pipeline-only)."""
+    data = request.get_json() or {}
+    if not data.get('asof') and not data.get('date'):
+        data = dict(data)
+        data['asof'] = _market_brief_today()
+
+    return market_brief_generate()
 
 
 @app.route('/api/auto-commit', methods=['POST'])

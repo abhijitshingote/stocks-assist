@@ -59,3 +59,20 @@ def load_topics() -> list[Topic]:
         seen.add(key)
         deduped.append(t)
     return deduped
+
+
+def order_topics_for_summarize(
+    topics: list[Topic],
+    *,
+    priority: list[str] | None = None,
+) -> list[Topic]:
+    """Priority themes first; everything else keeps relative order; unassigned is appended by caller."""
+    names = priority if priority is not None else config.SUMMARIZE_TOPIC_PRIORITY
+    rank = {name.strip().lower(): i for i, name in enumerate(names)}
+    default = len(rank)
+
+    def sort_key(t: Topic) -> tuple[int, int, str]:
+        r = rank.get(t.name.lower(), default)
+        return (r, topics.index(t), t.name.lower())
+
+    return sorted(topics, key=sort_key)

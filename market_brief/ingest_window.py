@@ -2,13 +2,36 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
+from market_brief import config
 from market_brief.trading_calendar import NewsWindow, compute_news_window
 
 
 def get_news_window(asof: str | None = None) -> NewsWindow:
+    """General + channel pulls: 5:00 AM ET anchor session → run time."""
     return compute_news_window(asof)
+
+
+def get_ticker_news_window(asof: str | None = None) -> NewsWindow:
+    """Per-ticker pulls: same end as general, start ``TICKER_NEWS_EXTRA_HOURS`` earlier."""
+    base = compute_news_window(asof)
+    extra = timedelta(hours=config.TICKER_NEWS_EXTRA_HOURS)
+    start_utc = base.start_utc - extra
+    start_et = start_utc.astimezone(base.start_et.tzinfo)
+    label = (
+        f"{start_et.strftime('%Y-%m-%d %H:%M %Z')} → "
+        f"{base.end_et.strftime('%Y-%m-%d %H:%M %Z')} "
+        f"(session {base.anchor_session.isoformat()}, "
+        f"ticker −{config.TICKER_NEWS_EXTRA_HOURS}h vs general)"
+    )
+    return NewsWindow(
+        start_utc=start_utc,
+        end_utc=base.end_utc,
+        anchor_session=base.anchor_session,
+        run_at_et=base.run_at_et,
+        label=label,
+    )
 
 
 def filter_published_window(

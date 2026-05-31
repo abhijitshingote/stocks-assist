@@ -9,8 +9,7 @@ from pathlib import Path
 
 from daily_screener.utils.perplexity import PerplexityError, call_perplexity
 
-from market_brief import config, prompts
-from market_brief.ingest import assign_articles_to_topic, assign_unassigned_articles
+from market_brief import config, ollama, prompts
 from market_brief.topics import Topic
 from market_brief.funnel_log import FunnelReport, SummarizeFunnelRow
 from market_brief.types import ProbeResult
@@ -134,12 +133,188 @@ def _merge_chunk_summaries(
     )
 
 
+def _assemble_topic_from_snippets(
+    topic: Topic,
+    snippets: list[tuple[dict, str]],
+    *,
+    tape_block: str | None,
+    errors: list[str],
+    include_source_body: bool = False,
+    tape_at_end: bool = False,
+) -> str:
+    from market_brief.snippet_price import split_fundamental_and_price
+    from market_brief.trading_calendar import prior_session_for_brief
+
+    session = prior_session_for_brief(None).isoformat()
+    parts: list[str] = [f"## {topic.name}\n"]
+    if tape_block and not tape_at_end:
+        parts.append("### Verified tape\n")
+        parts.append(tape_block.strip())
+        parts.append("")
+    if errors:
+        parts.append(f"_Ollama errors on {len(errors)} article(s): {'; '.join(errors[:3])}_\n")
+    for article, snippet in snippets:
+        title = article.get("title") or "(untitled)"
+        bid = article.get("benzinga_id")
+        pub = article.get("published") or article.get("published_date") or ""
+        url = article.get("url") or ""
+        parts.append(f"### {title}\n")
+        parts.append(f"_benzinga_id: {bid} · published: {pub}_")
+        if url:
+            parts.append(f" · {url}")
+        parts.append("\n\n")
+        parts.append("#### Snippet (Ollama)\n\n")
+        fund, price_block = split_fundamental_and_price(snippet)
+        if fund is None:
+            from market_brief.persist import _split_snippet_file
+
+            fund, price_block, _ = _split_snippet_file(snippet)
+        parts.append((fund or snippet).strip())
+        if price_block:
+            parts.append("\n\n#### Price reference\n\n")
+            parts.append(price_block.replace("## Price reference", "", 1).strip())
+        if include_source_body:
+            from market_brief.persist import article_source_body
+
+            parts.append("\n\n#### Source article\n\n")
+            parts.append(article_source_body(article))
+        parts.append("\n\n---\n\n")
+    if not snippets and not errors:
+        parts.append(
+            f"_No Benzinga articles in the trading-day window "
+            f"(from 5:00 AM ET on session {session}) matched this topic._\n"
+        )
+    if tape_block and tape_at_end:
+        parts.append("\n### Verified tape (session)\n\n")
+        parts.append(tape_block.strip())
+        parts.append("\n")
+    return "".join(parts).rstrip() + "\n"
+
+
+def summarize_topic_articles_ollama(
+    topic: Topic,
+    articles: list[dict],
+    asof: str,
+    tape_block: str | None = None,
+    *,
+    outdir: Path | None = None,
+    resume: bool = False,
+) -> str:
+    if not articles:
+        return _assemble_topic_from_snippets(topic, [], tape_block=tape_block, errors=[])
+
+    from market_brief.persist import (
+        is_topic_ollama_complete,
+        load_article_snippet,
+        mark_topic_ollama_complete,
+        persist_article_snippet,
+        persist_topic_partial,
+    )
+
+    if outdir and resume and is_topic_ollama_complete(outdir, topic.name):
+        from market_brief.persist import _slugify
+
+        final = outdir / "01_summaries" / f"{_slugify(topic.name)}__benzinga.md"
+        logger.info(
+            "SUMMARIZE skip | [%s] %s | ollama complete (resume) | %s",
+            topic.kind,
+            topic.name,
+            final.name,
+        )
+        if final.is_file():
+            text = final.read_text(encoding="utf-8")
+            marker = "\n\n"
+            if text.startswith("# ") and marker in text:
+                return text.split(marker, 2)[-1]
+            return text
+        return _assemble_topic_from_snippets(topic, [], tape_block=tape_block, errors=[])
+
+    ollama.check_model_available()
+    snippets: list[tuple[dict, str]] = []
+    errors: list[str] = []
+    n = len(articles)
+    for i, article in enumerate(articles, start=1):
+        bid = article.get("benzinga_id")
+        label = (
+            f"OLLAMA SNIPPET | [{topic.kind}] {topic.name} | "
+            f"article {i}/{n} | benzinga_id={bid}"
+        )
+        text: str | None = None
+        if outdir and resume and bid is not None:
+            text = load_article_snippet(outdir, int(bid))
+            if text:
+                from market_brief.snippet_price import append_price_reference
+
+                logger.info("%s | reused cached snippet", label)
+                text = append_price_reference(text, article, asof)
+        try:
+            if text is None:
+                from market_brief.snippet_price import (
+                    append_price_reference,
+                    price_reference_footer,
+                )
+
+                text = ollama.summarize_article(article, log_label=label)
+                price_ref = price_reference_footer(article, asof)
+                if outdir:
+                    persist_article_snippet(
+                        outdir,
+                        article,
+                        text,
+                        price_reference=price_ref,
+                    )
+                text = append_price_reference(text, article, asof)
+            snippets.append((article, text))
+        except ollama.OllamaError as e:
+            logger.error("%s | %s", label, e)
+            errors.append(f"{bid}: {e}")
+        if outdir:
+            partial_body = _assemble_topic_from_snippets(
+                topic,
+                snippets,
+                tape_block=tape_block,
+                errors=errors,
+                include_source_body=True,
+                tape_at_end=True,
+            )
+            persist_topic_partial(
+                outdir,
+                topic.name,
+                topic.kind,
+                partial_body,
+                articles_done=i,
+                articles_total=n,
+            )
+    content = _assemble_topic_from_snippets(
+        topic,
+        snippets,
+        tape_block=tape_block,
+        errors=errors,
+        tape_at_end=True,
+    )
+    if outdir:
+        mark_topic_ollama_complete(outdir, topic.name)
+    return content
+
+
 def summarize_topic_articles(
     topic: Topic,
     articles: list[dict],
     asof: str,
     tape_block: str | None = None,
+    *,
+    outdir: Path | None = None,
+    resume: bool = False,
 ) -> str:
+    if config.SUMMARIZE_BACKEND == "ollama":
+        return summarize_topic_articles_ollama(
+            topic,
+            articles,
+            asof,
+            tape_block=tape_block,
+            outdir=outdir,
+            resume=resume,
+        )
     if not articles:
         from market_brief.trading_calendar import prior_session_for_brief
 
@@ -171,14 +346,19 @@ def run_topic_summaries(
     tape_mod,
     outdir: Path | None = None,
     funnel: FunnelReport | None = None,
+    resume: bool = False,
 ) -> list[ProbeResult]:
     """Turn ingested Benzinga articles into per-topic summary blocks."""
+    from market_brief.ingest import assign_articles_to_topic, assign_unassigned_articles
+
     results: list[ProbeResult] = []
 
     unassigned = assign_unassigned_articles(articles, topics)
-    prepend: list[Topic] = []
+    from market_brief.topics import order_topics_for_summarize
+
+    topics_to_run = order_topics_for_summarize(list(topics))
     if unassigned:
-        prepend.append(
+        topics_to_run.append(
             Topic(
                 name=config.UNASSIGNED_TOPIC_NAME,
                 desc=config.UNASSIGNED_TOPIC_DESC,
@@ -186,7 +366,10 @@ def run_topic_summaries(
                 kind="unassigned",
             )
         )
-    topics_to_run = prepend + list(topics)
+    logger.info(
+        "summarize topic order: %s",
+        " → ".join(t.name for t in topics_to_run),
+    )
 
     for topic in topics_to_run:
         if topic.kind == "unassigned":
@@ -208,17 +391,28 @@ def run_topic_summaries(
         planned_calls = n_chunks if matched else 0
         if matched and n_chunks > 1:
             planned_calls = n_chunks + 1  # chunks + merge
+        if config.SUMMARIZE_BACKEND == "ollama":
+            planned_calls = len(matched)
+            backend = f"Ollama/{config.OLLAMA_MODEL}"
+        else:
+            backend = f"Perplexity/{config.TOPIC_SUMMARY_MODEL}"
         logger.info(
-            "SUMMARIZE topic | [%s] %s | %d articles | %d Perplexity call(s) planned",
+            "SUMMARIZE topic | [%s] %s | %d articles | %d call(s) | %s",
             topic.kind,
             topic.name,
             len(matched),
             planned_calls,
+            backend,
         )
         t0 = time.time()
         try:
             content = summarize_topic_articles(
-                topic, matched, asof, tape_block=tape_block
+                topic,
+                matched,
+                asof,
+                tape_block=tape_block,
+                outdir=outdir,
+                resume=resume,
             )
             elapsed = time.time() - t0
             result = ProbeResult(
@@ -259,7 +453,7 @@ def run_topic_summaries(
                 len(content or ""),
                 elapsed,
             )
-        except PerplexityError as e:
+        except (PerplexityError, ollama.OllamaError) as e:
             logger.error(
                 "SUMMARIZE FAILED | [%s] %s | %d articles | lost for final brief unless retried: %s",
                 topic.kind,
@@ -289,6 +483,9 @@ def run_topic_summaries(
                         error=str(e),
                     )
                 )
+    if config.SUMMARIZE_BACKEND == "ollama":
+        ollama.unload_model()
+
     return results
 
 
@@ -296,7 +493,7 @@ def run_watch_probe(topics: list[Topic], asof: str) -> ProbeResult:
     """Perplexity web probe for calendar events (not in Benzinga history)."""
     from market_brief.ingest import collect_ticker_universe
 
-    tickers = collect_ticker_universe(topics)
+    tickers = collect_ticker_universe(topics, asof=asof)
     t0 = time.time()
     prompt = prompts.build_watch_tomorrow_prompt(tickers, asof=asof)
     label = (

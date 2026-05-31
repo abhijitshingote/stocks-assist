@@ -71,6 +71,10 @@
         border-left: 2px solid var(--accent-blue);
     }
 
+    .date-item.ready {
+        border-left: 2px solid var(--accent-yellow);
+    }
+
     .date-item.failed,
     .date-item.error {
         border-left: 2px solid #c45c5c;
@@ -85,6 +89,14 @@
 
     .date-item-status.running { color: var(--accent-blue); }
     .date-item-status.complete { color: var(--accent-green); }
+    .date-item-status.ready { color: var(--accent-yellow); }
+    .date-item-status.empty { color: var(--text-muted); }
+    .date-item-today-badge {
+        font-size: 0.55rem;
+        color: var(--accent-green);
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
     .date-item-status.failed,
     .date-item-status.error { color: #c45c5c; }
 
@@ -556,6 +568,168 @@
         color: var(--text-secondary);
     }
 
+    .cost-panel {
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-dark);
+    }
+
+    .cost-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        user-select: none;
+        font-size: 0.75rem;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--text-secondary);
+    }
+
+    .cost-panel-header:hover {
+        color: var(--text-primary);
+    }
+
+    .cost-panel-chevron {
+        font-size: 0.65rem;
+        transition: transform 0.2s;
+    }
+
+    .cost-panel.expanded .cost-panel-chevron {
+        transform: rotate(90deg);
+    }
+
+    .cost-panel-body {
+        display: none;
+        padding: 0 1rem 0.75rem;
+    }
+
+    .cost-panel.expanded .cost-panel-body {
+        display: block;
+    }
+
+    .cost-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.7rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .cost-table th,
+    .cost-table td {
+        padding: 0.35rem 0.5rem;
+        text-align: right;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .cost-table th:first-child,
+    .cost-table td:first-child {
+        text-align: left;
+    }
+
+    .cost-table th {
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    .cost-table tr.total-row td {
+        font-weight: 700;
+        border-top: 2px solid var(--border-color);
+    }
+
+    .cost-metrics {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+    }
+
+    .cost-metric-card {
+        flex: 1;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .cost-metric-label {
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .cost-metric-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        color: var(--accent-green);
+        margin-top: 0.2rem;
+    }
+
+    .cost-progress {
+        font-size: 0.65rem;
+        color: var(--accent-blue);
+        margin-left: 0.5rem;
+    }
+
+    .generate-prompt {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-muted);
+    }
+
+    .generate-prompt button {
+        margin-top: 1rem;
+        padding: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+        background: var(--accent-green);
+        color: var(--bg-dark);
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .generate-prompt button:hover {
+        background: #4eca5f;
+    }
+
+    .generate-prompt button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .run-progress-banner {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.65rem 1rem;
+        background: rgba(88, 166, 255, 0.12);
+        border-bottom: 1px solid rgba(88, 166, 255, 0.35);
+        font-size: 0.8rem;
+        color: var(--text-primary);
+    }
+
+    .run-progress-spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid var(--border-color);
+        border-top-color: var(--accent-blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        flex-shrink: 0;
+    }
+
+    .run-progress-stage {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        color: var(--accent-blue);
+        font-weight: 600;
+    }
+
+    .run-progress-detail {
+        color: var(--text-muted);
+        font-size: 0.7rem;
+    }
+
 </style>
 {% endblock %}
 
@@ -593,9 +767,11 @@
                     <button id="btn-boxes-dark" class="active" onclick="setBoxTheme('dark')" title="Dark boxes">Dark</button>
                     <button id="btn-boxes-light" onclick="setBoxTheme('light')" title="Light boxes">Light</button>
                 </div>
-                <button class="run-btn" id="btn-run" onclick="runBrief()">Generate New</button>
+                <button class="run-btn" id="btn-run" onclick="runBrief()" title="Generate brief for today (US Eastern)">Generate today</button>
             </div>
         </div>
+        <div id="run-progress-banner"></div>
+        <div id="cost-panel-container"></div>
         <div class="brief-content" id="brief-content">
             <div class="brief-placeholder">Select a date from the list to view the market brief</div>
         </div>
@@ -608,6 +784,20 @@
     let currentDate = null;
     let currentData = null;
     let currentView = 'formatted';
+    let currentRunStatus = 'complete';
+    let costPollTimer = null;
+    let costPanelExpanded = false;
+
+    const MODEL_LABELS = {
+        'claude-sonnet-4-5': 'Sonnet',
+        'claude-opus-4-5': 'Opus',
+    };
+
+    let briefTodayDate = null;
+
+    function briefToday() {
+        return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+    }
 
     async function loadDateList() {
         const listEl = document.getElementById('date-list');
@@ -616,34 +806,54 @@
         try {
             const response = await fetch('/api/frontend/market-brief/dates');
             const data = await response.json();
+            briefTodayDate = data.today || briefToday();
 
             if (data.dates && data.dates.length > 0) {
                 listEl.innerHTML = data.dates.map(item => {
                     const dateObj = new Date(item.date + 'T12:00:00');
                     const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
                     const dateStr = item.date;
+                    const isToday = item.is_today || dateStr === briefTodayDate;
                     const st = item.status || 'complete';
+                    const stageLabel = (s) => {
+                        if (!s) return 'Running…';
+                        if (s === 'ingest' || s === 'step1_fetch') return 'Fetching news';
+                        if (s === 'step3_fact_extraction') return 'Extracting facts';
+                        if (s === 'step4_synthesis') return 'Synthesizing brief';
+                        return s.replace(/_/g, ' ');
+                    };
                     const statusLabel = st === 'running'
-                        ? (item.stage ? `Running · ${item.stage}` : 'Running…')
+                        ? stageLabel(item.stage)
                         : st === 'complete' ? 'Ready'
+                        : st === 'ready' ? 'Source ready'
+                        : st === 'empty' ? 'No run yet'
+                        : st === 'failed' ? 'Failed'
                         : st === 'error' ? 'Error'
                         : 'Incomplete';
 
                     return `
                         <div class="date-item ${st}${currentDate === item.date ? ' active' : ''}" onclick="loadBrief('${item.date}', '${st}')">
-                            <div class="date-item-date">${dateStr}</div>
+                            <div class="date-item-date">${dateStr}${isToday ? ' <span class="date-item-today-badge">TODAY</span>' : ''}</div>
                             <div class="date-item-meta">${dayName}</div>
                             <div class="date-item-status ${st}">${statusLabel}</div>
                         </div>
                     `;
                 }).join('');
 
-                if (!currentDate && data.dates.length > 0) {
-                    const first = data.dates[0];
-                    loadBrief(first.date, first.status || 'complete');
+                if (!currentDate) {
+                    const todayEntry = data.dates.find(d => d.date === briefTodayDate);
+                    loadBrief(briefTodayDate, todayEntry ? (todayEntry.status || 'empty') : 'empty');
                 }
             } else {
-                listEl.innerHTML = '<div class="empty-state">No briefs found. Click "Generate New" to create one.</div>';
+                briefTodayDate = briefTodayDate || briefToday();
+                listEl.innerHTML = `<div class="date-item active" onclick="loadBrief('${briefTodayDate}', 'empty')">
+                    <div class="date-item-date">${briefTodayDate} <span class="date-item-today-badge">TODAY</span></div>
+                    <div class="date-item-meta">—</div>
+                    <div class="date-item-status empty">No run yet</div>
+                </div>`;
+                if (!currentDate) {
+                    loadBrief(briefTodayDate, 'empty');
+                }
             }
         } catch (error) {
             listEl.innerHTML = `<div class="empty-state">Error loading dates: ${error.message}</div>`;
@@ -652,37 +862,268 @@
 
     async function loadBrief(dateStr, status) {
         currentDate = dateStr;
+        currentRunStatus = status || 'complete';
         const contentEl = document.getElementById('brief-content');
         const titleEl = document.getElementById('current-brief-date');
 
-        titleEl.textContent = `Brief for ${dateStr}`;
+        const todayTag = dateStr === (briefTodayDate || briefToday()) ? ' (today)' : '';
+        titleEl.textContent = `Brief for ${dateStr}${todayTag}`;
         document.querySelectorAll('.date-item').forEach(el => {
             el.classList.toggle('active', el.querySelector('.date-item-date').textContent === dateStr);
         });
 
-        if (status === 'running') {
-            contentEl.innerHTML = '<div class="brief-placeholder">Brief is still generating… This usually takes 10–20 minutes. The list will update automatically.</div>';
-            return;
-        }
-        if (status === 'failed' || status === 'error') {
-            contentEl.innerHTML = '<div class="brief-placeholder">This run did not finish. Check <code>user_data/market_brief/' + dateStr + '/run.log</code> or click Generate New to retry.</div>';
-            return;
-        }
+        stopRunPolling();
 
         contentEl.innerHTML = '<div class="loading">Loading...</div>';
 
         try {
             const response = await fetch(`/api/frontend/market-brief/${dateStr}`);
-            if (!response.ok) {
-                throw new Error(response.status === 404 ? 'Brief not ready yet' : `HTTP ${response.status}`);
+            if (!response.ok && response.status !== 404) {
+                throw new Error(`HTTP ${response.status}`);
             }
-            currentData = await response.json();
+            if (response.ok) {
+                currentData = await response.json();
+                currentRunStatus = currentData.status || status;
+            } else {
+                currentData = { date: dateStr, status: status };
+            }
+
+            const stage = currentData.run_status?.stage;
+            renderProgressBanner(stage, currentRunStatus, currentData.run_status);
+            renderCostPanel(currentData.run_costs, currentRunStatus);
+
+            if (currentRunStatus === 'running' || status === 'running') {
+                startRunPolling(dateStr);
+                contentEl.innerHTML = '<div class="brief-placeholder">Pipeline running — see progress above. This usually takes 15–25 minutes.</div>';
+                return;
+            }
+
+            if (currentRunStatus === 'failed' || currentRunStatus === 'error') {
+                contentEl.innerHTML = '<div class="brief-placeholder">This run did not finish. Check <code>user_data/market_brief/' + dateStr + '/subprocess.log</code> or click Generate to retry.</div>';
+                return;
+            }
+
+            if (currentRunStatus === 'empty' || status === 'empty') {
+                contentEl.innerHTML = `<div class="generate-prompt">
+                    <p>No brief for <strong>${dateStr}</strong> yet.</p>
+                    <button id="btn-generate-inline" onclick="runBrief('${dateStr}')">Generate today's brief</button>
+                </div>`;
+                return;
+            }
+
+            if (!currentData.markdown && (currentRunStatus === 'ready' || currentData.has_source)) {
+                contentEl.innerHTML = `<div class="generate-prompt">
+                    <p>Brief not yet generated. Source news data is on disk.</p>
+                    <button id="btn-generate-inline" onclick="runBrief('${dateStr}')">Generate brief</button>
+                </div>`;
+                return;
+            }
+
+            if (!currentData.markdown) {
+                contentEl.innerHTML = '<div class="brief-placeholder">No data for this date.</div>';
+                return;
+            }
 
             renderView();
         } catch (error) {
             contentEl.innerHTML = `<div class="brief-placeholder">Error loading brief: ${error.message}</div>`;
         }
     }
+
+    function formatStepLabel(step) {
+        if (!step) return 'Running…';
+        const labels = {
+            queued: 'Starting pipeline',
+            ingest: 'Fetching Benzinga news',
+            ingest_done: 'Ingest complete',
+            step3_fact_extraction: 'Extracting facts (Sonnet)',
+            step4_synthesis: 'Writing brief (Opus)',
+            done: 'Complete',
+        };
+        if (labels[step]) return labels[step];
+        return step
+            .replace(/^step3_/, 'Step 3 · ')
+            .replace(/^step4_/, 'Step 4 · ')
+            .replace(/_/g, ' ');
+    }
+
+    function renderProgressBanner(stage, status, runStatus) {
+        const banner = document.getElementById('run-progress-banner');
+        if (status !== 'running') {
+            banner.innerHTML = '';
+            return;
+        }
+        const updated = runStatus?.updated_at
+            ? new Date(runStatus.updated_at).toLocaleTimeString()
+            : '';
+        const err = runStatus?.error ? ` — ${runStatus.error}` : '';
+        banner.innerHTML = `
+            <div class="run-progress-banner">
+                <div class="run-progress-spinner"></div>
+                <div>
+                    <div class="run-progress-stage">${escapeHtml(formatStepLabel(stage))}</div>
+                    <div class="run-progress-detail">Pipeline in progress${updated ? ` · updated ${updated}` : ''}${err}</div>
+                </div>
+            </div>`;
+    }
+
+    function updateDateItemStatus(dateStr, status, stage) {
+        document.querySelectorAll('.date-item').forEach(el => {
+            const dateEl = el.querySelector('.date-item-date');
+            if (!dateEl || dateEl.textContent !== dateStr) return;
+            el.classList.remove('complete', 'running', 'ready', 'failed', 'error');
+            el.classList.add(status);
+            const statusEl = el.querySelector('.date-item-status');
+            if (statusEl) {
+                statusEl.className = `date-item-status ${status}`;
+                statusEl.textContent = status === 'running'
+                    ? formatStepLabel(stage)
+                    : status === 'complete' ? 'Ready'
+                    : status === 'ready' ? 'Source ready'
+                    : status === 'failed' || status === 'error' ? 'Failed'
+                    : 'Incomplete';
+            }
+        });
+    }
+
+    function formatCost4(n) {
+        return '$' + (n || 0).toFixed(4);
+    }
+
+    function formatCost2(n) {
+        return '$' + (n || 0).toFixed(2);
+    }
+
+    function renderCostPanel(runCosts, status) {
+        const container = document.getElementById('cost-panel-container');
+        if (!runCosts || !runCosts.calls || runCosts.calls.length === 0) {
+            if (status === 'running') {
+                container.innerHTML = `<div class="cost-panel">
+                    <div class="cost-panel-header">
+                        <span>Run cost: $0.00 · 0 API calls · starting…</span>
+                    </div>
+                </div>`;
+            } else {
+                container.innerHTML = '';
+            }
+            return;
+        }
+
+        const total = runCosts.total_cost_usd || 0;
+        const callCount = runCosts.call_count || runCosts.calls.length;
+        const ts = runCosts.completed_at || runCosts.started_at || '';
+        const tsShort = ts ? new Date(ts).toLocaleString() : '';
+        const progress = status === 'running' && runCosts.current_step
+            ? `<span class="cost-progress">· ${formatStepLabel(runCosts.current_step)}</span>`
+            : '';
+
+        let rows = runCosts.calls.map(c => {
+            const modelLabel = MODEL_LABELS[c.model] || c.model;
+            return `<tr>
+                <td>${escapeHtml(formatStepLabel(c.step))}</td>
+                <td>${escapeHtml(modelLabel)}</td>
+                <td>${(c.input_tokens || 0).toLocaleString()}</td>
+                <td>${(c.output_tokens || 0).toLocaleString()}</td>
+                <td>${formatCost4(c.total_cost_usd)}</td>
+            </tr>`;
+        }).join('');
+
+        const sumIn = runCosts.total_input_tokens || runCosts.calls.reduce((s, c) => s + (c.input_tokens || 0), 0);
+        const sumOut = runCosts.total_output_tokens || runCosts.calls.reduce((s, c) => s + (c.output_tokens || 0), 0);
+
+        rows += `<tr class="total-row">
+            <td><strong>Total</strong></td>
+            <td></td>
+            <td><strong>${sumIn.toLocaleString()}</strong></td>
+            <td><strong>${sumOut.toLocaleString()}</strong></td>
+            <td><strong>${formatCost2(total)}</strong></td>
+        </tr>`;
+
+        const expandedClass = costPanelExpanded ? ' expanded' : '';
+        container.innerHTML = `<div class="cost-panel${expandedClass}" id="cost-panel">
+            <div class="cost-panel-header" onclick="toggleCostPanel()">
+                <span>Run cost: ${formatCost2(total)} · ${callCount} API calls · ${escapeHtml(tsShort)}${progress}</span>
+                <span class="cost-panel-chevron">▶</span>
+            </div>
+            <div class="cost-panel-body">
+                <table class="cost-table">
+                    <thead>
+                        <tr>
+                            <th>Step</th>
+                            <th>Model</th>
+                            <th>Input tokens</th>
+                            <th>Output tokens</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                <div class="cost-metrics">
+                    <div class="cost-metric-card">
+                        <div class="cost-metric-label">Step 3 total</div>
+                        <div class="cost-metric-value">${formatCost2(runCosts.step3_cost_usd)}</div>
+                    </div>
+                    <div class="cost-metric-card">
+                        <div class="cost-metric-label">Step 4 total</div>
+                        <div class="cost-metric-value">${formatCost2(runCosts.step4_cost_usd)}</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function toggleCostPanel() {
+        costPanelExpanded = !costPanelExpanded;
+        const panel = document.getElementById('cost-panel');
+        if (panel) panel.classList.toggle('expanded', costPanelExpanded);
+    }
+
+    async function refreshRunProgress(dateStr) {
+        try {
+            const response = await fetch(`/api/frontend/market-brief/${dateStr}/costs`);
+            if (!response.ok) {
+                return;
+            }
+            const data = await response.json();
+            currentRunStatus = data.status || currentRunStatus;
+            const stage = data.run_status?.stage;
+            renderProgressBanner(stage, currentRunStatus, data.run_status);
+            renderCostPanel(data.run_costs, currentRunStatus);
+            updateDateItemStatus(dateStr, currentRunStatus, stage);
+
+            if (currentRunStatus === 'complete') {
+                stopRunPolling();
+                const btn = document.getElementById('btn-run');
+                btn.textContent = 'Generate';
+                btn.disabled = false;
+                await loadBrief(dateStr, 'complete');
+            } else if (currentRunStatus === 'failed' || currentRunStatus === 'error') {
+                stopRunPolling();
+                const btn = document.getElementById('btn-run');
+                btn.textContent = 'Generate';
+                btn.disabled = false;
+                await loadBrief(dateStr, currentRunStatus);
+            }
+        } catch (e) {
+            console.warn('run progress poll failed', e);
+        }
+    }
+
+    function stopRunPolling() {
+        if (costPollTimer) {
+            clearInterval(costPollTimer);
+            costPollTimer = null;
+        }
+    }
+
+    function startRunPolling(dateStr) {
+        stopRunPolling();
+        refreshRunProgress(dateStr);
+        costPollTimer = setInterval(() => refreshRunProgress(dateStr), 3000);
+    }
+
+    const stopCostPolling = stopRunPolling;
+    const startCostPolling = startRunPolling;
 
     function setView(view) {
         currentView = view;
@@ -732,9 +1173,12 @@
         const contentEl = document.getElementById('brief-content');
         const json = currentData.json;
 
-        if (!json || json._error || json._parse_error) {
+        if (!json || json._error || json._parse_error || !json.tldr) {
             const md = currentData.markdown || '(No content)';
             contentEl.innerHTML = `<div class="markdown-body">${simpleMarkdown(md)}</div>`;
+            if (currentData.run_costs) {
+                // cost panel is above brief-content
+            }
             return;
         }
 
@@ -788,7 +1232,14 @@
             });
         }
 
-        if (currentData.usage) {
+        if (currentData.run_costs) {
+            const rc = currentData.run_costs;
+            html += `<div class="usage-info">
+                <strong>Run cost:</strong>
+                ${rc.call_count || 0} API calls •
+                $${(rc.total_cost_usd || 0).toFixed(2)} total
+            </div>`;
+        } else if (currentData.usage) {
             const u = currentData.usage;
             html += `<div class="usage-info">
                 <strong>API Usage:</strong>
@@ -808,14 +1259,61 @@
     }
 
     function simpleMarkdown(md) {
-        let html = escapeHtml(md);
-        html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-        html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-        html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+        const lines = md.split('\n');
+        const out = [];
+        let i = 0;
+        while (i < lines.length) {
+            const line = lines[i];
+            if (line.trim().startsWith('|') && line.includes('|')) {
+                const tableLines = [];
+                while (i < lines.length && lines[i].trim().startsWith('|')) {
+                    tableLines.push(lines[i]);
+                    i++;
+                }
+                out.push(renderMarkdownTable(tableLines));
+                continue;
+            }
+            if (/^### /.test(line)) {
+                out.push('<h3>' + escapeHtml(line.slice(4)) + '</h3>');
+            } else if (/^## /.test(line)) {
+                out.push('<h2>' + escapeHtml(line.slice(3)) + '</h2>');
+            } else if (/^# /.test(line)) {
+                out.push('<h1>' + escapeHtml(line.slice(2)) + '</h1>');
+            } else if (/^---+$/.test(line.trim())) {
+                out.push('<hr>');
+            } else if (/^- /.test(line)) {
+                out.push('<li>' + inlineMarkdown(line.slice(2)) + '</li>');
+            } else if (line.trim() === '') {
+                out.push('');
+            } else {
+                out.push('<p>' + inlineMarkdown(line) + '</p>');
+            }
+            i++;
+        }
+        return out.join('\n');
+    }
+
+    function inlineMarkdown(text) {
+        let html = escapeHtml(text);
         html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-        html = html.replace(/_(.+?)_/g, '<em>$1</em>');
-        html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
-        html = html.replace(/\n/g, '<br>');
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+        return html;
+    }
+
+    function renderMarkdownTable(tableLines) {
+        const rows = tableLines
+            .filter(l => !/^\|[\s\-:|]+\|$/.test(l.trim()))
+            .map(l => l.split('|').slice(1, -1).map(c => c.trim()));
+        if (!rows.length) return '';
+        let html = '<table class="cost-table" style="margin:0.75rem 0"><thead><tr>';
+        rows[0].forEach(c => { html += '<th>' + inlineMarkdown(c) + '</th>'; });
+        html += '</tr></thead><tbody>';
+        for (let r = 1; r < rows.length; r++) {
+            html += '<tr>';
+            rows[r].forEach(c => { html += '<td>' + inlineMarkdown(c) + '</td>'; });
+            html += '</tr>';
+        }
+        html += '</tbody></table>';
         return html;
     }
 
@@ -870,47 +1368,65 @@
         }, 15000);
     }
 
-    async function runBrief() {
+    async function runBrief(forDate) {
         const btn = document.getElementById('btn-run');
+        const inlineBtn = document.getElementById('btn-generate-inline');
         btn.disabled = true;
+        if (inlineBtn) inlineBtn.disabled = true;
         btn.textContent = 'Starting...';
         stopBriefPolling();
+        stopRunPolling();
+
+        const asof = forDate || briefTodayDate || briefToday();
+        const body = { asof };
 
         try {
-            const response = await fetch('/api/frontend/market-brief/run', {
+            const response = await fetch('/api/frontend/market-brief/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({})
+                body: JSON.stringify(body)
             });
             const data = await response.json();
 
             if (response.status === 409) {
-                alert(data.message || 'A brief for today is already running.');
-                btn.textContent = 'Generate New';
+                alert(data.message || 'A brief for this date is already running.');
+                btn.textContent = 'Generate';
                 btn.disabled = false;
+                if (inlineBtn) inlineBtn.disabled = false;
                 await loadDateList();
-                if (data.asof) startBriefPolling(data.asof);
+                if (data.asof) {
+                    await loadBrief(data.asof, 'running');
+                }
+                return;
+            }
+
+            if (response.status === 400) {
+                alert(data.message || data.error || 'Could not start pipeline.');
+                btn.textContent = 'Generate';
+                btn.disabled = false;
+                if (inlineBtn) inlineBtn.disabled = false;
                 return;
             }
 
             if (data.status === 'started') {
-                btn.textContent = 'Running… (10–20 min)';
-                const targetDate = data.asof;
+                btn.textContent = 'Running…';
+                const targetDate = data.asof || asof;
                 await loadDateList();
                 if (targetDate) {
                     currentDate = targetDate;
                     await loadBrief(targetDate, 'running');
-                    startBriefPolling(targetDate);
                 }
             } else {
                 alert('Failed to start: ' + (data.error || data.message || 'Unknown error'));
-                btn.textContent = 'Generate New';
+                btn.textContent = 'Generate';
                 btn.disabled = false;
+                if (inlineBtn) inlineBtn.disabled = false;
             }
         } catch (error) {
             alert('Error: ' + error.message);
-            btn.textContent = 'Generate New';
+            btn.textContent = 'Generate';
             btn.disabled = false;
+            if (inlineBtn) inlineBtn.disabled = false;
         }
     }
 

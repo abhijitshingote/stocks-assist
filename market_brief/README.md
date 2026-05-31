@@ -1,242 +1,150 @@
 # Market Brief
 
-Daily pre-market intelligence: **Benzinga news** (Polygon API) → **Perplexity summaries** per topic → **one edited brief** (`02_brief.md`) plus a calendar **watch** probe.
-
-Not the same as `daily_screener` (that pipeline picks tickers to trade; this one builds morning context).
-
----
-
-## End-to-end funnel
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 1. TOPICS          config.SECTORS (5) + user_data/themes.json (themes)   │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 2. INGEST          Polygon Benzinga: general + channels + every ticker │
-│                    in the fetch universe → dedupe → Postgres → corpus   │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 3. ROUTE (files)   Split corpus into per-topic JSON under 00_news/      │
-│                    + _unassigned.json for stories with no theme/sector   │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 4. SUMMARIZE       Perplexity reads article bodies (no web) per bucket  │
-│                    + optional "Unassigned" bucket + verified tape       │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 5. WATCH           One Perplexity web probe: calendar next 24–48h       │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 6. SYNTHESIZE      Perplexity merges all summary texts → 02_brief.md    │
-│                    Second pass → 02_brief.json                          │
-└─────────────────────────────────────────────────────────────────────────┘
-```
-
-**Important:** The final brief never sees raw articles. It only sees **markdown summaries** produced in step 4 (and the watch probe). If a story never gets summarized, it cannot appear in `02_brief.md`.
-
----
-
-## Topics and tickers (three different uses)
-
-Every run builds a list of **topics** (`topics.load_topics()`):
-
-| Source | `kind` | Tickers on the topic row | Used for |
-|--------|--------|---------------------------|----------|
-| `config.SECTORS` | `sector` | Empty | Name + description in prompts; **ticker basket** from `tape.SECTOR_TICKERS[name]` |
-| `user_data/themes.json` | `theme` | Your list in JSON | Same; basket is **only** those tickers |
-
-The same symbols show up in three separate places:
-
-1. **Fetch universe** — union of all theme tickers + all `SECTOR_TICKERS` baskets → one Polygon call per symbol (~100+ calls).
-2. **Assignment** — which `00_news/<topic>.json` file an article lands in (see below).
-3. **Tape** — prior-session % moves from local OHLC injected into summarize prompts (`tape.py`).
-
-Sector names in `config.SECTORS` must **exactly match** keys in `tape.SECTOR_TICKERS` (e.g. `"Semiconductors"`). Theme names like `"AI Compute"` do **not** use a sector basket unless you add a matching key in `tape.py`.
-
----
-
-## Step 2 — Ingest (what gets pulled)
-
-**Window:** from **5:00 AM America/New_York** on the anchor NYSE session through run time (ET). Rules: weekday before 9:30 AM → prior session; Monday before 9:30 → prior Friday; weekend → last Friday; weekday after 9:30 → current session (holidays roll back). See `trading_calendar.py`.
-
-**API pulls:**
-
-| Pull | What |
-|------|------|
-| General | No filter, up to `GENERAL_NEWS_LIMIT` (100) |
-| Channels | Each entry in `GENERAL_CHANNEL_FETCHES` (e.g. `news`, `markets`, `tech`) |
-| Per ticker | Every symbol in the fetch universe, up to `PER_TICKER_LIMIT` (25) each |
-
-**Merge rules (articles only, not tickers):**
-
-- Append all rows from every pull into one list.
-- `filter_published_window` — keep articles with `published` in [window start, window end] (UTC).
-- `_dedupe_by_id` — keep one row per `benzinga_id`; drop rows with no id.
-- Upsert into Postgres `benzinga_articles`; reload the window into the **corpus** used for the rest of the run.
-
-**Tickers are never removed from the fetch list.** Duplicate **stories** are removed by `benzinga_id`. A symbol can return 0 articles (Benzinga had nothing in the window) — the call still happened.
-
-Rediscover channel slugs:
+Daily pre-market brief built from Benzinga news. Run in the backend container:
 
 ```bash
-docker compose exec backend python -m market_brief.discover_channels
+docker compose exec backend python -m market_brief.run_pipeline
 ```
 
+**Requirements (Anthropic pipeline):** `POLYGON_API_KEY`, `ANTHROPIC_API_KEY`, Postgres (`db` service). Legacy Perplexity path also needs `PERPLEXITY_API_KEY`.
+
 ---
 
-## Theme discovery (why quantum missed until you added it)
+## The process (four steps)
 
-**Themes are not inferred at runtime.** `topics.load_topics()` reads only `config.SECTORS` and `user_data/themes.json`. Routing is ticker overlap on each article's Benzinga `tickers` field. If `IONQ` / `QBTS` are not in any theme basket, quantum stories go to `_unassigned.json` — they still get summarized once, but there is no **Quantum Computing** topic file or dedicated brief section.
+Everything for one day lives under `user_data/market_brief/<YYYY-MM-DD>/`.
 
-`daily_screener` stage 3 does fetch **hot market themes** via Perplexity (`02a_market_themes.json`), but that does **not** update `themes.json` or the market brief.
-
-After each brief run (or on demand), scan unassigned clusters and write proposals:
-
-```bash
-docker compose exec backend python -m market_brief.discover_themes
-docker compose exec backend python -m market_brief.discover_themes --web   # optional Perplexity gap scan
+```
+  FETCH          GROUP BY CATEGORY    SUMMARIZE (LLM)      MERGE (LLM)
+     │                  │                    │                  │
+     ▼                  ▼                    ▼                  ▼
+ source/            (step 2 TBD)       01_summaries/        02_brief.md
+ (raw JSON)         group by category  (markdown)          (final brief)
 ```
 
-Output: `user_data/theme_discovery/proposals.json`. Set `"approved": true` on items you want, then:
+| Step | Folder | What happens | LLM? |
+|------|--------|--------------|------|
+| **1. Fetch** | `source/` | Pull articles from Polygon/Benzinga; save full JSON by *how* we fetched (general feed, channel, or one ticker) | No |
+| **2. Category tagging** | LLM instruction | Baked into Steps 3 & 4 — no code, no folder | No |
+| **3. Fact extract** | `01_summaries/` | One Sonnet call per channel + ticker batch → structured facts | **Yes** (Anthropic Sonnet) |
+| **4. Synthesize** | `02_brief.md` | One Opus call merges summaries + ticker universe into final brief | **Yes** (Anthropic Opus) |
 
-```bash
-docker compose exec backend python -m market_brief.discover_themes --approve new-quantum_computing --apply
-```
-
-Auto-write proposals after every run (never auto-apply):
-
-```bash
-MARKET_BRIEF_DISCOVER_THEMES=1 docker compose exec backend python -m market_brief.run
-```
+`02_brief.md` never reads raw Benzinga bodies. It only sees the text in `01_summaries/`.
 
 ---
 
-## Step 3 — Route articles to `00_news/`
+## Step 1 — Fetch (`source/`)
 
-Routing uses **Benzinga’s `tickers` field on each article**, normalized (`X:NVDA` → `NVDA`). It does **not** use “which API call found this story.”
+Three API pull types. All rows are merged, deduped by `benzinga_id`, and cached in Postgres (`benzinga_articles`).
 
-| File | Rule |
-|------|------|
-| `<sector_or_theme_slug>.json` | Article tickers overlap that topic’s ticker set |
-| `_unassigned.json` | Article’s `benzinga_id` matched **no** theme and **no** sector file |
-| `_macro.json` | Same payload as `_unassigned.json` (legacy filename) |
+| Pull | Time window | Saved as |
+|------|-------------|----------|
+| **General** | 5:00 AM ET on anchor session → run time | `source/general/articles.json` |
+| **Channels** | Same as general | `source/channel/<slug>/articles.json` (news, markets, tech, earnings, …) |
+| **Ticker universe** | **24h earlier** start, same end | `source/ticker/<SYMBOL>/articles.json` |
 
-An article can appear in **multiple** topic files if its tags overlap several sets.
+**General/channel window** — NYSE session rules in `trading_calendar.py` (e.g. weekend → prior Friday 5 AM; weekday before 9:30 → prior session).
 
-**Unassigned guarantee:** If a story is in the corpus but matched zero theme/sector buckets, it goes to `_unassigned.json` and, in step 4, gets its own summarize pass (`config.UNASSIGNED_TOPIC_NAME`). That summary **is** fed to synthesis so those stories are not silently dropped before the brief.
+**Ticker universe** — who we fetch is **not** from `themes.json`. It comes from DB screener screens (`screener_universe.py`):
 
----
+| Screen | Rule |
+|--------|------|
+| `r1d` | Top 10 by 1-day return per cap bucket |
+| `vol_spike_5d` | Vol spike/gapper in last 5 days |
+| `main_view_ti65` | Top 10 by TI65 |
 
-## Step 4 — Summarize
-
-For each topic (sectors, themes, then unassigned if any):
-
-1. Load matched articles from the corpus (not re-fetch).
-2. Attach **verified tape** from `tape.py` (sector/theme tickers only; not for unassigned).
-3. Chunk large bundles (`CHUNK_MAX_CHARS`), call Perplexity **`sonar-pro`** with `prompts.build_benzinga_chunk_prompt` (no web search).
-4. Write `01_summaries/<slug>__benzinga.md`.
-
-Empty topics still get a short stub (“no articles in window”) which is passed to synthesis.
+Cap buckets: mega, large, mid_small ($200M–$20B; micro excluded). ~65 symbols after dedupe (each symbol in one screen only). Human-readable list: `source/ticker_universe/overview.md`.
 
 ---
 
-## Step 5 — Watch
+## Step 2 — Category tagging
 
-One Perplexity **web** call over the full fetch universe: earnings, conferences, etc. in the next 24–48h (`prompts.build_watch_tomorrow_prompt`).
+No separate code step. The category vocabulary below is passed to the LLM in Steps 3 and 4. During fact extraction (Step 3), Sonnet tags each ticker/article section with its category. During synthesis (Step 4), Opus uses those tags as the organizing lens for Narrative Threads.
+
+Recognized categories: AI Compute · Memory & Interconnect · Optical & Photonics · Chip Equipment · Fab & Foundry · Wireless & Mobile · Analog & Mixed-Signal · Power & Wide-Bandgap · Test & Advanced Packaging · Specialty Materials & IP Licensing · Quantum Computing · EdgeAI · Semiconductors · AI Infrastructure · Software & SaaS · Internet & Platforms · Communications & Networking
+
+The LLM may identify additional categories not on this list if the source material clearly supports one.
+---
+
+## Step 3 — Fact extraction (`01_summaries/`)
+
+**First LLM step (Anthropic Sonnet).** Reads deduped articles per Benzinga channel and per ticker batch (grouped by screener screen from `overview.md`). Writes `channel_<slug>.md` and `tickers_<batch>.md`. Categories are inferred by the model during extraction — not pre-grouped in code.
+
+Requires `ANTHROPIC_API_KEY`. Cost tracked in `run_costs.json`.
 
 ---
 
-## Step 6 — Synthesize
+## Step 4 — Synthesize (`02_brief.md`)
 
-1. Concatenate all topic summary texts + watch → `prompts.build_synthesis_prompt` → `02_brief.md`.
-2. Restructure markdown only → `02_brief.json`.
+**Second LLM step (Anthropic Opus).** Concatenates all `01_summaries/*.md` + `ticker_universe/overview.md` → final brief (`02_brief.md`).
 
-Synthesis may shorten or omit weak bullets; it does not re-fetch news. Stories only survive if they were in a summary block (including **Unassigned**).
 
 ---
 
-## Output layout
+## Folder map
 
 ```
 user_data/market_brief/<YYYY-MM-DD>/
-├── 00_news/           Raw JSON per topic + _unassigned.json
-├── 01_summaries/      Per-topic Perplexity markdown
-├── 02_brief.md        ← read this
-├── 02_brief.json
+├── source/                    # Step 1 — raw fetch audit
+│   ├── general/
+│   ├── channel/<slug>/
+│   ├── ticker/<SYMBOL>/
+│   ├── ticker_universe/overview.md
+│   └── _manifest.json
+├── 00_news/                   # Step 2 — (planned) grouped by category
+├── 01_summaries/              # Step 3 — LLM summaries per topic
+├── 02_brief.md                # Step 4 — final brief
+├── run_costs.json             # Anthropic API cost breakdown
+├── 02_brief.json              # (legacy runs only)
 ├── ingest_stats.json
-├── run.log
-├── usage.json
-└── qa_funnel.md       Only with --qa-log or MARKET_BRIEF_QA_LOG=1
+└── run.log
 ```
-
-Postgres `benzinga_articles` caches ingested rows; runs purge rows older than 7 days.
-
-**`run.log`** includes:
-
-- **INGEST** / **ROUTING** breakdown (per source, dedupe, per theme/sector/unassigned)
-- **STAGE** banners (`INGEST`, `SUMMARIZE`, `WATCH`, `SYNTHESIZE`)
-- Every **Perplexity** call: `PERPLEXITY START | … | task: …` and on failure `PERPLEXITY RETRY` / `PERPLEXITY FAILED` with the same label
-
-Use `--qa-log` for the longer `qa_funnel.md` file.
 
 ---
 
-## Run
-
-Inside the **backend container** (`POLYGON_API_KEY`, `PERPLEXITY_API_KEY`):
+## Commands
 
 ```bash
+# Preview screener universe + topics (no API)
 docker compose exec backend python -m market_brief.run --dry-run
-docker compose exec backend python -m market_brief.run
-docker compose exec backend python -m market_brief.run --asof 2026-05-15
-docker compose exec backend python -m market_brief.run --qa-log
+
+# Full pipeline (deletes and rewrites source/, then Anthropic brief)
+docker compose exec backend python -m market_brief.run --asof 2026-05-31
+
+# Ingest only (rewrite source/; no LLM)
+docker compose exec backend python -m market_brief.run --skip-llm-summary --asof 2026-05-31
+
+# LLM only (existing source/)
+docker compose exec backend python -m market_brief.run --skip-ingest --asof 2026-05-31
+
+# Resume after partial failure (retry placeholders + Opus synthesis)
+docker compose exec backend python -m market_brief.run --asof 2026-05-31 --resume
+
+# Label a past calendar day
+docker compose exec backend python -m market_brief.run --asof 2026-05-31
 ```
 
-UI **Run brief** → `POST /api/market-brief/run` (optional body `{"qa_log": true}`).
+---
 
-`--qa-log` writes `qa_funnel.md`: API pull counts, dedupe, per-topic assignment sizes, unassigned count, summarize stats, usage.
+## Config highlights (`config.py`)
+
+| Setting | Default | Effect |
+|---------|---------|--------|
+| `TICKER_UNIVERSE_TOP_N` | 10 | Names per screen × cap bucket |
+| `TICKER_NEWS_EXTRA_HOURS` | 24 | Ticker fetch starts before general 5 AM |
+| `PER_TICKER_LIMIT` | 25 | Max articles per ticker API call |
+| `GENERAL_NEWS_LIMIT` | 100 | General feed cap |
+| `MARKET_BRIEF_SUMMARIZE_BACKEND` | `perplexity` | `ollama` for local per-article summarize |
 
 ---
 
-## What to edit
+## Troubleshooting
 
-| File | Controls |
-|------|----------|
-| `config.py` | Sectors, ingest limits, channel list, models, `QA_LOG_ENABLED` |
-| `user_data/themes.json` | Theme names, descriptions, ticker lists |
-| `tape.py` | `SECTOR_TICKERS` baskets and index ETFs for verified tape |
-| `prompts.py` | Summary and brief voice/structure |
+| Problem | Likely cause |
+|---------|----------------|
+| Huge `00_news/` but thin brief | Summarize/synth failed or skipped; check `run.log` |
+| Name only in `_unassigned.json` | Ticker not in any `themes.json` basket |
+| Empty `source/ticker/SYM/` | No Benzinga stories in the extended window for that symbol |
+| `too_many_prompt_tokens` on synth | Ollama summaries too large; use Perplexity summarize for production |
 
-**Legacy:** `MARKET_BRIEF_USE_WEB_PROBES=1` skips Benzinga ingest and uses old Perplexity web-search probes per topic instead.
-
----
-
-## Module map
-
-| Module | Role |
-|--------|------|
-| `run.py` | CLI |
-| `pipeline.py` | Orchestrates stages |
-| `topics.py` | Load sectors + themes |
-| `ingest.py` | Fetch, dedupe, assign, snapshots |
-| `summarize.py` | Per-topic + unassigned summaries |
-| `tape.py` | OHLC tape for prompts |
-| `prompts.py` | All LLM prompts |
-| `persist.py` | Write `01_summaries/` |
-| `funnel_log.py` | `qa_funnel.md` |
-| `discover_channels.py` | Probe Polygon channel slugs |
-| `discover_themes.py` | Propose `themes.json` updates from unassigned routing |
-| `theme_discovery.py` | Clustering / proposal builder |
-| `themes_io.py` | Load/save themes + apply approved proposals |
-| `backend/benzinga_news.py` | Polygon API + DB |
+Channel slug probe: `docker compose exec backend python -m market_brief.discover_channels`

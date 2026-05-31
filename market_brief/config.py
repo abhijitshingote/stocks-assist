@@ -128,8 +128,38 @@ CATALYST_ANGLES: list[dict[str, str]] = [
 # Benzinga ingest
 # ---------------------------------------------------------------------------
 
+# Ticker universe for per-symbol Benzinga pulls (DB screener slices, not themes.json).
+TICKER_UNIVERSE_TOP_N = 10
+TICKER_UNIVERSE_CAP_BUCKETS: tuple[str, ...] = ("mega", "large", "mid_small")
+# First claim wins when a symbol qualifies for multiple screens (see dedupe in screener_universe).
+TICKER_UNIVERSE_SLICE_PRIORITY: tuple[str, ...] = (
+    "r1d",
+    "vol_spike_5d",
+    "main_view_ti65",
+)
+VOLSPIKE_GAPPER_WINDOW_DAYS = 5
+
+# Mirrors backend/app.py MARKET_CAP_CATEGORIES (micro excluded from brief universe).
+MARKET_CAP_CATEGORIES: dict[str, dict[str, int | None]] = {
+    "micro": {"min": 0, "max": 200_000_000},
+    "small": {"min": 200_000_000, "max": 2_000_000_000},
+    "mid": {"min": 2_000_000_000, "max": 20_000_000_000},
+    "large": {"min": 20_000_000_000, "max": 100_000_000_000},
+    "mega": {"min": 100_000_000_000, "max": None},
+    # Brief ticker universe: small + mid caps in one bucket (micro excluded).
+    "mid_small": {"min": 200_000_000, "max": 20_000_000_000},
+}
+
+# Global liquidity + industry filters (mirrors scanner UI / daily_screener).
+LIQUIDITY_MIN_AVG_VOL_10D = 50_000
+LIQUIDITY_MIN_DOLLAR_VOLUME = 10_000_000
+LIQUIDITY_MIN_PRICE = 3.0
+EXCLUDED_INDUSTRIES = frozenset({"Biotechnology"})
+
 # Deprecated: ingest uses trading_calendar (5:00 AM ET anchor). Kept for empty-topic copy fallback.
 NEWS_WINDOW_HOURS = 24
+# Per-ticker pulls start this many hours before the general/channel window (5 AM ET anchor).
+TICKER_NEWS_EXTRA_HOURS = 24
 PER_TICKER_LIMIT = 25
 GENERAL_NEWS_LIMIT = 100
 # Extra channel-scoped pulls (Polygon ``channels=``).
@@ -170,6 +200,27 @@ UNASSIGNED_TOPIC_DESC = (
     "Benzinga articles in the ingest window that did not match any "
     "theme or sector ticker assignment — still summarized for the brief."
 )
+
+# Summarize stage runs these topics first (exact names from themes.json / SECTORS).
+# Unassigned always runs last. Remaining topics keep load_topics() order among themselves.
+SUMMARIZE_TOPIC_PRIORITY: list[str] = [
+    "AI Compute",
+    "Memory & Interconnect",
+    "Optical & Photonics",
+]
+
+# ---------------------------------------------------------------------------
+# Summarize backend — Perplexity (chunked topics) or Ollama (per-article snippets)
+# ---------------------------------------------------------------------------
+
+SUMMARIZE_BACKEND = os.getenv("MARKET_BRIEF_SUMMARIZE_BACKEND", "perplexity").lower()
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
+OLLAMA_MODEL = os.getenv("MARKET_BRIEF_OLLAMA_MODEL", "gemma4:latest")
+OLLAMA_NUM_PREDICT = 8192
+OLLAMA_NUM_CTX = 8192
+OLLAMA_TEMPERATURE = 0.15
+OLLAMA_TIMEOUT_SECONDS = 600
+OLLAMA_ARTICLE_BODY_MAX_CHARS = 12_000
 
 # ---------------------------------------------------------------------------
 # Perplexity — topic summaries + synthesis (news from Benzinga, not web probes)

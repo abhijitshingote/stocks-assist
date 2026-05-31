@@ -1,0 +1,330 @@
+{
+  "source_kind": "ticker",
+  "source_key": "NXT",
+  "window": "2026-05-28 05:00 EDT → 2026-05-31 06:00 EDT (session 2026-05-29, ticker −24h vs general)",
+  "anchor_session": "2026-05-29",
+  "published_gte_utc": "2026-05-28T09:00:00+00:00",
+  "published_lte_utc": "2026-05-31T10:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 15,
+  "articles": [
+    {
+      "benzinga_id": 52887114,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-29T19:43:00Z",
+      "last_updated": "2026-05-29T19:43:00Z",
+      "title": "Jefferies Maintains Buy on Nextpower, Raises Price Target to $159",
+      "teaser": "Jefferies  analyst Julien Dumoulin-Smith   maintains Nextpower (NASDAQ:NXT) with a Buy and raises the price target from $145 to $159.",
+      "body": "Jefferies  analyst Julien Dumoulin-Smith   maintains Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) with a Buy and raises the price target from $145 to $159.",
+      "url": "https://www.benzinga.com/news/26/05/52887114/jefferies-maintains-buy-on-nextpower-raises-price-target-to-159",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52882697,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-29T17:50:18Z",
+      "last_updated": "2026-05-29T17:50:19Z",
+      "title": "BNP Paribas Maintains Outperform on Nextpower, Raises Price Target to $182",
+      "teaser": "BNP Paribas  analyst Moses Sutton   maintains Nextpower (NASDAQ:NXT) with a Outperform and raises the price target from $177 to $182.",
+      "body": "BNP Paribas  analyst Moses Sutton   maintains Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) with a Outperform and raises the price target from $177 to $182.",
+      "url": "https://www.benzinga.com/news/26/05/52882697/bnp-paribas-maintains-outperform-on-nextpower-raises-price-target-to-182",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52882016,
+      "author": "benzinga insights",
+      "published": "2026-05-29T17:35:42Z",
+      "last_updated": "2026-05-29T17:35:43Z",
+      "title": "10 Industrials Stocks Whale Activity In Today&#39;s Session",
+      "teaser": " ",
+      "body": "<p>This whale alert can help traders discover the next big trading opportunities.</p>\n<p>Whales are entities with large sums of money and we track their transactions here at Benzinga on our options activity scanner.</p>\n<p>Traders often look for circumstances when the market estimation of an option diverges away from its normal worth. Abnormal amounts of trading activity could push option prices to hyperbolic or underperforming levels. </p>\n<p>Below are some instances of options activity happening in the Industrials sector:  <table>\n<thead>\n<tr>\n<th><strong>Symbol</strong></th>\n<th><strong>PUT/CALL</strong></th>\n<th><strong>Trade Type</strong></th>\n<th><strong>Sentiment</strong></th>\n<th><strong>Exp. Date</strong></th>\n<th><strong>Strike Price</strong></th>\n<th><strong>Total Trade Price</strong></th>\n<th><strong>Open Interest</strong></th>\n<th><strong>Volume</strong></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>SMR</td>\n<td>CALL</td>\n<td>SWEEP</td>\n<td>BEARISH</td>\n<td>01/15/27</td>\n<td>$20.00</td>\n<td>$276.1K</td>\n<td>13.2K</td>\n<td>7.1K</td>\n</tr>\n<tr>\n<td>SPCE</td>\n<td>CALL</td>\n<td>TRADE</td>\n<td>NEUTRAL</td>\n<td>01/15/27</td>\n<td>$5.00</td>\n<td>$29.3K</td>\n<td>26.0K</td>\n<td>3.0K</td>\n</tr>\n<tr>\n<td>ALK</td>\n<td>CALL</td>\n<td>TRADE</td>\n<td>BULLISH</td>\n<td>07/17/26</td>\n<td>$52.50</td>\n<td>$87.0K</td>\n<td>1.9K</td>\n<td>1.3K</td>\n</tr>\n<tr>\n<td>BE</td>\n<td>CALL</td>\n<td>SWEEP</td>\n<td>BULLISH</td>\n<td>06/05/26</td>\n<td>$320.00</td>\n<td>$26.7K</td>\n<td>560</td>\n<td>994</td>\n</tr>\n<tr>\n<td>UAL</td>\n<td>PUT</td>\n<td>TRADE</td>\n<td>BEARISH</td>\n<td>09/18/26</td>\n<td>$115.00</td>\n<td>$56.7K</td>\n<td>488</td>\n<td>120</td>\n</tr>\n<tr>\n<td>NXT</td>\n<td>PUT</td>\n<td>SWEEP</td>\n<td>BULLISH</td>\n<td>08/21/26</td>\n<td>$150.00</td>\n<td>$235.8K</td>\n<td>9</td>\n<td>113</td>\n</tr>\n<tr>\n<td>RUN</td>\n<td>CALL</td>\n<td>TRADE</td>\n<td>BULLISH</td>\n<td>01/15/27</td>\n<td>$13.00</td>\n<td>$61.3K</td>\n<td>1.1K</td>\n<td>112</td>\n</tr>\n<tr>\n<td>GEV</td>\n<td>CALL</td>\n<td>TRADE</td>\n<td>BULLISH</td>\n<td>03/19/27</td>\n<td>$1000.00</td>\n<td>$35.5K</td>\n<td>61</td>\n<td>108</td>\n</tr>\n<tr>\n<td>UPS</td>\n<td>CALL</td>\n<td>SWEEP</td>\n<td>BEARISH</td>\n<td>01/15/27</td>\n<td>$85.00</td>\n<td>$166.6K</td>\n<td>3.2K</td>\n<td>71</td>\n</tr>\n<tr>\n<td>EOSE</td>\n<td>CALL</td>\n<td>TRADE</td>\n<td>BULLISH</td>\n<td>03/19/27</td>\n<td>$5.00</td>\n<td>$26.9K</td>\n<td>482</td>\n<td>55</td>\n</tr>\n</tbody>\n</table></p>\n<h2>Explanation</h2>\n<p>These itemized elaborations have been created using the accompanying table.  </p>\n<p>•  Regarding <strong>SMR</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/SMR\">SMR</a>), we observe a <strong>call</strong> option <strong>sweep</strong> with <strong>bearish</strong> sentiment. It expires in 231 day(s) on <strong>January 15, 2027</strong>. Parties traded <strong>1000</strong> contract(s) at a <strong>$20.00</strong> strike. This particular call needed to be split into 7 different trades to become filled. The total cost received by the writing party (or parties) was <strong>$276.1K</strong>, with a price of <strong>$276.0</strong> per contract. There were <strong>13234</strong> open contracts at this strike prior to today, and today <strong>7153</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>SPCE</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/SPCE\">SPCE</a>), we observe a <strong>call</strong> option <strong>trade</strong> with <strong>neutral</strong> sentiment. It expires in 231 day(s) on <strong>January 15, 2027</strong>. Parties traded <strong>100</strong> contract(s) at a <strong>$5.00</strong> strike. The total cost received by the writing party (or parties) was <strong>$29.3K</strong>, with a price of <strong>$293.0</strong> per contract. There were <strong>26077</strong> open contracts at this strike prior to today, and today <strong>3017</strong> contract(s) were bought and sold. </p>\n<p>•  For <strong>ALK</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/ALK\">ALK</a>), we notice a <strong>call</strong> option <strong>trade</strong> that happens to be <strong>bullish</strong>, expiring in 49 day(s) on <strong>July 17, 2026</strong>. This event was a transfer of <strong>300</strong> contract(s) at a <strong>$52.50</strong> strike. The total cost received by the writing party (or parties) was <strong>$87.0K</strong>, with a price of <strong>$290.0</strong> per contract. There were <strong>1927</strong> open contracts at this strike prior to today, and today <strong>1309</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>BE</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/BE\">BE</a>), we observe a <strong>call</strong> option <strong>sweep</strong> with <strong>bullish</strong> sentiment. It expires in 7 day(s) on <strong>June 5, 2026</strong>. Parties traded <strong>50</strong> contract(s) at a <strong>$320.00</strong> strike. This particular call needed to be split into 5 different trades to become filled. The total cost received by the writing party (or parties) was <strong>$26.7K</strong>, with a price of <strong>$535.0</strong> per contract. There were <strong>560</strong> open contracts at this strike prior to today, and today <strong>994</strong> contract(s) were bought and sold. </p>\n<p>•  For <strong>UAL</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/UAL\">UAL</a>), we notice a <strong>put</strong> option <strong>trade</strong> that happens to be <strong>bearish</strong>, expiring in 112 day(s) on <strong>September 18, 2026</strong>. This event was a transfer of <strong>50</strong> contract(s) at a <strong>$115.00</strong> strike. The total cost received by the writing party (or parties) was <strong>$56.7K</strong>, with a price of <strong>$1135.0</strong> per contract. There were <strong>488</strong> open contracts at this strike prior to today, and today <strong>120</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>NXT</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>), we observe a <strong>put</strong> option <strong>sweep</strong> with <strong>bullish</strong> sentiment. It expires in 84 day(s) on <strong>August 21, 2026</strong>. Parties traded <strong>103</strong> contract(s) at a <strong>$150.00</strong> strike. This particular put needed to be split into 33 different trades to become filled. The total cost received by the writing party (or parties) was <strong>$235.8K</strong>, with a price of <strong>$2290.0</strong> per contract. There were <strong>9</strong> open contracts at this strike prior to today, and today <strong>113</strong> contract(s) were bought and sold. </p>\n<p>•  For <strong>RUN</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/RUN\">RUN</a>), we notice a <strong>call</strong> option <strong>trade</strong> that happens to be <strong>bullish</strong>, expiring in 231 day(s) on <strong>January 15, 2027</strong>. This event was a transfer of <strong>100</strong> contract(s) at a <strong>$13.00</strong> strike. The total cost received by the writing party (or parties) was <strong>$61.3K</strong>, with a price of <strong>$613.0</strong> per contract. There were <strong>1120</strong> open contracts at this strike prior to today, and today <strong>112</strong> contract(s) were bought and sold. </p>\n<p>•  For <strong>GEV</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/GEV\">GEV</a>), we notice a <strong>call</strong> option <strong>trade</strong> that happens to be <strong>bullish</strong>, expiring in 294 day(s) on <strong>March 19, 2027</strong>. This event was a transfer of <strong>2</strong> contract(s) at a <strong>$1000.00</strong> strike. The total cost received by the writing party (or parties) was <strong>$35.5K</strong>, with a price of <strong>$17750.0</strong> per contract. There were <strong>61</strong> open contracts at this strike prior to today, and today <strong>108</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>UPS</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/UPS\">UPS</a>), we observe a <strong>call</strong> option <strong>sweep</strong> with <strong>bearish</strong> sentiment. It expires in 231 day(s) on <strong>January 15, 2027</strong>. Parties traded <strong>70</strong> contract(s) at a <strong>$85.00</strong> strike. This particular call needed to be split into 6 different trades to become filled. The total cost received by the writing party (or parties) was <strong>$166.6K</strong>, with a price of <strong>$2394.0</strong> per contract. There were <strong>3228</strong> open contracts at this strike prior to today, and today <strong>71</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>EOSE</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/EOSE\">EOSE</a>), we observe a <strong>call</strong> option <strong>trade</strong> with <strong>bullish</strong> sentiment. It expires in 294 day(s) on <strong>March 19, 2027</strong>. Parties traded <strong>55</strong> contract(s) at a <strong>$5.00</strong> strike. The total cost received by the writing party (or parties) was <strong>$26.9K</strong>, with a price of <strong>$490.0</strong> per contract. There were <strong>482</strong> open contracts at this strike prior to today, and today <strong>55</strong> contract(s) were bought and sold. </p>\n<p><strong>Options Alert Terminology</strong><br />\n - <strong>Call Contracts:</strong> The right to buy shares as indicated in the contract.<br />\n - <strong>Put Contracts:</strong> The right to sell shares as indicated in the contract.<br />\n - <strong>Expiration Date:</strong> When the contract expires. One must act on the contract by this date if one wants to use it.<br />\n - <strong>Premium/Option Price:</strong> The price of the contract.  </p>\n<p>For more information, read <a href=\"https://www.benzinga.com/markets/options\">more about unusual options activity</a>.  </p>\n<p>This article was generated by Benzinga's automated content engine and reviewed by an editor.</p>",
+      "url": "https://www.benzinga.com/insights/options/26/05/52882016/10-industrials-stocks-whale-activity-in-todays-session",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_2.jpg?width=2048&height=1536",
+        "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_2.jpg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_2.jpg?width=1024&height=768"
+      ],
+      "channels": [
+        "options"
+      ],
+      "tickers": [
+        "ALK",
+        "BE",
+        "EOSE",
+        "GEV",
+        "NXT",
+        "RUN",
+        "SMR",
+        "SPCE",
+        "UAL",
+        "UPS"
+      ],
+      "tags": [
+        "bzi-auoa"
+      ]
+    },
+    {
+      "benzinga_id": 52879512,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-29T16:28:59Z",
+      "last_updated": "2026-05-29T16:29:00Z",
+      "title": "RBC Capital Maintains Outperform on Nextpower, Raises Price Target to $149",
+      "teaser": "RBC Capital  analyst Christopher Dendrinos   maintains Nextpower (NASDAQ:NXT) with a Outperform and raises the price target from $146 to $149.",
+      "body": "RBC Capital  analyst Christopher Dendrinos   maintains Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) with a Outperform and raises the price target from $146 to $149.",
+      "url": "https://www.benzinga.com/news/26/05/52879512/rbc-capital-maintains-outperform-on-nextpower-raises-price-target-to-149",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52877909,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-29T15:47:37Z",
+      "last_updated": "2026-05-29T15:47:37Z",
+      "title": "Keybanc Maintains Overweight on Nextpower, Raises Price Target to $164",
+      "teaser": "Keybanc  analyst Sophie Karp   maintains Nextpower (NASDAQ:NXT) with a Overweight and raises the price target from $152 to $164.",
+      "body": "Keybanc  analyst Sophie Karp   maintains Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) with a Overweight and raises the price target from $152 to $164.",
+      "url": "https://www.benzinga.com/news/26/05/52877909/keybanc-maintains-overweight-on-nextpower-raises-price-target-to-164",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52877124,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-29T15:30:11Z",
+      "last_updated": "2026-05-29T15:30:12Z",
+      "title": "JP Morgan Maintains Overweight on Nextpower, Raises Price Target to $174",
+      "teaser": "JP Morgan  analyst Mark Strouse   maintains Nextpower (NASDAQ:NXT) with a Overweight and raises the price target from $155 to $174.",
+      "body": "JP Morgan  analyst Mark Strouse   maintains Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) with a Overweight and raises the price target from $155 to $174.",
+      "url": "https://www.benzinga.com/news/26/05/52877124/jp-morgan-maintains-overweight-on-nextpower-raises-price-target-to-174",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52875768,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-29T14:58:26Z",
+      "last_updated": "2026-05-29T14:58:27Z",
+      "title": "Wells Fargo Maintains Overweight on Nextpower, Raises Price Target to $151",
+      "teaser": "Wells Fargo  analyst Praneeth Satish   maintains Nextpower (NASDAQ:NXT) with a Overweight and raises the price target from $143 to $151.",
+      "body": "Wells Fargo  analyst Praneeth Satish   maintains Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) with a Overweight and raises the price target from $143 to $151.",
+      "url": "https://www.benzinga.com/news/26/05/52875768/wells-fargo-maintains-overweight-on-nextpower-raises-price-target-to-151",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52874156,
+      "author": "avi kapoor",
+      "published": "2026-05-29T14:32:13Z",
+      "last_updated": "2026-05-29T14:32:14Z",
+      "title": "Replimune, Dell Technologies, NetApp And Other Big Stocks Moving Higher on Friday",
+      "teaser": "US stocks up, Dow Jones up 171 pts. Replimune Group rises after FDA agreement. Other big gainers include Dell, NetApp, and Okta.",
+      "body": "<p>U.S. stocks rose today, with the Dow Jones index rising around 171 points on Friday.</p>\n\n\n\n<p>Shares of <strong>Replimune Group Inc.</strong> <a href=\"https://www.benzinga.com/quote/REPL\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"REPL\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/REPL\">REPL</a>)</a> rose sharply after the company reached an agreement with the Food and Drug Administration (FDA) to advance the resubmission process for its experimental advanced melanoma treatment.</p>\n\n\n\n<p>The FDA had declined to approve vusolimogene oderparepvec,&nbsp;or&nbsp;RP1, in April, and asked for more data from a well-controlled clinical trial. Replimune&nbsp;plans to resubmit its application to the regulator for the third time in the coming days.</p>\n\n\n\n<p>Replimune Group surged 70.9% to $8.00 on Friday.</p>\n\n\n\n<p>Here are some other big stocks recording gains in today's session.</p>\n\n\n\n<ul class=\"wp-block-list\">\n<li><strong>Mega Fortune Co., Ltd.</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/MGRT\">MGRT</a>) gained 39.2% to $130.00, with a significant surge in daily trading volume, indicating that heightened retail and broad market participation is driving upward momentum.</li>\n\n\n\n<li><strong>Dell Technologies Inc.</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/DELL\">DELL</a>) surged 33.7% to $423.75 after the company reported better-than-expected first-quarter financial results with the fastest quarterly revenue growth since 2018.</li>\n\n\n\n<li><strong>NetApp Inc.</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NTAP\">NTAP</a>) climbed 27.2% to $181.18 after the company reported beat fourth-quarter results and higher-than-expected sales guidance for the first quarter.</li>\n\n\n\n<li><strong>TSS, Inc.</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/TSSI\">TSSI</a>) jumped 25.3% to $16.97.</li>\n\n\n\n<li><strong>PagerDuty, Inc.</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/PD\">PD</a>) rose 21.8% to $9.06. RBC Capital analyst Matthew Hedberg raised PD's price target from $8.00 to $9.00 while maintaining a Sector Perform rating</li>\n\n\n\n<li><strong>Okta, Inc.</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/OKTA\">OKTA</a>) rose 18.5% to $112.28.</li>\n\n\n\n<li><strong>uniQure N.V.</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/QURE\">QURE</a>) climbed 16.6% to $28.98.</li>\n\n\n\n<li><strong>Nextracker Inc.</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) advanced 16.3% to $159.50.</li>\n\n\n\n<li><strong>Chagee Holdings Limited</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CHA\">CHA</a>) rose 16.1% to $11.80 after the company announced a $150 million share buyback program.</li>\n</ul>",
+      "url": "https://www.benzinga.com/markets/equities/26/05/52874156/replimune-dell-technologies-netapp-and-other-big-stocks-moving-higher-on-friday",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2026/05/29/Using-A-Mobile-Phone-To-View-Stocks-And-.jpeg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2026/05/29/Using-A-Mobile-Phone-To-View-Stocks-And-.jpeg?width=1024&height=768",
+        "https://cdn.benzinga.com/files/images/story/2026/05/29/Using-A-Mobile-Phone-To-View-Stocks-And-.jpeg?width=2048&height=1536"
+      ],
+      "channels": [
+        "movers"
+      ],
+      "tickers": [
+        "CHA",
+        "DELL",
+        "MGRT",
+        "NTAP",
+        "NXT",
+        "OKTA",
+        "PD",
+        "QURE",
+        "REPL",
+        "TSSI"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52870374,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-29T13:41:44Z",
+      "last_updated": "2026-05-29T13:41:45Z",
+      "title": "Northland Capital Markets Maintains Outperform on Nextpower, Raises Price Target to $162",
+      "teaser": "Northland Capital Markets  analyst Gus Richard   maintains Nextpower (NASDAQ:NXT) with a Outperform and raises the price target from $148 to $162.",
+      "body": "Northland Capital Markets  analyst Gus Richard   maintains Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) with a Outperform and raises the price target from $148 to $162.",
+      "url": "https://www.benzinga.com/news/26/05/52870374/northland-capital-markets-maintains-outperform-on-nextpower-raises-price-target-to-162",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52866413,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-29T10:50:15Z",
+      "last_updated": "2026-05-29T10:50:15Z",
+      "title": "Needham Reiterates Buy on Nextpower, Maintains $149 Price Target",
+      "teaser": "Needham  analyst Sean Milligan   reiterates Nextpower (NASDAQ:NXT) with a Buy and maintains $149 price target.",
+      "body": "Needham  analyst Sean Milligan   reiterates Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) with a Buy and maintains $149 price target.",
+      "url": "https://www.benzinga.com/news/26/05/52866413/needham-reiterates-buy-on-nextpower-maintains-149-price-target",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "reiteration",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52861213,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-28T21:28:14Z",
+      "last_updated": "2026-05-28T21:28:15Z",
+      "title": "Nextpower Raises FY2027 GAAP EPS Guidance from $3.19-$3.56 to $3.22-$3.64 vs $3.61 Est",
+      "teaser": "Nextpower (NASDAQ:NXT) raises FY2027 GAAP EPS guidance from $3.19-$3.56 to $3.22-$3.64 vs $3.61 analyst estimate..",
+      "body": "Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) raises FY2027 GAAP EPS guidance from $3.19-$3.56 to $3.22-$3.64 vs $3.61 analyst estimate..",
+      "url": "https://www.benzinga.com/news/26/05/52861213/nextpower-raises-fy2027-gaap-eps-guidance-from-3-19-3-56-to-3-22-3-64-vs-3-61-est",
+      "images": [],
+      "channels": [
+        "news",
+        "guidance"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52861202,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-28T21:27:57Z",
+      "last_updated": "2026-05-28T21:27:58Z",
+      "title": "Nextpower Raises FY2027 Adj EPS Guidance from $4.21-$4.59 to $4.30-$4.73 vs $4.37 Est; Raises FY2027 Sales Guidance from $3.800B-$4.100B to $4.000B-$4.400B vs $3.520B Est",
+      "teaser": "Nextpower (NASDAQ:NXT) raises FY2027 Adj EPS guidance from $4.21-$4.59 to $4.30-$4.73 vs $4.37 analyst estimate. Raises FY2027 sales outlook from $3.800 billion-$4.100 billion to $4.000 billion-$4.400 billion vs $3.520",
+      "body": "Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) raises FY2027 Adj EPS guidance from $4.21-$4.59 to $4.30-$4.73 vs $4.37 analyst estimate. Raises FY2027 sales outlook from $3.800 billion-$4.100 billion to $4.000 billion-$4.400 billion vs $3.520 billion estimate.",
+      "url": "https://www.benzinga.com/news/26/05/52861202/nextpower-raises-fy2027-adj-eps-guidance-from-4-21-4-59-to-4-30-4-73-vs-4-37-est-raises-fy2027-sales",
+      "images": [],
+      "channels": [
+        "news",
+        "guidance"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52857854,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-28T20:19:35Z",
+      "last_updated": "2026-05-28T20:19:36Z",
+      "title": "Nextpower Raises FY2027 Revenue Outlook To $4B-$4.4B And EBITDA $845M-$930M",
+      "url": "https://www.benzinga.com/news/26/05/52857854/nextpower-raises-fy2027-revenue-outlook-to-4b-4-4b-and-ebitda-845m-930m",
+      "images": [],
+      "channels": [
+        "news",
+        "guidance"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52857849,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-28T20:19:33Z",
+      "last_updated": "2026-05-28T20:19:34Z",
+      "title": "Nextpower To Acquire Prevalon Energy for Up To $365M To Expand Battery Storage And AI Data Center Power Infrastructure Platform",
+      "teaser": "Acquisition is expected to extend Nextpower&#39;s solar power technology platform with the integration of BESS and energy management softwareExpands market opportunity for energy infrastructure to serve the utility grid, AI",
+      "body": "<ul><li>Acquisition is expected to extend Nextpower's solar power technology platform with the integration of BESS and energy management software</li><li>Expands market opportunity for energy infrastructure to serve the utility grid, AI data centers, and industrial power systems</li><li>Prevalon has over 6 GWh of BESS systems deployed globally and 1.3 GW of firm supply contracts supporting AI and hyperscaler data center infrastructure deployments</li><li>Transaction expected to be accretive to FY27 financial outlook</li></ul><p>Nextpower&#x2122; (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>), a leading provider of solar and power technology solutions for utility-scale power plants, today announced it has entered into a definitive agreement to acquire Prevalon Energy, a U.S.-headquartered joint venture between Mitsubishi Power Americas and EES, for total consideration of up to $365 million, not including cash to be acquired, comprising cash and stock. Closing of the transaction is subject to customary closing conditions, including antitrust regulatory review.</p><p>This press release features multimedia. View the full release here: <a href=\"https://www.businesswire.com/news/home/20260528147848/en/\">https://www.businesswire.com/news/home/20260528147848/en/</a></p><p>Featured technology: Prevalon Energy's Hybrid Power Stabilizer (HPS) at an AI data center</p><p>The acquisition is expected to extend Nextpower's technology platform across BESS and intelligent controls for critical power infrastructure. The Company projects that the global demand for BESS outside China could represent an opportunity of up to $35 billion by 2030, with the U.S. comprising up to $15 billion.</p><p>In connection with the transaction, Nextpower is raising its fiscal year 2027 outlook, which assumes the successful closing of the transaction. Nextpower now expects fiscal 2027 revenue of approximately $4.0 billion to $4.4 billion, compared to its prior outlook of $3.8 billion to $4.1 billion, and adjusted EBITDA of approximately $845 million to $930 million, compared to its prior outlook of $825 million to $900 million. Nextpower will provide additional details on its updated outlook during an investor conference call later today.</p>",
+      "url": "https://www.benzinga.com/26/05/52857849/nextpower-to-acquire-prevalon-energy-for-up-to-365m-to-expand-battery-storage-and-ai-data-center-pow",
+      "images": [],
+      "channels": [],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52857845,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-28T20:19:28Z",
+      "last_updated": "2026-05-28T20:19:28Z",
+      "title": "Nextpower Enters Equity Purchase Agreement To Acquire 100% Of Prevalon In $365M Stock-And-Cash Deal",
+      "teaser": "On May 28, 2026, Nextpower Inc., a Delaware corporation (the &#34;Company&#34;) and Nextpower LLC, a Delaware limited liability company and a wholly owned subsidiary of the Company (&#34;Buyer&#34;), entered into an equity purchase",
+      "body": "<p>On May 28, 2026, Nextpower Inc., a Delaware corporation (the \"Company\") and Nextpower LLC, a Delaware limited liability company and a wholly owned subsidiary of the Company (\"Buyer\"), entered into an equity purchase agreement (the \"Equity Purchase Agreement\") with Prevalon Energy LLC, a Delaware limited liability company (\"Prevalon\") and Emerald Energy Storage LLC, a Delaware limited liability company (\"Seller\"), pursuant to which Buyer has agreed to purchase 100% of the issued and outstanding equity interests of Prevalon from Seller for total consideration of up to $365 million, consisting of (i) approximately $150 million in cash consideration to be paid at closing, (ii) $50 million in stock consideration consisting of shares of Class A common stock of the Company (\"Company Common Stock\") to be issued one year after closing and priced at the average of the daily volume-weighted average prices for Company Common Stock on the Nasdaq Stock Market LLC for each of the 60 consecutive complete trading days ending with May 27, 2026, and (iii) up to $165 million of contingent cash consideration, subject to the terms and conditions of the Equity Purchase Agreement.</p>",
+      "url": "https://www.benzinga.com/m-a/26/05/52857845/nextpower-enters-equity-purchase-agreement-to-acquire-100-of-prevalon-in-365m-stock-and-cash-deal",
+      "images": [],
+      "channels": [
+        "m&a",
+        "news"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "r1d/large",
+  "label": "Top 10 · 1D return · Large cap",
+  "rank": 3
+}

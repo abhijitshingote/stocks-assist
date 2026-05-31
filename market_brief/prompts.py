@@ -506,3 +506,52 @@ Source brief:
 ---
 
 Return JSON only."""
+
+
+def build_article_snippet_prompt(article: dict) -> str:
+    """Per-article actionable snippets (local Ollama path; no web)."""
+    from market_brief.snippet_price import article_body_for_summarize
+
+    tickers = article.get("tickers") or []
+    tickers_label = ", ".join(tickers) if tickers else "(none in metadata)"
+    body = article_body_for_summarize(article)
+    max_chars = config.OLLAMA_ARTICLE_BODY_MAX_CHARS
+    if len(body) > max_chars:
+        body = body[:max_chars] + "\n\n[truncated]"
+
+    return f"""You are a research assistant extracting only the most useful, concrete facts from ONE article.
+Use ONLY the article text. Do not invent facts. Do not search the web.
+
+YOUR GOAL
+Turn the article into dense, scannable bullet points for someone who wants to act on the information.
+Every bullet must contain at least one concrete anchor: a number, a date, a name, or a comparison.
+Where the article gives you enough data to state an obvious implication, state it
+(e.g. if three price targets are listed and the stock is already above two of them, say that).
+
+WHAT TO SKIP
+- Do not open with how much the stock is up or down today.
+- Do not add a section about today's price or chart movement.
+- Analyst price targets and ratings are useful — keep those.
+- If the article is thin on facts, keep the output short. Do not pad it.
+
+SECTIONS — only include a section if the article actually supports it; skip empty ones
+**Analyst Targets** — firm name, analyst (if named), rating, price target, date
+**The Core Story** — what structural shift, product, or market trend the article argues is driving this
+**Demand & Results** — reported revenue, growth rates, orders, backlog, near-term guidance
+**Long-Range Targets** — any multi-year goals management stated, by business line if given
+**Key Risks** — supply issues, execution concerns, valuation; facts only, no chart language
+**Next Catalyst** — upcoming earnings date, revenue and EPS estimates, valuation metrics (P/E etc.)
+**Bottom Line** — 1-2 sentences: the single most actionable takeaway and the biggest risk to it
+
+FORMATTING
+- Bold all key figures: dollar amounts, percentages, dates, targets.
+- Use the section headers above in bold only where they help scanning.
+- If the article covers multiple companies with distinct facts, give each its own block.
+
+Title: {article.get("title") or ""}
+Published: {article.get("published") or article.get("published_date") or ""}
+Tickers: {tickers_label}
+
+Article:
+{body}
+"""

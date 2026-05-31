@@ -1217,6 +1217,27 @@ def api_market_brief_for_date(date_str):
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/market-brief/<date_str>/costs', methods=['GET'])
+def api_market_brief_costs(date_str):
+    """Proxy endpoint for live run cost polling."""
+    data, status_code = make_backend_request(f'/api/market-brief/{date_str}/costs')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch run costs'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief/generate', methods=['POST'])
+def api_market_brief_generate():
+    """Proxy endpoint to run Steps 3–4 pipeline on existing source data."""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        '/api/market-brief/generate', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to start market brief pipeline'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/market-brief/run', methods=['POST'])
 def api_market_brief_run():
     """Proxy endpoint to trigger market brief generation"""

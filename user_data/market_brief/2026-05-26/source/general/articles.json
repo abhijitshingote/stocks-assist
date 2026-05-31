@@ -1,0 +1,11 @@
+{
+  "source_kind": "general",
+  "source_key": "general",
+  "window": "2026-05-22 05:00 EDT → 2026-05-26 06:00 EDT (session 2026-05-22, rule: weekday before 9:30 AM ET → prior session 5:00 AM ET)",
+  "anchor_session": "2026-05-22",
+  "published_gte_utc": "2026-05-22T09:00:00+00:00",
+  "published_lte_utc": "2026-05-26T10:00:00+00:00",
+  "api_limit": 100,
+  "article_count": 0,
+  "articles": []
+}
