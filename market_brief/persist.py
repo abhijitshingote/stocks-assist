@@ -44,13 +44,17 @@ def snippet_path(outdir: Path, benzinga_id: int) -> Path:
     return outdir / "01_summaries" / SNIPPETS_SUBDIR / f"{benzinga_id}.md"
 
 
-def article_source_body(article: dict, *, max_chars: int = 12_000) -> str:
-    """Original Benzinga body for QA diff against the model snippet."""
-    body = (article.get("body_text") or article.get("teaser") or "").strip()
+def article_source_body(article: dict) -> str:
+    """Full Benzinga body for QA diff against the model snippet (no truncation)."""
+    body = (
+        article.get("body")
+        or article.get("body_html")
+        or article.get("body_text")
+        or article.get("teaser")
+        or ""
+    ).strip()
     if not body:
         return "_(no body in article record)_"
-    if len(body) > max_chars:
-        return body[:max_chars] + "\n\n[truncated for QA file]"
     return body
 
 

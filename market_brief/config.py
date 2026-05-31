@@ -220,7 +220,6 @@ OLLAMA_NUM_PREDICT = 8192
 OLLAMA_NUM_CTX = 8192
 OLLAMA_TEMPERATURE = 0.15
 OLLAMA_TIMEOUT_SECONDS = 600
-OLLAMA_ARTICLE_BODY_MAX_CHARS = 12_000
 
 # ---------------------------------------------------------------------------
 # Perplexity — topic summaries + synthesis (news from Benzinga, not web probes)

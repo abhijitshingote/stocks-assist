@@ -10,15 +10,16 @@ from typing import Any
 import anthropic
 from anthropic import RateLimitError
 
+from market_brief.anthropic_pricing import UsageBreakdown
 from market_brief.cost_tracker import CostTracker
 
 logger = logging.getLogger(__name__)
 
 SONNET_MODEL = os.getenv("MARKET_BRIEF_SONNET_MODEL", "claude-sonnet-4-5-20250929")
-OPUS_MODEL = os.getenv("MARKET_BRIEF_OPUS_MODEL", "claude-opus-4-5-20251101")
+OPUS_MODEL = os.getenv("MARKET_BRIEF_OPUS_MODEL", "claude-opus-4-6")
 
 SONNET_LOGICAL = "claude-sonnet-4-5"
-OPUS_LOGICAL = "claude-opus-4-5"
+OPUS_LOGICAL = "claude-opus-4-6"
 
 # Anthropic org limit (input tokens per minute) — pace Sonnet calls to stay under this.
 INPUT_TPM_LIMIT = int(os.getenv("MARKET_BRIEF_INPUT_TPM_LIMIT", "30000"))
@@ -67,6 +68,22 @@ def _retry_wait_seconds(exc: RateLimitError, attempt: int) -> float:
     return min(120, 45 * (attempt + 1))
 
 
+def count_message_tokens(
+    *,
+    model: str,
+    system: str,
+    user_message: str,
+) -> int:
+    """Preflight token count via Anthropic ``messages.count_tokens`` (no generation)."""
+    client = _client()
+    result = client.messages.count_tokens(
+        model=model,
+        system=system,
+        messages=[{"role": "user", "content": user_message}],
+    )
+    return int(result.input_tokens)
+
+
 def complete(
     *,
     model: str,
@@ -87,7 +104,7 @@ def complete(
     for attempt in range(MAX_RETRIES):
         try:
             if use_stream:
-                text, input_tokens, output_tokens = _complete_streaming(
+                text, usage = _complete_streaming(
                     client,
                     model=model,
                     system=system,
@@ -101,18 +118,21 @@ def complete(
                     system=system,
                     messages=[{"role": "user", "content": user_message}],
                 )
-                input_tokens = response.usage.input_tokens
-                output_tokens = response.usage.output_tokens
+                usage = response.usage
                 text = _extract_text(response)
 
-            tracker.record(
-                step=step,
-                model=logical_model,
-                input_tokens=input_tokens,
-                output_tokens=output_tokens,
+            u = UsageBreakdown.from_api(usage)
+            tracker.record_usage(step=step, api_model=model, usage=usage)
+            logger.info(
+                "Anthropic usage step=%s in=%s out=%s cache_write=%s cache_read=%s",
+                step,
+                f"{u.input_tokens:,}",
+                f"{u.output_tokens:,}",
+                f"{u.cache_creation_input_tokens:,}",
+                f"{u.cache_read_input_tokens:,}",
             )
             if pace_after and logical_model == SONNET_LOGICAL:
-                pause_for_rate_limit(input_tokens)
+                pause_for_rate_limit(u.input_tokens)
             return text
         except RateLimitError as e:
             last_exc = e
@@ -150,7 +170,7 @@ def _complete_streaming(
     system: str,
     user_message: str,
     max_tokens: int,
-) -> tuple[str, int, int]:
+) -> tuple[str, Any]:
     """Stream a long response (required for large Opus synthesis requests)."""
     parts: list[str] = []
     with client.messages.stream(
@@ -162,7 +182,7 @@ def _complete_streaming(
         for chunk in stream.text_stream:
             parts.append(chunk)
         final = stream.get_final_message()
-    return "".join(parts), final.usage.input_tokens, final.usage.output_tokens
+    return "".join(parts), final.usage
 
 
 def extract_text_from_response(response: Any) -> str:

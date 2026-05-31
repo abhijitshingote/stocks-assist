@@ -791,6 +791,7 @@
     const MODEL_LABELS = {
         'claude-sonnet-4-5': 'Sonnet',
         'claude-opus-4-5': 'Opus',
+        'claude-opus-4-6': 'Opus',
     };
 
     let briefTodayDate = null;
@@ -818,7 +819,6 @@
                     const stageLabel = (s) => {
                         if (!s) return 'Running…';
                         if (s === 'ingest' || s === 'step1_fetch') return 'Fetching news';
-                        if (s === 'step3_fact_extraction') return 'Extracting facts';
                         if (s === 'step4_synthesis') return 'Synthesizing brief';
                         return s.replace(/_/g, ' ');
                     };
@@ -1060,12 +1060,8 @@
                 </table>
                 <div class="cost-metrics">
                     <div class="cost-metric-card">
-                        <div class="cost-metric-label">Step 3 total</div>
-                        <div class="cost-metric-value">${formatCost2(runCosts.step3_cost_usd)}</div>
-                    </div>
-                    <div class="cost-metric-card">
-                        <div class="cost-metric-label">Step 4 total</div>
-                        <div class="cost-metric-value">${formatCost2(runCosts.step4_cost_usd)}</div>
+                        <div class="cost-metric-label">Total cost</div>
+                        <div class="cost-metric-value">${formatCost2(runCosts.total_cost_usd)}</div>
                     </div>
                 </div>
             </div>

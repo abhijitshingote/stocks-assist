@@ -515,9 +515,6 @@ def build_article_snippet_prompt(article: dict) -> str:
     tickers = article.get("tickers") or []
     tickers_label = ", ".join(tickers) if tickers else "(none in metadata)"
     body = article_body_for_summarize(article)
-    max_chars = config.OLLAMA_ARTICLE_BODY_MAX_CHARS
-    if len(body) > max_chars:
-        body = body[:max_chars] + "\n\n[truncated]"
 
     return f"""You are a research assistant extracting only the most useful, concrete facts from ONE article.
 Use ONLY the article text. Do not invent facts. Do not search the web.

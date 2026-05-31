@@ -81,6 +81,216 @@ def concat_articles(articles: list[dict[str, Any]]) -> str:
     return "\n---\n".join(blocks)
 
 
+def _benzinga_id_int(article: dict[str, Any]) -> int | None:
+    bid = article.get("benzinga_id")
+    if bid is None:
+        return None
+    return int(bid)
+
+
+def _ticker_label(article: dict[str, Any], *, folder_symbol: str = "") -> str:
+    tickers = article.get("tickers") or []
+    if tickers:
+        return ", ".join(str(t) for t in tickers)
+    if folder_symbol:
+        return folder_symbol
+    return "—"
+
+
+def format_brief_article_block(
+    article: dict[str, Any],
+    *,
+    channel: str,
+    ticker: str = "",
+) -> str:
+    """Single article block for Step 4 synthesis input."""
+    title = (article.get("title") or "").strip()
+    body = (
+        article.get("body")
+        or article.get("body_html")
+        or article.get("body_text")
+        or ""
+    ).strip()
+    ticker_part = ticker or _ticker_label(article)
+    return f"[TICKER: {ticker_part}] [{channel}] {title}\n{body}\n---\n"
+
+
+def all_ticker_symbols(source_dir: Path) -> list[str]:
+    """Union of screener overview symbols and on-disk ``source/ticker/<SYM>/`` dirs."""
+    syms: set[str] = set()
+    overview_path = source_dir / "ticker_universe" / "overview.md"
+    for _, batch in parse_ticker_batches_from_overview(overview_path):
+        syms.update(batch)
+    ticker_root = source_dir / "ticker"
+    if ticker_root.is_dir():
+        for d in ticker_root.iterdir():
+            if d.is_dir():
+                syms.add(d.name)
+    return sorted(syms)
+
+
+def audit_step4_source(
+    source_dir: Path,
+    *,
+    channel_text: str | None = None,
+    ticker_text: str | None = None,
+) -> dict[str, Any]:
+    """Coverage stats for logging — confirms ingest → Step 4 alignment."""
+    general_n = len(load_articles_file(source_dir / "general" / "articles.json"))
+    channel_n = 0
+    channel_dir = source_dir / "channel"
+    if channel_dir.is_dir():
+        for slug_dir in channel_dir.iterdir():
+            if slug_dir.is_dir():
+                channel_n += len(load_articles_file(slug_dir / "articles.json"))
+    ticker_n = 0
+    ticker_syms = all_ticker_symbols(source_dir)
+    for sym in ticker_syms:
+        ticker_n += len(load_articles_file(source_dir / "ticker" / sym / "articles.json"))
+
+    unique = load_all_source_articles(source_dir)
+    if channel_text is None or ticker_text is None:
+        channel_text, ticker_text = build_step4_summaries_text(source_dir)
+    ch_text = channel_text or ""
+    tk_text = ticker_text or ""
+    blocks_ch = ch_text.count("---\n") if ch_text else 0
+    blocks_tk = tk_text.count("---\n") if tk_text else 0
+
+    ids_general_ch: set[int] = set()
+    for path in [source_dir / "general" / "articles.json"] + list(
+        (source_dir / "channel").glob("*/articles.json")
+    ):
+        for a in load_articles_file(path):
+            bid = _benzinga_id_int(a)
+            if bid is not None:
+                ids_general_ch.add(bid)
+
+    ticker_only = 0
+    for sym in ticker_syms:
+        for a in load_articles_file(source_dir / "ticker" / sym / "articles.json"):
+            bid = _benzinga_id_int(a)
+            if bid is not None and bid not in ids_general_ch:
+                ticker_only += 1
+
+    manifest: dict[str, Any] = {}
+    manifest_path = source_dir / "_manifest.json"
+    if manifest_path.exists():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            manifest = {}
+
+    article_chars = len(ch_text) + len(tk_text)
+    return {
+        "general_rows": general_n,
+        "channel_rows": channel_n,
+        "ticker_rows": ticker_n,
+        "raw_rows_total": general_n + channel_n + ticker_n,
+        "unique_benzinga_ids": len(unique),
+        "step4_blocks_channel": blocks_ch,
+        "step4_blocks_ticker": blocks_tk,
+        "step4_blocks_total": blocks_ch + blocks_tk,
+        "ticker_only_articles": ticker_only,
+        "ticker_symbols": len(ticker_syms),
+        "coverage_ok": len(unique) == blocks_ch + blocks_tk,
+        "article_chars": article_chars,
+        "estimated_tokens_chars_per_3_5": estimate_tokens(ch_text + tk_text),
+        "general_window": manifest.get("general_window"),
+        "ticker_window": manifest.get("ticker_window"),
+    }
+
+
+def build_step4_summaries_text(source_dir: Path) -> tuple[str, str]:
+    """Build channel_summaries and ticker_summaries from raw source/ articles.
+
+    Articles are deduped globally by benzinga_id (ingest order: general → channels → tickers).
+    Each article appears once: channel/general first, then ticker-only extras.
+    """
+    seen: set[int] = set()
+    channel_sections: list[str] = []
+
+    general_path = source_dir / "general" / "articles.json"
+    general_blocks: list[str] = []
+    for article in dedupe_articles(load_articles_file(general_path)):
+        bid = _benzinga_id_int(article)
+        if bid is None or bid in seen:
+            continue
+        seen.add(bid)
+        general_blocks.append(
+            format_brief_article_block(
+                article,
+                channel="general",
+                ticker=_ticker_label(article),
+            )
+        )
+    if general_blocks:
+        channel_sections.append(f"## Channel: general\n\n{''.join(general_blocks)}")
+
+    channel_dir = source_dir / "channel"
+    if channel_dir.is_dir():
+        for slug_dir in sorted(channel_dir.iterdir()):
+            if not slug_dir.is_dir():
+                continue
+            slug = slug_dir.name
+            blocks: list[str] = []
+            for article in dedupe_articles(load_articles_file(slug_dir / "articles.json")):
+                bid = _benzinga_id_int(article)
+                if bid is None or bid in seen:
+                    continue
+                seen.add(bid)
+                blocks.append(
+                    format_brief_article_block(
+                        article,
+                        channel=slug,
+                        ticker=_ticker_label(article),
+                    )
+                )
+            if blocks:
+                channel_sections.append(f"## Channel: {slug}\n\n{''.join(blocks)}")
+
+    ticker_sections: list[str] = []
+    overview_path = source_dir / "ticker_universe" / "overview.md"
+    batched: set[str] = set()
+    for batch_label, symbols in parse_ticker_batches_from_overview(overview_path):
+        batched.update(symbols)
+        blocks = _ticker_blocks_for_symbols(source_dir, symbols, seen)
+        if blocks:
+            ticker_sections.append(f"## Ticker Group: {batch_label}\n\n{''.join(blocks)}")
+
+    extra_syms = [s for s in all_ticker_symbols(source_dir) if s not in batched]
+    if extra_syms:
+        blocks = _ticker_blocks_for_symbols(source_dir, extra_syms, seen)
+        if blocks:
+            ticker_sections.append(f"## Ticker Group: other_tickers\n\n{''.join(blocks)}")
+
+    return "\n\n".join(channel_sections), "\n\n".join(ticker_sections)
+
+
+def _ticker_blocks_for_symbols(
+    source_dir: Path,
+    symbols: list[str],
+    seen: set[int],
+) -> list[str]:
+    blocks: list[str] = []
+    for sym in symbols:
+        path = source_dir / "ticker" / sym / "articles.json"
+        for article in dedupe_articles(load_articles_file(path)):
+            bid = _benzinga_id_int(article)
+            if bid is None or bid in seen:
+                continue
+            seen.add(bid)
+            ch = article.get("channels") or []
+            channel_label = ", ".join(str(c) for c in ch) if ch else sym
+            blocks.append(
+                format_brief_article_block(
+                    article,
+                    channel=channel_label,
+                    ticker=sym,
+                )
+            )
+    return blocks
+
+
 def estimate_tokens(text: str) -> int:
     return int(len(text) / CHARS_PER_TOKEN)
 

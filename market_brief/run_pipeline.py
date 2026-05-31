@@ -23,61 +23,20 @@ from market_brief import config
 from market_brief.anthropic_client import (
     OPUS_LOGICAL,
     OPUS_MODEL,
-    SONNET_LOGICAL,
-    SONNET_MODEL,
     complete,
+    count_message_tokens,
 )
+from market_brief.anthropic_pricing import estimate_input_cost
 from market_brief.cost_tracker import CostTracker
 from market_brief.prompts_pipeline import (
-    STEP3_SYSTEM_PROMPT,
     STEP4_SYSTEM_PROMPT,
-    step3_user_message,
     step4_user_message,
 )
-from market_brief.source_loader import (
-    channel_article_sets,
-    channel_output_filename,
-    concat_articles,
-    parse_ticker_batches_from_overview,
-    split_oversized_batch,
-    ticker_articles_for_symbols,
-)
+from market_brief.source_loader import audit_step4_source, build_step4_summaries_text
 from market_brief import status as status_mod
 
 logger = logging.getLogger(__name__)
 
-PLACEHOLDER = "# Fact extraction failed\n\n_No material facts extracted for this group._\n"
-PLACEHOLDER_MARKER = "Fact extraction failed"
-
-
-def _is_failed_summary(path: Path) -> bool:
-    if not path.exists():
-        return True
-    text = path.read_text(encoding="utf-8")
-    return PLACEHOLDER_MARKER in text[:300]
-
-
-def _summaries_need_work(summaries_dir: Path, source_dir: Path) -> bool:
-    """True if any Step 3 output is missing or a failed placeholder."""
-    if not summaries_dir.is_dir():
-        return True
-    channel_sets = channel_article_sets(source_dir, {})
-    for slug, articles in channel_sets.items():
-        if not articles:
-            continue
-        out_path = summaries_dir / channel_output_filename(slug)
-        if _is_failed_summary(out_path):
-            return True
-    overview_path = source_dir / "ticker_universe" / "overview.md"
-    for batch_label, symbols in parse_ticker_batches_from_overview(overview_path):
-        articles = ticker_articles_for_symbols(source_dir, symbols, {})
-        if not articles:
-            continue
-        for sub_label, _ in split_oversized_batch(batch_label, articles):
-            out_path = summaries_dir / f"tickers_{sub_label}.md"
-            if _is_failed_summary(out_path):
-                return True
-    return False
 _BRIEF_TZ = ZoneInfo("America/New_York")
 
 
@@ -91,11 +50,6 @@ def _setup_logging(verbose: bool) -> None:
         format="%(asctime)s %(levelname)s %(name)s | %(message)s",
         stream=sys.stdout,
     )
-
-
-def _write_summary(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
 
 
 def _clear_source(outdir: Path) -> None:
@@ -131,131 +85,10 @@ def run_fetch(date_str: str, outdir: Path) -> None:
     )
 
 
-def run_step3(
-    *,
-    date_str: str,
-    source_dir: Path,
-    summaries_dir: Path,
-    tracker: CostTracker,
-    resume: bool = False,
-) -> list[Path]:
-    """Fact extraction: one Sonnet call per channel + ticker batches."""
-    written: list[Path] = []
-    channel_sets = channel_article_sets(source_dir, {})
-
-    for slug, articles in channel_sets.items():
-        out_name = channel_output_filename(slug)
-        out_path = summaries_dir / out_name
-        step_id = f"step3_channel_{slug}"
-        tracker.set_current_step(step_id)
-
-        if not articles:
-            logger.info("Skipping empty channel: %s", slug)
-            continue
-
-        if resume and not _is_failed_summary(out_path):
-            logger.info("Resume: keeping %s", out_path.name)
-            written.append(out_path)
-            continue
-
-        articles_text = concat_articles(articles)
-        user_msg = step3_user_message(
-            source_label=f"channel: {slug}",
-            date_str=date_str,
-            articles_text=articles_text,
-        )
-        try:
-            md = complete(
-                model=SONNET_MODEL,
-                logical_model=SONNET_LOGICAL,
-                system=STEP3_SYSTEM_PROMPT,
-                user_message=user_msg,
-                step=step_id,
-                tracker=tracker,
-            )
-            _write_summary(out_path, md)
-            written.append(out_path)
-            logger.info("Wrote %s (%d articles)", out_path.name, len(articles))
-        except Exception as e:
-            logger.exception("Step 3 failed for channel %s: %s", slug, e)
-            _write_summary(out_path, PLACEHOLDER)
-            written.append(out_path)
-
-    overview_path = source_dir / "ticker_universe" / "overview.md"
-    batches = parse_ticker_batches_from_overview(overview_path)
-    if not batches:
-        logger.warning("No ticker batches parsed from overview; skipping ticker extraction")
-    else:
-        for batch_label, symbols in batches:
-            articles = ticker_articles_for_symbols(source_dir, symbols, {})
-            if not articles:
-                logger.info("Skipping empty ticker batch: %s", batch_label)
-                continue
-
-            sub_batches = split_oversized_batch(batch_label, articles)
-            for sub_label, sub_articles in sub_batches:
-                out_name = f"tickers_{sub_label}.md"
-                out_path = summaries_dir / out_name
-                step_id = f"step3_tickers_{sub_label}"
-                tracker.set_current_step(step_id)
-
-                if resume and not _is_failed_summary(out_path):
-                    logger.info("Resume: keeping %s", out_path.name)
-                    written.append(out_path)
-                    continue
-
-                articles_text = concat_articles(sub_articles)
-                user_msg = step3_user_message(
-                    source_label=f"ticker batch: {sub_label} ({', '.join(symbols[:8])}{'…' if len(symbols) > 8 else ''})",
-                    date_str=date_str,
-                    articles_text=articles_text,
-                )
-                try:
-                    md = complete(
-                        model=SONNET_MODEL,
-                        logical_model=SONNET_LOGICAL,
-                        system=STEP3_SYSTEM_PROMPT,
-                        user_message=user_msg,
-                        step=step_id,
-                        tracker=tracker,
-                    )
-                    _write_summary(out_path, md)
-                    written.append(out_path)
-                    logger.info(
-                        "Wrote %s (%d articles, %d symbols)",
-                        out_path.name,
-                        len(sub_articles),
-                        len(symbols),
-                    )
-                except Exception as e:
-                    logger.exception("Step 3 failed for ticker batch %s: %s", sub_label, e)
-                    _write_summary(out_path, PLACEHOLDER)
-                    written.append(out_path)
-
-    return written
-
-
-def _load_summaries_text(summaries_dir: Path) -> tuple[str, str]:
-    channel_parts: list[str] = []
-    ticker_parts: list[str] = []
-
-    for path in sorted(summaries_dir.glob("*.md")):
-        content = path.read_text(encoding="utf-8")
-        if path.name.startswith("channel_"):
-            name = path.stem.replace("channel_", "", 1)
-            channel_parts.append(f"## Channel: {name}\n\n{content}")
-        elif path.name.startswith("tickers_"):
-            name = path.stem.replace("tickers_", "", 1)
-            ticker_parts.append(f"## Ticker Group: {name}\n\n{content}")
-
-    return "\n\n".join(channel_parts), "\n\n".join(ticker_parts)
-
-
 def run_step4(
     *,
     date_str: str,
     source_dir: Path,
-    summaries_dir: Path,
     outdir: Path,
     tracker: CostTracker,
 ) -> Path:
@@ -266,7 +99,33 @@ def run_step4(
         if overview_path.exists()
         else ""
     )
-    channel_text, ticker_text = _load_summaries_text(summaries_dir)
+    channel_text, ticker_text = build_step4_summaries_text(source_dir)
+    audit = audit_step4_source(source_dir, channel_text=channel_text, ticker_text=ticker_text)
+    logger.info(
+        "Step 4 source audit: %d unique articles → %d prompt blocks "
+        "(channel=%d ticker-only=%d) coverage_ok=%s",
+        audit["unique_benzinga_ids"],
+        audit["step4_blocks_total"],
+        audit["step4_blocks_channel"],
+        audit["ticker_only_articles"],
+        audit["coverage_ok"],
+    )
+    logger.info(
+        "Ingest windows: general=%s | ticker=%s",
+        audit.get("general_window"),
+        audit.get("ticker_window"),
+    )
+    logger.info(
+        "Step 4 article text: %s chars (~%s tokens at chars/3.5; API tokenizer may differ)",
+        f"{audit['article_chars']:,}",
+        f"{audit['estimated_tokens_chars_per_3_5']:,}",
+    )
+    if not audit["coverage_ok"]:
+        logger.warning(
+            "Step 4 coverage mismatch: %d unique in source vs %d blocks in prompt",
+            audit["unique_benzinga_ids"],
+            audit["step4_blocks_total"],
+        )
 
     step_id = "step4_synthesis"
     tracker.set_current_step(step_id)
@@ -277,6 +136,20 @@ def run_step4(
         channel_summaries=channel_text,
         ticker_summaries=ticker_text,
     )
+    try:
+        preflight_in = count_message_tokens(
+            model=OPUS_MODEL,
+            system=STEP4_SYSTEM_PROMPT,
+            user_message=user_msg,
+        )
+        logger.info(
+            "Anthropic count_tokens preflight: %s input tokens (~$%.4f input @ list price)",
+            f"{preflight_in:,}",
+            estimate_input_cost(preflight_in, api_model=OPUS_MODEL),
+        )
+    except Exception as e:  # noqa: BLE001
+        logger.warning("count_tokens preflight failed (non-fatal): %s", e)
+
     brief_md = complete(
         model=OPUS_MODEL,
         logical_model=OPUS_LOGICAL,
@@ -344,29 +217,7 @@ def run_pipeline(
                 f"No source data at {source_dir} — run without --skip-ingest first"
             )
 
-    summaries_dir = outdir / "01_summaries"
-    if not resume:
-        if summaries_dir.exists():
-            shutil.rmtree(summaries_dir)
-        summaries_dir.mkdir(parents=True, exist_ok=True)
-    else:
-        summaries_dir.mkdir(parents=True, exist_ok=True)
-
     tracker = CostTracker.load_or_create(outdir) if resume else CostTracker(outdir=outdir)
-
-    need_step3 = (not resume) or _summaries_need_work(summaries_dir, source_dir)
-    if need_step3:
-        status_mod.write_status(outdir, "running", stage="step3_fact_extraction")
-        logger.info("Step 3: fact extraction for %s (resume=%s)", asof, resume)
-        run_step3(
-            date_str=asof,
-            source_dir=source_dir,
-            summaries_dir=summaries_dir,
-            tracker=tracker,
-            resume=resume,
-        )
-    elif resume:
-        logger.info("Resume: all Step 3 summaries present — skipping to synthesis")
 
     if brief_path.exists() and resume:
         logger.info("Resume: %s already exists — skipping Step 4", brief_path.name)
@@ -376,7 +227,6 @@ def run_pipeline(
         run_step4(
             date_str=asof,
             source_dir=source_dir,
-            summaries_dir=summaries_dir,
             outdir=outdir,
             tracker=tracker,
         )
@@ -400,12 +250,12 @@ def run_pipeline(
 def _print_cost_summary(tracker: CostTracker) -> None:
     print("\n=== Run cost summary ===")
     print(f"  API calls:     {len(tracker.calls)}")
-    print(f"  Step 3 total:  ${tracker.step3_cost_usd:.4f}")
-    print(f"  Step 4 total:  ${tracker.step4_cost_usd:.4f}")
-    print(f"  Grand total:   ${tracker.total_cost_usd:.4f}")
+    print(f"  Total cost:    ${tracker.total_cost_usd:.4f}")
     for rec in tracker.calls:
         print(
-            f"    {rec.step}: in={rec.input_tokens:,} out={rec.output_tokens:,} "
+            f"    {rec.step} ({rec.api_model}): "
+            f"in={rec.input_tokens:,} out={rec.output_tokens:,} "
+            f"cache_r={rec.cache_read_input_tokens:,} "
             f"${rec.total_cost_usd:.4f}"
         )
 
@@ -421,23 +271,23 @@ def main(
     """Program entry; also callable from market_brief.run with explicit flags."""
     if date is None and __name__ == "__main__":
         p = argparse.ArgumentParser(
-            description="Market brief: Benzinga ingest + Anthropic fact extraction + synthesis",
+            description="Market brief: Benzinga ingest + Anthropic synthesis",
         )
         p.add_argument("--date", "--asof", dest="date", help="YYYY-MM-DD (default: today UTC)")
         p.add_argument(
             "--skip-ingest",
             action="store_true",
-            help="Skip Benzinga ingest; run Anthropic Steps 3–4 on existing source/",
+            help="Skip Benzinga ingest; run Anthropic Step 4 on existing source/",
         )
         p.add_argument(
             "--skip-llm-summary",
             action="store_true",
-            help="Ingest only (rewrite source/); skip Anthropic Steps 3–4",
+            help="Ingest only (rewrite source/); skip Anthropic Step 4",
         )
         p.add_argument(
             "--resume",
             action="store_true",
-            help="Resume failed/missing Step 3 summaries + Step 4 (implies --skip-ingest)",
+            help="Resume Step 4 synthesis if missing (implies --skip-ingest)",
         )
         p.add_argument("-v", "--verbose", action="store_true")
         args = p.parse_args()
@@ -478,7 +328,6 @@ def main(
         return 0
 
     print(f"\nBrief written to: {outdir / '02_brief.md'}")
-    print(f"  Summaries:  {outdir / '01_summaries/'}")
     print(f"  Costs:      {outdir / 'run_costs.json'}")
     return 0
 

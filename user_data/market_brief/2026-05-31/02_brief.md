@@ -1,6 +1,6 @@
 ### 🗓 2026-05-31 — Pre-Market Brief
 
-**One-liner**: Dell's $43.8B quarter (+88% YoY) with $16.1B in AI server revenue ignited a mega-cap tech surge, lifting IBM +13.5%, NOW +12.3%, and NTAP +25.8%, while memory names MU (+84% in May, now >$1T market cap) and broader semis (SOXX +24% in May) extended the AI infrastructure rally; Anthropic's $965B valuation round and pending U.S.-Iran ceasefire framework added macro tailwinds.
+**One-liner**: DELL +30% on $16.1B AI server revenue (up 757% YoY) and raised FY27 guide to $165–169B pulls the entire AI hardware chain higher — NTAP +26%, OKTA +30%, HPE +13%, IBM +14% — while S&P 500 closes its 9th consecutive green week at 7,582 as 8 of 11 sectors finished May in the red.
 
 ---
 
@@ -8,160 +8,128 @@
 
 | Ticker | Move | Cap | Catalyst | Theme |
 |--------|------|-----|----------|-------|
-| **DELL** | +30.4% | Mega | Q1 rev $43.8B vs $35.5B est; AI server rev $16.1B (+757% YoY); FY27 guide $165-169B | AI Infrastructure |
-| **OKTA** | +29.5% | Large | Q1 EPS $0.91 vs $0.85 est; cRPO +12% YoY; raised FY27 guide to $3.19-3.21B | SaaS |
-| **MX** | +31.2% | Small | Semiconductor rally spillover; no company-specific catalyst identified | Semiconductors |
-| **PD** | +29.1% | Small | Q1 EPS $0.32 vs $0.25 est; ARR $496M flat YoY; NRR 97% | SaaS |
-| **NTAP** | +25.8% | Large | Q4 rev $1.95B vs $1.91B est; multiyear Google cloud deal; FY27 EPS guide $8.70-9.00 | AI Infrastructure |
-| **CHA** | +25.5% | Small | Q1 EPS $0.38 vs $0.23 est; $150M buyback announced | Consumer |
-| **TSSI** | +23.2% | Small | Q1 EPS $0.08 vs $0.04 est; AI data center infrastructure demand | AI Infrastructure |
-| **SPCE** | +42.8% | Small | Court approved $2.75M shareholder settlement; short squeeze dynamics | Idiosyncratic |
-| **IBM** | +13.5% | Mega | $10B quantum computing commitment over 5 years; $5B Project Lightwell cybersecurity | AI Infrastructure |
-| **NOW** | +12.3% | Mega | Dell AI infrastructure halo; no company-specific news | AI Infrastructure |
-| **HPE** | +12.6% | Large | Dell spillover; earnings due June 1 ⚠️ | AI Infrastructure |
-| **TEAM** | +13.0% | Large | Broad enterprise software rally; no company-specific catalyst | SaaS |
-| **HOOD** | +10.8% | Large | Launched AI trading agents; 3% credit card cash back; Trump Accounts app | Fintech |
-| **WDAY** | +10.6% | Large | Q1 strongest new-bookings in 5 years; beat rev/EPS; raised margin guide | SaaS |
-| **SMCI** | +10.0% | Large | Dell spillover; Taiwan detained 3 for fraudulent server exports | AI Infrastructure |
-| **BURL** | +9.1% | Large | Q1 adj EPS $2.10 vs $1.78 est; comps +6%; raised FY26 guide to $11.45-11.80 | Consumer |
-| **PLTR** | +9.7% | Mega | Broad AI software rally; Snowflake momentum; no new catalyst | AI Infrastructure |
-| **CRM** | +8.9% | Mega | Agentforce ARR $1.2B; processed 28.6T AI tokens (+152% QoQ); guidance slightly soft | SaaS |
-| **ORCL** | +8.8% | Mega | Broad cloud/AI rally; Power Inflow signal triggered at $215.49 | SaaS |
-| **HPQ** | +8.8% | Large | Q2 beat; AI PC mix 44% (up from 35%); FY26 EPS guide $2.90-3.10 | AI Compute |
-| **PANW** | +8.2% | Mega | Cybersecurity sector strength; earnings upcoming | Cybersecurity |
-| **CRWD** | +8.1% | Mega | Sector rally; expanded Project QuiltWorks with insurers; earnings June 3 ⚠️ | Cybersecurity |
-| **ADBE** | +6.4% | Mega | Recovery from prior weakness; no new catalyst | SaaS |
-| **FTNT** | +5.2% | Mega | Cybersecurity sector strength | Cybersecurity |
-| **GRRR** | +15.2% | Small | AI/drone sector momentum | Idiosyncratic |
-| **PURR** | +13.8% | Small | HYPE token rally; Hyperliquid Strategies to join Russell 3000 June 26 | Crypto |
-| **RPD** | +13.4% | Small | SaaS sector strength | SaaS |
-| **ASAN** | +12.8% | Small | Q1 rev $205.1M vs $203.6M est; AI bookings 17% of net new ARR; Stack AI acquisition | SaaS |
-| **ZETA** | +12.8% | Small | Marketing tech AI momentum | SaaS |
-| **BAND** | +11.5% | Small | Communications platform strength | Communications |
-| **WOLF** | -12.0% | Small | SiC demand concerns; prior gap down May 21 | Power Semiconductors |
-| **FCEL** | -10.6% | Small | Fuel cell sector weakness | Clean Energy |
+| **DELL** | +30.4% | Mega | Q1 rev $43.8B vs $35.5B est; AI server rev $16.1B; FY27 guide raised to $165-169B | AI Infra / Servers |
+| **IBM** | +13.5% | Mega | $10B quantum investment; $5B Project Lightwell open-source security; sector rotation | Quantum / Cybersecurity |
+| **NOW** | +12.3% | Mega | CMO Colin Fleming departs to OpenAI as Business CMO; AI platform sentiment | SaaS / AI Agents |
+| **PLTR** | +9.7% | Mega | Continued AI software momentum; sector rotation into enterprise AI names | AI Software / Defense |
+| **CRM** | +8.9% | Mega | Post-earnings recovery; Q1 EPS $3.88 vs $3.12 est; Agentforce $1.2B ARR | SaaS / AI Agents |
+| **ORCL** | +8.8% | Mega | Mega-cap tech rotation; Power Inflow signal at $215.49 | Cloud / AI Infra |
+| **PANW** | +8.2% | Mega | Project QuiltWorks expansion with cyber insurers; pre-earnings momentum ⚠️ | Cybersecurity |
+| **CRWD** | +8.1% | Mega | QuiltWorks AI cyber risk collaboration; Jefferies PT raised to $775 ⚠️ | Cybersecurity |
+| **OKTA** | +29.5% | Large | Q1 EPS $0.91 vs $0.85 est; rev $765M vs $752M; FY27 guide raised; cRPO +12% | Identity / SaaS |
+| **NTAP** | +25.8% | Large | Q4 rev $1.95B vs $1.87B est; FY27 guide $7.33-7.58B vs $7.20B; Google Cloud deal | Data Storage / AI |
+| **NXT** | +13.1% | Large | Prevalon Energy acquisition for $365M; FY27 rev guide raised to $4.0-4.4B | Solar / Battery Storage |
+| **TEAM** | +13.0% | Large | Broader AI software rotation; no specific catalyst identified | SaaS |
+| **HPE** | +12.6% | Large | Sympathy with DELL AI server beat; reports June 1 ⚠️ | AI Infra / Servers |
+| **HOOD** | +10.8% | Large | Trump Accounts app launches; AI agent trading product; states requesting replication | Fintech |
+| **WDAY** | +10.6% | Large | Strongest Q1 new-bookings growth in 5 yrs; Google Cloud Gemini partnership | SaaS / AI |
+| **SMCI** | +10.0% | Large | Taiwan compliance crackdown on smuggled servers; DELL halo effect | AI Servers |
+| **BURL** | +9.1% | Large | Q1 adj EPS $2.10 vs $1.78 est; comp +6%; FY26 guide raised to $11.45-11.80 | Retail |
+| **HPQ** | +8.8% | Large | Q2 EPS $0.86 vs $0.71 est; AI PC mix at 44%; wave of PT raises | PC Hardware |
+| **SPCE** | +42.8% | Small | $2.75M derivative lawsuit settlement; SpaceX IPO proxy frenzy | Space |
+| **MX** | +31.2% | Small | No specific catalyst identified; semiconductor sector momentum | Semiconductors |
+| **PD** | +29.1% | Small | Q1 EPS $0.32 vs $0.25 est; rev $121M vs $120M; FY27 EPS guide raised | SaaS / DevOps |
+| **CHA** | +25.5% | Small | Q1 EPS $0.38 vs $0.23 est; rev $514M vs $456M; $150M buyback | Consumer / Tea |
+| **TSSI** | +23.2% | Small | Director files Form 144 for warrant shares; Dell partnership tailwind | Data Center Services |
+| **GRRR** | +15.2% | Small | No specific catalyst; sector momentum | Idiosyncratic |
+| **ASAN** | +12.8% | Small | Q1 EPS $0.10 vs $0.07 est; Stack AI acquisition; FY27 rev guide raised | SaaS / Work Management |
+| **GAP** | -17.1% | Large | Q1 rev $3.5B vs $3.52B est; FY26 rev guide cut to $15.52-15.67B; JPM downgrade to Neutral | Retail |
+| **AMBA** | -20.3% | Mid | Q2 rev guide $105-111M midpoint below $107.4M est | Semiconductors / Edge AI |
+| **WOLF** | -12.0% | Small | No specific catalyst; continued weakness | SiC / Power Semis |
 
 ---
 
 ### 🧭 Narrative Threads
 
-**AI Infrastructure Spending Inflection** `AI Infrastructure` → ongoing
+**AI Infrastructure Spending Broadens Beyond Chips** `AI Compute / AI Infra` → ongoing
 
-**Dell's** Q1 FY2027 marked the largest earnings surprise in recent memory, with results forcing a complete rerating of AI server demand expectations across the supply chain.
+**DELL**'s Q1 was the defining print of the session: $43.84B revenue (+88% YoY) vs $35.45B est, $4.86 adj EPS vs $2.94 est, $16.1B AI server revenue (+757% YoY), $51.3B AI backlog, and $24.4B in new AI orders. FY27 revenue guide raised to $165–169B from $138–142B; AI server revenue target lifted to $60B. COO Jeff Clarke said some customers are signing multi-year deals without fixed pricing because securing capacity is now the priority.
 
-- **DELL** Q1 revenue $43.84B (+88% YoY) vs $35.45B consensus; adjusted EPS $4.86 (+214% YoY) vs $2.94 consensus
-- AI server revenue $16.1B (+757% YoY); AI-related orders $24.4B; AI server backlog $51.3B (record)
-- FY2027 revenue guidance raised to $165B–$169B from $138B–$142B; AI server target raised to $60B from $50B
-- Stock +30.4% Friday, added ~$62B in market value; up ~80% since Trump's May 8 "buy a Dell" comment
-- COO Clarke: memory (DRAM, NAND) and CPU constraints persist; repricing "every day" due to component inflation
-- Susquehanna upgraded to Positive, raised PT to $700 (street high); Piper Sandler $497; Wells Fargo $505
-- $9.69B five-year Pentagon contract for Microsoft software licensing (announced May 27)
-- **HPE** +12.6%, **SMCI** +10.0% on Dell halo; both lack company-specific news
-- **HPE** earnings due June 1 ⚠️
-- **NTAP** +25.8%: Q4 rev $1.95B vs $1.91B est; multiyear Google cloud agreement; FY27 EPS guide $8.70–$9.00; operating margin 32% (record)
+- **DELL** FY27 EPS guide raised to $17.90 from $12.90 vs $13.09 est.
+- Melius raised PT to $565 (street-high); Susquehanna upgraded to Positive at $700; Wells Fargo to $505; BofA to $500; Piper Sandler to $497; Barclays to $550.
+- Michael Dell's net worth increased ~$32B on Friday, passing Zuckerberg for 6th-richest globally.
+- Dell won a $9.69B five-year Pentagon contract for Microsoft software licensing across DoD, IC, and Coast Guard on Wednesday.
+- **HPE** +12.6% on pure sympathy — no company-specific news; reports Q2 on June 1 ⚠️.
+- **SMCI** +10.0% partly on DELL halo, partly on Taiwan compliance crackdown that intercepted 50+ diverted servers.
+- **HPQ** +8.8% on Q2 EPS $0.86 vs $0.71 est; AI PC mix rose to 44% from 35% in Q1; FY26 adj EPS narrowed to $2.90–3.10. TD Cowen, UBS, JP Morgan all raised PTs.
+- **NTAP** +25.8% on Q4 rev $1.95B (+12% YoY) vs $1.87B est; FY27 guide $7.33–7.58B vs $7.20B est; EPS guide $8.70–9.00 vs $8.55 est. Google Distributed Cloud multi-year enterprise agreement was the key product-revenue driver. ~500 AI wins in Q4 alone, 1,100 for FY26.
+- **TSSI** +23.2% — Dell partner, data center services company; Director filed Form 144 for warrant shares.
+- **MU** +2.7% Friday but +84% for May (best month since Nov 1985); Susquehanna raised PT to $1,750; Mizuho to $1,150; DA Davidson to $1,500. Earnings June 24 ⚠️.
+- S&P 500 info tech sector +16% in May; SOXX semiconductor index +24% in May — strongest two-month advance in SOXX history.
+- Dell disclosed DRAM, NAND, and CPU shortages are its biggest supply bottlenecks; said it is "repricing every day."
 
-**IBM** announced $15B in strategic commitments spanning quantum and cybersecurity:
-- $10B over 5 years for quantum computing; goal: fault-tolerant quantum computer by 2029
-- Project Lightwell: $5B initiative with Red Hat for open-source security; 20,000+ engineers; tested by Goldman Sachs, JPMorgan, Visa
-- Stock +13.5%
+**Enterprise AI Software Acceleration** `SaaS / AI Agents` → ongoing
 
----
+A cluster of enterprise software names surged on AI monetization evidence, with **OKTA**, **CRM**, **NOW**, **WDAY**, **ASAN**, **PD**, and **MDB** all moving on earnings or AI-driven catalysts.
 
-**Memory & Interconnect Surge** `Memory & Interconnect` → ongoing
+- **OKTA** +29.5%: Q1 EPS $0.91 vs $0.85 est; rev $765M vs $752M; cRPO $2.50B (+12% YoY); RPO $4.72B (+16%); FY27 adj EPS raised to $3.79–3.87; FY27 rev raised to $3.19–3.21B. AI agent security pipeline described as "bigger than anything we've ever seen." BTIG raised PT to $119; Needham to $120; JP Morgan to $120; Guggenheim reiterated Buy at $138 ("grossly undervalued asset").
+- **CRM** +8.9% (recovery from Wednesday's -2% after-hours): Q1 rev $11.13B vs $11.05B est; adj EPS $3.88 vs $3.12 est; Agentforce ARR $1.2B; 28.6T tokens processed (+152% QoQ). Q2 rev guide $11.27–11.35B slightly below est. Bernstein maintained Underperform at $173; DA Davidson Neutral at $175; Wedbush reiterated $325 Outperform.
+- **NOW** +12.3%: CMO Colin Fleming announced departure to OpenAI as Business CMO for its business division. Stock appears to be riding broader AI software rotation rather than company-specific fundamental catalyst.
+- **WDAY** +10.6%: Strongest Q1 new-bookings growth in 5 years; beat on revenue and EPS; raised full-year margin forecast. Expanded partnership with Google Cloud — Gemini becomes default AI model for Sana.
+- **MDB** +0.9% (gapped up 23% post-earnings Thursday, gave back most Friday): Q1 rev $688M (+25% YoY) vs $665M est; Atlas rev +29% YoY; FY27 rev raised to $2.92–2.96B. Needham raised PT from $300 to $400; Morgan Stanley to $380; Citigroup to $455.
+- **ASAN** +12.8%: Q1 EPS $0.10 vs $0.07 est; rev $205M vs $204M; acquired Stack AI (cross-system AI workflow platform) for ~$75M upfront cash + equity earnout. FY27 rev raised to $855.5–863.5M. AI product bookings 17% of net new ARR, ahead of 15% full-year target.
+- **PD** +29.1%: Q1 EPS $0.32 vs $0.25 est; rev $121M vs $120M; FY27 adj EPS raised to $1.27–1.32.
 
-**MU** completed its best month since November 1985, crossing $1T market cap as Dell's earnings highlighted persistent memory shortages benefiting DRAM/NAND suppliers.
+**Cybersecurity Pre-Earnings Positioning** `Cybersecurity` → ongoing
 
-- **MU** +84% in May; +24.9% on week; now trades ~9–10x forward earnings despite AI tailwinds
-- DA Davidson raised PT to $1,500; Mizuho to $1,150; Susquehanna to $1,750
-- Dell CFO Kennedy cited memory/CPU constraints as primary bottlenecks
-- **SNDK** benefiting from same dynamics; Susquehanna raised PT to $3,250 from $2,000
-- SOXX semiconductor ETF +24% in May; +40% in April (strongest two-month advance in fund history)
-- SK Hynix, Samsung also expanding HBM capacity; analysts warn supply additions could reverse cycle late 2027–2028
+**PANW** +8.2% and **CRWD** +8.1% both rallied ahead of imminent earnings. **CRWD** expanded Project QuiltWorks with Coalition, Liberty Mutual, Lockton for AI cyber risk financial modeling. Jefferies raised CRWD PT to $775.
 
----
+- **CRWD** earnings June 3 ⚠️; EPS est $0.88, rev est $1.36B.
+- **PANW** earnings also imminent ⚠️.
+- Jim Cramer warned CRWD has gone "parabolic" and could face profit-taking even if results are strong.
+- **FTNT** +5.2% riding sector momentum.
 
-**Enterprise SaaS Beat Cycle** `Software & SaaS` → ongoing
+**Iran Ceasefire & Oil Dynamics** `Macro / Geopolitics` → ongoing
 
-Okta, MongoDB, Workday, and Asana delivered strong Q1 results with improving retention metrics and AI-driven product momentum.
+US and Iran reportedly agreed to a 60-day ceasefire extension MOU, but Trump left the Situation Room without announcing a decision. Iran disputes key US claims about nuclear material destruction and Hormuz toll-free access. Trump posted that the naval blockade "will now be lifted" and enriched uranium will be "unearthed and destroyed." Iran says $12B frozen asset release is included in the MOU.
 
-- **OKTA** +29.5%: Q1 EPS $0.91 vs $0.85 est; cRPO $2.50B (+12% YoY); NRR improved to 107% from 106% sequentially; new products (OIG, OPA) ~25% of bookings with ~40% uplift; FY27 revenue guide raised to $3.185B–$3.205B; 12 analyst PT raises (BTIG $119, Needham $120, RBC $122)
-- **MDB** +0.9% (down 5.3% session, recovered after-hours): Q1 rev $687.6M (+25% YoY) vs $664.5M est; Atlas +29% YoY; NRR 121%; FY27 guide raised to $2.92B–$2.96B; Needham raised PT to $400
-- **WDAY** +10.6%: Q1 strongest new-bookings growth in 5 years; beat on rev/EPS; raised full-year margin forecast
-- **ASAN** +12.8%: Q1 EPS $0.10 vs $0.07 est; AI bookings 17% of net new ARR; Stack AI acquisition for ~$75M; FY27 guide raised
-- **SNOW** +5.6% (after +36.5% Thursday, best day ever): Q1 product revenue +34% YoY; Cortex Code in >7,000 accounts (~half of base); $6B five-year AWS commitment; Goldman raised PT to $278
-- **CRM** +8.9%: Q1 beat on EPS/rev; Agentforce ARR $1.2B; 28.6T AI tokens processed (+152% QoQ); Q2 rev guide slightly below consensus tempered rally
+- WTI crude settled ~$87.86, Brent ~$91.68; Brent down ~19% from end of April — steepest monthly drop since 2020.
+- Treasury Secretary Bessent said US seized ~$1B in Iranian crypto; described Iran as "at the end of their tether financially."
+- Fed's Kansas City President Schmid: "Inflation is too hot"; places "little stock" in belief recent price jump is transitory; surging oil weighing on spending power.
+- CENTCOM disabled 5th commercial vessel defying Hormuz blockade; 116 vessels redirected total.
+- US Baker Hughes oil rig count +4 to 429.
 
----
+**Macro: Inflation Sticky, Growth Slowing** `Macro` → ongoing
 
-**Anthropic Valuation Surge** `AI Infrastructure` → new
+April PCE data delivered mixed signals: headline PCE +3.8% YoY (highest since May 2023), core PCE +0.2% MoM / +3.3% YoY (in line). Q1 GDP revised down to 1.6% from 2.0%. Personal savings rate fell to 2.6% — lowest since 2022. Personal income flat in April.
 
-Anthropic's latest funding round valued the company at $965B, making it the world's most valuable AI startup, surpassing OpenAI.
+- Fed's Bowman: progress lowering inflation has stalled; "moderately restrictive" policy aimed at jobs and lowering inflation; would consider policy shift if war-driven inflation broadens.
+- Fed's Paulson: holding rates steady gives space to weigh data; inflation pressures weighing on economy; monetary policy appropriately positioned.
+- Fed's Daly: sees "green shoots" for productivity growth from AI; barriers to sustained AI productivity gains are largely regulatory.
+- Chicago PMI May: 62.7 vs 50.6 est — major beat.
+- CME FedWatch: 98.9% probability rates unchanged in June; ~70% chance of at least one 25bp hike by year-end.
 
-- Series H led by Altimeter, Dragoneer, Greenoaks, Sequoia
-- Google's prior $10B investment at $350B valuation now worth >$25B on paper
-- Apollo and Blackstone arranging $36B debt financing to acquire Google TPUs for Anthropic; Broadcom providing payment guarantees; deal expected to close next week
-- Multi-gigawatt TPU capacity agreement with Broadcom and Google starting 2027
-- Partnership with SpaceX: access to >300MW at Colossus 1 data center (~220,000 NVIDIA GPUs)
-- Released Claude Opus 4.8 this week
+**Space Sector Frenzy Ahead of SpaceX IPO** `Space` → ongoing
 
----
+**SPCE** +42.8% (5D +99.4%) on derivative lawsuit settlement ($2.75M) and SpaceX proxy momentum. SpaceX IPO valuation reportedly trimmed to $1.8T from $2T target, with Blue Origin's New Glenn rocket exploding on launch pad Thursday adding risk context. NASA ETF at $1.27B AUM; UFO ETF surpassed $1B AUM.
 
-**Semiconductor Mixed Signals** `Semiconductors` → ongoing
+- SpaceX IPO targeted for June 12; ~30% of shares earmarked for retail investors.
+- **RKLB** -4.8% Friday (profit-taking after strong run); Roth Capital raised LUNR PT to $75.
+- ICE CEO Jeffrey Sprecher called Hyperliquid "bigger than Nasdaq" by volume, noting its 11-person team.
 
-While memory and AI compute names rallied, foundry and equipment names showed mixed action.
+**Drone Manufacturing Gets Federal Backing** `Defense / Drones` → developing
 
-- **ARM** +4.8%: Q4 licensing revenue $819M (+29% YoY, record); AGI CPU backlog >$2B (doubled in recent weeks); FY31 targets: AGI CPU $15B, IP $10B; Mizuho $360 PT (street high); valuation 356x P/E
-- **QCOM** +3.1%: nearly doubled over past two months (strongest rally since December 1999); Snapdragon C chip for entry-level AI laptops announced
-- **AMD** -2.0%: profit-taking after +148% Q2 performance; still up 358% over 12 months; RSI 76.86 (overbought)
-- **INTC** -1.5%: consolidating after +500% rally over 12 months; government stake ($8.9B, ~10% ownership) now worth >$41B
-- **MRVL** +0.1%: raised FY27 revenue outlook to >40% growth, FY28 to >45%; Q4 exit run-rate ~$3.4B quarterly; Barclays raised PT to $275
-- **PLAB** (gap down May 28): Q2 EPS $0.42 vs $0.54 est; Q3 guide below consensus; CEO cited design delays, memory constraints
+WSJ reported Pentagon's Office of Strategic Capital exploring debt/equity financing for US drone makers. **UMAC** +5.4% Friday (5D +94.3%); partner Powerus advanced to Phase II of $1B Drone Dominance Program. FY2027 defense budget targets 300,000 low-cost attack drones by 2027.
 
----
+- 49 companies invited to compete in Phase II qualifying event in June.
+- Trump Jr. is shareholder and advisory board member of UMAC.
 
-**Drone & Defense Momentum** `EdgeAI` → ongoing
+**Anthropic Fundraising & AI Capital Markets** `AI / Private Markets` → new
 
-WSJ reported Trump administration in talks to take equity/debt stakes in domestic drone manufacturers; $1B Drone Dominance Program advancing.
+Anthropic hit $965B valuation in Series H ($65B raise), surpassing OpenAI as world's most valuable AI startup. Apollo and Blackstone arranging $36B debt financing for Anthropic to acquire Google TPUs (Broadcom providing payment guarantees). Google's prior $10B investment now worth >$25B on paper.
 
-- **UMAC** +94.3% on week: named as potential Pentagon funding candidate; partner Powerus selected for Phase II qualifier (June 2026); Donald Trump Jr. on board
-- **RCAT** +36% Thursday: Q1 rev $15.5M (+869% YoY); Teal Drones in Drone Dominance Program; 173-system Japan Ministry of Defense order
-- **RDW** -7.8% (pullback after +78% weekly surge): RSI 88.92 (extreme overbought)
-- **KTOS** +13.8%: $68.3M DoD contract for Project Helios facility; up 70% over past year
-- **SPCE** +42.8%: court approved $2.75M shareholder settlement; short squeeze dynamics; RSI 78.65
-- Blue Origin New Glenn rocket exploded during static fire test May 28 at Kennedy Space Center; Bezos confirmed personnel safe
-
----
-
-**Consumer Retail Divergence** `Consumer Discretionary` → ongoing
-
-Burlington delivered standout results while Gap and Costco disappointed.
-
-- **BURL** +9.1%: Q1 adj EPS $2.10 vs $1.78 est; comps +6% (guidance was +2–4%); adj EBIT margin +20bps; FY26 guide raised to $11.45–$11.80
-- **COST** -4.7%: Q3 EPS $4.93 vs $4.98 est (miss); revenue $70.53B beat; membership fee +10.7%; digital comps +21.5%
-- **GAP** -17.1%: Q1 EPS $0.90 vs $0.42 est (beat) but FY26 rev guide lowered to $15.52B–$15.67B from $15.71B–$15.86B; JPMorgan downgraded to Neutral
-- **BKE** -5.8%: Q1 EPS $0.92 vs $0.74 est; comps +5.1%; gross margin contracted 50bps; inventory +13.5%
-
----
-
-**Macro & Geopolitical** `Macro` → ongoing
-
-U.S.-Iran ceasefire framework agreement (60 days) pending Trump approval; crude oil down ~19% in May.
-
-- Trump: "Hormuz Strait must be immediately open, no tolls"; U.S. naval blockade "will now be lifted"
-- Brent crude ~$91.68; WTI ~$87.86; steepest monthly drop since 2020
-- Gold +1.5% to ~$4,564/oz as yields retreated; record high $5,595.46/oz
-- April PCE: headline 3.8% YoY (highest since May 2023); core +0.2% MoM vs 0.3% est
-- Q1 GDP revised to 1.6% from 2.0% (softer consumer spending, inventory drag)
-- CME FedWatch: 98.9% probability Fed holds rates unchanged at June meeting
-- S&P 500 closed at record 7,581 (+5.3% in May); on pace for 9th consecutive weekly gain (only 10 times since WWII)
-- Nasdaq +8% in May; SOXX +24%; 8 of 11 S&P sectors finished May in red (extreme concentration)
+- Apollo syndicating the debt deal with closing targeted for next week — would be one of largest-ever private credit deals.
+- Anthropic hired former AWS cyber threat intel specialist and OpenAI co-founder Andrej Karpathy.
 
 **📡 Undercurrents** *(developing, not yet dominant)*
-- SpaceX IPO expected June 12 at ~$1.8T valuation (trimmed from $2T); 14 companies now >$1T market cap
-- Bitcoin ETFs lost $2.43B in May (worst month of 2026); BlackRock IBIT lost $68M Friday; nine consecutive outflow days totaling >$2.7B
-- Hyperliquid (HYPE) token hit record $67; ICE CEO called platform "bigger than Nasdaq" by volume; PURR to join Russell 3000 June 26
-- Bank of America Bull & Bear Indicator at 8.5 (sell signal territory >8); BofA private clients at record 66% in stocks, lowest cash ever
-- Japan Finance Minister warned of potential currency intervention (carry trade risk to AI stocks)
+- **BofA's Hartnett** raised Bull & Bear Indicator to 8.5 (contrarian sell territory); only 21 S&P 500 stocks (4%) at new highs — same count as March 2000 dot-com top; 222 stocks >20% below their highs.
+- **Goldman Sachs** raised S&P 500 year-end target to 8,000 from 7,600; Goldman also says M&A on pace to rival 2021 record.
+- **USMCA renegotiation**: Trump administration seeking 82% North American auto content (vs 75% current) and 50% US-produced content, with no provision for Canadian content.
+- **Nvidia N1X Windows PC** launch at Computex next week — Ming-Chi Kuo estimates ~10M shipments over 2 years; MSFT building "One Copilot" super app combining GitHub Copilot, Copilot Chat, and Autopilot.
+- **Bitcoin ETFs** lost $2.43B in May (worst month of 2026); IBIT led outflows. Spot BTC at ~$73,468. Rotation to equities appears underway.
+- **Jamie Dimon** warned private credit will "perform far worse than average" when credit cycle turns; said $1.7T private credit market has weakening underwriting standards.
+- **IFF** selling Food Ingredients business to CVC for ~$4.3B; retaining 10% minority stake.
+- **YUM** reportedly in exclusive talks to sell Pizza Hut to LongRange (Bloomberg).
 
 ---
 
@@ -169,29 +137,33 @@ U.S.-Iran ceasefire framework agreement (60 days) pending Trump approval; crude 
 
 | Channel | Material fact |
 |---------|--------------|
-| Earnings | Dell Q1 AI server revenue $16.1B (+757% YoY); backlog $51.3B; FY27 guide raised by ~$27B |
-| Macro | U.S.-Iran 60-day ceasefire framework pending Trump; Brent crude -19% in May |
-| Tech | Anthropic raises at $965B valuation; Claude Opus 4.8 released; $36B TPU acquisition debt deal closing next week |
-| Semiconductors | MU +84% in May (best since Nov 1985), crossed $1T; SOXX +24% in May |
-| Defense | Pentagon Drone Dominance Phase II qualifier June 2026; 49 companies invited; $1B program |
-| SaaS | Okta NRR improved to 107%; MongoDB Atlas +29% YoY; Snowflake Cortex Code in 7,000+ accounts |
+| Earnings | **DELL** Q1 rev $43.84B vs $35.45B est (+88% YoY); AI server rev $16.1B (+757%); FY27 guide $165–169B — largest beat-and-raise in company's public history |
+| Macro | April core PCE +0.2% MoM (below 0.3% est); headline PCE +3.8% YoY (highest since May 2023); Q1 GDP revised to 1.6% from 2.0%; personal savings rate 2.6% (lowest since 2022) |
+| Geopolitics | Trump left Situation Room without Iran deal decision; says naval blockade "will now be lifted"; Iran disputes nuclear and Hormuz terms; CENTCOM disabled 5th vessel defying blockade |
+| Tech | Anthropic valued at $965B (Series H); Apollo/Blackstone arranging $36B debt for Google TPU acquisition; MSFT planning "One Copilot" super app launch by end of summer |
+| Fed | Kansas City's Schmid: "Inflation is too hot"; Bowman: progress lowering inflation has stalled; Paulson: monetary policy appropriately positioned; Daly: sees AI productivity "green shoots" |
+| Space | SpaceX IPO valuation trimmed to $1.8T; Blue Origin New Glenn rocket exploded during static fire test; UFO ETF crossed $1B AUM |
+| Defense | Pentagon exploring equity/debt stakes in US drone manufacturers; 49 companies invited to Phase II of $1B Drone Dominance Program |
 
 ---
 
 ### 👁 On The Radar
 
-- **CRWD** earnings June 3 ⚠️; Jefferies raised PT to $775; stock up 8.1% into print; RSI elevated
-- **HPE** earnings June 1 ⚠️; stock +12.6% on Dell halo effect with no company-specific news
-- **NVDA** Computex keynote early June in Taiwan; CEO Huang to unveil first Windows PC powered by Nvidia chips with Microsoft
-- **SpaceX** IPO expected June 12 at ~$1.8T valuation; Goldman Sachs lead underwriter
-- **ARM** next earnings ~July 29 ⚠️; Q1 FY2027 revenue guide ~$1.27B vs $1.05B consensus
-- **INTC** launched Arc G-series processors for Windows handhelds; OEM devices from Acer, MSI, OneXPlayer shipping June 2026
-- **Jobs report** due Friday; April nonfarm payrolls +115K; unemployment 4.3%
+- **HPE** reports Q2 earnings **June 1** — stock already +12.6% on Friday on DELL sympathy; consensus expects modest results but AI server read-through is now the dominant factor ⚠️
+- **CRWD** reports Q1 earnings **June 3** — EPS est $0.88, rev est $1.36B; stock at 52-week highs with RSI 75+ ⚠️
+- **PANW** earnings imminent — cybersecurity sector test of whether AI-driven threats translate to revenue ⚠️
+- **MU** earnings **June 24** — EPS est $19.16 vs $1.91 YoY; rev est $33.66B vs $9.30B YoY; stock near 52-week high at $948 ⚠️
+- **NVIDIA Computex keynote** next week in Taiwan — Jensen Huang to unveil Windows PC chips with MSFT; ARM, MRVL, INTC, QCOM executives also presenting
+- **MSFT Build conference** next week in San Francisco — "One Copilot" super app elements may be previewed
+- **SpaceX IPO** targeted for **June 12** at ~$1.8T valuation; Goldman Sachs lead underwriter
+- **Jobs week**: JOLTS Tuesday, ADP Wednesday, ISM Services Wednesday, Nonfarm Payrolls Friday (prior: +115K, unemployment 4.3%)
+- **PURR** (Hyperliquid Strategies) added to Russell 3000 Index effective **June 26** — passive buying trigger
+- **Asana Work Innovation Summit** June 4 in London; investor webinar June 8
 
 ---
 
 ### 🚫 What to Ignore Today
 
-- **SPCE** +42.8%: settlement approval and short squeeze mechanics; no fundamental change to business
-- **MX** +31.2%: small-cap semiconductor with no identifiable company-specific catalyst; riding sector momentum
-- Pre-market crypto headlines: Bitcoin ETF outflows ($2.43B in May) already priced; no new catalysts beyond rotation narrative
+- **CRM** post-earnings noise: stock already recovered +8.9% Friday after Wednesday's -2% after-hours slide; Q2 guide miss was marginal ($11.27–11.35B vs $11.33B est); analysts largely unchanged.
+- **Crypto narratives** (Scaramucci Bitcoin origin story, Cardano fee comparisons, HYPE cup-and-handle pattern): no near-term market impact on equity portfolio positioning.
+- **Political headlines** (Trump cognitive test, Pope Leo feud, Freedom 250 concert cancellations): zero equity relevance.
