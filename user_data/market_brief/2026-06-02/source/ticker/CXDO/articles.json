@@ -1,0 +1,34 @@
+{
+  "source_kind": "ticker",
+  "source_key": "CXDO",
+  "window": "2026-05-31 05:00 UTC → 2026-06-02 06:00 UTC (session 2026-06-01, ticker −24h vs general)",
+  "anchor_session": "2026-06-01",
+  "published_gte_utc": "2026-05-31T05:00:00+00:00",
+  "published_lte_utc": "2026-06-02T06:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 1,
+  "articles": [
+    {
+      "benzinga_id": 52917599,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-01T17:37:26Z",
+      "last_updated": "2026-06-01T17:37:26Z",
+      "title": "Crexendo Option Alert: Jul 17 $15 Calls Sweep (24) Near The Ask: 1600 @ $0.6 vs 134 OI; Ref=$10.3",
+      "url": "https://www.benzinga.com/news/26/06/52917599/crexendo-option-alert-jul-17-15-calls-sweep-24-near-the-ask-1600-0-6-vs-134-oi-ref-10-3",
+      "images": [],
+      "channels": [
+        "news",
+        "options",
+        "markets",
+        "trading ideas"
+      ],
+      "tickers": [
+        "CXDO"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "vol_spike_5d/mid_small",
+  "label": "Vol spike / gapper · last 5D · Mid & small cap",
+  "rank": 9
+}

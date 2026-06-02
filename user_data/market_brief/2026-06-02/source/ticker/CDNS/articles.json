@@ -1,0 +1,81 @@
+{
+  "source_kind": "ticker",
+  "source_key": "CDNS",
+  "window": "2026-05-31 05:00 UTC → 2026-06-02 06:00 UTC (session 2026-06-01, ticker −24h vs general)",
+  "anchor_session": "2026-06-01",
+  "published_gte_utc": "2026-05-31T05:00:00+00:00",
+  "published_lte_utc": "2026-06-02T06:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 3,
+  "articles": [
+    {
+      "benzinga_id": 52901606,
+      "author": "avi kapoor",
+      "published": "2026-06-01T12:18:06Z",
+      "last_updated": "2026-06-01T12:18:07Z",
+      "title": "Jim Cramer Won&#39;t Recommend Mortgage Stocks Because &#39;I Never Know What They Really Own&#39; — But He Loves Intel&#39;s &#39;Burgeoning Packaging Division&#39;",
+      "teaser": "Cramer criticizes Clover Health&#39;s quarterly results, recommends Amkor for semiconductor packaging, and expresses caution over mortgage stocks.",
+      "body": "<p>On CNBC's &#8220;<a href=\"https://www.benzinga.com/topic/mad-money-lightning-round\">Mad Money Lightning Round</a>,&#8221; Jim Cramer said that the quarterly results released by <strong>Clover Health Investments Corp</strong> <a href=\"https://www.benzinga.com/quote/CLOV\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"CLOV\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CLOV\">CLOV</a>)</a> were \"not good.\" Due to the lackluster results, investors would need to be in \"pure spec mode,\" he added.</p>\n\n\n\n<p>While the company reported decent revenues, its earnings \"were not there,\" Cramer further stated.</p>\n\n\n\n<p>When asked about <strong>Amkor Technology Inc</strong> <a href=\"https://www.benzinga.com/quote/AMKR\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"AMKR\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/AMKR\">AMKR</a>)</a>, Cramer said that it offers \"the right kind of packaging,\" which is for the semiconductor segment. He added, however, that he prefers <strong>Cadence Design Systems Inc</strong> <a href=\"https://www.benzinga.com/quote/CDNS\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"CDNS\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CDNS\">CDNS</a>)</a>.</p>\n\n\n\n<p>Cramer further stated that he liked <strong>Intel Corp</strong>'s <a class=\"ticker-link\" data-ticker=\"INTC\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/INTC\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/INTC\">INTC</a>)</a> \"burgeoning packaging division,\" which is under the leadership of <strong>Lip-Bu Tan</strong>, who used to be the CEO at Cadence Design Systems.</p>\n\n\n\n<p>Regarding <strong>Ellington Financial Inc </strong>(NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/EFC\">EFC</a>), Cramer said that he felt apprehensive recommending stocks of mortgage financing companies. \"When I see these mortgage finance companies, I never know what they really own, so I never feel like I can give any good guidance,\" he explained.</p>\n\n\n\n<p>He added that he typically does not recommend these stocks, although they have \"very big yields.\"</p>\n\n\n\n<p>Cramer said that <strong>BigBear.ai Holdings Inc</strong> <a href=\"https://www.benzinga.com/quote/BBAI\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"BBAI\" data-exchange=\"NYSE\" rel=\"noopener\">(NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/BBAI\">BBAI</a>)</a> loses money \"hand over fist,\" which is why he does not recommend it.</p>\n\n\n\n<p><strong>Price Action:</strong></p>\n\n\n\n<ul class=\"wp-block-list\">\n<li>Clover Health Investments shares were down 4.78% to close at $3.98 on Friday.</li>\n\n\n\n<li>Shares of Amkor Technology declined by 1.45% to settle at $69.56 on Friday.</li>\n\n\n\n<li>Ellington Financial shares were up 0.82% at $13.57.</li>\n\n\n\n<li>BigBear.ai Holdings&nbsp;shares rose by 2.02% to close at $5.04 on Friday.</li>\n</ul>",
+      "url": "https://www.benzinga.com/markets/equities/26/06/52901606/jim-cramer-wont-recommend-mortgage-stocks-because-i-never-know-what-they-really-own-but-he-loves-intels-burgeoning-packaging-division",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2026/06/01/Jim-Cramer.jpeg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2026/06/01/Jim-Cramer.jpeg?width=1024&height=768",
+        "https://cdn.benzinga.com/files/images/story/2026/06/01/Jim-Cramer.jpeg?width=2048&height=1536"
+      ],
+      "channels": [
+        "earnings",
+        "trading ideas"
+      ],
+      "tickers": [
+        "AMKR",
+        "BBAI",
+        "CDNS",
+        "CLOV",
+        "EFC",
+        "INTC"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52897005,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-01T08:38:13Z",
+      "last_updated": "2026-06-01T08:38:14Z",
+      "title": "Cadence Unveils AI Chip Design Agent Built In Collaboration With NVIDIA That Can Automate Semiconductor Verification Tasks",
+      "teaser": "At Computex 2026, Cadence (NASDAQ:CDNS) announced the industry&#39;s first fully autonomous virtual agentic AI design engineer, extending the ChipStack™ AI Super Agent to Level-5 autonomy. Built on Cadence&#39;s AI-driven",
+      "body": "<p>At Computex 2026, Cadence (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CDNS\">CDNS</a>) announced the industry's first fully autonomous virtual agentic AI design engineer, extending the ChipStack&#x2122; AI Super Agent to Level-5 autonomy. Built on Cadence's AI-driven electronic design automation (EDA) portfolio with <a href=\"https://cts.businesswire.com/ct/CT?id=smartlink&amp;url=https%3A%2F%2Fwww.nvidia.com%2Fen-us%2Fai-data-science%2Ffoundation-models%2Fnemotron%2F&amp;esheet=54545057&amp;newsitemid=20260531072918&amp;lan=en-US&amp;anchor=NVIDIA+Nemotron&amp;index=1&amp;md5=caf712fbe36197e90cf4a03b76b4dab4\">NVIDIA Nemotron</a> models, and secured by <a href=\"https://cts.businesswire.com/ct/CT?id=smartlink&amp;url=https%3A%2F%2Fbuild.nvidia.com%2Fopenshell&amp;esheet=54545057&amp;newsitemid=20260531072918&amp;lan=en-US&amp;anchor=NVIDIA+OpenShell&amp;index=2&amp;md5=b8a1b2fcc86d177a353f9dbd74b4654d\">NVIDIA OpenShell</a> runtime, the new agentic capabilities enable customers to run dynamic simulations in automated workflows. At NVIDIA, 1000s of engineers are using billions of compute hours per year to run millions of tests to verify their designs. Each engineer will use ChipStack agents to run hundreds of dynamic simulations with Cadence&#xAE; Xcelium&#x2122; Logic Simulation and Jasper&#xAE; Formal Verification, delivering over 40X faster RTL validation cycles and reducing a typical five-week verification loop to less than a day, dramatically accelerating the validation of complex semiconductor designs.</p>",
+      "url": "https://www.benzinga.com/news/26/06/52897005/cadence-unveils-ai-chip-design-agent-built-in-collaboration-with-nvidia-that-can-automate-semiconduc",
+      "images": [],
+      "channels": [
+        "news"
+      ],
+      "tickers": [
+        "CDNS"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52896799,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-01T08:18:54Z",
+      "last_updated": "2026-06-01T08:18:55Z",
+      "title": "NVIDIA Launches New AI Tools to Help Businesses Build Digital Coworkers for Everyday Tasks",
+      "teaser": "NVIDIA GTC Taipei -- NVIDIA today announced new software, open source models and partnerships with the world&#39;s leading software platform providers to build autonomous AI agents for industries and enterprises across",
+      "body": "<p><strong>NVIDIA GTC Taipei -- </strong>NVIDIA today announced new software, open source models and partnerships with the world's leading software platform providers to build autonomous AI agents for industries and enterprises across engineering, healthcare, software development and business operations.</p><p>Leading software companies are using NVIDIA Agent Toolkit software to build secure, long-running AI agents that act as digital coworkers. These autonomous agents start with a model. Then, they require a software layer called a harness to turn the model into an agent with functions like orchestration, context, memory, tool use and security.</p><p>NVIDIA Agent Toolkit software equips enterprises to build agents that can work alongside employees at scale. <a href=\"https://www.nvidia.com/en-us/ai-data-science/foundation-models/nemotron/\">NVIDIA Nemotron</a>&#x2122; open models and <a href=\"http://www.nvidia.com/nemoclaw\">NVIDIA NemoClaw</a>&#x2122; blueprints connect popular harnesses; the <a href=\"https://build.nvidia.com/openshell\">NVIDIA OpenShell</a>&#x2122; secure runtime sets policy and privacy controls; and agents can now tap into <a href=\"https://www.nvidia.com/en-us/technologies/cuda-x/\">NVIDIA CUDA-X</a>&#x2122; libraries as skills.</p><p>\"The world's software leaders are bringing AI agents into the systems where work gets done — showing how AI coworkers help employees think faster and execute complex tasks to solve bigger problems,\" said Jensen Huang, founder and CEO of NVIDIA. \"NVIDIA NemoClaw provides enterprise software developers with the open building blocks to create more secure, long-running AI coworkers that amplify human expertise as they reshape how work gets done.\"</p><p><strong>Design and Simulation Leaders Build Autonomous AI Engineers With NVIDIA NemoClaw</strong><br><br>In semiconductor and industrial engineering, simulation and verification are among the most time-intensive workloads, requiring teams to execute complex, repetitive workflows across days or weeks before a design can move forward.</p><p>Cadence, Dassault Systèmes, Siemens, Synopsys, Flexcompute, Luminary, Neural Concept, nTop, <a href=\"https://p-1.ai/computex2026\">P-1 AI</a>, PhysicsX and <a href=\"https://www.synera.io/press/synera-nvidia-nemoclaw-ai-agents-design-simulation\">Synera</a> are among the first to build autonomous AI engineers to work alongside employees, using NVIDIA NemoClaw. By delegating these tasks to always-on autonomous AI engineers, organizations can compress those weeks of engineering cycles into hours and redirect human expertise toward the work that demands it most.</p><p><a href=\"https://www.cadence.com/en_US/home/company/newsroom/press-releases/pr/2026/cadence-unveils-industryas-first-fully-autonomous-virtual.html\">Cadence</a> is using NVIDIA OpenShell to secure its ChipStack AI Super Agent, a fully autonomous AI engineer that executes chip design and verification. NVIDIA is the first customer using ChipStack to autonomously verify its chip designs.</p><p><a href=\"https://blog.3ds.com/topics/company-news/ai-factory-virtual-twins\">Dassault Systèmes</a> is using NVIDIA NemoClaw and OpenShell to productize the 3DEXPERIENCE agentic platform for long-running, autonomous agents across design, simulation and manufacturing operations.</p><p><a href=\"https://news.siemens.com/en-us/siemens-fuse-eda-ai-agent/\">Siemens</a> is integrating NVIDIA NemoClaw and OpenShell into Fuse EDA AI Agent, a purpose-built autonomous agent that plans and orchestrates multi-tool workflows across semiconductor, 3D integrated circuit and printed circuit board system design.</p><p><a href=\"https://news.synopsys.com/2026-03-16-Synopsys-Showcases-NVIDIA-Partnership-Impact-and-Ecosystem-Innovation-at-GTC-2026\">Synopsys</a> is working with NVIDIA to build always-on autonomous AI engineers for chip design, with a focus on achieving full workflow autonomy.</p><p>Also announced today, <a href=\"https://nvidianews.nvidia.com/news/nvidia-foxconn-and-taiwan-medical-centers-bring-agentic-and-physical-ai-to-healthy-taiwan\">Foxconn</a> is piloting NVIDIA NemoClaw to power its Nurabot and CoDoctor platforms, using teams of specialized AI agents to support clinical reasoning, documentation and care coordination. <a href=\"https://blogs.nvidia.com/blog/taiwan-ecosystem-ai-infrastructure\">Foxconn</a> is also using the <a href=\"https://blogs.nvidia.com/blog/factory-operations-fox-blueprint-ai-brain\">NVIDIA FOX</a> and NemoClaw blueprints to build MoMClaw, a factory operations agent that connects sensor and machine data with AI agents to deliver real-time insights and action plans with NVIDIA OpenShell privacy controls and safety guardrails.</p>",
+      "url": "https://www.benzinga.com/news/26/06/52896799/nvidia-launches-new-ai-tools-to-help-businesses-build-digital-coworkers-for-everyday-tasks",
+      "images": [],
+      "channels": [
+        "news"
+      ],
+      "tickers": [
+        "CDNS",
+        "NVDA",
+        "SNPS"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "r1d/mega",
+  "label": "Top 10 · 1D return · Mega cap",
+  "rank": 8
+}
