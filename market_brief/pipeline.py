@@ -300,7 +300,7 @@ def run_brief(
                 )
                 t0 = time.time()
                 ingest_funnel = IngestFunnelData()
-                metadata, refresh, articles = ingest.prepare_run(
+                metadata, ingest_stats, articles = ingest.prepare_run(
                     asof, outdir, topics, funnel=ingest_funnel
                 )
                 (outdir / "metadata.json").write_text(
@@ -319,8 +319,8 @@ def run_brief(
                 logger.info(
                     "INGEST complete in %.1fs — %d upserted, %d corpus stories",
                     time.time() - t0,
-                    refresh.unique_upserted,
-                    len(metadata.get("corpus_article_ids") or []),
+                    ingest_stats.db_upserted,
+                    (metadata.get("counts") or {}).get("after_dedupe_unique", 0),
                 )
 
             status_mod.write_status(outdir, "running", stage="summarize")

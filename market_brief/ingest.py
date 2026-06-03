@@ -8,13 +8,19 @@ import logging
 import re
 import shutil
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from daily_screener.utils.db import get_session
 from market_brief import config, tape as tape_mod
-from market_brief.funnel_log import IngestFunnelData
-from market_brief.ingest_window import get_news_window, get_ticker_news_window
+from market_brief.funnel_log import FetchSlice, IngestFunnelData
+from market_brief.ingest_window import (
+    filter_published_window,
+    get_news_window,
+    get_ticker_news_window,
+    published_range,
+)
 from market_brief.topics import Topic, load_topics
 from market_brief.trading_calendar import NewsWindow
 
@@ -36,6 +42,39 @@ class IngestStats:
     db_upserted: int = 0
     purged: int = 0
     per_ticker_limit: int = 0
+
+
+@dataclass
+class FetchBucketStats:
+    """One API pull: rows returned vs rows inside the ET ingest window."""
+
+    api_rows: int = 0
+    in_window: int = 0
+    error: str | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "api_rows": self.api_rows,
+            "in_window": self.in_window,
+            "error": self.error,
+        }
+
+
+@dataclass
+class IngestFetchReport:
+    general: FetchBucketStats
+    channels: dict[str, FetchBucketStats]
+    ticker: dict[str, FetchBucketStats]
+    warnings: list[str]
+
+    def ticker_summary(self) -> FetchBucketStats:
+        total = FetchBucketStats()
+        for st in self.ticker.values():
+            total.api_rows += st.api_rows
+            total.in_window += st.in_window
+            if st.error and not total.error:
+                total.error = f"{st.error} (first ticker error)"
+        return total
 
 
 @dataclass
@@ -227,20 +266,159 @@ def _channel_tags_on_articles(articles: list[dict]) -> dict[str, int]:
     return dict(sorted(counts.items(), key=lambda x: (-x[1], x[0])))
 
 
-def prepare_run(
+def _count_new_ids(rows: list[dict], seen: set[int]) -> int:
+    n = 0
+    for article in rows:
+        bid = article.get("benzinga_id")
+        if bid is None:
+            continue
+        i = int(bid)
+        if i not in seen:
+            seen.add(i)
+            n += 1
+    return n
+
+
+def _fetch_ticker(
+    ticker: str, window: NewsWindow
+) -> tuple[str, list[dict], FetchBucketStats]:
+    stats = FetchBucketStats()
+    try:
+        raw = bz.fetch_benzinga_from_api(
+            ticker,
+            limit=config.PER_TICKER_LIMIT,
+            published_gte=window.start_utc,
+            published_lte=window.end_utc,
+        )
+        stats.api_rows = len(raw)
+        filtered = filter_published_window(raw, window)
+        stats.in_window = len(filtered)
+        return ticker, filtered, stats
+    except Exception as e:  # noqa: BLE001
+        stats.error = str(e)
+        logger.error("benzinga fetch failed for %s: %s", ticker, e)
+        return ticker, [], stats
+
+
+def _warn_if_empty_bucket(label: str, stats: FetchBucketStats, warnings: list[str]) -> None:
+    if stats.error:
+        msg = f"{label}: API error — {stats.error}"
+        warnings.append(msg)
+        logger.error(msg)
+        return
+    if stats.api_rows > 0 and stats.in_window == 0:
+        msg = (
+            f"{label}: API returned {stats.api_rows} rows but 0 in ingest window "
+            f"(check published.lte / asof window)"
+        )
+        warnings.append(msg)
+        logger.warning(msg)
+    elif stats.api_rows == 0 and stats.in_window == 0:
+        msg = f"{label}: API returned 0 rows"
+        warnings.append(msg)
+        logger.warning(msg)
+
+
+def _fetch_general(
+    window: NewsWindow,
+    funnel: IngestFunnelData | None = None,
+    *,
+    warnings: list[str] | None = None,
+) -> tuple[list[dict], dict[str, list[dict]], FetchBucketStats, dict[str, FetchBucketStats]]:
+    """Return (general rows, channel rows, general stats, channel stats)."""
+    general_rows: list[dict] = []
+    channel_rows: dict[str, list[dict]] = {}
+    general_stats = FetchBucketStats()
+    channel_stats: dict[str, FetchBucketStats] = {}
+    seen_ids: set[int] = set()
+    warn = warnings if warnings is not None else []
+
+    try:
+        raw = bz.fetch_benzinga_general(
+            limit=config.GENERAL_NEWS_LIMIT,
+            published_gte=window.start_utc,
+            published_lte=window.end_utc,
+        )
+        filtered = filter_published_window(raw, window)
+        general_stats.api_rows = len(raw)
+        general_stats.in_window = len(filtered)
+        general_rows = filtered
+        if funnel is not None:
+            funnel.general = FetchSlice(
+                label="general (no channel)",
+                api_rows=len(raw),
+                after_filter=len(filtered),
+                new_unique_ids=_count_new_ids(filtered, seen_ids),
+            )
+    except Exception as e:  # noqa: BLE001
+        general_stats.error = str(e)
+        if funnel is not None:
+            funnel.general = FetchSlice(
+                label="general (no channel)",
+                error=str(e),
+            )
+        logger.error("general benzinga fetch failed: %s", e)
+        raise
+
+    _warn_if_empty_bucket("general", general_stats, warn)
+
+    for channel, limit in config.GENERAL_CHANNEL_FETCHES:
+        slug = _slugify(channel)
+        st = FetchBucketStats()
+        channel_stats[slug] = st
+        slice_row = FetchSlice(label=f"channel:{channel}")
+        try:
+            raw = bz.fetch_benzinga_general(
+                limit=limit,
+                published_gte=window.start_utc,
+                published_lte=window.end_utc,
+                channels=channel,
+            )
+            filtered = filter_published_window(raw, window)
+            channel_rows[channel] = filtered
+            st.api_rows = len(raw)
+            st.in_window = len(filtered)
+            slice_row.api_rows = len(raw)
+            slice_row.after_filter = len(filtered)
+            slice_row.new_unique_ids = _count_new_ids(filtered, seen_ids)
+        except Exception as e:  # noqa: BLE001
+            st.error = str(e)
+            slice_row.error = str(e)
+            channel_rows[channel] = []
+            logger.error("channel fetch failed for %s: %s", channel, e)
+        if funnel is not None:
+            funnel.channels.append(slice_row)
+        _warn_if_empty_bucket(f"channel:{channel}", st, warn)
+    return general_rows, channel_rows, general_stats, channel_stats
+
+
+def ingest_pool_ids(slices: IngestSourceSlices) -> dict[str, Any]:
+    """Per-bucket ``benzinga_id`` lists for Step 4 dedupe (no on-disk article JSON)."""
+    return {
+        "general": article_ids_from_rows(slices.general),
+        "channels": {
+            _slugify(channel): article_ids_from_rows(rows)
+            for channel, rows in slices.channels.items()
+        },
+        "ticker": {
+            sym: article_ids_from_rows(rows)
+            for sym, rows in sorted(slices.ticker_articles.items())
+        },
+    }
+
+
+def ingest_all(
     asof: str,
-    outdir: Path,
     topics: list[Topic] | None = None,
     *,
     funnel: IngestFunnelData | None = None,
-) -> tuple[dict[str, Any], bz.RefreshStats, list[dict]]:
-    """Refresh DB, write ticker universe under ``source/``, return metadata + corpus articles."""
-    from market_brief import source_loader
-    from market_brief.screener_universe import build_screener_universe
-
+) -> tuple[list[dict], IngestStats, IngestSourceSlices, IngestFetchReport]:
+    """API pulls (general / channel / per-ticker) → dedupe → upsert DB."""
     topics = topics or load_topics()
     general_window = news_window_for_run(asof)
     ticker_window = get_ticker_news_window(asof)
+    stats = IngestStats()
+    fetch_warnings: list[str] = []
     if funnel is not None:
         funnel.since_iso = general_window.start_utc.isoformat()
         funnel.end_iso = general_window.end_utc.isoformat()
@@ -254,73 +432,202 @@ def prepare_run(
         from models import BenzingaArticle
 
         BenzingaArticle.__table__.create(session.get_bind(), checkfirst=True)
-        refresh = bz.refresh_benzinga_articles(
-            session,
-            days=config.REFRESH_LOOKBACK_DAYS,
-            limit=config.REFRESH_API_LIMIT,
-            purge_days=config.ARTICLE_RETENTION_DAYS,
-            end=general_window.end_utc,
+        stats.purged = bz.purge_articles_older_than(
+            session, days=config.ARTICLE_RETENTION_DAYS
         )
         if funnel is not None:
-            funnel.purge_count = refresh.purged
+            funnel.purge_count = stats.purged
+        logger.info(
+            "purged %d benzinga rows older than %d days",
+            stats.purged,
+            config.ARTICLE_RETENTION_DAYS,
+        )
+
+        from market_brief.screener_universe import build_screener_universe
 
         universe_slices, ticker_lineage, universe = build_screener_universe(asof)
-        universe_set = {s.upper() for s in universe}
+        stats.per_ticker_limit = config.PER_TICKER_LIMIT
         if funnel is not None:
             funnel.universe_size = len(universe)
             funnel.universe_sample = universe[:25]
 
-        slices = IngestSourceSlices(
-            general=[],
-            channels={},
-            ticker_universe_slices=universe_slices,
-            ticker_articles={},
-            ticker_lineage=ticker_lineage,
-        )
-        persist_source_snapshots(slices, outdir, topics, asof=asof)
+        all_raw: list[dict] = []
 
-        articles, corpus_ids = source_loader.load_synthesis_corpus(
-            session, asof, universe_set
+        general_rows, channel_rows, general_stats, channel_stats = _fetch_general(
+            general_window, funnel=funnel, warnings=fetch_warnings
+        )
+        stats.general_api_calls = 1 + len(config.GENERAL_CHANNEL_FETCHES)
+        stats.general_channel_rows = len(general_rows) + sum(
+            len(rows) for rows in channel_rows.values()
+        )
+        all_raw.extend(general_rows)
+        for rows in channel_rows.values():
+            all_raw.extend(rows)
+
+        ticker_articles: dict[str, list[dict]] = {}
+        ticker_counts: dict[str, int] = {}
+        ticker_stats: dict[str, FetchBucketStats] = {}
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=config.INGEST_CONCURRENCY
+        ) as pool:
+            futures = {
+                pool.submit(_fetch_ticker, ticker, ticker_window): ticker
+                for ticker in universe
+            }
+            for fut in concurrent.futures.as_completed(futures):
+                ticker = futures[fut]
+                try:
+                    _, rows, t_stats = fut.result()
+                    stats.ticker_api_calls += 1
+                    ticker_stats[ticker] = t_stats
+                    ticker_counts[ticker] = len(rows)
+                    ticker_articles[ticker] = rows
+                    all_raw.extend(rows)
+                    if t_stats.error:
+                        if funnel is not None:
+                            funnel.ticker_failed.append(ticker)
+                except Exception as e:  # noqa: BLE001
+                    logger.error("benzinga fetch failed for %s: %s", ticker, e)
+                    ticker_articles[ticker] = []
+                    ticker_stats[ticker] = FetchBucketStats(error=str(e))
+                    if funnel is not None:
+                        funnel.ticker_failed.append(ticker)
+
+        stats.ticker_rows = sum(ticker_counts.values())
+        if funnel is not None:
+            funnel.ticker_ok = stats.ticker_api_calls
+            funnel.ticker_article_counts = ticker_counts
+
+        stats.raw_articles = len(all_raw)
+        unique, dropped_no_id = _dedupe_by_id(all_raw)
+        stats.unique_articles = len(unique)
+        stats.dropped_no_benzinga_id = dropped_no_id
+        stats.duplicate_rows_removed = (
+            stats.raw_articles - stats.unique_articles - dropped_no_id
         )
         if funnel is not None:
-            funnel.db_upserted = refresh.unique_upserted
-            funnel.unique_articles = len(articles)
-            funnel.db_loaded = len(articles)
-            funnel.channel_tags_on_corpus = _channel_tags_on_articles(articles)
+            funnel.raw_rows = stats.raw_articles
+            funnel.dropped_no_benzinga_id = dropped_no_id
+            funnel.unique_articles = stats.unique_articles
+
+        stats.db_upserted = bz.upsert_articles(session, unique)
+        if funnel is not None:
+            funnel.db_upserted = stats.db_upserted
+            funnel.db_loaded = len(unique)
+            funnel.channel_tags_on_corpus = _channel_tags_on_articles(unique)
+            funnel.tickers_fetched_zero_articles = sorted(
+                t for t in universe if ticker_counts.get(t, 0) == 0
+            )
             for topic in topics:
                 funnel.topic_assignment[topic.name] = len(
-                    assign_articles_to_topic(articles, topic)
+                    assign_articles_to_topic(unique, topic)
                 )
-            n_unassigned = len(assign_unassigned_articles(articles, topics))
+            n_unassigned = len(assign_unassigned_articles(unique, topics))
             funnel.unassigned_count = n_unassigned
             funnel.macro_count = n_unassigned
             funnel.assigned_content_ids = len(
-                assigned_content_topic_ids(articles, topics)
+                assigned_content_topic_ids(unique, topics)
             )
 
-        metadata = build_ingest_metadata(
-            asof,
-            slices,
-            corpus_article_ids=corpus_ids,
-            refresh=refresh,
-            funnel=funnel,
+        slices = IngestSourceSlices(
+            general=general_rows,
+            channels=channel_rows,
+            ticker_universe_slices=universe_slices,
+            ticker_articles=ticker_articles,
+            ticker_lineage=ticker_lineage,
         )
-        return metadata, refresh, articles
+        t_summary = FetchBucketStats()
+        for sym, st in ticker_stats.items():
+            t_summary.api_rows += st.api_rows
+            t_summary.in_window += st.in_window
+            if st.error:
+                fetch_warnings.append(f"ticker:{sym}: API error — {st.error}")
+        n_ticker_api_but_empty = sum(
+            1
+            for st in ticker_stats.values()
+            if st.api_rows > 0 and st.in_window == 0 and not st.error
+        )
+        if n_ticker_api_but_empty:
+            fetch_warnings.append(
+                f"ticker: {n_ticker_api_but_empty} symbols had API rows but 0 in window"
+            )
+        fetch_report = IngestFetchReport(
+            general=general_stats,
+            channels=channel_stats,
+            ticker=ticker_stats,
+            warnings=fetch_warnings,
+        )
+        if fetch_warnings:
+            logger.warning(
+                "Ingest fetch warnings (%d): %s",
+                len(fetch_warnings),
+                "; ".join(fetch_warnings[:5])
+                + (" …" if len(fetch_warnings) > 5 else ""),
+            )
+        return unique, stats, slices, fetch_report
     finally:
         session.close()
+
+
+def prepare_run(
+    asof: str,
+    outdir: Path,
+    topics: list[Topic] | None = None,
+    *,
+    funnel: IngestFunnelData | None = None,
+) -> tuple[dict[str, Any], IngestStats, list[dict]]:
+    """API ingest → DB upsert → ticker universe under ``source/`` + ``metadata.json`` fields."""
+    topics = topics or load_topics()
+    articles, stats, slices, fetch_report = ingest_all(asof, topics, funnel=funnel)
+    persist_source_snapshots(slices, outdir, topics, asof=asof)
+    metadata = build_ingest_metadata(
+        asof,
+        slices,
+        ingest_stats=stats,
+        deduped_articles=articles,
+        fetch_report=fetch_report,
+    )
+    return metadata, stats, articles
 
 
 def build_ingest_metadata(
     asof: str,
     slices: IngestSourceSlices,
     *,
-    corpus_article_ids: list[str],
-    refresh: bz.RefreshStats | None = None,
-    funnel: IngestFunnelData | None = None,
+    ingest_stats: IngestStats,
+    deduped_articles: list[dict] | None = None,
+    fetch_report: IngestFetchReport | None = None,
 ) -> dict:
-    """Run-level metadata: synthesis windows, corpus ids, refresh stats."""
+    """Run metadata: windows, per-fetch counts, ingest pool ids for Step 4."""
     general_window = news_window_for_run(asof)
     ticker_window = get_ticker_news_window(asof)
+    ticker_by_sym = {
+        sym: len(rows) for sym, rows in sorted(slices.ticker_articles.items())
+    }
+    api_by_fetch: dict[str, Any]
+    if fetch_report is not None:
+        api_by_fetch = {
+            "general": fetch_report.general.as_dict(),
+            "channels": {
+                slug: st.as_dict() for slug, st in sorted(fetch_report.channels.items())
+            },
+            "ticker": {
+                sym: st.as_dict() for sym, st in sorted(fetch_report.ticker.items())
+            },
+            "ticker_totals": fetch_report.ticker_summary().as_dict(),
+        }
+    else:
+        api_by_fetch = {
+            "general": {"api_rows": None, "in_window": len(slices.general), "error": None},
+            "channels": {
+                _slugify(ch): {"api_rows": None, "in_window": len(rows), "error": None}
+                for ch, rows in slices.channels.items()
+            },
+            "ticker": {
+                sym: {"api_rows": None, "in_window": n, "error": None}
+                for sym, n in ticker_by_sym.items()
+            },
+        }
 
     slice_manifest = [
         {
@@ -336,7 +643,7 @@ def build_ingest_metadata(
         (slices.ticker_lineage.get("by_ticker") or {}).keys()
     )
 
-    metadata: dict = {
+    return {
         "asof": asof,
         "windows": {
             "general_window": general_window.label,
@@ -346,48 +653,20 @@ def build_ingest_metadata(
             "ticker_published_gte_utc": ticker_window.start_utc.isoformat(),
             "published_lte_utc": general_window.end_utc.isoformat(),
         },
-        "corpus_article_ids": corpus_article_ids,
+        "counts": {
+            "api_by_fetch": api_by_fetch,
+            "api_total_rows": ingest_stats.raw_articles,
+            "after_dedupe_unique": ingest_stats.unique_articles,
+            "upserted": ingest_stats.db_upserted,
+            "deduped_published": published_range(deduped_articles or []),
+            "prompt": None,
+        },
+        "fetch_warnings": fetch_report.warnings if fetch_report else [],
+        "ingest_pools": ingest_pool_ids(slices),
         "universe_symbols": universe_symbols,
         "ticker_universe_slices": slice_manifest,
         "ticker_universe_overview": "source/ticker_universe/overview.md",
-        "refresh": {
-            "lookback_days": config.REFRESH_LOOKBACK_DAYS,
-        },
     }
-    if refresh is not None:
-        metadata["refresh"] = {
-            "lookback_days": refresh.lookback_days,
-            "start_utc": refresh.start_utc,
-            "end_utc": refresh.end_utc,
-            "purged": refresh.purged,
-            "api_rows": refresh.api_rows,
-            "unique_upserted": refresh.unique_upserted,
-        }
-    if funnel is not None:
-        metadata["funnel"] = {
-            "since_iso": funnel.since_iso,
-            "end_iso": funnel.end_iso,
-            "window_label": funnel.window_label,
-            "anchor_session": funnel.anchor_session,
-            "universe_size": funnel.universe_size,
-            "purge_count": funnel.purge_count,
-            "general": funnel.general.__dict__ if funnel.general else None,
-            "channels": [c.__dict__ for c in funnel.channels],
-            "ticker_ok": funnel.ticker_ok,
-            "ticker_failed": funnel.ticker_failed,
-            "ticker_article_counts": funnel.ticker_article_counts,
-            "raw_rows": funnel.raw_rows,
-            "dropped_no_benzinga_id": funnel.dropped_no_benzinga_id,
-            "unique_articles": funnel.unique_articles,
-            "db_upserted": funnel.db_upserted,
-            "db_loaded": funnel.db_loaded,
-            "topic_assignment": funnel.topic_assignment,
-            "unassigned_count": funnel.unassigned_count,
-            "assigned_content_ids": funnel.assigned_content_ids,
-            "tickers_fetched_zero_articles": funnel.tickers_fetched_zero_articles,
-            "channel_tags_on_corpus": funnel.channel_tags_on_corpus,
-        }
-    return metadata
 
 
 def _prune_stale_source_dirs(root: Path, active_tickers: set[str]) -> None:
@@ -422,9 +701,11 @@ def persist_source_snapshots(
     root = outdir / "source"
     root.mkdir(parents=True, exist_ok=True)
 
-    active_tickers = {
-        sym.upper() for sym in (slices.ticker_lineage.get("by_ticker") or {})
-    }
+    active_tickers = {sym.upper() for sym in slices.ticker_articles}
+    if not active_tickers:
+        active_tickers = {
+            sym.upper() for sym in (slices.ticker_lineage.get("by_ticker") or {})
+        }
     _prune_stale_source_dirs(root, active_tickers)
 
     persist_ticker_lineage(

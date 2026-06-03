@@ -79,6 +79,12 @@ def _published_gte_param(dt: datetime) -> str:
     return dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _published_lte_param(dt: datetime) -> str:
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def fetch_benzinga_raw(**params: Any) -> list[dict]:
     """Call Polygon ``GET /benzinga/v2/news`` with arbitrary query params."""
     api_key = os.getenv("POLYGON_API_KEY")
@@ -102,10 +108,13 @@ def fetch_benzinga_from_api(
     *,
     limit: int = DEFAULT_LIMIT,
     published_gte: datetime | None = None,
+    published_lte: datetime | None = None,
 ) -> list[dict]:
     params: dict[str, Any] = {"tickers": ticker.upper(), "limit": limit}
     if published_gte is not None:
         params["published.gte"] = _published_gte_param(published_gte)
+    if published_lte is not None:
+        params["published.lte"] = _published_lte_param(published_lte)
     return fetch_benzinga_raw(**params)
 
 
@@ -119,6 +128,24 @@ def fetch_benzinga_since(
         limit=limit,
         **{"published.gte": _published_gte_param(published_gte)},
     )
+
+
+def fetch_benzinga_general(
+    *,
+    limit: int = 100,
+    published_gte: datetime | None = None,
+    published_lte: datetime | None = None,
+    channels: str | None = None,
+) -> list[dict]:
+    """Market-wide Benzinga pull (no ticker filter). Optional ``channels=`` filter."""
+    params: dict[str, Any] = {"limit": limit}
+    if published_gte is not None:
+        params["published.gte"] = _published_gte_param(published_gte)
+    if published_lte is not None:
+        params["published.lte"] = _published_lte_param(published_lte)
+    if channels:
+        params["channels"] = channels
+    return fetch_benzinga_raw(**params)
 
 
 def fetch_benzinga_for_channel(
@@ -297,6 +324,27 @@ def load_articles_since(
 
 def _rows_to_json(rows: list[BenzingaArticle]) -> list[dict]:
     return [article_to_json(r) for r in rows]
+
+
+def benzinga_ids_published_between(
+    session,
+    start: datetime,
+    end: datetime,
+) -> list[int]:
+    """``benzinga_id`` values with ``published`` in [start, end] (UTC, inclusive)."""
+    if start.tzinfo is None:
+        start = start.replace(tzinfo=timezone.utc)
+    if end.tzinfo is None:
+        end = end.replace(tzinfo=timezone.utc)
+    rows = (
+        session.query(BenzingaArticle.benzinga_id)
+        .filter(
+            BenzingaArticle.published >= start,
+            BenzingaArticle.published <= end,
+        )
+        .all()
+    )
+    return [int(r[0]) for r in rows]
 
 
 def load_articles_published_between(

@@ -66,3 +66,19 @@ def _parse_datetime(value: str | None) -> datetime | None:
         return dt
     except ValueError:
         return None
+
+
+def published_range(articles: list[dict]) -> dict[str, str | int | None]:
+    """Earliest/latest ``published`` among deduped ingest articles (UTC ISO)."""
+    times: list[datetime] = []
+    for article in articles:
+        dt = _parse_datetime(article.get("published") or article.get("published_date"))
+        if dt is not None:
+            times.append(dt)
+    if not times:
+        return {"earliest_utc": None, "latest_utc": None, "with_published": 0}
+    return {
+        "earliest_utc": min(times).isoformat(),
+        "latest_utc": max(times).isoformat(),
+        "with_published": len(times),
+    }

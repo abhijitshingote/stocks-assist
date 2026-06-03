@@ -1,20 +1,14 @@
-"""Load Benzinga articles for market brief steps from metadata.json + Postgres."""
+"""Load Benzinga articles for market brief Step 4 from metadata ingest pools + Postgres."""
 
 from __future__ import annotations
 
 import json
 import re
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from daily_screener.utils.db import get_session
-from market_brief import config
-from market_brief.ingest import article_ticker_symbols, news_window_for_run
-from market_brief.ingest_window import get_news_window, get_ticker_news_window
-from market_brief.trading_calendar import NewsWindow
-
 import benzinga_news as bz  # noqa: E402
 
 CHARS_PER_TOKEN = 3.5
@@ -43,57 +37,13 @@ def _slugify(name: str) -> str:
     return s.strip("_") or "topic"
 
 
-def _channel_slugs() -> list[str]:
-    slugs = ["general"]
-    for ch, _limit in config.GENERAL_CHANNEL_FETCHES:
-        slug = _slugify(ch)
-        if slug not in slugs:
-            slugs.append(slug)
-    return slugs
-
-
-def _parse_published(article: dict[str, Any]) -> datetime | None:
-    raw = article.get("published") or article.get("published_date")
-    if not raw:
-        return None
-    try:
-        dt = datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return dt
-    except ValueError:
-        return None
-
-
-def _published_in_window(article: dict[str, Any], window: NewsWindow) -> bool:
-    pub = _parse_published(article)
-    if pub is None:
-        return False
-    start = window.start_utc
-    end = window.end_utc
-    if start.tzinfo is None:
-        start = start.replace(tzinfo=timezone.utc)
-    if end.tzinfo is None:
-        end = end.replace(tzinfo=timezone.utc)
-    return start <= pub <= end
-
-
-def _article_channel_slugs(article: dict[str, Any]) -> set[str]:
-    out: set[str] = set()
-    for ch in article.get("channels") or []:
-        slug = _slugify(str(ch))
-        if slug:
-            out.add(slug)
-    return out
-
-
 @dataclass
-class SynthesisPools:
-    """Three explicit DB pulls for Step 4 (general window, per-channel, ticker window)."""
+class IngestPools:
+    """API-bucket articles loaded from DB via ``metadata.json`` ``ingest_pools`` ids."""
 
     general: list[dict] = field(default_factory=list)
     channels: dict[str, list[dict]] = field(default_factory=dict)
-    ticker: list[dict] = field(default_factory=list)
+    ticker: dict[str, list[dict]] = field(default_factory=dict)
 
 
 @dataclass
@@ -108,52 +58,23 @@ class Step4SourceBuild:
     corpus_unique: int
 
 
-def _pool_counts(pools: SynthesisPools) -> dict[str, int]:
+def prompt_counts(built: Step4SourceBuild) -> dict[str, Any]:
+    """Step 4: articles loaded from DB into the Opus user message (post dedupe)."""
+    return {
+        "articles_total": len(built.article_ids),
+        "by_section": dict(sorted(built.section_counts.items())),
+    }
+
+
+def _pool_counts(pools: IngestPools) -> dict[str, int]:
     counts: dict[str, int] = {"general_pool": len(pools.general)}
     for slug, batch in sorted(pools.channels.items()):
         counts[f"channel_pool:{slug}"] = len(batch)
-    counts["ticker_pool"] = len(pools.ticker)
+    counts["ticker_pool"] = sum(len(batch) for batch in pools.ticker.values())
     return counts
 
 
-def load_synthesis_pools(
-    session,
-    asof: str,
-    universe: set[str],
-) -> SynthesisPools:
-    """DB pulls: general (no channel param) + each configured channel + ticker universe."""
-    general_window = news_window_for_run(asof)
-    ticker_window = get_ticker_news_window(asof)
-    start_g = general_window.start_utc
-    end_g = general_window.end_utc
-
-    general = bz._rows_to_json(
-        bz.load_articles_general_window(session, start_g, end_g)
-    )
-
-    channels: dict[str, list[dict]] = {}
-    for channel_name, _limit in config.GENERAL_CHANNEL_FETCHES:
-        slug = _slugify(channel_name)
-        rows = bz.load_articles_channel_window(
-            session, start_g, end_g, channel_name
-        )
-        channels[slug] = bz._rows_to_json(rows)
-
-    ticker_rows = bz.load_articles_published_between(
-        session,
-        ticker_window.start_utc,
-        ticker_window.end_utc,
-    )
-    ticker = [
-        bz.article_to_json(r)
-        for r in ticker_rows
-        if article_ticker_symbols(bz.article_to_json(r)) & universe
-    ]
-
-    return SynthesisPools(general=general, channels=channels, ticker=ticker)
-
-
-def _merge_pools(pools: SynthesisPools) -> tuple[list[dict], list[str]]:
+def _merge_pools(pools: IngestPools) -> tuple[list[dict], list[str]]:
     by_id: dict[int, dict] = {}
 
     def _add(batch: list[dict]) -> None:
@@ -165,7 +86,8 @@ def _merge_pools(pools: SynthesisPools) -> tuple[list[dict], list[str]]:
     _add(pools.general)
     for batch in pools.channels.values():
         _add(batch)
-    _add(pools.ticker)
+    for batch in pools.ticker.values():
+        _add(batch)
 
     articles = list(by_id.values())
     articles.sort(key=lambda a: a.get("published") or "", reverse=True)
@@ -173,30 +95,45 @@ def _merge_pools(pools: SynthesisPools) -> tuple[list[dict], list[str]]:
     return articles, corpus_ids
 
 
-def load_synthesis_corpus(
-    session,
-    asof: str,
-    universe: set[str],
-) -> tuple[list[dict], list[str]]:
-    """Merged corpus ids from general + channel + ticker DB pulls."""
-    pools = load_synthesis_pools(session, asof, universe)
-    return _merge_pools(pools)
+def _collect_pool_ids(pool_ids: dict[str, Any]) -> list[str]:
+    ids: set[str] = set()
+    for raw in pool_ids.get("general") or []:
+        ids.add(str(raw))
+    for batch in (pool_ids.get("channels") or {}).values():
+        for raw in batch:
+            ids.add(str(raw))
+    for batch in (pool_ids.get("ticker") or {}).values():
+        for raw in batch:
+            ids.add(str(raw))
+    return sorted(ids, key=int, reverse=True)
 
 
-def synthesis_pools_for_run(asof: str, universe: set[str]) -> SynthesisPools:
-    session = get_session()
-    try:
-        return load_synthesis_pools(session, asof, universe)
-    finally:
-        session.close()
+def _articles_for_ids(ids: list[str], by_id: dict[str, dict[str, Any]]) -> list[dict]:
+    return [by_id[i] for i in ids if i in by_id]
 
 
-def synthesis_corpus_for_run(asof: str, universe: set[str]) -> tuple[list[dict], list[str]]:
-    session = get_session()
-    try:
-        return load_synthesis_corpus(session, asof, universe)
-    finally:
-        session.close()
+def load_ingest_pools(outdir: Path) -> tuple[dict[str, dict[str, Any]], IngestPools]:
+    """Hydrate API-bucket articles from ``ingest_pools`` ids in ``metadata.json``."""
+    meta = load_metadata(outdir)
+    pool_ids = meta.get("ingest_pools")
+    if not pool_ids:
+        raise FileNotFoundError(
+            f"{outdir / 'metadata.json'} missing ingest_pools — run ingest first"
+        )
+    all_ids = _collect_pool_ids(pool_ids)
+    by_id = load_articles_by_ids(all_ids)
+    pools = IngestPools(
+        general=_articles_for_ids(pool_ids.get("general") or [], by_id),
+        channels={
+            slug: _articles_for_ids(ids, by_id)
+            for slug, ids in sorted((pool_ids.get("channels") or {}).items())
+        },
+        ticker={
+            sym: _articles_for_ids(ids, by_id)
+            for sym, ids in sorted((pool_ids.get("ticker") or {}).items())
+        },
+    )
+    return by_id, pools
 
 
 def load_metadata(outdir: Path) -> dict[str, Any]:
@@ -218,21 +155,8 @@ def load_articles_by_ids(ids: list[str]) -> dict[str, dict[str, Any]]:
         session.close()
 
 
-def _load_window_pools(
-    outdir: Path,
-) -> tuple[dict[str, dict[str, Any]], SynthesisPools, set[str]]:
-    meta = load_metadata(outdir)
-    asof = meta["asof"]
-    universe = {s.upper() for s in (meta.get("universe_symbols") or [])}
-    pools = synthesis_pools_for_run(asof, universe)
-    articles, _ = _merge_pools(pools)
-    by_id: dict[str, dict[str, Any]] = {}
-    for article in articles:
-        try:
-            by_id[article_id(article)] = article
-        except ValueError:
-            continue
-    return by_id, pools, universe
+def _load_ingest_pools(outdir: Path) -> tuple[dict[str, dict[str, Any]], IngestPools]:
+    return load_ingest_pools(outdir)
 
 
 def dedupe_articles(articles: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -324,7 +248,7 @@ def audit_step4_source(
     channel_text: str | None = None,
     ticker_text: str | None = None,
 ) -> dict[str, Any]:
-    by_id, pools, _universe = _load_window_pools(outdir)
+    by_id, pools = _load_ingest_pools(outdir)
     if channel_text is None or ticker_text is None:
         built = build_step4_summaries_text(outdir)
         channel_text, ticker_text = built.channel_text, built.ticker_text
@@ -344,18 +268,21 @@ def audit_step4_source(
             if bid is not None:
                 general_ch_ids.add(bid)
 
-    ticker_only = sum(
-        1
-        for article in pools.ticker
-        if (bid := _benzinga_id_int(article)) is not None and bid not in general_ch_ids
-    )
+    ticker_only = 0
+    for batch in pools.ticker.values():
+        for article in batch:
+            bid = _benzinga_id_int(article)
+            if bid is not None and bid not in general_ch_ids:
+                ticker_only += 1
 
     channel_row_count = sum(len(batch) for batch in pools.channels.values())
+    ticker_row_count = sum(len(batch) for batch in pools.ticker.values())
     windows = load_metadata(outdir).get("windows") or {}
     return {
-        "general_window_rows": len(pools.general),
-        "channel_window_rows": channel_row_count,
-        "ticker_window_rows": len(pools.ticker),
+        "general_rows": len(pools.general),
+        "channel_rows": channel_row_count,
+        "ticker_rows": ticker_row_count,
+        "raw_rows_total": len(pools.general) + channel_row_count + ticker_row_count,
         "unique_benzinga_ids": len(by_id),
         "step4_blocks_channel": blocks_ch,
         "step4_blocks_ticker": blocks_tk,
@@ -371,8 +298,8 @@ def audit_step4_source(
 
 
 def build_step4_summaries_text(outdir: Path) -> Step4SourceBuild:
-    """Build Step 4 input from three DB pulls: general, per-channel, ticker."""
-    _by_id, pools, _universe = _load_window_pools(outdir)
+    """Build Step 4 input from ingest API buckets (ids in metadata, bodies from DB)."""
+    _by_id, pools = _load_ingest_pools(outdir)
     _articles, corpus_ids = _merge_pools(pools)
     seen: set[int] = set()
     article_ids: list[str] = []
@@ -419,14 +346,18 @@ def build_step4_summaries_text(outdir: Path) -> Step4SourceBuild:
     batched: set[str] = set()
     for batch_label, symbols in parse_ticker_batches_from_overview(overview_path):
         batched.update(symbols)
-        blocks = _ticker_blocks_for_symbols(symbols, pools.ticker, seen, article_ids)
+        blocks = _ticker_blocks_for_symbols(
+            symbols, pools.ticker, seen, article_ids
+        )
         if blocks:
             section_counts[f"Ticker Group: {batch_label}"] = len(blocks)
             ticker_sections.append(f"## Ticker Group: {batch_label}\n\n{''.join(blocks)}")
 
     extra_syms = [s for s in all_ticker_symbols(outdir) if s not in batched]
     if extra_syms:
-        blocks = _ticker_blocks_for_symbols(extra_syms, pools.ticker, seen, article_ids)
+        blocks = _ticker_blocks_for_symbols(
+            extra_syms, pools.ticker, seen, article_ids
+        )
         if blocks:
             section_counts["Ticker Group: other_tickers"] = len(blocks)
             ticker_sections.append(f"## Ticker Group: other_tickers\n\n{''.join(blocks)}")
@@ -443,29 +374,25 @@ def build_step4_summaries_text(outdir: Path) -> Step4SourceBuild:
 
 def _ticker_blocks_for_symbols(
     symbols: list[str],
-    ticker_pool: list[dict[str, Any]],
+    ticker_by_sym: dict[str, list[dict[str, Any]]],
     seen: set[int],
     article_ids: list[str],
 ) -> list[str]:
-    sym_set = {s.upper() for s in symbols}
     blocks: list[str] = []
-    for article in ticker_pool:
-        if not article_ticker_symbols(article) & sym_set:
-            continue
-        bid = _benzinga_id_int(article)
-        if bid is None or bid in seen:
-            continue
-        seen.add(bid)
-        article_ids.append(article_id(article))
-        overlap = sorted(article_ticker_symbols(article) & sym_set)
-        sym = overlap[0] if overlap else symbols[0]
-        ch = article.get("channels") or []
-        channel_label = ", ".join(str(c) for c in ch) if ch else sym
-        blocks.append(
-            format_brief_article_block(
-                article, channel=channel_label, ticker=sym
+    for sym in symbols:
+        for article in ticker_by_sym.get(sym, []):
+            bid = _benzinga_id_int(article)
+            if bid is None or bid in seen:
+                continue
+            seen.add(bid)
+            article_ids.append(article_id(article))
+            ch = article.get("channels") or []
+            channel_label = ", ".join(str(c) for c in ch) if ch else sym
+            blocks.append(
+                format_brief_article_block(
+                    article, channel=channel_label, ticker=sym
+                )
             )
-        )
     return blocks
 
 
@@ -474,14 +401,14 @@ def estimate_tokens(text: str) -> int:
 
 
 def load_all_source_articles(outdir: Path) -> dict[str, dict[str, Any]]:
-    by_id, _, _ = _load_window_pools(outdir)
+    by_id, _ = _load_ingest_pools(outdir)
     return by_id
 
 
 def channel_article_sets(
     outdir: Path, all_by_id: dict[str, dict[str, Any]] | None = None
 ) -> dict[str, list[dict[str, Any]]]:
-    _by_id, pools, _ = _load_window_pools(outdir)
+    _by_id, pools = _load_ingest_pools(outdir)
     result: dict[str, list[dict[str, Any]]] = {}
     if pools.general:
         result["general"] = list(pools.general)
@@ -571,21 +498,19 @@ def ticker_articles_for_symbols(
     symbols: list[str],
     all_by_id: dict[str, dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    _by_id, pools, _ = _load_window_pools(outdir)
-    sym_set = {s.upper() for s in symbols}
+    _by_id, pools = _load_ingest_pools(outdir)
     seen: set[str] = set()
     out: list[dict[str, Any]] = []
-    for article in pools.ticker:
-        if not article_ticker_symbols(article) & sym_set:
-            continue
-        try:
-            aid = article_id(article)
-        except ValueError:
-            continue
-        if aid in seen:
-            continue
-        seen.add(aid)
-        out.append(article)
+    for sym in symbols:
+        for article in pools.ticker.get(sym, []):
+            try:
+                aid = article_id(article)
+            except ValueError:
+                continue
+            if aid in seen:
+                continue
+            seen.add(aid)
+            out.append(article)
     return out
 
 

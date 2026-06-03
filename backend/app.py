@@ -5528,8 +5528,10 @@ def market_brief_generate():
                 'asof': asof,
             }), 400
         cmd.append('--skip-ingest')
-    elif data.get('skip_llm_summary') in (True, 'true', '1', 1):
-        cmd.append('--skip-llm-summary')
+    elif data.get('skip_llm') in (True, 'true', '1', 1) or data.get(
+        'skip_llm_summary'
+    ) in (True, 'true', '1', 1):
+        cmd.append('--skip-llm')
     elif data.get('resume') in (True, 'true', '1', 1):
         cmd.append('--skip-ingest')
         cmd.append('--resume')

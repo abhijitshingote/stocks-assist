@@ -5,7 +5,7 @@ Run inside the backend container:
     docker compose exec backend python -m market_brief.run_pipeline
     docker compose exec backend python -m market_brief.run_pipeline --date 2026-05-31
     docker compose exec backend python -m market_brief.run_pipeline --skip-ingest
-    docker compose exec backend python -m market_brief.run_pipeline --skip-llm-summary
+    docker compose exec backend python -m market_brief.run_pipeline --skip-llm
 """
 
 from __future__ import annotations
@@ -32,7 +32,11 @@ from market_brief.prompts_pipeline import (
     STEP4_SYSTEM_PROMPT,
     step4_user_message,
 )
-from market_brief.source_loader import audit_step4_source, build_step4_summaries_text
+from market_brief.source_loader import (
+    audit_step4_source,
+    build_step4_summaries_text,
+    prompt_counts,
+)
 from market_brief import status as status_mod
 
 logger = logging.getLogger(__name__)
@@ -61,7 +65,7 @@ def _clear_source(outdir: Path) -> None:
 
 
 def run_fetch(date_str: str, outdir: Path) -> None:
-    """Step 1: ``refresh_benzinga_articles`` → ticker universe → metadata (corpus via DB windows)."""
+    """Step 1: API bucket ingest → DB upsert → metadata (ingest_pools + corpus ids)."""
     from market_brief import ingest
     from market_brief.funnel_log import IngestFunnelData
     from market_brief.topics import load_topics
@@ -70,19 +74,48 @@ def run_fetch(date_str: str, outdir: Path) -> None:
     _clear_source(outdir)
     topics = load_topics()
     funnel = IngestFunnelData()
-    metadata, refresh, _corpus = ingest.prepare_run(
+    metadata, stats, _corpus = ingest.prepare_run(
         date_str, outdir, topics, funnel=funnel
     )
-    (outdir / "metadata.json").write_text(
+    metadata_path = outdir / "metadata.json"
+    metadata_path.write_text(
         json.dumps(metadata, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
+    _fill_prompt_counts(outdir, metadata_path)
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    c = metadata["counts"]
+    p = c.get("prompt") or {}
+    warnings = metadata.get("fetch_warnings") or []
     logger.info(
-        "Refresh complete: %d upserted, %d corpus → %s",
-        refresh.unique_upserted,
-        len(metadata["corpus_article_ids"]),
+        "Ingest complete: api_total=%d deduped=%d upserted=%d prompt_articles=%s → %s",
+        c["api_total_rows"],
+        c["after_dedupe_unique"],
+        c["upserted"],
+        p.get("articles_total", "—"),
         outdir,
     )
+    if warnings:
+        logger.warning(
+            "fetch_warnings (%d) — see metadata.json: %s",
+            len(warnings),
+            "; ".join(warnings[:3]) + (" …" if len(warnings) > 3 else ""),
+        )
+
+
+def _fill_prompt_counts(outdir: Path, metadata_path: Path) -> None:
+    """Load ingest pools from DB and record prompt section counts (no Opus)."""
+    try:
+        built = build_step4_summaries_text(outdir)
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        metadata.setdefault("counts", {})["prompt"] = prompt_counts(built)
+        metadata["article_ids"] = built.article_ids
+        metadata_path.write_text(
+            json.dumps(metadata, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+    except Exception as e:  # noqa: BLE001
+        logger.warning("prompt counts skipped: %s", e)
 
 
 def run_step4(
@@ -99,7 +132,8 @@ def run_step4(
         if overview_path.exists()
         else ""
     )
-    channel_text, ticker_text, article_ids = build_step4_summaries_text(outdir)
+    built = build_step4_summaries_text(outdir)
+    channel_text, ticker_text = built.channel_text, built.ticker_text
     audit = audit_step4_source(outdir, channel_text=channel_text, ticker_text=ticker_text)
     logger.info(
         "Step 4 source audit: %d unique articles → %d prompt blocks "
@@ -172,12 +206,19 @@ def run_step4(
             metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
             metadata = {}
-    metadata["article_ids"] = article_ids
+    metadata.setdefault("counts", {})["prompt"] = prompt_counts(built)
+    metadata["article_ids"] = built.article_ids
     metadata_path.write_text(
         json.dumps(metadata, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
-    logger.info("Wrote %s (%d article_ids)", metadata_path, len(article_ids))
+    p = metadata["counts"]["prompt"]
+    logger.info(
+        "Wrote %s (%d articles in prompt, %d sections)",
+        metadata_path,
+        p["articles_total"],
+        len(p.get("by_section") or {}),
+    )
     return brief_path
 
 
@@ -185,12 +226,12 @@ def run_pipeline(
     date_str: str | None = None,
     *,
     skip_ingest: bool = False,
-    skip_llm_summary: bool = False,
+    skip_llm: bool = False,
     resume: bool = False,
 ) -> Path:
     """Ingest + Anthropic brief for the given date. Returns output directory."""
-    if skip_ingest and skip_llm_summary:
-        raise ValueError("Cannot use --skip-ingest and --skip-llm-summary together")
+    if skip_ingest and skip_llm:
+        raise ValueError("Cannot use --skip-ingest and --skip-llm together")
     if resume:
         skip_ingest = True
 
@@ -205,7 +246,7 @@ def run_pipeline(
             f"Cannot resume: no source/ at {source_dir} — run a full pipeline first"
         )
 
-    if not skip_llm_summary:
+    if not skip_llm:
         status_mod.write_status(outdir, "running", stage="queued" if not resume else "resuming")
         if not resume:
             for stale_name in ("02_brief.md", "02_brief.json"):
@@ -219,9 +260,9 @@ def run_pipeline(
         logger.info("Ingest: Benzinga fetch for %s", asof)
         run_fetch(asof, outdir)
 
-    if skip_llm_summary:
+    if skip_llm:
         status_mod.write_status(outdir, "complete", stage="ingest_done")
-        logger.info("Skipping LLM steps (--skip-llm-summary)")
+        logger.info("Skipping LLM steps (--skip-llm)")
         print(f"\nIngest complete: {outdir / 'metadata.json'}")
         return outdir
 
@@ -282,7 +323,7 @@ def main(
     *,
     date: str | None = None,
     skip_ingest: bool = False,
-    skip_llm_summary: bool = False,
+    skip_llm: bool = False,
     resume: bool = False,
     verbose: bool = False,
 ) -> int:
@@ -298,7 +339,7 @@ def main(
             help="Skip Benzinga ingest; run Anthropic Step 4 on existing source/",
         )
         p.add_argument(
-            "--skip-llm-summary",
+            "--skip-llm",
             action="store_true",
             help="Ingest only (rewrite source/); skip Anthropic Step 4",
         )
@@ -311,24 +352,24 @@ def main(
         args = p.parse_args()
         date = args.date
         skip_ingest = args.skip_ingest
-        skip_llm_summary = args.skip_llm_summary
+        skip_llm = args.skip_llm
         resume = args.resume
         verbose = args.verbose
 
     _setup_logging(verbose)
 
-    if skip_ingest and skip_llm_summary:
-        logger.error("Cannot use --skip-ingest and --skip-llm-summary together")
+    if skip_ingest and skip_llm:
+        logger.error("Cannot use --skip-ingest and --skip-llm together")
         return 1
-    if resume and skip_llm_summary:
-        logger.error("Cannot use --resume with --skip-llm-summary")
+    if resume and skip_llm:
+        logger.error("Cannot use --resume with --skip-llm")
         return 1
 
     try:
         outdir = run_pipeline(
             date,
             skip_ingest=skip_ingest,
-            skip_llm_summary=skip_llm_summary,
+            skip_llm=skip_llm,
             resume=resume,
         )
     except (FileNotFoundError, ValueError) as e:
@@ -342,7 +383,7 @@ def main(
         )
         return 1
 
-    if skip_llm_summary:
+    if skip_llm:
         return 0
 
     print(f"\nBrief written to: {outdir / '02_brief.md'}")

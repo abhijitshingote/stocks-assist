@@ -5,7 +5,7 @@ Run inside the backend container:
     docker compose exec backend python -m market_brief.run
     docker compose exec backend python -m market_brief.run --asof 2026-05-31
     docker compose exec backend python -m market_brief.run --skip-ingest
-    docker compose exec backend python -m market_brief.run --skip-llm-summary
+    docker compose exec backend python -m market_brief.run --skip-llm
     docker compose exec backend python -m market_brief.run --asof 2026-05-31 --resume
     docker compose exec backend python -m market_brief.run --dry-run
 """
@@ -43,9 +43,9 @@ def main() -> int:
         help="Skip Benzinga ingest; run Anthropic Steps 3–4 on existing source/",
     )
     p.add_argument(
-        "--skip-llm-summary",
+        "--skip-llm",
         action="store_true",
-        help="Ingest only (rewrite source/); skip Anthropic Steps 3–4",
+        help="Ingest only (rewrite source/); skip Anthropic synthesis",
     )
     p.add_argument(
         "--resume",
@@ -78,11 +78,11 @@ def main() -> int:
         print(f"  Themes loaded: {len(topics)}")
         return 0
 
-    if args.skip_ingest and args.skip_llm_summary:
-        print("Error: cannot use --skip-ingest and --skip-llm-summary together", file=sys.stderr)
+    if args.skip_ingest and args.skip_llm:
+        print("Error: cannot use --skip-ingest and --skip-llm together", file=sys.stderr)
         return 1
-    if args.resume and args.skip_llm_summary:
-        print("Error: cannot use --resume with --skip-llm-summary", file=sys.stderr)
+    if args.resume and args.skip_llm:
+        print("Error: cannot use --resume with --skip-llm", file=sys.stderr)
         return 1
 
     from market_brief.run_pipeline import main as pipeline_main
@@ -90,7 +90,7 @@ def main() -> int:
     return pipeline_main(
         date=args.date,
         skip_ingest=args.skip_ingest,
-        skip_llm_summary=args.skip_llm_summary,
+        skip_llm=args.skip_llm,
         resume=args.resume,
         verbose=args.verbose,
     )
