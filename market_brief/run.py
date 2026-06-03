@@ -15,9 +15,10 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
 
 from market_brief.topics import load_topics
+from market_brief.trading_calendar import ET
 
 
 def _setup_logging(verbose: bool) -> None:
@@ -30,7 +31,7 @@ def _setup_logging(verbose: bool) -> None:
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Daily market brief generator")
-    p.add_argument("--asof", "--date", dest="date", help="YYYY-MM-DD (default: today UTC)")
+    p.add_argument("--asof", "--date", dest="date", help="YYYY-MM-DD (default: today ET)")
     p.add_argument(
         "--dry-run",
         action="store_true",
@@ -59,7 +60,7 @@ def main() -> int:
     if args.dry_run:
         from market_brief.screener_universe import build_screener_universe
 
-        asof = args.date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        asof = args.date or datetime.now(ET).strftime("%Y-%m-%d")
         topics = load_topics()
         slices, lineage, fetch_syms = build_screener_universe(asof)
         print(f"Would run Benzinga ingest + Anthropic brief for {asof}")

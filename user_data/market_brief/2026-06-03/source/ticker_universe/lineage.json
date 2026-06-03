@@ -1,5 +1,5 @@
 {
-  "asof": "2026-05-31",
+  "asof": "2026-06-03",
   "source": "stock_metrics / stock_volspike_gapper / main_view (DB)",
   "cap_buckets": [
     "mega",
@@ -213,7 +213,7 @@
     "CRWV": {
       "section": "vol_spike_5d/large",
       "label": "Vol spike / gapper · last 5D · Large cap",
-      "rank": 5,
+      "rank": 7,
       "dr_1": -6.27,
       "dr_5": 8.17,
       "ti65": 1.11,
@@ -265,7 +265,7 @@
     "EC": {
       "section": "vol_spike_5d/large",
       "label": "Vol spike / gapper · last 5D · Large cap",
-      "rank": 6,
+      "rank": 8,
       "dr_1": -1.87,
       "dr_5": 5.85,
       "ti65": 1.09,
@@ -352,19 +352,6 @@
       "last_event_type": "volume_spike",
       "market_cap": 74489721242,
       "company_name": "Hewlett Packard Enterprise Company"
-    },
-    "HPQ": {
-      "section": "vol_spike_5d/large",
-      "label": "Vol spike / gapper · last 5D · Large cap",
-      "rank": 10,
-      "dr_1": -4.01,
-      "dr_5": 4.53,
-      "ti65": 1.28,
-      "vol_vs_10d_avg": 0.45,
-      "last_event_date": "2026-05-29",
-      "last_event_type": "gapper",
-      "market_cap": 24957332670,
-      "company_name": "HP Inc."
     },
     "HYLN": {
       "section": "main_view_ti65/mid_small",
@@ -551,7 +538,7 @@
     "NBIS": {
       "section": "vol_spike_5d/large",
       "label": "Vol spike / gapper · last 5D · Large cap",
-      "rank": 7,
+      "rank": 5,
       "dr_1": -4.87,
       "dr_5": 19.9,
       "ti65": 1.51,
@@ -599,6 +586,19 @@
       "last_event_type": "gapper",
       "market_cap": 22874780128,
       "company_name": "Nextpower Inc."
+    },
+    "OKTA": {
+      "section": "vol_spike_5d/large",
+      "label": "Vol spike / gapper · last 5D · Large cap",
+      "rank": 10,
+      "dr_1": -8.61,
+      "dr_5": 37.84,
+      "ti65": 1.4,
+      "vol_vs_10d_avg": 0.67,
+      "last_event_date": "2026-05-29",
+      "last_event_type": "volume_spike",
+      "market_cap": 22687615880,
+      "company_name": "Okta, Inc."
     },
     "OPTX": {
       "section": "vol_spike_5d/mid_small",
@@ -811,7 +811,7 @@
     "TWLO": {
       "section": "vol_spike_5d/large",
       "label": "Vol spike / gapper · last 5D · Large cap",
-      "rank": 8,
+      "rank": 6,
       "dr_1": -1.56,
       "dr_5": 22.72,
       "ti65": 1.32,
@@ -1092,12 +1092,12 @@
         "COHR",
         "STM",
         "MDB",
-        "CRWV",
-        "EC",
         "NBIS",
         "TWLO",
+        "CRWV",
+        "EC",
         "NXT",
-        "HPQ"
+        "OKTA"
       ]
     },
     {

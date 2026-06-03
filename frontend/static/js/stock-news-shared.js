@@ -6,6 +6,8 @@
 
     const NEWS_SOURCES = ['All', 'Seeking Alpha', 'Yahoo Finance', 'FMP', 'Benzinga'];
     const OTHER_SOURCES = ['Seeking Alpha', 'Yahoo Finance', 'FMP'];
+    /** US equities app — display datetimes in Eastern (matches backend / market_brief). */
+    const APP_TIMEZONE = 'America/New_York';
 
     let _modalReady = false;
 
@@ -27,6 +29,27 @@
         if (source === 'FMP') return 'source-fmp';
         if (source === 'Benzinga') return 'source-benzinga';
         return '';
+    }
+
+    /** Datetime in US Eastern (EDT/EST), regardless of browser timezone. */
+    function formatAppDateTime(dateStr, opts) {
+        if (!dateStr) return '';
+        const options = Object.assign({
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZone: APP_TIMEZONE,
+            timeZoneName: 'short',
+        }, opts || {});
+        if (opts && opts.year) {
+            options.year = 'numeric';
+        }
+        return new Date(dateStr).toLocaleString('en-US', options);
+    }
+
+    function formatBenzingaDate(dateStr, opts) {
+        return formatAppDateTime(dateStr, opts);
     }
 
     function computeSourceCounts(articles) {
@@ -109,12 +132,7 @@
         const bodyEl = document.getElementById('benzingaModalBody');
         const footerEl = document.getElementById('benzingaModalFooter');
 
-        const date = article.published_date
-            ? new Date(article.published_date).toLocaleString('en-US', {
-                month: 'short', day: 'numeric', year: 'numeric',
-                hour: 'numeric', minute: '2-digit',
-            })
-            : '';
+        const date = formatBenzingaDate(article.published_date, { year: 'numeric' });
         const metaParts = [];
         if (article.author) metaParts.push('By ' + article.author);
         if (date) metaParts.push(date);
@@ -189,11 +207,11 @@
             }
 
             const listHtml = '<div class="news-list">' + filtered.map(a => {
-                const date = a.published_date
-                    ? new Date(a.published_date).toLocaleDateString('en-US', {
-                        month: 'short', day: 'numeric', year: 'numeric',
-                    })
-                    : '';
+                const date = a.source === 'Benzinga'
+                    ? formatBenzingaDate(a.published_date, { year: 'numeric' })
+                    : (a.published_date
+                        ? formatAppDateTime(a.published_date, { year: 'numeric' })
+                        : '');
                 const thumb = a.image
                     ? `<img class="news-article-thumb" src="${escAttr(a.image)}" alt="" onerror="this.style.display='none'">`
                     : '';
@@ -412,6 +430,9 @@
     global.StockNewsShared = {
         createNewsPanel,
         showBenzingaArticle,
+        formatAppDateTime,
+        formatBenzingaDate,
+        APP_TIMEZONE,
         sourceBadgeClass,
         computeSourceCounts,
         NEWS_SOURCES,

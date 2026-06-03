@@ -124,11 +124,18 @@ class NewsWindow:
 
 
 def resolve_run_instant_et(asof: str | None = None) -> datetime:
-    """Wall clock for window rules. ``asof`` backfills use that date at 6:00 AM ET."""
-    if asof:
-        d = datetime.strptime(asof, "%Y-%m-%d").date()
-        return datetime.combine(d, time(6, 0), tzinfo=ET)
-    return datetime.now(ET)
+    """Wall clock for window rules.
+
+    - No ``asof``, or ``asof`` is **today** (ET): current time (live ingest).
+    - Past ``asof``: that calendar date at 6:00 AM ET (historical pre-market brief).
+    """
+    now = datetime.now(ET)
+    if not asof:
+        return now
+    d = datetime.strptime(asof, "%Y-%m-%d").date()
+    if d == now.date():
+        return now
+    return datetime.combine(d, time(6, 0), tzinfo=ET)
 
 
 def compute_news_window(asof: str | None = None) -> NewsWindow:

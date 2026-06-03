@@ -161,6 +161,15 @@ def _fmt_full_date_eng(d):
     return f'{_ENG_MONTH_ABBR[d.month - 1]} {d.day}, {d.year}'
 
 
+def _nav_data_thru_label(latest_date, et_dt, abbr):
+    """OHLC session date + last OHLC sync time in US/Eastern."""
+    time_part = f'{_fmt_time_12h_eng(et_dt)} {abbr}'
+    session = _fmt_month_day_eng(latest_date)
+    if et_dt.date() == latest_date:
+        return f'{session}, {time_part}'
+    return f'{session}, as of {_fmt_month_day_eng(et_dt.date())}, {time_part}'
+
+
 @app.route('/api/health')
 def health():
     try:
@@ -197,7 +206,10 @@ def get_latest_date():
         if not latest_date:
             return jsonify({'error': 'No price data available'}), 404
 
-        latest_update = s.query(SyncMetadata).order_by(desc(SyncMetadata.last_synced_at)).first()
+        ohlc_sync = s.query(SyncMetadata).filter(SyncMetadata.key == 'ohlc_last_sync').first()
+        latest_update = ohlc_sync or s.query(SyncMetadata).order_by(
+            desc(SyncMetadata.last_synced_at)
+        ).first()
 
         response = {
             'latest_date': latest_date.strftime('%Y-%m-%d'),
@@ -219,9 +231,7 @@ def get_latest_date():
                 f'{_ENG_MONTH_ABBR[et_dt.month - 1]} {et_dt.day}, {et_dt.year} '
                 f'{_fmt_time_12h_eng(et_dt)} {abbr}'
             )
-            response['nav_data_thru_label'] = (
-                f'{_fmt_month_day_eng(latest_date)}, {_fmt_time_12h_eng(et_dt)} {abbr}'
-            )
+            response['nav_data_thru_label'] = _nav_data_thru_label(latest_date, et_dt, abbr)
 
         return jsonify(response)
     except Exception as e:
@@ -2926,15 +2936,13 @@ def get_market_benzinga_news():
         try:
             from datetime import timedelta
 
-            from market_brief import config as mb_config
-
-            days = mb_config.REFRESH_LOOKBACK_DAYS
+            days = benzinga_news_service.DEFAULT_REFRESH_LOOKBACK_DAYS
             end = datetime.now(timezone.utc)
             since = end - timedelta(days=days)
             articles_rows = benzinga_news_service.load_articles_published_between(
                 session, since, end, limit=limit
             )
-            
+
             # Filter by channel if requested
             if channel:
                 articles_rows = [
@@ -2978,16 +2986,14 @@ def refresh_market_benzinga_news():
         try:
             from datetime import timedelta
 
-            from market_brief import config as mb_config
-
-            days = mb_config.REFRESH_LOOKBACK_DAYS
+            days = benzinga_news_service.DEFAULT_REFRESH_LOOKBACK_DAYS
             end = datetime.now(timezone.utc)
             since = end - timedelta(days=days)
             refresh = benzinga_news_service.refresh_benzinga_articles(
                 session,
                 days=days,
-                limit=mb_config.REFRESH_API_LIMIT,
-                purge_days=mb_config.ARTICLE_RETENTION_DAYS,
+                limit=benzinga_news_service.DEFAULT_REFRESH_API_LIMIT,
+                purge_days=benzinga_news_service.DEFAULT_ARTICLE_RETENTION_DAYS,
             )
 
             articles_rows = benzinga_news_service.load_articles_published_between(

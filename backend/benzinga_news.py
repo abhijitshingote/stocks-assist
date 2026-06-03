@@ -19,6 +19,8 @@ from models import BenzingaArticle
 DEFAULT_BASE_URL = "https://api.polygon.io"
 DEFAULT_LIMIT = 40
 DEFAULT_REFRESH_LOOKBACK_DAYS = 3
+DEFAULT_REFRESH_API_LIMIT = 1000
+DEFAULT_ARTICLE_RETENTION_DAYS = 7
 
 logger = logging.getLogger(__name__)
 

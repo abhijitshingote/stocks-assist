@@ -54,13 +54,25 @@
     }
 
     function formatDate(dateStr) {
+        if (window.StockNewsShared && window.StockNewsShared.formatAppDateTime) {
+            return window.StockNewsShared.formatAppDateTime(dateStr);
+        }
         if (!dateStr) return '';
         return new Date(dateStr).toLocaleString('en-US', {
             month: 'short',
             day: 'numeric',
             hour: 'numeric',
             minute: '2-digit',
+            timeZone: 'America/New_York',
+            timeZoneName: 'short',
         });
+    }
+
+    function formatBenzingaDate(dateStr) {
+        if (window.StockNewsShared && window.StockNewsShared.formatBenzingaDate) {
+            return window.StockNewsShared.formatBenzingaDate(dateStr);
+        }
+        return formatDate(dateStr);
     }
 
     function getSourceBadgeClass(source) {
@@ -126,7 +138,7 @@
         }
 
         const listHtml = '<div class="news-list">' + benzingaArticles.map(a => {
-            const date = formatDate(a.published_date);
+            const date = formatBenzingaDate(a.published_date);
             const snippet = a.teaser || a.text || '';
             const image = a.image || (a.images && a.images[0]) || '';
             const channels = (a.channels || []).slice(0, 2).map(c =>

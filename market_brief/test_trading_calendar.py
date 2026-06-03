@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 from datetime import date, datetime, time
+from unittest.mock import patch
 
 from market_brief.trading_calendar import (
     ET,
@@ -12,6 +13,7 @@ from market_brief.trading_calendar import (
     compute_news_window,
     is_trading_day,
     previous_trading_day,
+    resolve_run_instant_et,
 )
 
 
@@ -57,6 +59,27 @@ class TradingCalendarTests(unittest.TestCase):
     def test_tuesday_before_open_skips_memorial_day(self) -> None:
         run = datetime(2026, 5, 26, 8, 0, tzinfo=ET)
         self.assertEqual(anchor_session_date(run), date(2026, 5, 22))
+
+    def test_asof_today_uses_now_not_six_am(self) -> None:
+        fixed_now = datetime(2026, 6, 3, 15, 22, tzinfo=ET)
+        with patch("market_brief.trading_calendar.datetime") as mock_dt:
+            mock_dt.now.return_value = fixed_now
+            mock_dt.strptime = datetime.strptime
+            mock_dt.combine = datetime.combine
+            run_et = resolve_run_instant_et("2026-06-03")
+        self.assertEqual(run_et, fixed_now)
+        win = compute_news_window("2026-06-03")
+        self.assertEqual(win.anchor_session, date(2026, 6, 3))
+        self.assertEqual(win.end_et, fixed_now)
+
+    def test_asof_past_date_uses_six_am_et(self) -> None:
+        fixed_now = datetime(2026, 6, 3, 15, 22, tzinfo=ET)
+        with patch("market_brief.trading_calendar.datetime") as mock_dt:
+            mock_dt.now.return_value = fixed_now
+            mock_dt.strptime = datetime.strptime
+            mock_dt.combine = datetime.combine
+            run_et = resolve_run_instant_et("2026-05-27")
+        self.assertEqual(run_et, datetime(2026, 5, 27, 6, 0, tzinfo=ET))
 
 
 if __name__ == "__main__":

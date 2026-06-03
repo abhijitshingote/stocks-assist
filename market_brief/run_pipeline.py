@@ -15,7 +15,7 @@ import json
 import logging
 import shutil
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -291,7 +291,7 @@ def main(
         p = argparse.ArgumentParser(
             description="Market brief: Benzinga ingest + Anthropic synthesis",
         )
-        p.add_argument("--date", "--asof", dest="date", help="YYYY-MM-DD (default: today UTC)")
+        p.add_argument("--date", "--asof", dest="date", help="YYYY-MM-DD (default: today ET)")
         p.add_argument(
             "--skip-ingest",
             action="store_true",
@@ -336,7 +336,7 @@ def main(
         return 1
     except Exception as e:
         logger.exception("Pipeline failed: %s", e)
-        asof = date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        asof = date or _default_asof()
         status_mod.write_status(
             config.OUTPUTS_DIR / asof, "failed", stage="error", error=str(e)
         )

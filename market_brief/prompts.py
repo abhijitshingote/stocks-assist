@@ -16,14 +16,15 @@ produces the final tiered brief.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Iterable
 
 from market_brief import config
+from market_brief.trading_calendar import ET
 
 
 def _today_str() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return datetime.now(ET).strftime("%Y-%m-%d")
 
 
 def _prior_session_label(asof: str) -> str:
