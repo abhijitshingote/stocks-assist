@@ -2924,11 +2924,15 @@ def get_market_benzinga_news():
         _ensure_benzinga_table()
         session = Session()
         try:
-            # Load articles from the last 7 days that aren't ticker-specific
             from datetime import timedelta
-            since = datetime.now(timezone.utc) - timedelta(days=7)
-            articles_rows = benzinga_news_service.load_articles_since(
-                session, since, limit=limit
+
+            from market_brief import config as mb_config
+
+            days = mb_config.REFRESH_LOOKBACK_DAYS
+            end = datetime.now(timezone.utc)
+            since = end - timedelta(days=days)
+            articles_rows = benzinga_news_service.load_articles_published_between(
+                session, since, end, limit=limit
             )
             
             # Filter by channel if requested
@@ -2952,9 +2956,9 @@ def get_market_benzinga_news():
                 'articles': articles,
                 'channels_available': sorted(list(channels_available)),
                 'window': {
-                    'label': 'Last 7 days',
+                    'label': f'Last {days} days',
                     'start_utc': since.isoformat(),
-                    'end_utc': datetime.now(timezone.utc).isoformat(),
+                    'end_utc': end.isoformat(),
                 }
             })
         finally:
@@ -2966,23 +2970,28 @@ def get_market_benzinga_news():
 
 @app.route('/api/benzinga-news/market', methods=['POST'])
 def refresh_market_benzinga_news():
-    """Fetch fresh market-wide Benzinga news from Polygon API, upsert to DB,
-    and return the refreshed cache window."""
+    """Refresh Benzinga cache (3-day lookback) and return articles from DB."""
     limit = request.args.get('limit', 200, type=int)
-    api_limit = min(max(request.args.get('api_limit', 100, type=int), 1), 100)
     try:
         _ensure_benzinga_table()
         session = Session()
         try:
             from datetime import timedelta
-            since = datetime.now(timezone.utc) - timedelta(days=7)
-            raw = benzinga_news_service.fetch_benzinga_general(
-                limit=api_limit, published_gte=since
-            )
-            inserted = benzinga_news_service.upsert_articles(session, raw)
 
-            articles_rows = benzinga_news_service.load_articles_since(
-                session, since, limit=limit
+            from market_brief import config as mb_config
+
+            days = mb_config.REFRESH_LOOKBACK_DAYS
+            end = datetime.now(timezone.utc)
+            since = end - timedelta(days=days)
+            refresh = benzinga_news_service.refresh_benzinga_articles(
+                session,
+                days=days,
+                limit=mb_config.REFRESH_API_LIMIT,
+                purge_days=mb_config.ARTICLE_RETENTION_DAYS,
+            )
+
+            articles_rows = benzinga_news_service.load_articles_published_between(
+                session, since, end, limit=limit
             )
             articles = [benzinga_news_service.article_to_json(row) for row in articles_rows]
 
@@ -2993,13 +3002,13 @@ def refresh_market_benzinga_news():
 
             return jsonify({
                 'count': len(articles),
-                'fetched_from_api': inserted,
+                'fetched_from_api': refresh.unique_upserted,
                 'articles': articles,
                 'channels_available': sorted(list(channels_available)),
                 'window': {
-                    'label': 'Last 7 days',
+                    'label': f'Last {days} days',
                     'start_utc': since.isoformat(),
-                    'end_utc': datetime.now(timezone.utc).isoformat(),
+                    'end_utc': end.isoformat(),
                 },
             })
         finally:

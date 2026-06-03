@@ -1,13 +1,22 @@
-"""Load and deduplicate Benzinga articles from source/ snapshots."""
+"""Load Benzinga articles for market brief steps from metadata.json + Postgres."""
 
 from __future__ import annotations
 
 import json
 import re
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-# Rough chars-per-token for batch sizing (conservative)
+from daily_screener.utils.db import get_session
+from market_brief import config
+from market_brief.ingest import article_ticker_symbols, news_window_for_run
+from market_brief.ingest_window import get_news_window, get_ticker_news_window
+from market_brief.trading_calendar import NewsWindow
+
+import benzinga_news as bz  # noqa: E402
+
 CHARS_PER_TOKEN = 3.5
 MAX_BATCH_TOKENS = 80_000
 
@@ -28,15 +37,182 @@ def article_id(article: dict[str, Any]) -> str:
     return str(raw)
 
 
-def load_articles_file(path: Path) -> list[dict[str, Any]]:
+def _slugify(name: str) -> str:
+    s = name.lower().strip()
+    s = re.sub(r"[^a-z0-9]+", "_", s)
+    return s.strip("_") or "topic"
+
+
+def _channel_slugs() -> list[str]:
+    slugs = ["general"]
+    for ch, _limit in config.GENERAL_CHANNEL_FETCHES:
+        slug = _slugify(ch)
+        if slug not in slugs:
+            slugs.append(slug)
+    return slugs
+
+
+def _parse_published(article: dict[str, Any]) -> datetime | None:
+    raw = article.get("published") or article.get("published_date")
+    if not raw:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt
+    except ValueError:
+        return None
+
+
+def _published_in_window(article: dict[str, Any], window: NewsWindow) -> bool:
+    pub = _parse_published(article)
+    if pub is None:
+        return False
+    start = window.start_utc
+    end = window.end_utc
+    if start.tzinfo is None:
+        start = start.replace(tzinfo=timezone.utc)
+    if end.tzinfo is None:
+        end = end.replace(tzinfo=timezone.utc)
+    return start <= pub <= end
+
+
+def _article_channel_slugs(article: dict[str, Any]) -> set[str]:
+    out: set[str] = set()
+    for ch in article.get("channels") or []:
+        slug = _slugify(str(ch))
+        if slug:
+            out.add(slug)
+    return out
+
+
+@dataclass
+class SynthesisPools:
+    """Three explicit DB pulls for Step 4 (general window, per-channel, ticker window)."""
+
+    general: list[dict] = field(default_factory=list)
+    channels: dict[str, list[dict]] = field(default_factory=dict)
+    ticker: list[dict] = field(default_factory=list)
+
+
+def load_synthesis_pools(
+    session,
+    asof: str,
+    universe: set[str],
+) -> SynthesisPools:
+    """DB pulls: general (no channel tag) + each configured channel + ticker universe."""
+    general_window = news_window_for_run(asof)
+    ticker_window = get_ticker_news_window(asof)
+    start_g = general_window.start_utc
+    end_g = general_window.end_utc
+
+    general = bz._rows_to_json(
+        bz.load_articles_general_window(session, start_g, end_g)
+    )
+
+    channels: dict[str, list[dict]] = {}
+    for channel_name, _limit in config.GENERAL_CHANNEL_FETCHES:
+        slug = _slugify(channel_name)
+        rows = bz.load_articles_channel_window(
+            session, start_g, end_g, channel_name
+        )
+        channels[slug] = bz._rows_to_json(rows)
+
+    ticker_rows = bz.load_articles_published_between(
+        session,
+        ticker_window.start_utc,
+        ticker_window.end_utc,
+    )
+    ticker = [
+        bz.article_to_json(r)
+        for r in ticker_rows
+        if article_ticker_symbols(bz.article_to_json(r)) & universe
+    ]
+
+    return SynthesisPools(general=general, channels=channels, ticker=ticker)
+
+
+def _merge_pools(pools: SynthesisPools) -> tuple[list[dict], list[str]]:
+    by_id: dict[int, dict] = {}
+
+    def _add(batch: list[dict]) -> None:
+        for article in batch:
+            bid = article.get("benzinga_id")
+            if bid is not None:
+                by_id[int(bid)] = article
+
+    _add(pools.general)
+    for batch in pools.channels.values():
+        _add(batch)
+    _add(pools.ticker)
+
+    articles = list(by_id.values())
+    articles.sort(key=lambda a: a.get("published") or "", reverse=True)
+    corpus_ids = [str(bid) for bid in sorted(by_id.keys(), reverse=True)]
+    return articles, corpus_ids
+
+
+def load_synthesis_corpus(
+    session,
+    asof: str,
+    universe: set[str],
+) -> tuple[list[dict], list[str]]:
+    """Merged corpus ids from general + channel + ticker DB pulls."""
+    pools = load_synthesis_pools(session, asof, universe)
+    return _merge_pools(pools)
+
+
+def synthesis_pools_for_run(asof: str, universe: set[str]) -> SynthesisPools:
+    session = get_session()
+    try:
+        return load_synthesis_pools(session, asof, universe)
+    finally:
+        session.close()
+
+
+def synthesis_corpus_for_run(asof: str, universe: set[str]) -> tuple[list[dict], list[str]]:
+    session = get_session()
+    try:
+        return load_synthesis_corpus(session, asof, universe)
+    finally:
+        session.close()
+
+
+def load_metadata(outdir: Path) -> dict[str, Any]:
+    path = outdir / "metadata.json"
     if not path.exists():
-        return []
-    data = json.loads(path.read_text(encoding="utf-8"))
-    if isinstance(data, list):
-        return data
-    if isinstance(data, dict):
-        return list(data.get("articles") or [])
-    return []
+        raise FileNotFoundError(f"missing metadata.json at {path}")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_articles_by_ids(ids: list[str]) -> dict[str, dict[str, Any]]:
+    if not ids:
+        return {}
+    int_ids = [int(i) for i in ids]
+    session = get_session()
+    try:
+        rows = bz.load_articles_by_ids(session, int_ids)
+        return {str(r.benzinga_id): bz.article_to_json(r) for r in rows}
+    finally:
+        session.close()
+
+
+def _load_window_pools(
+    outdir: Path,
+) -> tuple[dict[str, dict[str, Any]], SynthesisPools, set[str]]:
+    meta = load_metadata(outdir)
+    asof = meta["asof"]
+    universe = {s.upper() for s in (meta.get("universe_symbols") or [])}
+    pools = synthesis_pools_for_run(asof, universe)
+    articles, _ = _merge_pools(pools)
+    by_id: dict[str, dict[str, Any]] = {}
+    for article in articles:
+        try:
+            by_id[article_id(article)] = article
+        except ValueError:
+            continue
+    return by_id, pools, universe
 
 
 def dedupe_articles(articles: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -77,8 +253,7 @@ def format_article_block(article: dict[str, Any]) -> str:
 def concat_articles(articles: list[dict[str, Any]]) -> str:
     if not articles:
         return ""
-    blocks = [format_article_block(a) for a in articles]
-    return "\n---\n".join(blocks)
+    return "\n---\n".join(format_article_block(a) for a in articles)
 
 
 def _benzinga_id_int(article: dict[str, Any]) -> int | None:
@@ -103,7 +278,6 @@ def format_brief_article_block(
     channel: str,
     ticker: str = "",
 ) -> str:
-    """Single article block for Step 4 synthesis input."""
     title = (article.get("title") or "").strip()
     body = (
         article.get("body")
@@ -115,98 +289,69 @@ def format_brief_article_block(
     return f"[TICKER: {ticker_part}] [{channel}] {title}\n{body}\n---\n"
 
 
-def all_ticker_symbols(source_dir: Path) -> list[str]:
-    """Union of screener overview symbols and on-disk ``source/ticker/<SYM>/`` dirs."""
-    syms: set[str] = set()
-    overview_path = source_dir / "ticker_universe" / "overview.md"
+def all_ticker_symbols(outdir: Path) -> list[str]:
+    meta = load_metadata(outdir)
+    syms = set(meta.get("universe_symbols") or [])
+    overview_path = outdir / "source" / "ticker_universe" / "overview.md"
     for _, batch in parse_ticker_batches_from_overview(overview_path):
         syms.update(batch)
-    ticker_root = source_dir / "ticker"
-    if ticker_root.is_dir():
-        for d in ticker_root.iterdir():
-            if d.is_dir():
-                syms.add(d.name)
     return sorted(syms)
 
 
 def audit_step4_source(
-    source_dir: Path,
+    outdir: Path,
     *,
     channel_text: str | None = None,
     ticker_text: str | None = None,
 ) -> dict[str, Any]:
-    """Coverage stats for logging — confirms ingest → Step 4 alignment."""
-    general_n = len(load_articles_file(source_dir / "general" / "articles.json"))
-    channel_n = 0
-    channel_dir = source_dir / "channel"
-    if channel_dir.is_dir():
-        for slug_dir in channel_dir.iterdir():
-            if slug_dir.is_dir():
-                channel_n += len(load_articles_file(slug_dir / "articles.json"))
-    ticker_n = 0
-    ticker_syms = all_ticker_symbols(source_dir)
-    for sym in ticker_syms:
-        ticker_n += len(load_articles_file(source_dir / "ticker" / sym / "articles.json"))
-
-    unique = load_all_source_articles(source_dir)
+    by_id, pools, _universe = _load_window_pools(outdir)
     if channel_text is None or ticker_text is None:
-        channel_text, ticker_text, _ = build_step4_summaries_text(source_dir)
+        channel_text, ticker_text, _ = build_step4_summaries_text(outdir)
     ch_text = channel_text or ""
     tk_text = ticker_text or ""
     blocks_ch = ch_text.count("---\n") if ch_text else 0
     blocks_tk = tk_text.count("---\n") if tk_text else 0
 
-    ids_general_ch: set[int] = set()
-    for path in [source_dir / "general" / "articles.json"] + list(
-        (source_dir / "channel").glob("*/articles.json")
-    ):
-        for a in load_articles_file(path):
-            bid = _benzinga_id_int(a)
+    general_ch_ids: set[int] = set()
+    for article in pools.general:
+        bid = _benzinga_id_int(article)
+        if bid is not None:
+            general_ch_ids.add(bid)
+    for batch in pools.channels.values():
+        for article in batch:
+            bid = _benzinga_id_int(article)
             if bid is not None:
-                ids_general_ch.add(bid)
+                general_ch_ids.add(bid)
 
-    ticker_only = 0
-    for sym in ticker_syms:
-        for a in load_articles_file(source_dir / "ticker" / sym / "articles.json"):
-            bid = _benzinga_id_int(a)
-            if bid is not None and bid not in ids_general_ch:
-                ticker_only += 1
+    ticker_only = sum(
+        1
+        for article in pools.ticker
+        if (bid := _benzinga_id_int(article)) is not None and bid not in general_ch_ids
+    )
 
-    manifest: dict[str, Any] = {}
-    manifest_path = source_dir / "_manifest.json"
-    if manifest_path.exists():
-        try:
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            manifest = {}
-
-    article_chars = len(ch_text) + len(tk_text)
+    channel_row_count = sum(len(batch) for batch in pools.channels.values())
+    windows = load_metadata(outdir).get("windows") or {}
     return {
-        "general_rows": general_n,
-        "channel_rows": channel_n,
-        "ticker_rows": ticker_n,
-        "raw_rows_total": general_n + channel_n + ticker_n,
-        "unique_benzinga_ids": len(unique),
+        "general_window_rows": len(pools.general),
+        "channel_window_rows": channel_row_count,
+        "ticker_window_rows": len(pools.ticker),
+        "unique_benzinga_ids": len(by_id),
         "step4_blocks_channel": blocks_ch,
         "step4_blocks_ticker": blocks_tk,
         "step4_blocks_total": blocks_ch + blocks_tk,
         "ticker_only_articles": ticker_only,
-        "ticker_symbols": len(ticker_syms),
-        "coverage_ok": len(unique) == blocks_ch + blocks_tk,
-        "article_chars": article_chars,
+        "ticker_symbols": len(all_ticker_symbols(outdir)),
+        "coverage_ok": len(by_id) == blocks_ch + blocks_tk,
+        "article_chars": len(ch_text) + len(tk_text),
         "estimated_tokens_chars_per_3_5": estimate_tokens(ch_text + tk_text),
-        "general_window": manifest.get("general_window"),
-        "ticker_window": manifest.get("ticker_window"),
+        "general_window": windows.get("general_window"),
+        "ticker_window": windows.get("ticker_window"),
     }
 
 
-def build_step4_summaries_text(source_dir: Path) -> tuple[str, str, list[str]]:
-    """Build channel_summaries and ticker_summaries from raw source/ articles.
-
-    Articles are deduped globally by benzinga_id (ingest order: general → channels → tickers).
-    Each article appears once: channel/general first, then ticker-only extras.
-    Returns ``article_ids`` in the same order as prompt blocks (for reproduction).
-    """
+def build_step4_summaries_text(outdir: Path) -> tuple[str, str, list[str]]:
+    """Build Step 4 input from three DB pulls: general, per-channel, ticker."""
+    _by_id, pools, universe = _load_window_pools(outdir)
     seen: set[int] = set()
     article_ids: list[str] = []
     channel_sections: list[str] = []
@@ -216,59 +361,46 @@ def build_step4_summaries_text(source_dir: Path) -> tuple[str, str, list[str]]:
         if bid is None or bid in seen:
             return False
         seen.add(bid)
-        try:
-            article_ids.append(article_id(article))
-        except ValueError:
-            pass
+        article_ids.append(article_id(article))
         return True
 
-    general_path = source_dir / "general" / "articles.json"
     general_blocks: list[str] = []
-    for article in dedupe_articles(load_articles_file(general_path)):
+    for article in pools.general:
         if not _take(article):
             continue
         general_blocks.append(
             format_brief_article_block(
-                article,
-                channel="general",
-                ticker=_ticker_label(article),
+                article, channel="general", ticker=_ticker_label(article)
             )
         )
     if general_blocks:
         channel_sections.append(f"## Channel: general\n\n{''.join(general_blocks)}")
 
-    channel_dir = source_dir / "channel"
-    if channel_dir.is_dir():
-        for slug_dir in sorted(channel_dir.iterdir()):
-            if not slug_dir.is_dir():
+    for slug in sorted(pools.channels.keys()):
+        blocks: list[str] = []
+        for article in pools.channels[slug]:
+            if not _take(article):
                 continue
-            slug = slug_dir.name
-            blocks: list[str] = []
-            for article in dedupe_articles(load_articles_file(slug_dir / "articles.json")):
-                if not _take(article):
-                    continue
-                blocks.append(
-                    format_brief_article_block(
-                        article,
-                        channel=slug,
-                        ticker=_ticker_label(article),
-                    )
+            blocks.append(
+                format_brief_article_block(
+                    article, channel=slug, ticker=_ticker_label(article)
                 )
-            if blocks:
-                channel_sections.append(f"## Channel: {slug}\n\n{''.join(blocks)}")
+            )
+        if blocks:
+            channel_sections.append(f"## Channel: {slug}\n\n{''.join(blocks)}")
 
+    overview_path = outdir / "source" / "ticker_universe" / "overview.md"
     ticker_sections: list[str] = []
-    overview_path = source_dir / "ticker_universe" / "overview.md"
     batched: set[str] = set()
     for batch_label, symbols in parse_ticker_batches_from_overview(overview_path):
         batched.update(symbols)
-        blocks = _ticker_blocks_for_symbols(source_dir, symbols, seen, article_ids)
+        blocks = _ticker_blocks_for_symbols(symbols, pools.ticker, seen, article_ids)
         if blocks:
             ticker_sections.append(f"## Ticker Group: {batch_label}\n\n{''.join(blocks)}")
 
-    extra_syms = [s for s in all_ticker_symbols(source_dir) if s not in batched]
+    extra_syms = [s for s in all_ticker_symbols(outdir) if s not in batched]
     if extra_syms:
-        blocks = _ticker_blocks_for_symbols(source_dir, extra_syms, seen, article_ids)
+        blocks = _ticker_blocks_for_symbols(extra_syms, pools.ticker, seen, article_ids)
         if blocks:
             ticker_sections.append(f"## Ticker Group: other_tickers\n\n{''.join(blocks)}")
 
@@ -276,32 +408,30 @@ def build_step4_summaries_text(source_dir: Path) -> tuple[str, str, list[str]]:
 
 
 def _ticker_blocks_for_symbols(
-    source_dir: Path,
     symbols: list[str],
+    ticker_pool: list[dict[str, Any]],
     seen: set[int],
     article_ids: list[str],
 ) -> list[str]:
+    sym_set = {s.upper() for s in symbols}
     blocks: list[str] = []
-    for sym in symbols:
-        path = source_dir / "ticker" / sym / "articles.json"
-        for article in dedupe_articles(load_articles_file(path)):
-            bid = _benzinga_id_int(article)
-            if bid is None or bid in seen:
-                continue
-            seen.add(bid)
-            try:
-                article_ids.append(article_id(article))
-            except ValueError:
-                pass
-            ch = article.get("channels") or []
-            channel_label = ", ".join(str(c) for c in ch) if ch else sym
-            blocks.append(
-                format_brief_article_block(
-                    article,
-                    channel=channel_label,
-                    ticker=sym,
-                )
+    for article in ticker_pool:
+        if not article_ticker_symbols(article) & sym_set:
+            continue
+        bid = _benzinga_id_int(article)
+        if bid is None or bid in seen:
+            continue
+        seen.add(bid)
+        article_ids.append(article_id(article))
+        overlap = sorted(article_ticker_symbols(article) & sym_set)
+        sym = overlap[0] if overlap else symbols[0]
+        ch = article.get("channels") or []
+        channel_label = ", ".join(str(c) for c in ch) if ch else sym
+        blocks.append(
+            format_brief_article_block(
+                article, channel=channel_label, ticker=sym
             )
+        )
     return blocks
 
 
@@ -309,56 +439,21 @@ def estimate_tokens(text: str) -> int:
     return int(len(text) / CHARS_PER_TOKEN)
 
 
-def load_all_source_articles(source_dir: Path) -> dict[str, dict[str, Any]]:
-    """Return deduped article dict keyed by id from all source pulls."""
-    by_id: dict[str, dict[str, Any]] = {}
-
-    def _merge(batch: list[dict[str, Any]]) -> None:
-        for a in batch:
-            try:
-                by_id[article_id(a)] = a
-            except ValueError:
-                continue
-
-    general_path = source_dir / "general" / "articles.json"
-    _merge(load_articles_file(general_path))
-
-    channel_dir = source_dir / "channel"
-    if channel_dir.is_dir():
-        for slug_dir in sorted(channel_dir.iterdir()):
-            if slug_dir.is_dir():
-                _merge(load_articles_file(slug_dir / "articles.json"))
-
-    ticker_dir = source_dir / "ticker"
-    if ticker_dir.is_dir():
-        for sym_dir in sorted(ticker_dir.iterdir()):
-            if sym_dir.is_dir():
-                _merge(load_articles_file(sym_dir / "articles.json"))
-
+def load_all_source_articles(outdir: Path) -> dict[str, dict[str, Any]]:
+    by_id, _, _ = _load_window_pools(outdir)
     return by_id
 
 
 def channel_article_sets(
-    source_dir: Path, all_by_id: dict[str, dict[str, Any]]
+    outdir: Path, all_by_id: dict[str, dict[str, Any]] | None = None
 ) -> dict[str, list[dict[str, Any]]]:
-    """Articles per channel slug (deduped within channel file)."""
+    _by_id, pools, _ = _load_window_pools(outdir)
     result: dict[str, list[dict[str, Any]]] = {}
-
-    general_path = source_dir / "general" / "articles.json"
-    general = dedupe_articles(load_articles_file(general_path))
-    if general:
-        result["general"] = general
-
-    channel_dir = source_dir / "channel"
-    if channel_dir.is_dir():
-        for slug_dir in sorted(channel_dir.iterdir()):
-            if not slug_dir.is_dir():
-                continue
-            slug = slug_dir.name
-            arts = dedupe_articles(load_articles_file(slug_dir / "articles.json"))
-            if arts:
-                result[slug] = arts
-
+    if pools.general:
+        result["general"] = list(pools.general)
+    for slug, arts in pools.channels.items():
+        if arts:
+            result[slug] = list(arts)
     return result
 
 
@@ -367,7 +462,6 @@ def channel_output_filename(slug: str) -> str:
 
 
 def parse_ticker_batches_from_overview(overview_path: Path) -> list[tuple[str, list[str]]]:
-    """Group tickers into ~4 batches using screener screen from overview.md."""
     if not overview_path.exists():
         return []
 
@@ -383,7 +477,6 @@ def parse_ticker_batches_from_overview(overview_path: Path) -> list[tuple[str, l
             ticker_to_screen[sym] = section
 
     if not ticker_to_screen:
-        # Fallback: parse section tables before master list
         parts = re.split(r"^## ", text, flags=re.MULTILINE)
         for part in parts[1:]:
             if part.startswith("Master list"):
@@ -440,31 +533,31 @@ def parse_ticker_batches_from_overview(overview_path: Path) -> list[tuple[str, l
 
 
 def ticker_articles_for_symbols(
-    source_dir: Path,
+    outdir: Path,
     symbols: list[str],
     all_by_id: dict[str, dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Collect ticker-pull articles for symbols (deduped by id)."""
+    _by_id, pools, _ = _load_window_pools(outdir)
+    sym_set = {s.upper() for s in symbols}
     seen: set[str] = set()
     out: list[dict[str, Any]] = []
-    for sym in symbols:
-        path = source_dir / "ticker" / sym / "articles.json"
-        for a in dedupe_articles(load_articles_file(path)):
-            try:
-                aid = article_id(a)
-            except ValueError:
-                continue
-            if aid in seen:
-                continue
-            seen.add(aid)
-            out.append(a)
+    for article in pools.ticker:
+        if not article_ticker_symbols(article) & sym_set:
+            continue
+        try:
+            aid = article_id(article)
+        except ValueError:
+            continue
+        if aid in seen:
+            continue
+        seen.add(aid)
+        out.append(article)
     return out
 
 
 def split_oversized_batch(
     label: str, articles: list[dict[str, Any]]
 ) -> list[tuple[str, list[dict[str, Any]]]]:
-    """Split article list if concatenated text exceeds token budget."""
     text = concat_articles(articles)
     if estimate_tokens(text) <= MAX_BATCH_TOKENS:
         return [(label, articles)]

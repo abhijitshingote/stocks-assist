@@ -24,13 +24,25 @@ def _hdr(title: str) -> None:
 
 def log_ingest_report(
     funnel: IngestFunnelData,
-    stats: IngestStats,
+    stats: IngestStats | None,
     *,
     window: NewsWindow,
 ) -> None:
-    """Write a full pull/merge breakdown to the run log (always)."""
-    dup = stats.duplicate_rows_removed
+    """Write ingest breakdown to the run log."""
     _hdr("INGEST: what was pulled from Benzinga")
+    if stats is None:
+        logger.info("Published window (synthesis): %s", funnel.window_label or window.label)
+        logger.info(
+            "  start (UTC): %s | end (UTC): %s",
+            funnel.since_iso or window.start_utc.isoformat(),
+            funnel.end_iso or window.end_utc.isoformat(),
+        )
+        logger.info("DB purge: %d rows older than retention deleted", funnel.purge_count)
+        logger.info("Ticker universe (screener): %d symbols", funnel.universe_size)
+        logger.info("Corpus loaded from DB for synthesis windows: %d", funnel.db_loaded)
+        return
+
+    dup = stats.duplicate_rows_removed
     logger.info("Published window: %s", funnel.window_label or window.label)
     logger.info(
         "  start (UTC): %s | end (UTC): %s",

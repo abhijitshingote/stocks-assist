@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import html
+import logging
 import os
 import re
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from typing import Any
@@ -16,6 +18,9 @@ from models import BenzingaArticle
 
 DEFAULT_BASE_URL = "https://api.polygon.io"
 DEFAULT_LIMIT = 40
+DEFAULT_REFRESH_LOOKBACK_DAYS = 3
+
+logger = logging.getLogger(__name__)
 
 
 class _HTMLToText(HTMLParser):
@@ -102,18 +107,28 @@ def fetch_benzinga_from_api(
     return fetch_benzinga_raw(**params)
 
 
-def fetch_benzinga_general(
+def fetch_benzinga_since(
+    *,
+    limit: int = 1000,
+    published_gte: datetime,
+) -> list[dict]:
+    """Polygon news since ``published_gte`` — no ticker or channel filters (DB refresh)."""
+    return fetch_benzinga_raw(
+        limit=limit,
+        **{"published.gte": _published_gte_param(published_gte)},
+    )
+
+
+def fetch_benzinga_for_channel(
+    channel: str,
     *,
     limit: int = 100,
     published_gte: datetime | None = None,
-    channels: str | None = None,
 ) -> list[dict]:
-    """Market-wide Benzinga pull (no ticker filter). Optional channel filter."""
-    params: dict[str, Any] = {"limit": limit}
+    """Polygon news filtered by Benzinga channel slug (discovery / probes only)."""
+    params: dict[str, Any] = {"limit": limit, "channels": channel}
     if published_gte is not None:
         params["published.gte"] = _published_gte_param(published_gte)
-    if channels:
-        params["channels"] = channels
     return fetch_benzinga_raw(**params)
 
 
@@ -248,6 +263,19 @@ def load_articles_from_db(session, ticker: str, *, limit: int = DEFAULT_LIMIT) -
     )
 
 
+def load_articles_by_ids(
+    session,
+    benzinga_ids: list[int],
+) -> list[BenzingaArticle]:
+    if not benzinga_ids:
+        return []
+    return (
+        session.query(BenzingaArticle)
+        .filter(BenzingaArticle.benzinga_id.in_(benzinga_ids))
+        .all()
+    )
+
+
 def load_articles_since(
     session,
     since: datetime,
@@ -263,6 +291,122 @@ def load_articles_since(
         .limit(limit)
         .all()
     )
+
+
+def _rows_to_json(rows: list[BenzingaArticle]) -> list[dict]:
+    return [article_to_json(r) for r in rows]
+
+
+def load_articles_published_between(
+    session,
+    start: datetime,
+    end: datetime,
+    *,
+    limit: int = 10000,
+) -> list[BenzingaArticle]:
+    """Rows with ``published`` in [start, end] (UTC, inclusive)."""
+    if start.tzinfo is None:
+        start = start.replace(tzinfo=timezone.utc)
+    if end.tzinfo is None:
+        end = end.replace(tzinfo=timezone.utc)
+    return (
+        session.query(BenzingaArticle)
+        .filter(
+            BenzingaArticle.published >= start,
+            BenzingaArticle.published <= end,
+        )
+        .order_by(BenzingaArticle.published.desc().nullslast())
+        .limit(limit)
+        .all()
+    )
+
+
+def load_articles_general_window(
+    session,
+    start: datetime,
+    end: datetime,
+    *,
+    limit: int = 10000,
+) -> list[BenzingaArticle]:
+    """General-window rows with no Benzinga channel tags (``channels`` empty/null)."""
+    rows = load_articles_published_between(session, start, end, limit=limit)
+    return [r for r in rows if not (r.channels or [])]
+
+
+def load_articles_channel_window(
+    session,
+    start: datetime,
+    end: datetime,
+    channel: str,
+    *,
+    limit: int = 10000,
+) -> list[BenzingaArticle]:
+    """General-window rows tagged with a specific Benzinga ``channel`` name."""
+    if start.tzinfo is None:
+        start = start.replace(tzinfo=timezone.utc)
+    if end.tzinfo is None:
+        end = end.replace(tzinfo=timezone.utc)
+    return (
+        session.query(BenzingaArticle)
+        .filter(
+            BenzingaArticle.published >= start,
+            BenzingaArticle.published <= end,
+            BenzingaArticle.channels.contains([channel]),
+        )
+        .order_by(BenzingaArticle.published.desc().nullslast())
+        .limit(limit)
+        .all()
+    )
+
+
+def _filter_published_lte(raw_articles: list[dict], end: datetime) -> list[dict]:
+    if end.tzinfo is None:
+        end = end.replace(tzinfo=timezone.utc)
+    out: list[dict] = []
+    for raw in raw_articles:
+        pub = _parse_datetime(raw.get("published"))
+        if pub is None or pub <= end:
+            out.append(raw)
+    return out
+
+
+@dataclass
+class RefreshStats:
+    lookback_days: int = DEFAULT_REFRESH_LOOKBACK_DAYS
+    start_utc: str = ""
+    end_utc: str = ""
+    purged: int = 0
+    api_rows: int = 0
+    unique_upserted: int = 0
+
+
+def refresh_benzinga_articles(
+    session,
+    *,
+    days: int = DEFAULT_REFRESH_LOOKBACK_DAYS,
+    limit: int = 1000,
+    purge_days: int | None = None,
+    end: datetime | None = None,
+) -> RefreshStats:
+    """Rehydrate Postgres with Benzinga news for ``days`` ending at ``end`` (default: now UTC)."""
+    if end is not None and end.tzinfo is None:
+        end = end.replace(tzinfo=timezone.utc)
+    end = end or datetime.now(timezone.utc)
+    start = end - timedelta(days=days)
+    stats = RefreshStats(
+        lookback_days=days,
+        start_utc=start.isoformat(),
+        end_utc=end.isoformat(),
+    )
+    if purge_days is not None:
+        stats.purged = purge_articles_older_than(session, days=purge_days)
+
+    raw = fetch_benzinga_since(limit=limit, published_gte=start)
+    filtered = _filter_published_lte(raw, end)
+    stats.api_rows = len(filtered)
+    deduped = _dedupe_raw_by_benzinga_id(filtered)
+    stats.unique_upserted = upsert_articles(session, deduped)
+    return stats
 
 
 def article_to_json(row: BenzingaArticle) -> dict:

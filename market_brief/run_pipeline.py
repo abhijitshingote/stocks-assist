@@ -61,7 +61,7 @@ def _clear_source(outdir: Path) -> None:
 
 
 def run_fetch(date_str: str, outdir: Path) -> None:
-    """Step 1: pull Benzinga news and write source/ snapshots."""
+    """Step 1: ``refresh_benzinga_articles`` → ticker universe → metadata (corpus via DB windows)."""
     from market_brief import ingest
     from market_brief.funnel_log import IngestFunnelData
     from market_brief.topics import load_topics
@@ -70,18 +70,18 @@ def run_fetch(date_str: str, outdir: Path) -> None:
     _clear_source(outdir)
     topics = load_topics()
     funnel = IngestFunnelData()
-    _articles, ingest_stats, source_slices = ingest.ingest_all(
-        date_str, topics, funnel=funnel
+    metadata, refresh, _corpus = ingest.prepare_run(
+        date_str, outdir, topics, funnel=funnel
     )
-    ingest.persist_source_snapshots(source_slices, outdir, topics, asof=date_str)
-    (outdir / "ingest_stats.json").write_text(
-        json.dumps(ingest_stats.__dict__, indent=2),
+    (outdir / "metadata.json").write_text(
+        json.dumps(metadata, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
     logger.info(
-        "Fetch complete: %d unique articles → %s",
-        ingest_stats.unique_articles,
-        outdir / "source",
+        "Refresh complete: %d upserted, %d corpus → %s",
+        refresh.unique_upserted,
+        len(metadata["corpus_article_ids"]),
+        outdir,
     )
 
 
@@ -99,8 +99,8 @@ def run_step4(
         if overview_path.exists()
         else ""
     )
-    channel_text, ticker_text, article_ids = build_step4_summaries_text(source_dir)
-    audit = audit_step4_source(source_dir, channel_text=channel_text, ticker_text=ticker_text)
+    channel_text, ticker_text, article_ids = build_step4_summaries_text(outdir)
+    audit = audit_step4_source(outdir, channel_text=channel_text, ticker_text=ticker_text)
     logger.info(
         "Step 4 source audit: %d unique articles → %d prompt blocks "
         "(channel=%d ticker-only=%d) coverage_ok=%s",
@@ -165,20 +165,16 @@ def run_step4(
     brief_path.write_text(brief_md, encoding="utf-8")
     logger.info("Wrote %s", brief_path)
 
-    manifest: dict = {}
-    manifest_path = source_dir / "_manifest.json"
-    if manifest_path.exists():
-        try:
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            manifest = {}
     metadata_path = outdir / "metadata.json"
+    metadata: dict = {}
+    if metadata_path.exists():
+        try:
+            metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            metadata = {}
+    metadata["article_ids"] = article_ids
     metadata_path.write_text(
-        json.dumps(
-            {"asof": date_str, "article_ids": article_ids, "manifest": manifest},
-            indent=2,
-            ensure_ascii=False,
-        ),
+        json.dumps(metadata, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
     logger.info("Wrote %s (%d article_ids)", metadata_path, len(article_ids))
@@ -226,13 +222,17 @@ def run_pipeline(
     if skip_llm_summary:
         status_mod.write_status(outdir, "complete", stage="ingest_done")
         logger.info("Skipping LLM steps (--skip-llm-summary)")
-        print(f"\nIngest complete: {outdir / 'source'}")
+        print(f"\nIngest complete: {outdir / 'metadata.json'}")
         return outdir
 
     if skip_ingest:
         if not source_dir.is_dir():
             raise FileNotFoundError(
                 f"No source data at {source_dir} — run without --skip-ingest first"
+            )
+        if not (outdir / "metadata.json").exists():
+            raise FileNotFoundError(
+                f"No metadata.json at {outdir} — run without --skip-ingest first"
             )
 
     tracker = CostTracker.load_or_create(outdir) if resume else CostTracker(outdir=outdir)

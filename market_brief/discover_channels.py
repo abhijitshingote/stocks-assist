@@ -39,10 +39,10 @@ def _probe_channel(
 ) -> tuple[int, int, list[str]]:
     """Return (api_rows, after_filter, sample_ids)."""
     try:
-        raw = bz.fetch_benzinga_general(
+        raw = bz.fetch_benzinga_for_channel(
+            channel,
             limit=limit,
             published_gte=window.start_utc,
-            channels=channel,
         )
     except Exception as e:  # noqa: BLE001
         return -1, -1, [f"ERROR: {e}"]
@@ -69,9 +69,9 @@ def main() -> int:
     window = news_window_for_run()
     print(f"News window: {window.label}\n")
 
-    print("=== General feed (no channel filter) ===")
+    print("=== Unfiltered feed sample (no channel param) ===")
     try:
-        general_raw = bz.fetch_benzinga_general(
+        general_raw = bz.fetch_benzinga_since(
             limit=config.GENERAL_NEWS_LIMIT,
             published_gte=window.start_utc,
         )

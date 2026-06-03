@@ -193,6 +193,9 @@ QA_LOG_ENABLED = os.getenv("MARKET_BRIEF_QA_LOG", "").lower() in (
 )
 INGEST_CONCURRENCY = 5
 ARTICLE_RETENTION_DAYS = 7
+# Rolling Polygon refresh window for ``refresh_benzinga_articles`` (market news + brief ingest).
+REFRESH_LOOKBACK_DAYS = 3
+REFRESH_API_LIMIT = 1000
 
 # Summarize + brief input for stories that matched no theme or sector bucket.
 UNASSIGNED_TOPIC_NAME = "Unassigned (no theme/sector)"

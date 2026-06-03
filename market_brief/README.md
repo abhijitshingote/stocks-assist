@@ -35,13 +35,13 @@ Everything for one day lives under `user_data/market_brief/<YYYY-MM-DD>/`.
 
 ## Step 1 — Fetch (`source/`)
 
-Three API pull types. All rows are merged, deduped by `benzinga_id`, and cached in Postgres (`benzinga_articles`).
+**Refresh** upserts the last 3 days into Postgres (`benzinga_articles`). **Synthesis** reads the DB using trading-calendar windows below.
 
-| Pull | Time window | Saved as |
-|------|-------------|----------|
-| **General** | 5:00 AM ET on anchor session → run time | `source/general/articles.json` |
-| **Channels** | Same as general | `source/channel/<slug>/articles.json` (news, markets, tech, earnings, …) |
-| **Ticker universe** | **24h earlier** start, same end | `source/ticker/<SYMBOL>/articles.json` |
+| Step | What |
+|------|------|
+| **Refresh** | `refresh_benzinga_articles(end=brief run instant)` — 3 days ending at same ``asof`` 6 AM ET used for synthesis windows |
+| **Brief prep** | `prepare_run()` — refresh + screener `source/ticker_universe/` + `metadata.json` |
+| **Synthesis** | `source_loader` — three DB pulls: general window (untagged), each channel in `GENERAL_CHANNEL_FETCHES`, ticker window + universe |
 
 **General/channel window** — NYSE session rules in `trading_calendar.py` (e.g. weekend → prior Friday 5 AM; weekday before 9:30 → prior session).
 
@@ -85,18 +85,12 @@ Requires `ANTHROPIC_API_KEY`. Cost tracked in `run_costs.json`.
 
 ```
 user_data/market_brief/<YYYY-MM-DD>/
-├── source/                    # Step 1 — raw fetch audit
-│   ├── general/
-│   ├── channel/<slug>/
-│   ├── ticker/<SYMBOL>/
-│   ├── ticker_universe/overview.md
-│   └── _manifest.json
-├── 00_news/                   # Step 2 — (planned) grouped by category
+├── metadata.json              # fetch ids, dedupe, windows, ingest stats
+├── source/ticker_universe/    # screener overview + lineage
+├── 00_news/                   # legacy Perplexity pipeline snapshots
 ├── 01_summaries/              # Step 3 — LLM summaries per topic
 ├── 02_brief.md                # Step 4 — final brief
 ├── run_costs.json             # Anthropic API cost breakdown
-├── 02_brief.json              # (legacy runs only)
-├── ingest_stats.json
 └── run.log
 ```
 
