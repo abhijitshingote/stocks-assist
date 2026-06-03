@@ -1,6 +1,7 @@
 {
-  "status": "failed",
-  "stage": "stale",
-  "error": "Run stopped responding (no log activity for 15+ minutes)",
-  "updated_at": "2026-05-31T20:00:00+00:00"
+  "status": "complete",
+  "stage": "done",
+  "updated_at": "2026-06-03T16:31:20.355609+00:00",
+  "total_cost_usd": 1.2663,
+  "call_count": 1
 }

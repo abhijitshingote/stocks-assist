@@ -1,8 +1,9 @@
-# Environment Assumptions
-- I am using WSL2 on Windows.
-- All commands should be written assuming a Linux environment.
-- Use Docker and docker-compose and most scripts should be run inside the backend container.
-- Do not generate Windows PowerShell or CMD commands unless explicitly asked.
-- Assume code will run inside WSL using Ubuntu.
+Always use docker to test functionality or any adhoc scripts - ./docker/
+packages should not be installed on host machine.
 
-When I type TEST123, always respond with OK.  
+Dont be overly verbose when writing README or any descriptors in code.
+When responding to me , dont be too verbose
+
+I prefer technical explanation not a product style explanation. For example, I prefer filter dr_5 > 20 was applied rather than "picked 5 day momentum stocks".
+Specificity is very important.
+

@@ -99,7 +99,7 @@ def run_step4(
         if overview_path.exists()
         else ""
     )
-    channel_text, ticker_text = build_step4_summaries_text(source_dir)
+    channel_text, ticker_text, article_ids = build_step4_summaries_text(source_dir)
     audit = audit_step4_source(source_dir, channel_text=channel_text, ticker_text=ticker_text)
     logger.info(
         "Step 4 source audit: %d unique articles → %d prompt blocks "
@@ -164,6 +164,24 @@ def run_step4(
     brief_path = outdir / "02_brief.md"
     brief_path.write_text(brief_md, encoding="utf-8")
     logger.info("Wrote %s", brief_path)
+
+    manifest: dict = {}
+    manifest_path = source_dir / "_manifest.json"
+    if manifest_path.exists():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            manifest = {}
+    metadata_path = outdir / "metadata.json"
+    metadata_path.write_text(
+        json.dumps(
+            {"asof": date_str, "article_ids": article_ids, "manifest": manifest},
+            indent=2,
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    logger.info("Wrote %s (%d article_ids)", metadata_path, len(article_ids))
     return brief_path
 
 

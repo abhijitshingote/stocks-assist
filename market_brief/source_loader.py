@@ -150,7 +150,7 @@ def audit_step4_source(
 
     unique = load_all_source_articles(source_dir)
     if channel_text is None or ticker_text is None:
-        channel_text, ticker_text = build_step4_summaries_text(source_dir)
+        channel_text, ticker_text, _ = build_step4_summaries_text(source_dir)
     ch_text = channel_text or ""
     tk_text = ticker_text or ""
     blocks_ch = ch_text.count("---\n") if ch_text else 0
@@ -200,22 +200,33 @@ def audit_step4_source(
     }
 
 
-def build_step4_summaries_text(source_dir: Path) -> tuple[str, str]:
+def build_step4_summaries_text(source_dir: Path) -> tuple[str, str, list[str]]:
     """Build channel_summaries and ticker_summaries from raw source/ articles.
 
     Articles are deduped globally by benzinga_id (ingest order: general → channels → tickers).
     Each article appears once: channel/general first, then ticker-only extras.
+    Returns ``article_ids`` in the same order as prompt blocks (for reproduction).
     """
     seen: set[int] = set()
+    article_ids: list[str] = []
     channel_sections: list[str] = []
+
+    def _take(article: dict[str, Any]) -> bool:
+        bid = _benzinga_id_int(article)
+        if bid is None or bid in seen:
+            return False
+        seen.add(bid)
+        try:
+            article_ids.append(article_id(article))
+        except ValueError:
+            pass
+        return True
 
     general_path = source_dir / "general" / "articles.json"
     general_blocks: list[str] = []
     for article in dedupe_articles(load_articles_file(general_path)):
-        bid = _benzinga_id_int(article)
-        if bid is None or bid in seen:
+        if not _take(article):
             continue
-        seen.add(bid)
         general_blocks.append(
             format_brief_article_block(
                 article,
@@ -234,10 +245,8 @@ def build_step4_summaries_text(source_dir: Path) -> tuple[str, str]:
             slug = slug_dir.name
             blocks: list[str] = []
             for article in dedupe_articles(load_articles_file(slug_dir / "articles.json")):
-                bid = _benzinga_id_int(article)
-                if bid is None or bid in seen:
+                if not _take(article):
                     continue
-                seen.add(bid)
                 blocks.append(
                     format_brief_article_block(
                         article,
@@ -253,23 +262,24 @@ def build_step4_summaries_text(source_dir: Path) -> tuple[str, str]:
     batched: set[str] = set()
     for batch_label, symbols in parse_ticker_batches_from_overview(overview_path):
         batched.update(symbols)
-        blocks = _ticker_blocks_for_symbols(source_dir, symbols, seen)
+        blocks = _ticker_blocks_for_symbols(source_dir, symbols, seen, article_ids)
         if blocks:
             ticker_sections.append(f"## Ticker Group: {batch_label}\n\n{''.join(blocks)}")
 
     extra_syms = [s for s in all_ticker_symbols(source_dir) if s not in batched]
     if extra_syms:
-        blocks = _ticker_blocks_for_symbols(source_dir, extra_syms, seen)
+        blocks = _ticker_blocks_for_symbols(source_dir, extra_syms, seen, article_ids)
         if blocks:
             ticker_sections.append(f"## Ticker Group: other_tickers\n\n{''.join(blocks)}")
 
-    return "\n\n".join(channel_sections), "\n\n".join(ticker_sections)
+    return "\n\n".join(channel_sections), "\n\n".join(ticker_sections), article_ids
 
 
 def _ticker_blocks_for_symbols(
     source_dir: Path,
     symbols: list[str],
     seen: set[int],
+    article_ids: list[str],
 ) -> list[str]:
     blocks: list[str] = []
     for sym in symbols:
@@ -279,6 +289,10 @@ def _ticker_blocks_for_symbols(
             if bid is None or bid in seen:
                 continue
             seen.add(bid)
+            try:
+                article_ids.append(article_id(article))
+            except ValueError:
+                pass
             ch = article.get("channels") or []
             channel_label = ", ".join(str(c) for c in ch) if ch else sym
             blocks.append(

@@ -1,151 +1,164 @@
-# Daily Market Brief — 2026-05-26  
-_Covering: Friday May 22, 2026_
+### 🗓 May 26, 2026 — Pre-Market Brief
 
-## TL;DR (top of mind)
-
-SOXX +2.33%, IGV +1.65%, XLK +1.00%, QQQ +0.42%, SPY +0.39% on Friday May 22, 2026; semis, AI infra, and quantum ripped while NVDA and select megacap platforms lagged on post‑earnings digestion.[Semiconductors][AI Infrastructure][Quantum Computing]
-
-- **NVDA Friday May 22, 2026 close: -2.27% to $215.23** — traded lower despite fiscal Q1 revenue **$81.6–$81.615B (+~85% YoY, ~$79B est.)**, data‑center revenue **$75.2B (~92% of total)**, EPS **$1.87 vs ~$1.76–1.77**, Q2 revenue guide **$91B**, an **$80B buyback**, and a dividend hike from **$0.01 to $0.25** per share (Benzinga).[Semiconductors][AI Compute]  
-- **AMD Friday May 22 close: +4.98% to $466.49** — bid as Lisa Su highlighted AI‑driven CPU demand, **> $10B** planned investment into Taiwan’s AI supply chain, and ramp of **Venice CPUs on TSM 2nm**, positioning AMD as a key rival in the **$200B CPU market** Nvidia is targeting (Benzinga).[Semiconductors][AI Compute]  
-- **QCOM Friday May 22 close: +12.48% to $236.80** — surged on an expanded **Snapdragon Digital Chassis** deal with Stellantis plus prior Q2 beat/dividend/buyback, with Benzinga calling out **+12.48%** intraday and bullish June **$250 calls** (17 contracts, **$26.8K** premium) in options flow.[Wireless & Mobile]  
-- **DELL Friday May 22 close: +17.19% to $296.01; HPE +10.98% to $37.44; SMCI +6.81% to $35.41; MRVL +2.71% to $195.01; ANET +3.38% to $152.04; ETN +2.43% to $392.39; VRT +0.33% to $326.69** — AI server, networking, power, and cooling cohort ripped as Benzinga tallied **hyperscaler AI capex guidance at ~$602–$690B** for 2026 and framed broad rotation into full‑stack AI infrastructure.[AI Infrastructure][Communications & Networking]  
-- **MU Friday May 22 close: +0.65% to $758.94** — held green despite profit‑taking after a **>140% YTD / 703.65% 12‑month** run and Samsung strike relief; Micron started **1α DRAM** production in Virginia as part of a **> $2B** expansion and **$200B** U.S. investment plan, with consensus EPS seen jumping from **$1.91 to $19.11** and revenue from **$9.30B to $33.60B** YoY at the next print (Benzinga).[Memory & Interconnect]  
-- **Quantum complex Friday May 22: RGTI +20.59% to $25.80, QBTS +12.13% to $28.38, IONQ +7.53% to $62.54, QUBT +6.98% to $12.18, ARQQ +6.06% to $17.59; GFS +6.28% to $85.67; IBM +1.72% to $253.72; INTC +1.26% to $119.57** — squeezed higher after U.S. Commerce outlined a **$2B CHIPS Act quantum package** with **IBM set to receive about $1B** for **Anderon**, a 300‑mm quantum‑wafer foundry, plus awards and equity stakes for **GFS, RGTI, QBTS** and others (Benzinga).[Quantum Computing][Fab & Foundry]  
-- **TSM Friday May 22 close: -0.95% to $403.86** — slipped despite Bernstein’s **Mark Li** calling it the **“most trustworthy AI compounder”**, raising PT to **$430 from $351**, and highlighting **true 2nm mass production, 28% EPS CAGR**, and capacity‑constrained AI backlog; stock faded from **+0.31% pre‑market at $408.41** near its **$421.97** 52‑week high to the **-0.95%** close (Benzinga).[Fab & Foundry]  
+**One-liner**: DELL +30% on AI server backlog optimism ahead of May 28 earnings, IBM +13.5% extending its best week since 2002 on a $1B quantum foundry award, OKTA +29.5% and WDAY +10.6% on earnings beats, while WTI crude crashes 5%+ to ~$91 on Trump's claim a US-Iran deal is "largely negotiated."
 
 ---
 
-## Tape recap — Friday May 22, 2026
+### ⚡ Top Movers At a Glance
 
-### Up
-
-- **SOXX +2.33%** — semis led broad tech; AI compute and equipment strongest (Benzinga sector wraps).[Semiconductors][AI Infrastructure]  
-- **IGV +1.65%** — software and SaaS bid with security and data platforms in focus (Benzinga).[Software & SaaS]  
-- **XLK +1.00%** — tech outperformed SPY as AI and semi themes dominated (Benzinga).[Semiconductors]  
-- **QQQ +0.42%** — Nasdaq ticked higher, supported by semis and software (Benzinga).[AI Infrastructure]  
-- **SPY +0.39%** — broad index modestly higher into the long weekend (Benzinga).[AI Infrastructure]  
-
-(Specific single‑name moves are covered under sectors below per instructions.)
-
-### Down
-
-- No additional index/ETF decliners with verified moves in this packet; single‑name losers are detailed by sector below.
+| Ticker | Move | Cap | Catalyst | Theme |
+|--------|------|-----|----------|-------|
+| DELL | +30.4% | Mega | Morgan Stanley PT raise; $43B AI server backlog; earnings 5/28 ⚠️ | AI Infra / Servers |
+| IBM | +13.5% | Mega | $1B CHIPS Act quantum foundry award; best week since 2002 | Quantum / AI |
+| NOW | +12.3% | Mega | BofA reinstates Buy, $130 PT; AI growth engine thesis | SaaS / AI |
+| PLTR | +9.7% | Mega | Broad AI/defense momentum; Pentagon DIA contract dispute | Defense AI |
+| CRM | +8.9% | Mega | Software sector rebound; earnings 5/28 ⚠️ | SaaS |
+| ORCL | +8.8% | Mega | BNP Paribas $208 PT; SpaceX S-1 shows $15B/yr Anthropic compute spend | Cloud / AI Infra |
+| PANW | +8.2% | Mega | Cybersecurity rally; Wells Fargo raises PT to $285 | Cybersecurity |
+| CRWD | +8.1% | Mega | Cybersecurity sector record month; Wells Fargo PT to $700 | Cybersecurity |
+| ADBE | +6.4% | Mega | P/E 14.2x vs industry avg 82.5x; undervaluation narrative | Software |
+| FTNT | +5.2% | Mega | RSI 87.3; Q1 rev $1.85B beat $1.73B est; billings +31% YoY | Cybersecurity |
+| OKTA | +29.5% | Large | Cybersecurity sector +20.9% MTD in BUG ETF | Cybersecurity |
+| NTAP | +25.8% | Large | AI/data infrastructure momentum | Storage / AI |
+| NXT | +13.1% | Large | AI infrastructure buildout momentum | Data Center Infra |
+| TEAM | +13.0% | Large | SaaS sector rebound post-earnings | SaaS |
+| HPE | +12.6% | Large | AI server/sovereign AI demand; MS PT raised to $33 | AI Infra / Servers |
+| HOOD | +10.8% | Large | SpaceX IPO retail allocation via HOOD; crypto regulatory catalyst | Fintech |
+| WDAY | +10.6% | Large | Q1 EPS $2.66 beat $2.51 est; sub rev +14.3% YoY; AI >25% new ACV | SaaS / AI |
+| SMCI | +10.0% | Large | AI server demand; NVDA "parabolic demand" call | AI Infra / Servers |
+| BURL | +9.1% | Large | No specific catalyst identified | Retail |
+| HPQ | +8.8% | Large | AI PC cycle positioning; pre-earnings | PC Hardware |
+| SPCE | +42.8% | Small | +99.4% 5D; speculative momentum | Space |
+| MX | +31.2% | Small | +62.0% 5D; speculative momentum | Semis (analog) |
+| PD | +29.1% | Small | +36.7% 5D; momentum | SaaS |
+| CHA | +25.5% | Small | +32.9% 5D; 8.5× vol | China Telecom |
+| TSSI | +23.2% | Small | +40.2% 5D; AI data center infrastructure | AI Infra |
+| WOLF | -12.0% | Small | Reversal after +8.7% prior session; no new catalyst | SiC Semis |
+| FCEL | -10.6% | Small | Profit-taking after +25.7% Thursday; RSI 77 | Clean Energy |
+| RKLB | -4.8% | Large | $3B ATM equity offering filed; dilution concern | Space |
 
 ---
 
-## Per-sector / per-theme
+### 🧭 Narrative Threads
 
-### Semiconductors
+**AI Infrastructure Broadens Past GPUs** `AI Compute / Servers` → ongoing
 
-- **NVDA -2.27% (close $215.23, Friday May 22)** — traded lower despite fiscal Q1 revenue **$81.6–$81.615B (+~85% YoY, >$78.8–$79B est.)**, data‑center revenue **$75.2B (~92% of sales)**, EPS **$1.87 vs $1.76–1.77 est.**, Q2 revenue guide **$91B**, and an **$80B share‑repurchase authorization** plus dividend lift from **$0.01 to $0.25** per quarter (Benzinga).[Semiconductors]  
-- **AMD +4.98% (close $466.49)** — led GPU/CPU peers as Benzinga cited rich **P/E 155.84, P/S 20.50**, low **D/E 0.06**, and Lisa Su’s comments on AI inferencing, **agentic AI** tightening CPU supply, **> $10B** planned Taiwan AI‑ecosystem investment, and **Venice CPU** ramp on **TSMC 2nm** (Benzinga).[Semiconductors][AI Compute]  
-- **INTC +1.26% (close $119.57)** — up as a “secondary/tertiary AI” play; Benzinga noted Xeon CPUs selling through previously held‑back supply, Intel **more than tripling YTD**, and Bloomberg‑sourced talks to acquire or invest in AI startup **Tenstorrent** at **> $5B valuation**, with ETF weights **6.30% of SOXX, 5.07% of VLUE, 8.56% of FTXL** adding mechanical flow (Benzinga).[Semiconductors][AI Compute][Wireless & Mobile]  
-- **ASML +2.85% to $1633.41; LRCX +1.85% to $305.10; AMAT +0.92% to $431.48; KLAC +2.34% to $1887.22; ENTG +2.64% to $135.01; UCTT +3.69% to $83.29; ICHR +4.69% to $68.28; ACMR +3.00% to $73.20; VECO +2.52% to $59.30; ACLS +2.68% to $157.01** — all closed higher with SOXX as Benzinga tied the sector to rising AI research and manufacturing spend and to the new **$125M UCLA AI Semiconductor Hub** focused on AI‑native hardware, advanced packaging, and ultra‑broadband communications (Benzinga).[Chip Equipment]  
-- **MU +0.65% (close $758.94)** — advanced after Micron announced **1α DRAM** production at its Manassas, Virginia fab, part of a **> $2B** expansion and **$200B** U.S. investment plan expected to **quadruple DDR4 wafer supply**, with qualified output by end‑2026; consensus sees EPS jumping from **$1.91 to $19.11** and revenue from **$9.30B to $33.60B** YoY at the next update (est. June 24), while the CEO projected **memory shortage lasting beyond 2026** (Benzinga).[Memory & Interconnect]  
+The AI hardware trade widened dramatically last week as NVDA's Q1 ($81.6B rev, +85% YoY, beat $78.8B est) validated the capex cycle but the stock slipped 2.84% post-earnings — a signal that easy money in the obvious name is harder to find. The beneficiaries were the picks-and-shovels names downstream.
 
-### AI Infrastructure
+- **DELL** +30.4% to $417.90 on 5.9× volume. Morgan Stanley raised PT ahead of May 28 earnings. Wells Fargo analyst Aaron Rakers raised PT to $270 (from $180). DELL disclosed FY26 AI orders of $64.1B, AI shipments of $25.2B, exited the year with a $43B AI backlog, and guided ~$50B AI revenue for FY27 (~100% growth). Analysts expect Q1 revenue of $35.68B (+52% YoY) and adj EPS of $2.91 vs $1.55 a year ago. ⚠️ Earnings May 28.
+- **HPE** +12.6% on 3.6× volume. Morgan Stanley raised PT to $33 from $25 (Equal-Weight maintained). CNAS report identified HPE as supplier in 52% of sovereign AI projects alongside NVDA, AMD, INTC, DELL.
+- **HPQ** +8.8%; traders positioned ahead of earnings on AI PC cycle hopes.
+- **SMCI** +10.0% on 2.5× volume. CEO Jensen Huang described demand as "utterly parabolic." NANO Nuclear eyes AI data center power collaboration with SMCI.
+- **NTAP** +25.8% on 3.4× volume. AI/data infrastructure momentum.
+- **MU** +2.7% on session but +24.9% over 5D. Melius Research set Street-high PT of $1,100. Roundhill Memory ETF (DRAM) hit $10B AUM in 30 days — fastest-growing ETF ever, surpassing IBIT's record. ⚠️ MU gapped May 26.
+- NVDA Q2 guidance: $89.18B–$92.82B vs consensus. $80B buyback authorized; quarterly dividend raised to $0.25 from $0.01.
+- Top four hyperscalers plan combined $725B capex in 2026.
+- S&P Global flash U.S. manufacturing PMI hit 55.3 in May, a 48-month high — AI infrastructure capex cited as primary driver.
 
-- **NVDA -2.27% (close $215.23); AMD +4.98%; MRVL +2.71%; ANET +3.38%; SMCI +6.81%; ETN +2.43%; DELL +17.19%; HPE +10.98%; ORCL +1.05%; META +0.31%; VRT +0.33%** — Benzinga framed Friday as rotation across the **AI infra stack**: GPUs lagged while server OEMs (**DELL, HPE, SMCI**), networking (**MRVL, ANET**), and power/thermal management (**ETN, VRT**) rallied, with AI capex from the top U.S. cloud/AI platforms guided to roughly **$602–$690B** in 2026 (Benzinga).[AI Infrastructure][Communications & Networking]  
-- **DELL +17.19% (close $296.01)** — one of the strongest AI server beneficiaries; Benzinga called it a top AI infra player and a key upcoming earnings catalyst for the Nasdaq 100 and S&P 500 (Benzinga).[AI Infrastructure][Communications & Networking]  
-- **HPE +10.98% (close $37.44)** — re‑rated with the AI server trade alongside DELL, supported by the same AI capex and infrastructure narrative (Benzinga).[AI Infrastructure]  
-- **ETN +2.43% (close $392.39); VRT +0.33% (close $326.69)** — captured the market’s attention on datacenter **power, substations, and cooling bottlenecks**, which Benzinga flagged as key constraints in an **$8T AI capex cycle of which only 12–18% is built** (Benzinga).[AI Infrastructure][Power & Wide-Bandgap]  
+**Cybersecurity Sector Prints Record Monthly Rally** `Cybersecurity` → new
 
-### Software & SaaS
+The April narrative that Anthropic's Claude Mythos would destroy cybersecurity moats inverted completely. The sector is now posting its best month on record as enterprises spend *more* to defend against AI threats.
 
-- **MSFT -0.19% (close $418.07)** — marginal laggard despite AI exposure; Benzinga highlighted a **bearish MSFT call sweep** (110 contracts, **$54.4K** at the **$420** strike expiring May 29), a **$250M Activision shareholder settlement**, GitHub cyberattack investigation, and Microsoft’s strategy to serve as the AI **“orchestration layer”** rather than build a standalone model (Benzinga).[Software & SaaS][Internet & Platforms]  
-- **ORCL +1.05% (close $191.43)** — traded higher with software; Benzinga pointed to its role in sovereign AI infra and a notable **$210 strike ORCL call** (bullish flow) expiring May 29 (Benzinga).[Software & SaaS][AI Infrastructure]  
-- **CRM +2.94% (close $180.76)** — bid into Wednesday’s earnings, with consensus expecting **~12% revenue growth to $11B** and BofA highlighting AI as a key risk for Salesforce in contrast to ServiceNow (Benzinga).[Software & SaaS]  
-- **NOW +2.28% (close $101.40)** — up after BofA reinstated it as a **top Buy**, calling AI a “growth engine” and pointing to roughly **20% growth** (Benzinga).[Software & SaaS]  
-- **SNOW +4.84% (close $171.94)** — gained as a top Nasdaq 100 catalyst heading into its earnings week (Benzinga).[Software & SaaS]  
-- **DDOG +2.45% (close $222.25)** — moved higher with observability peers; Benzinga highlighted **32.15% revenue growth** and premium valuation relative to software cohort (Benzinga).[Software & SaaS]  
-- **MDB +2.23%; ESTC +1.69%; PANW +3.55%; CRWD +2.68%; ZS +7.20%; TEAM +5.07%; ADBE +0.38%; INTU +3.61%** — all higher with the software/cybersecurity bid; specific notes included **CRWD** PT lift to **$700**, ZS earnings expectations (**EPS $1.01 on $834.92M revenue**) and post‑close dip to **$181.10 AH**, and INTU rebound after prior‑week earnings‑driven drawdown (Benzinga).[Software & SaaS]  
+- **CRWD** +8.1%; Wells Fargo raised PT to $700 from $525 (Overweight). RSI 86.5. CRWD integrated Anthropic's Claude Compliance API into Falcon platform. Signed deal with Germany's SVA for public sector Falcon deployment. BUG ETF +26.14% MTD — largest monthly gain since inception (Oct 2019). HACK ETF +17.27% MTD — largest monthly gain since inception (Nov 2014).
+- **PANW** +8.2%; Wells Fargo raised PT to $285 from $235 (Overweight). Palo Alto research: machines/AI agents outnumber human employees 82-to-1 in enterprise environments. Closed CyberArk acquisition; announced Portkey deal May 1 to secure AI agent operations.
+- **FTNT** +5.2%; RSI 87.3. Q1 revenue $1.85B beat $1.73B est; adj EPS $0.82 vs ~$0.62 est; billings +31% YoY. Full-year guidance raised. BTIG upgraded to Buy, PT $125.
+- **OKTA** +29.5% on 5.0× volume. +20.9% MTD in BUG ETF constituent tracking.
+- **RPD** +13.4%. Rapid7 +23.9% MTD within BUG.
 
-### Internet & Platforms
+**SaaS Earnings Split: AI Monetizers vs. Legacy** `SaaS` → ongoing
 
-- **GOOGL -1.70% (close $382.40)** — fell after Reuters/Handelsblatt‑cited Benzinga report that the European Commission is preparing a **“high triple‑digit million euro” Digital Markets Act fine** over search self‑preferencing; probe began **March 2025** (Benzinga).[Internet & Platforms]  
-- **AAPL +1.15% (close $308.76)** — higher even as Counterpoint data showed **iPhone 17e Japan sales 1.17M units in first 7 weeks, down 9.8% vs iPhone 16e**; options flow flagged **284 AAPL calls** at the **$300 strike** for **$384.8K** expiring June 18 (Benzinga).[Internet & Platforms]  
-- **META +0.31% (close $608.64)** — modest gain amid headlines on **~8,000 job cuts**, raised **2026 capex to $125B–$145B**, a new Reddit‑like app **Forum**, a Texas AG lawsuit over WhatsApp encryption disclosures, and Georgia data‑center scrutiny (Benzinga).[Internet & Platforms]  
-- **AMZN -0.56% (close $266.76)** — down with no tape‑verified catalyst beyond mentions of AWS Trainium as a driver for MRVL custom silicon and a cultural piece on Elon Musk criticizing “The Boys” finale (Benzinga).[Internet & Platforms][Communications & Networking]  
-- **NFLX -1.39% (close $88.45)** — softer despite CNBC “Final Trades” mention and BofA Buy rating with **$125 PT**; options tape showed a **bullish Sept 18, 2026 $80 put sweep** (100 contracts, **$33.0K**), typically interpreted as put‑writing (Benzinga).[Internet & Platforms]  
-- **UBER -2.54% (close $71.95)** — declined after Benzinga reported Uber’s AI budget was effectively exhausted by **April** due to broad adoption of Anthropic’s Claude Code (**~84% of engineers** using it by March), and Senator Bernie Sanders warning driverless vehicles could threaten Uber drivers’ jobs (Benzinga).[Internet & Platforms]  
-- **SPOT +5.49% (close $516.23)** — rallied on **JP Morgan PT raise to $650 from $600 (OW)** and **Wells Fargo PT to $600 from $580 (OW)**, plus launch of **“Reserved by Spotify”** ticket‑access program with Live Nation (Benzinga).[Internet & Platforms]  
-- **RBLX +2.65% (close $47.76)** — up after **DA Davidson** maintained Neutral but cut PT to **$45 from $47.50** (below spot), alongside a neutral **$44 call** sweep (97 contracts, **$35.8K**) expiring May 22 (Benzinga).[Internet & Platforms]  
-- **TTD +4.57%; PINS +1.30%; SNAP -0.53%** — moved with the ad/social tape; no specific Friday catalysts in the packet (Benzinga).[Internet & Platforms]  
+SaaS stocks diverged sharply based on AI traction. BofA's Tal Liani drew an explicit line: AI is a "growth engine" for ServiceNow and a "major risk" for Salesforce.
 
-### Communications & Networking
+- **WDAY** +10.6%. Q1 EPS $2.66 beat $2.51 est; revenue $2.54B beat $2.52B est. Subscription rev +14.3% YoY. AI contributed >25% of new ACV from customer expansions; AI deals 50%+ larger on average. Over 4,000 customers using at least one organically developed AI agent. Raised FY27 non-GAAP op margin guidance to 30.5%. Aiming for flat headcount for the year. Wells Fargo PT raised to $185; Needham cut PT to $180 from $300 (Buy maintained); BTIG reiterated Buy/$175; Jefferies raised PT to $140 (Hold); Piper Sandler raised PT to $145 (Neutral).
+- **NOW** +12.3% on 2.3× volume. BofA reinstated Buy, $130 PT. Liani: ServiceNow growing ~20%, AI aligns perfectly with enterprise operations routing/governance.
+- **CRM** +8.9%. BofA initiated Underperform; Agentforce "not finding traction"; expects sub-10% growth going forward. ⚠️ Earnings May 28 — key SaaS bellwether.
+- **TEAM** +13.0% on 2.3× volume. SaaS sector rebound.
+- **ASAN** +12.8% on 3.4× volume. Small-cap SaaS momentum.
+- **DDOG** +7.2%. Observability/AI infrastructure play.
 
-- **NOK +9.27% (close $15.44)** — extended gains, trading **+2.82% pre‑market to $14.58** near 52‑week highs as Benzinga detailed Nokia’s **AI Networking Innovation Lab** and FCC approval for in‑home broadband devices; analysts see **Q2 EPS $0.07 vs $0.04 YoY** and **revenue $5.62B vs $5.15B YoY** for an estimated July 23 report, with recent upgrades including **Argus Buy $15 PT**, **Morgan Stanley OW at $8**, **JPM OW at $8** and ETF weights in **QTUM 1.72%, UFOX 2.89%, NXTG 1.60%** (Benzinga).[Communications & Networking]  
-- **MRVL +2.71% (close $195.01)** — printed a **new 52‑week high at $196.94 (intraday +3.28%)** and closed near the highs as multiple houses raised PTs: **Citi $215**, **Stifel $210**, **Oppenheimer $200**, **RBC $200**, **Wells Fargo $195**, all citing AI optical networking, custom ASICs for **AWS Trainium** and **MSFT Maia**, and optics growth of **~50% CAGR with potential >60% this year**; Benzinga also flagged concerns: **forward P/E 98 vs sector 32, consensus PT $137 vs ~$197 spot, RSI 72, rising‑wedge pattern**, and a **$2B NVDA investment** plus Celestial AI/XConn deals supporting elevated expectations ahead of May 27 earnings (EPS est **$0.75 vs $0.62 YoY**, revenue **$2.40B vs $1.90B**) (Benzinga).[Communications & Networking][Wireless & Mobile]  
-- **CSCO +1.84% (close $120.30)** — higher despite a **bearish CSCO $120 call trade** (281 contracts, **$70.2K** premium, exp. May 29) flagged by the options scanner; Benzinga cited Cisco as a key supplier in sovereign AI infrastructure alongside NVDA, AMD, INTC, DELL, HPE, ORCL, AMZN (Benzinga).[Communications & Networking]  
-- **ERIC +1.81% (close $13.48)** — up with the group; Benzinga later (May 26) noted plans to move Ericsson’s Stockholm HQ to **Hagastaden** beginning 2028, a long‑term footprint move rather than near‑term P&L event (Benzinga).[Communications & Networking]  
-- **CIEN -1.17% (close $580.80); LITE -2.56% (close $947.75); COHR -0.98% (close $375.21); AVGO -0.18% (close $412.22)** — lagged despite sector strength; CIEN traded against positive news as it won Biznet’s **400G BNCS‑1 subsea** upgrade, while AVGO participated in the **$125M UCLA AI Semiconductor Hub** with AMAT, GFS, META, SNPS (Benzinga).[Communications & Networking][Chip Equipment]  
+**Quantum Computing Gets $2B Federal Injection** `Quantum` → new
 
-### EdgeAI
+The Trump administration committed $2B in CHIPS Act funding to nine quantum companies, taking minority equity stakes in exchange.
 
-- **AMBQ +4.99% (close $81.00)** — added to a **+117.9% May‑to‑date** run (as of May 25) after a **May 12** update with **Q1 net sales up 59% YoY** and raised Q2 guidance; Benzinga noted **>80% of units shipped run AI algorithms on‑device**, firmly positioning Ambiq as an edge‑AI chip name (Benzinga).[EdgeAI][Optical & Photonics]  
-- **NET +1.65% (close $214.70)** — rose with IGV and SOXX; no company‑specific Benzinga catalyst in this packet beyond broad AI/software bid (Benzinga).[EdgeAI]  
-- **AKAM +0.90% (close $147.13)** — higher alongside XLK and IGV; no supported single‑name event in the provided articles (Benzinga).[EdgeAI]  
+- **IBM** +13.5% on 2.4× volume. Largest recipient at $1B for Anderon, a standalone 300mm quantum wafer foundry in Albany, NY. IBM matching with $1B own cash. Commerce Secretary Lutnick: "leading the world into a new era of American innovation." IBM estimates quantum industry could generate $850B in economic value by 2040. Dan Ives (Wedbush) called IBM a "sleeping giant." Best weekly performance since October 2002. ⚠️ Next earnings est. July 22.
+- **GFS** received $375M; Commerce Dept receives ~1% equity stake. GFS launched Quantum Technology Solutions business. Partnerships with PsiQuantum, Quantinuum, Diraq, Google Quantum AI, MSFT, NVDA.
+- **IONQ** +0.6% (5D +12.3%). Sympathy. Short interest 24%.
+- Kalshi market: 7% chance of useful quantum computer before 2027; 36% before 2030.
 
-### AI Compute
+**Iran Deal Hopes Crush Oil, Boost Risk Assets** `Macro / Geopolitical` → ongoing
 
-- **NVDA -2.27%; AMD +4.98%; INTC +1.26%; ARM +3.92%; ALAB +2.48%; CEVA +2.22%; AMBA +5.17%; SIMO +3.95%; AIP +2.75%** — Benzinga framed the day as **capital rotation within AI compute**, with NVDA consolidating after a record run and beat, while secondary CPU, connectivity, and IP plays caught incremental flows; ARM was highlighted as up **128.62% 1Y / 169.01% YTD** and **+46.09% on the week**, with insider sales and an FTC licensing probe as key risks, while ALAB gained **40.61%** on the week amid AI connectivity enthusiasm and Form 144 insider plans for **280,000 shares (~$60.4M)** (Benzinga).[AI Compute]  
+Trump said a US-Iran deal is "largely negotiated" and the Strait of Hormuz "will be opened." WTI crude crashed to ~$91, down 5.5%. However, Jeff Currie (Carlyle) warned: "Five 'deal' announcements, zero closed. Sell the tweet, buy the molecule."
 
-### Optical & Photonics
+- WTI crude fell to ~$91/bbl; Brent slipped below $98.
+- Robin Brooks (Brookings): expects Brent to $85 if deal holds; markets would quickly reprice Fed cuts and dollar weakness.
+- Polymarket: 40% chance Strait reopens by June 30; 63% by July 31; 84% by year-end.
+- National average gas price $4.507/gal on Memorial Day — highest since 2022.
+- U.S. conducted "defensive strikes" on Iranian missile sites and boats allegedly placing mines near Strait.
+- Iran tentatively agreed to relinquish its HEU stockpile (970 lbs enriched to 60%) per NYT report.
+- S&P 500 futures +0.54% early Tuesday; Dow futures +306 pts. Polymarket: 91% probability S&P opens higher Tuesday.
 
-- **AXTI +12.28% (close $135.79)** — outperformed; sector beta supported by SOXX +2.33%. (Probe’s narrative earnings line conflicts with “no AXTI article” note in Specialty Materials; we flag the discrepancy and use only the verified tape move here.)  
-- **LASR +3.12% (close $78.10)** — traded higher after Stifel’s **Ruben Roy** (91% accuracy in Benzinga’s framework) maintained Buy and raised PT from **$75 to $85** on May 21, citing better‑than‑expected **May 7 Q1** and above‑consensus Q2 sales guide; with LASR at **$78.10**, Stifel’s target implies mid‑single‑digit upside (Benzinga).[Optical & Photonics]  
-- **AMBQ +4.99% (close $81.00)** — see EdgeAI; Benzinga placed AMBQ among the seven best Russell 2000 performers in May, more than doubling Micron’s **46%** May return (Benzinga).[Optical & Photonics]  
-- **AAOI +1.97% (close $179.05)** — tracked AI optical transceiver demand; no additional single‑name catalyst in this packet (Benzinga).[Communications & Networking][Optical & Photonics]  
-- **LITE -2.56%; LWLG -3.03%; IPGP -1.45%; POET -0.58%** — underperformed despite AI‑capex tailwinds; Benzinga linked lasers and photonics broadly to NVDA/MU/AMD‑driven AI infra and highlighted Rackspace’s AMD AI partnership as another infra example, but without ticker‑specific catalysts for these four (Benzinga).[Optical & Photonics]  
+**Fed Pivot Risk: Hike Now on the Table** `Macro / Rates` → ongoing
 
-### Chip Equipment
+Fed Governor Waller called rate-cut talk "crazy" with April CPI at 3.8%. New Fed Chair Warsh declared AI a "significant disinflationary force" and signaled an aggressive cutting cycle — creating a potential yield curve trap.
 
-- **ASML, LRCX, AMAT, KLAC, ENTG, UCTT, ICHR, ACMR, VECO, ACLS** — see Semiconductors above; Benzinga tied their **+0.9–4.7%** moves to AI‑native chip R&D and manufacturing workstreams in the UCLA hub and broader AI capex ramp (Benzinga).[Chip Equipment]  
+- U. Michigan consumer sentiment fell to record-low 44.8 in May (final) from prelim 48.2.
+- 1-yr inflation expectations: 4.8%; 5-yr: 3.9% — highest in 7 months.
+- CME FedWatch: 82% probability of rate hike by Dec 2026; 98.5% by Jan 2027.
+- 30-yr yields at 5.17%; 10-yr at 4.65% on Warsh's swearing-in day.
+- Nomura expects zero cuts in 2026.
+- April FOMC minutes: 4 dissents — most since 1992. Officials open door to rate hike if inflation persists.
 
-### Memory & Interconnect
+**SpaceX IPO Reshapes Investor Flows** `Space / IPOs` → new
 
-- **MU +0.65%; RMBS +1.13%; GSIT +3.39%; MRAM +9.14%; TSEM +2.11%; GFS +6.28%; ASX +6.62%; AMKR -0.42%; UMC -0.55%** — Benzinga highlighted:  
-  - **Micron** as the main AI memory vehicle (see above) with ETF weights **7.63% SOXX, 7.25% FTXL, 8.88% VLUE**, heavy upside call activity (**$800 calls**, 100 contracts, **$154.4K** expiring May 29), and debate over “memory‑trade froth” via **Jordi Visser** exiting MU despite expecting **$8T AI capex** and persistent HBM shortages (Benzinga).[Memory & Interconnect]  
-  - **GFS +6.28%** after a **$375M U.S. Commerce CHIPS LOI** and ~**1% equity stake** to scale **Quantum Technology Solutions**, plus participation in the **$125M UCLA hub** and inclusion in Commerce’s **$2B quantum package** (Benzinga).[Memory & Interconnect][Fab & Foundry][Quantum Computing]  
-  - **ASX +6.62%** as a packaging name benefitting from Amkor’s commentary that advanced packaging is a “major bottleneck” for AI chips and from AMD’s **> $10B** Taiwan AI supply‑chain plan (Benzinga).[Memory & Interconnect][Power & Wide-Bandgap]  
-  - **GSIT +3.39%** intraday **+11.7% to $10.34** and **MRAM +9.14%** as high‑beta memory/IP plays in the Friday movers list; no ticker‑specific fundamentals beyond speculative AI memory demand (Benzinga).[Memory & Interconnect]  
+SpaceX filed S-1 on NASDAQ under $SPCX. BlackRock reportedly eyeing $5B–$10B investment. The IPO is creating significant gravitational pull on capital and index mechanics.
 
-### Wireless & Mobile
+- S-1 disclosed: 2025 revenue $18.67B (+81% YoY); Q1 2026 revenue $4.6B. Annual loss $4.59B (vs $791M profit in 2024). Starlink revenue $11.4B; launch $4B; xAI $3.2B. Musk retains 85.1% voting power.
+- Anthropic committed ~$1.25B/month ($15B/yr) for Colossus data center access per S-1.
+- **HOOD** +10.8%: SpaceX reportedly reserving 30% share allocation for retail investors via HOOD, SoFi, and E-Trade. Nasdaq rule changes could trigger $22B–$27B in forced ETF buying within 15 days of listing.
+- **RKLB** -4.8%: filed $3B ATM equity offering; $90M US Space Force GEO satellite contract. Tema NASA ETF surpassed $1.4B AUM.
+- Economist Dean Baker: Nasdaq could face lawsuits from index funds over rule changes facilitating fast-track inclusion.
 
-- **QCOM +12.48% (close $236.80)** — led RF/baseband; Benzinga tied the **12.48%** spike to an expanded **multi‑year Snapdragon Digital Chassis** deal with Stellantis for cockpit/connectivity/ADAS chips plus prior Q2 beat, dividend hike, and buyback expansion; unusual options flow showed **bullish $250 calls (17 contracts, $26.8K, exp. June 18)** alongside earlier **bearish $250 call sweep (45 contracts, $27.9K, exp. May 29)**, and a compounding study showed **15.71% 10‑year annualized return** with a current **$252.86B** market cap (Benzinga).[Wireless & Mobile]  
-- **MRVL +2.71%** — see Communications & Networking; also a top S&P 500 AI focus name up **176% from YTD low** with **nine consecutive up weeks** (Benzinga).[Wireless & Mobile]  
-- **INDI +13.38% (close $4.76)** — Indie Semiconductor printed **+21.53% intraday to $5.08** with an **$883.1M** market cap, landing on Benzinga’s top IT movers list; no fundamental headline, framed as speculative auto/IoT connectivity momentum (Benzinga).[Wireless & Mobile]  
-- **SWKS +11.41%; QRVO +8.00%; SYNA +8.44%; HIMX +6.19%; MXL -1.65%; AVGO -0.18%** — RF/mixed‑signal cohort rallied with SOXX +2.33% and the QCOM/MRVL strength; AVGO underperformed despite joining the **$125M UCLA hub** (Benzinga).[Wireless & Mobile][Communications & Networking]  
+**📡 Undercurrents** *(developing, not yet dominant)*
+- **Liquid cooling** emerging as next AI infrastructure trade — Goldman Sachs analyst Shawn Tuteja says data centers will shift to liquid cooling to save 10× electricity; Vertiv (VRT) +95% YTD, nVent (NVT) +165% 12M.
+- **Samsung 48,000-worker strike** threat: failed pay negotiations could tighten global memory/NAND supply, benefiting MU and SNDK.
+- **Intel reportedly exploring acquisition of AI chip startup Tenstorrent** at >$5B valuation; Qualcomm also circling (Bloomberg).
+- **FUTU** (Moomoo parent) crashed 28% after CSRC proposed $271M penalty for unlicensed China operations — potential competitive benefit for HOOD in international retail brokerage.
+- **"Beeflation"**: ground beef at record $6.90/lb; beef prices +24% since Trump took office Jan 2025.
 
-### Analog & Mixed-Signal / Power
+---
 
-- **TXN +4.20% (close $309.65)** — outpaced XLK and SPY after **Seaport Global’s Jay Goldberg** upgraded TXN from Neutral to **Buy** with **$400 PT**, with Benzinga noting prior close **$298.39** (Benzinga).[Analog & Mixed-Signal]  
-- **ADI +3.32% (close $396.43)** — up on a strong Q2: **EPS $3.09 vs $2.90 est., revenue $3.62B (+37.2% YoY) vs $3.51B est.**; a peer table showed **P/E 57.17, P/B 5.55, P/S 14.87, D/E 0.26**, lower leverage vs peers but softer ROE/growth than industry averages; a Congressional trade disclosure showed Rep. Thomas Kean **selling up to $60K of ADI on April 29** while **buying $1,001–$15,000 of TXN on April 14** (Benzinga).[Analog & Mixed-Signal]  
-- **NXPI +5.08% (close $314.41)** — rallied as Benzinga highlighted a **15‑year 17.4% annualized return**, beating the market by **5.33%**, with a hypothetical **$1,000** investment now worth **$11,092.53** at a share price of **$316.15** and market cap **$79.82B** (Benzinga).[Analog & Mixed-Signal]  
-- **ON +6.73% (close $116.53)** — gained with SOXX; ADI peer table pegged ON at **P/E 80.60, P/B 5.84, P/S 7.32, ROE -0.45%**, flagging premium valuation despite low growth (Benzinga).[Analog & Mixed-Signal]  
-- **VSH +12.97% (close $47.38)** — one of the day’s strongest moves; Benzinga’s movers piece showed **Vishay +9.5% to $46.18 intraday** among big Friday gainers (Benzinga).[Analog & Mixed-Signal]  
-- **MTSI +1.44% (close $382.67)** — up after Barclays’ Tom O’Malley maintained **Overweight** and raised PT from **$400 to $450** (Benzinga).[Analog & Mixed-Signal]  
-- **POWI +1.36% (close $71.19)** — modestly higher; after‑hours, Power Integrations was **+3.55% to $73.37** with **$3.9B** market cap, indicating continued demand beyond the regular session (Benzinga).[Analog & Mixed-Signal]  
+### 📰 Channel Pulse
 
-### Power & Wide-Bandgap
+| Channel | Material fact |
+|---------|--------------|
+| Earnings | WDAY Q1 EPS $2.66 vs $2.51 est; sub rev $2.35B +14.3% YoY; AI >25% new ACV; FY27 non-GAAP op margin raised to 30.5% |
+| Macro | U. Michigan consumer sentiment: record-low 44.8 (final May); 5-yr inflation expectations rose to 3.9%; CME: 82% prob of rate hike by Dec |
+| Geopolitical | Trump: Iran deal "largely negotiated"; WTI crude -5.5% to ~$91; US conducted "defensive strikes" in southern Iran; Strait of Hormuz reopening priced 40% by June 30 on Polymarket |
+| Tech/AI | NVDA Q1 rev $81.6B (+85% YoY); Q2 guide $89-93B; $80B buyback; Jensen Huang: "demand has gone parabolic" |
+| Quantum | Commerce Dept awards $2B to 9 quantum firms; IBM gets $1B for Anderon foundry; govt takes equity stakes |
+| IPOs | SpaceX filed S-1; 2025 rev $18.67B; loss $4.59B; Starlink $11.4B rev; BlackRock mulling $5-10B investment |
+| Commodities | National avg gas $4.507/gal — highest Memorial Day since 2022; WTI at $91; Brent below $98 |
 
-- **NVTS +18.84% (close $29.21)** — spiked after Benzinga reported Navitas **jumped 10.2% intraday to $26.86** and disclosed a **May 18 settlement** with Live Oak Sponsor to transfer **726,225 Sponsor Earnout Shares**, forfeit **115,775**, and grant a general release, clarifying SPAC‑era share overhangs (Benzinga).[Power & Wide-Bandgap]  
-- **SMTC +6.36% (close $154.77)** — up as Semtech printed bullish flow: **90 SMTC $200 calls expiring June 18** for **$76.5K** total premium and **6.2K volume**, plus an **Oppenheimer PT hike to $150 from $110 (Outperform)** (Benzinga).[Power & Wide-Bandgap]  
-- **WOLF +0.30% (close $69.77)** — closed slightly green; Benzinga’s movers list had **Wolfspeed +8.7% to $75.63 intraday**, highlighting strong intraday demand in SiC (Benzinga).[Power & Wide-Bandgap]  
-- **AEHR +5.67% (close $94.31)** — higher with the wide‑bandgap/test basket; no specific Friday catalyst in the provided articles (Benzinga).[Power & Wide-Bandgap]  
+---
 
-### Test & Advanced Packaging
+### 👁 On The Radar
 
-- **CAMT +4.42%; KLIC +3.91%; LSCC +3.49%; PLAB +2.63%; COHU +1.88%; FORM +1.79%; SKYT +1.35%; ONTO +0.58%; TER -0.32%** — test/packaging names were mostly higher with SOXX; the standout supported event was:  
-  - **LSCC +3.49% (close $142.99)** — Deutsche Bank reiterated **Buy** and raised PT from **$150 to $175**, with Benzinga noting a prior close of **$139.35** and listing the call among “10 top analyst forecasts for Friday,” giving LSCC **~17% implied upside** vs Wednesday and helping its outperformance vs SOXX (Benzinga).[Test & Advanced Packaging]  
+- **DELL earnings May 28**: consensus rev $35.68B, EPS $2.91. Wells Fargo looking for $60-65B AI server revenue vs $50B prior guide. $43B AI backlog.
+- **CRM earnings May 28**: consensus rev ~$11B. BofA Underperform rating; Agentforce traction will be key focus. Benchmark SaaS read-through.
+- **MRVL earnings May 28**: consensus rev $2.4B (+26% YoY). Stock +9 weeks consecutive; forward P/E 98. NVDA investment and custom chip demand are key.
+- **COST earnings May 29**: consensus rev ~$69B (+10% YoY). Consumer health gauge after WMT warned on fuel cost inflation.
+- **MDB earnings May 28**: vol spiked 4.5×. Database/AI agent infrastructure play.
+- **A (Agilent) earnings May 28**: gapper flagged for 5/28.
+- **DLTR earnings May 28**: gapper flagged; +22.9% over 5D.
+- **HEI earnings May 28**: defense/aerospace; +14.8% over 5D.
+- **SpaceX IPO roadshow**: scheduled for June; target listing June 12 under $SPCX; 5:1 stock split completed.
+- **FCEL earnings June 8 (confirmed)**: EPS est loss $0.47; rev est $41.6M.
+- **Iran ceasefire/deal**: 60-day extension under discussion; Strait of Hormuz reopening timeline is the macro variable for oil, inflation, and Fed path.
 
-### Fab & Foundry
+---
 
-- **TSM -0.95% (close $403.86)** — slipped despite Bernstein’s **Outperform** and **PT $430 (from $351)**, a forecast for **28% EPS CAGR over 2.5 years**, commentary that TSM is mass‑producing **“true 2nm”** and is **capacity‑constrained**, and Benzinga Edge scores of **momentum 90.67, growth 92.88, quality 97.56, value 25.99**; shares traded **+0.31% pre‑market at $408.41**, near **$421.97** 52‑week high, but closed **-0.95%** as a Bloomberg‑cited piece described investors rotating Asian AI exposure into **memory, CPUs, robotics, and infra** beyond TSM (Benzinga).[Fab & Foundry]  
-- **GFS +6.28% (close $85.67)** — extended a week where Benzinga flagged **+23.70%** gains on news that U.S. Commerce signed a **$375M CHIPS LOI** and ~**1% equity stake** for its **Quantum Technology Solutions** business, plus inclusion in the **$2B quantum package** and the **$125M UCLA AI Semiconductor Hub** (Benzinga).[Fab & Foundry][Quantum Computing]  
-- **ASX +6.62% (close $34.81)** — rallied in sympathy with OSAT/packaging; Benzinga tied broader packaging demand to AMD’s **> $10B** Taiwan investments and Amkor’s comments on advanced packaging as a bottleneck, though ASX itself had no standalone headline (Benzinga).[Fab & Foundry][Memory & Interconnect]  
-- **TSEM +2.11% (close $283.47); SLAB +0.16% (close $217.59); SITM +1.89% (close $726.74); UMC -0.55% (close $18.23)** — moved on sector dynamics; Micron’s peer table pegged **TSEM** at **P/E 131.21, P/B 10.70, P/S 19.91, ROE 2.2%**, highlighting rich multiples vs MU’s stronger fundamentals (Benzinga).[Memory & Interconnect][Fab & Foundry]  
+### 🚫 What to Ignore Today
 
-### Specialty Materials & IP Licensing
-
-- **ATOM +9.65% (close $9.32); GSIT +3.39% (close $9.58); NVMI +1.36% (close $500.72); RMBS +1.13% (close $141.55); OLED +2.90% (close $93.98); AXTI +12.28% (close $135.79); ALMU -2.86% (close $22.29)** — broader specialty group traded higher with tech, with **GSIT** singled out in movers coverage as **+11.7% intraday to $10.34**; no fresh, ticker‑specific fundamentals were detailed for most beyond the earnings reference for AXTI i
+- **SPCE +42.8%**: Pure speculative momentum, 99.4% in 5 days, no identifiable fundamental catalyst. Noise.
+- **BURL +9.1%**: No earnings, no catalyst, flat 5D — appears to be passive flow or sector rotation artifact. Skip.
+- **Pompliano/Saylor Bitcoin commentary**: Narrative recycling (gold/BTC hedging thesis). BTC -30% 1Y; no new data in these posts. Already priced.

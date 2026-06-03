@@ -1,29 +1,29 @@
 {
-  "started_at": "2026-05-31T20:46:19.114525+00:00",
-  "completed_at": "2026-05-31T20:48:53.984004+00:00",
+  "started_at": "2026-06-03T16:31:20.640753+00:00",
+  "completed_at": "2026-06-03T16:33:54.709233+00:00",
   "call_count": 1,
   "current_step": null,
-  "pricing_note": "Token counts from Anthropic Messages API response.usage. USD estimated from published claude.com/api pricing (input, 5m cache write, cache read, output) — Anthropic does not return dollar amounts on the response.",
+  "pricing_note": "Token counts from Anthropic Messages API response.usage. USD estimated from published claude.com/api pricing (input, 5m cache write, cache read, output) \u2014 Anthropic does not return dollar amounts on the response.",
   "total_input_tokens": 454290,
-  "total_output_tokens": 5587,
+  "total_output_tokens": 5548,
   "total_cache_creation_input_tokens": 0,
   "total_cache_read_input_tokens": 0,
-  "total_cost_usd": 2.4111,
+  "total_cost_usd": 2.4101,
   "calls": [
     {
       "step": "step4_synthesis",
       "api_model": "claude-opus-4-6",
       "pricing_model": "claude-opus-4-6",
-      "model": "claude-opus-4-6",
       "input_tokens": 454290,
-      "output_tokens": 5587,
+      "output_tokens": 5548,
       "cache_creation_input_tokens": 0,
       "cache_read_input_tokens": 0,
       "input_cost_usd": 2.27145,
-      "output_cost_usd": 0.139675,
+      "output_cost_usd": 0.1387,
       "cache_write_cost_usd": 0.0,
       "cache_read_cost_usd": 0.0,
-      "total_cost_usd": 2.411125
+      "total_cost_usd": 2.41015,
+      "model": "claude-opus-4-6"
     }
   ]
 }
