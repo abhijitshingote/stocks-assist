@@ -96,12 +96,32 @@ class SynthesisPools:
     ticker: list[dict] = field(default_factory=list)
 
 
+@dataclass
+class Step4SourceBuild:
+    """Step 4 prompt text plus per-section assignment counts."""
+
+    channel_text: str
+    ticker_text: str
+    article_ids: list[str]
+    section_counts: dict[str, int]
+    pool_counts: dict[str, int]
+    corpus_unique: int
+
+
+def _pool_counts(pools: SynthesisPools) -> dict[str, int]:
+    counts: dict[str, int] = {"general_pool": len(pools.general)}
+    for slug, batch in sorted(pools.channels.items()):
+        counts[f"channel_pool:{slug}"] = len(batch)
+    counts["ticker_pool"] = len(pools.ticker)
+    return counts
+
+
 def load_synthesis_pools(
     session,
     asof: str,
     universe: set[str],
 ) -> SynthesisPools:
-    """DB pulls: general (no channel tag) + each configured channel + ticker universe."""
+    """DB pulls: general (no channel param) + each configured channel + ticker universe."""
     general_window = news_window_for_run(asof)
     ticker_window = get_ticker_news_window(asof)
     start_g = general_window.start_utc
@@ -306,7 +326,8 @@ def audit_step4_source(
 ) -> dict[str, Any]:
     by_id, pools, _universe = _load_window_pools(outdir)
     if channel_text is None or ticker_text is None:
-        channel_text, ticker_text, _ = build_step4_summaries_text(outdir)
+        built = build_step4_summaries_text(outdir)
+        channel_text, ticker_text = built.channel_text, built.ticker_text
     ch_text = channel_text or ""
     tk_text = ticker_text or ""
     blocks_ch = ch_text.count("---\n") if ch_text else 0
@@ -349,12 +370,14 @@ def audit_step4_source(
     }
 
 
-def build_step4_summaries_text(outdir: Path) -> tuple[str, str, list[str]]:
+def build_step4_summaries_text(outdir: Path) -> Step4SourceBuild:
     """Build Step 4 input from three DB pulls: general, per-channel, ticker."""
-    _by_id, pools, universe = _load_window_pools(outdir)
+    _by_id, pools, _universe = _load_window_pools(outdir)
+    _articles, corpus_ids = _merge_pools(pools)
     seen: set[int] = set()
     article_ids: list[str] = []
     channel_sections: list[str] = []
+    section_counts: dict[str, int] = {}
 
     def _take(article: dict[str, Any]) -> bool:
         bid = _benzinga_id_int(article)
@@ -374,6 +397,7 @@ def build_step4_summaries_text(outdir: Path) -> tuple[str, str, list[str]]:
             )
         )
     if general_blocks:
+        section_counts["Channel: general"] = len(general_blocks)
         channel_sections.append(f"## Channel: general\n\n{''.join(general_blocks)}")
 
     for slug in sorted(pools.channels.keys()):
@@ -387,6 +411,7 @@ def build_step4_summaries_text(outdir: Path) -> tuple[str, str, list[str]]:
                 )
             )
         if blocks:
+            section_counts[f"Channel: {slug}"] = len(blocks)
             channel_sections.append(f"## Channel: {slug}\n\n{''.join(blocks)}")
 
     overview_path = outdir / "source" / "ticker_universe" / "overview.md"
@@ -396,15 +421,24 @@ def build_step4_summaries_text(outdir: Path) -> tuple[str, str, list[str]]:
         batched.update(symbols)
         blocks = _ticker_blocks_for_symbols(symbols, pools.ticker, seen, article_ids)
         if blocks:
+            section_counts[f"Ticker Group: {batch_label}"] = len(blocks)
             ticker_sections.append(f"## Ticker Group: {batch_label}\n\n{''.join(blocks)}")
 
     extra_syms = [s for s in all_ticker_symbols(outdir) if s not in batched]
     if extra_syms:
         blocks = _ticker_blocks_for_symbols(extra_syms, pools.ticker, seen, article_ids)
         if blocks:
+            section_counts["Ticker Group: other_tickers"] = len(blocks)
             ticker_sections.append(f"## Ticker Group: other_tickers\n\n{''.join(blocks)}")
 
-    return "\n\n".join(channel_sections), "\n\n".join(ticker_sections), article_ids
+    return Step4SourceBuild(
+        channel_text="\n\n".join(channel_sections),
+        ticker_text="\n\n".join(ticker_sections),
+        article_ids=article_ids,
+        section_counts=section_counts,
+        pool_counts=_pool_counts(pools),
+        corpus_unique=len(corpus_ids),
+    )
 
 
 def _ticker_blocks_for_symbols(

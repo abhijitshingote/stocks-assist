@@ -330,9 +330,8 @@ def load_articles_general_window(
     *,
     limit: int = 10000,
 ) -> list[BenzingaArticle]:
-    """General-window rows with no Benzinga channel tags (``channels`` empty/null)."""
-    rows = load_articles_published_between(session, start, end, limit=limit)
-    return [r for r in rows if not (r.channels or [])]
+    """General-window rows (market-wide feed; no ``channels=`` API filter)."""
+    return load_articles_published_between(session, start, end, limit=limit)
 
 
 def load_articles_channel_window(
