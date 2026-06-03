@@ -1,0 +1,137 @@
+{
+  "source_kind": "ticker",
+  "source_key": "STM",
+  "window": "2026-06-01 05:00 UTC → 2026-06-03 06:00 UTC (session 2026-06-02, ticker −24h vs general)",
+  "anchor_session": "2026-06-02",
+  "published_gte_utc": "2026-06-01T05:00:00+00:00",
+  "published_lte_utc": "2026-06-03T06:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 4,
+  "articles": [
+    {
+      "benzinga_id": 52951698,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T18:09:46Z",
+      "last_updated": "2026-06-02T18:09:47Z",
+      "title": "B of A Securities Maintains Neutral on STMicroelectronics, Raises Price Target to $83",
+      "teaser": "B of A Securities  analyst Didier Scemama   maintains STMicroelectronics (NYSE:STM) with a Neutral and raises the price target from $73 to $83.",
+      "body": "B of A Securities  analyst Didier Scemama   maintains STMicroelectronics (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/STM\">STM</a>) with a Neutral and raises the price target from $73 to $83.",
+      "url": "https://www.benzinga.com/news/26/06/52951698/b-of-a-securities-maintains-neutral-on-stmicroelectronics-raises-price-target-to-83",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "hot",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "STM"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52950241,
+      "author": "benzinga insights",
+      "published": "2026-06-02T17:35:43Z",
+      "last_updated": "2026-06-02T17:35:44Z",
+      "title": "10 Information Technology Stocks With Whale Alerts In Today's Session",
+      "teaser": " ",
+      "body": "<p>This whale alert can help traders discover the next big trading opportunities.</p>\n<p>Whales are entities with large sums of money and we track their transactions here at Benzinga on our options activity scanner.</p>\n<p>Traders will search for circumstances when the market estimation of an option diverges heavily from its normal worth. High amounts of trading activity could push option prices to exaggerated or underestimated levels. </p>\n<p>Below are some instances of options activity happening in the Information Technology sector:  <table style=\"overflow:auto; height: 90px; display: block;\">\n<thead>\n<tr>\n<th><strong>Symbol</strong></th>\n<th><strong>PUT/CALL</strong></th>\n<th><strong>Trade Type</strong></th>\n<th><strong>Sentiment</strong></th>\n<th><strong>Exp. Date</strong></th>\n<th><strong>Strike Price</strong></th>\n<th><strong>Total Trade Price</strong></th>\n<th><strong>Open Interest</strong></th>\n<th><strong>Volume</strong></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>NVDA</td>\n<td>CALL</td>\n<td>SWEEP</td>\n<td>BULLISH</td>\n<td>06/03/26</td>\n<td>$225.00</td>\n<td>$45.5K</td>\n<td>23.3K</td>\n<td>93.5K</td>\n</tr>\n<tr>\n<td>PLTR</td>\n<td>CALL</td>\n<td>SWEEP</td>\n<td>BEARISH</td>\n<td>06/05/26</td>\n<td>$152.50</td>\n<td>$53.5K</td>\n<td>2.0K</td>\n<td>11.2K</td>\n</tr>\n<tr>\n<td>MU</td>\n<td>CALL</td>\n<td>TRADE</td>\n<td>BULLISH</td>\n<td>06/05/26</td>\n<td>$1050.00</td>\n<td>$38.4K</td>\n<td>2.7K</td>\n<td>9.4K</td>\n</tr>\n<tr>\n<td>STM</td>\n<td>CALL</td>\n<td>TRADE</td>\n<td>BULLISH</td>\n<td>06/18/26</td>\n<td>$70.00</td>\n<td>$27.3K</td>\n<td>15.2K</td>\n<td>5.6K</td>\n</tr>\n<tr>\n<td>MRVL</td>\n<td>PUT</td>\n<td>SWEEP</td>\n<td>BEARISH</td>\n<td>06/18/26</td>\n<td>$220.00</td>\n<td>$55.0K</td>\n<td>2.5K</td>\n<td>2.9K</td>\n</tr>\n<tr>\n<td>SMCI</td>\n<td>CALL</td>\n<td>SWEEP</td>\n<td>NEUTRAL</td>\n<td>07/17/26</td>\n<td>$60.00</td>\n<td>$35.1K</td>\n<td>13.1K</td>\n<td>2.8K</td>\n</tr>\n<tr>\n<td>PGY</td>\n<td>CALL</td>\n<td>SWEEP</td>\n<td>BEARISH</td>\n<td>11/20/26</td>\n<td>$18.00</td>\n<td>$127.5K</td>\n<td>4.0K</td>\n<td>2.4K</td>\n</tr>\n<tr>\n<td>IREN</td>\n<td>CALL</td>\n<td>TRADE</td>\n<td>BEARISH</td>\n<td>06/18/26</td>\n<td>$65.00</td>\n<td>$53.8K</td>\n<td>12.0K</td>\n<td>2.2K</td>\n</tr>\n<tr>\n<td>INTC</td>\n<td>PUT</td>\n<td>TRADE</td>\n<td>BEARISH</td>\n<td>06/05/26</td>\n<td>$106.00</td>\n<td>$106.5K</td>\n<td>1.2K</td>\n<td>2.0K</td>\n</tr>\n<tr>\n<td>AMD</td>\n<td>CALL</td>\n<td>TRADE</td>\n<td>NEUTRAL</td>\n<td>06/05/26</td>\n<td>$517.50</td>\n<td>$32.5K</td>\n<td>1.6K</td>\n<td>1.8K</td>\n</tr>\n</tbody>\n</table></p>\n<h2>Explanation</h2>\n<p>These itemized elaborations have been created using the accompanying table.  </p>\n<p>•  For <strong>NVDA</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NVDA\">NVDA</a>), we notice a <strong>call</strong> option <strong>sweep</strong> that happens to be <strong>bullish</strong>, expiring in 1 day(s) on <strong>June 3, 2026</strong>. This event was a transfer of <strong>250</strong> contract(s) at a <strong>$225.00</strong> strike. This particular call needed to be split into 13 different trades to become filled. The total cost received by the writing party (or parties) was <strong>$45.5K</strong>, with a price of <strong>$182.0</strong> per contract. There were <strong>23319</strong> open contracts at this strike prior to today, and today <strong>93588</strong> contract(s) were bought and sold. </p>\n<p>•  For <strong>PLTR</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/PLTR\">PLTR</a>), we notice a <strong>call</strong> option <strong>sweep</strong> that happens to be <strong>bearish</strong>, expiring in 3 day(s) on <strong>June 5, 2026</strong>. This event was a transfer of <strong>137</strong> contract(s) at a <strong>$152.50</strong> strike. This particular call needed to be split into 8 different trades to become filled. The total cost received by the writing party (or parties) was <strong>$53.5K</strong>, with a price of <strong>$392.0</strong> per contract. There were <strong>2008</strong> open contracts at this strike prior to today, and today <strong>11229</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>MU</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/MU\">MU</a>), we observe a <strong>call</strong> option <strong>trade</strong> with <strong>bullish</strong> sentiment. It expires in 3 day(s) on <strong>June 5, 2026</strong>. Parties traded <strong>10</strong> contract(s) at a <strong>$1050.00</strong> strike. The total cost received by the writing party (or parties) was <strong>$38.4K</strong>, with a price of <strong>$3844.0</strong> per contract. There were <strong>2711</strong> open contracts at this strike prior to today, and today <strong>9426</strong> contract(s) were bought and sold. </p>\n<p>•  For <strong>STM</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/STM\">STM</a>), we notice a <strong>call</strong> option <strong>trade</strong> that happens to be <strong>bullish</strong>, expiring in 16 day(s) on <strong>June 18, 2026</strong>. This event was a transfer of <strong>25</strong> contract(s) at a <strong>$70.00</strong> strike. The total cost received by the writing party (or parties) was <strong>$27.3K</strong>, with a price of <strong>$1095.0</strong> per contract. There were <strong>15291</strong> open contracts at this strike prior to today, and today <strong>5620</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>MRVL</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/MRVL\">MRVL</a>), we observe a <strong>put</strong> option <strong>sweep</strong> with <strong>bearish</strong> sentiment. It expires in 16 day(s) on <strong>June 18, 2026</strong>. Parties traded <strong>151</strong> contract(s) at a <strong>$220.00</strong> strike. This particular put needed to be split into 14 different trades to become filled. The total cost received by the writing party (or parties) was <strong>$55.0K</strong>, with a price of <strong>$360.0</strong> per contract. There were <strong>2582</strong> open contracts at this strike prior to today, and today <strong>2918</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>SMCI</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/SMCI\">SMCI</a>), we observe a <strong>call</strong> option <strong>sweep</strong> with <strong>neutral</strong> sentiment. It expires in 45 day(s) on <strong>July 17, 2026</strong>. Parties traded <strong>117</strong> contract(s) at a <strong>$60.00</strong> strike. This particular call needed to be split into 14 different trades to become filled. The total cost received by the writing party (or parties) was <strong>$35.1K</strong>, with a price of <strong>$300.0</strong> per contract. There were <strong>13140</strong> open contracts at this strike prior to today, and today <strong>2897</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>PGY</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/PGY\">PGY</a>), we observe a <strong>call</strong> option <strong>sweep</strong> with <strong>bearish</strong> sentiment. It expires in 171 day(s) on <strong>November 20, 2026</strong>. Parties traded <strong>500</strong> contract(s) at a <strong>$18.00</strong> strike. This particular call needed to be split into 16 different trades to become filled. The total cost received by the writing party (or parties) was <strong>$127.5K</strong>, with a price of <strong>$255.0</strong> per contract. There were <strong>4060</strong> open contracts at this strike prior to today, and today <strong>2407</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>IREN</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/IREN\">IREN</a>), we observe a <strong>call</strong> option <strong>trade</strong> with <strong>bearish</strong> sentiment. It expires in 16 day(s) on <strong>June 18, 2026</strong>. Parties traded <strong>70</strong> contract(s) at a <strong>$65.00</strong> strike. The total cost received by the writing party (or parties) was <strong>$53.8K</strong>, with a price of <strong>$769.0</strong> per contract. There were <strong>12050</strong> open contracts at this strike prior to today, and today <strong>2200</strong> contract(s) were bought and sold. </p>\n<p>•  Regarding <strong>INTC</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/INTC\">INTC</a>), we observe a <strong>put</strong> option <strong>trade</strong> with <strong>bearish</strong> sentiment. It expires in 3 day(s) on <strong>June 5, 2026</strong>. Parties traded <strong>300</strong> contract(s) at a <strong>$106.00</strong> strike. The total cost received by the writing party (or parties) was <strong>$106.5K</strong>, with a price of <strong>$355.0</strong> per contract. There were <strong>1238</strong> open contracts at this strike prior to today, and today <strong>2089</strong> contract(s) were bought and sold. </p>\n<p>•  For <strong>AMD</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/AMD\">AMD</a>), we notice a <strong>call</strong> option <strong>trade</strong> that happens to be <strong>neutral</strong>, expiring in 3 day(s) on <strong>June 5, 2026</strong>. This event was a transfer of <strong>25</strong> contract(s) at a <strong>$517.50</strong> strike. The total cost received by the writing party (or parties) was <strong>$32.5K</strong>, with a price of <strong>$1302.0</strong> per contract. There were <strong>1681</strong> open contracts at this strike prior to today, and today <strong>1809</strong> contract(s) were bought and sold. </p>\n<p><strong>Options Alert Terminology</strong><br />\n - <strong>Call Contracts:</strong> The right to buy shares as indicated in the contract.<br />\n - <strong>Put Contracts:</strong> The right to sell shares as indicated in the contract.<br />\n - <strong>Expiration Date:</strong> When the contract expires. One must act on the contract by this date if one wants to use it.<br />\n - <strong>Premium/Option Price:</strong> The price of the contract.  </p>\n<p>For more information, read <a href=\"https://www.benzinga.com/markets/options\">more about unusual options activity</a>.  </p>\n<p>This article was generated by Benzinga's automated content engine and reviewed by an editor.</p>",
+      "url": "https://www.benzinga.com/insights/options/26/06/52950241/10-information-technology-stocks-with-whale-alerts-in-todays-session",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_2.jpg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_2.jpg?width=1024&height=768",
+        "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_2.jpg?width=2048&height=1536"
+      ],
+      "channels": [
+        "options"
+      ],
+      "tickers": [
+        "AMD",
+        "INTC",
+        "IREN",
+        "MRVL",
+        "MU",
+        "NVDA",
+        "PGY",
+        "PLTR",
+        "SMCI",
+        "STM"
+      ],
+      "tags": [
+        "bzi-auoa"
+      ]
+    },
+    {
+      "benzinga_id": 52934379,
+      "author": "avi kapoor",
+      "published": "2026-06-02T12:20:25Z",
+      "last_updated": "2026-06-02T12:33:39Z",
+      "title": "Hewlett Packard Enterprise Posts Blowout Q2 Earnings, Joins Marvell Technology And Other Big Stocks Moving Higher In Tuesday's Session",
+      "teaser": "US stock futures surge on tech sector news, HPE reports strong earnings, and other tech stocks follow suit in pre-market trading.",
+      "body": "<p>U.S. stock futures were sharply higher this morning, with the Nasdaq futures surging nearly 0.50% on Tuesday following spectacular quarterly financial results and high-profile tech sector partnership announcements.</p>\n\n\n\n<p>Shares of <strong>Hewlett Packard Enterprise Co</strong> <a href=\"https://www.benzinga.com/quote/HPE\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"HPE\" data-exchange=\"NYSE\" rel=\"noopener\">(NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/HPE\">HPE</a>)</a> skyrocketed in pre-market trading after delivering a historic fiscal second-quarter earnings report that crushed Wall Street forecasts.</p>\n\n\n\n<p>HPE reported quarterly non-GAAP diluted earnings of $0.79 per share, soundly beating the consensus analyst estimate of $0.54 per share. Total net revenue reached $10.7 billion. The growth was fueled by an unprecedented influx of enterprise orders for AI inference servers and networking equipment. Management aggressively raised its fiscal 2026 full-year non-GAAP EPS guidance to a range of $3.35 to $3.45 and boosted its free cash flow target to at least $3.5 billion, indicating structural data center modernization is moving ahead of schedule.</p>\n\n\n\n<p>HPE shares jumped 26.49% to $59.45 in pre-market trading.</p>\n\n\n\n<p>Here are some other stocks moving higher in pre-market trading:</p>\n\n\n\n<ul class=\"wp-block-list\">\n<li><strong>Marvell Technology Inc</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/MRVL\">MRVL</a>) shares soared 22.19% to $268.14 in pre-market trading after Nvidia CEO Jensen Huang explicitly labeled the chipmaker as the &#8220;next trillion-dollar company&#8221; during a joint keynote address at the Computex event in Taipei.</li>\n\n\n\n<li><strong>Kelly Services Inc Class A</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/KELYB\">KELYB</a>) climbed 11.85% to $23.49 in pre-market trading.</li>\n\n\n\n<li><strong>POET Technologies Inc</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/POET\">POET</a>) rose 11.37% to $15.47 in pre-market trading, catching direct tech tailwinds as demand for high-speed optical interlinks scales alongside massive data center hardware buildouts.</li>\n\n\n\n<li><strong>STMicroelectronics NV</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/STM\">STM</a>) advanced 11.18% to $76.74 in pre-market trading.</li>\n\n\n\n<li><strong>Relmada Therapeutics Inc</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/RLMD\">RLMD</a>) gained 10.94% to $7.60 in pre-market trading on steady, speculative clinical-stage clinical program reassessments.</li>\n\n\n\n<li><strong>Lithium Americas Corp</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/LAC\">LAC</a>) added 10.52% to $6.09 in pre-market trading, rebounding on localized domestic battery infrastructure funding headlines and broader rare metals asset flows.</li>\n\n\n\n<li><strong>Polibeli Group Ltd</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/PLBL\">PLBL</a>) ticked up 10.21% to $6.80 in pre-market trading.</li>\n\n\n\n<li><strong>Camtek Ltd</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CAMT\">CAMT</a>) rose 10.12% to $179.61 in pre-market trading, benefiting heavily from increased capital expenditure projections across top-tier semiconductor packaging lines.</li>\n\n\n\n<li><strong>Hesai Group &#8211; ADR</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/HSAI\">HSAI</a>) advanced 9.83% to $22.00 in pre-market trading.</li>\n\n\n\n<li><strong>Generac Holdings Inc</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/GNRC\">GNRC</a>) ticked up 9.26% to $294.20 in pre-market trading.</li>\n\n\n\n<li><strong>Lightwave Logic Inc</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/LWLG\">LWLG</a>) rose 8.89% to $12.00 in pre-market trading.&nbsp;</li>\n</ul>",
+      "url": "https://www.benzinga.com/markets/equities/26/06/52934379/hewlett-packard-posts-blowout-q2-earnings-joins-marvell-technology-and-other-big-stocks-moving-higher-in-tuesdays-session",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Hewlett-Packard-Enterprise---EK.jpeg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Hewlett-Packard-Enterprise---EK.jpeg?width=1024&height=768",
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Hewlett-Packard-Enterprise---EK.jpeg?width=2048&height=1536"
+      ],
+      "channels": [
+        "movers"
+      ],
+      "tickers": [
+        "CAMT",
+        "GNRC",
+        "HPE",
+        "HSAI",
+        "KELYB",
+        "LAC",
+        "LWLG",
+        "MRVL",
+        "PLBL",
+        "POET",
+        "RLMD",
+        "STM"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52933878,
+      "author": "benzinga insights",
+      "published": "2026-06-02T12:06:14Z",
+      "last_updated": "2026-06-02T12:06:15Z",
+      "title": "12 Information Technology Stocks Moving In Tuesday's Pre-Market Session",
+      "teaser": " ",
+      "body": "<h3>Gainers</h3>\n<ul>\n<li><strong>Abits Group</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/ABTS\">ABTS</a>) stock moved upwards by 34.6% to $2.88 during Tuesday's pre-market session. The market value of their outstanding shares is at $6.3 million. </li>\n<li><strong>Hewlett Packard</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/HPE\">HPE</a>) stock moved upwards by 30.15% to $61.17. The market value of their outstanding shares is at $62.3 billion. As per the press release, Q2 earnings came out yesterday. </li>\n<li><strong>Marvell Technology</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/MRVL\">MRVL</a>) shares rose 19.94% to $263.19. The company's market cap stands at $191.9 billion. As per the news, the Q1 earnings report came out 4 days ago. </li>\n<li><strong>SemiLEDs</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/LEDS\">LEDS</a>) shares increased by 13.17% to $2.32. The company's market cap stands at $16.9 million. </li>\n<li><strong>STMicroelectronics</strong> (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/STM\">STM</a>) shares increased by 10.43% to $76.22. The company's market cap stands at $61.3 billion. </li>\n<li><strong>Camtek</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CAMT\">CAMT</a>) shares moved upwards by 10.11% to $179.59. The company's market cap stands at $7.5 billion. </li>\n</ul>\n<h3>Losers</h3>\n<ul>\n<li><strong>The Growhub</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/TGHL\">TGHL</a>) stock fell 24.4% to $1.02 during Tuesday's pre-market session. The company's market cap stands at $34.1 million. </li>\n<li><strong>BlockchAIn Digital Infr</strong> (AMEX:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/AIB\">AIB</a>) shares declined by 20.45% to $2.53. The market value of their outstanding shares is at $119.7 million. </li>\n<li><strong>Astrotech</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/ASTC\">ASTC</a>) stock decreased by 17.29% to $29.28. The company's market cap stands at $62.2 million. </li>\n<li><strong>Hub Cyber Security</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/HUBC\">HUBC</a>) shares decreased by 14.57% to $0.44. </li>\n<li><strong>Phaos Technology Holdings</strong> (AMEX:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/POAS\">POAS</a>) shares fell 14.18% to $0.23. The company's market cap stands at $4.4 million. </li>\n<li><strong>Microvision</strong> (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/MVIS\">MVIS</a>) stock decreased by 11.94% to $0.53. The market value of their outstanding shares is at $200.3 million. \n<strong>See Also:</strong> <a href=\"http://www.benzinga.com/money/tech-stocks/\" title=\"www.benzinga.com/money/tech-stocks/\">www.benzinga.com/money/tech-stocks/</a></li>\n</ul>\n<p>This article was generated by Benzinga's automated content engine and reviewed by an editor.</p>",
+      "url": "https://www.benzinga.com/insights/movers/26/06/52933878/12-information-technology-stocks-moving-in-tuesdays-pre-market-session",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2025/11/06/movers_2.jpg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2025/11/06/movers_2.jpg?width=1024&height=768",
+        "https://cdn.benzinga.com/files/images/story/2025/11/06/movers_2.jpg?width=2048&height=1536"
+      ],
+      "channels": [
+        "movers"
+      ],
+      "tickers": [
+        "ABTS",
+        "AIB",
+        "ASTC",
+        "CAMT",
+        "HPE",
+        "HUBC",
+        "LEDS",
+        "MRVL",
+        "MVIS",
+        "POAS",
+        "STM",
+        "TGHL"
+      ],
+      "tags": [
+        "bzi-tfm"
+      ]
+    }
+  ],
+  "section": "r1d/large",
+  "label": "Top 10 · 1D return · Large cap",
+  "rank": 3
+}

@@ -1,0 +1,36 @@
+{
+  "source_kind": "ticker",
+  "source_key": "CIEN",
+  "window": "2026-06-01 05:00 UTC → 2026-06-03 06:00 UTC (session 2026-06-02, ticker −24h vs general)",
+  "anchor_session": "2026-06-02",
+  "published_gte_utc": "2026-06-01T05:00:00+00:00",
+  "published_lte_utc": "2026-06-03T06:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 1,
+  "articles": [
+    {
+      "benzinga_id": 52950982,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T17:53:45Z",
+      "last_updated": "2026-06-02T17:53:46Z",
+      "title": "B. Riley Securities Maintains Neutral on Ciena, Raises Price Target to $531",
+      "teaser": "B. Riley Securities  analyst Dave Kang   maintains Ciena (NYSE:CIEN) with a Neutral and raises the price target from $283 to $531.",
+      "body": "B. Riley Securities  analyst Dave Kang   maintains Ciena (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CIEN\">CIEN</a>) with a Neutral and raises the price target from $283 to $531.",
+      "url": "https://www.benzinga.com/news/26/06/52950982/b-riley-securities-maintains-neutral-on-ciena-raises-price-target-to-531",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "hot",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "CIEN"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "r1d/large",
+  "label": "Top 10 · 1D return · Large cap",
+  "rank": 8
+}
