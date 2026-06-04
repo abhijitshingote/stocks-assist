@@ -1,10 +1,11 @@
 # High Priority
-1. Market Brief & Daily Screener should be endpoints to be consistent with architecture
-2. This should fold into db_scripts/initialize for table creation & /update_data for refresh. also rename script appropriately. Should run as part of init-zd as well as update
+
+2. This should fold into db_scripts/initialize for table creation & /update_data for refresh. also rename script appropriately. Should run as part of init-zd as well as update-benzinga market news page
 3. Not sure what to do with RSI feature - not being used
-4. When Running Market bried - article ids should be saved as an artefact to help with reproduction of brief or experimentation with other LLM providers
+4. deepse ek
 5. remove garbage or one line articles from benzinga
 6. only 100 articles is too little .but can the prompt handle more
+7. In a seperate call, also get a read on losers to see if tide is turning
 
 
 # More Complex
