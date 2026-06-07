@@ -1,0 +1,575 @@
+{
+  "asof": "2026-06-06",
+  "pipeline": "market_brief_losers",
+  "source_scope": "ticker_only",
+  "windows": {
+    "ticker_window": "2026-06-04 05:00 EDT → 2026-06-06 20:43 EDT (session 2026-06-05, ticker −24h vs general)",
+    "anchor_session": "2026-06-05",
+    "ticker_published_gte_utc": "2026-06-04T09:00:00+00:00",
+    "published_lte_utc": "2026-06-07T00:43:09.467967+00:00"
+  },
+  "counts": {
+    "api_by_fetch": {
+      "ticker": {
+        "AMAT": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "AMD": {
+          "api_rows": 11,
+          "in_window": 11,
+          "error": null
+        },
+        "ARM": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "ASTS": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "BE": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "BLDP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "BRUN": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "CRCL": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "DGXX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "FCEL": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "FN": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "FSLR": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "GLW": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "INTC": {
+          "api_rows": 12,
+          "in_window": 12,
+          "error": null
+        },
+        "IONQ": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "KLAC": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "LRCX": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "MRVL": {
+          "api_rows": 12,
+          "in_window": 12,
+          "error": null
+        },
+        "MU": {
+          "api_rows": 13,
+          "in_window": 13,
+          "error": null
+        },
+        "MX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NBIS": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "NOK": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "ORCL": {
+          "api_rows": 10,
+          "in_window": 10,
+          "error": null
+        },
+        "PDYN": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "PL": {
+          "api_rows": 15,
+          "in_window": 15,
+          "error": null
+        },
+        "POET": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "QCOM": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "SCCO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "SMCI": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "SNDK": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "STRL": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "STX": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "TE": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "WDC": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "ZUMZ": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        }
+      },
+      "ticker_totals": {
+        "api_rows": 113,
+        "in_window": 113,
+        "error": null
+      }
+    },
+    "api_total_rows": 113,
+    "after_dedupe_unique": 86,
+    "upserted": 86,
+    "deduped_published": {
+      "earliest_utc": "2026-06-04T09:38:37+00:00",
+      "latest_utc": "2026-06-06T20:28:20+00:00",
+      "with_published": 86
+    },
+    "prompt": {
+      "articles_total": 86,
+      "by_section": {
+        "Ticker: Bottom 10 · 1D return · Large cap": 12,
+        "Ticker: Bottom 10 · 1D return · Mid & small cap": 21,
+        "Ticker: Bottom 15 · 1D return · Mega cap": 53
+      }
+    }
+  },
+  "fetch_warnings": [],
+  "ingest_pools": {
+    "ticker": {
+      "AMAT": [
+        "53011202"
+      ],
+      "AMD": [
+        "53048110",
+        "53047918",
+        "53046560",
+        "53037256",
+        "53023881",
+        "53022380",
+        "53021123",
+        "53018690",
+        "52999339",
+        "52994875",
+        "52994284"
+      ],
+      "ARM": [
+        "53031127",
+        "53011666"
+      ],
+      "ASTS": [
+        "53036948",
+        "53034731",
+        "52999456"
+      ],
+      "BE": [
+        "53037266",
+        "52998910"
+      ],
+      "BLDP": [],
+      "BRUN": [
+        "52996768",
+        "53011442"
+      ],
+      "CRCL": [
+        "53026458"
+      ],
+      "DGXX": [],
+      "FCEL": [],
+      "FN": [],
+      "FSLR": [
+        "53036948"
+      ],
+      "GLW": [
+        "53040996",
+        "53004610"
+      ],
+      "INTC": [
+        "53048057",
+        "53039690",
+        "53037993",
+        "53037256",
+        "53024185",
+        "53023135",
+        "53022380",
+        "53021408",
+        "53001782",
+        "52997205",
+        "52994284",
+        "52993502"
+      ],
+      "IONQ": [
+        "53031741",
+        "53016501"
+      ],
+      "KLAC": [],
+      "LRCX": [
+        "53011202"
+      ],
+      "MRVL": [
+        "53048110",
+        "53047918",
+        "53046583",
+        "53046267",
+        "53044728",
+        "53037256",
+        "53023602",
+        "53023534",
+        "53021123",
+        "53015603",
+        "53006608",
+        "52998010"
+      ],
+      "MU": [
+        "53048057",
+        "53046560",
+        "53040127",
+        "53037256",
+        "53036948",
+        "53024576",
+        "53021294",
+        "53021123",
+        "53010252",
+        "53007325",
+        "53004220",
+        "52995907",
+        "52995547"
+      ],
+      "MX": [],
+      "NBIS": [
+        "53046171",
+        "53039876",
+        "53032145"
+      ],
+      "NOK": [
+        "53026448"
+      ],
+      "ORCL": [
+        "53037874",
+        "53035425",
+        "53028006",
+        "53025886",
+        "53024614",
+        "53024576",
+        "53023567",
+        "53013188",
+        "53012553",
+        "53009957"
+      ],
+      "PDYN": [],
+      "PL": [
+        "53037663",
+        "53036507",
+        "53026136",
+        "53025622",
+        "53025080",
+        "53024396",
+        "53024012",
+        "53023072",
+        "53019505",
+        "53019573",
+        "53017028",
+        "53017014",
+        "53016961",
+        "52999456",
+        "52998503"
+      ],
+      "POET": [
+        "53037256"
+      ],
+      "QCOM": [
+        "53039690",
+        "53037993",
+        "53034933",
+        "53011202"
+      ],
+      "SCCO": [],
+      "SMCI": [
+        "53038114",
+        "53036948",
+        "52999339"
+      ],
+      "SNDK": [
+        "53048110",
+        "53048057",
+        "53046560",
+        "53006963"
+      ],
+      "STRL": [],
+      "STX": [
+        "53048057"
+      ],
+      "TE": [],
+      "WDC": [
+        "53048110"
+      ],
+      "ZUMZ": [
+        "53036272",
+        "53024274",
+        "53019353",
+        "53016824",
+        "53016760"
+      ]
+    }
+  },
+  "universe_symbols": [
+    "AMAT",
+    "AMD",
+    "ARM",
+    "ASTS",
+    "BE",
+    "BLDP",
+    "BRUN",
+    "CRCL",
+    "DGXX",
+    "FCEL",
+    "FN",
+    "FSLR",
+    "GLW",
+    "INTC",
+    "IONQ",
+    "KLAC",
+    "LRCX",
+    "MRVL",
+    "MU",
+    "MX",
+    "NBIS",
+    "NOK",
+    "ORCL",
+    "PDYN",
+    "PL",
+    "POET",
+    "QCOM",
+    "SCCO",
+    "SMCI",
+    "SNDK",
+    "STRL",
+    "STX",
+    "TE",
+    "WDC",
+    "ZUMZ"
+  ],
+  "losers_universe_slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "selection_count": 15,
+      "tickers": [
+        "MU",
+        "MRVL",
+        "ARM",
+        "SNDK",
+        "GLW",
+        "WDC",
+        "QCOM",
+        "AMD",
+        "SCCO",
+        "INTC",
+        "ORCL",
+        "LRCX",
+        "AMAT",
+        "KLAC",
+        "STX"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "selection_count": 10,
+      "tickers": [
+        "ASTS",
+        "NBIS",
+        "NOK",
+        "FSLR",
+        "IONQ",
+        "FN",
+        "STRL",
+        "CRCL",
+        "SMCI",
+        "BE"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "selection_count": 10,
+      "tickers": [
+        "PL",
+        "ZUMZ",
+        "POET",
+        "TE",
+        "BRUN",
+        "MX",
+        "BLDP",
+        "DGXX",
+        "PDYN",
+        "FCEL"
+      ]
+    }
+  ],
+  "losers_universe_overview": "source/losers_universe/overview.md",
+  "article_ids": [
+    "53048057",
+    "53046560",
+    "53040127",
+    "53037256",
+    "53036948",
+    "53024576",
+    "53021294",
+    "53021123",
+    "53010252",
+    "53007325",
+    "53004220",
+    "52995907",
+    "52995547",
+    "53048110",
+    "53047918",
+    "53046583",
+    "53046267",
+    "53044728",
+    "53023602",
+    "53023534",
+    "53015603",
+    "53006608",
+    "52998010",
+    "53031127",
+    "53011666",
+    "53006963",
+    "53040996",
+    "53004610",
+    "53039690",
+    "53037993",
+    "53034933",
+    "53011202",
+    "53023881",
+    "53022380",
+    "53018690",
+    "52999339",
+    "52994875",
+    "52994284",
+    "53024185",
+    "53023135",
+    "53021408",
+    "53001782",
+    "52997205",
+    "52993502",
+    "53037874",
+    "53035425",
+    "53028006",
+    "53025886",
+    "53024614",
+    "53023567",
+    "53013188",
+    "53012553",
+    "53009957",
+    "53034731",
+    "52999456",
+    "53046171",
+    "53039876",
+    "53032145",
+    "53026448",
+    "53031741",
+    "53016501",
+    "53026458",
+    "53038114",
+    "53037266",
+    "52998910",
+    "53037663",
+    "53036507",
+    "53026136",
+    "53025622",
+    "53025080",
+    "53024396",
+    "53024012",
+    "53023072",
+    "53019505",
+    "53019573",
+    "53017028",
+    "53017014",
+    "53016961",
+    "52998503",
+    "53036272",
+    "53024274",
+    "53019353",
+    "53016824",
+    "53016760",
+    "52996768",
+    "53011442"
+  ]
+}

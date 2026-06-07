@@ -1271,6 +1271,27 @@ def api_market_brief_run():
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/market-brief-losers/generate', methods=['POST'])
+def api_market_brief_losers_generate():
+    """Proxy endpoint to start R1D losers brief pipeline."""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        '/api/market-brief-losers/generate', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to start losers brief pipeline'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief-losers/<date_str>/costs', methods=['GET'])
+def api_market_brief_losers_costs(date_str):
+    """Proxy endpoint for losers brief run progress."""
+    data, status_code = make_backend_request(f'/api/market-brief-losers/{date_str}/costs')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch losers brief run status'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/auto-commit', methods=['POST'])
 def api_auto_commit():
     """Proxy to backend: run auto_commit.sh for user_data backup."""

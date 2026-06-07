@@ -1,0 +1,13 @@
+{
+  "started_at": "2026-06-07T11:00:38.600297+00:00",
+  "completed_at": "2026-06-07T11:00:38.609277+00:00",
+  "call_count": 0,
+  "current_step": "synthesis",
+  "pricing_note": "Token counts from DeepSeek Chat Completions API response.usage. USD estimated from published api-docs.deepseek.com pricing (input cache miss, cache hit, output).",
+  "total_input_tokens": 0,
+  "total_output_tokens": 0,
+  "total_cache_creation_input_tokens": 0,
+  "total_cache_read_input_tokens": 0,
+  "total_cost_usd": 0,
+  "calls": []
+}

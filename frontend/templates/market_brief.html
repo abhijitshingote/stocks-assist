@@ -14,7 +14,8 @@
     .brief-container {
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        align-content: flex-start;
         gap: 0.75rem;
         min-height: calc(100vh - 160px);
         width: 100%;
@@ -110,7 +111,7 @@
     .date-item-status.error { color: #c45c5c; }
 
     .brief-container > .brief-viewer {
-        flex: 1 1 auto !important;
+        flex: 1 1 0;
         min-width: 0;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
@@ -182,6 +183,16 @@
     .brief-viewer-actions button.run-btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
+    }
+
+    .brief-viewer-actions button.run-btn.losers-run-btn {
+        background: transparent;
+        color: var(--accent-red, #e57373);
+        border-color: var(--accent-red, #e57373);
+    }
+
+    .brief-viewer-actions button.run-btn.losers-run-btn:hover:not(:disabled) {
+        background: rgba(229, 115, 115, 0.12);
     }
 
     .brief-viewer-actions button:disabled {
@@ -323,11 +334,67 @@
         margin: 1rem 0;
     }
 
+    .losers-brief-section {
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+    }
+
+    .losers-brief-divider {
+        border: none;
+        border-top: 2px solid var(--border-color);
+        margin: 0 0 1.25rem;
+        opacity: 0.6;
+    }
+
+    .losers-brief-header {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-red, #e57373);
+        margin-bottom: 1rem;
+    }
+
+    .losers-brief-empty {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .losers-brief-actions {
+        margin-top: 0.75rem;
+    }
+
+    .losers-brief-actions button {
+        background: transparent;
+        color: var(--accent-red, #e57373);
+        border: 1px solid var(--accent-red, #e57373);
+        border-radius: 4px;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+
+    .losers-brief-actions button:hover:not(:disabled) {
+        background: rgba(229, 115, 115, 0.12);
+    }
+
+    .losers-brief-actions button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .losers-run-progress {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin: 0 0 0.75rem;
+    }
+
     .brief-placeholder {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100%;
+        min-height: 12rem;
         color: var(--text-muted);
         font-size: 0.9rem;
     }
@@ -336,7 +403,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100%;
+        min-height: 3rem;
         color: var(--text-muted);
         font-size: 0.8rem;
     }
@@ -936,6 +1003,7 @@
                     <button id="btn-boxes-light" onclick="setBoxTheme('light')" title="Light boxes">Light</button>
                 </div>
                 <button class="export-pdf-btn" id="btn-export-pdf" onclick="exportBriefPdf()" title="Download brief as PDF" disabled>Export PDF</button>
+                <button class="run-btn losers-run-btn" id="btn-run-losers" onclick="runLosersBrief()" title="Generate R1D losers brief for the selected date">Generate losers</button>
                 <button class="run-btn" id="btn-run" onclick="runBrief()" title="Generate brief for today (US Eastern)">Generate today</button>
             </div>
         </div>
@@ -954,19 +1022,37 @@
     let currentData = null;
     let currentView = 'formatted';
     let currentRunStatus = 'complete';
+    let currentLosersRunStatus = 'empty';
     let costPollTimer = null;
+    let losersPollTimer = null;
     let costPanelExpanded = false;
 
     const MODEL_LABELS = {
         'claude-sonnet-4-5': 'Sonnet',
         'claude-opus-4-5': 'Opus',
         'claude-opus-4-6': 'Opus',
+        'deepseek-v4-pro': 'DeepSeek',
+        'deepseek-v4-flash': 'DeepSeek Flash',
     };
 
     let briefTodayDate = null;
 
     function briefToday() {
         return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+    }
+
+    function updateLosersButton() {
+        const btn = document.getElementById('btn-run-losers');
+        if (!btn) return;
+        if (currentLosersRunStatus === 'running') {
+            btn.textContent = 'Losers running…';
+            btn.disabled = true;
+            return;
+        }
+        btn.disabled = false;
+        const dateLabel = currentDate || briefTodayDate || briefToday();
+        btn.textContent = currentDate ? `Generate losers` : 'Generate losers';
+        btn.title = `Generate R1D losers brief for ${dateLabel}`;
     }
 
     function updatePdfButton() {
@@ -1083,7 +1169,9 @@
         });
 
         stopRunPolling();
+        stopLosersPolling();
         updatePdfButton();
+        updateLosersButton();
 
         contentEl.innerHTML = '<div class="loading">Loading...</div>';
 
@@ -1095,8 +1183,15 @@
             if (response.ok) {
                 currentData = await response.json();
                 currentRunStatus = currentData.status || status;
+                currentLosersRunStatus = currentData.losers_status || 'empty';
             } else {
                 currentData = { date: dateStr, status: status };
+                currentLosersRunStatus = 'empty';
+            }
+
+            updateLosersButton();
+            if (currentLosersRunStatus === 'running') {
+                startLosersPolling(dateStr);
             }
 
             const stage = currentData.run_status?.stage;
@@ -1154,6 +1249,7 @@
             queued: 'Starting pipeline',
             ingest: 'Fetching Benzinga news',
             ingest_done: 'Ingest complete',
+            synthesis: 'Writing losers brief (DeepSeek)',
             step3_fact_extraction: 'Extracting facts (Sonnet)',
             step4_synthesis: 'Writing brief (Opus)',
             done: 'Complete',
@@ -1336,6 +1432,63 @@
         costPollTimer = setInterval(() => refreshRunProgress(dateStr), 3000);
     }
 
+    function stopLosersPolling() {
+        if (losersPollTimer) {
+            clearInterval(losersPollTimer);
+            losersPollTimer = null;
+        }
+    }
+
+    async function refreshLosersProgress(dateStr) {
+        try {
+            const response = await fetch(`/api/frontend/market-brief-losers/${dateStr}/costs`);
+            if (!response.ok) {
+                return;
+            }
+            const data = await response.json();
+            currentLosersRunStatus = data.status || currentLosersRunStatus;
+            if (data.run_status) {
+                currentData = currentData || { date: dateStr };
+                currentData.losers_run_status = data.run_status;
+            }
+            if (data.run_costs) {
+                currentData = currentData || { date: dateStr };
+                currentData.losers_run_costs = data.run_costs;
+            }
+            updateLosersButton();
+
+            if (currentLosersRunStatus === 'complete') {
+                stopLosersPolling();
+                const btn = document.getElementById('btn-run-losers');
+                if (btn) {
+                    btn.textContent = 'Generate losers';
+                    btn.disabled = false;
+                }
+                if (currentDate === dateStr && currentRunStatus !== 'running') {
+                    await loadBrief(dateStr, currentRunStatus);
+                } else if (currentDate === dateStr) {
+                    renderView();
+                }
+            } else if (currentLosersRunStatus === 'failed' || currentLosersRunStatus === 'error') {
+                stopLosersPolling();
+                updateLosersButton();
+                if (currentDate === dateStr) {
+                    renderView();
+                }
+            } else if (currentDate === dateStr && currentRunStatus !== 'running') {
+                renderView();
+            }
+        } catch (e) {
+            console.warn('losers progress poll failed', e);
+        }
+    }
+
+    function startLosersPolling(dateStr) {
+        stopLosersPolling();
+        refreshLosersProgress(dateStr);
+        losersPollTimer = setInterval(() => refreshLosersProgress(dateStr), 3000);
+    }
+
     const stopCostPolling = stopRunPolling;
     const startCostPolling = startRunPolling;
 
@@ -1377,10 +1530,49 @@
             contentEl.innerHTML = `<pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; white-space: pre-wrap;">${JSON.stringify(jsonData, null, 2)}</pre>`;
         } else if (currentView === 'markdown') {
             const md = currentData.markdown || '(No markdown content)';
-            contentEl.innerHTML = `<pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; white-space: pre-wrap;">${escapeHtml(md)}</pre>`;
+            const losersMd = currentData.has_losers_brief && currentData.losers_markdown
+                ? '\n\n---\n\n' + currentData.losers_markdown
+                : '';
+            const unavailableNote = !currentData.has_losers_brief
+                ? '\n\n---\n\n## R1D Losers Brief\n\nNo losers brief available for this date.'
+                : '';
+            contentEl.innerHTML = `<pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; white-space: pre-wrap;">${escapeHtml(md + losersMd + unavailableNote)}</pre>`;
         } else {
             renderFormatted();
         }
+    }
+
+    function renderLosersBriefSection() {
+        if (!currentData) return '';
+
+        let progress = '';
+        if (currentLosersRunStatus === 'running') {
+            const stage = currentData.losers_run_status?.stage;
+            progress = `<p class="losers-run-progress">Pipeline running — ${escapeHtml(formatStepLabel(stage))}. Usually 2–5 minutes.</p>`;
+        } else if (currentLosersRunStatus === 'failed' || currentLosersRunStatus === 'error') {
+            progress = `<p class="losers-run-progress">Last run failed. Check <code>user_data/market_brief_losers/${escapeHtml(currentDate || '')}/subprocess.log</code>.</p>`;
+        }
+
+        const generateBtn = currentLosersRunStatus !== 'running'
+            ? `<div class="losers-brief-actions"><button type="button" id="btn-generate-losers-inline" onclick="runLosersBrief(currentDate)">Generate losers brief</button></div>`
+            : '';
+
+        if (currentData.has_losers_brief && currentData.losers_markdown) {
+            return `<div class="losers-brief-section">
+                <hr class="losers-brief-divider">
+                <div class="losers-brief-header">R1D Losers Brief</div>
+                ${progress}
+                <div class="markdown-body">${simpleMarkdown(currentData.losers_markdown)}</div>
+                ${generateBtn}
+            </div>`;
+        }
+        return `<div class="losers-brief-section">
+            <hr class="losers-brief-divider">
+            <div class="losers-brief-header">R1D Losers Brief</div>
+            ${progress}
+            <p class="losers-brief-empty">No losers brief available for this date.</p>
+            ${generateBtn}
+        </div>`;
     }
 
     function renderFormatted() {
@@ -1389,7 +1581,7 @@
 
         if (!json || json._error || json._parse_error || !json.tldr) {
             const md = currentData.markdown || '(No content)';
-            contentEl.innerHTML = `<div class="markdown-body">${simpleMarkdown(md)}</div>`;
+            contentEl.innerHTML = `<div class="markdown-body">${simpleMarkdown(md)}</div>${renderLosersBriefSection()}`;
             if (currentData.run_costs) {
                 // cost panel is above brief-content
             }
@@ -1462,6 +1654,8 @@
                 $${(u.cost_usd_total || 0).toFixed(4)}
             </div>`;
         }
+
+        html += renderLosersBriefSection();
 
         contentEl.innerHTML = html || '<div class="brief-placeholder">No structured data available</div>';
     }
@@ -1584,6 +1778,72 @@
                 btn.disabled = false;
             }
         }, 15000);
+    }
+
+    async function runLosersBrief(forDate) {
+        const btn = document.getElementById('btn-run-losers');
+        const inlineBtn = document.getElementById('btn-generate-losers-inline');
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = 'Starting…';
+        }
+        if (inlineBtn) inlineBtn.disabled = true;
+        stopLosersPolling();
+
+        const asof = forDate || currentDate || briefTodayDate || briefToday();
+        const body = { asof };
+
+        try {
+            const response = await fetch('/api/frontend/market-brief-losers/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await response.json();
+
+            if (response.status === 409) {
+                alert(data.message || 'Losers brief for this date is already running.');
+                updateLosersButton();
+                if (inlineBtn) inlineBtn.disabled = false;
+                if (data.asof) {
+                    currentDate = data.asof;
+                    currentLosersRunStatus = 'running';
+                    startLosersPolling(data.asof);
+                    if (currentRunStatus !== 'running') {
+                        await loadBrief(data.asof, currentRunStatus);
+                    }
+                }
+                return;
+            }
+
+            if (response.status === 400) {
+                alert(data.message || data.error || 'Could not start losers pipeline.');
+                updateLosersButton();
+                if (inlineBtn) inlineBtn.disabled = false;
+                return;
+            }
+
+            if (data.status === 'started') {
+                const targetDate = data.asof || asof;
+                currentDate = targetDate;
+                currentLosersRunStatus = 'running';
+                updateLosersButton();
+                if (currentRunStatus !== 'running') {
+                    await loadBrief(targetDate, currentRunStatus);
+                } else {
+                    renderView();
+                }
+                startLosersPolling(targetDate);
+            } else {
+                alert('Failed to start: ' + (data.error || data.message || 'Unknown error'));
+                updateLosersButton();
+                if (inlineBtn) inlineBtn.disabled = false;
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+            updateLosersButton();
+            if (inlineBtn) inlineBtn.disabled = false;
+        }
     }
 
     async function runBrief(forDate) {

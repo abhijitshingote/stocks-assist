@@ -5158,6 +5158,9 @@ def daily_shortlist_theme_dates():
 MARKET_BRIEF_OUTPUTS_DIR = os.path.join(
     os.path.dirname(__file__), '..', 'user_data', 'market_brief'
 )
+MARKET_BRIEF_LOSERS_OUTPUTS_DIR = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'market_brief_losers'
+)
 MARKET_BRIEF_TZ = ZoneInfo('America/New_York')
 
 
@@ -5168,6 +5171,40 @@ def _market_brief_today() -> str:
 
 def _market_brief_has_source(brief_dir: str) -> bool:
     source_dir = os.path.join(brief_dir, 'source')
+    return os.path.isdir(source_dir) and bool(os.listdir(source_dir))
+
+
+def _load_losers_brief_fields(date_str: str) -> dict:
+    """Optional R1D losers brief from market_brief_losers output dir."""
+    losers_dir = os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, date_str)
+    result: dict = {
+        'has_losers_brief': False,
+        'losers_markdown': None,
+        'losers_status': 'empty',
+    }
+    if not os.path.isdir(losers_dir):
+        return result
+
+    result['losers_status'] = _market_brief_run_status(losers_dir)
+    status_payload = _read_market_brief_status_file(losers_dir)
+    if status_payload:
+        result['losers_run_status'] = status_payload
+
+    costs_path = os.path.join(losers_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
+        with open(costs_path, 'r', encoding='utf-8') as f:
+            result['losers_run_costs'] = json.load(f)
+
+    brief_path = os.path.join(losers_dir, '02_brief.md')
+    if os.path.isfile(brief_path):
+        with open(brief_path, 'r', encoding='utf-8') as f:
+            result['has_losers_brief'] = True
+            result['losers_markdown'] = f.read()
+    return result
+
+
+def _losers_brief_has_source(brief_dir: str) -> bool:
+    source_dir = os.path.join(brief_dir, 'source', 'losers_universe')
     return os.path.isdir(source_dir) and bool(os.listdir(source_dir))
 
 
@@ -5398,6 +5435,8 @@ def market_brief_for_date(date_str):
         with open(costs_path, 'r', encoding='utf-8') as f:
             result['run_costs'] = json.load(f)
 
+    result.update(_load_losers_brief_fields(date_str))
+
     return jsonify(result)
 
 
@@ -5556,6 +5595,83 @@ def market_brief_run():
         data['asof'] = _market_brief_today()
 
     return market_brief_generate()
+
+
+@app.route('/api/market-brief-losers/<date_str>/costs', methods=['GET'])
+def market_brief_losers_costs(date_str):
+    """Return losers brief run status + optional run_costs.json."""
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    brief_dir = os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, date_str)
+    if not os.path.isdir(brief_dir):
+        return jsonify({'error': 'No losers brief folder for this date'}), 404
+
+    result = {
+        'date': date_str,
+        'status': _market_brief_run_status(brief_dir),
+    }
+    status_payload = _read_market_brief_status_file(brief_dir)
+    if status_payload:
+        result['run_status'] = status_payload
+
+    costs_path = os.path.join(brief_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
+        with open(costs_path, 'r', encoding='utf-8') as f:
+            result['run_costs'] = json.load(f)
+
+    return jsonify(result)
+
+
+@app.route('/api/market-brief-losers/generate', methods=['POST'])
+def market_brief_losers_generate():
+    """Run R1D losers pipeline: ticker-only ingest + DeepSeek synthesis."""
+    data = request.get_json() or {}
+    asof = data.get('asof') or data.get('date')
+    if not asof:
+        asof = _market_brief_today()
+    else:
+        try:
+            datetime.strptime(asof, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    outdir = os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, asof)
+
+    existing = _market_brief_run_status(outdir)
+    if existing == 'running':
+        return jsonify({
+            'status': 'already_running',
+            'message': f'Losers brief pipeline for {asof} is already running',
+            'asof': asof,
+        }), 409
+
+    cmd = ['python', '-m', 'market_brief_losers.run_pipeline', '--date', asof]
+    if data.get('skip_ingest') in (True, 'true', '1', 1):
+        if not _losers_brief_has_source(outdir):
+            return jsonify({
+                'error': 'No source data for this date',
+                'message': 'Cannot skip ingest without existing source/losers_universe/',
+                'asof': asof,
+            }), 400
+        cmd.append('--skip-ingest')
+    elif data.get('skip_llm') in (True, 'true', '1', 1):
+        cmd.append('--skip-llm')
+    elif data.get('resume') in (True, 'true', '1', 1):
+        cmd.append('--skip-ingest')
+        cmd.append('--resume')
+
+    err = _start_market_brief_subprocess(cmd, outdir, asof)
+    if err:
+        return jsonify({'error': err}), 500
+
+    return jsonify({
+        'status': 'started',
+        'message': 'Losers brief pipeline started',
+        'asof': asof,
+    })
 
 
 @app.route('/api/auto-commit', methods=['POST'])
