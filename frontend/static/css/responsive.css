@@ -13,6 +13,40 @@ body {
     max-width: 100%;
 }
 
+/* ── Abi General Notes (side-by-side unusable below 900px) ─────── */
+@media (max-width: 900px) {
+    body.page-abi-general-notes {
+        overflow-x: clip;
+    }
+
+    body.page-abi-general-notes .notes-container {
+        flex-direction: column !important;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    body.page-abi-general-notes .notes-container > .notes-sidebar {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: 0 0 auto !important;
+    }
+
+    body.page-abi-general-notes .notes-container > .notes-main {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    body.page-abi-general-notes .notes-container.mobile-editing > .notes-sidebar {
+        display: none !important;
+    }
+
+    body.page-abi-general-notes .notes-container:not(.mobile-editing) > .notes-main {
+        display: none !important;
+    }
+}
+
 /* ── Tablet and below ───────────────────────────────────────────── */
 @media (max-width: 768px) {
     main {

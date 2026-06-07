@@ -1,23 +1,38 @@
 {% extends "base.html" %}
 
+{% block body_class %}page-abi-general-notes{% endblock %}
+
 {% block title %}Abi General Notes - Stocks Assist{% endblock %}
 
 {% block extra_styles %}
 <style>
+    body.page-abi-general-notes main {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    .notes-page-title {
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+
     .notes-container {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
         gap: 0.75rem;
         min-height: calc(100vh - 160px);
         width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
     }
 
     .notes-container > .notes-sidebar {
-        flex: 0 0 260px !important;
-        width: 260px !important;
-        min-width: 260px !important;
-        max-width: 260px !important;
+        flex: 0 0 260px;
+        width: 260px;
+        min-width: 260px;
+        max-width: 260px;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 8px;
@@ -202,7 +217,7 @@
 
     /* Main content */
     .notes-container > .notes-main {
-        flex: 1 1 auto !important;
+        flex: 1 1 auto;
         min-width: 0;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
@@ -221,6 +236,32 @@
         align-items: center;
         flex-wrap: wrap;
         gap: 0.5rem;
+    }
+
+    .mobile-back-btn {
+        display: none;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.7rem;
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+
+    .mobile-back-btn:hover {
+        color: var(--text-primary);
+        border-color: var(--accent-blue);
+    }
+
+    .note-editor-header-left {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 0;
+        flex: 1;
     }
 
     .note-editor-title {
@@ -331,6 +372,29 @@
         font-family: 'JetBrains Mono', monospace;
         font-size: 1rem;
         line-height: 1.5;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-group.content-group {
+        flex: 1;
+        min-height: 0;
+    }
+
+    .note-form-content .note-form-fields {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+    }
+
+    .note-form-content .note-form-fields .content-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .note-form-content .note-form-fields .content-group textarea {
+        flex: 1;
     }
 
     /* Empty/placeholder state */
@@ -406,32 +470,161 @@
         border-color: var(--accent-red);
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-        .notes-container {
+    /* Responsive — 900px matches nav collapse; side-by-side below this is unusable */
+    @media (max-width: 900px) {
+        body.page-abi-general-notes main {
+            padding: 0.75rem 0.5rem !important;
+        }
+
+        body.page-abi-general-notes .notes-page-title {
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        body.page-abi-general-notes .notes-container {
+            flex-direction: column !important;
+            flex-wrap: wrap !important;
+            min-height: auto;
+            gap: 0.5rem;
+        }
+
+        body.page-abi-general-notes .notes-container > .notes-sidebar {
+            flex: 0 0 auto !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+        }
+
+        /* Master-detail: show list OR editor full-width */
+        body.page-abi-general-notes .notes-container.mobile-editing > .notes-sidebar {
+            display: none !important;
+        }
+
+        body.page-abi-general-notes .notes-container:not(.mobile-editing) > .notes-main {
+            display: none !important;
+        }
+
+        body.page-abi-general-notes.notes-mobile-editing .notes-page-title {
+            display: none;
+        }
+
+        body.page-abi-general-notes .notes-container.mobile-editing > .notes-main {
+            min-height: calc(100dvh - 120px);
+        }
+
+        .search-box,
+        .date-filter input,
+        .form-group input,
+        .form-group textarea {
+            font-size: 16px; /* prevent iOS zoom on focus */
+        }
+
+        .notes-list {
+            max-height: min(55vh, 420px);
+        }
+
+        .note-item-preview {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            -webkit-line-clamp: 3;
+        }
+
+        .note-item-title {
+            font-size: 0.85rem;
+        }
+
+        .note-form-content {
+            flex: 1;
+            display: flex;
             flex-direction: column;
+            max-height: none;
+            min-height: 0;
+            padding: 0.5rem 0.65rem 0.75rem;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .notes-container > .notes-sidebar {
-            flex: 0 0 auto;
-            min-width: 100%;
-            max-width: 100%;
+        .form-row {
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-bottom: 0.5rem;
         }
 
-        .notes-list, .note-form-content {
-            max-height: 250px;
+        .form-row.meta-row {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .form-row.meta-row .form-group:first-child {
+            flex: 0 0 130px;
+        }
+
+        .form-row.meta-row .form-group.flex-1 {
+            flex: 1 1 140px;
+            min-width: 0;
+        }
+
+        .form-group input[type="date"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            min-height: 50vh;
+            line-height: 1.6;
+        }
+
+        .note-editor-header {
+            padding: 0.45rem 0.65rem;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .note-editor-header-left {
+            width: 100%;
+        }
+
+        .note-actions {
+            flex-wrap: wrap;
+            width: 100%;
+            justify-content: stretch;
+            gap: 0.35rem;
+        }
+
+        .note-actions button {
+            flex: 1 1 auto;
+            padding: 0.45rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .mobile-back-btn {
+            display: inline-flex;
+            flex-shrink: 0;
+        }
+
+        .note-editor-title {
+            font-size: 0.85rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .toast {
+            left: 0.75rem;
+            right: 0.75rem;
+            bottom: 1rem;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 1.25rem;">
+<h1 class="notes-page-title">
     <span class="mono text-purple">📝</span> Abi General Notes
 </h1>
 
-<div class="notes-container" style="display: flex; flex-direction: row; gap: 0.75rem;">
-    <div class="notes-sidebar" style="flex: 0 0 260px; width: 260px;">
+<div class="notes-container" id="notesContainer">
+    <div class="notes-sidebar">
         <div class="sidebar-header">
             <span>Notes</span>
             <button class="new-note-btn" onclick="createNewNote()">
@@ -461,9 +654,17 @@
         </div>
     </div>
 
-    <div class="notes-main" style="flex: 1;">
+    <div class="notes-main">
         <div class="note-editor-header">
-            <span class="note-editor-title" id="editorTitle">Select a note</span>
+            <div class="note-editor-header-left">
+                <button type="button" class="mobile-back-btn" onclick="cancelEdit()" aria-label="Back to notes list">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Notes
+                </button>
+                <span class="note-editor-title" id="editorTitle">Select a note</span>
+            </div>
             <div class="note-actions" id="noteActions" style="display: none;">
                 <button onclick="cancelEdit()">Cancel</button>
                 <button class="btn-delete" onclick="deleteNote()" id="deleteBtn" style="display: none;">Delete</button>
@@ -488,10 +689,21 @@
     let searchTimeout = null;
     let activeTag = null;
 
+    function updateMobileLayout() {
+        const container = document.getElementById('notesContainer');
+        if (!container) return;
+        const isMobile = window.matchMedia('(max-width: 900px)').matches;
+        const mobileEditing = isMobile && isEditing;
+        container.classList.toggle('mobile-editing', mobileEditing);
+        document.body.classList.toggle('notes-mobile-editing', mobileEditing);
+    }
+
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
         loadNotes();
         loadTags();
+        updateMobileLayout();
+        window.addEventListener('resize', updateMobileLayout);
     });
 
     function debounceSearch() {
@@ -594,6 +806,7 @@
         
         currentNoteId = noteId;
         isEditing = true;
+        updateMobileLayout();
         renderNotesList();
         showNoteEditor(note);
     }
@@ -601,6 +814,7 @@
     function createNewNote() {
         currentNoteId = null;
         isEditing = true;
+        updateMobileLayout();
         renderNotesList();
         
         const today = new Date().toISOString().split('T')[0];
@@ -617,31 +831,34 @@
 
     function showNoteEditor(note) {
         document.getElementById('noteContent').innerHTML = `
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="noteDate">Date</label>
-                    <input type="date" id="noteDate" value="${note.note_date || ''}" required>
+            <div class="note-form-fields">
+                <div class="form-row meta-row">
+                    <div class="form-group">
+                        <label for="noteDate">Date</label>
+                        <input type="date" id="noteDate" value="${note.note_date || ''}" required>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="noteTitle">Title</label>
+                        <input type="text" id="noteTitle" value="${escapeHtml(note.title) || ''}" placeholder="Note title...">
+                    </div>
                 </div>
-                <div class="form-group flex-1">
-                    <label for="noteTitle">Title</label>
-                    <input type="text" id="noteTitle" value="${escapeHtml(note.title) || ''}" placeholder="Note title...">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="noteTags">Tags (comma-separated)</label>
+                        <input type="text" id="noteTags" value="${escapeHtml(note.tags) || ''}" placeholder="market, idea, earnings...">
+                    </div>
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group flex-1">
-                    <label for="noteTags">Tags (comma-separated)</label>
-                    <input type="text" id="noteTags" value="${escapeHtml(note.tags) || ''}" placeholder="market, idea, earnings...">
+                <div class="form-group content-group">
+                    <label for="noteContentInput">Content</label>
+                    <textarea id="noteContentInput" placeholder="Write your thoughts...">${escapeHtml(note.content) || ''}</textarea>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="noteContentInput">Content</label>
-                <textarea id="noteContentInput" placeholder="Write your thoughts...">${escapeHtml(note.content) || ''}</textarea>
             </div>
         `;
         
         document.getElementById('editorTitle').textContent = currentNoteId ? 'Edit Note' : 'New Note';
         document.getElementById('noteActions').style.display = 'flex';
         document.getElementById('deleteBtn').style.display = currentNoteId ? 'inline-block' : 'none';
+        updateMobileLayout();
         
         // Focus on title for new notes
         if (!currentNoteId) {
@@ -736,6 +953,7 @@
     function cancelEdit() {
         currentNoteId = null;
         isEditing = false;
+        updateMobileLayout();
         renderNotesList();
         
         document.getElementById('noteContent').innerHTML = `
