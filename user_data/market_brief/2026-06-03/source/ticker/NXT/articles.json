@@ -1,0 +1,69 @@
+{
+  "source_kind": "ticker",
+  "source_key": "NXT",
+  "window": "2026-06-01 05:00 UTC → 2026-06-03 06:00 UTC (session 2026-06-02, ticker −24h vs general)",
+  "anchor_session": "2026-06-02",
+  "published_gte_utc": "2026-06-01T05:00:00+00:00",
+  "published_lte_utc": "2026-06-03T06:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 3,
+  "articles": [
+    {
+      "benzinga_id": 52930062,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T08:26:16Z",
+      "last_updated": "2026-06-02T08:26:17Z",
+      "title": "Reported Earlier, Nextpower Announced That It Has Filed A Patent Infringement Lawsuit Against GameChange Solar In The United States District Court For The District Of Delaware",
+      "url": "https://www.benzinga.com/quote/NXT",
+      "images": [],
+      "channels": [
+        "news"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52911211,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-01T15:17:37Z",
+      "last_updated": "2026-06-01T15:17:37Z",
+      "title": "Susquehanna Maintains Positive on Nextpower, Raises Price Target to $180",
+      "teaser": "Susquehanna  analyst Biju Perincheril   maintains Nextpower (NASDAQ:NXT) with a Positive and raises the price target from $161 to $180.",
+      "body": "Susquehanna  analyst Biju Perincheril   maintains Nextpower (NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NXT\">NXT</a>) with a Positive and raises the price target from $161 to $180.",
+      "url": "https://www.benzinga.com/news/26/06/52911211/susquehanna-maintains-positive-on-nextpower-raises-price-target-to-180",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52902167,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-01T12:40:15Z",
+      "last_updated": "2026-06-01T12:40:16Z",
+      "title": "Nextpower Files Patent Infringement Lawsuit Against GameChange Solar In U.S. District Court In Delaware",
+      "teaser": "Nextpower&#39;s lawsuit charges GameChange with infringing three patents related to the company&#39;s proprietary self-powered solar tracker technology and TrueCapture energy management control system, based on GameChange&#39;s",
+      "body": "<p>Nextpower's lawsuit charges GameChange with infringing three patents related to the company's proprietary self-powered solar tracker technology and TrueCapture energy management control system, based on GameChange's sales of its Genius Tracker systems and associated software.</p><p>\"Nextpower invests heavily in the development of our best-in-class solar tracker products, and we treat intellectual property very seriously,\" said Dan Shugar, founder and CEO of Nextpower. \"We respect legitimate competition, but we will vigorously defend our patent rights in all global markets in which we conduct business.\"</p><p>Nextpower's lawsuit seeks remedies available under U.S. patent law, including injunctive relief and monetary damages.</p>",
+      "url": "https://www.benzinga.com/news/26/06/52902167/nextpower-files-patent-infringement-lawsuit-against-gamechange-solar-in-u-s-district-court-in-delawa",
+      "images": [],
+      "channels": [
+        "news"
+      ],
+      "tickers": [
+        "NXT"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "vol_spike_5d/large",
+  "label": "Vol spike / gapper · last 5D · Large cap",
+  "rank": 10
+}

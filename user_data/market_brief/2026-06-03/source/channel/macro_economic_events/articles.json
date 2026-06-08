@@ -1,0 +1,424 @@
+{
+  "source_kind": "channel",
+  "source_key": "macro economic events",
+  "window": "2026-06-02 05:00 UTC → 2026-06-03 06:00 UTC (session 2026-06-02, rule: weekday before 9:30 AM ET → prior session 5:00 AM ET)",
+  "anchor_session": "2026-06-02",
+  "published_gte_utc": "2026-06-02T05:00:00+00:00",
+  "published_lte_utc": "2026-06-03T06:00:00+00:00",
+  "api_limit": 50,
+  "article_count": 18,
+  "articles": [
+    {
+      "benzinga_id": 52958020,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T20:50:37Z",
+      "last_updated": "2026-06-02T20:50:38Z",
+      "title": "API Crude Oil Stock 6.750M Barrel Draw Vs 3.600M Barrel Draw Est.",
+      "url": "https://www.benzinga.com/quote/USO",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "econ #s",
+        "economics"
+      ],
+      "tickers": [
+        "SPY",
+        "USO"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52956928,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T20:26:45Z",
+      "last_updated": "2026-06-02T20:26:46Z",
+      "title": "'Warsh Picks Paul Winfree, Daniel Heil To Work As Temporary Contractors To Support Policy Analysis, Planning; Winfree Is Named Author Of Project 2025 Chapter On Federal Reserve; Heil Is Policy Fellow At Stanford's Hoover Institution' - WSJ",
+      "teaser": "https://www.wsj.com/economy/central-banking/warsh-names-two-conservative-policy-veterans-as-interim-fed-advisers-b734311a",
+      "body": "<p><a href=\"https://www.wsj.com/economy/central-banking/warsh-names-two-conservative-policy-veterans-as-interim-fed-advisers-b734311a\" title=\"https://www.wsj.com/economy/central-banking/warsh-names-two-conservative-policy-veterans-as-interim-fed-advisers-b734311a\">https://www.wsj.com/economy/central-banking/warsh-names-two-conservative-policy-veterans-as-interim-fed-advisers-b734311a</a></p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52956928/warsh-picks-paul-winfree-daniel-heil-to-work-as-temporary-contractors-to-support-",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "economics",
+        "federal reserve"
+      ],
+      "tickers": [
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52956896,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T20:25:34Z",
+      "last_updated": "2026-06-02T20:25:35Z",
+      "title": "'Warsh Names Two Conservative Policy Veterans as Interim Fed Advisers' - WSJ Exclusive",
+      "teaser": "https://www.wsj.com/economy/central-banking/warsh-names-two-conservative-policy-veterans-as-interim-fed-advisers-b734311a",
+      "body": "<p><a href=\"https://www.wsj.com/economy/central-banking/warsh-names-two-conservative-policy-veterans-as-interim-fed-advisers-b734311a\" title=\"https://www.wsj.com/economy/central-banking/warsh-names-two-conservative-policy-veterans-as-interim-fed-advisers-b734311a\">https://www.wsj.com/economy/central-banking/warsh-names-two-conservative-policy-veterans-as-interim-fed-advisers-b734311a</a></p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52956896/warsh-names-two-conservative-policy-veterans-as-interim-fed-advisers-wsj-exclusiv",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "economics",
+        "federal reserve"
+      ],
+      "tickers": [
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52949145,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T17:05:51Z",
+      "last_updated": "2026-06-02T17:05:52Z",
+      "title": "President Trump Posts On Truth Social 'Fake News Reports that the Islamic Republic of Iran, and the U.S.A., stopped speaking a few days ago are false and erroneous. The conversations between us have been going on continuously, including four days ago, three days ago, two days ago, one day ago, and today. Where they lead, one never knows, but as I told Iran, \"It's time, one way or another, for you to make a Deal. You've been doing this for 47 years, and it cannot be allowed to go on any longer!\"'",
+      "teaser": "https://truthsocial.com/@realDonaldTrump/posts/116681581361115247",
+      "body": "<p><a href=\"https://truthsocial.com/@realDonaldTrump/posts/116681581361115247\" title=\"https://truthsocial.com/@realDonaldTrump/posts/116681581361115247\">https://truthsocial.com/@realDonaldTrump/posts/116681581361115247</a></p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52949145/president-trump-posts-on-truth-social-fake-news-reports-that-the-islamic-republic",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "politics",
+        "global",
+        "economics",
+        "general"
+      ],
+      "tickers": [
+        "SPY",
+        "USO"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52948230,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T16:43:07Z",
+      "last_updated": "2026-06-02T16:43:07Z",
+      "title": "Goldman Sachs CEO Solomon Says Lens Of Seeing A Rate Cut For The Rest Of The Year Has Gone Down Materially From Whatever It Was Six Months Ago",
+      "teaser": "- The Economic Club Of New York",
+      "body": "<p>- The Economic Club Of New York</p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52948230/goldman-sachs-ceo-solomon-says-lens-of-seeing-a-rate-cut-for-the-rest-of-the-year",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "economics"
+      ],
+      "tickers": [
+        "GS",
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52947000,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T16:15:24Z",
+      "last_updated": "2026-06-02T16:15:24Z",
+      "title": "'Venezuela Wants Oil Firms to Supply Their Own Power for Projects' - Bloomberg News",
+      "teaser": "https://www.bloomberg.com/news/articles/2026-06-02/venezuela-wants-oil-firms-to-supply-their-own-power-for-projects",
+      "body": "<p><a href=\"https://www.bloomberg.com/news/articles/2026-06-02/venezuela-wants-oil-firms-to-supply-their-own-power-for-projects\" title=\"https://www.bloomberg.com/news/articles/2026-06-02/venezuela-wants-oil-firms-to-supply-their-own-power-for-projects\">https://www.bloomberg.com/news/articles/2026-06-02/venezuela-wants-oil-firms-to-supply-their-own-power-for-projects</a></p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52947000/venezuela-wants-oil-firms-to-supply-their-own-power-for-projects-bloomberg-news",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "politics",
+        "global",
+        "economics",
+        "general"
+      ],
+      "tickers": [
+        "CVX",
+        "SPY",
+        "USO",
+        "XOM"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52944447,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T15:16:31Z",
+      "last_updated": "2026-06-02T15:16:32Z",
+      "title": "United States Secretary Of State Marco Rubio Says We Want To See The Status Quo Preserved On Taiwan; There Has Been No Change In U.S. Policy Toward Taiwan; Rubio Says $14B Weapons Sale To Taiwan Is Still Under Evaluation",
+      "teaser": "https://www.youtube.com/watch?v=gzaGqTB2rPg ",
+      "body": "<p><a href=\"https://www.youtube.com/watch?v=gzaGqTB2rPg\">https://www.youtube.com/watch?v=gzaGqTB2rPg</a></p><p>&nbsp;</p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52944447/united-states-secretary-of-state-marco-rubio-says-we-want-to-see-the-status-quo-p",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "politics",
+        "global",
+        "economics",
+        "general"
+      ],
+      "tickers": [
+        "EWT",
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52942959,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T14:51:40Z",
+      "last_updated": "2026-06-02T14:51:41Z",
+      "title": "United States Secretary Of State Marco Rubio Says Iran Also Has To Commit To Specific Negotiations On Disposition Of Highly Enriched Uranium; Any Sanctions Relief On Iran Is Condition-Based; Iran Will Not Get Sanctions Relief Just For Reopening Strait Of Hormuz",
+      "teaser": "https://www.youtube.com/watch?v=gzaGqTB2rPg  ",
+      "body": "<p><a href=\"https://www.youtube.com/watch?v=gzaGqTB2rPg\">https://www.youtube.com/watch?v=gzaGqTB2rPg</a><br>&nbsp;</p><p>&nbsp;</p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52942959/united-states-secretary-of-state-marco-rubio-says-iran-also-has-to-commit-to-spec",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "politics",
+        "global",
+        "economics",
+        "general"
+      ],
+      "tickers": [
+        "SPY",
+        "USO"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52942795,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T14:48:13Z",
+      "last_updated": "2026-06-02T14:48:14Z",
+      "title": "United States Secretary Of State Marco Rubio Says Iran Has To Announce Very Clearly Hormuz Strait Is Now Open; Says Condition No 1 In Iran Talks Is That Iran Opens The Strait Of Hormuz",
+      "teaser": "https://www.youtube.com/watch?v=gzaGqTB2rPg ",
+      "body": "<p><a href=\"https://www.youtube.com/watch?v=gzaGqTB2rPg\">https://www.youtube.com/watch?v=gzaGqTB2rPg</a></p><p>&nbsp;</p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52942795/united-states-secretary-of-state-marco-rubio-says-iran-has-to-announce-very-clear",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "politics",
+        "global",
+        "economics",
+        "general"
+      ],
+      "tickers": [
+        "SPY",
+        "USO"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52939649,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T14:00:18Z",
+      "last_updated": "2026-06-02T14:00:19Z",
+      "title": "USA JOLTS Job Openings For April 7.618M Vs 6.860M Est",
+      "url": "https://www.benzinga.com/quote/SPY",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "econ #s",
+        "economics",
+        "hot"
+      ],
+      "tickers": [
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52936887,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T13:23:09Z",
+      "last_updated": "2026-06-02T13:23:09Z",
+      "title": "Canada Prime Minister Mark Carney Says Canada Is Making Progress On Some Of The Issues It Has With The United States On Trade",
+      "teaser": "- Reuters ",
+      "body": "<p>- Reuters&nbsp;</p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52936887/canada-prime-minister-mark-carney-says-canada-is-making-progress-on-some-of-the-i",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "politics",
+        "global",
+        "economics",
+        "general"
+      ],
+      "tickers": [
+        "EWC",
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52936680,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T13:16:34Z",
+      "last_updated": "2026-06-02T13:16:34Z",
+      "title": "Iran's Fars News Agency Says Message Exchange Between Iran And U.S. To Reach An MOU Has Stopped A Few Days Ago",
+      "teaser": "- Reuters Citing Source At Iran&#39;s Fars News Agency",
+      "body": "<p>- Reuters Citing Source At Iran's Fars News Agency</p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52936680/irans-fars-news-agency-says-message-exchange-between-iran-and-u-s-to-reach-an-mou",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "politics",
+        "global",
+        "economics",
+        "general"
+      ],
+      "tickers": [
+        "SPY",
+        "USO"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52936646,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T13:15:48Z",
+      "last_updated": "2026-06-02T13:15:49Z",
+      "title": "'Trump Taps Pulte As Acting Director Of National Intelligence' - Bloomberg News",
+      "teaser": "https://www.bloomberg.com/news/articles/2026-06-02/trump-taps-pulte-as-acting-director-of-national-intelligence",
+      "body": "<p><a href=\"https://www.bloomberg.com/news/articles/2026-06-02/trump-taps-pulte-as-acting-director-of-national-intelligence\" title=\"https://www.bloomberg.com/news/articles/2026-06-02/trump-taps-pulte-as-acting-director-of-national-intelligence\">https://www.bloomberg.com/news/articles/2026-06-02/trump-taps-pulte-as-acting-director-of-national-intelligence</a></p>",
+      "url": "https://www.benzinga.com/economics/macro-economic-events/26/06/52936646/trump-taps-pulte-as-acting-director-of-national-intelligence-bloomberg-news",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "politics",
+        "global",
+        "economics",
+        "general"
+      ],
+      "tickers": [
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52936057,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T13:03:14Z",
+      "last_updated": "2026-06-02T13:03:15Z",
+      "title": "U.S. Trade Representative Greer Speaking On CNBC Says We Have Seen Very Good Results In Exports From Tariffs And 'Green Shoots' In Manufacturing; We Will Be Releasing Reports On Other Section 301 Investigations Over The Next Few Weeks; We Have A Giant Trade Deficit, We Need Substantial Tariffs To Correct That",
+      "url": "https://www.benzinga.com/quote/SPY",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "economics"
+      ],
+      "tickers": [
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52935303,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T12:45:50Z",
+      "last_updated": "2026-06-02T12:45:51Z",
+      "title": "Redbook Retail Sales Index Up 9.0% YoY For Week Ended 5/30/26",
+      "url": "https://www.benzinga.com/quote/SPY",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "econ #s",
+        "economics"
+      ],
+      "tickers": [
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52935282,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T12:45:28Z",
+      "last_updated": "2026-06-02T12:45:29Z",
+      "title": "Redbook Retail Sales Index For May 2026 Vs May 2025: 8.9% YoY",
+      "url": "https://www.benzinga.com/quote/SPY",
+      "images": [],
+      "channels": [
+        "macro economic events",
+        "news",
+        "econ #s",
+        "economics"
+      ],
+      "tickers": [
+        "SPY"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52935012,
+      "author": "tanya rawat",
+      "published": "2026-06-02T12:38:23Z",
+      "last_updated": "2026-06-02T12:38:24Z",
+      "title": "Forget AI Fears: Remote Work May Be The Real Reason Young Graduates Are Struggling To Find Jobs",
+      "teaser": "Remote work may explain 64% of rising unemployment among young college graduates, according to new research.",
+      "body": "<p>Young college graduates may be struggling to find jobs because of remote work rather than artificial intelligence, according to new research published Monday by the <strong>New York Federal Reserve&#8217;s Liberty Street Economics</strong> blog.</p>\n\n\n\n<p>The researchers found that the rise of remote work since the pandemic has made it more difficult for employers to train and mentor inexperienced workers, making companies less willing to hire recent graduates for distributed teams. They estimate that remote work can explain about 64% of the increase in unemployment among young college graduates since the pandemic.</p>\n\n\n\n<p>Unemployment among college graduates under age 29 increased from 3.1% in 2017-2019 to 3.7% in 2022-2025. Over the same period, unemployment among more experienced college graduates declined slightly from 1.9% to 1.8%.</p>\n\n\n\n<div class=\"bz-read-next-block\"\n     data-variant=\"card\"\n     data-news-mode=\"manual\"\n\n    >\n\n\n<p>\n<strong>\nRead Also:\n<a href=\"https://www.benzinga.com/news/health-care/26/06/52933064/millions-could-be-affected-as-cms-rolls-out-strict-new-medicaid-work-requirements-heres-what-to-know\" target=\"_blank\" rel=\"noopener\">\nMillions Could Be Affected As CMS Rolls Out Strict New Medicaid Work Requirements— Here&#039;s What To Know </a>\n</strong>\n</p>\n\n\n</div>\n\n\n<h2 class=\"wp-block-heading\">Remote Work Effect</h2>\n\n\n\n<p>The researchers found the increase in youth unemployment was concentrated in occupations that can be performed remotely, such as software engineering and other office-based professional roles. In contrast, unemployment among young workers in non-remotable occupations returned to pre-pandemic levels after an initial increase in 2020.</p>\n\n\n\n<p>According to the study, employers may be reluctant to hire inexperienced workers because remote environments make it harder to provide the feedback, mentorship and skill development that early-career employees typically need.</p>\n\n\n\n<p>Using data from a Fortune 500 company, the researchers found that employees working alongside colleagues received more feedback and mentorship and produced higher-quality work than those working at a distance. The company also hired fewer inexperienced workers when offices were closed during the pandemic and shifted back toward younger hires after reopening.</p>\n\n\n\n<h2 class=\"wp-block-heading\">AI Debate Continues</h2>\n\n\n\n<p>The findings add a new dimension to the debate over whether artificial intelligence is hurting employment opportunities for younger workers.</p>\n\n\n\n<p>On Friday, <strong>Apollo Global Management</strong>&#8216;s <a href=\"https://www.benzinga.com/quote/APO\" target=\"_blank\" rel=\"noreferrer noopener\">(NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/APO\">APO</a></a>)  Chief Economist <strong>Torsten Sløk</strong> said there is &#8220;zero evidence&#8221; that <a href=\"https://www.benzinga.com/markets/macro-economic-events/26/06/52902292/top-economist-says-there-is-zero-evidence-of-ai-job-losses-despite-growing-layoff-fears\">AI is causing job losses</a> across the U.S. economy, arguing that AI investment continues to support hiring and economic activity.</p>\n\n\n\n<p>The New York Fed researchers reached a similar conclusion regarding recent labor market challenges facing young graduates. While acknowledging AI could play a larger role in the future, they found the rise in youth unemployment began <a href=\"https://www.benzinga.com/news/topics/26/04/51965397/the-great-standstill-american-workers-stay-put-as-job-switching-appetite-hits-five-year-low-amid-uncertainty\">before generative AI</a> became widespread and persisted even after accounting for occupations&#8217; exposure to AI.</p>\n\n\n\n<p>The findings also come as <a href=\"https://www.benzinga.com/markets/equities/26/05/52439204/youth-lose-faith-job-market-poll-older-americans-upbeat\">confidence among younger</a> workers continues to weaken. A recent Gallup survey found only 43% of Americans ages 15 to 34 believed it was a good time to find a job locally, marking a sharp decline from recent years. Separately, a New York Fed labor market survey found workers under 45 were among the most likely to pull back from job searching and switching employers amid growing uncertainty.</p>\n\n\n\n<p>The researchers concluded that remote work has weakened incentives to hire inexperienced workers by reducing opportunities for on-the-job training, making it harder for young graduates to gain a foothold in the labor market.</p>\n\n\n\n<p><em><strong>Disclaimer:</strong> This content was produced with the help of AI tools and was reviewed and published by Benzinga editors.</em></p>\n\n\n\n<p><em>Image via SHutterstock</em><br></p>\n\n\n\n<div class=\"bz-read-next-block\"\n     data-variant=\"card\"\n     data-news-mode=\"manual\"\n\n    >\n\n\n<p>\n<strong>\nRead Also:\n<a href=\"https://www.benzinga.com/news/health-care/26/06/52932961/os-therapies-says-new-bone-cancer-data-strengthens-case-for-regulatory-filings\" target=\"_blank\" rel=\"noopener\">\nOS Therapies Says New Bone Cancer Data Strengthens Case For Regulatory Filings</a>\n</strong>\n</p>\n\n\n</div>",
+      "url": "https://www.benzinga.com/news/education/26/06/52935012/forget-ai-fears-remote-work-may-be-the-real-reason-young-graduates-are-struggling-to-find-jobs",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Workforce-Reduction-Shows-Employee-Leavi.jpeg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Workforce-Reduction-Shows-Employee-Leavi.jpeg?width=1024&height=768",
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Workforce-Reduction-Shows-Employee-Leavi.jpeg?width=2048&height=1536"
+      ],
+      "channels": [
+        "macro economic events",
+        "news",
+        "education",
+        "economics",
+        "general"
+      ],
+      "tickers": [
+        "APO"
+      ],
+      "tags": [
+        "benznews",
+        "remote work"
+      ]
+    },
+    {
+      "benzinga_id": 52929957,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T08:17:24Z",
+      "last_updated": "2026-06-02T08:17:25Z",
+      "title": "Emmanuel Macron Says Nebius, SoftBank Chose France As AI Commitments Reach $61.7 Billion; Son Says Infrastructure Will Shape The Future",
+      "teaser": "France secured €53 billion in AI investment commitments from SoftBank and Nebius, one of Europe&#39;s largest AI infrastructure pushes.",
+      "body": "<p>France secured €53 billion ($61.7 billion) in artificial intelligence-related investment commitments from Japan&#8217;s <strong>Softbank Group Corp. </strong><a class=\"ticker-link\" data-ticker=\"SFTBY\" data-exchange=\"OTC\" href=\"https://www.benzinga.com/quote/SFTBY\" target=\"_blank\" rel=\"noopener\">(OTC:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/SFTBY\">SFTBY</a>)</a> and Amsterdam-based AI cloud services firm <strong>Nebius Group N.V. </strong><a class=\"ticker-link\" data-ticker=\"NBIS\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/NBIS\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NBIS\">NBIS</a>)</a>, marking one of the largest artificial intelligence infrastructure investment pushes in Europe as the country seeks to become a leading hub for AI development.</p>\n\n\n\n<p>French President <strong>Emmanuel Macron</strong> Monday said in a post on X, the investments would create thousands of jobs and help establish the country as Europe&#8217;s leading destination for AI infrastructure and development.</p>\n\n\n\n<h2 class=\"wp-block-heading\"><strong>One Of Europe&#8217;s Largest AI Investment Waves</strong></h2>\n\n\n\n<p>SoftBank said it plans to invest an initial €45 billion to develop 3.1 gigawatts of AI-focused data center capacity in France&#8217;s Hauts-de-France region by 2031, including in Dunkirk, Bosquel and Bouchain. </p>\n\n\n\n<p>The investment marks the first phase of a broader initiative that could see SoftBank deploy up to €75 billion to build and operate 5 gigawatts of AI data center capacity across France. </p>\n\n\n\n<p>\"AI is entering a new era, and the countries that build the infrastructure for this transformation will shape the future of technology, industry and society,\" Softbank CEO <strong>Masayoshi Son</strong> said in a statement over the weekend. </p>\n\n\n\n<p>The investments underscore growing competition among countries to attract the computing capacity needed to support increasingly powerful AI models and services.</p>\n\n\n\n<p>Nebius plans to invest more than €8 billion in cloud infrastructure and services in the country, targeting 240 megawatts of capacity and creating what Macron described as one of Europe&#8217;s most powerful AI computing sites.</p>\n\n\n\n<p>The deals formed part of a broader slate of investment announcements made during the 2026 Choose France summit.</p>\n\n\n\n<figure class=\"wp-block-image size-full\"><img loading=\"lazy\" decoding=\"async\" width=\"877\" height=\"404\" src=\"https://editorial-assets.benzinga.com/wp-content/uploads/2026/06/02015436/Capture-4.png\" alt=\"\" class=\"wp-image-1487139\" srcset=\"https://editorial-assets.benzinga.com/wp-content/uploads/2026/06/02015436/Capture-4.png 877w,https://editorial-assets.benzinga.com/wp-content/uploads/2026/06/02015436/Capture-4-300x138.png 300w,https://editorial-assets.benzinga.com/wp-content/uploads/2026/06/02015436/Capture-4-768x354.png 768w\" sizes=\"(max-width: 877px) 100vw, 877px\" /></figure>\n\n\n\n<div class=\"bz-read-next-block\"\n     data-variant=\"card\"\n     data-news-mode=\"manual\"\n\n    >\n\n\n<p>\n<strong>\nRead Also:\n<a href=\"https://www.benzinga.com/markets/equities/26/06/52929064/fulc-stock-crashes-after-hours-what-investors-need-to-know\" target=\"_blank\" rel=\"noopener\">\nFULC Stock Crashes After Hours: What Investors Need To Know</a>\n</strong>\n</p>\n\n\n</div>\n\n\n<h2 class=\"wp-block-heading\">Europe&#8217;s AI Ambitions Face A Test</h2>\n\n\n\n<p>The AI investment push comes at a time when there is growing concerns that Europe risks falling behind the U.S. and China in AI data center development, with industry leaders warning that the region must significantly increase investment in computing infrastructure to remain competitive.</p>\n\n\n\n<p>Europe&#8217;s AI ambitions have been <a href=\"https://www.benzinga.com/Opinion/26/04/51623501/europe-ai-push-faces-major-roadblock-high-energy-costs-threaten-industrial-competitiveness\">complicated by high energy costs</a>, with industry leaders warning that expensive electricity could undermine the region&#8217;s competitiveness against the U.S. and China.</p>\n\n\n\n<p>France&#8217;s nuclear-powered electricity grid has emerged as a potential advantage as countries compete to attract AI infrastructure investments.</p>\n\n\n\n<figure class=\"wp-block-image size-full\"><img loading=\"lazy\" decoding=\"async\" width=\"867\" height=\"426\" src=\"https://editorial-assets.benzinga.com/wp-content/uploads/2026/06/02015525/Capture-5.png\" alt=\"\" class=\"wp-image-1487140\" srcset=\"https://editorial-assets.benzinga.com/wp-content/uploads/2026/06/02015525/Capture-5.png 867w,https://editorial-assets.benzinga.com/wp-content/uploads/2026/06/02015525/Capture-5-300x147.png 300w,https://editorial-assets.benzinga.com/wp-content/uploads/2026/06/02015525/Capture-5-768x377.png 768w\" sizes=\"(max-width: 867px) 100vw, 867px\" /></figure>\n\n\n\n<h2 class=\"wp-block-heading\"><strong>The Global AI Infrastructure Race</strong></h2>\n\n\n\n<p>The announcements follows a wave of major AI infrastructure spending globally, with technology giants including <strong>Microsoft</strong>, <strong>Amazon</strong>, <strong>Google</strong>&#8216;s parent company <strong>Alphabet </strong>and <strong>Meta</strong> expected to spend hundreds of billions of dollars on data centers and AI-related capital expenditures in the coming years.</p>\n\n\n\n<p>Countries are increasingly competing to attract AI infrastructure investments, viewing data centers and cloud computing capacity as strategic assets that can drive economic growth, technological innovation and job creation.</p>\n\n\n\n<div class=\"bz-read-next-block\"\n     data-variant=\"card\"\n     data-news-mode=\"manual\"\n\n    >\n\n\n<p>\n<strong>\nRead Also:\n<a href=\"https://www.benzinga.com/markets/tech/26/06/52928774/jim-cramer-says-it-seems-openai-wants-to-go-public-real-soon-but-wonders-if-theres-enough-money-around-with-spacex-and-anthropic-vying-for-funds\" target=\"_blank\" rel=\"noopener\">\nJim Cramer Says It Seems OpenAI Wants To Go Public &#039;Real Soon&#039; But Wonders If There&#039;s &#039;Enough Money Around&#039; With SpaceX And Anthropic Vying For Funds</a>\n</strong>\n</p>\n\n\n</div>\n\n\n<p><strong><em>Disclaimer</em>:</strong><em>&nbsp;This content was partially produced with the help of AI tools and was reviewed and published by Benzinga editors.</em></p>\n\n\n\n<p><em>Photo Courtesy: Victor Velter on Shutterstock.com</em></p>",
+      "url": "https://www.benzinga.com/markets/eurozone/26/06/52929957/emmanuel-macron-says-nebius-softbank-chose-france-as-ai-commitments-reach-61-7-billion-son-says-infrastructure-will-shape-the-future",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Emmanuel-Macron-During-The-Rugby-World-C.jpeg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Emmanuel-Macron-During-The-Rugby-World-C.jpeg?width=1024&height=768",
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Emmanuel-Macron-During-The-Rugby-World-C.jpeg?width=2048&height=1536"
+      ],
+      "channels": [
+        "government",
+        "macro economic events",
+        "eurozone",
+        "economics",
+        "tech"
+      ],
+      "tickers": [
+        "NBIS",
+        "SFTBY"
+      ],
+      "tags": [
+        "artificial intelligence",
+        "france",
+        "investments"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "source_kind": "channel",
+  "source_key": "news",
+  "window": "2026-06-02 05:00 UTC → 2026-06-03 06:00 UTC (session 2026-06-02, rule: weekday before 9:30 AM ET → prior session 5:00 AM ET)",
+  "anchor_session": "2026-06-02",
+  "published_gte_utc": "2026-06-02T05:00:00+00:00",
+  "published_lte_utc": "2026-06-03T06:00:00+00:00",
+  "api_limit": 50,
+  "article_count": 0,
+  "articles": []
+}

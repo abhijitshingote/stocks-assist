@@ -1,0 +1,91 @@
+{
+  "source_kind": "ticker",
+  "source_key": "CSCO",
+  "window": "2026-06-01 05:00 UTC → 2026-06-03 06:00 UTC (session 2026-06-02, ticker −24h vs general)",
+  "anchor_session": "2026-06-02",
+  "published_gte_utc": "2026-06-01T05:00:00+00:00",
+  "published_lte_utc": "2026-06-03T06:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 3,
+  "articles": [
+    {
+      "benzinga_id": 52957578,
+      "author": "opeyemi babalola",
+      "published": "2026-06-02T20:39:36Z",
+      "last_updated": "2026-06-02T20:39:37Z",
+      "title": "3 Stocks At The Center Of Trump's AI Security Order",
+      "teaser": "Trump&#39;s AI cybersecurity order reshapes federal spending. Cisco, Alphabet, and Nvidia investors need to understand what comes next.",
+      "body": "<p>President Trump signed an executive order on June 2, 2026, directing federal agencies to test frontier AI models for cybersecurity risks up to 30 days before public release. The framework is voluntary, but the market implications are significant. For investors tracking the AI cybersecurity spending wave, this order accelerates an already fast-moving trade and reshapes which companies sit closest to federal dollars.</p>\n\n\n\n<p class=\"has-medium-font-size\"><strong>Why &#8220;Voluntary&#8221; Still Moves Markets</strong></p>\n\n\n\n<p>The order bars the government from creating mandatory licensing or pre-clearance requirements. That makes it a request, not a rule. However, voluntary cooperation with federal agencies has historically translated into preferred contractor status. Companies that participate in government AI testing programs gain a strategic edge. They position themselves as trusted vendors for future procurement cycles. Reuters reported that the Pentagon, Treasury, and the Cybersecurity and Infrastructure Security Agency are all named as lead agencies under the order. Where federal agencies spend attention, they eventually spend money.</p>\n\n\n\n<p class=\"has-medium-font-size\"><strong>The Clearinghouse Effect</strong></p>\n\n\n\n<p>One of the order's most overlooked provisions is its establishment of an AI cybersecurity clearinghouse. This body will collect and share information on vulnerabilities across AI systems. Participating companies gain early visibility into emerging threat vectors. They also gain something harder to quantify: institutional credibility with defense and intelligence buyers. The clearinghouse model mirrors the structure of existing federal security-sharing frameworks. Those framework have generated steady contract revenue for established vendors over many years.</p>\n\n\n\n<p class=\"has-medium-font-size\"><strong>Cisco Sits in the Sweet Spot</strong></p>\n\n\n\n<p>Among publicly traded names, Cisco Systems <a class=\"ticker-link\" data-ticker=\"CSCO\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/CSCO\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CSCO\">CSCO</a>)</a> appears especially well-positioned. Cisco is a founding member of Project Glasswing, Anthropic's program giving select partners early access to its advanced cybersecurity AI model. According to Q3 fiscal 2026 results reported on May 13, 2026, Cisco posted record revenue of $15.84 billion, up 12% year over year.</p>\n\n\n\n<p>AI infrastructure orders reached $5.3 billion so far in fiscal 2026, and management raised its full-year AI order target to $9 billion. Cisco also debuted a leaderboard in Q3 for ranking AI models on cybersecurity robustness. A product squarely aligned with what the new executive order now elevates into national policy. Federal customers are already updating equipment for AI-related security reasons, according to comments made on Cisco's Q1 fiscal 2026 earnings call.</p>\n\n\n\n<p class=\"has-medium-font-size\"><strong>Alphabet's Cloud Clearinghouse Angle</strong></p>\n\n\n\n<p>Alphabet <a href=\"https://www.benzinga.com/quote/GOOGL\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"GOOGL\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/GOOGL\">GOOGL</a>)</a> carries a different but equally compelling angle. Google Cloud's contract backlog nearly doubled sequentially to $462 billion as of Q1 2026, with AI solutions as the largest contributor to cloud growth. The Wiz acquisition, which closed in March 2026, added cybersecurity tools including AI-powered threat detection and continuous red teaming. These capabilities map directly to what the executive order now asks federal agencies to build and procure. Alphabet also controls Mandiant, one of the most recognized names in government-facing cybersecurity services. As federal agencies stand up the new clearinghouse infrastructure, Alphabet's cloud and security stack becomes a natural candidate for procurement conversations.</p>\n\n\n\n<p class=\"has-medium-font-size\"><strong>The Nvidia Connection</strong></p>\n\n\n\n<p>No AI policy discussion is complete without noting Nvidia <a href=\"https://www.benzinga.com/quote/NVDA\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"NVDA\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NVDA\">NVDA</a>)</a>. Every frontier AI model that gets tested under this order runs on Nvidia silicon. Voluntary or mandatory, expanded pre-deployment testing increases the total compute footprint required across the AI development lifecycle. More testing cycles mean more GPU hours. Nvidia does not need a government contract to benefit from this order. It simply needs the testing regime to run.</p>\n\n\n\n<p class=\"has-medium-font-size\"><strong>Bottom Line</strong></p>\n\n\n\n<p>Trump's June 2, 2026, executive order on AI cybersecurity stops short of hard regulation. However, it formally links frontier AI development to national security infrastructure. That linkage creates a durable procurement tailwind for companies already embedded in federal AI and security workflows. Cisco's Project Glasswing membership, Alphabet's cloud and Mandiant assets, and Nvidia's hardware dominance place all three at the center of what this order will ultimately fund. Investors focused on the AI cybersecurity spending cycle should treat voluntary compliance not as a soft signal but as an early indicator of where the next round of government contracts will land.</p>\n\n\n\n<p><strong><em>Benzinga Disclaimer: This article is from an unpaid external contributor. It does not represent Benzinga&#8217;s reporting and has not been edited for content or accuracy.</em></strong></p>",
+      "url": "https://www.benzinga.com/Opinion/26/06/52957578/3-stocks-at-the-center-of-trumps-ai-security-order",
+      "images": [],
+      "channels": [
+        "equities",
+        "government",
+        "regulations",
+        "opinion",
+        "tech",
+        "trading ideas"
+      ],
+      "tickers": [
+        "CSCO",
+        "GOOGL",
+        "NVDA"
+      ],
+      "tags": [
+        "contributors",
+        "expert ideas"
+      ]
+    },
+    {
+      "benzinga_id": 52948998,
+      "author": "daragh thomas",
+      "published": "2026-06-02T17:02:22Z",
+      "last_updated": "2026-06-02T17:02:23Z",
+      "title": "Michael Burry Is Shorting NVDA, Steve Eisman Says Not So Fast: Why The 'Big Short' Stars Are On Opposite Sides Of The Trade",
+      "teaser": "The Big Short&#39;s two stars split on Nvidia. Burry is doubling down on puts. Eisman won&#39;t short an 85% revenue print. Polymarket sides with Eisman.",
+      "body": "<p><strong>Michael Burry</strong> and <strong>Steve Eisman</strong>, the two investors who got famous shorting subprime, have landed on opposite sides of the AI trade after the latest earnings print from <strong>NVIDIA Corp <a href=\"https://www.benzinga.com/quote/NVDA\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"NVDA\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NVDA\">NVDA</a>)</a></strong>.</p>\n\n\n\n<p>Eisman, the analyst played by Steve Carell in &#8220;The Big Short,&#8221; said on the latest episode of his <a href=\"https://www.youtube.com/watch?v=NRSvQqG6BgE\">podcast</a> that he is hunting for the crack in the AI story the way he hunted for the crack in subprime, but the tape will not let him.</p>\n\n\n\n<p>&#8220;I couldn&#8217;t make that argument right now because the biggest company on planet earth just <a href=\"https://www.benzinga.com/markets/prediction-markets/26/05/52789474/nvda-down-almost-10-in-2-weeks-despite-record-revenue-what-is-going-on\">reported revenue growth</a> of 85%,&#8221; Eisman said.</p>\n\n\n\n<p>The same Q1 FY27 print included an $80 billion buyback expansion and a dividend increase to $0.25 per share, giving Nvidia the firepower to aggressively defend its own stock.</p>\n\n\n\n<p>Two quarters earlier, the company grew revenue 65%. Hyperscaler capex commitments north of $500 billion in 2026 from <strong>Alphabet Inc <a href=\"https://www.benzinga.com/quote/GOOGL\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"GOOGL\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/GOOGL\">GOOGL</a>)</a></strong>, <strong>Amazon.com Inc <a href=\"https://www.benzinga.com/quote/AMZN\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"AMZN\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/AMZN\">AMZN</a>)</a></strong> and <strong>Meta Platforms Inc <a href=\"https://www.benzinga.com/quote/META\" target=\"_blank\" class=\"ticker-link\" data-ticker=\"META\" data-exchange=\"NASDAQ\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/META\">META</a>)</a></strong> have kept Eisman on the sidelines despite his skepticism.</p>\n\n\n\n<h2 class=\"wp-block-heading\">Burry Doubles Down From The Sidelines</h2>\n\n\n\n<p>Burry, the investor depicted by Christian Bale in the same film, looked at the same 85% number and reached the opposite conclusion. He likens Nvidia to <strong>Cisco Systems Inc <a class=\"ticker-link\" data-ticker=\"CSCO\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/CSCO\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CSCO\">CSCO</a>)</a></strong> during the dot-com era. </p>\n\n\n\n<p>In a May Substack <a href=\"https://michaeljburry.substack.com/p/abridged-the-heretics-guide-to-ais\">post</a>, Burry cited the company&#8217;s $81.6 billion in quarterly revenue while arguing that current demand reflects a training and benchmarking phase that may give way to a less GPU-intensive inference phase.</p>\n\n\n\n<p>Put options on Nvidia, <strong>Palantir Technologies Inc</strong> <a class=\"ticker-link\" data-ticker=\"PLTR\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/PLTR\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/PLTR\">PLTR</a>)</a>, the<strong> iShares Semiconductor ETF</strong> <a class=\"ticker-link\" data-ticker=\"SOXX\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/SOXX\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/SOXX\">SOXX</a>)</a> and <strong>Oracle Corp <a class=\"ticker-link\" data-ticker=\"ORCL\" data-exchange=\"NYSE\" href=\"https://www.benzinga.com/quote/ORCL\" target=\"_blank\" rel=\"noopener\">(NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/ORCL\">ORCL</a>)</a></strong> occupied roughly 80% of Scion Asset Management&#8217;s portfolio by the end of 2025, a concentration that makes this a conviction play rather than a hedge.</p>\n\n\n\n<p>Burry deregistered Scion with the SEC late last year to focus on his Cassandra Unchained newsletter, <a href=\"https://www.benzinga.com/markets/tech/25/11/49036800/michael-burry-unchained-big-short-attacks-nvidia-on-substack\">closing the fund</a> just as he was making the call.</p>\n\n\n\n<h2 class=\"wp-block-heading\">Prediction Markets Side With Eisman</h2>\n\n\n\n<p>Polymarket traders appear to agree with Eisman for now. The &#8220;AI bubble burst by&#8221; <a href=\"https://polymarket.com/event/ai-bubble-burst-by\">market</a> currently assigns a 25% probability to a burst by Dec. 31, 2026, while a separate <a href=\"https://polymarket.com/event/largest-company-end-of-december-2026\">contract</a> gives Nvidia a 75% chance of finishing 2026 as the world&#8217;s largest company by market cap.</p>\n\n\n\n<p>Nvidia&#8217;s new RTX Spark chip reveal just <a href=\"https://www.benzinga.com/markets/prediction-markets/26/06/52909401/intel-stock-plunges-5-as-jensen-huang-unveils-new-chip-what-do-prediction-markets-say-about-nvda\" target=\"_blank\" rel=\"noreferrer noopener\">sent Intel stock plunging 5%</a> as Jensen Huang expands his AI dominance into consumer PCs.</p>\n\n\n\n<p>Nvidia closed last week near $214. Burry&#8217;s $115 strike sits roughly 46% below that, but still vastly above the stock&#8217;s split-adjusted price of approximately $15 in January 2023.</p>\n\n\n\n<p><em>Image: Shutterstock</em></p>\n\n\n\n<p></p>",
+      "url": "https://www.benzinga.com/markets/prediction-markets/26/06/52948998/michael-burry-is-shorting-nvda-steve-eisman-says-not-so-fast-why-the-big-short-stars-are-on-opposite-sides-of-the-trade",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Michael-Burry-AI-Gen---EK.jpeg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Michael-Burry-AI-Gen---EK.jpeg?width=1024&height=768",
+        "https://cdn.benzinga.com/files/images/story/2026/06/02/Michael-Burry-AI-Gen---EK.jpeg?width=2048&height=1536"
+      ],
+      "channels": [
+        "prediction markets",
+        "markets"
+      ],
+      "tickers": [
+        "AMZN",
+        "CSCO",
+        "GOOGL",
+        "META",
+        "NVDA",
+        "ORCL",
+        "PLTR",
+        "SOXX"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52936348,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-02T13:08:39Z",
+      "last_updated": "2026-06-02T13:08:40Z",
+      "title": "Cisco Unveils Cloud Control Platform To Unite Human And AI Operations For Critical Infrastructure Management",
+      "teaser": "Cisco Cloud Control brings together human operators and trusted AI agents to run the world&#39;s most critical systemsNews summary:Cisco Cloud Control is a unified platform built for humans and AI agents to run critical IT",
+      "body": "<p><strong>Cisco Cloud Control brings together human operators and trusted AI agents to run the world's most critical systems</strong></p><p><i><strong>News summary:</strong></i></p><ul><li><strong>Cisco Cloud Control</strong> is a unified platform built for humans and AI agents to run critical IT infrastructure together. It brings Cisco platforms together and advances Cisco's AgenticOps vision, allowing customers to build their own apps and agents in natural language, and extending to third-party tools.</li><li>With AI accelerating the window between vulnerability and exploit from weeks to minutes, Cisco announces several security innovations, including the expansion of <strong>Live Protect</strong> to shield more Cisco products from new vulnerabilities at runtime – no reboots, no upgrades, no downtime.</li><li><strong>New Cisco IQ capabilities</strong> help customers build long-term resilience against tomorrow's threats. <strong>Resilient Infrastructure Services</strong> helps customers stay ahead of frontier model risk, while the new <strong>Quantum Ready Assessments</strong> identify the assets most exposed to \"harvest now, decrypt later\" attacks - and where to start.</li></ul><p>LAS VEGAS, June 2, 2026 /CNW/ -- Cisco Live US -- In an agentic AI world, organizations must act and defend at machine speed and scale<i>.</i> <a href=\"https://edge.prnewswire.com/c/link/?t=0&amp;l=en&amp;o=4702029-1&amp;h=3625895882&amp;u=https%3A%2F%2Fcloud.cisco.com%2F&amp;a=Cisco+Cloud+Control\">Cisco Cloud Control</a>, unveiled today at Cisco Live, is a unified platform built for humans and AI agents to manage, monitor and defend critical IT infrastructure — and the foundation for Cisco's AgenticOps operating model.</p><p>With one login, Cisco Cloud Control delivers a single view of Cisco networking, security, compute, observability, and collaboration in one secure environment. People and agents work from a single data layer, sharing the same operational context and the same system of action, while humans stay in control. Customers can build their own applications and agents using natural language directly within the platform, which also connects to a large ecosystem, including AWS, Linear, Microsoft, PagerDuty, ServiceNow, Slack, and Google Cloud, which now includes Wiz.</p>",
+      "url": "https://www.benzinga.com/news/26/06/52936348/cisco-unveils-cloud-control-platform-to-unite-human-and-ai-operations-for-critical-infrastructure-ma",
+      "images": [],
+      "channels": [
+        "news"
+      ],
+      "tickers": [
+        "CSCO"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "r1d/mega",
+  "label": "Top 10 · 1D return · Mega cap",
+  "rank": 7
+}
