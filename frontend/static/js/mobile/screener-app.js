@@ -493,11 +493,27 @@
 
     let chartResizeTimers = [];
 
+    function getStockChartHeight() {
+      const wrap = document.getElementById('stockChartWrap');
+      const charts = document.querySelector('#mainPanelChart .charts');
+      const h = Math.max(
+        wrap ? wrap.clientHeight : 0,
+        charts ? charts.clientHeight : 0,
+      );
+      return h;
+    }
+
     function resizeStockChart() {
       if (!stockChart || !stockChart.chart) return;
       const wrap = document.getElementById('stockChartWrap');
-      if (!wrap || wrap.clientHeight < 1) return;
-      stockChart.resizeToHeight(wrap.clientHeight, wrap.clientWidth);
+      const container = document.getElementById('stockChartContainer');
+      const h = getStockChartHeight();
+      if (!wrap || h < 1) return;
+      if (container) {
+        container.style.height = h + 'px';
+        container.style.maxHeight = h + 'px';
+      }
+      stockChart.resizeToHeight(h, wrap.clientWidth);
     }
 
     function scheduleStockChartResize() {
@@ -506,6 +522,13 @@
       requestAnimationFrame(resizeStockChart);
       chartResizeTimers.push(setTimeout(() => requestAnimationFrame(resizeStockChart), 50));
       chartResizeTimers.push(setTimeout(() => requestAnimationFrame(resizeStockChart), 300));
+    }
+
+    function setupChartResizeObserver() {
+      const panel = document.getElementById('mainPanelChart');
+      if (!panel || typeof ResizeObserver === 'undefined') return;
+      const ro = new ResizeObserver(() => scheduleStockChartResize());
+      ro.observe(panel);
     }
 
     async function loadCharts(ticker) {
@@ -763,6 +786,7 @@
     updateListHeader();
     U.setupNotesModal();
     setupNews();
+    setupChartResizeObserver();
     loadHeaderIndicators();
 
     if (config.onSetup) config.onSetup(app);

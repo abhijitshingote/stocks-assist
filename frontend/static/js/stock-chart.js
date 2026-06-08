@@ -322,12 +322,13 @@ class StockChart {
     resizeToHeight(totalHeight, totalWidth) {
         if (!this.chart || !totalWidth) return;
 
+        const container = document.getElementById(this.containerId);
         const height = Math.max(totalHeight, 120);
         const legendH = this.legendContainer ? this.legendContainer.offsetHeight : 0;
         const chartAreaH = height - legendH;
         if (chartAreaH < 80) return;
 
-        const minVolumeH = this.options.compact ? 36 : 40;
+        const minVolumeH = this.options.compact ? 44 : 40;
         let volumeH = Math.floor(chartAreaH * CHART_CONFIG.volumeRatio);
         if (volumeH < minVolumeH && chartAreaH > minVolumeH + 100) {
             volumeH = minVolumeH;
@@ -338,8 +339,21 @@ class StockChart {
             volumeH = chartAreaH - priceH;
         }
 
-        if (this.priceContainer) this.priceContainer.style.height = priceH + 'px';
-        if (this.volumeContainer) this.volumeContainer.style.height = volumeH + 'px';
+        if (container) {
+            container.style.height = height + 'px';
+            container.style.maxHeight = height + 'px';
+            container.style.flex = '0 0 auto';
+        }
+        if (this.priceContainer) {
+            this.priceContainer.style.flex = '0 0 auto';
+            this.priceContainer.style.height = priceH + 'px';
+            this.priceContainer.style.marginBottom = '0';
+        }
+        if (this.volumeContainer) {
+            this.volumeContainer.style.flex = '0 0 auto';
+            this.volumeContainer.style.height = volumeH + 'px';
+            this.volumeContainer.style.marginTop = '0';
+        }
 
         this.chart.applyOptions({ height: priceH, width: totalWidth });
         if (this.volumeChart) {
@@ -540,11 +554,13 @@ class StockChart {
         this.priceContainer = document.createElement('div');
         this.priceContainer.style.width = '100%';
         this.priceContainer.style.height = `${priceHeight}px`;
+        this.priceContainer.style.flexShrink = '0';
         container.appendChild(this.priceContainer);
         
         this.volumeContainer = document.createElement('div');
         this.volumeContainer.style.width = '100%';
         this.volumeContainer.style.height = `${volumeHeight}px`;
+        this.volumeContainer.style.flexShrink = '0';
         container.appendChild(this.volumeContainer);
         
         // Create main price chart
@@ -657,16 +673,20 @@ class StockChart {
     
     _createLegend(container) {
         this.legendContainer = document.createElement('div');
+        const legendGap = this.options.compact ? 8 : 12;
+        const legendPad = this.options.compact ? '4px 6px' : '6px 8px';
+        const legendFont = this.options.compact ? 10 : 11;
         this.legendContainer.style.cssText = `
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            padding: 6px 8px;
-            font-size: 11px;
+            gap: ${legendGap}px;
+            padding: ${legendPad};
+            font-size: ${legendFont}px;
             font-family: 'JetBrains Mono', monospace;
             background: rgba(22, 27, 34, 0.8);
             border-radius: 4px;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            flex-shrink: 0;
         `;
         
         const maConfigs = [

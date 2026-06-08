@@ -389,7 +389,6 @@
       flex-direction: column;
       min-height: 0;
       overflow: hidden;
-      padding-bottom: calc(44px + var(--safe-bottom));
     }
 
     .detail-compact {
@@ -566,7 +565,10 @@
 
     /* Chart tab: no scroll — fill remaining viewport */
     #mainPanelChart {
+      flex: 1;
+      min-height: 0;
       overflow: hidden;
+      padding: 0;
     }
 
     /* ── Charts panel ── */
@@ -598,6 +600,7 @@
     .chart-main-wrap {
       flex: 1;
       min-height: 0;
+      height: 100%;
       display: flex;
       flex-direction: column;
       background: var(--surface);
@@ -621,17 +624,22 @@
     .chart-canvas {
       flex: 1;
       min-height: 0;
+      height: 100%;
       display: flex;
       flex-direction: column;
       position: relative;
-      padding: 4px 4px 4px;
+      padding: 2px 4px 0;
       overflow: hidden;
     }
     #stockChartContainer {
-      flex: 1;
+      flex: 1 1 0;
       width: 100%;
       min-height: 0;
+      height: 100%;
+      max-height: 100%;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
     .ohlc {
       position: absolute;
@@ -782,7 +790,7 @@
     .mode-toggle {
       position: absolute;
       bottom: calc(10px + var(--safe-bottom));
-      right: 16px;
+      left: 16px;
       z-index: 55;
       display: flex;
       gap: 6px;
