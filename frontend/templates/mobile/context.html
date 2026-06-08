@@ -1,0 +1,61 @@
+{% extends "mobile/_base.html" %}
+{% set page_title = 'Context' %}
+{% block title %}Context — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_utility_styles.html" %}{% endblock %}
+{% block body %}
+<div class="phone" id="phone">
+  {% include "mobile/_utility_header.html" %}
+  <div class="utility-body utility-scroll">
+    <div class="ctx-chart-block" data-symbol="QQQ">
+      <div class="ctx-chart-head">
+        <div>
+          <div class="ctx-chart-title">QQQ</div>
+          <div class="ctx-chart-sub">Invesco QQQ Trust (Nasdaq 100)</div>
+        </div>
+        <div class="ctx-tf-bar" data-symbol="QQQ">
+          <button type="button" data-days="90">3M</button>
+          <button type="button" data-days="180">6M</button>
+          <button type="button" data-days="365" class="active">1Y</button>
+          <button type="button" data-days="730">2Y</button>
+        </div>
+      </div>
+      <div class="ctx-chart-wrap" id="qqqChartWrapper">
+        <div class="md-loading">Loading QQQ…</div>
+      </div>
+      <div class="ctx-notes">
+        <div class="ctx-note"><b>A</b>Was there a recent pullback or rally?</div>
+        <div class="ctx-note"><b>B</b>Are we at support or resistance?</div>
+        <div class="ctx-note"><b>C</b>Tightening up? Double bottom or top, cup and handle?</div>
+      </div>
+    </div>
+    <div class="ctx-chart-block" data-symbol="SPY">
+      <div class="ctx-chart-head">
+        <div>
+          <div class="ctx-chart-title">SPY</div>
+          <div class="ctx-chart-sub">SPDR S&P 500 ETF Trust</div>
+        </div>
+        <div class="ctx-tf-bar" data-symbol="SPY">
+          <button type="button" data-days="90">3M</button>
+          <button type="button" data-days="180">6M</button>
+          <button type="button" data-days="365" class="active">1Y</button>
+          <button type="button" data-days="730">2Y</button>
+        </div>
+      </div>
+      <div class="ctx-chart-wrap" id="spyChartWrapper">
+        <div class="md-loading">Loading SPY…</div>
+      </div>
+      <div class="ctx-notes">
+        <div class="ctx-note"><b>A</b>Was there a recent pullback or rally?</div>
+        <div class="ctx-note"><b>B</b>Are we at support or resistance?</div>
+        <div class="ctx-note"><b>C</b>Tightening up? Double bottom or top, cup and handle?</div>
+      </div>
+    </div>
+  </div>
+  {% include "mobile/_nav_drawer.html" %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="{{ url_for('static', filename='js/mobile/pages/context.js') }}"></script>
+{% include "mobile/_nav_libs.html" %}
+{% endblock %}

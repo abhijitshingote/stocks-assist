@@ -145,6 +145,73 @@ def main_view_hybrid_page():
     return render_template('main_view_hybrid.html')
 
 
+# Mobile-optimized page routes (separate templates; desktop routes unchanged)
+@app.route('/m')
+@app.route('/m/')
+def m_index():
+    return render_template('mobile/index.html')
+
+
+@app.route('/m/main-view')
+def m_main_view():
+    return render_template('main_view_hybrid.html')
+
+
+@app.route('/m/high-sales-growth')
+def m_high_sales_growth():
+    return render_template('mobile/high_sales_growth.html')
+
+
+@app.route('/m/volspike-gapper')
+def m_volspike_gapper():
+    return render_template('mobile/volspike_gapper.html')
+
+
+@app.route('/m/top-performance')
+def m_top_performance():
+    return render_template('mobile/top_performance.html')
+
+
+@app.route('/m/top-losers')
+def m_top_losers():
+    return render_template('mobile/top_losers.html')
+
+
+@app.route('/m/abi-watchlist')
+def m_abi_watchlist():
+    return render_template('mobile/abi_watchlist.html')
+
+
+@app.route('/m/abi-general-notes')
+def m_abi_general_notes():
+    return render_template('mobile/abi_general_notes.html')
+
+
+@app.route('/m/context')
+def m_context():
+    return render_template('mobile/context.html')
+
+
+@app.route('/m/context-2')
+def m_context2():
+    return render_template('mobile/context2.html')
+
+
+@app.route('/m/market-brief')
+def m_market_brief():
+    return render_template('mobile/market_brief.html')
+
+
+@app.route('/m/market-news')
+def m_market_news():
+    return render_template('mobile/market_news.html')
+
+
+@app.route('/m/logs')
+def m_logs():
+    return render_template('mobile/logs.html')
+
+
 @app.route('/technical-screener')
 def technical_screener_page():
     """Technical Screener page - intraday/technical setups (reversal, etc.)"""

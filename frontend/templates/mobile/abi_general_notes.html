@@ -1,0 +1,49 @@
+{% extends "mobile/_base.html" %}
+{% set page_title = 'Abi Notes' %}
+{% block title %}Abi General Notes — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_utility_styles.html" %}{% endblock %}
+{% block body %}
+<div class="phone" id="phone">
+  {% include "mobile/_utility_header.html" %}
+  <div class="utility-body md-layout" id="notesLayout">
+    <div class="md-list-pane">
+      <div class="md-toolbar">
+        <button type="button" class="md-btn primary" id="btnNewNote">+ New</button>
+        <span class="spacer"></span>
+        <span class="md-item-meta" id="notesCount">—</span>
+      </div>
+      <div class="md-filters">
+        <input class="md-search" type="search" id="searchBox" placeholder="Search notes…">
+        <div class="md-date-row">
+          <input type="date" id="startDate" aria-label="Start date">
+          <input type="date" id="endDate" aria-label="End date">
+        </div>
+        <div class="md-tags" id="tagsFilter"></div>
+      </div>
+      <div class="md-list" id="notesList"></div>
+    </div>
+    <div class="md-detail-pane">
+      <div class="md-detail-head">
+        <button type="button" class="md-back" data-md-back>← List</button>
+        <span class="md-detail-title" id="editorTitle">Note</span>
+      </div>
+      <div class="md-detail-body" id="noteEditor">
+        <div class="md-empty">Select a note or create a new one</div>
+      </div>
+      <div class="md-toolbar" id="noteActions" style="display:none">
+        <button type="button" class="md-btn danger" id="deleteBtn">Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="md-btn" id="cancelBtn">Cancel</button>
+        <button type="button" class="md-btn primary" id="saveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+  <div class="md-toast" id="toast"></div>
+  {% include "mobile/_nav_drawer.html" %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/mobile/master-detail.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mobile/pages/abi-general-notes.js') }}"></script>
+{% include "mobile/_nav_libs.html" %}
+{% endblock %}

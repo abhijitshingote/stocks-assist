@@ -1,0 +1,59 @@
+{% extends "mobile/_base.html" %}
+{% set page_title = 'Context 2' %}
+{% block title %}Context 2 — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_utility_styles.html" %}{% endblock %}
+{% block body %}
+<div class="phone" id="phone">
+  {% include "mobile/_utility_header.html" %}
+  <div class="utility-body utility-scroll">
+    <div class="ctx2-section-title">Research & Commentary</div>
+    <div class="ctx2-panel">
+      <div class="ctx2-panel-label">Groups</div>
+      <a href="https://finviz.com/groups.ashx" target="_blank" rel="noopener noreferrer" class="ctx2-link">
+        <span class="ctx2-link-dot"></span>
+        <span class="ctx2-link-text">Finviz Groups</span>
+        <span class="ctx2-link-domain">finviz.com</span>
+      </a>
+    </div>
+    <div class="ctx2-panel">
+      <div class="ctx2-panel-label">Commentary</div>
+      <a href="https://www.briefing.com/story-stocks/archive" target="_blank" rel="noopener noreferrer" class="ctx2-link">
+        <span class="ctx2-link-dot"></span>
+        <span class="ctx2-link-text">Story Stocks Archive</span>
+        <span class="ctx2-link-domain">briefing.com</span>
+      </a>
+      <a href="https://www.briefing.com/stock-market-update" target="_blank" rel="noopener noreferrer" class="ctx2-link">
+        <span class="ctx2-link-dot"></span>
+        <span class="ctx2-link-text">Stock Market Update</span>
+        <span class="ctx2-link-domain">briefing.com</span>
+      </a>
+      <a href="https://www.briefing.com/the-big-picture" target="_blank" rel="noopener noreferrer" class="ctx2-link">
+        <span class="ctx2-link-dot"></span>
+        <span class="ctx2-link-text">The Big Picture</span>
+        <span class="ctx2-link-domain">briefing.com</span>
+      </a>
+      <a href="https://www.briefing.com/page-one" target="_blank" rel="noopener noreferrer" class="ctx2-link">
+        <span class="ctx2-link-dot"></span>
+        <span class="ctx2-link-text">Page One</span>
+        <span class="ctx2-link-domain">briefing.com</span>
+      </a>
+    </div>
+    <div class="ctx2-section-title">Calendar Events</div>
+    <div class="ctx2-panel">
+      <div class="ctx2-panel-label">Economic Calendar & Earnings</div>
+      <a href="https://tradingeconomics.com/calendar" target="_blank" rel="noopener noreferrer" class="ctx2-link">
+        <span class="ctx2-link-dot"></span>
+        <span class="ctx2-link-text">Economic Calendar</span>
+        <span class="ctx2-link-domain">tradingeconomics.com</span>
+      </a>
+      <a href="https://tradingeconomics.com/earnings" target="_blank" rel="noopener noreferrer" class="ctx2-link">
+        <span class="ctx2-link-dot"></span>
+        <span class="ctx2-link-text">Earnings — Upcoming</span>
+        <span class="ctx2-link-domain">tradingeconomics.com</span>
+      </a>
+    </div>
+  </div>
+  {% include "mobile/_nav_drawer.html" %}
+</div>
+{% endblock %}
+{% block scripts %}{% include "mobile/_nav_libs.html" %}{% endblock %}

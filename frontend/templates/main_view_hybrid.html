@@ -6,7 +6,7 @@
   <title>Main View Preview — Hybrid v2</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/benzinga-news.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main-view-hybrid.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile/shell.css') }}">
 </head>
 <body>
   <div class="phone" id="phone">
@@ -17,9 +17,9 @@
 
     <header class="app-header">
       <div class="header-row1">
-        <span class="logo">stocks_assist</span>
+        <a class="logo logo-link" href="/m">stocks_assist</a>
         <div class="search-box"><span>⌕</span> <span id="searchTicker">—</span></div>
-        <a class="menu-btn" href="/main-view">Classic</a>
+        <button type="button" class="menu-btn" id="mobileNavBtn" aria-label="Open navigation" aria-expanded="false">Nav</button>
       </div>
       <div class="header-row2">
         <span>VIX <b id="vixVal">—</b></span>
@@ -160,6 +160,8 @@
       <button type="button" class="active" data-mode="analyze">Analyze</button>
       <button type="button" data-mode="browse">Browse</button>
     </div>
+
+    {% include "mobile/_nav_drawer.html" %}
   </div>
 
   <div class="wl-modal-overlay" id="notesModalOverlay">
@@ -178,6 +180,9 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="{{ url_for('static', filename='js/stock-chart.js') }}"></script>
   <script src="{{ url_for('static', filename='js/stock-news-shared.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/mobile/util.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/mobile/screener-app.js') }}"></script>
   <script src="{{ url_for('static', filename='js/main-view-hybrid.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/mobile/nav.js') }}"></script>
 </body>
 </html>

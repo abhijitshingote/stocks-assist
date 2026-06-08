@@ -140,7 +140,6 @@
         const listHtml = '<div class="news-list">' + benzingaArticles.map(a => {
             const date = formatBenzingaDate(a.published_date);
             const snippet = a.teaser || a.text || '';
-            const image = a.image || (a.images && a.images[0]) || '';
             const channels = (a.channels || []).slice(0, 2).map(c =>
                 '<span class="news-channel-tag">' + escHtml(c) + '</span>'
             ).join(' ');
@@ -153,7 +152,6 @@
             return (
                 '<div class="news-article" data-benzinga-id="' + escAttr(a.benzinga_id) + '" ' +
                 'role="button" tabindex="0">' +
-                (image ? '<img src="' + escAttr(image) + '" alt="" class="news-article-thumb">' : '') +
                 '<div class="news-article-body">' +
                 '<div class="news-article-title">' + escHtml(a.title || 'Untitled') + '</div>' +
                 '<div class="news-article-meta">' +
@@ -238,12 +236,10 @@
         const listHtml = '<div class="news-list">' + fmpArticles.map(a => {
             const date = formatDate(a.published_date);
             const snippet = a.text || '';
-            const image = a.image || '';
 
             return (
                 '<div class="news-article" data-article-url="' + escAttr(a.url) + '" ' +
                 'role="button" tabindex="0">' +
-                (image ? '<img src="' + escAttr(image) + '" alt="" class="news-article-thumb">' : '') +
                 '<div class="news-article-body">' +
                 '<div class="news-article-title">' + escHtml(a.title || 'Untitled') + '</div>' +
                 '<div class="news-article-meta">' +
@@ -312,12 +308,10 @@
         const listHtml = '<div class="news-list">' + seekingAlphaArticles.map(a => {
             const date = formatDate(a.published_date);
             const snippet = a.text || '';
-            const image = a.image || '';
 
             return (
                 '<div class="news-article" data-article-url="' + escAttr(a.url) + '" ' +
                 'role="button" tabindex="0">' +
-                (image ? '<img src="' + escAttr(image) + '" alt="" class="news-article-thumb">' : '') +
                 '<div class="news-article-body">' +
                 '<div class="news-article-title">' + escHtml(a.title || 'Untitled') + '</div>' +
                 '<div class="news-article-meta">' +

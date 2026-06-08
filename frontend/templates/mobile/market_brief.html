@@ -1,0 +1,28 @@
+{% extends "mobile/_base.html" %}
+{% set page_title = 'Market Brief' %}
+{% block title %}Market Brief — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_utility_styles.html" %}{% endblock %}
+{% block body %}
+<div class="phone" id="phone">
+  {% include "mobile/_utility_header.html" %}
+  <div class="utility-body md-layout" id="briefLayout">
+    <div class="md-chip-strip" id="dateStrip"></div>
+    <div class="md-toolbar">
+      <span class="md-detail-title" id="currentBriefDate">—</span>
+      <span class="spacer"></span>
+      <button type="button" class="md-btn primary" id="btnRun">Generate</button>
+      <button type="button" class="md-btn" id="btnPdf" disabled>PDF</button>
+      <button type="button" class="md-btn" id="btnLosers">Losers</button>
+    </div>
+    <div id="runProgressBanner"></div>
+    <div class="brief-content-area" id="briefContent">
+      <div class="md-loading">Loading…</div>
+    </div>
+  </div>
+  {% include "mobile/_nav_drawer.html" %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/mobile/pages/market-brief.js') }}"></script>
+{% include "mobile/_nav_libs.html" %}
+{% endblock %}
