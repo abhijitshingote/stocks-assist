@@ -563,6 +563,7 @@
         loadBtnId: ids.loadBtn,
         benzingaBtnId: ids.benzingaBtn,
         filterBarId: ids.filterBar,
+        showSnippet: false,
         buttonLabels: {
           load: 'Load',
           loadRefresh: 'Reload',

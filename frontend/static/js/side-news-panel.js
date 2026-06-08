@@ -42,6 +42,7 @@
             loadBtnId: 'sideLoadNewsBtn',
             benzingaBtnId: 'sideBenzingaNewsBtn',
             getTicker,
+            showSnippet: false,
         });
         _panel.setup();
 

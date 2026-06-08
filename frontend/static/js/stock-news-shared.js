@@ -166,6 +166,7 @@
             filterBarId,
             getTicker,
             buttonLabels = {},
+            showSnippet = true,
         } = config;
         const labels = {
             load: buttonLabels.load || 'Load News',
@@ -240,10 +241,7 @@
                     : (a.published_date
                         ? formatAppDateTime(a.published_date, { year: 'numeric' })
                         : '');
-                const thumb = a.image
-                    ? `<img class="news-article-thumb" src="${escAttr(a.image)}" alt="" onerror="this.style.display='none'">`
-                    : '';
-                const snippet = a.text ? escAttr(a.text.substring(0, 200)) : '';
+                const snippet = showSnippet && a.text ? escAttr(a.text.substring(0, 200)) : '';
                 const badge = a.source
                     ? `<span class="news-source-badge ${sourceBadgeClass(a.source)}">${escAttr(a.source)}</span>`
                     : '';
@@ -258,7 +256,6 @@
 
                 return `
                 <div class="news-article" ${isBenzinga ? `data-benzinga-id="${escAttr(a.benzinga_id)}"` : ''}>
-                    ${thumb}
                     <div class="news-article-body">
                         <div class="news-article-title">${titleHtml}</div>
                         <div class="news-article-meta">
