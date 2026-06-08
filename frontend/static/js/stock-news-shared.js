@@ -163,8 +163,16 @@
             contentId,
             loadBtnId,
             benzingaBtnId,
+            filterBarId,
             getTicker,
+            buttonLabels = {},
         } = config;
+        const labels = {
+            load: buttonLabels.load || 'Load News',
+            loadRefresh: buttonLabels.loadRefresh || 'Refresh News',
+            benzinga: buttonLabels.benzinga || 'Get Benzinga News',
+            benzingaRefresh: buttonLabels.benzingaRefresh || 'Refresh Benzinga',
+        };
 
         let allArticles = [];
         let activeSource = 'All';
@@ -181,18 +189,38 @@
             return benzingaBtnId ? document.getElementById(benzingaBtnId) : null;
         }
 
-        function renderNews(articles, sourceCounts) {
-            const container = getContentEl();
-            if (!container) return;
+        function getFilterBarEl() {
+            return filterBarId ? document.getElementById(filterBarId) : null;
+        }
 
+        function buildFilterChipsHtml(articles, sourceCounts) {
             const total = articles.length;
-            const chipsHtml = '<div class="news-source-filters">' + NEWS_SOURCES.map(s => {
+            return NEWS_SOURCES.map(s => {
                 const count = s === 'All' ? total : (sourceCounts[s] || 0);
                 const active = s === activeSource ? ' active' : '';
                 const disabled = s !== 'All' && count === 0;
                 if (disabled) return '';
                 return `<button type="button" class="news-filter-chip${active}" data-news-source="${escAttr(s)}">${escAttr(s)} (${count})</button>`;
-            }).join('') + '</div>';
+            }).join('');
+        }
+
+        function renderFilterChips(articles, sourceCounts) {
+            const chipsHtml = buildFilterChipsHtml(articles, sourceCounts);
+            const filterBar = getFilterBarEl();
+            if (filterBar) {
+                filterBar.innerHTML = chipsHtml;
+                filterBar.hidden = !articles.length;
+                return '';
+            }
+            if (!chipsHtml) return '';
+            return '<div class="news-source-filters">' + chipsHtml + '</div>';
+        }
+
+        function renderNews(articles, sourceCounts) {
+            const container = getContentEl();
+            if (!container) return;
+
+            const chipsPrefix = renderFilterChips(articles, sourceCounts);
 
             const filtered = activeSource === 'All'
                 ? articles
@@ -200,9 +228,9 @@
 
             if (filtered.length === 0) {
                 const hint = activeSource === 'Benzinga'
-                    ? 'Click Get Benzinga News to fetch articles.'
+                    ? 'Tap Benzinga to fetch articles.'
                     : 'No articles from ' + escAttr(activeSource) + '.';
-                container.innerHTML = chipsHtml + '<div class="news-empty">' + hint + '</div>';
+                container.innerHTML = chipsPrefix + '<div class="news-empty">' + hint + '</div>';
                 return;
             }
 
@@ -244,7 +272,7 @@
             `;
             }).join('') + '</div>';
 
-            container.innerHTML = chipsHtml + listHtml;
+            container.innerHTML = chipsPrefix + listHtml;
         }
 
         async function loadCachedBenzinga() {
@@ -286,7 +314,7 @@
                 allArticles = mergeBenzingaArticles(allArticles, data.articles || []);
                 activeSource = 'Benzinga';
                 renderNews(allArticles, computeSourceCounts(allArticles));
-                btn.textContent = 'Refresh Benzinga';
+                btn.textContent = labels.benzingaRefresh;
             } catch (e) {
                 console.error('Benzinga refresh failed:', e);
                 if (activeSource === 'Benzinga') {
@@ -328,7 +356,7 @@
                 allArticles = mergeBenzingaArticles(base, benzingaCached);
                 activeSource = 'All';
                 renderNews(allArticles, computeSourceCounts(allArticles));
-                btn.textContent = 'Refresh News';
+                btn.textContent = labels.loadRefresh;
             } catch (e) {
                 console.error('Error loading news:', e);
                 container.innerHTML = '<div class="news-empty">Error fetching news.</div>';
@@ -343,19 +371,24 @@
             activeSource = 'All';
             const c = getContentEl();
             if (c) {
-                c.innerHTML = '<div class="news-empty">Click Load News to fetch headlines.</div>';
+                c.innerHTML = '<div class="news-empty">Tap Load to fetch headlines.</div>';
             }
             const btn = getLoadBtn();
             if (btn) {
                 btn.disabled = false;
                 btn.classList.remove('loading');
-                btn.textContent = 'Load News';
+                btn.textContent = labels.load;
             }
             const bzBtn = getBenzingaBtn();
             if (bzBtn) {
                 bzBtn.disabled = false;
                 bzBtn.classList.remove('loading');
-                bzBtn.textContent = 'Get Benzinga News';
+                bzBtn.textContent = labels.benzinga;
+            }
+            const filterBar = getFilterBarEl();
+            if (filterBar) {
+                filterBar.innerHTML = '';
+                filterBar.hidden = true;
             }
         }
 
@@ -368,37 +401,39 @@
             }
         }
 
+        function handleNewsClick(e) {
+            const chip = e.target.closest('.news-filter-chip[data-news-source]');
+            if (chip) {
+                e.preventDefault();
+                activeSource = chip.getAttribute('data-news-source') || 'All';
+                renderNews(allArticles, computeSourceCounts(allArticles));
+                if (activeSource === 'Benzinga' && !allArticles.some(a => a.source === 'Benzinga')) {
+                    loadCachedBenzinga().then((cached) => {
+                        if (cached.length) {
+                            allArticles = mergeBenzingaArticles(allArticles, cached);
+                            renderNews(allArticles, computeSourceCounts(allArticles));
+                        }
+                    });
+                }
+                return;
+            }
+
+            const readLink = e.target.closest('.news-read-inline[data-benzinga-id]');
+            if (readLink) {
+                e.preventDefault();
+                const id = readLink.getAttribute('data-benzinga-id');
+                const article = allArticles.find(
+                    a => a.source === 'Benzinga' && String(a.benzinga_id) === String(id)
+                );
+                if (article) showBenzingaArticle(article);
+            }
+        }
+
         function bindContentClicks() {
             const container = getContentEl();
-            if (!container) return;
-
-            container.addEventListener('click', (e) => {
-                const chip = e.target.closest('.news-filter-chip[data-news-source]');
-                if (chip) {
-                    e.preventDefault();
-                    activeSource = chip.getAttribute('data-news-source') || 'All';
-                    renderNews(allArticles, computeSourceCounts(allArticles));
-                    if (activeSource === 'Benzinga' && !allArticles.some(a => a.source === 'Benzinga')) {
-                        loadCachedBenzinga().then((cached) => {
-                            if (cached.length) {
-                                allArticles = mergeBenzingaArticles(allArticles, cached);
-                                renderNews(allArticles, computeSourceCounts(allArticles));
-                            }
-                        });
-                    }
-                    return;
-                }
-
-                const readLink = e.target.closest('.news-read-inline[data-benzinga-id]');
-                if (readLink) {
-                    e.preventDefault();
-                    const id = readLink.getAttribute('data-benzinga-id');
-                    const article = allArticles.find(
-                        a => a.source === 'Benzinga' && String(a.benzinga_id) === String(id)
-                    );
-                    if (article) showBenzingaArticle(article);
-                }
-            });
+            if (container) container.addEventListener('click', handleNewsClick);
+            const filterBar = getFilterBarEl();
+            if (filterBar) filterBar.addEventListener('click', handleNewsClick);
         }
 
         function setup() {

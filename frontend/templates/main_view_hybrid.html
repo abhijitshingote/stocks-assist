@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Main View Preview — Hybrid v2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/benzinga-news.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main-view-hybrid.css') }}">
+</head>
+<body>
+  <div class="phone" id="phone">
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner"></div>
+      <span>Loading Main View data…</span>
+    </div>
+
+    <header class="app-header">
+      <div class="header-row1">
+        <span class="logo">stocks_assist</span>
+        <div class="search-box"><span>⌕</span> <span id="searchTicker">—</span></div>
+        <a class="menu-btn" href="/main-view">Classic</a>
+      </div>
+      <div class="header-row2">
+        <span>VIX <b id="vixVal">—</b></span>
+        <span>10Y <b id="us10yVal">—</b></span>
+        <span>Stocks <b id="totalStocks">—</b></span>
+        <span>Showing <b id="showingCount">—</b></span>
+      </div>
+    </header>
+
+    <div class="filter-summary" id="filterSummary" role="button" tabindex="0" aria-expanded="false">
+      <span class="chip" id="filterChipText"><b>All</b> · All sectors · <b>0</b> stocks</span>
+      <span class="chev">▼</span>
+    </div>
+
+    <div class="filter-drawer" id="filterDrawer">
+      <div class="filter-inner">
+        <div class="filter-stats">
+          <span>Stocks: <b id="totalStocks2">—</b></span>
+          <span>Showing: <b id="showingCount2">—</b></span>
+        </div>
+        <div class="strip" role="tablist" aria-label="Market cap" id="capStrip">
+          <span class="strip-label">Cap</span>
+          <button class="pill active" type="button" data-cap="all">All</button>
+          <button class="pill" type="button" data-cap="mega">Mega</button>
+          <button class="pill" type="button" data-cap="large">Large</button>
+          <button class="pill" type="button" data-cap="mid">Mid</button>
+          <button class="pill" type="button" data-cap="small">Small</button>
+          <button class="pill" type="button" data-cap="micro">Micro</button>
+        </div>
+        <div class="strip sector-strip" role="tablist" aria-label="Sector" id="sectorStrip"></div>
+        <div class="strip industry-strip hidden" role="tablist" aria-label="Industry" id="industryStrip"></div>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div class="list-zone mode-collapsed" id="listZone">
+        <div class="chip-row">
+          <span class="label">List · <b id="listCount">0</b></span>
+          <div class="chips" id="chipStrip"></div>
+          <button class="copy-sm" type="button" id="copyBtn">Copy</button>
+        </div>
+        <div class="list-handle" id="listHandle" aria-label="Resize list"></div>
+        <div class="list-table-wrap">
+          <table class="stock-table">
+            <thead>
+              <tr><th>SN</th><th>Ticker</th><th>MCap</th><th>Ret</th><th>★</th></tr>
+            </thead>
+            <tbody id="stockTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="analyze-zone" id="analyzeZone">
+        <div class="detail-compact">
+          <div class="detail-row-a">
+            <div class="left">
+              <div class="tk" id="detailTk">—</div>
+              <div class="co-line" id="detailCoLine">
+                <span class="co" id="detailCo"></span><span class="si" id="detailSectorIndustry"></span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="price" id="detailPx">—</div>
+              <div class="chg" id="detailChg">—</div>
+            </div>
+          </div>
+          <div class="detail-row-b">
+            <span class="tag mcap" id="detailMcap"></span>
+            <span class="tag ti" id="detailTi65" style="display:none"></span>
+            <span class="tag float" id="detailLowFloat" style="display:none">Low Float</span>
+            <a class="detail-link" id="detailLink" href="#">Detail →</a>
+          </div>
+          <div class="detail-row-c">
+            <button class="icon-btn" type="button" title="Abi ticker notes" id="notesBtn">📝</button>
+            <button class="icon-btn" type="button" id="wlBtn">+ WL</button>
+            <div class="tf-group" id="tfBar">
+              <button type="button" data-days="30">1M</button>
+              <button type="button" data-days="90">3M</button>
+              <button type="button" data-days="180">6M</button>
+              <button type="button" class="active" data-days="365">1Y</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-tabs">
+          <div class="main-seg" role="tablist" aria-label="Main view panel">
+            <button type="button" data-panel="metrics">Metrics</button>
+            <button type="button" data-panel="news">News</button>
+            <button type="button" class="active" data-panel="chart">Chart</button>
+          </div>
+        </div>
+
+        <div class="main-panel">
+          <div class="main-panel-view panel-scroll" id="mainPanelMetrics">
+            <div class="notes-box" id="abiNotesBox">
+              <div class="h">Abi ticker notes</div>
+              <div class="notes-body empty" id="abiNotesBody">No Abi ticker notes yet.</div>
+            </div>
+            <div class="ms-tags" id="tagsStrip"></div>
+            <div id="metricsContent"></div>
+          </div>
+
+          <div class="main-panel-view panel-scroll" id="mainPanelNews">
+            <div class="news-header-bar">
+              <div class="news-actions">
+                <button type="button" id="hybridLoadNewsBtn">Load</button>
+                <button type="button" id="hybridBenzingaNewsBtn">Benzinga</button>
+              </div>
+              <div class="news-source-filters" id="hybridNewsFilters" hidden></div>
+            </div>
+            <div id="hybridNewsContent"></div>
+          </div>
+
+          <div class="main-panel-view active" id="mainPanelChart">
+            <div class="charts">
+              <div class="chart-main-wrap">
+                <div class="chart-canvas" id="stockChartWrap">
+                  <span class="ohlc" id="ohlc" style="display:none"></span>
+                  <div id="stockChartContainer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sector-sheet" id="sectorSheet">
+      <div class="sh">
+        <span>All sectors</span>
+        <button class="close" type="button" id="closeSector">Done</button>
+      </div>
+      <input class="sector-search" type="search" id="sectorSearch" placeholder="Search sectors…">
+      <div class="sector-list" id="sectorList"></div>
+    </div>
+
+    <div class="mode-toggle">
+      <button type="button" class="active" data-mode="analyze">Analyze</button>
+      <button type="button" data-mode="browse">Browse</button>
+    </div>
+  </div>
+
+  <div class="wl-modal-overlay" id="notesModalOverlay">
+    <div class="wl-modal">
+      <div class="wl-modal-title">Abi ticker notes for <span class="ticker-hl" id="notesModalTicker"></span></div>
+      <textarea id="notesModalNotes" placeholder="Abi ticker notes (markdown supported)…"></textarea>
+      <div class="wl-modal-actions">
+        <button class="wl-remove" id="notesModalRemoveBtn" style="display:none" type="button">Delete</button>
+        <button class="wl-cancel" type="button" id="notesModalCancelBtn">Cancel</button>
+        <button class="wl-save" id="notesModalSaveBtn" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="{{ url_for('static', filename='js/stock-chart.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/stock-news-shared.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main-view-hybrid.js') }}"></script>
+</body>
+</html>

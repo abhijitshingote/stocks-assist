@@ -139,6 +139,12 @@ def main_view_page():
     return render_template('main_view.html')
 
 
+@app.route('/main-view-hybrid')
+def main_view_hybrid_page():
+    """Standalone hybrid mobile layout preview — live data via existing frontend proxies"""
+    return render_template('main_view_hybrid.html')
+
+
 @app.route('/technical-screener')
 def technical_screener_page():
     """Technical Screener page - intraday/technical setups (reversal, etc.)"""
