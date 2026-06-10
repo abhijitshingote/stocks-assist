@@ -1,0 +1,11 @@
+{
+  "status": "failed",
+  "stage": "stale",
+  "error": "Run stopped responding (no log activity for 15+ minutes)",
+  "updated_at": "2026-06-10T13:52:11.125971+00:00",
+  "previous": {
+    "status": "running",
+    "stage": "queued",
+    "updated_at": "2026-06-10T13:07:58.951370+00:00"
+  }
+}
