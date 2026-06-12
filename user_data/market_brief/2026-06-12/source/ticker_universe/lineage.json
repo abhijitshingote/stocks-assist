@@ -1,0 +1,1030 @@
+{
+  "asof": "2026-06-12",
+  "source": "stock_metrics / stock_volspike_gapper / main_view (DB)",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_per_slice": 10,
+  "vol_spike_window_days": 5,
+  "dedupe": "exclusive — each ticker in one section (priority: r1d → vol_spike_5d → main_view_ti65)",
+  "slice_count": 9,
+  "unique_tickers_assigned": 60,
+  "unique_tickers_raw_union": 60,
+  "skipped_duplicate_slots": 19,
+  "by_ticker": {
+    "AGL": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 1,
+      "dr_1": 11.78,
+      "dr_5": 18.23,
+      "ti65": 2.18,
+      "vol_vs_10d_avg": 0.69,
+      "last_event_date": "2026-06-04",
+      "last_event_type": "gapper",
+      "market_cap": 1696741036,
+      "company_name": "Agilon Health, Inc."
+    },
+    "ALAB": {
+      "section": "main_view_ti65/large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "rank": 1,
+      "dr_1": 7.36,
+      "dr_5": -0.48,
+      "ti65": 1.66,
+      "vol_vs_10d_avg": 0.77,
+      "last_event_date": "2026-05-19",
+      "last_event_type": "gapper",
+      "market_cap": 58570092756,
+      "company_name": "Astera Labs, Inc. Common Stock"
+    },
+    "AMAT": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": 11.06,
+      "dr_5": 9.06,
+      "ti65": 1.23,
+      "vol_vs_10d_avg": 1.61,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 398480298322,
+      "company_name": "Applied Materials, Inc."
+    },
+    "AMBQ": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 10,
+      "dr_1": 11.37,
+      "dr_5": -1.57,
+      "ti65": 1.67,
+      "vol_vs_10d_avg": 0.81,
+      "last_event_date": "2026-05-12",
+      "last_event_type": "volume_spike",
+      "market_cap": 1625412258,
+      "company_name": "Ambiq Micro, Inc."
+    },
+    "AMD": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": 8.27,
+      "dr_5": -7.51,
+      "ti65": 1.43,
+      "vol_vs_10d_avg": 0.87,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 775358453000,
+      "company_name": "Advanced Micro Devices, Inc."
+    },
+    "APPS": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 3,
+      "dr_1": -2.73,
+      "dr_5": 7.55,
+      "ti65": 2.08,
+      "vol_vs_10d_avg": 0.6,
+      "last_event_date": "2026-05-28",
+      "last_event_type": "volume_spike",
+      "market_cap": 1188520493,
+      "company_name": "Digital Turbine, Inc."
+    },
+    "ARM": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": 11.48,
+      "dr_5": -12.94,
+      "ti65": 1.63,
+      "vol_vs_10d_avg": 0.68,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 327105520000,
+      "company_name": "Arm Holdings plc American Depositary Shares"
+    },
+    "ASML": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": 8.55,
+      "dr_5": 6.42,
+      "ti65": 1.18,
+      "vol_vs_10d_avg": 1.54,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 672799134719,
+      "company_name": "ASML Holding N.V."
+    },
+    "ASTS": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": 11.02,
+      "dr_5": -10.61,
+      "ti65": 1.09,
+      "vol_vs_10d_avg": 0.82,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 39696388593,
+      "company_name": "AST SpaceMobile, Inc."
+    },
+    "ATEX": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": 28.08,
+      "dr_5": 21.14,
+      "ti65": 1.37,
+      "vol_vs_10d_avg": 3.54,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 1525606480,
+      "company_name": "Anterix Inc."
+    },
+    "ATRO": {
+      "section": "vol_spike_5d/mid_small",
+      "label": "Vol spike / gapper · last 5D · Mid & small cap",
+      "rank": 7,
+      "dr_1": 15.45,
+      "dr_5": 7.45,
+      "ti65": 1.14,
+      "vol_vs_10d_avg": 2.94,
+      "last_event_date": "2026-06-11",
+      "last_event_type": "gapper",
+      "market_cap": 2990519221,
+      "company_name": "Astronics Corporation"
+    },
+    "BAND": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 5,
+      "dr_1": 4.65,
+      "dr_5": -13.19,
+      "ti65": 1.81,
+      "vol_vs_10d_avg": 0.84,
+      "last_event_date": "2026-05-01",
+      "last_event_type": "volume_spike",
+      "market_cap": 1998840538,
+      "company_name": "Bandwidth Inc."
+    },
+    "BAP": {
+      "section": "vol_spike_5d/large",
+      "label": "Vol spike / gapper · last 5D · Large cap",
+      "rank": 5,
+      "dr_1": 5.6,
+      "dr_5": 13.01,
+      "ti65": 1.02,
+      "vol_vs_10d_avg": 1.16,
+      "last_event_date": "2026-06-09",
+      "last_event_type": "gapper",
+      "market_cap": 27601934292,
+      "company_name": "Credicorp Ltd."
+    },
+    "BRUN": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 9,
+      "dr_1": 0.27,
+      "dr_5": -18.31,
+      "ti65": 1.68,
+      "vol_vs_10d_avg": 0.46,
+      "last_event_date": "2026-06-01",
+      "last_event_type": "gapper",
+      "market_cap": 2422424136,
+      "company_name": "Boost Run Inc. Class A Common Stock"
+    },
+    "CASY": {
+      "section": "vol_spike_5d/large",
+      "label": "Vol spike / gapper · last 5D · Large cap",
+      "rank": 4,
+      "dr_1": 1.4,
+      "dr_5": 20.27,
+      "ti65": 1.04,
+      "vol_vs_10d_avg": 1.33,
+      "last_event_date": "2026-06-10",
+      "last_event_type": "volume_spike",
+      "market_cap": 33963689369,
+      "company_name": "Casey's General Stores, Inc."
+    },
+    "CBRS": {
+      "section": "vol_spike_5d/large",
+      "label": "Vol spike / gapper · last 5D · Large cap",
+      "rank": 7,
+      "dr_1": -4.39,
+      "dr_5": 4.41,
+      "ti65": 0.89,
+      "vol_vs_10d_avg": 0.63,
+      "last_event_date": "2026-06-08",
+      "last_event_type": "gapper",
+      "market_cap": 50194141138,
+      "company_name": "Cerebras Systems Inc."
+    },
+    "CPNG": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": 11.23,
+      "dr_5": 4.06,
+      "ti65": 0.87,
+      "vol_vs_10d_avg": 4.52,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 28559470578,
+      "company_name": "Coupang, Inc."
+    },
+    "CRWD": {
+      "section": "main_view_ti65/mega",
+      "label": "Top 10 · Main View TI65 · Mega cap",
+      "rank": 10,
+      "dr_1": 7.45,
+      "dr_5": -3.62,
+      "ti65": 1.33,
+      "vol_vs_10d_avg": 0.92,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 164891816506,
+      "company_name": "CrowdStrike Holdings, Inc."
+    },
+    "DDOG": {
+      "section": "main_view_ti65/large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "rank": 8,
+      "dr_1": 1.56,
+      "dr_5": -5.13,
+      "ti65": 1.43,
+      "vol_vs_10d_avg": 0.62,
+      "last_event_date": "2026-05-07",
+      "last_event_type": "volume_spike",
+      "market_cap": 80276144078,
+      "company_name": "Datadog, Inc."
+    },
+    "DELL": {
+      "section": "main_view_ti65/mega",
+      "label": "Top 10 · Main View TI65 · Mega cap",
+      "rank": 2,
+      "dr_1": 5.5,
+      "dr_5": -8.63,
+      "ti65": 1.67,
+      "vol_vs_10d_avg": 0.57,
+      "last_event_date": "2026-05-29",
+      "last_event_type": "volume_spike",
+      "market_cap": 253597725018,
+      "company_name": "Dell Technologies Inc."
+    },
+    "ENTG": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": 12.9,
+      "dr_5": 2.78,
+      "ti65": 1.02,
+      "vol_vs_10d_avg": 1.57,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 20431045000,
+      "company_name": "Entegris, Inc."
+    },
+    "ESLT": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": 12.08,
+      "dr_5": 9.09,
+      "ti65": 0.98,
+      "vol_vs_10d_avg": 1.7,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 42243731068,
+      "company_name": "Elbit Systems Ltd."
+    },
+    "FLEX": {
+      "section": "main_view_ti65/large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "rank": 3,
+      "dr_1": 9.2,
+      "dr_5": -5.78,
+      "ti65": 1.47,
+      "vol_vs_10d_avg": 0.58,
+      "last_event_date": "2026-05-06",
+      "last_event_type": "volume_spike",
+      "market_cap": 53934505380,
+      "company_name": "Flex Ltd."
+    },
+    "FLY": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": 19.0,
+      "dr_5": -5.7,
+      "ti65": 1.02,
+      "vol_vs_10d_avg": 0.92,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 5492846598,
+      "company_name": "Firefly Aerospace Inc."
+    },
+    "FTNT": {
+      "section": "main_view_ti65/mega",
+      "label": "Top 10 · Main View TI65 · Mega cap",
+      "rank": 7,
+      "dr_1": 5.45,
+      "dr_5": -2.47,
+      "ti65": 1.4,
+      "vol_vs_10d_avg": 1.07,
+      "last_event_date": "2026-05-07",
+      "last_event_type": "gapper",
+      "market_cap": 101750208542,
+      "company_name": "Fortinet, Inc."
+    },
+    "GLW": {
+      "section": "vol_spike_5d/mega",
+      "label": "Vol spike / gapper · last 5D · Mega cap",
+      "rank": 2,
+      "dr_1": 5.41,
+      "dr_5": -11.19,
+      "ti65": 1.1,
+      "vol_vs_10d_avg": 0.79,
+      "last_event_date": "2026-06-08",
+      "last_event_type": "gapper",
+      "market_cap": 144871165082,
+      "company_name": "Corning Incorporated"
+    },
+    "HPE": {
+      "section": "main_view_ti65/large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "rank": 2,
+      "dr_1": 3.01,
+      "dr_5": -14.24,
+      "ti65": 1.6,
+      "vol_vs_10d_avg": 0.45,
+      "last_event_date": "2026-06-02",
+      "last_event_type": "volume_spike",
+      "market_cap": 59787788973,
+      "company_name": "Hewlett Packard Enterprise Company"
+    },
+    "HUM": {
+      "section": "main_view_ti65/large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "rank": 5,
+      "dr_1": 1.49,
+      "dr_5": 5.78,
+      "ti65": 1.45,
+      "vol_vs_10d_avg": 0.99,
+      "last_event_date": "2025-07-30",
+      "last_event_type": "gapper",
+      "market_cap": 43757614290,
+      "company_name": "Humana Inc."
+    },
+    "HYLN": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 2,
+      "dr_1": 3.83,
+      "dr_5": -3.5,
+      "ti65": 2.14,
+      "vol_vs_10d_avg": 0.8,
+      "last_event_date": "2026-06-04",
+      "last_event_type": "gapper",
+      "market_cap": 1296439034,
+      "company_name": "Hyliion Holdings Corp."
+    },
+    "INTC": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": 10.32,
+      "dr_5": 4.96,
+      "ti65": 1.31,
+      "vol_vs_10d_avg": 1.92,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 542405920000,
+      "company_name": "Intel Corporation"
+    },
+    "KLAC": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": 13.05,
+      "dr_5": 12.51,
+      "ti65": 1.22,
+      "vol_vs_10d_avg": 1.59,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 303045854300,
+      "company_name": "KLA Corporation"
+    },
+    "LRCX": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": 12.67,
+      "dr_5": 6.02,
+      "ti65": 1.23,
+      "vol_vs_10d_avg": 1.6,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 409136481200,
+      "company_name": "Lam Research Corporation"
+    },
+    "MKSI": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": 10.48,
+      "dr_5": 3.29,
+      "ti65": 1.16,
+      "vol_vs_10d_avg": 0.98,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 21348663687,
+      "company_name": "MKS Inc."
+    },
+    "MRVL": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": 9.78,
+      "dr_5": -12.05,
+      "ti65": 1.77,
+      "vol_vs_10d_avg": 0.82,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 222365412000,
+      "company_name": "Marvell Technology, Inc."
+    },
+    "MU": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": 9.41,
+      "dr_5": -4.01,
+      "ti65": 1.58,
+      "vol_vs_10d_avg": 1.02,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 1024689309900,
+      "company_name": "Micron Technology, Inc."
+    },
+    "NTAP": {
+      "section": "main_view_ti65/large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "rank": 10,
+      "dr_1": -1.69,
+      "dr_5": -10.03,
+      "ti65": 1.41,
+      "vol_vs_10d_avg": 0.31,
+      "last_event_date": "2026-05-29",
+      "last_event_type": "volume_spike",
+      "market_cap": 32326800000,
+      "company_name": "NetApp, Inc."
+    },
+    "NUAI": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": 22.31,
+      "dr_5": -9.98,
+      "ti65": 1.11,
+      "vol_vs_10d_avg": 1.21,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 263454701,
+      "company_name": "New Era Energy & Digital, Inc."
+    },
+    "PANW": {
+      "section": "main_view_ti65/mega",
+      "label": "Top 10 · Main View TI65 · Mega cap",
+      "rank": 9,
+      "dr_1": 5.9,
+      "dr_5": -0.78,
+      "ti65": 1.34,
+      "vol_vs_10d_avg": 0.88,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 177547330128,
+      "company_name": "Palo Alto Networks, Inc."
+    },
+    "PENG": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 6,
+      "dr_1": 8.77,
+      "dr_5": -12.05,
+      "ti65": 1.8,
+      "vol_vs_10d_avg": 0.56,
+      "last_event_date": "2026-06-02",
+      "last_event_type": "gapper",
+      "market_cap": 3075820270,
+      "company_name": "Penguin Solutions, Inc."
+    },
+    "QH": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": 43.24,
+      "dr_5": 66.31,
+      "ti65": 2.04,
+      "vol_vs_10d_avg": 17.62,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 542251584,
+      "company_name": "Quhuo Limited"
+    },
+    "RXT": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 7,
+      "dr_1": -2.79,
+      "dr_5": -4.64,
+      "ti65": 1.76,
+      "vol_vs_10d_avg": 1.07,
+      "last_event_date": "2026-06-10",
+      "last_event_type": "gapper",
+      "market_cap": 1395645994,
+      "company_name": "Rackspace Technology, Inc."
+    },
+    "SATL": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": 18.98,
+      "dr_5": -9.05,
+      "ti65": 1.02,
+      "vol_vs_10d_avg": 1.02,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 754597408,
+      "company_name": "Satellogic Inc."
+    },
+    "SATS": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": 11.5,
+      "dr_5": 2.59,
+      "ti65": 0.97,
+      "vol_vs_10d_avg": 1.95,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 33213890607,
+      "company_name": "EchoStar Corporation"
+    },
+    "SHAZ": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": 16.96,
+      "dr_5": -6.0,
+      "ti65": 1.52,
+      "vol_vs_10d_avg": 1.06,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 716199015,
+      "company_name": "SharonAI Holdings, Inc. Class A Common Stock"
+    },
+    "SMCI": {
+      "section": "vol_spike_5d/large",
+      "label": "Vol spike / gapper · last 5D · Large cap",
+      "rank": 2,
+      "dr_1": 4.5,
+      "dr_5": -33.8,
+      "ti65": 1.31,
+      "vol_vs_10d_avg": 4.53,
+      "last_event_date": "2026-06-11",
+      "last_event_type": "volume_spike",
+      "market_cap": 24441627520,
+      "company_name": "Super Micro Computer, Inc."
+    },
+    "SNDK": {
+      "section": "r1d/mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": 14.03,
+      "dr_5": 4.92,
+      "ti65": 1.5,
+      "vol_vs_10d_avg": 1.21,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 243835696965,
+      "company_name": "Sandisk Corporation"
+    },
+    "SNOW": {
+      "section": "main_view_ti65/large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "rank": 9,
+      "dr_1": 0.46,
+      "dr_5": -1.96,
+      "ti65": 1.41,
+      "vol_vs_10d_avg": 0.68,
+      "last_event_date": "2026-05-28",
+      "last_event_type": "volume_spike",
+      "market_cap": 83149340000,
+      "company_name": "Snowflake Inc."
+    },
+    "SPCE": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": 35.32,
+      "dr_5": 24.21,
+      "ti65": 1.51,
+      "vol_vs_10d_avg": 1.95,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 274476188,
+      "company_name": "Virgin Galactic Holdings, Inc."
+    },
+    "SPIR": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": 18.48,
+      "dr_5": -5.3,
+      "ti65": 1.04,
+      "vol_vs_10d_avg": 1.26,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 643894801,
+      "company_name": "Spire Global, Inc."
+    },
+    "STM": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": 10.13,
+      "dr_5": -0.2,
+      "ti65": 1.46,
+      "vol_vs_10d_avg": 1.28,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 65166385612,
+      "company_name": "STMicroelectronics N.V."
+    },
+    "STRL": {
+      "section": "main_view_ti65/large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "rank": 7,
+      "dr_1": 9.02,
+      "dr_5": -15.74,
+      "ti65": 1.44,
+      "vol_vs_10d_avg": 0.72,
+      "last_event_date": "2026-05-05",
+      "last_event_type": "volume_spike",
+      "market_cap": 25778042517,
+      "company_name": "Sterling Infrastructure, Inc."
+    },
+    "STX": {
+      "section": "main_view_ti65/mega",
+      "label": "Top 10 · Main View TI65 · Mega cap",
+      "rank": 8,
+      "dr_1": 5.84,
+      "dr_5": -7.52,
+      "ti65": 1.37,
+      "vol_vs_10d_avg": 0.79,
+      "last_event_date": "2026-04-29",
+      "last_event_type": "gapper",
+      "market_cap": 182968621710,
+      "company_name": "Seagate Technology Holdings plc"
+    },
+    "SW": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": 9.96,
+      "dr_5": -0.13,
+      "ti65": 1.03,
+      "vol_vs_10d_avg": 1.89,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 20582591642,
+      "company_name": "Smurfit Westrock Plc"
+    },
+    "TSEM": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": 10.71,
+      "dr_5": -2.59,
+      "ti65": 1.14,
+      "vol_vs_10d_avg": 1.21,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 26099641034,
+      "company_name": "Tower Semiconductor Ltd."
+    },
+    "UMC": {
+      "section": "r1d/large",
+      "label": "Top 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": 10.02,
+      "dr_5": -0.14,
+      "ti65": 1.45,
+      "vol_vs_10d_avg": 0.97,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 47143364499,
+      "company_name": "United Microelectronics Corporation"
+    },
+    "UNIT": {
+      "section": "vol_spike_5d/mid_small",
+      "label": "Vol spike / gapper · last 5D · Mid & small cap",
+      "rank": 8,
+      "dr_1": 10.59,
+      "dr_5": 7.38,
+      "ti65": 1.11,
+      "vol_vs_10d_avg": 4.29,
+      "last_event_date": "2026-06-11",
+      "last_event_type": "volume_spike",
+      "market_cap": 2819089719,
+      "company_name": "Uniti Group Inc."
+    },
+    "VELO": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": 34.29,
+      "dr_5": 62.29,
+      "ti65": 1.34,
+      "vol_vs_10d_avg": 4.63,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 386954848,
+      "company_name": "Velo3D, Inc."
+    },
+    "VPG": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 8,
+      "dr_1": 11.67,
+      "dr_5": 6.61,
+      "ti65": 1.71,
+      "vol_vs_10d_avg": 1.26,
+      "last_event_date": "2026-05-13",
+      "last_event_type": "volume_spike",
+      "market_cap": 1631500660,
+      "company_name": "Vishay Precision Group, Inc."
+    },
+    "VSAT": {
+      "section": "r1d/mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": 17.34,
+      "dr_5": -2.41,
+      "ti65": 1.09,
+      "vol_vs_10d_avg": 1.17,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 8732218854,
+      "company_name": "Viasat, Inc."
+    },
+    "VSH": {
+      "section": "main_view_ti65/mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "rank": 4,
+      "dr_1": 7.88,
+      "dr_5": -10.38,
+      "ti65": 1.83,
+      "vol_vs_10d_avg": 0.59,
+      "last_event_date": null,
+      "last_event_type": null,
+      "market_cap": 7438183390,
+      "company_name": "Vishay Intertechnology, Inc."
+    }
+  },
+  "skipped_duplicates": [
+    {
+      "ticker": "INTC",
+      "would_be": "vol_spike_5d/mega#1",
+      "assigned_to": "r1d/mega"
+    },
+    {
+      "ticker": "ESLT",
+      "would_be": "vol_spike_5d/large#1",
+      "assigned_to": "r1d/large"
+    },
+    {
+      "ticker": "CPNG",
+      "would_be": "vol_spike_5d/large#3",
+      "assigned_to": "r1d/large"
+    },
+    {
+      "ticker": "STM",
+      "would_be": "vol_spike_5d/large#6",
+      "assigned_to": "r1d/large"
+    },
+    {
+      "ticker": "VSAT",
+      "would_be": "vol_spike_5d/mid_small#1",
+      "assigned_to": "r1d/mid_small"
+    },
+    {
+      "ticker": "SATL",
+      "would_be": "vol_spike_5d/mid_small#2",
+      "assigned_to": "r1d/mid_small"
+    },
+    {
+      "ticker": "SPCE",
+      "would_be": "vol_spike_5d/mid_small#3",
+      "assigned_to": "r1d/mid_small"
+    },
+    {
+      "ticker": "SPIR",
+      "would_be": "vol_spike_5d/mid_small#4",
+      "assigned_to": "r1d/mid_small"
+    },
+    {
+      "ticker": "NUAI",
+      "would_be": "vol_spike_5d/mid_small#5",
+      "assigned_to": "r1d/mid_small"
+    },
+    {
+      "ticker": "QH",
+      "would_be": "vol_spike_5d/mid_small#6",
+      "assigned_to": "r1d/mid_small"
+    },
+    {
+      "ticker": "SHAZ",
+      "would_be": "vol_spike_5d/mid_small#9",
+      "assigned_to": "r1d/mid_small"
+    },
+    {
+      "ticker": "ATEX",
+      "would_be": "vol_spike_5d/mid_small#10",
+      "assigned_to": "r1d/mid_small"
+    },
+    {
+      "ticker": "MRVL",
+      "would_be": "main_view_ti65/mega#1",
+      "assigned_to": "r1d/mega"
+    },
+    {
+      "ticker": "ARM",
+      "would_be": "main_view_ti65/mega#3",
+      "assigned_to": "r1d/mega"
+    },
+    {
+      "ticker": "MU",
+      "would_be": "main_view_ti65/mega#4",
+      "assigned_to": "r1d/mega"
+    },
+    {
+      "ticker": "SNDK",
+      "would_be": "main_view_ti65/mega#5",
+      "assigned_to": "r1d/mega"
+    },
+    {
+      "ticker": "AMD",
+      "would_be": "main_view_ti65/mega#6",
+      "assigned_to": "r1d/mega"
+    },
+    {
+      "ticker": "STM",
+      "would_be": "main_view_ti65/large#4",
+      "assigned_to": "r1d/large"
+    },
+    {
+      "ticker": "UMC",
+      "would_be": "main_view_ti65/large#6",
+      "assigned_to": "r1d/large"
+    }
+  ],
+  "slices": [
+    {
+      "slice_id": "r1d",
+      "cap_bucket": "mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "ticker_count": 10,
+      "tickers": [
+        "SNDK",
+        "KLAC",
+        "LRCX",
+        "ARM",
+        "AMAT",
+        "INTC",
+        "MRVL",
+        "MU",
+        "ASML",
+        "AMD"
+      ]
+    },
+    {
+      "slice_id": "r1d",
+      "cap_bucket": "large",
+      "label": "Top 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "ENTG",
+        "ESLT",
+        "SATS",
+        "CPNG",
+        "ASTS",
+        "TSEM",
+        "MKSI",
+        "STM",
+        "UMC",
+        "SW"
+      ]
+    },
+    {
+      "slice_id": "r1d",
+      "cap_bucket": "mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "QH",
+        "SPCE",
+        "VELO",
+        "ATEX",
+        "NUAI",
+        "FLY",
+        "SATL",
+        "SPIR",
+        "VSAT",
+        "SHAZ"
+      ]
+    },
+    {
+      "slice_id": "vol_spike_5d",
+      "cap_bucket": "mega",
+      "label": "Vol spike / gapper · last 5D · Mega cap",
+      "ticker_count": 1,
+      "tickers": [
+        "GLW"
+      ]
+    },
+    {
+      "slice_id": "vol_spike_5d",
+      "cap_bucket": "large",
+      "label": "Vol spike / gapper · last 5D · Large cap",
+      "ticker_count": 4,
+      "tickers": [
+        "SMCI",
+        "CASY",
+        "BAP",
+        "CBRS"
+      ]
+    },
+    {
+      "slice_id": "vol_spike_5d",
+      "cap_bucket": "mid_small",
+      "label": "Vol spike / gapper · last 5D · Mid & small cap",
+      "ticker_count": 2,
+      "tickers": [
+        "ATRO",
+        "UNIT"
+      ]
+    },
+    {
+      "slice_id": "main_view_ti65",
+      "cap_bucket": "mega",
+      "label": "Top 10 · Main View TI65 · Mega cap",
+      "ticker_count": 5,
+      "tickers": [
+        "DELL",
+        "FTNT",
+        "STX",
+        "PANW",
+        "CRWD"
+      ]
+    },
+    {
+      "slice_id": "main_view_ti65",
+      "cap_bucket": "large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "ticker_count": 8,
+      "tickers": [
+        "ALAB",
+        "HPE",
+        "FLEX",
+        "HUM",
+        "STRL",
+        "DDOG",
+        "SNOW",
+        "NTAP"
+      ]
+    },
+    {
+      "slice_id": "main_view_ti65",
+      "cap_bucket": "mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "AGL",
+        "HYLN",
+        "APPS",
+        "VSH",
+        "BAND",
+        "PENG",
+        "RXT",
+        "VPG",
+        "BRUN",
+        "AMBQ"
+      ]
+    }
+  ]
+}
