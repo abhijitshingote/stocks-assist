@@ -18,7 +18,7 @@
     <header class="app-header">
       <div class="header-row1">
         <a class="logo logo-link" href="/m">stocks_assist</a>
-        <div class="search-box"><span>⌕</span> <span id="searchTicker">—</span></div>
+        {% include "mobile/_ticker_search.html" %}
         <button type="button" class="menu-btn" id="mobileNavBtn" aria-label="Open navigation" aria-expanded="false">Nav</button>
       </div>
       <div class="header-row2">
@@ -184,5 +184,6 @@
   <script src="{{ url_for('static', filename='js/mobile/screener-app.js') }}"></script>
   <script src="{{ url_for('static', filename='js/main-view-hybrid.js') }}"></script>
   <script src="{{ url_for('static', filename='js/mobile/nav.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/mobile/search.js') }}"></script>
 </body>
 </html>

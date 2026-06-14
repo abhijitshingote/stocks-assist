@@ -212,6 +212,12 @@ def m_logs():
     return render_template('mobile/logs.html')
 
 
+@app.route('/m/stock/<ticker>')
+def m_stock_detail(ticker):
+    """Mobile stock detail page"""
+    return render_template('mobile/stock.html', ticker=ticker.upper())
+
+
 @app.route('/technical-screener')
 def technical_screener_page():
     """Technical Screener page - intraday/technical setups (reversal, etc.)"""

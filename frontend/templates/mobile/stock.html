@@ -1,8 +1,11 @@
-{# Shared mobile screener shell — used by all stock list mobile pages #}
-<div class="phone" id="phone">
+{% extends "mobile/_base.html" %}
+{% block title %}{{ ticker }} — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_screener_styles.html" %}{% endblock %}
+{% block body %}
+<div class="phone stock-page" id="phone">
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <span>Loading…</span>
+    <span>Loading {{ ticker }}…</span>
   </div>
 
   <header class="app-header">
@@ -11,63 +14,14 @@
       {% include "mobile/_ticker_search.html" %}
       {% include "mobile/_nav_button.html" %}
     </div>
-    <div class="header-row2">
-      <span>VIX <b id="vixVal">—</b></span>
-      <span>10Y <b id="us10yVal">—</b></span>
-      <span>Stocks <b id="totalStocks">—</b></span>
-      <span>Showing <b id="showingCount">—</b></span>
-    </div>
   </header>
 
-  <div class="filter-summary" id="filterSummary" role="button" tabindex="0" aria-expanded="false">
-    <span class="chip" id="filterChipText"><b>All</b> · All sectors · <b>0</b> stocks</span>
-    <span class="chev">▼</span>
-  </div>
-
-  <div class="filter-drawer" id="filterDrawer">
-    <div class="filter-inner">
-      <div class="filter-stats">
-        <span>Stocks: <b id="totalStocks2">—</b></span>
-        <span>Showing: <b id="showingCount2">—</b></span>
-      </div>
-      <div class="strip" role="tablist" aria-label="Market cap" id="capStrip">
-        <span class="strip-label">Cap</span>
-        <button class="pill active" type="button" data-cap="all">All</button>
-        <button class="pill" type="button" data-cap="mega">Mega</button>
-        <button class="pill" type="button" data-cap="large">Large</button>
-        <button class="pill" type="button" data-cap="mid">Mid</button>
-        <button class="pill" type="button" data-cap="small">Small</button>
-        <button class="pill" type="button" data-cap="micro">Micro</button>
-      </div>
-      <div id="extraFilters" class="extra-filters"></div>
-      <div class="strip sector-strip" role="tablist" aria-label="Sector" id="sectorStrip"></div>
-      <div class="strip industry-strip hidden" role="tablist" aria-label="Industry" id="industryStrip"></div>
-    </div>
-  </div>
-
-  <div class="workspace">
-    <div class="list-zone mode-collapsed" id="listZone">
-      <div class="chip-row">
-        <span class="label">List · <b id="listCount">0</b></span>
-        <div class="chips" id="chipStrip"></div>
-        <button class="copy-sm" type="button" id="copyBtn">Copy</button>
-      </div>
-      <div class="list-handle" id="listHandle" aria-label="Resize list"></div>
-      <div class="list-table-wrap">
-        <table class="stock-table">
-          <thead>
-            <tr><th>SN</th><th>Ticker</th><th>MCap</th><th id="listValueHeader">Ret</th><th>★</th></tr>
-          </thead>
-          <tbody id="stockTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
+  <div class="workspace stock-workspace">
     <div class="analyze-zone" id="analyzeZone">
       <div class="detail-compact">
         <div class="detail-row-a">
           <div class="left">
-            <div class="tk" id="detailTk">—</div>
+            <div class="tk" id="detailTk">{{ ticker }}</div>
             <div class="co-line" id="detailCoLine">
               <span class="co" id="detailCo"></span><span class="si" id="detailSectorIndustry"></span>
             </div>
@@ -81,7 +35,7 @@
           <span class="tag mcap" id="detailMcap"></span>
           <span class="tag ti" id="detailTi65" style="display:none"></span>
           <span class="tag float" id="detailLowFloat" style="display:none">Low Float</span>
-          <a class="detail-link" id="detailLink" href="#">Detail →</a>
+          <a class="detail-link" id="detailLink" href="/stock/{{ ticker }}">Desktop →</a>
         </div>
         <div class="detail-row-c">
           <button class="icon-btn" type="button" title="Abi ticker notes" id="notesBtn">📝</button>
@@ -138,18 +92,9 @@
     </div>
   </div>
 
-  <div class="sector-sheet" id="sectorSheet">
-    <div class="sh">
-      <span>All sectors</span>
-      <button class="close" type="button" id="closeSector">Done</button>
-    </div>
-    <input class="sector-search" type="search" id="sectorSearch" placeholder="Search sectors…">
-    <div class="sector-list" id="sectorList"></div>
-  </div>
-
-  <div class="mode-toggle">
-    <button type="button" class="active" data-mode="analyze">Analyze</button>
-    <button type="button" data-mode="browse">Browse</button>
+  <div class="stock-error" id="stockError" hidden>
+    <p>Could not load <b id="stockErrorTicker">{{ ticker }}</b>.</p>
+    <a href="/m">Back to dashboard</a>
   </div>
 
   {% include "mobile/_nav_drawer.html" %}
@@ -166,3 +111,9 @@
     </div>
   </div>
 </div>
+{% endblock %}
+{% block scripts %}
+<script>window.__STOCK_TICKER__ = {{ ticker | tojson }};</script>
+{% include "mobile/_stock_libs.html" %}
+<script src="{{ url_for('static', filename='js/mobile/pages/stock.js') }}"></script>
+{% endblock %}

@@ -341,7 +341,10 @@
       const stock = allStocks.find(s => s.ticker === ticker);
       if (!stock) return;
 
-      document.getElementById('searchTicker').textContent = ticker;
+      const searchInput = document.getElementById('tickerSearchInput');
+      if (searchInput) searchInput.value = ticker;
+      const searchSpan = document.getElementById('searchTicker');
+      if (searchSpan) searchSpan.textContent = ticker;
       document.getElementById('detailTk').textContent = ticker;
       document.getElementById('detailCo').textContent = stock.company_name || '';
       document.getElementById('detailPx').textContent = stock.current_price ? '$' + stock.current_price.toFixed(2) : '—';
@@ -366,7 +369,7 @@
       const lfEl = document.getElementById('detailLowFloat');
       lfEl.style.display = U.isLowFloat(stock.float_shares) ? '' : 'none';
 
-      document.getElementById('detailLink').href = '/stock/' + ticker;
+      document.getElementById('detailLink').href = '/m/stock/' + ticker;
 
       updateAbiNotes(ticker);
       updateWatchlistBtn(ticker);
