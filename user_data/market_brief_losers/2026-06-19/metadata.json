@@ -1,0 +1,548 @@
+{
+  "asof": "2026-06-19",
+  "pipeline": "market_brief_losers",
+  "source_scope": "ticker_only",
+  "windows": {
+    "ticker_window": "2026-06-17 05:00 UTC → 2026-06-19 14:10 UTC (session 2026-06-18, ticker −24h vs general)",
+    "anchor_session": "2026-06-18",
+    "ticker_published_gte_utc": "2026-06-17T05:00:00+00:00",
+    "published_lte_utc": "2026-06-19T14:10:53.932046+00:00"
+  },
+  "counts": {
+    "api_by_fetch": {
+      "ticker": {
+        "AADX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "AAMI": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "ACN": {
+          "api_rows": 21,
+          "in_window": 21,
+          "error": null
+        },
+        "APP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ASTS": {
+          "api_rows": 6,
+          "in_window": 6,
+          "error": null
+        },
+        "AVEX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "AXTI": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "BHP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "BP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "COP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "CPNG": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "CTSH": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "CVX": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "EPAM": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "GLOB": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "HURN": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "HWM": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "IBM": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "INFY": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "INOD": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "KR": {
+          "api_rows": 10,
+          "in_window": 10,
+          "error": null
+        },
+        "LHX": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "LMT": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "MSTR": {
+          "api_rows": 14,
+          "in_window": 14,
+          "error": null
+        },
+        "NEM": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NOC": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NVCR": {
+          "api_rows": 6,
+          "in_window": 6,
+          "error": null
+        },
+        "PFE": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "PLTR": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "RIO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "RTX": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "RXT": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "SAP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "SCHW": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "STLD": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        }
+      },
+      "ticker_totals": {
+        "api_rows": 93,
+        "in_window": 93,
+        "error": null
+      }
+    },
+    "api_total_rows": 93,
+    "after_dedupe_unique": 82,
+    "upserted": 82,
+    "deduped_published": {
+      "earliest_utc": "2026-06-17T06:32:16+00:00",
+      "latest_utc": "2026-06-19T13:15:49+00:00",
+      "with_published": 82
+    },
+    "prompt": {
+      "articles_total": 82,
+      "by_section": {
+        "Ticker: Bottom 10 · 1D return · Large cap": 50,
+        "Ticker: Bottom 10 · 1D return · Mid & small cap": 16,
+        "Ticker: Bottom 15 · 1D return · Mega cap": 16
+      }
+    }
+  },
+  "fetch_warnings": [],
+  "ingest_pools": {
+    "ticker": {
+      "AADX": [],
+      "AAMI": [
+        "53271789"
+      ],
+      "ACN": [
+        "53295346",
+        "53286915",
+        "53285079",
+        "53284938",
+        "53283834",
+        "53277604",
+        "53275246",
+        "53274515",
+        "53271973",
+        "53270980",
+        "53270451",
+        "53270415",
+        "53270393",
+        "53270382",
+        "53270249",
+        "53268883",
+        "53268634",
+        "53268234",
+        "53252018",
+        "53242637",
+        "53242615"
+      ],
+      "APP": [],
+      "ASTS": [
+        "53290998",
+        "53251668",
+        "53251369",
+        "53245005",
+        "53244627",
+        "53243897"
+      ],
+      "AVEX": [],
+      "AXTI": [
+        "53275478",
+        "53264119"
+      ],
+      "BHP": [],
+      "BP": [],
+      "COP": [],
+      "CPNG": [],
+      "CTSH": [
+        "53283834"
+      ],
+      "CVX": [
+        "53284836",
+        "53266348"
+      ],
+      "EPAM": [
+        "53283834"
+      ],
+      "GLOB": [
+        "53283834"
+      ],
+      "HURN": [
+        "53293681"
+      ],
+      "HWM": [],
+      "IBM": [
+        "53286088",
+        "53274515"
+      ],
+      "INFY": [],
+      "INOD": [
+        "53286095",
+        "53264474"
+      ],
+      "KR": [
+        "60000323",
+        "53273633",
+        "53273075",
+        "53270980",
+        "53270837",
+        "53270586",
+        "53270544",
+        "53268883",
+        "53268634",
+        "53268234"
+      ],
+      "LHX": [
+        "53242440"
+      ],
+      "LMT": [
+        "53241789"
+      ],
+      "MSTR": [
+        "60001600",
+        "53295501",
+        "53292644",
+        "53289584",
+        "53288733",
+        "53284954",
+        "53281937",
+        "53274470",
+        "53267654",
+        "53267211",
+        "53258696",
+        "53255331",
+        "53246042",
+        "53245023"
+      ],
+      "NEM": [],
+      "NOC": [],
+      "NVCR": [
+        "53285093",
+        "53284938",
+        "53283112",
+        "53277161",
+        "53271978",
+        "53270746"
+      ],
+      "PFE": [
+        "53285698",
+        "53284645",
+        "53281318",
+        "53270465"
+      ],
+      "PLTR": [
+        "53294246",
+        "53273844",
+        "53259584"
+      ],
+      "RIO": [],
+      "RTX": [
+        "53267681",
+        "53242440"
+      ],
+      "RXT": [
+        "53264322",
+        "53257452",
+        "53253223",
+        "53250744",
+        "53246451"
+      ],
+      "SAP": [],
+      "SCHW": [
+        "53294246",
+        "53245949",
+        "53245610"
+      ],
+      "STLD": [
+        "53278448",
+        "53273135",
+        "53271453",
+        "53264586"
+      ]
+    }
+  },
+  "universe_symbols": [
+    "AADX",
+    "AAMI",
+    "ACN",
+    "APP",
+    "ASTS",
+    "AVEX",
+    "AXTI",
+    "BHP",
+    "BP",
+    "COP",
+    "CPNG",
+    "CTSH",
+    "CVX",
+    "EPAM",
+    "GLOB",
+    "HURN",
+    "HWM",
+    "IBM",
+    "INFY",
+    "INOD",
+    "KR",
+    "LHX",
+    "LMT",
+    "MSTR",
+    "NEM",
+    "NOC",
+    "NVCR",
+    "PFE",
+    "PLTR",
+    "RIO",
+    "RTX",
+    "RXT",
+    "SAP",
+    "SCHW",
+    "STLD"
+  ],
+  "losers_universe_slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "selection_count": 15,
+      "tickers": [
+        "IBM",
+        "LMT",
+        "RTX",
+        "SAP",
+        "NEM",
+        "APP",
+        "RIO",
+        "BP",
+        "COP",
+        "PFE",
+        "BHP",
+        "SCHW",
+        "PLTR",
+        "HWM",
+        "CVX"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "selection_count": 10,
+      "tickers": [
+        "ACN",
+        "INFY",
+        "ASTS",
+        "CTSH",
+        "STLD",
+        "KR",
+        "CPNG",
+        "LHX",
+        "MSTR",
+        "NOC"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "selection_count": 10,
+      "tickers": [
+        "NVCR",
+        "AXTI",
+        "HURN",
+        "EPAM",
+        "AADX",
+        "AVEX",
+        "GLOB",
+        "AAMI",
+        "INOD",
+        "RXT"
+      ]
+    }
+  ],
+  "losers_universe_overview": "source/losers_universe/overview.md",
+  "article_ids": [
+    "53286088",
+    "53274515",
+    "53241789",
+    "53267681",
+    "53242440",
+    "53285698",
+    "53284645",
+    "53281318",
+    "53270465",
+    "53294246",
+    "53245949",
+    "53245610",
+    "53273844",
+    "53259584",
+    "53284836",
+    "53266348",
+    "53295346",
+    "53286915",
+    "53285079",
+    "53284938",
+    "53283834",
+    "53277604",
+    "53275246",
+    "53271973",
+    "53270980",
+    "53270451",
+    "53270415",
+    "53270393",
+    "53270382",
+    "53270249",
+    "53268883",
+    "53268634",
+    "53268234",
+    "53252018",
+    "53242637",
+    "53242615",
+    "53290998",
+    "53251668",
+    "53251369",
+    "53245005",
+    "53244627",
+    "53243897",
+    "53278448",
+    "53273135",
+    "53271453",
+    "53264586",
+    "60000323",
+    "53273633",
+    "53273075",
+    "53270837",
+    "53270586",
+    "53270544",
+    "60001600",
+    "53295501",
+    "53292644",
+    "53289584",
+    "53288733",
+    "53284954",
+    "53281937",
+    "53274470",
+    "53267654",
+    "53267211",
+    "53258696",
+    "53255331",
+    "53246042",
+    "53245023",
+    "53285093",
+    "53283112",
+    "53277161",
+    "53271978",
+    "53270746",
+    "53275478",
+    "53264119",
+    "53293681",
+    "53271789",
+    "53286095",
+    "53264474",
+    "53264322",
+    "53257452",
+    "53253223",
+    "53250744",
+    "53246451"
+  ]
+}

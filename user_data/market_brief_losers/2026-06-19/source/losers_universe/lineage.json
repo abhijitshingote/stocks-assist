@@ -1,0 +1,461 @@
+{
+  "asof": "2026-06-19",
+  "source": "stock_metrics (DB) — bottom dr_1",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_by_bucket": {
+    "mega": 15,
+    "large": 10,
+    "mid_small": 10
+  },
+  "unique_tickers": 35,
+  "by_ticker": {
+    "AADX": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": -10.97,
+      "dr_5": -13.59,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 3788989122,
+      "company_name": "Applied Aerospace & Defense, Inc."
+    },
+    "AAMI": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": -10.02,
+      "dr_5": -4.61,
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "market_cap": 2947230880,
+      "company_name": "Acadian Asset Management"
+    },
+    "ACN": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": -17.64,
+      "dr_5": -23.13,
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 78763392928,
+      "company_name": "Accenture plc"
+    },
+    "APP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": -2.8,
+      "dr_5": -1.88,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 168851635839,
+      "company_name": "AppLovin Corporation"
+    },
+    "ASTS": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": -8.85,
+      "dr_5": -18.78,
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "market_cap": 34760788002,
+      "company_name": "AST SpaceMobile, Inc."
+    },
+    "AVEX": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": -10.69,
+      "dr_5": -15.51,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 1007271873,
+      "company_name": "Aevex Corp."
+    },
+    "AXTI": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": -12.71,
+      "dr_5": -7.16,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 3911343746,
+      "company_name": "AXT, Inc."
+    },
+    "BHP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 11,
+      "dr_1": -2.51,
+      "dr_5": 0.36,
+      "sector": "Basic Materials",
+      "industry": "Industrial Materials",
+      "market_cap": 235007328253,
+      "company_name": "BHP Group Limited"
+    },
+    "BP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": -2.67,
+      "dr_5": -8.91,
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "market_cap": 107916080750,
+      "company_name": "BP p.l.c."
+    },
+    "COP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": -2.62,
+      "dr_5": -7.07,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 135486476518,
+      "company_name": "ConocoPhillips"
+    },
+    "CPNG": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": -6.8,
+      "dr_5": 4.8,
+      "sector": "Consumer Cyclical",
+      "industry": "Specialty Retail",
+      "market_cap": 32365008878,
+      "company_name": "Coupang, Inc."
+    },
+    "CTSH": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": -8.76,
+      "dr_5": -13.18,
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 23134284580,
+      "company_name": "Cognizant Technology Solutions Corporation"
+    },
+    "CVX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 15,
+      "dr_1": -2.23,
+      "dr_5": -7.1,
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "market_cap": 358707076000,
+      "company_name": "Chevron Corporation"
+    },
+    "EPAM": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": -11.59,
+      "dr_5": -15.6,
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 4581838352,
+      "company_name": "EPAM Systems, Inc."
+    },
+    "GLOB": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": -10.05,
+      "dr_5": -14.12,
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 1581667136,
+      "company_name": "Globant S.A."
+    },
+    "HURN": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": -12.57,
+      "dr_5": -14.09,
+      "sector": "Industrials",
+      "industry": "Consulting Services",
+      "market_cap": 1745365510,
+      "company_name": "Huron Consulting Group Inc."
+    },
+    "HWM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 14,
+      "dr_1": -2.31,
+      "dr_5": 5.32,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 113322442410,
+      "company_name": "Howmet Aerospace Inc."
+    },
+    "IBM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": -4.35,
+      "dr_5": -8.77,
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 234543602325,
+      "company_name": "International Business Machines Corporation"
+    },
+    "INFY": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": -9.57,
+      "dr_5": -8.8,
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 48565402200,
+      "company_name": "Infosys Limited"
+    },
+    "INOD": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": -8.81,
+      "dr_5": -9.36,
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 3097197429,
+      "company_name": "Innodata Inc."
+    },
+    "KR": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": -7.89,
+      "dr_5": -11.68,
+      "sector": "Consumer Defensive",
+      "industry": "Grocery Stores",
+      "market_cap": 34903499924,
+      "company_name": "The Kroger Co."
+    },
+    "LHX": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": -6.22,
+      "dr_5": -7.02,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 58342005150,
+      "company_name": "L3Harris Technologies, Inc."
+    },
+    "LMT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": -4.1,
+      "dr_5": -7.71,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 123570565707,
+      "company_name": "Lockheed Martin Corporation"
+    },
+    "MSTR": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": -5.8,
+      "dr_5": -7.31,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 36483496813,
+      "company_name": "Strategy Inc"
+    },
+    "NEM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": -2.81,
+      "dr_5": 6.32,
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "market_cap": 115765421728,
+      "company_name": "Newmont Corporation"
+    },
+    "NOC": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": -5.54,
+      "dr_5": -7.25,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 78139454950,
+      "company_name": "Northrop Grumman Corporation"
+    },
+    "NVCR": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": -18.82,
+      "dr_5": -19.19,
+      "sector": "Healthcare",
+      "industry": "Medical - Instruments & Supplies",
+      "market_cap": 2025708240,
+      "company_name": "NovoCure Limited"
+    },
+    "PFE": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": -2.59,
+      "dr_5": -4.29,
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - General",
+      "market_cap": 148413417600,
+      "company_name": "Pfizer Inc."
+    },
+    "PLTR": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 13,
+      "dr_1": -2.34,
+      "dr_5": -1.93,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 292285807681,
+      "company_name": "Palantir Technologies Inc."
+    },
+    "RIO": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": -2.7,
+      "dr_5": -3.11,
+      "sector": "Basic Materials",
+      "industry": "Industrial Materials",
+      "market_cap": 171723590993,
+      "company_name": "Rio Tinto Group"
+    },
+    "RTX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": -3.15,
+      "dr_5": 0.92,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 259343634400,
+      "company_name": "RTX Corporation"
+    },
+    "RXT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": -8.77,
+      "dr_5": 32.72,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 1876645417,
+      "company_name": "Rackspace Technology, Inc."
+    },
+    "SAP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": -2.92,
+      "dr_5": -5.29,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 192741548477,
+      "company_name": "SAP SE"
+    },
+    "SCHW": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 12,
+      "dr_1": -2.35,
+      "dr_5": 2.72,
+      "sector": "Financial Services",
+      "industry": "Financial - Capital Markets",
+      "market_cap": 164366121400,
+      "company_name": "The Charles Schwab Corporation"
+    },
+    "STLD": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": -7.93,
+      "dr_5": -10.72,
+      "sector": "Basic Materials",
+      "industry": "Steel",
+      "market_cap": 36357539430,
+      "company_name": "Steel Dynamics, Inc."
+    }
+  },
+  "slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "ticker_count": 15,
+      "tickers": [
+        "IBM",
+        "LMT",
+        "RTX",
+        "SAP",
+        "NEM",
+        "APP",
+        "RIO",
+        "BP",
+        "COP",
+        "PFE",
+        "BHP",
+        "SCHW",
+        "PLTR",
+        "HWM",
+        "CVX"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "ACN",
+        "INFY",
+        "ASTS",
+        "CTSH",
+        "STLD",
+        "KR",
+        "CPNG",
+        "LHX",
+        "MSTR",
+        "NOC"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "NVCR",
+        "AXTI",
+        "HURN",
+        "EPAM",
+        "AADX",
+        "AVEX",
+        "GLOB",
+        "AAMI",
+        "INOD",
+        "RXT"
+      ]
+    }
+  ]
+}
