@@ -121,6 +121,12 @@ def top_performance_page():
     return render_template('top_performance.html')
 
 
+@app.route('/all-stocks')
+def all_stocks_page():
+    """All Stocks page - main_view universe filtered only by sector/industry"""
+    return render_template('all_stocks.html')
+
+
 @app.route('/top-losers')
 def top_losers_page():
     """Top Losers page - Union of bottom stocks by 1D, 5D, 20D returns"""
@@ -443,6 +449,15 @@ def api_rsi_index(index_type, market_cap=None):
     data, status_code = make_backend_request(endpoint)
     if data is None:
         return jsonify({'error': 'Failed to fetch RSI Index data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/all-stocks')
+def api_all_stocks():
+    """Proxy: AllStocks — full liquid universe (stock_metrics LEFT JOIN volspike/gapper)"""
+    data, status_code = make_backend_request('/api/AllStocks')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch All Stocks data'}), status_code
     return jsonify(data), status_code
 
 
