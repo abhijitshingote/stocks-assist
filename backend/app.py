@@ -3667,6 +3667,102 @@ def get_sector_performance():
         s.close()
 
 
+def get_etf_returns_data(connection, symbols):
+    """
+    Calculate 1D, 5D, 20D, 60D, 120D performance for a given list of ETF symbols
+    from the index_prices table. Returns a list of dicts keyed by symbol.
+    """
+    if not symbols:
+        return []
+    try:
+        # Same global trading-date grid approach as get_sector_performance_data,
+        # extended with a 120D timeframe.
+        query = """
+        WITH trading_dates AS (
+            SELECT DISTINCT date
+            FROM index_prices
+            ORDER BY date DESC
+            LIMIT 121
+        ),
+        latest_date AS (
+            SELECT MAX(date) as max_date FROM trading_dates
+        ),
+        date_1d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 1),
+        date_5d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 5),
+        date_20d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 20),
+        date_60d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 60),
+        date_120d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 120)
+        SELECT
+            ip_today.symbol,
+            ip_today.close_price as current_price,
+            CASE WHEN ip_1d.close_price > 0 THEN
+                ((ip_today.close_price - ip_1d.close_price) / ip_1d.close_price * 100) END as dr_1,
+            CASE WHEN ip_5d.close_price > 0 THEN
+                ((ip_today.close_price - ip_5d.close_price) / ip_5d.close_price * 100) END as dr_5,
+            CASE WHEN ip_20d.close_price > 0 THEN
+                ((ip_today.close_price - ip_20d.close_price) / ip_20d.close_price * 100) END as dr_20,
+            CASE WHEN ip_60d.close_price > 0 THEN
+                ((ip_today.close_price - ip_60d.close_price) / ip_60d.close_price * 100) END as dr_60,
+            CASE WHEN ip_120d.close_price > 0 THEN
+                ((ip_today.close_price - ip_120d.close_price) / ip_120d.close_price * 100) END as dr_120,
+            ld.max_date as latest_date
+        FROM index_prices ip_today
+        CROSS JOIN latest_date ld
+        LEFT JOIN index_prices ip_1d
+            ON ip_today.symbol = ip_1d.symbol AND ip_1d.date = (SELECT d FROM date_1d_ago)
+        LEFT JOIN index_prices ip_5d
+            ON ip_today.symbol = ip_5d.symbol AND ip_5d.date = (SELECT d FROM date_5d_ago)
+        LEFT JOIN index_prices ip_20d
+            ON ip_today.symbol = ip_20d.symbol AND ip_20d.date = (SELECT d FROM date_20d_ago)
+        LEFT JOIN index_prices ip_60d
+            ON ip_today.symbol = ip_60d.symbol AND ip_60d.date = (SELECT d FROM date_60d_ago)
+        LEFT JOIN index_prices ip_120d
+            ON ip_today.symbol = ip_120d.symbol AND ip_120d.date = (SELECT d FROM date_120d_ago)
+        WHERE ip_today.date = ld.max_date
+          AND ip_today.symbol IN :symbols
+        ORDER BY ip_today.symbol
+        """
+        stmt = text(query).bindparams(bindparam('symbols', expanding=True))
+        result = connection.execute(stmt, {'symbols': symbols})
+
+        def r(v):
+            return round(float(v), 2) if v is not None else None
+
+        results = []
+        latest_date = None
+        for row in result.fetchall():
+            latest_date = row[7].strftime('%Y-%m-%d') if row[7] else latest_date
+            results.append({
+                'symbol': row[0],
+                'current_price': r(row[1]),
+                'dr_1': r(row[2]),
+                'dr_5': r(row[3]),
+                'dr_20': r(row[4]),
+                'dr_60': r(row[5]),
+                'dr_120': r(row[6]),
+            })
+        return {'latest_date': latest_date, 'etfs': results}
+    except Exception as e:
+        logger.error(f"Error getting ETF returns data: {str(e)}")
+        return {'latest_date': None, 'etfs': []}
+
+
+@app.route('/api/etf-performance')
+def get_etf_performance():
+    """Get 1D/5D/20D/60D/120D performance for a comma-separated list of ETF symbols."""
+    symbols_param = request.args.get('symbols', '')
+    symbols = [s.strip().upper() for s in symbols_param.split(',') if s.strip()]
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_etf_returns_data(conn, symbols))
+    except Exception as e:
+        logger.error(f"Error in ETF performance endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
 def get_homepage_data(connection):
     """
     Get homepage data: main indices, commodities, and sector ETFs with DMA calculations.

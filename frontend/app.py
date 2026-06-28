@@ -236,9 +236,39 @@ def themes_page():
     return render_template('themes.html')
 
 
+@app.route('/etfs')
+def etfs_page():
+    """ETFs page - thematic / sub-sector ETF performance across timeframes"""
+    return render_template('etfs.html')
+
+
 # User data directory for themes
 USER_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'user_data')
 THEMES_FILE = os.path.join(USER_DATA_DIR, 'themes.json')
+ETFS_FILE = os.path.join(USER_DATA_DIR, 'etfs.json')
+
+
+@app.route('/api/frontend/etfs', methods=['GET'])
+def api_get_etfs():
+    """Get the curated ETF groups from user_data/etfs.json"""
+    try:
+        if os.path.exists(ETFS_FILE):
+            with open(ETFS_FILE, 'r') as f:
+                return jsonify(json.load(f)), 200
+        return jsonify([]), 200
+    except Exception as e:
+        logger.error(f"Error reading etfs file: {e}")
+        return jsonify({'error': 'Failed to read etfs'}), 500
+
+
+@app.route('/api/frontend/etf-performance')
+def api_etf_performance():
+    """Proxy: ETF performance (1D/5D/20D/60D/120D) for a list of symbols"""
+    symbols = request.args.get('symbols', '')
+    data, status_code = make_backend_request(f'/api/etf-performance?symbols={symbols}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch ETF performance'}), status_code
+    return jsonify(data), status_code
 
 
 @app.route('/api/frontend/themes', methods=['GET'])

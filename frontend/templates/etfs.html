@@ -1,0 +1,743 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-etfs{% endblock %}
+
+{% block title %}ETFs - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+    main {
+        max-width: 100% !important;
+        padding: 0.4rem 0.6rem !important;
+    }
+
+    /* ── Top bar ── */
+    .etf-top-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.4rem;
+        flex-wrap: wrap;
+    }
+
+    .page-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--accent-blue);
+        letter-spacing: -0.3px;
+    }
+
+    .stats-compact {
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        font-family: 'JetBrains Mono', monospace;
+        align-items: center;
+    }
+
+    .stats-compact span {
+        color: var(--accent-blue);
+        font-weight: 600;
+    }
+
+    .etf-controls {
+        margin-left: auto;
+        display: flex;
+        gap: 0.3rem;
+        align-items: center;
+    }
+
+    .etf-sort-toggle {
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.65rem;
+        transition: all 0.15s;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .etf-sort-toggle:hover {
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
+    .etf-sort-toggle.active {
+        background: linear-gradient(135deg, rgba(88, 166, 255, 0.2) 0%, rgba(0, 212, 170, 0.2) 100%);
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
+    /* ── ETF grid ── */
+    .etf-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .etf-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .etf-card-header {
+        padding: 0.5rem 0.6rem;
+        border-bottom: 1px solid var(--border-color);
+        background: linear-gradient(135deg, rgba(88, 166, 255, 0.06) 0%, rgba(0, 212, 170, 0.04) 100%);
+    }
+
+    .etf-card-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--accent-blue);
+        letter-spacing: -0.3px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .etf-card-title .count-pill {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        background: var(--bg-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0.05rem 0.45rem;
+    }
+
+    /* ── Column headers / rows grid ── */
+    .etf-row-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 58px 52px 52px 52px 52px 56px;
+        gap: 0.35rem;
+        align-items: center;
+    }
+
+    .etf-col-headers {
+        padding: 0.25rem 0.6rem;
+        border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.55rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+    }
+
+    .etf-col-headers .col-num { text-align: right; }
+
+    .etf-stock-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .etf-stock-item {
+        padding: 0.4rem 0.6rem;
+        border-bottom: 1px solid rgba(48, 54, 61, 0.3);
+        color: inherit;
+        transition: background 0.15s;
+        cursor: pointer;
+    }
+
+    .etf-stock-item:last-child { border-bottom: none; }
+    .etf-stock-item:hover { background: var(--bg-card-hover); }
+
+    .etf-stock-item.active {
+        background: rgba(88, 166, 255, 0.10);
+        box-shadow: inset 2px 0 0 var(--accent-blue);
+    }
+
+    .etf-stock-item .ticker-block {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        gap: 0.05rem;
+    }
+
+    .etf-stock-item .ticker {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 0.82rem;
+    }
+
+    .etf-stock-item.active .ticker { color: var(--accent-blue); }
+
+    .etf-stock-item .company {
+        font-size: 0.62rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .etf-stock-item .val,
+    .etf-stock-item .ret {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .etf-stock-item .val { color: var(--text-secondary); }
+    .etf-stock-item .ret.positive { color: var(--accent-green); }
+    .etf-stock-item .ret.negative { color: var(--accent-red); }
+    .etf-stock-item .ret.muted,
+    .etf-stock-item .val.muted { color: var(--text-muted); }
+
+    /* ── Chart modal ── */
+    .etf-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .etf-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(2px);
+    }
+
+    .etf-modal-card {
+        position: relative;
+        width: 100%;
+        max-width: 960px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem 1.25rem 0.85rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+    .chart-title { display: flex; align-items: baseline; gap: 0.6rem; min-width: 0; }
+
+    .chart-title h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .chart-title span {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .chart-controls { display: flex; align-items: center; gap: 0.75rem; }
+
+    .chart-timeframe { display: flex; gap: 0.4rem; }
+
+    .timeframe-btn {
+        padding: 0.3rem 0.5rem;
+        border-radius: 5px;
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 0.7rem;
+        font-family: 'JetBrains Mono', monospace;
+        transition: all 0.2s;
+    }
+
+    .timeframe-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+
+    .timeframe-btn.active {
+        background: var(--accent-blue);
+        border-color: var(--accent-blue);
+        color: var(--bg-dark);
+    }
+
+    .modal-close {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        line-height: 1;
+        transition: all 0.15s;
+    }
+
+    .modal-close:hover { border-color: var(--accent-red); color: var(--accent-red); }
+
+    .etf-chart-wrapper {
+        width: 100%;
+        height: 420px;
+        position: relative;
+    }
+
+    .chart-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 420px;
+        color: var(--text-muted);
+    }
+
+    .chart-loading .spinner {
+        width: 36px; height: 36px;
+        border: 3px solid var(--border-color);
+        border-top-color: var(--accent-blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 0.5rem;
+    }
+
+    .chart-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .chart-legend { display: flex; gap: 1rem; font-size: 0.7rem; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 0.3rem; color: var(--text-secondary); }
+    .legend-dot { width: 10px; height: 3px; border-radius: 1px; }
+
+    .chart-stats { display: flex; gap: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; }
+    .chart-stat { color: var(--text-secondary); }
+    .chart-stat span { color: var(--text-primary); margin-left: 0.2rem; }
+    .chart-stat .text-green { color: var(--accent-green); }
+    .chart-stat .text-red { color: var(--accent-red); }
+
+    /* Loading state */
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        color: var(--text-muted);
+    }
+
+    .spinner {
+        width: 24px; height: 24px;
+        border: 2px solid var(--border-color);
+        border-top-color: var(--accent-blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 0.4rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+        .etf-grid { grid-template-columns: 1fr; }
+    }
+{% endblock %}
+
+{% block content %}
+<div class="etf-top-bar">
+    <span class="page-title">ETFs</span>
+    <div class="stats-compact">
+        <div>Categories: <span id="totalCategories">—</span></div>
+        <div>ETFs: <span id="totalEtfs">—</span></div>
+        <div id="asOf"></div>
+    </div>
+    <div class="etf-controls">
+        <button type="button" class="etf-sort-toggle active" data-sort="default" title="Original ordering">Default</button>
+        <button type="button" class="etf-sort-toggle" data-sort="dr_1" title="Sort by 1D % return">1D %</button>
+        <button type="button" class="etf-sort-toggle" data-sort="dr_5" title="Sort by 5D % return">5D %</button>
+        <button type="button" class="etf-sort-toggle" data-sort="dr_20" title="Sort by 20D % return">20D %</button>
+        <button type="button" class="etf-sort-toggle" data-sort="dr_60" title="Sort by 60D % return">60D %</button>
+        <button type="button" class="etf-sort-toggle" data-sort="dr_120" title="Sort by 120D % return">120D %</button>
+    </div>
+</div>
+
+<div class="loading-container" id="loadingState">
+    <div class="spinner"></div>
+    <span>Loading ETFs...</span>
+</div>
+
+<div class="etf-grid" id="etfGrid" style="display: none;"></div>
+
+<!-- Chart Modal -->
+<div class="etf-modal" id="chartModal" style="display: none;">
+    <div class="etf-modal-backdrop" onclick="closeChartModal()"></div>
+    <div class="etf-modal-card">
+        <div class="chart-header">
+            <div class="chart-title">
+                <h3 id="modalSymbol"></h3>
+                <span id="modalName"></span>
+            </div>
+            <div class="chart-controls">
+                <div class="chart-timeframe" id="modalTimeframe">
+                    <button class="timeframe-btn" data-days="30">1M</button>
+                    <button class="timeframe-btn" data-days="90">3M</button>
+                    <button class="timeframe-btn" data-days="180">6M</button>
+                    <button class="timeframe-btn active" data-days="365">1Y</button>
+                </div>
+                <button class="modal-close" onclick="closeChartModal()" title="Close">✕</button>
+            </div>
+        </div>
+        <div class="chart-loading" id="modalLoading">
+            <div class="spinner"></div>
+            <span>Loading chart...</span>
+        </div>
+        <div class="etf-chart-wrapper" id="modalChartContainer" style="display: none;"></div>
+        <div class="chart-footer">
+            <div class="chart-legend">
+                <div class="legend-item"><div class="legend-dot" style="background: #3fb950;"></div><span>Bull</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background: #f85149;"></div><span>Bear</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background: #ffffff;"></div><span>10 EMA</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background: #ffa500;"></div><span>20 EMA</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background: #00ff00;"></div><span>50 SMA</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background: #ff0000;"></div><span>200 SMA</span></div>
+            </div>
+            <div class="chart-stats" id="modalChartStats"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+(function() {
+    let ETF_GROUPS = [];
+    let perfMap = {};
+    let currentSort = 'default';
+
+    // ── Formatting ──
+    function fmtRet(v) {
+        if (v == null) return '—';
+        return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+    }
+    function retCls(v) {
+        if (v == null) return 'muted';
+        return v >= 0 ? 'positive' : 'negative';
+    }
+    function fmtPrice(v) {
+        if (v == null) return '—';
+        return '$' + v.toFixed(2);
+    }
+
+    // ── Data loading ──
+    async function loadData() {
+        try {
+            const resp = await fetch('/api/frontend/etfs');
+            const data = await resp.json();
+            if (Array.isArray(data)) ETF_GROUPS = data;
+        } catch (e) {
+            console.error('Failed to load etfs config', e);
+        }
+
+        if (ETF_GROUPS.length === 0) {
+            document.getElementById('loadingState').innerHTML = '<span>No ETFs configured. Edit user_data/etfs.json.</span>';
+            return;
+        }
+
+        const symbols = [];
+        ETF_GROUPS.forEach(g => (g.etfs || []).forEach(e => symbols.push(e.symbol)));
+        document.getElementById('totalCategories').textContent = ETF_GROUPS.length;
+        document.getElementById('totalEtfs').textContent = symbols.length;
+
+        try {
+            const resp = await fetch('/api/frontend/etf-performance?symbols=' + encodeURIComponent(symbols.join(',')));
+            const data = await resp.json();
+            (data.etfs || []).forEach(p => { perfMap[p.symbol] = p; });
+            if (data.latest_date) document.getElementById('asOf').textContent = 'As of ' + data.latest_date;
+        } catch (e) {
+            console.error('Failed to load etf performance', e);
+        }
+
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('etfGrid').style.display = 'grid';
+        renderGrid();
+    }
+
+    // ── Sorting ──
+    function sortEtfs(etfs) {
+        if (currentSort === 'default') return etfs.slice();
+        const arr = etfs.slice();
+        arr.sort((a, b) => {
+            const va = perfMap[a.symbol]?.[currentSort];
+            const vb = perfMap[b.symbol]?.[currentSort];
+            if (va == null && vb == null) return 0;
+            if (va == null) return 1;
+            if (vb == null) return -1;
+            return vb - va;
+        });
+        return arr;
+    }
+
+    // ── Render ──
+    function renderGrid() {
+        const grid = document.getElementById('etfGrid');
+        grid.innerHTML = ETF_GROUPS.map(group => {
+            const sorted = sortEtfs(group.etfs || []);
+            const rowsHtml = sorted.map(renderEtfRow).join('');
+            return `
+                <div class="etf-card">
+                    <div class="etf-card-header">
+                        <div class="etf-card-title">
+                            <span>${group.category}</span>
+                            <span class="count-pill">${(group.etfs || []).length}</span>
+                        </div>
+                    </div>
+                    <div class="etf-col-headers etf-row-grid">
+                        <span>Symbol</span>
+                        <span class="col-num">Price</span>
+                        <span class="col-num">1D</span>
+                        <span class="col-num">5D</span>
+                        <span class="col-num">20D</span>
+                        <span class="col-num">60D</span>
+                        <span class="col-num">120D</span>
+                    </div>
+                    <div class="etf-stock-list">${rowsHtml}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderEtfRow(etf) {
+        const p = perfMap[etf.symbol] || {};
+        return `
+            <div class="etf-stock-item etf-row-grid" data-symbol="${etf.symbol}"
+                 onclick="openChartModal('${etf.symbol}', '${(etf.name || '').replace(/'/g, "\\'")}')">
+                <span class="ticker-block">
+                    <span class="ticker">${etf.symbol}</span>
+                    <span class="company">${etf.name || ''}</span>
+                </span>
+                <span class="val ${p.current_price == null ? 'muted' : ''}">${fmtPrice(p.current_price)}</span>
+                <span class="ret ${retCls(p.dr_1)}">${fmtRet(p.dr_1)}</span>
+                <span class="ret ${retCls(p.dr_5)}">${fmtRet(p.dr_5)}</span>
+                <span class="ret ${retCls(p.dr_20)}">${fmtRet(p.dr_20)}</span>
+                <span class="ret ${retCls(p.dr_60)}">${fmtRet(p.dr_60)}</span>
+                <span class="ret ${retCls(p.dr_120)}">${fmtRet(p.dr_120)}</span>
+            </div>
+        `;
+    }
+
+    // ── Sort toggle wiring ──
+    document.querySelectorAll('.etf-sort-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const next = btn.dataset.sort;
+            if (next === currentSort) return;
+            currentSort = next;
+            document.querySelectorAll('.etf-sort-toggle').forEach(b => {
+                b.classList.toggle('active', b.dataset.sort === currentSort);
+            });
+            renderGrid();
+        });
+    });
+
+    // ============================================
+    // Chart modal (index_prices OHLC)
+    // ============================================
+    let modalChart = null;
+    let modalState = null;   // { data, series, timeframe }
+    let activeSymbol = null;
+
+    window.openChartModal = function(symbol, name) {
+        activeSymbol = symbol;
+        document.getElementById('modalSymbol').textContent = symbol;
+        document.getElementById('modalName').textContent = name || '';
+
+        document.querySelectorAll('.etf-stock-item').forEach(el => {
+            el.classList.toggle('active', el.dataset.symbol === symbol);
+        });
+
+        // Reset timeframe buttons to 1Y
+        document.querySelectorAll('#modalTimeframe .timeframe-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.days === '365');
+        });
+
+        document.getElementById('chartModal').style.display = 'flex';
+        loadModalChart(symbol);
+    };
+
+    window.closeChartModal = function() {
+        document.getElementById('chartModal').style.display = 'none';
+        if (modalChart) { modalChart.remove(); modalChart = null; }
+        modalState = null;
+        document.querySelectorAll('.etf-stock-item.active').forEach(el => el.classList.remove('active'));
+        activeSymbol = null;
+    };
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.getElementById('chartModal').style.display === 'flex') {
+            closeChartModal();
+        }
+    });
+
+    async function loadModalChart(symbol) {
+        const loading = document.getElementById('modalLoading');
+        const container = document.getElementById('modalChartContainer');
+        loading.style.display = 'flex';
+        container.style.display = 'none';
+        if (modalChart) { modalChart.remove(); modalChart = null; }
+
+        try {
+            const resp = await fetch('/api/frontend/index-ohlc/' + symbol);
+            const data = await resp.json();
+            if (data.error || !Array.isArray(data) || data.length === 0) {
+                loading.innerHTML = '<span style="color: var(--text-muted);">No chart data for ' + symbol + '</span>';
+                return;
+            }
+            // Ignore stale responses if user already closed/switched
+            if (activeSymbol !== symbol) return;
+            loading.style.display = 'none';
+            container.style.display = 'block';
+            initModalChart(data);
+        } catch (err) {
+            console.error('Error loading chart for ' + symbol, err);
+            loading.innerHTML = '<span style="color: var(--text-muted);">Failed to load chart</span>';
+        }
+    }
+
+    function initModalChart(data) {
+        const container = document.getElementById('modalChartContainer');
+        const chart = LightweightCharts.createChart(container, {
+            width: container.clientWidth,
+            height: 420,
+            layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#8b949e', fontFamily: "'JetBrains Mono', monospace" },
+            grid: { vertLines: { visible: false }, horzLines: { visible: false } },
+            crosshair: {
+                mode: LightweightCharts.CrosshairMode.Normal,
+                vertLine: { width: 1, color: 'rgba(88, 166, 255, 0.5)', style: LightweightCharts.LineStyle.Dashed },
+                horzLine: { width: 1, color: 'rgba(88, 166, 255, 0.5)', style: LightweightCharts.LineStyle.Dashed },
+            },
+            rightPriceScale: { borderColor: '#30363d', scaleMargins: { top: 0.05, bottom: 0.15 } },
+            timeScale: { borderColor: '#30363d', timeVisible: true, secondsVisible: false },
+        });
+
+        const candlestickSeries = chart.addCandlestickSeries({
+            upColor: '#3fb950', downColor: '#f85149',
+            borderDownColor: '#f85149', borderUpColor: '#3fb950',
+            wickDownColor: '#f85149', wickUpColor: '#3fb950',
+        });
+        const ema10Series = chart.addLineSeries({ color: '#ffffff', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+        const ema20Series = chart.addLineSeries({ color: '#ffa500', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+        const sma50Series = chart.addLineSeries({ color: '#00ff00', lineWidth: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+        const sma200Series = chart.addLineSeries({ color: '#ff0000', lineWidth: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+        const volumeSeries = chart.addHistogramSeries({ color: '#26a69a', priceFormat: { type: 'volume' }, priceScaleId: '', scaleMargins: { top: 0.88, bottom: 0 } });
+
+        modalChart = chart;
+        modalState = { data, series: { candlestickSeries, ema10Series, ema20Series, sma50Series, sma200Series, volumeSeries }, timeframe: 365 };
+
+        updateModalChart(365);
+    }
+
+    function updateModalChart(days) {
+        if (!modalState) return;
+        const { data, series } = modalState;
+        modalState.timeframe = days;
+
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+        const cutoffStr = cutoffDate.toISOString().split('T')[0];
+
+        const ema10Full = calculateEMA(data, 10);
+        const ema20Full = calculateEMA(data, 20);
+        const sma50Full = calculateSMA(data, 50);
+        const sma200Full = calculateSMA(data, 200);
+
+        const filteredCandles = data.filter(d => d.time >= cutoffStr);
+        const dataToUse = filteredCandles.length > 0 ? filteredCandles : data;
+
+        series.candlestickSeries.setData(dataToUse.map(d => ({ time: d.time, open: d.open, high: d.high, low: d.low, close: d.close })));
+        series.ema10Series.setData(ema10Full.filter(d => d.time >= cutoffStr));
+        series.ema20Series.setData(ema20Full.filter(d => d.time >= cutoffStr));
+        series.sma50Series.setData(sma50Full.filter(d => d.time >= cutoffStr));
+        series.sma200Series.setData(sma200Full.filter(d => d.time >= cutoffStr));
+        series.volumeSeries.setData(dataToUse.map(d => ({ time: d.time, value: d.volume, color: d.close >= d.open ? 'rgba(63, 185, 80, 0.3)' : 'rgba(248, 81, 73, 0.3)' })));
+
+        modalChart.timeScale().fitContent();
+        updateModalStats(dataToUse);
+    }
+
+    function calculateEMA(data, period) {
+        if (data.length < period) return [];
+        const k = 2 / (period + 1);
+        const out = [];
+        let sum = 0;
+        for (let i = 0; i < period; i++) sum += data[i].close;
+        let ema = sum / period;
+        out.push({ time: data[period - 1].time, value: ema });
+        for (let i = period; i < data.length; i++) {
+            ema = (data[i].close - ema) * k + ema;
+            out.push({ time: data[i].time, value: ema });
+        }
+        return out;
+    }
+
+    function calculateSMA(data, period) {
+        if (data.length < period) return [];
+        const out = [];
+        for (let i = period - 1; i < data.length; i++) {
+            let sum = 0;
+            for (let j = 0; j < period; j++) sum += data[i - j].close;
+            out.push({ time: data[i].time, value: sum / period });
+        }
+        return out;
+    }
+
+    function updateModalStats(data) {
+        if (!data || data.length === 0) return;
+        const firstPrice = data[0].close;
+        const lastPrice = data[data.length - 1].close;
+        const changePercent = ((lastPrice - firstPrice) / firstPrice * 100).toFixed(2);
+        const highest = Math.max(...data.map(d => d.high));
+        const lowest = Math.min(...data.map(d => d.low));
+        document.getElementById('modalChartStats').innerHTML = `
+            <div class="chart-stat">Chg: <span class="${changePercent >= 0 ? 'text-green' : 'text-red'}">${changePercent >= 0 ? '+' : ''}${changePercent}%</span></div>
+            <div class="chart-stat">High: <span>$${highest.toFixed(2)}</span></div>
+            <div class="chart-stat">Low: <span>$${lowest.toFixed(2)}</span></div>
+            <div class="chart-stat">Last: <span>$${lastPrice.toFixed(2)}</span></div>
+        `;
+    }
+
+    // Timeframe buttons
+    document.querySelectorAll('#modalTimeframe .timeframe-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('#modalTimeframe .timeframe-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            updateModalChart(parseInt(this.dataset.days));
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (modalChart) {
+            const container = document.getElementById('modalChartContainer');
+            modalChart.applyOptions({ width: container.clientWidth });
+        }
+    });
+
+    loadData();
+})();
+</script>
+{% endblock %}
