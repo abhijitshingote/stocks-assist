@@ -1,8 +1,15 @@
 [
   {
-    "name": "EdgeAI",
-    "desc": "",
-    "tickers": ["AKAM","NET","AMBQ"]
+    "name": "Quantum Computing",
+    "desc": "Quantum hardware, error correction, government funding & foundry buildout",
+    "tickers": ["IONQ", "RGTI", "QBTS", "QUBT", "IBM", "GFS", "NVDA", "ARQQ", "INTC"]
+  },
+  {
+    "name": "Software & SaaS",
+    "desc": "Application software, infra software, cybersecurity, developer tools, AI-application layer, vertical SaaS",
+    "tickers": ["RDDT","NFLX","MSFT","DDOG","SNOW","FROG","PANW","MDB",
+    "OKTA","ZS", "TEAM", "INTU","CRWD", 
+    "CRM", "NOW","ACN" ]
   },
   {
     "name": "AI Compute",

@@ -5,7 +5,7 @@ from __future__ import annotations
 from flask import Flask, jsonify, request, send_file
 import io
 from flask_cors import CORS
-from sqlalchemy import create_engine, func, desc, asc, text, or_
+from sqlalchemy import create_engine, func, desc, asc, text, or_, bindparam
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
@@ -2240,6 +2240,153 @@ def get_main_view_mega():
         s.close()
 
 
+def _format_all_stocks_row(r):
+    spike_dates = [d for d in (r['volume_spike_days'] or '').split(',') if d.strip()]
+    gap_dates = [d for d in (r['gap_days'] or '').split(',') if d.strip()]
+    return {
+        'ticker': r['ticker'],
+        'company_name': r['company_name'],
+        'country': r['country'],
+        'sector': r['sector'],
+        'industry': r['industry'],
+        'ipo_date': r['ipo_date'].strftime('%Y-%m-%d') if r['ipo_date'] else None,
+        'market_cap': r['market_cap'],
+        'current_price': round(r['current_price'], 2) if r['current_price'] else None,
+        'range_52_week': r['range_52_week'],
+        'volume': int(r['volume']) if r['volume'] else None,
+        'dollar_volume': round(r['dollar_volume'], 2) if r['dollar_volume'] else None,
+        'avg_vol_10d': float(r['avg_vol_10d']) if r['avg_vol_10d'] else None,
+        'vol_vs_10d_avg': float(r['vol_vs_10d_avg']) if r['vol_vs_10d_avg'] else None,
+        'ti65': round(r['ti65'], 2) if r['ti65'] else None,
+        'dr_1': round(r['dr_1'], 2) if r['dr_1'] else None,
+        'dr_5': round(r['dr_5'], 2) if r['dr_5'] else None,
+        'dr_20': round(r['dr_20'], 2) if r['dr_20'] else None,
+        'dr_60': round(r['dr_60'], 2) if r['dr_60'] else None,
+        'dr_120': round(r['dr_120'], 2) if r['dr_120'] else None,
+        'atr20': round(r['atr20'], 2) if r['atr20'] else None,
+        'pe_t_minus_1': round(r['pe_t_minus_1'], 2) if r['pe_t_minus_1'] else None,
+        'pe_t': round(r['pe_t'], 2) if r['pe_t'] else None,
+        'pe_t_plus_1': round(r['pe_t_plus_1'], 2) if r['pe_t_plus_1'] else None,
+        'pe_t_plus_2': round(r['pe_t_plus_2'], 2) if r['pe_t_plus_2'] else None,
+        'ps_t_minus_1': round(r['ps_t_minus_1'], 2) if r['ps_t_minus_1'] else None,
+        'ps_t': round(r['ps_t'], 2) if r['ps_t'] else None,
+        'ps_t_plus_1': round(r['ps_t_plus_1'], 2) if r['ps_t_plus_1'] else None,
+        'ps_t_plus_2': round(r['ps_t_plus_2'], 2) if r['ps_t_plus_2'] else None,
+        'rev_growth_t_minus_1': round(r['rev_growth_t_minus_1'], 2) if r['rev_growth_t_minus_1'] else None,
+        'rev_growth_t': round(r['rev_growth_t'], 2) if r['rev_growth_t'] else None,
+        'rev_growth_t_plus_1': round(r['rev_growth_t_plus_1'], 2) if r['rev_growth_t_plus_1'] else None,
+        'rev_growth_t_plus_2': round(r['rev_growth_t_plus_2'], 2) if r['rev_growth_t_plus_2'] else None,
+        'eps_growth_t_minus_1': round(r['eps_growth_t_minus_1'], 2) if r['eps_growth_t_minus_1'] else None,
+        'eps_growth_t': round(r['eps_growth_t'], 2) if r['eps_growth_t'] else None,
+        'eps_growth_t_plus_1': round(r['eps_growth_t_plus_1'], 2) if r['eps_growth_t_plus_1'] else None,
+        'eps_growth_t_plus_2': round(r['eps_growth_t_plus_2'], 2) if r['eps_growth_t_plus_2'] else None,
+        'rsi': r['rsi'],
+        'rsi_mktcap': r['rsi_mktcap'],
+        'short_float': round(r['short_float'], 2) if r['short_float'] else None,
+        'short_ratio': round(r['short_ratio'], 2) if r['short_ratio'] else None,
+        'short_interest': round(r['short_interest'], 2) if r['short_interest'] else None,
+        'low_float': r['low_float'],
+        'float_shares': r['float_shares'],
+        'outstanding_shares': r['outstanding_shares'],
+        'free_float': round(r['free_float'], 2) if r['free_float'] else None,
+        'spike_day_count': r['spike_day_count'] or 0,
+        'avg_volume_spike': round(r['avg_volume_spike'], 2) if r['avg_volume_spike'] else None,
+        'volume_spike_days': spike_dates,
+        'gapper_day_count': r['gapper_day_count'] or 0,
+        'avg_return_gapper': round(r['avg_return_gapper'], 4) if r['avg_return_gapper'] else None,
+        'gap_days': gap_dates,
+        'last_event_date': r['last_event_date'].strftime('%Y-%m-%d') if r['last_event_date'] else None,
+        'last_event_type': r['last_event_type'],
+        'last_event_magnitude': float(r['last_event_magnitude']) if r['last_event_magnitude'] else None,
+        'last_event_return': float(r['last_event_return']) if r['last_event_return'] else None,
+        'tags': r['tags'] or '',
+    }
+
+
+_ALL_STOCKS_SQL = """
+    SELECT
+        sm.ticker,
+        sm.company_name,
+        sm.country,
+        sm.sector,
+        sm.industry,
+        sm.ipo_date,
+        sm.market_cap,
+        sm.current_price,
+        sm.range_52_week,
+        sm.volume,
+        sm.dollar_volume,
+        sm.avg_vol_10d,
+        sm.vol_vs_10d_avg,
+        sm.TI65,
+        sm.dr_1, sm.dr_5, sm.dr_20, sm.dr_60, sm.dr_120,
+        sm.atr20,
+        sm.pe_t_minus_1, sm.pe_t, sm.pe_t_plus_1, sm.pe_t_plus_2,
+        sm.ps_t_minus_1, sm.ps_t, sm.ps_t_plus_1, sm.ps_t_plus_2,
+        sm.rev_growth_t_minus_1, sm.rev_growth_t,
+        sm.rev_growth_t_plus_1, sm.rev_growth_t_plus_2,
+        sm.eps_growth_t_minus_1, sm.eps_growth_t,
+        sm.eps_growth_t_plus_1, sm.eps_growth_t_plus_2,
+        sm.rsi, sm.rsi_mktcap,
+        sm.short_float, sm.short_ratio, sm.short_interest, sm.low_float,
+        sm.float_shares, sm.outstanding_shares, sm.free_float,
+        svg.spike_day_count,
+        svg.avg_volume_spike,
+        svg.volume_spike_days,
+        svg.gapper_day_count,
+        svg.avg_return_gapper,
+        svg.gap_days,
+        svg.last_event_date,
+        svg.last_event_type,
+        svg.last_event_magnitude,
+        svg.last_event_return,
+        ARRAY_TO_STRING(
+            ARRAY(
+                SELECT DISTINCT tag FROM UNNEST(ARRAY[
+                    CASE WHEN
+                        (COALESCE(sm.rev_growth_t::numeric, sm.rev_growth_t_plus_1::numeric) +
+                         COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t::numeric)) / 2 > 25
+                        OR
+                        (COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t_plus_2::numeric) +
+                         COALESCE(sm.rev_growth_t_plus_2::numeric, sm.rev_growth_t_plus_1::numeric)) / 2 > 25
+                    THEN 'high_sales_growth' END,
+                    CASE WHEN sm.TI65 > 1.05 THEN 'TI65' END,
+                    CASE WHEN svg.spike_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '30 days'
+                         THEN 'volume_spike (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')' END,
+                    CASE WHEN svg.gapper_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '30 days'
+                         THEN 'gapper (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')' END
+                ]) AS tag
+                WHERE tag IS NOT NULL
+            ), ', '
+        ) AS tags
+    FROM stock_metrics sm
+    LEFT JOIN stock_volspike_gapper svg ON sm.ticker = svg.ticker
+    WHERE sm.industry <> 'Biotechnology'
+      AND sm.current_price > 3
+      AND sm.avg_vol_10d * (
+            SELECT AVG(close) FROM (
+                SELECT o.close FROM ohlc o
+                WHERE o.ticker = sm.ticker
+                ORDER BY o."date" DESC LIMIT 10
+            ) AS last10
+      ) > 10000000
+"""
+
+
+def _fetch_all_stocks(session, tickers=None):
+    ticker_filter = ''
+    params = {}
+    if tickers:
+        ticker_filter = ' AND sm.ticker IN :tickers'
+        params = {'tickers': tickers}
+
+    sql = text(_ALL_STOCKS_SQL + ticker_filter + '\n    ORDER BY sm.TI65 DESC NULLS LAST')
+    if tickers:
+        sql = sql.bindparams(bindparam('tickers', expanding=True))
+    rows = session.execute(sql, params).mappings().all()
+    return [_format_all_stocks_row(r) for r in rows]
+
+
 @app.route('/api/AllStocks')
 def get_all_stocks():
     """
@@ -2248,145 +2395,36 @@ def get_all_stocks():
     without volspike/gapper rows are still included (those columns return NULL
     and `tags` is computed inline, mirroring main_view_update.py).
     """
-    sql = text("""
-        SELECT
-            sm.ticker,
-            sm.company_name,
-            sm.country,
-            sm.sector,
-            sm.industry,
-            sm.ipo_date,
-            sm.market_cap,
-            sm.current_price,
-            sm.range_52_week,
-            sm.volume,
-            sm.dollar_volume,
-            sm.avg_vol_10d,
-            sm.vol_vs_10d_avg,
-            sm.TI65,
-            sm.dr_1, sm.dr_5, sm.dr_20, sm.dr_60, sm.dr_120,
-            sm.atr20,
-            sm.pe_t_minus_1, sm.pe_t, sm.pe_t_plus_1, sm.pe_t_plus_2,
-            sm.ps_t_minus_1, sm.ps_t, sm.ps_t_plus_1, sm.ps_t_plus_2,
-            sm.rev_growth_t_minus_1, sm.rev_growth_t,
-            sm.rev_growth_t_plus_1, sm.rev_growth_t_plus_2,
-            sm.eps_growth_t_minus_1, sm.eps_growth_t,
-            sm.eps_growth_t_plus_1, sm.eps_growth_t_plus_2,
-            sm.rsi, sm.rsi_mktcap,
-            sm.short_float, sm.short_ratio, sm.short_interest, sm.low_float,
-            sm.float_shares, sm.outstanding_shares, sm.free_float,
-            svg.spike_day_count,
-            svg.avg_volume_spike,
-            svg.volume_spike_days,
-            svg.gapper_day_count,
-            svg.avg_return_gapper,
-            svg.gap_days,
-            svg.last_event_date,
-            svg.last_event_type,
-            svg.last_event_magnitude,
-            svg.last_event_return,
-            ARRAY_TO_STRING(
-                ARRAY(
-                    SELECT DISTINCT tag FROM UNNEST(ARRAY[
-                        CASE WHEN
-                            (COALESCE(sm.rev_growth_t::numeric, sm.rev_growth_t_plus_1::numeric) +
-                             COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t::numeric)) / 2 > 25
-                            OR
-                            (COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t_plus_2::numeric) +
-                             COALESCE(sm.rev_growth_t_plus_2::numeric, sm.rev_growth_t_plus_1::numeric)) / 2 > 25
-                        THEN 'high_sales_growth' END,
-                        CASE WHEN sm.TI65 > 1.05 THEN 'TI65' END,
-                        CASE WHEN svg.spike_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '30 days'
-                             THEN 'volume_spike (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')' END,
-                        CASE WHEN svg.gapper_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '30 days'
-                             THEN 'gapper (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')' END
-                    ]) AS tag
-                    WHERE tag IS NOT NULL
-                ), ', '
-            ) AS tags
-        FROM stock_metrics sm
-        LEFT JOIN stock_volspike_gapper svg ON sm.ticker = svg.ticker
-        WHERE sm.industry <> 'Biotechnology'
-          AND sm.current_price > 3
-          AND sm.avg_vol_10d * (
-                SELECT AVG(close) FROM (
-                    SELECT o.close FROM ohlc o
-                    WHERE o.ticker = sm.ticker
-                    ORDER BY o."date" DESC LIMIT 10
-                ) AS last10
-          ) > 10000000
-        ORDER BY sm.TI65 DESC NULLS LAST
-    """)
-
     s = Session()
     try:
-        rows = s.execute(sql).mappings().all()
-        out = []
-        for r in rows:
-            spike_dates = [d for d in (r['volume_spike_days'] or '').split(',') if d.strip()]
-            gap_dates = [d for d in (r['gap_days'] or '').split(',') if d.strip()]
-            out.append({
-                'ticker': r['ticker'],
-                'company_name': r['company_name'],
-                'country': r['country'],
-                'sector': r['sector'],
-                'industry': r['industry'],
-                'ipo_date': r['ipo_date'].strftime('%Y-%m-%d') if r['ipo_date'] else None,
-                'market_cap': r['market_cap'],
-                'current_price': round(r['current_price'], 2) if r['current_price'] else None,
-                'range_52_week': r['range_52_week'],
-                'volume': int(r['volume']) if r['volume'] else None,
-                'dollar_volume': round(r['dollar_volume'], 2) if r['dollar_volume'] else None,
-                'avg_vol_10d': float(r['avg_vol_10d']) if r['avg_vol_10d'] else None,
-                'vol_vs_10d_avg': float(r['vol_vs_10d_avg']) if r['vol_vs_10d_avg'] else None,
-                'ti65': round(r['ti65'], 2) if r['ti65'] else None,
-                'dr_1': round(r['dr_1'], 2) if r['dr_1'] else None,
-                'dr_5': round(r['dr_5'], 2) if r['dr_5'] else None,
-                'dr_20': round(r['dr_20'], 2) if r['dr_20'] else None,
-                'dr_60': round(r['dr_60'], 2) if r['dr_60'] else None,
-                'dr_120': round(r['dr_120'], 2) if r['dr_120'] else None,
-                'atr20': round(r['atr20'], 2) if r['atr20'] else None,
-                'pe_t_minus_1': round(r['pe_t_minus_1'], 2) if r['pe_t_minus_1'] else None,
-                'pe_t': round(r['pe_t'], 2) if r['pe_t'] else None,
-                'pe_t_plus_1': round(r['pe_t_plus_1'], 2) if r['pe_t_plus_1'] else None,
-                'pe_t_plus_2': round(r['pe_t_plus_2'], 2) if r['pe_t_plus_2'] else None,
-                'ps_t_minus_1': round(r['ps_t_minus_1'], 2) if r['ps_t_minus_1'] else None,
-                'ps_t': round(r['ps_t'], 2) if r['ps_t'] else None,
-                'ps_t_plus_1': round(r['ps_t_plus_1'], 2) if r['ps_t_plus_1'] else None,
-                'ps_t_plus_2': round(r['ps_t_plus_2'], 2) if r['ps_t_plus_2'] else None,
-                'rev_growth_t_minus_1': round(r['rev_growth_t_minus_1'], 2) if r['rev_growth_t_minus_1'] else None,
-                'rev_growth_t': round(r['rev_growth_t'], 2) if r['rev_growth_t'] else None,
-                'rev_growth_t_plus_1': round(r['rev_growth_t_plus_1'], 2) if r['rev_growth_t_plus_1'] else None,
-                'rev_growth_t_plus_2': round(r['rev_growth_t_plus_2'], 2) if r['rev_growth_t_plus_2'] else None,
-                'eps_growth_t_minus_1': round(r['eps_growth_t_minus_1'], 2) if r['eps_growth_t_minus_1'] else None,
-                'eps_growth_t': round(r['eps_growth_t'], 2) if r['eps_growth_t'] else None,
-                'eps_growth_t_plus_1': round(r['eps_growth_t_plus_1'], 2) if r['eps_growth_t_plus_1'] else None,
-                'eps_growth_t_plus_2': round(r['eps_growth_t_plus_2'], 2) if r['eps_growth_t_plus_2'] else None,
-                'rsi': r['rsi'],
-                'rsi_mktcap': r['rsi_mktcap'],
-                'short_float': round(r['short_float'], 2) if r['short_float'] else None,
-                'short_ratio': round(r['short_ratio'], 2) if r['short_ratio'] else None,
-                'short_interest': round(r['short_interest'], 2) if r['short_interest'] else None,
-                'low_float': r['low_float'],
-                'float_shares': r['float_shares'],
-                'outstanding_shares': r['outstanding_shares'],
-                'free_float': round(r['free_float'], 2) if r['free_float'] else None,
-                'spike_day_count': r['spike_day_count'] or 0,
-                'avg_volume_spike': round(r['avg_volume_spike'], 2) if r['avg_volume_spike'] else None,
-                'volume_spike_days': spike_dates,
-                'gapper_day_count': r['gapper_day_count'] or 0,
-                'avg_return_gapper': round(r['avg_return_gapper'], 4) if r['avg_return_gapper'] else None,
-                'gap_days': gap_dates,
-                'last_event_date': r['last_event_date'].strftime('%Y-%m-%d') if r['last_event_date'] else None,
-                'last_event_type': r['last_event_type'],
-                'last_event_magnitude': float(r['last_event_magnitude']) if r['last_event_magnitude'] else None,
-                'last_event_return': float(r['last_event_return']) if r['last_event_return'] else None,
-                'tags': r['tags'] or '',
-            })
-        return jsonify(out)
+        return jsonify(_fetch_all_stocks(s))
     except Exception as e:
         logger.error(f"Error in AllStocks endpoint: {e}")
         return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/AllStocks-ByTickers')
+def get_all_stocks_by_tickers():
+    """
+    AllStocks data for a specific ticker list (comma-separated via 'tickers' param).
+    Same stock_metrics source and liquidity filters as /api/AllStocks.
+    """
+    tickers_param = request.args.get('tickers', '').strip()
+    if not tickers_param:
+        return jsonify([])
+
+    tickers = [t.strip().upper() for t in tickers_param.split(',') if t.strip()]
+    if not tickers:
+        return jsonify([])
+
+    s = Session()
+    try:
+        return jsonify(_fetch_all_stocks(s, tickers=tickers))
+    except Exception as e:
+        logger.error(f"Error in AllStocks-ByTickers endpoint: {e}")
+        return jsonify([])
     finally:
         s.close()
 
