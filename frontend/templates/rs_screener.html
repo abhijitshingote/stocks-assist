@@ -76,6 +76,25 @@
         font-size: 0.75rem;
     }
 
+    .stock-item .ticker-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        min-width: 0;
+    }
+
+    .tag-near-52w {
+        font-size: 0.55rem;
+        padding: 0.02rem 0.25rem;
+        border-radius: 3px;
+        background: rgba(63, 185, 80, 0.18);
+        color: var(--accent-green);
+        border: 1px solid rgba(63, 185, 80, 0.35);
+        font-weight: 600;
+        font-family: 'JetBrains Mono', monospace;
+        flex-shrink: 0;
+    }
+
     .stock-item .score {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.7rem;
@@ -353,6 +372,86 @@
     .rs-positive { color: var(--accent-green); }
     .rs-negative { color: var(--accent-red); }
 
+    /* ── Sector / Industry filter bars ── */
+    .si-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        margin-bottom: 0.25rem;
+        flex-wrap: wrap;
+    }
+
+    .si-bar-label {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-right: 0.2rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .industry-bar {
+        display: none;
+        padding: 0.15rem 0.35rem 0.15rem 0.5rem;
+        border-left: 2px solid var(--accent-green);
+        background: rgba(63, 185, 80, 0.04);
+        border-radius: 0 4px 4px 0;
+    }
+
+    .industry-bar.visible { display: flex; }
+
+    .si-tab {
+        padding: 0.18rem 0.45rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.65rem;
+        transition: all 0.15s;
+        font-family: 'JetBrains Mono', monospace;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+    }
+
+    .si-tab:hover {
+        border-color: var(--accent-purple);
+        color: var(--text-primary);
+    }
+
+    .si-tab.sector-tab.active {
+        background: linear-gradient(135deg, rgba(63, 185, 80, 0.22) 0%, rgba(0, 188, 212, 0.22) 100%);
+        border-color: var(--accent-green);
+        color: var(--text-primary);
+    }
+
+    .si-tab.industry-tab {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+    }
+
+    .si-tab.industry-tab.active {
+        background: rgba(88, 166, 255, 0.22);
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
+
+    .si-tab .count {
+        font-size: 0.55rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 0.02rem 0.22rem;
+        border-radius: 3px;
+    }
+
+    .si-tab.active .count {
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
     @media (max-width: 768px) {
         .rs-layout { flex-direction: column; height: auto; }
         .rs-left { width: 100%; height: 200px; }
@@ -371,6 +470,12 @@
     <button class="cap-tab" data-cap="micro">Micro<span class="cap-label">&lt;$200M</span></button>
 </div>
 
+<!-- Sector filter bar -->
+<div class="si-bar" id="sectorBar"></div>
+
+<!-- Industry filter bar (visible only when a sector is selected) -->
+<div class="si-bar industry-bar" id="industryBar"></div>
+
 <div class="rs-layout">
     <!-- Left: stock list -->
     <div class="rs-left">
@@ -387,28 +492,28 @@
         <div class="slider-bar">
             <div class="slider-group">
                 <label>2D</label>
-                <input type="range" min="0" max="100" value="75" data-tf="2d">
-                <span class="slider-val">75</span>
+                <input type="range" min="0" max="100" value="50" data-tf="2d">
+                <span class="slider-val">50</span>
             </div>
             <div class="slider-group">
                 <label>5D</label>
-                <input type="range" min="0" max="100" value="75" data-tf="5d">
-                <span class="slider-val">75</span>
+                <input type="range" min="0" max="100" value="50" data-tf="5d">
+                <span class="slider-val">50</span>
             </div>
             <div class="slider-group">
                 <label>10D</label>
-                <input type="range" min="0" max="100" value="60" data-tf="10d">
-                <span class="slider-val">60</span>
+                <input type="range" min="0" max="100" value="50" data-tf="10d">
+                <span class="slider-val">50</span>
             </div>
             <div class="slider-group">
                 <label>20D</label>
-                <input type="range" min="0" max="100" value="30" data-tf="20d">
-                <span class="slider-val">30</span>
+                <input type="range" min="0" max="100" value="15" data-tf="20d">
+                <span class="slider-val">15</span>
             </div>
             <div class="slider-group">
                 <label>60D</label>
-                <input type="range" min="0" max="100" value="15" data-tf="60d">
-                <span class="slider-val">15</span>
+                <input type="range" min="0" max="100" value="0" data-tf="60d">
+                <span class="slider-val">0</span>
             </div>
             <button class="slider-reset" id="resetSliders">Reset</button>
         </div>
@@ -453,7 +558,15 @@
     let allStocks = [];
     let currentCap = 'all';
     let selectedTicker = null;
+    let selectedSector = null;
+    let selectedIndustry = null;
     let currentTimeframeDays = 365;
+
+    const NEAR_52W_PCT = -15;
+
+    function escAttr(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
 
     // Ticker chart (StockChart instance — no RSI, we manage RSI ourselves)
     let stockChart = null;
@@ -527,24 +640,143 @@
             const resp = await fetch(`/api/frontend/rs-screener/${cap}`);
             allStocks = await resp.json();
             if (allStocks.error) allStocks = [];
-            renderList();
-            const tickers = allStocks.map(s => s.ticker);
-            if (tickers.length > 0) loadWatchlistForStocks(tickers);
         } catch (e) {
             console.error('Failed to load RS screener data', e);
             allStocks = [];
-            renderList();
         }
+
+        if (selectedSector && !allStocks.some(s => (s.sector || 'Unknown') === selectedSector)) {
+            selectedSector = null;
+            selectedIndustry = null;
+        } else if (selectedIndustry && !allStocks.some(s =>
+            (s.sector || 'Unknown') === selectedSector &&
+            (s.industry || 'Unknown') === selectedIndustry
+        )) {
+            selectedIndustry = null;
+        }
+
+        renderSectorTabs();
+        renderIndustryTabs();
+        renderList();
+
+        const tickers = allStocks.map(s => s.ticker);
+        if (tickers.length > 0) loadWatchlistForStocks(tickers);
+    }
+
+    // ── Sector / Industry filter cards ──
+    function renderSectorTabs() {
+        const bar = document.getElementById('sectorBar');
+        if (!bar) return;
+
+        const counts = {};
+        allStocks.forEach(s => {
+            const sec = s.sector || 'Unknown';
+            counts[sec] = (counts[sec] || 0) + 1;
+        });
+        const sectors = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+
+        let html = '<span class="si-bar-label">Sector</span>';
+        const allActive = selectedSector === null ? ' active' : '';
+        html += `<button class="si-tab sector-tab${allActive}" data-sector="">All <span class="count">${allStocks.length}</span></button>`;
+        sectors.forEach(sec => {
+            const isActive = sec === selectedSector ? ' active' : '';
+            html += `<button class="si-tab sector-tab${isActive}" data-sector="${escAttr(sec)}">${escAttr(sec)} <span class="count">${counts[sec]}</span></button>`;
+        });
+        bar.innerHTML = html;
+
+        bar.querySelectorAll('.sector-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sec = btn.dataset.sector || null;
+                if (sec === selectedSector) {
+                    selectedSector = null;
+                    selectedIndustry = null;
+                } else {
+                    selectedSector = sec;
+                    selectedIndustry = null;
+                }
+                renderSectorTabs();
+                renderIndustryTabs();
+                renderList();
+                ensureSelectedVisible();
+            });
+        });
+    }
+
+    function renderIndustryTabs() {
+        const bar = document.getElementById('industryBar');
+        if (!bar) return;
+
+        if (!selectedSector) {
+            bar.classList.remove('visible');
+            bar.innerHTML = '';
+            return;
+        }
+
+        const counts = {};
+        allStocks.forEach(s => {
+            if ((s.sector || 'Unknown') !== selectedSector) return;
+            const ind = s.industry || 'Unknown';
+            counts[ind] = (counts[ind] || 0) + 1;
+        });
+        const industries = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+        const totalInSector = industries.reduce((acc, k) => acc + counts[k], 0);
+
+        let html = '<span class="si-bar-label">Industry</span>';
+        const allActive = selectedIndustry === null ? ' active' : '';
+        html += `<button class="si-tab industry-tab${allActive}" data-industry="">All <span class="count">${totalInSector}</span></button>`;
+        industries.forEach(ind => {
+            const isActive = ind === selectedIndustry ? ' active' : '';
+            html += `<button class="si-tab industry-tab${isActive}" data-industry="${escAttr(ind)}">${escAttr(ind)} <span class="count">${counts[ind]}</span></button>`;
+        });
+        bar.innerHTML = html;
+        bar.classList.add('visible');
+
+        bar.querySelectorAll('.industry-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ind = btn.dataset.industry || null;
+                selectedIndustry = (ind === selectedIndustry) ? null : ind;
+                renderIndustryTabs();
+                renderList();
+                ensureSelectedVisible();
+            });
+        });
+    }
+
+    function passesSectorIndustry(s) {
+        if (selectedSector && (s.sector || 'Unknown') !== selectedSector) return false;
+        if (selectedIndustry && (s.industry || 'Unknown') !== selectedIndustry) return false;
+        return true;
+    }
+
+    function ensureSelectedVisible() {
+        const visible = getScoredVisibleStocks();
+        if (visible.length === 0) return;
+        const stillVisible = visible.find(s => s.ticker === selectedTicker);
+        if (!stillVisible) selectStock(visible[0].ticker);
+    }
+
+    function getScoredVisibleStocks() {
+        const weights = getWeights();
+        const scored = allStocks
+            .filter(passesSectorIndustry)
+            .map(s => ({
+                ...s,
+                composite: computeComposite(s, weights),
+            }));
+        scored.sort((a, b) => b.composite - a.composite);
+        return scored;
+    }
+
+    function near52wTag(s) {
+        if (s.pct_from_52w_high == null || s.pct_from_52w_high < NEAR_52W_PCT) return '';
+        const pct = s.pct_from_52w_high;
+        const label = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+        return `<span class="tag-near-52w" title="${label} from 52W high (OHLC)">52W</span>`;
     }
 
     // ── Render stock list ──
     function renderList() {
-        const weights = getWeights();
-        const scored = allStocks.map(s => ({
-            ...s,
-            composite: computeComposite(s, weights),
-        }));
-        scored.sort((a, b) => b.composite - a.composite);
+        const scored = getScoredVisibleStocks();
 
         const listEl = document.getElementById('stockList');
         document.getElementById('stockCount').textContent = scored.length;
@@ -552,7 +784,7 @@
         listEl.innerHTML = scored.map(s => {
             const isActive = s.ticker === selectedTicker ? ' active' : '';
             return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
-                <span class="ticker">${s.ticker}</span>
+                <span class="ticker-cell"><span class="ticker">${s.ticker}</span>${near52wTag(s)}</span>
                 <span class="score">${s.composite.toFixed(1)}</span>
             </div>`;
         }).join('');
@@ -940,7 +1172,7 @@
         });
     });
 
-    const SLIDER_DEFAULTS = { '2d': 75, '5d': 75, '10d': 60, '20d': 30, '60d': 15 };
+    const SLIDER_DEFAULTS = { '2d': 50, '5d': 50, '10d': 50, '20d': 15, '60d': 0 };
     document.getElementById('resetSliders').addEventListener('click', () => {
         document.querySelectorAll('.slider-group input[type="range"]').forEach(el => {
             const def = SLIDER_DEFAULTS[el.dataset.tf] || 20;
@@ -966,6 +1198,33 @@
             btn.classList.add('active');
             setAllTimeframes(parseInt(btn.dataset.days, 10));
         });
+    });
+
+    function scrollToStock(ticker) {
+        const el = document.querySelector(`.stock-item[data-ticker="${ticker}"]`);
+        if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (!allStocks.length) return;
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        const visibleItems = getScoredVisibleStocks();
+        if (visibleItems.length === 0) return;
+
+        const currentIdx = visibleItems.findIndex(s => s.ticker === selectedTicker);
+
+        if (e.key === 'ArrowDown' || e.key === 'j') {
+            e.preventDefault();
+            const nextIdx = currentIdx < visibleItems.length - 1 ? currentIdx + 1 : 0;
+            selectStock(visibleItems[nextIdx].ticker);
+            scrollToStock(visibleItems[nextIdx].ticker);
+        } else if (e.key === 'ArrowUp' || e.key === 'k') {
+            e.preventDefault();
+            const prevIdx = currentIdx > 0 ? currentIdx - 1 : visibleItems.length - 1;
+            selectStock(visibleItems[prevIdx].ticker);
+            scrollToStock(visibleItems[prevIdx].ticker);
+        }
     });
 
     // ── Init ──

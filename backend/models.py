@@ -277,7 +277,8 @@ class StockMetrics(Base):
     ipo_date = Column(Date)
     market_cap = Column(BigInteger)
     current_price = Column(Float)
-    range_52_week = Column(String(50))
+    range_52_week = Column(String(50))       # FMP profile range (may be stale)
+    range_52_week_ohlc = Column(String(50))  # MIN(low)-MAX(high) over last 252 trading days
     volume = Column(BigInteger)
     dollar_volume = Column(Float)
     avg_vol_10d = Column(Float)

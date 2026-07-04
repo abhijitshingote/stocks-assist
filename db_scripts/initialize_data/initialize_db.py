@@ -300,6 +300,7 @@ def initialize_database(reset=False, schema='public'):
                 market_cap BIGINT,
                 current_price FLOAT,
                 range_52_week VARCHAR(50),
+                range_52_week_ohlc VARCHAR(50),
                 volume BIGINT,
                 dollar_volume FLOAT,
                 avg_vol_10d FLOAT,

@@ -4059,13 +4059,37 @@ def get_index_ohlc_data(symbol):
 # RS Screener Endpoints (multi-timeframe relative strength)
 # ============================================================================
 
+def _parse_52w_high(range_52_week):
+    if not range_52_week:
+        return None
+    try:
+        parts = str(range_52_week).split('-')
+        if len(parts) < 2:
+            return None
+        return float(parts[-1].strip())
+    except (ValueError, TypeError):
+        return None
+
+
+def _pct_from_52w_high(current_price, range_52_week):
+    high = _parse_52w_high(range_52_week)
+    if high is None or not current_price or high <= 0:
+        return None
+    return round((current_price / high - 1) * 100, 2)
+
+
 @app.route('/api/rs-screener')
 @app.route('/api/rs-screener/<market_cap>')
 def get_rs_screener(market_cap=None):
     """Get RS screener data, optionally filtered by market cap category."""
     s = Session()
     try:
-        query = s.query(RsScreener).filter(
+        query = s.query(
+            RsScreener,
+            StockMetrics.range_52_week_ohlc,
+        ).outerjoin(
+            StockMetrics, RsScreener.ticker == StockMetrics.ticker
+        ).filter(
             RsScreener.market_cap.isnot(None),
             RsScreener.rs_2d_rank.isnot(None),
         )
@@ -4083,7 +4107,6 @@ def get_rs_screener(market_cap=None):
         price_min = GLOBAL_LIQUIDITY_FILTERS.get('price_min')
 
         if avg_vol_min or dollar_vol_min or price_min:
-            query = query.join(StockMetrics, RsScreener.ticker == StockMetrics.ticker)
             if avg_vol_min:
                 query = query.filter(StockMetrics.avg_vol_10d >= avg_vol_min)
             if dollar_vol_min:
@@ -4091,10 +4114,10 @@ def get_rs_screener(market_cap=None):
             if price_min:
                 query = query.filter(StockMetrics.current_price >= price_min)
 
-        stocks = query.all()
+        rows = query.all()
 
         results = []
-        for stock in stocks:
+        for stock, range_52_week_ohlc in rows:
             results.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
@@ -4102,6 +4125,7 @@ def get_rs_screener(market_cap=None):
                 'industry': stock.industry,
                 'market_cap': stock.market_cap,
                 'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'pct_from_52w_high': _pct_from_52w_high(stock.current_price, range_52_week_ohlc),
                 'rs_2d': float(stock.rs_2d) if stock.rs_2d is not None else None,
                 'rs_5d': float(stock.rs_5d) if stock.rs_5d is not None else None,
                 'rs_10d': float(stock.rs_10d) if stock.rs_10d is not None else None,

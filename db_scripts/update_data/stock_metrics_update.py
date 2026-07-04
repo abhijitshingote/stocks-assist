@@ -5,6 +5,7 @@ Truncates and reloads the stock_metrics table with pre-computed metrics.
 
 This script computes various metrics including:
 - Price change percentages (1, 5, 20, 60, 120 days)
+- 52-week range from OHLC (252 trading days, low-high string)
 - Volume vs 10-day average
 - ATR20 (Average True Range as %)
 - P/E, P/S (TTM and Forward)
@@ -253,6 +254,24 @@ def compute_and_load_metrics(connection):
         WHERE rn <= 20
         GROUP BY ticker
     ),
+    range_52w_ohlc AS (
+        SELECT
+            ticker,
+            MIN(low) AS low_52w,
+            MAX(high) AS high_52w
+        FROM (
+            SELECT
+                o.ticker,
+                o.low,
+                o.high,
+                ROW_NUMBER() OVER (PARTITION BY o.ticker ORDER BY o.date DESC) AS rn
+            FROM ohlc o
+            CROSS JOIN latest_date ld
+            WHERE o.date <= ld.max_date
+        ) ranked
+        WHERE rn <= 252
+        GROUP BY ticker
+    ),
     -- Compute stock returns
     stock_returns AS (
         SELECT
@@ -307,6 +326,7 @@ def compute_and_load_metrics(connection):
         market_cap,
         current_price,
         range_52_week,
+        range_52_week_ohlc,
         volume,
         dollar_volume,
         avg_vol_10d,
@@ -355,6 +375,11 @@ def compute_and_load_metrics(connection):
         t.market_cap,
         pc.current_close as current_price,
         cp.range_52_week,
+        CASE
+            WHEN r52.low_52w IS NOT NULL AND r52.high_52w IS NOT NULL THEN
+                ROUND(r52.low_52w::numeric, 2)::text || '-' || ROUND(r52.high_52w::numeric, 2)::text
+            ELSE NULL
+        END AS range_52_week_ohlc,
         pc.today_volume as volume,
         ROUND((pc.current_close::numeric * pc.today_volume::numeric), 0) as dollar_volume,
         ROUND(va.avg_vol_10d::numeric, 2) as avg_vol_10d,
@@ -403,6 +428,7 @@ def compute_and_load_metrics(connection):
     LEFT JOIN dynamic_growth dg ON t.ticker = dg.ticker
     LEFT JOIN shares_float sf ON t.ticker = sf.ticker
     LEFT JOIN close_avgs ca ON t.ticker = ca.ticker
+    LEFT JOIN range_52w_ohlc r52 ON t.ticker = r52.ticker
     LEFT JOIN (
         SELECT
             ticker,
@@ -449,7 +475,6 @@ def main():
     
     try:
         with engine.connect() as connection:
-            # Step 1: Truncate the table
             truncate_stock_metrics(connection)
             
             # Step 2: Compute and load metrics
