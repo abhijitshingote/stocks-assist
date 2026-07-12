@@ -617,7 +617,16 @@ class RsScreener(Base):
     rs_10d_rank = Column(Integer)
     rs_20d_rank = Column(Integer)
     rs_60d_rank = Column(Integer)
-    
+
+    # IBD / MarketSmith style RS Rating (1-99): percentile of weighted trailing
+    # 12-month performance (recent quarter weighted 2x), ranked across whole universe.
+    rs_rating = Column(Integer)
+    # Relative strength value vs SPX: (1+strength_stock)/(1+strength_spx)*100.
+    # 100 = in line with SPX over the weighted year; >100 = outperforming.
+    rs_vs_spy = Column(Float)
+    # RS Line (close / SPY close) at a 252-day high (MarketSmith "RS line new high").
+    rs_line_new_high = Column(Boolean)
+
     updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 

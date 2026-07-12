@@ -4136,6 +4136,9 @@ def get_rs_screener(market_cap=None):
                 'rs_10d_rank': stock.rs_10d_rank,
                 'rs_20d_rank': stock.rs_20d_rank,
                 'rs_60d_rank': stock.rs_60d_rank,
+                'rs_rating': stock.rs_rating,
+                'rs_vs_spy': float(stock.rs_vs_spy) if stock.rs_vs_spy is not None else None,
+                'rs_line_new_high': bool(stock.rs_line_new_high) if stock.rs_line_new_high is not None else False,
             })
 
         return jsonify(results)

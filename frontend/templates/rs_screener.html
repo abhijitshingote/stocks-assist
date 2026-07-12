@@ -95,6 +95,40 @@
         flex-shrink: 0;
     }
 
+    /* RS-line-at-new-high dot (MarketSmith "blue dot") */
+    .rs-blue-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent-blue);
+        box-shadow: 0 0 4px rgba(88, 166, 255, 0.8);
+        flex-shrink: 0;
+    }
+
+    .stock-item .right-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        flex-shrink: 0;
+    }
+
+    /* IBD RS Rating badge (1-99) */
+    .rs-rating-badge {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.6rem;
+        font-weight: 700;
+        padding: 0.02rem 0.28rem;
+        border-radius: 3px;
+        min-width: 20px;
+        text-align: center;
+        border: 1px solid transparent;
+    }
+    .rs-r-strong { background: rgba(63, 185, 80, 0.28); color: #7ee787; border-color: rgba(63, 185, 80, 0.5); }
+    .rs-r-good   { background: rgba(63, 185, 80, 0.16); color: var(--accent-green); border-color: rgba(63, 185, 80, 0.3); }
+    .rs-r-ok     { background: rgba(88, 166, 255, 0.14); color: var(--accent-blue); border-color: rgba(88, 166, 255, 0.3); }
+    .rs-r-mid    { background: rgba(139, 148, 158, 0.12); color: var(--text-secondary); }
+    .rs-r-weak   { background: rgba(248, 81, 73, 0.14); color: var(--accent-red); border-color: rgba(248, 81, 73, 0.3); }
+
     .stock-item .score {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.7rem;
@@ -480,7 +514,7 @@
     <!-- Left: stock list -->
     <div class="rs-left">
         <div class="rs-left-header">
-            <span>RS Score</span>
+            <span title="IBD / MarketSmith RS Rating (1-99)">RS Rating</span>
             <span class="stock-count" id="stockCount">0</span>
         </div>
         <div class="stock-list" id="stockList"></div>
@@ -492,13 +526,13 @@
         <div class="slider-bar">
             <div class="slider-group">
                 <label>2D</label>
-                <input type="range" min="0" max="100" value="50" data-tf="2d">
-                <span class="slider-val">50</span>
+                <input type="range" min="0" max="100" value="10" data-tf="2d">
+                <span class="slider-val">10</span>
             </div>
             <div class="slider-group">
                 <label>5D</label>
-                <input type="range" min="0" max="100" value="50" data-tf="5d">
-                <span class="slider-val">50</span>
+                <input type="range" min="0" max="100" value="25" data-tf="5d">
+                <span class="slider-val">25</span>
             </div>
             <div class="slider-group">
                 <label>10D</label>
@@ -507,13 +541,13 @@
             </div>
             <div class="slider-group">
                 <label>20D</label>
-                <input type="range" min="0" max="100" value="15" data-tf="20d">
-                <span class="slider-val">15</span>
+                <input type="range" min="0" max="100" value="50" data-tf="20d">
+                <span class="slider-val">50</span>
             </div>
             <div class="slider-group">
                 <label>60D</label>
-                <input type="range" min="0" max="100" value="0" data-tf="60d">
-                <span class="slider-val">0</span>
+                <input type="range" min="0" max="100" value="50" data-tf="60d">
+                <span class="slider-val">50</span>
             </div>
             <button class="slider-reset" id="resetSliders">Reset</button>
         </div>
@@ -763,7 +797,14 @@
                 ...s,
                 composite: computeComposite(s, weights),
             }));
-        scored.sort((a, b) => b.composite - a.composite);
+        // Sort by IBD/MarketSmith RS Rating (1-99); unrated (null) go last,
+        // tie-break on the slider composite.
+        scored.sort((a, b) => {
+            const ra = a.rs_rating == null ? -1 : a.rs_rating;
+            const rb = b.rs_rating == null ? -1 : b.rs_rating;
+            if (rb !== ra) return rb - ra;
+            return b.composite - a.composite;
+        });
         return scored;
     }
 
@@ -772,6 +813,23 @@
         const pct = s.pct_from_52w_high;
         const label = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
         return `<span class="tag-near-52w" title="${label} from 52W high (OHLC)">52W</span>`;
+    }
+
+    function blueDot(s) {
+        if (!s.rs_line_new_high) return '';
+        return `<span class="rs-blue-dot" title="RS line at 52-week high (MarketSmith blue dot)"></span>`;
+    }
+
+    function rsRatingBadge(s) {
+        if (s.rs_rating == null) return '<span class="rs-rating-badge rs-r-mid" title="Insufficient history (needs 1yr)">–</span>';
+        const r = s.rs_rating;
+        let cls = 'rs-r-weak';
+        if (r >= 90) cls = 'rs-r-strong';
+        else if (r >= 80) cls = 'rs-r-good';
+        else if (r >= 70) cls = 'rs-r-ok';
+        else if (r >= 40) cls = 'rs-r-mid';
+        const vs = s.rs_vs_spy != null ? ` · RS vs SPX ${s.rs_vs_spy.toFixed(0)}` : '';
+        return `<span class="rs-rating-badge ${cls}" title="IBD/MarketSmith RS Rating ${r}${vs}">${r}</span>`;
     }
 
     // ── Render stock list ──
@@ -784,8 +842,8 @@
         listEl.innerHTML = scored.map(s => {
             const isActive = s.ticker === selectedTicker ? ' active' : '';
             return `<div class="stock-item${isActive}" data-ticker="${s.ticker}">
-                <span class="ticker-cell"><span class="ticker">${s.ticker}</span>${near52wTag(s)}</span>
-                <span class="score">${s.composite.toFixed(1)}</span>
+                <span class="ticker-cell">${blueDot(s)}<span class="ticker">${s.ticker}</span>${near52wTag(s)}</span>
+                <span class="right-cell">${rsRatingBadge(s)}<span class="score">${s.composite.toFixed(1)}</span></span>
             </div>`;
         }).join('');
 
@@ -1087,6 +1145,16 @@
             });
             html += '</div>';
 
+            // IBD / MarketSmith RS Rating
+            html += '<div class="ms-section"><span class="ms-section-title">IBD</span>';
+            const rr = rsStock.rs_rating;
+            const rrCls = rr == null ? '' : rr >= 80 ? 'rs-positive' : rr < 40 ? 'rs-negative' : '';
+            html += msItem('Rating', rr != null ? rr : '—', rrCls);
+            const vspy = rsStock.rs_vs_spy;
+            html += msItem('vs SPX', vspy != null ? vspy.toFixed(0) : '—', vspy == null ? '' : vspy >= 100 ? 'rs-positive' : 'rs-negative');
+            html += msItem('RS NH', rsStock.rs_line_new_high ? 'Yes' : 'No', rsStock.rs_line_new_high ? 'rs-positive' : '');
+            html += '</div>';
+
             // Price & Market
             html += '<div class="ms-section"><span class="ms-section-title">Mkt</span>';
             html += msItem('Price', s.current_price ? '$'+s.current_price.toFixed(2) : '—');
@@ -1172,7 +1240,7 @@
         });
     });
 
-    const SLIDER_DEFAULTS = { '2d': 50, '5d': 50, '10d': 50, '20d': 15, '60d': 0 };
+    const SLIDER_DEFAULTS = { '2d': 10, '5d': 25, '10d': 50, '20d': 50, '60d': 50 };
     document.getElementById('resetSliders').addEventListener('click', () => {
         document.querySelectorAll('.slider-group input[type="range"]').forEach(el => {
             const def = SLIDER_DEFAULTS[el.dataset.tf] || 20;

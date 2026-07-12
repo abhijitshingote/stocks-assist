@@ -499,6 +499,9 @@ def initialize_database(reset=False, schema='public'):
                 rs_10d_rank INTEGER,
                 rs_20d_rank INTEGER,
                 rs_60d_rank INTEGER,
+                rs_rating INTEGER,
+                rs_vs_spy FLOAT,
+                rs_line_new_high BOOLEAN,
                 updated_at TIMESTAMP DEFAULT NOW()
             )
         """))
