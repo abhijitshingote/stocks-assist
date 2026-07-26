@@ -54,9 +54,10 @@ const CHART_CONFIG = {
     defaultHeight: 300,
     rsiHeight: 120,
     
-    // Height ratio: candlestick:volume = 3:1
-    candlestickRatio: 0.75,
-    volumeRatio: 0.25,
+    // Height ratio: candlestick:volume = ~72:28 (matches thinkorswim layout
+    // measured from reference screenshot).
+    candlestickRatio: 0.72,
+    volumeRatio: 0.28,
 
     /** Logical bars of empty space after the last bar (time scale) */
     rightBarOffset: 3,

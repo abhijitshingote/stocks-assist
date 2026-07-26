@@ -455,22 +455,102 @@
     }
 }
 
-/* Chart Section */
+/* Tuned for a MacBook Air 13" (content area ~1400px wide). Cap the page
+   so the chart is a well-proportioned landscape rectangle, not a wide
+   thin strip. */
+main {
+    max-width: 1150px;
+    padding: 1rem 1rem;
+}
+
+.back-link {
+    margin-bottom: 0.5rem;
+}
+
+.stock-header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+}
+
+.data-sections {
+    margin-bottom: 0.75rem;
+}
+
+/* Chart Section: fixed landscape rectangle tuned for a MacBook Air 13".
+   ~1118px wide (1150px main - padding) x 620px tall = 1.80:1, matching
+   the thinkorswim reference chart's landscape shape. Fixed pixel height
+   (no vh / aspect-ratio) so it renders consistently on this device. */
 .chart-section {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
+    padding: 0.5rem 0.75rem;
+    margin: 0 auto 1rem;
+    width: 100%;
+    height: 856px;
+    display: flex;
+    flex-direction: column;
 }
 
 .chart-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
+    flex-shrink: 0;
+    margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--border-color);
+}
+
+#chartContainer {
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    min-height: 320px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+#chartLoading {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 320px;
+}
+
+.chart-legend {
+    flex-shrink: 0;
+    margin-top: 0.35rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.7rem;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.chart-stats {
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+    font-size: 0.7rem;
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .chart-section {
+        /* On small screens fall back to a tall fixed height since other
+           sections stack vertically and consume the viewport. */
+        height: auto;
+        min-height: 520px;
+    }
+
+    #chartContainer,
+    #chartLoading {
+        flex: 1 1 auto;
+        min-height: 360px;
+    }
 }
 
 .chart-header h2 {
@@ -509,40 +589,17 @@
     color: var(--bg-dark);
 }
 
-#chartContainer {
-    width: 100%;
-    height: 450px;
-    position: relative;
-}
-
-#rsiChartContainer {
-    width: 100%;
-    height: 120px;
-    position: relative;
-    margin-top: 0.5rem;
-    border-top: 1px solid var(--border-color);
-    padding-top: 0.5rem;
-}
-
-.rsi-label {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
-    z-index: 10;
-    background: rgba(13, 17, 23, 0.8);
-    padding: 0.15rem 0.35rem;
-    border-radius: 4px;
-}
+/* Chart container heights are driven by the flex layout in .chart-section
+   (see above). The fixed pixel heights below are kept only as fallbacks. */
+#chartContainer-fallback { display: none; }
 
 .chart-loading {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 450px;
+    flex: 1 1 auto;
+    min-height: 320px;
     color: var(--text-muted);
 }
 
@@ -1331,9 +1388,6 @@
             <span>Loading chart...</span>
         </div>
         <div id="chartContainer"></div>
-        <div id="rsiChartContainer">
-            <div class="rsi-label">RSI MktCap (1-100)</div>
-        </div>
         <div class="chart-legend">
             <div class="legend-item">
                 <div class="legend-dot bullish"></div>
@@ -1358,10 +1412,6 @@
             <div class="legend-item">
                 <div class="legend-dot" style="background: #ff0000;"></div>
                 <span>200 DMA</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: #00bcd4;"></div>
-                <span>RSI MktCap</span>
             </div>
             <div class="legend-item">
                 <div class="legend-dot" style="background: #f5f5dc;"></div>
@@ -1776,11 +1826,13 @@ async function loadChartData() {
     try {
         document.getElementById('chartLoading').style.display = 'flex';
         
-        // Use shared chart module with RSI sub-chart
+        // Use shared chart module (price + volume only; RSI sub-chart
+        // removed so the main chart occupies the full section). The actual
+        // rendered height is driven by the flex layout of .chart-section
+        // and kept in sync via a ResizeObserver below.
         stockChart = new StockChart('chartContainer', {
-            height: 450,
-            showRSI: true,
-            rsiContainerId: 'rsiChartContainer',
+            height: 600,
+            showRSI: false,
         });
         
         await stockChart.load(ticker);
@@ -1794,9 +1846,37 @@ async function loadChartData() {
                 document.getElementById('currentPrice').textContent = '$' + formatNumber(latestData.close, 2);
             }
         }
-        
+
         setupTimeframeButtons();
         updateChartStats();
+
+        // Dynamically resize the price + volume panes to fill the
+        // .chart-section container (which itself fills the viewport).
+        // The shared chart module only resizes width on window resize; we
+        // add a ResizeObserver so the chart grows / shrinks with the
+        // available vertical space, like a trading platform.
+        const chartHost = document.getElementById('chartContainer');
+        const fitChart = () => {
+            if (!stockChart || !chartHost) return;
+            const hostH = chartHost.clientHeight;
+            const hostW = chartHost.clientWidth;
+            if (hostH > 0 && hostW > 0) {
+                stockChart.resizeToHeight(hostH, hostW);
+            }
+        };
+        // Initial fit after layout settles.
+        requestAnimationFrame(fitChart);
+        requestAnimationFrame(() => requestAnimationFrame(fitChart));
+
+        if (window.ResizeObserver) {
+            const ro = new ResizeObserver(() => requestAnimationFrame(fitChart));
+            ro.observe(chartHost);
+            window.addEventListener('beforeunload', () => ro.disconnect());
+        }
+        window.addEventListener('resize', () => requestAnimationFrame(fitChart));
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) requestAnimationFrame(fitChart);
+        });
         
     } catch (error) {
         console.error('Error loading chart data:', error);

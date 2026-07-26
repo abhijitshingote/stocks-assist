@@ -567,11 +567,56 @@
         }
         .wl-modal-actions .wl-remove:hover { background: rgba(248, 81, 73, 0.15); }
 
+        /* ── Hide-nav toggle (extra screen real estate) ───────────────── */
+        body.nav-hidden nav {
+            display: none;
+        }
+
+        /* Floating toggle button, pinned to the top-right corner. */
+        .nav-hide-toggle {
+            position: fixed;
+            top: 6px;
+            right: 10px;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .nav-hide-toggle:hover {
+            opacity: 1;
+            color: var(--text-primary);
+            border-color: var(--accent-green);
+        }
+
+        /* When the nav is hidden, keep the toggle subtle until hovered. */
+        body.nav-hidden .nav-hide-toggle {
+            opacity: 0.35;
+        }
+        body.nav-hidden .nav-hide-toggle:hover {
+            opacity: 1;
+        }
+
         {% block extra_styles %}{% endblock %}
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
+    <button type="button" class="nav-hide-toggle" id="navHideToggle" title="Hide/show nav bar (press \ )">
+        <span id="navHideIcon">▲</span>
+        <span id="navHideLabel">Hide nav</span>
+    </button>
     <nav>
         <div class="container">
             <div class="logo-group">
@@ -703,6 +748,47 @@
                     btn.setAttribute('aria-expanded', 'false');
                 });
             });
+        })();
+
+        // Hide/show nav bar for more screen real estate. State persists
+        // across pages via localStorage. Toggle with the floating button
+        // or by pressing the "\" key.
+        (function() {
+            const NAV_HIDDEN_KEY = 'stocks-assist-nav-hidden';
+            const toggle = document.getElementById('navHideToggle');
+            const icon = document.getElementById('navHideIcon');
+            const label = document.getElementById('navHideLabel');
+            if (!toggle) return;
+
+            function apply(hidden) {
+                document.body.classList.toggle('nav-hidden', hidden);
+                if (icon) icon.textContent = hidden ? '▼' : '▲';
+                if (label) label.textContent = hidden ? 'Show nav' : 'Hide nav';
+                try { localStorage.setItem(NAV_HIDDEN_KEY, hidden ? '1' : '0'); } catch (e) {}
+                // Nudge charts / listeners to recompute available space.
+                window.dispatchEvent(new Event('resize'));
+            }
+
+            function isHidden() {
+                return document.body.classList.contains('nav-hidden');
+            }
+
+            toggle.addEventListener('click', function() { apply(!isHidden()); });
+
+            document.addEventListener('keydown', function(e) {
+                // Ignore when typing in an input/textarea.
+                const tag = (e.target && e.target.tagName) || '';
+                if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+                if (e.key === '\\') {
+                    e.preventDefault();
+                    apply(!isHidden());
+                }
+            });
+
+            // Restore saved state on load.
+            let saved = '0';
+            try { saved = localStorage.getItem(NAV_HIDDEN_KEY) || '0'; } catch (e) {}
+            apply(saved === '1');
         })();
 
         // Navbar ticker search
