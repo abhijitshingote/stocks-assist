@@ -1,0 +1,710 @@
+{
+  "date": "2026-05-23",
+  "curated_count": 11,
+  "user_taste_count": 10,
+  "hot_market_count": 12,
+  "merged_count": 33,
+  "watchlist_hash": "2911a92861a1",
+  "themes": [
+    {
+      "tag": "ai-hyperscaler-deals",
+      "label": "Ai Hyperscaler Deals",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "This trader likes clear, named enterprise or hyperscaler wins tied to AI infrastructure, especially when the contract size, customer type, or rollout timing is explicit. Big dollar figures and long-duration commitments make the story feel real rather than promotional."
+      ],
+      "example_tickers": [
+        "AKAM",
+        "FLNC",
+        "INOD",
+        "FROG",
+        "DDOG",
+        "BAND"
+      ],
+      "anti_pattern": "Generic AI partnership chatter without a named customer, contract value, or concrete deployment/use case."
+    },
+    {
+      "tag": "earnings-beat-and-raise",
+      "label": "Earnings Beat And Raise",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "A recurring pattern is strong quarters with raised guidance, especially when the notes cite exact growth rates, margin improvement, or EPS surprises. The trader seems to reward proof that the story is already translating into numbers."
+      ],
+      "example_tickers": [
+        "MXL",
+        "TEAM",
+        "BAND",
+        "INOD",
+        "AXTI",
+        "AKAM"
+      ],
+      "anti_pattern": "One-time beat with no guide raise, or a guide raise unsupported by improving operating metrics."
+    },
+    {
+      "tag": "ai-infrastructure-enablers",
+      "label": "Ai Infrastructure Enablers",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "The watchlist heavily favors picks-and-shovels names serving AI buildout: chips, substrates, optical networking, power, racks, and datacenter-adjacent infrastructure. The trader appears especially drawn to companies that become more valuable as AI capex scales."
+      ],
+      "example_tickers": [
+        "AXTI",
+        "MXL",
+        "SIMO",
+        "MRVL",
+        "NXPI",
+        "HIMX",
+        "FLNC",
+        "FLEX",
+        "RXT"
+      ],
+      "anti_pattern": "Consumer-facing AI branding or software-only AI narratives with no clear infrastructure tie-in."
+    },
+    {
+      "tag": "optical-photonics-inflection",
+      "label": "Optical Photonics Inflection",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "Several notes focus on optical transceivers, InP substrates, smart networking, and the idea that optical demand is at an inflection point. The trader seems to like stories where a niche component becomes mission-critical to AI data-center bandwidth."
+      ],
+      "example_tickers": [
+        "MXL",
+        "AXTI",
+        "HIMX",
+        "MRVL",
+        "SIMO"
+      ],
+      "anti_pattern": "Broad semis exposure without an optical/data-center bandwidth catalyst."
+    },
+    {
+      "tag": "margin-and-growth-inflection",
+      "label": "Margin And Growth Inflection",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "The trader repeatedly highlights revenue acceleration, positive EPS turns, and margin recovery from weak or negative levels. The appeal is the visible transition from stagnation to operating leverage."
+      ],
+      "example_tickers": [
+        "MXL",
+        "AXTI",
+        "FLNC",
+        "INOD",
+        "HIMX",
+        "DDOG"
+      ],
+      "anti_pattern": "Companies with only narrative potential but no visible inflection in revenue, gross margin, or EPS."
+    },
+    {
+      "tag": "story-driven-momentum",
+      "label": "Story Driven Momentum",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "These notes often ask 'what's the story?' or 'why did it spike?', showing a taste for momentum backed by a clear catalyst. The trader seems to prefer names where price strength can be explained by a real fundamental or thematic driver."
+      ],
+      "example_tickers": [
+        "MXL",
+        "INTC",
+        "AIP",
+        "RMAX",
+        "BULL",
+        "SNDK",
+        "CRML"
+      ],
+      "anti_pattern": "Pure chart chase with no identifiable fundamental, product, or event catalyst."
+    },
+    {
+      "tag": "breakout-and-new-highs",
+      "label": "Breakout And New Highs",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "The trader likes fresh breakouts, strength after consolidation, and stocks making new highs on improving fundamentals. Price action matters, but it is usually paired with a business catalyst or positive revision trend."
+      ],
+      "example_tickers": [
+        "SIMO",
+        "AXTI",
+        "MXL",
+        "SNDK",
+        "INOD"
+      ],
+      "anti_pattern": "Late-stage extended charts with no evidence of a recent breakout, catalyst, or trend change."
+    },
+    {
+      "tag": "spin-and-sum-of-parts",
+      "label": "Spin And Sum Of Parts",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "There is a clear interest in valuation re-rating stories where a hidden asset, spin-off, or segment separation could unlock value. The trader likes when a boring parent can be revalued because the market is missing the quality of a faster-growing piece."
+      ],
+      "example_tickers": [
+        "FLEX",
+        "RXT",
+        "AKAM"
+      ],
+      "anti_pattern": "Traditional value argument without a catalyst that could change the market's valuation framework."
+    },
+    {
+      "tag": "big-contract-and-backlog",
+      "label": "Big Contract And Backlog",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "Large backlog, multi-year orders, and explicit pipeline metrics show up repeatedly as proof of durability. This trader seems to like visibility into future revenue more than vague top-line hopes."
+      ],
+      "example_tickers": [
+        "FLNC",
+        "AKAM",
+        "CRML",
+        "MXL",
+        "AXTI"
+      ],
+      "anti_pattern": "Backlog claims without size, customer specificity, or a believable path to revenue conversion."
+    },
+    {
+      "tag": "special-situations-with-optional-downside",
+      "label": "Special Situations With Optional Downside",
+      "weight": 3.0,
+      "sources": [
+        "user_taste"
+      ],
+      "descriptions": [
+        "Some picks are driven by a unique angle such as regulatory change, governance setup, or a one-off market structure catalyst, especially if it can rerate the business. The trader appears comfortable with nuanced catalysts as long as the setup is concrete."
+      ],
+      "example_tickers": [
+        "BULL",
+        "RXT",
+        "XNDU",
+        "CRML"
+      ],
+      "anti_pattern": "Macro speculation or opaque special-situation setup with no identifiable mechanism for rerating."
+    },
+    {
+      "tag": "edgeai",
+      "label": "EdgeAI",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [],
+      "example_tickers": [
+        "AKAM",
+        "NET",
+        "AMBQ"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "ai-compute",
+      "label": "AI Compute",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "GPUs, CPUs & AI accelerators powering the data center buildout"
+      ],
+      "example_tickers": [
+        "NVDA",
+        "AMD",
+        "INTC",
+        "ARM",
+        "ALAB",
+        "CEVA",
+        "AMBA",
+        "SIMO",
+        "AIP"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "optical-and-photonics",
+      "label": "Optical & Photonics",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "Transceivers, lasers & silicon photonics for AI data centers"
+      ],
+      "example_tickers": [
+        "AXTI",
+        "LITE",
+        "LWLG",
+        "AAOI",
+        "IPGP",
+        "LASR",
+        "POET",
+        "AMBQ"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "chip-equipment",
+      "label": "Chip Equipment",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "Wafer fab tools & process control riding the AI capex wave"
+      ],
+      "example_tickers": [
+        "ASML",
+        "LRCX",
+        "AMAT",
+        "KLAC",
+        "ENTG",
+        "UCTT",
+        "ICHR",
+        "ACMR",
+        "VECO",
+        "ACLS"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "memory-and-interconnect",
+      "label": "Memory & Interconnect",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "DRAM, HBM, memory IP & advanced packaging"
+      ],
+      "example_tickers": [
+        "MU",
+        "RMBS",
+        "GSIT",
+        "MRAM",
+        "AMKR",
+        "TSEM",
+        "GFS",
+        "UMC",
+        "ASX"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "wireless-and-mobile",
+      "label": "Wireless & Mobile",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "RF, baseband & connectivity chips"
+      ],
+      "example_tickers": [
+        "QCOM",
+        "AVGO",
+        "SWKS",
+        "QRVO",
+        "MRVL",
+        "INDI",
+        "SYNA",
+        "HIMX",
+        "MXL"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "analog-and-mixed-signal",
+      "label": "Analog & Mixed-Signal",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "Auto, industrial & power management semiconductors"
+      ],
+      "example_tickers": [
+        "TXN",
+        "ADI",
+        "NXPI",
+        "MCHP",
+        "MPWR",
+        "ON",
+        "ALGM",
+        "DIOD",
+        "POWI",
+        "VSH",
+        "MTSI",
+        "STM",
+        "AOSL"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "power-and-wide-bandgap",
+      "label": "Power & Wide-Bandgap",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "SiC, GaN & power semiconductors for EV and fast charging"
+      ],
+      "example_tickers": [
+        "WOLF",
+        "NVTS",
+        "SMTC",
+        "AEHR"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "test-and-advanced-packaging",
+      "label": "Test & Advanced Packaging",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "Wafer probe, test sockets & inspection equipment"
+      ],
+      "example_tickers": [
+        "TER",
+        "FORM",
+        "COHU",
+        "ONTO",
+        "CAMT",
+        "KLIC",
+        "PLAB",
+        "LSCC",
+        "SKYT"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "fab-and-foundry",
+      "label": "Fab & Foundry",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "Leading-edge & specialty wafer manufacturing"
+      ],
+      "example_tickers": [
+        "TSM",
+        "GFS",
+        "UMC",
+        "ASX",
+        "TSEM",
+        "SLAB",
+        "SITM"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "specialty-materials-and-ip-licensing",
+      "label": "Specialty Materials & IP Licensing",
+      "weight": 2.0,
+      "sources": [
+        "curated"
+      ],
+      "descriptions": [
+        "Substrates, process technology & semiconductor IP"
+      ],
+      "example_tickers": [
+        "ATOM",
+        "ALMU",
+        "GSIT",
+        "NVMI",
+        "RMBS",
+        "OLED",
+        "AXTI"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "ai-megacap-and-nvidia-lead",
+      "label": "Ai Megacap And Nvidia Lead",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "Mega-cap tech \u2014 especially Nvidia and the rest of the \u2018Magnificent Seven\u2019 \u2014 continues to drive index-level gains as investors crowd into perceived secular AI winners and momentum leaders making new highs."
+      ],
+      "example_tickers": [
+        "NVDA",
+        "MSFT",
+        "GOOGL",
+        "META",
+        "AMZN",
+        "AAPL",
+        "AVGO",
+        "TSLA"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "ai-infrastructure-and-power-buildout",
+      "label": "Ai Infrastructure And Power Buildout",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "The market is rewarding companies leveraged to the physical buildout behind AI \u2014 power generation, grid upgrades, data center infrastructure, and high-performance compute \u2014 as hyperscaler capex guides remain aggressive."
+      ],
+      "example_tickers": [
+        "NVDA",
+        "AMD",
+        "AVGO",
+        "MU",
+        "PLTR",
+        "HPE",
+        "SMCI",
+        "ACLS"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "short-covering-in-underowned-cyclicals",
+      "label": "Short Covering In Underowned Cyclicals",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "A sharp squeeze in under-owned and heavily shorted cyclicals and small caps has accompanied the index rally, as improving risk sentiment and fear-of-missing-out force bears to cover."
+      ],
+      "example_tickers": [
+        "IWM",
+        "XRT",
+        "CAR",
+        "UPST",
+        "DKS",
+        "MARA",
+        "HOOD",
+        "RBLX"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "crypto-and-blockchain-beta",
+      "label": "Crypto And Blockchain Beta",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "Crypto-linked equities and blockchain ETFs are catching a bid alongside renewed strength in digital assets, with traders using them as high-beta proxies for bitcoin and broader crypto sentiment."
+      ],
+      "example_tickers": [
+        "COIN",
+        "MARA",
+        "RIOT",
+        "MSTR",
+        "HUT",
+        "BITX",
+        "WGMI",
+        "DAPP"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "copper-and-electrification-trade",
+      "label": "Copper And Electrification Trade",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "Copper-related plays are moving as investors position for tight physical markets and long-term demand from electrification, EVs, and data center power needs, with copper ETFs and miners seeing inflows."
+      ],
+      "example_tickers": [
+        "FCX",
+        "SCCO",
+        "TECK",
+        "VALE",
+        "CPER",
+        "COPX",
+        "RIO"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "banks-and-credit-resilience",
+      "label": "Banks And Credit Resilience",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "US banks are trading better after management teams downplayed systemic credit stress and private credit contagion in recent updates, easing one of the key overhangs on the macro narrative."
+      ],
+      "example_tickers": [
+        "JPM",
+        "BAC",
+        "WFC",
+        "C",
+        "GS",
+        "MS",
+        "KRE",
+        "XLF"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "us-outperformance-vs-europe-uk",
+      "label": "Us Outperformance Vs Europe Uk",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "Flows continue to favor US equities over European and UK markets amid currency headwinds, energy uncertainty, and weaker growth narratives abroad, reinforcing a \u2018there is no alternative to US\u2019 mindset."
+      ],
+      "example_tickers": [
+        "SPY",
+        "QQQ",
+        "IVV",
+        "VGK",
+        "EWG",
+        "EWU",
+        "EZU"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "ai-software-and-productivity-tools",
+      "label": "Ai Software And Productivity Tools",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "AI-embedded software and productivity platforms are seeing renewed interest as enterprises ramp adoption and vendors highlight AI-driven upsell and pricing power in guidance."
+      ],
+      "example_tickers": [
+        "MSFT",
+        "CRM",
+        "ADBE",
+        "NOW",
+        "DDOG",
+        "SNOW",
+        "CRM",
+        "MDB"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "risk-on-meme-and-retail-speculation",
+      "label": "Risk On Meme And Retail Speculation",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "The broader risk-on tone has spilled into meme and high-volatility retail favorites, where low float and options activity are amplifying rapid upside moves on light fundamental catalysts."
+      ],
+      "example_tickers": [
+        "GME",
+        "AMC",
+        "BBBYQ",
+        "CVNA",
+        "TSLA",
+        "HOOD",
+        "RBLX"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "defense-and-geopolitical-tension",
+      "label": "Defense And Geopolitical Tension",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "Persistent geopolitical tensions and ongoing conflict headlines are keeping defense and aerospace names bid, with investors treating them as structural beneficiaries of higher global defense spending."
+      ],
+      "example_tickers": [
+        "LMT",
+        "RTX",
+        "NOC",
+        "GD",
+        "HII",
+        "BA",
+        "ITA"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "glp1-obesity-and-healthcare-shift",
+      "label": "Glp1 Obesity And Healthcare Shift",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "Weight-loss and diabetes GLP-1 drugs remain a central healthcare narrative as new data and uptake trends shape expectations for long-term demand, supply constraints, and spillover effects across healthcare sub-sectors."
+      ],
+      "example_tickers": [
+        "LLY",
+        "NVO",
+        "PFE",
+        "MRK",
+        "DXCM",
+        "PODD",
+        "UNH",
+        "HUM"
+      ],
+      "anti_pattern": ""
+    },
+    {
+      "tag": "oil-and-energy-uncertainty",
+      "label": "Oil And Energy Uncertainty",
+      "weight": 1.5,
+      "sources": [
+        "hot_market"
+      ],
+      "descriptions": [
+        "Energy names are reacting to ongoing uncertainty around supply, OPEC+ dynamics, and geopolitical risk premia, with traders using them both as macro hedges and yield vehicles."
+      ],
+      "example_tickers": [
+        "XOM",
+        "CVX",
+        "SLB",
+        "EOG",
+        "PXD",
+        "XLE",
+        "OXY",
+        "HES"
+      ],
+      "anti_pattern": ""
+    }
+  ],
+  "errors": {
+    "user_taste": null,
+    "hot_market": null
+  }
+}

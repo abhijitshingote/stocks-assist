@@ -1,0 +1,1137 @@
+{
+  "asof": "2026-06-11",
+  "windows": {
+    "general_window": "2026-06-11 05:00 UTC → 2026-06-11 09:44 UTC (session 2026-06-11, rule: weekday after 9:30 AM ET → current session 5:00 AM ET)",
+    "ticker_window": "2026-06-10 05:00 UTC → 2026-06-11 09:44 UTC (session 2026-06-11, ticker −24h vs general)",
+    "anchor_session": "2026-06-11",
+    "general_published_gte_utc": "2026-06-11T05:00:00+00:00",
+    "ticker_published_gte_utc": "2026-06-10T05:00:00+00:00",
+    "published_lte_utc": "2026-06-11T09:44:07.459786+00:00"
+  },
+  "counts": {
+    "api_by_fetch": {
+      "general": {
+        "api_rows": 61,
+        "in_window": 61,
+        "error": null
+      },
+      "channels": {
+        "commodities": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "earnings": {
+          "api_rows": 8,
+          "in_window": 8,
+          "error": null
+        },
+        "equities": {
+          "api_rows": 12,
+          "in_window": 12,
+          "error": null
+        },
+        "macro_economic_events": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "markets": {
+          "api_rows": 15,
+          "in_window": 15,
+          "error": null
+        },
+        "movers": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "news": {
+          "api_rows": 47,
+          "in_window": 47,
+          "error": null
+        },
+        "tech": {
+          "api_rows": 10,
+          "in_window": 10,
+          "error": null
+        }
+      },
+      "ticker": {
+        "ADUR": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "AGL": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ALAB": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "AMBQ": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "AMD": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "APPS": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "ARM": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "AXTI": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "BAND": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "BAP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "BB": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "BULL": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "CASY": {
+          "api_rows": 8,
+          "in_window": 8,
+          "error": null
+        },
+        "CBRL": {
+          "api_rows": 12,
+          "in_window": 12,
+          "error": null
+        },
+        "CBRS": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "COP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "CRWD": {
+          "api_rows": 6,
+          "in_window": 6,
+          "error": null
+        },
+        "CVX": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "DDOG": {
+          "api_rows": 10,
+          "in_window": 10,
+          "error": null
+        },
+        "DELL": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "DVN": {
+          "api_rows": 6,
+          "in_window": 6,
+          "error": null
+        },
+        "EC": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "FCEL": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "FLEX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "FRMI": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "FTNT": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "GLW": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "HOOD": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "HPE": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "HUM": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "INTC": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "KO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "LITE": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "MO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "MRVL": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "MU": {
+          "api_rows": 7,
+          "in_window": 7,
+          "error": null
+        },
+        "MUSA": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "MX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NTAP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NTES": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "OCC": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "OKE": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "PANW": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "PBR": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "PBR-A": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "PENG": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "PGR": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "PM": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "QH": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "RMIX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "RXT": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "SNDK": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "SNOW": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "STM": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "STRL": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "STX": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "TMUS": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "TRGP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "UMC": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "VECO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "VELO": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "VG": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "VPG": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "VSH": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "VZ": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "WTI": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        }
+      },
+      "ticker_totals": {
+        "api_rows": 94,
+        "in_window": 94,
+        "error": null
+      }
+    },
+    "api_total_rows": 253,
+    "after_dedupe_unique": 131,
+    "upserted": 131,
+    "deduped_published": {
+      "earliest_utc": "2026-06-10T05:39:26+00:00",
+      "latest_utc": "2026-06-11T09:41:21+00:00",
+      "with_published": 131
+    },
+    "prompt": {
+      "articles_total": 131,
+      "by_section": {
+        "Channel: general": 59,
+        "Ticker Group: r1d_screener": 35,
+        "Ticker Group: ti65_mega_large": 28,
+        "Ticker Group: ti65_mid_small": 3,
+        "Ticker Group: vol_spike_5d": 6
+      }
+    }
+  },
+  "fetch_warnings": [
+    "channel:macro economic events: API returned 0 rows"
+  ],
+  "ingest_pools": {
+    "general": [
+      "53134748",
+      "53134740",
+      "53134639",
+      "53134621",
+      "53134603",
+      "53134591",
+      "53134559",
+      "53134543",
+      "53134477",
+      "53134435",
+      "53134365",
+      "53134352",
+      "53134336",
+      "53134257",
+      "53134230",
+      "53134214",
+      "53134204",
+      "53134154",
+      "53134108",
+      "53134087",
+      "53134077",
+      "53134041",
+      "53134029",
+      "53134017",
+      "53134001",
+      "53133988",
+      "53133979",
+      "53133968",
+      "53133953",
+      "53133943",
+      "53133931",
+      "53133919",
+      "53133908",
+      "53133896",
+      "53133882",
+      "53133796",
+      "53133785",
+      "53133772",
+      "53133744",
+      "53133723",
+      "53133712",
+      "53133698",
+      "53133688",
+      "53133678",
+      "53133662",
+      "53133654",
+      "53133535",
+      "53133511",
+      "53133492",
+      "53133466",
+      "53133447",
+      "53133446",
+      "53133435",
+      "53133390",
+      "53133376",
+      "53133264",
+      "53133251",
+      "53133233",
+      "53133219"
+    ],
+    "channels": {
+      "news": [
+        "53134748",
+        "53134740",
+        "53134639",
+        "53134621",
+        "53134591",
+        "53134559",
+        "53134477",
+        "53134365",
+        "53134352",
+        "53134257",
+        "53134214",
+        "53134204",
+        "53134154",
+        "53134108",
+        "53134087",
+        "53134077",
+        "53134041",
+        "53134029",
+        "53134017",
+        "53134001",
+        "53133988",
+        "53133979",
+        "53133968",
+        "53133953",
+        "53133943",
+        "53133931",
+        "53133919",
+        "53133896",
+        "53133882",
+        "53133796",
+        "53133785",
+        "53133744",
+        "53133723",
+        "53133712",
+        "53133688",
+        "53133678",
+        "53133662",
+        "53133654",
+        "53133535",
+        "53133466",
+        "53133447",
+        "53133435",
+        "53133390",
+        "53133376",
+        "53133264",
+        "53133233",
+        "53133219"
+      ],
+      "markets": [
+        "53134639",
+        "53134621",
+        "53134435",
+        "53134352",
+        "53134257",
+        "53134029",
+        "53133988",
+        "53133772",
+        "53133698",
+        "53133678",
+        "53133447",
+        "53133446",
+        "53133376",
+        "53133264",
+        "53133219"
+      ],
+      "equities": [
+        "53134639",
+        "53134621",
+        "53134435",
+        "53134352",
+        "53134029",
+        "53133988",
+        "53133698",
+        "53133511",
+        "53133447",
+        "53133446",
+        "53133376",
+        "53133219"
+      ],
+      "tech": [
+        "53134621",
+        "53134365",
+        "53134154",
+        "53134077",
+        "53134029",
+        "53133988",
+        "53133535",
+        "53133511",
+        "53133264",
+        "53133233"
+      ],
+      "commodities": [
+        "53134639",
+        "53134435",
+        "53134257",
+        "53133772",
+        "53133447"
+      ],
+      "earnings": [
+        "53134639",
+        "53134621",
+        "53134591",
+        "53133796",
+        "53133723",
+        "53133688",
+        "53133678",
+        "53133219"
+      ],
+      "movers": [
+        "53134621"
+      ],
+      "macro_economic_events": []
+    },
+    "ticker": {
+      "ADUR": [
+        "53122726",
+        "53113705"
+      ],
+      "AGL": [],
+      "ALAB": [],
+      "AMBQ": [],
+      "AMD": [
+        "53113225"
+      ],
+      "APPS": [
+        "53134621"
+      ],
+      "ARM": [
+        "53122333"
+      ],
+      "AXTI": [
+        "53115386"
+      ],
+      "BAND": [],
+      "BAP": [],
+      "BB": [
+        "53118748"
+      ],
+      "BULL": [
+        "53117654"
+      ],
+      "CASY": [
+        "53124067",
+        "53122726",
+        "53116836",
+        "53115795",
+        "53115386",
+        "53108423",
+        "53111883",
+        "53107226"
+      ],
+      "CBRL": [
+        "53133688",
+        "53124953",
+        "53123778",
+        "53123251",
+        "53122726",
+        "53120835",
+        "53118016",
+        "53115386",
+        "53113856",
+        "53108423",
+        "53110398",
+        "53108839"
+      ],
+      "CBRS": [
+        "53130222",
+        "53115386"
+      ],
+      "COP": [],
+      "CRWD": [
+        "53134154",
+        "53128128",
+        "53124895",
+        "53122471",
+        "53121890",
+        "53109785"
+      ],
+      "CVX": [
+        "53129028"
+      ],
+      "DDOG": [
+        "53132114",
+        "53124895",
+        "53121278",
+        "53120036",
+        "53119795",
+        "53119399",
+        "53119258",
+        "53116999",
+        "53116969",
+        "53116479"
+      ],
+      "DELL": [],
+      "DVN": [
+        "53126406",
+        "53124067",
+        "53123603",
+        "53121634",
+        "53112582",
+        "53109517"
+      ],
+      "EC": [],
+      "FCEL": [
+        "53129496"
+      ],
+      "FLEX": [],
+      "FRMI": [
+        "53133698",
+        "53124693",
+        "53123340"
+      ],
+      "FTNT": [],
+      "GLW": [],
+      "HOOD": [
+        "53132969",
+        "53121508",
+        "53117654",
+        "53116161",
+        "53115386"
+      ],
+      "HPE": [
+        "53124726"
+      ],
+      "HUM": [
+        "53130414"
+      ],
+      "INTC": [
+        "53131802",
+        "53111785",
+        "53108675",
+        "53107258"
+      ],
+      "KO": [],
+      "LITE": [
+        "53115386"
+      ],
+      "MO": [],
+      "MRVL": [
+        "53124726",
+        "53111985"
+      ],
+      "MU": [
+        "53133988",
+        "53124726",
+        "53124067",
+        "53113635",
+        "53111954",
+        "53111858",
+        "53109158"
+      ],
+      "MUSA": [
+        "53124067"
+      ],
+      "MX": [],
+      "NTAP": [],
+      "NTES": [],
+      "OCC": [],
+      "OKE": [],
+      "PANW": [
+        "53132350",
+        "53118269"
+      ],
+      "PBR": [
+        "53119594"
+      ],
+      "PBR-A": [],
+      "PENG": [],
+      "PGR": [],
+      "PM": [
+        "53114548"
+      ],
+      "QH": [
+        "53131078"
+      ],
+      "RMIX": [],
+      "RXT": [
+        "53123783",
+        "53115386"
+      ],
+      "SNDK": [],
+      "SNOW": [
+        "53120036",
+        "53111944"
+      ],
+      "STM": [],
+      "STRL": [],
+      "STX": [
+        "53130732"
+      ],
+      "TMUS": [],
+      "TRGP": [],
+      "UMC": [
+        "53111409"
+      ],
+      "VECO": [],
+      "VELO": [
+        "53116852"
+      ],
+      "VG": [],
+      "VPG": [],
+      "VSH": [
+        "53125786",
+        "53122275"
+      ],
+      "VZ": [
+        "53119480"
+      ],
+      "WTI": []
+    }
+  },
+  "universe_symbols": [
+    "ADUR",
+    "AGL",
+    "ALAB",
+    "AMBQ",
+    "AMD",
+    "APPS",
+    "ARM",
+    "AXTI",
+    "BAND",
+    "BAP",
+    "BB",
+    "BULL",
+    "CASY",
+    "CBRL",
+    "CBRS",
+    "COP",
+    "CRWD",
+    "CVX",
+    "DDOG",
+    "DELL",
+    "DVN",
+    "EC",
+    "FCEL",
+    "FLEX",
+    "FRMI",
+    "FTNT",
+    "GLW",
+    "HOOD",
+    "HPE",
+    "HUM",
+    "INTC",
+    "KO",
+    "LITE",
+    "MO",
+    "MRVL",
+    "MU",
+    "MUSA",
+    "MX",
+    "NTAP",
+    "NTES",
+    "OCC",
+    "OKE",
+    "PANW",
+    "PBR",
+    "PBR-A",
+    "PENG",
+    "PGR",
+    "PM",
+    "QH",
+    "RMIX",
+    "RXT",
+    "SNDK",
+    "SNOW",
+    "STM",
+    "STRL",
+    "STX",
+    "TMUS",
+    "TRGP",
+    "UMC",
+    "VECO",
+    "VELO",
+    "VG",
+    "VPG",
+    "VSH",
+    "VZ",
+    "WTI"
+  ],
+  "ticker_universe_slices": [
+    {
+      "slice_id": "r1d",
+      "cap_bucket": "mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "selection_count": 10,
+      "tickers": [
+        "COP",
+        "KO",
+        "TMUS",
+        "PM",
+        "PBR",
+        "CVX",
+        "PGR",
+        "MO",
+        "VZ",
+        "PBR-A"
+      ]
+    },
+    {
+      "slice_id": "r1d",
+      "cap_bucket": "large",
+      "label": "Top 10 · 1D return · Large cap",
+      "selection_count": 10,
+      "tickers": [
+        "CASY",
+        "VG",
+        "DVN",
+        "LITE",
+        "OKE",
+        "CBRS",
+        "EC",
+        "TRGP",
+        "NTES",
+        "HOOD"
+      ]
+    },
+    {
+      "slice_id": "r1d",
+      "cap_bucket": "mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "selection_count": 10,
+      "tickers": [
+        "CBRL",
+        "OCC",
+        "QH",
+        "FRMI",
+        "RXT",
+        "VELO",
+        "WTI",
+        "AXTI",
+        "BULL",
+        "MUSA"
+      ]
+    },
+    {
+      "slice_id": "vol_spike_5d",
+      "cap_bucket": "mega",
+      "label": "Vol spike / gapper · last 5D · Mega cap",
+      "selection_count": 2,
+      "tickers": [
+        "GLW",
+        "INTC"
+      ]
+    },
+    {
+      "slice_id": "vol_spike_5d",
+      "cap_bucket": "large",
+      "label": "Vol spike / gapper · last 5D · Large cap",
+      "selection_count": 2,
+      "tickers": [
+        "BAP",
+        "STM"
+      ]
+    },
+    {
+      "slice_id": "vol_spike_5d",
+      "cap_bucket": "mid_small",
+      "label": "Vol spike / gapper · last 5D · Mid & small cap",
+      "selection_count": 4,
+      "tickers": [
+        "RMIX",
+        "VECO",
+        "ADUR",
+        "FCEL"
+      ]
+    },
+    {
+      "slice_id": "main_view_ti65",
+      "cap_bucket": "mega",
+      "label": "Top 10 · Main View TI65 · Mega cap",
+      "selection_count": 10,
+      "tickers": [
+        "MRVL",
+        "DELL",
+        "ARM",
+        "MU",
+        "SNDK",
+        "AMD",
+        "FTNT",
+        "STX",
+        "CRWD",
+        "PANW"
+      ]
+    },
+    {
+      "slice_id": "main_view_ti65",
+      "cap_bucket": "large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "selection_count": 9,
+      "tickers": [
+        "ALAB",
+        "HPE",
+        "FLEX",
+        "UMC",
+        "DDOG",
+        "STRL",
+        "SNOW",
+        "HUM",
+        "NTAP"
+      ]
+    },
+    {
+      "slice_id": "main_view_ti65",
+      "cap_bucket": "mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "selection_count": 9,
+      "tickers": [
+        "AGL",
+        "APPS",
+        "VSH",
+        "BAND",
+        "PENG",
+        "MX",
+        "VPG",
+        "BB",
+        "AMBQ"
+      ]
+    }
+  ],
+  "ticker_universe_overview": "source/ticker_universe/overview.md",
+  "article_ids": [
+    "53134748",
+    "53134740",
+    "53134639",
+    "53134621",
+    "53134603",
+    "53134591",
+    "53134559",
+    "53134543",
+    "53134477",
+    "53134435",
+    "53134365",
+    "53134352",
+    "53134336",
+    "53134257",
+    "53134230",
+    "53134214",
+    "53134204",
+    "53134154",
+    "53134108",
+    "53134087",
+    "53134077",
+    "53134041",
+    "53134029",
+    "53134017",
+    "53134001",
+    "53133988",
+    "53133979",
+    "53133968",
+    "53133953",
+    "53133943",
+    "53133931",
+    "53133919",
+    "53133908",
+    "53133896",
+    "53133882",
+    "53133796",
+    "53133785",
+    "53133772",
+    "53133744",
+    "53133723",
+    "53133712",
+    "53133698",
+    "53133688",
+    "53133678",
+    "53133662",
+    "53133654",
+    "53133535",
+    "53133511",
+    "53133492",
+    "53133466",
+    "53133447",
+    "53133446",
+    "53133435",
+    "53133390",
+    "53133376",
+    "53133264",
+    "53133251",
+    "53133233",
+    "53133219",
+    "53115386",
+    "53117654",
+    "53124067",
+    "53122726",
+    "53116836",
+    "53115795",
+    "53108423",
+    "53111883",
+    "53107226",
+    "53124953",
+    "53123778",
+    "53123251",
+    "53120835",
+    "53118016",
+    "53113856",
+    "53110398",
+    "53108839",
+    "53130222",
+    "53129028",
+    "53126406",
+    "53123603",
+    "53121634",
+    "53112582",
+    "53109517",
+    "53124693",
+    "53123340",
+    "53132969",
+    "53121508",
+    "53116161",
+    "53119594",
+    "53114548",
+    "53131078",
+    "53123783",
+    "53116852",
+    "53119480",
+    "53113705",
+    "53129496",
+    "53131802",
+    "53111785",
+    "53108675",
+    "53107258",
+    "53113225",
+    "53122333",
+    "53128128",
+    "53124895",
+    "53122471",
+    "53121890",
+    "53109785",
+    "53132114",
+    "53121278",
+    "53120036",
+    "53119795",
+    "53119399",
+    "53119258",
+    "53116999",
+    "53116969",
+    "53116479",
+    "53124726",
+    "53130414",
+    "53111985",
+    "53113635",
+    "53111954",
+    "53111858",
+    "53109158",
+    "53132350",
+    "53118269",
+    "53111944",
+    "53130732",
+    "53111409",
+    "53118748",
+    "53125786",
+    "53122275"
+  ]
+}

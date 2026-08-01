@@ -1,0 +1,100 @@
+[
+  {
+    "category": "AI / Data Infrastructure",
+    "etfs": [
+      { "symbol": "SMH", "name": "VanEck Semiconductor ETF" },
+      { "symbol": "SOXX", "name": "iShares Semiconductor ETF" },
+      { "symbol": "BOTZ", "name": "Global X Robotics & Artificial Intelligence ETF" },
+      { "symbol": "ROBT", "name": "First Trust Nasdaq AI and Robotics ETF" }
+    ]
+  },
+  {
+    "category": "Cybersecurity",
+    "etfs": [
+      { "symbol": "CIBR", "name": "First Trust NASDAQ Cybersecurity ETF" },
+      { "symbol": "HACK", "name": "ETFMG Prime Cyber Security ETF" },
+      { "symbol": "BUG", "name": "Global X Cybersecurity ETF" }
+    ]
+  },
+  {
+    "category": "Cloud / Software",
+    "etfs": [
+      { "symbol": "IGV", "name": "iShares Expanded Tech-Software Sector ETF" },
+      { "symbol": "SKYY", "name": "First Trust Cloud Computing ETF" },
+      { "symbol": "WCLD", "name": "WisdomTree Cloud Computing ETF" }
+    ]
+  },
+  {
+    "category": "Biotech",
+    "etfs": [
+      { "symbol": "XBI", "name": "SPDR S&P Biotech ETF" },
+      { "symbol": "IBB", "name": "iShares Biotechnology ETF" },
+      { "symbol": "LABU", "name": "Direxion Daily S&P Biotech Bull 3X Shares" },
+      { "symbol": "LABD", "name": "Direxion Daily S&P Biotech Bear 3X Shares" }
+    ]
+  },
+  {
+    "category": "Fintech",
+    "etfs": [
+      { "symbol": "FINX", "name": "Global X FinTech ETF" },
+      { "symbol": "ARKF", "name": "ARK Fintech Innovation ETF" }
+    ]
+  },
+  {
+    "category": "Clean Energy / EV",
+    "etfs": [
+      { "symbol": "ICLN", "name": "iShares Global Clean Energy ETF" },
+      { "symbol": "TAN", "name": "Invesco Solar ETF" },
+      { "symbol": "LIT", "name": "Global X Lithium & Battery Tech ETF" },
+      { "symbol": "IDRV", "name": "iShares Self-Driving EV and Tech ETF" }
+    ]
+  },
+  {
+    "category": "Innovation / Disruptive Tech",
+    "etfs": [
+      { "symbol": "ARKK", "name": "ARK Innovation ETF" },
+      { "symbol": "ARKG", "name": "ARK Genomic Revolution ETF" },
+      { "symbol": "ARKW", "name": "ARK Next Generation Internet ETF" }
+    ]
+  },
+  {
+    "category": "Homebuilders / Housing",
+    "etfs": [
+      { "symbol": "XHB", "name": "SPDR S&P Homebuilders ETF" },
+      { "symbol": "ITB", "name": "iShares U.S. Home Construction ETF" }
+    ]
+  },
+  {
+    "category": "Regional Banks",
+    "etfs": [
+      { "symbol": "KRE", "name": "SPDR S&P Regional Banking ETF" },
+      { "symbol": "KBE", "name": "SPDR S&P Bank ETF" }
+    ]
+  },
+  {
+    "category": "Retail",
+    "etfs": [
+      { "symbol": "XRT", "name": "SPDR S&P Retail ETF" }
+    ]
+  },
+  {
+    "category": "China Tech",
+    "etfs": [
+      { "symbol": "KWEB", "name": "KraneShares CSI China Internet ETF" },
+      { "symbol": "CQQQ", "name": "Invesco China Technology ETF" }
+    ]
+  },
+  {
+    "category": "Leveraged Sub-Sector (3X)",
+    "etfs": [
+      { "symbol": "SOXL", "name": "Direxion Daily Semiconductor Bull 3X" },
+      { "symbol": "SOXS", "name": "Direxion Daily Semiconductor Bear 3X" },
+      { "symbol": "TECL", "name": "Direxion Daily Technology Bull 3X" },
+      { "symbol": "TECS", "name": "Direxion Daily Technology Bear 3X" },
+      { "symbol": "FAS", "name": "Direxion Daily Financial Bull 3X" },
+      { "symbol": "FAZ", "name": "Direxion Daily Financial Bear 3X" },
+      { "symbol": "NAIL", "name": "Direxion Daily Homebuilders & Supplies Bull 3X" },
+      { "symbol": "DPST", "name": "Direxion Daily Regional Banks Bull 3X" }
+    ]
+  }
+]

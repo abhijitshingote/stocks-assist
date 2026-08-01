@@ -1,0 +1,550 @@
+{
+  "asof": "2026-06-17",
+  "pipeline": "market_brief_losers",
+  "source_scope": "ticker_only",
+  "windows": {
+    "ticker_window": "2026-06-15 05:00 UTC → 2026-06-17 02:41 UTC (session 2026-06-16, ticker −24h vs general)",
+    "anchor_session": "2026-06-16",
+    "ticker_published_gte_utc": "2026-06-15T05:00:00+00:00",
+    "published_lte_utc": "2026-06-17T02:41:50.104138+00:00"
+  },
+  "counts": {
+    "api_by_fetch": {
+      "ticker": {
+        "ADI": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "ALAB": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "ALTO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "AMD": {
+          "api_rows": 10,
+          "in_window": 10,
+          "error": null
+        },
+        "ASML": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "AVGO": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "AXTI": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "BLSH": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "BOT": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "CIEN": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "COHR": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "ELVR": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "ENTG": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "FN": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "GIL": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "GLW": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "HUN": {
+          "api_rows": 6,
+          "in_window": 6,
+          "error": null
+        },
+        "INTC": {
+          "api_rows": 6,
+          "in_window": 6,
+          "error": null
+        },
+        "IONQ": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "KLAC": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "LITE": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "LRCX": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "MPWR": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "MRVL": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "MU": {
+          "api_rows": 14,
+          "in_window": 14,
+          "error": null
+        },
+        "NFLX": {
+          "api_rows": 8,
+          "in_window": 8,
+          "error": null
+        },
+        "PDD": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "QUBT": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "SNDK": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "STM": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "TSEM": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "TSM": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "VCX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "VRT": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "WOLF": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        }
+      },
+      "ticker_totals": {
+        "api_rows": 98,
+        "in_window": 98,
+        "error": null
+      }
+    },
+    "api_total_rows": 98,
+    "after_dedupe_unique": 75,
+    "upserted": 75,
+    "deduped_published": {
+      "earliest_utc": "2026-06-15T06:41:09+00:00",
+      "latest_utc": "2026-06-17T02:25:24+00:00",
+      "with_published": 75
+    },
+    "prompt": {
+      "articles_total": 75,
+      "by_section": {
+        "Ticker: Bottom 10 · 1D return · Large cap": 11,
+        "Ticker: Bottom 10 · 1D return · Mid & small cap": 12,
+        "Ticker: Bottom 15 · 1D return · Mega cap": 52
+      }
+    }
+  },
+  "fetch_warnings": [],
+  "ingest_pools": {
+    "ticker": {
+      "ADI": [
+        "53216550",
+        "53188434"
+      ],
+      "ALAB": [
+        "53235540",
+        "53233833",
+        "53232828",
+        "53206950"
+      ],
+      "ALTO": [],
+      "AMD": [
+        "53240874",
+        "53226214",
+        "53217959",
+        "53216484",
+        "53214653",
+        "53211089",
+        "53205496",
+        "53201539",
+        "53197355",
+        "53189543"
+      ],
+      "ASML": [],
+      "AVGO": [
+        "53233210",
+        "53205289",
+        "53192829"
+      ],
+      "AXTI": [
+        "53213823",
+        "53197355",
+        "53191228",
+        "53187861"
+      ],
+      "BLSH": [
+        "53232072",
+        "53230853"
+      ],
+      "BOT": [
+        "53187861"
+      ],
+      "CIEN": [],
+      "COHR": [
+        "53221618"
+      ],
+      "ELVR": [
+        "53219363"
+      ],
+      "ENTG": [
+        "53203303"
+      ],
+      "FN": [],
+      "GIL": [
+        "53232055",
+        "53231794",
+        "53228811",
+        "53223542"
+      ],
+      "GLW": [],
+      "HUN": [
+        "53239314",
+        "53232072",
+        "53229429",
+        "53225145",
+        "53219363",
+        "53216859"
+      ],
+      "INTC": [
+        "53232285",
+        "53219755",
+        "53211089",
+        "53210236",
+        "53205496",
+        "53193377"
+      ],
+      "IONQ": [
+        "53196120"
+      ],
+      "KLAC": [
+        "53198492"
+      ],
+      "LITE": [
+        "53232072",
+        "53228096"
+      ],
+      "LRCX": [
+        "53217546",
+        "53205507",
+        "53204292"
+      ],
+      "MPWR": [
+        "53213567"
+      ],
+      "MRVL": [
+        "53229920",
+        "53219298",
+        "53214373",
+        "53196188"
+      ],
+      "MU": [
+        "53232828",
+        "53229984",
+        "53227624",
+        "53217524",
+        "53214685",
+        "53214373",
+        "53211089",
+        "53205496",
+        "53205289",
+        "53203303",
+        "53201351",
+        "53200506",
+        "53188296",
+        "53189067"
+      ],
+      "NFLX": [
+        "53240692",
+        "53230620",
+        "53229526",
+        "53223671",
+        "53204539",
+        "53201821",
+        "53201232",
+        "53196440"
+      ],
+      "PDD": [
+        "53218163",
+        "53216444",
+        "53200728"
+      ],
+      "QUBT": [
+        "53197355"
+      ],
+      "SNDK": [
+        "53211089",
+        "53208182",
+        "53205496",
+        "53203303",
+        "53200267"
+      ],
+      "STM": [],
+      "TSEM": [
+        "53197355",
+        "53188296",
+        "53188491",
+        "53187861",
+        "53186993"
+      ],
+      "TSM": [
+        "53221544",
+        "53214653",
+        "53205496",
+        "53188296",
+        "53188357"
+      ],
+      "VCX": [],
+      "VRT": [],
+      "WOLF": []
+    }
+  },
+  "universe_symbols": [
+    "ADI",
+    "ALAB",
+    "ALTO",
+    "AMD",
+    "ASML",
+    "AVGO",
+    "AXTI",
+    "BLSH",
+    "BOT",
+    "CIEN",
+    "COHR",
+    "ELVR",
+    "ENTG",
+    "FN",
+    "GIL",
+    "GLW",
+    "HUN",
+    "INTC",
+    "IONQ",
+    "KLAC",
+    "LITE",
+    "LRCX",
+    "MPWR",
+    "MRVL",
+    "MU",
+    "NFLX",
+    "PDD",
+    "QUBT",
+    "SNDK",
+    "STM",
+    "TSEM",
+    "TSM",
+    "VCX",
+    "VRT",
+    "WOLF"
+  ],
+  "losers_universe_slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "selection_count": 15,
+      "tickers": [
+        "INTC",
+        "MRVL",
+        "GLW",
+        "KLAC",
+        "AMD",
+        "MU",
+        "ASML",
+        "LRCX",
+        "AVGO",
+        "VRT",
+        "NFLX",
+        "SNDK",
+        "TSM",
+        "PDD",
+        "ADI"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "selection_count": 10,
+      "tickers": [
+        "IONQ",
+        "LITE",
+        "MPWR",
+        "CIEN",
+        "COHR",
+        "FN",
+        "TSEM",
+        "ALAB",
+        "ENTG",
+        "STM"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "selection_count": 10,
+      "tickers": [
+        "HUN",
+        "GIL",
+        "BOT",
+        "AXTI",
+        "VCX",
+        "ALTO",
+        "ELVR",
+        "BLSH",
+        "QUBT",
+        "WOLF"
+      ]
+    }
+  ],
+  "losers_universe_overview": "source/losers_universe/overview.md",
+  "article_ids": [
+    "53232285",
+    "53219755",
+    "53211089",
+    "53210236",
+    "53205496",
+    "53193377",
+    "53229920",
+    "53219298",
+    "53214373",
+    "53196188",
+    "53198492",
+    "53240874",
+    "53226214",
+    "53217959",
+    "53216484",
+    "53214653",
+    "53201539",
+    "53197355",
+    "53189543",
+    "53232828",
+    "53229984",
+    "53227624",
+    "53217524",
+    "53214685",
+    "53205289",
+    "53203303",
+    "53201351",
+    "53200506",
+    "53188296",
+    "53189067",
+    "53217546",
+    "53205507",
+    "53204292",
+    "53233210",
+    "53192829",
+    "53240692",
+    "53230620",
+    "53229526",
+    "53223671",
+    "53204539",
+    "53201821",
+    "53201232",
+    "53196440",
+    "53208182",
+    "53200267",
+    "53221544",
+    "53188357",
+    "53218163",
+    "53216444",
+    "53200728",
+    "53216550",
+    "53188434",
+    "53196120",
+    "53232072",
+    "53228096",
+    "53213567",
+    "53221618",
+    "53188491",
+    "53187861",
+    "53186993",
+    "53235540",
+    "53233833",
+    "53206950",
+    "53239314",
+    "53229429",
+    "53225145",
+    "53219363",
+    "53216859",
+    "53232055",
+    "53231794",
+    "53228811",
+    "53223542",
+    "53213823",
+    "53191228",
+    "53230853"
+  ]
+}

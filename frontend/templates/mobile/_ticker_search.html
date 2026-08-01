@@ -1,0 +1,15 @@
+<label class="search-box ticker-search-box">
+  <span aria-hidden="true">⌕</span>
+  <input
+    type="text"
+    id="tickerSearchInput"
+    class="search-input"
+    placeholder="Ticker…"
+    maxlength="10"
+    autocomplete="off"
+    autocapitalize="characters"
+    spellcheck="false"
+    enterkeyhint="go"
+    {% if ticker %}value="{{ ticker }}"{% endif %}
+  >
+</label>

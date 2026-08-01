@@ -1,0 +1,30 @@
+{
+  "ticker": "AKAM",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Morgan Stanley upgraded Akamai from Underweight to Overweight on 2026-05-08 and raised its price target to $115, citing an inflection in the business model and improving growth prospects.",
+    "KeyBanc also upgraded Akamai to Overweight on 2026-05-08 with a $115 price target, pointing to upside from the company\u2019s compute business and AI infrastructure exposure.",
+    "Scotiabank lifted its Akamai price target to $105 on 2026-05-08, explicitly citing AI infrastructure initiatives including the NVIDIA partnership and Akamai\u2019s Inference Cloud launch.",
+    "Akamai announced a strategic collaboration with Visa on 2026-05-08 to secure AI-powered commerce, integrating Visa\u2019s Trusted Agent Protocol with Akamai security technologies.",
+    "Akamai\u2019s cloud service achieved FedRAMP High Ready status on 2026-05-08, expanding its ability to serve federal-agency workloads with sensitive data."
+  ],
+  "latest_material_date": "2026-05-08",
+  "theme_tags": [
+    "earnings-beat-and-raise",
+    "new-product-or-platform-inflection",
+    "hyperscaler-ai-infrastructure",
+    "edgeai",
+    "ai-compute",
+    "breakout-and-momentum"
+  ],
+  "summary": "The stock is reacting primarily to a sharp AI-infrastructure re-rating, not just the recent earnings beat. The big catalyst cluster was on 2026-05-08: multiple broker upgrades to Overweight with $105-$115 targets, plus Akamai\u2019s push into AI inference/compute and adjacent security use cases, including its Inference Cloud, a Visa collaboration, and FedRAMP High Ready status. The size of the move and the 20-day run suggest the market is also chasing momentum, but the fundamental driver is the market\u2019s growing belief that Akamai\u2019s compute business could inflect materially higher.",
+  "ok": true,
+  "raw": "{\"ticker\":\"AKAM\",\"has_material_news\":true,\"headline_drivers\":[\"Morgan Stanley upgraded Akamai from Underweight to Overweight on 2026-05-08 and raised its price target to $115, citing an inflection in the business model and improving growth prospects.\",\"KeyBanc also upgraded Akamai to Overweight on 2026-05-08 with a $115 price target, pointing to upside from the company\u2019s compute business and AI infrastructure exposure.\",\"Scotiabank lifted its Akamai price target to $105 on 2026-05-08, explicitly citing AI infrastructure initiatives including the NVIDIA partnership and Akamai\u2019s Inference Cloud launch.\",\"Akamai announced a strategic collaboration with Visa on 2026-05-08 to secure AI-powered commerce, integrating Visa\u2019s Trusted Agent Protocol with Akamai security technologies.\",\"Akamai\u2019s cloud service achieved FedRAMP High Ready status on 2026-05-08, expanding its ability to serve federal-agency workloads with sensitive data.\"],\"latest_material_date\":\"2026-05-08\",\"theme_tags\":[\"earnings-beat-and-raise\",\"new-product-or-platform-inflection\",\"hyperscaler-ai-infrastructure\",\"edgeai\",\"ai-compute\",\"breakout-and-momentum\"],\"summary\":\"The stock is reacting primarily to a sharp AI-infrastructure re-rating, not just the recent earnings beat. The big catalyst cluster was on 2026-05-08: multiple broker upgrades to Overweight with $105-$115 targets, plus Akamai\u2019s push into AI inference/compute and adjacent security use cases, including its Inference Cloud, a Visa collaboration, and FedRAMP High Ready status. The size of the move and the 20-day run suggest the market is also chasing momentum, but the fundamental driver is the market\u2019s growing belief that Akamai\u2019s compute business could inflect materially higher.\"}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

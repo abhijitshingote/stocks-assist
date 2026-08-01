@@ -1,0 +1,461 @@
+{
+  "asof": "2026-06-04",
+  "source": "stock_metrics (DB) — bottom dr_1",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_by_bucket": {
+    "mega": 15,
+    "large": 10,
+    "mid_small": 10
+  },
+  "unique_tickers": 35,
+  "by_ticker": {
+    "AMAT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 13,
+      "dr_1": -9.65,
+      "dr_5": 1.52,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 359671554136,
+      "company_name": "Applied Materials, Inc."
+    },
+    "AMD": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": -10.88,
+      "dr_5": -7.1,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 760479228000,
+      "company_name": "Advanced Micro Devices, Inc."
+    },
+    "ARM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": -12.9,
+      "dr_5": -2.37,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 364877520000,
+      "company_name": "Arm Holdings plc American Depositary Shares"
+    },
+    "ASTS": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": -14.52,
+      "dr_5": -16.24,
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "market_cap": 38085096067,
+      "company_name": "AST SpaceMobile, Inc."
+    },
+    "BE": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": -11.68,
+      "dr_5": -6.99,
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 74982248043,
+      "company_name": "Bloom Energy Corporation"
+    },
+    "BLDP": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": -20.57,
+      "dr_5": -19.7,
+      "sector": "Industrials",
+      "industry": "Industrial - Machinery",
+      "market_cap": 1483261177,
+      "company_name": "Ballard Power Systems Inc."
+    },
+    "BRUN": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": -21.28,
+      "dr_5": -14.64,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 2353765899,
+      "company_name": "Boost Run Inc. Class A Common Stock"
+    },
+    "CRCL": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": -12.04,
+      "dr_5": -27.83,
+      "sector": "Financial Services",
+      "industry": "Financial - Capital Markets",
+      "market_cap": 21458095469,
+      "company_name": "Circle Internet Group"
+    },
+    "DGXX": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": -20.0,
+      "dr_5": -21.03,
+      "sector": "Financial Services",
+      "industry": "Asset Management - Cryptocurrency",
+      "market_cap": 439873147,
+      "company_name": "Digi Power X Inc."
+    },
+    "FCEL": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": -19.7,
+      "dr_5": -18.63,
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 918106418,
+      "company_name": "FuelCell Energy, Inc."
+    },
+    "FN": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": -12.77,
+      "dr_5": -4.14,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 22259225975,
+      "company_name": "Fabrinet"
+    },
+    "FSLR": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": -13.55,
+      "dr_5": -7.84,
+      "sector": "Energy",
+      "industry": "Solar",
+      "market_cap": 29980461530,
+      "company_name": "First Solar, Inc."
+    },
+    "GLW": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": -11.49,
+      "dr_5": -1.99,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 152832064964,
+      "company_name": "Corning Incorporated"
+    },
+    "INTC": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": -10.67,
+      "dr_5": -15.38,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 498428420000,
+      "company_name": "Intel Corporation"
+    },
+    "IONQ": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": -13.18,
+      "dr_5": -18.56,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 21194267647,
+      "company_name": "IonQ, Inc."
+    },
+    "KLAC": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 14,
+      "dr_1": -9.18,
+      "dr_5": 0.72,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 252007535671,
+      "company_name": "KLA Corporation"
+    },
+    "LRCX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 12,
+      "dr_1": -10.15,
+      "dr_5": -4.37,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 379272869600,
+      "company_name": "Lam Research Corporation"
+    },
+    "MRVL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": -13.24,
+      "dr_5": 35.83,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 230483556000,
+      "company_name": "Marvell Technology, Inc."
+    },
+    "MU": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": -14.17,
+      "dr_5": -7.01,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 974369997300,
+      "company_name": "Micron Technology, Inc."
+    },
+    "MX": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": -21.26,
+      "dr_5": -22.63,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 252535139,
+      "company_name": "Magnachip Semiconductor Corporation"
+    },
+    "NBIS": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": -13.93,
+      "dr_5": 1.62,
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "market_cap": 54674400000,
+      "company_name": "Nebius Group N.V."
+    },
+    "NOK": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": -13.59,
+      "dr_5": -3.67,
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "market_cap": 77664826960,
+      "company_name": "Nokia Oyj"
+    },
+    "ORCL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 11,
+      "dr_1": -10.65,
+      "dr_5": -4.21,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 613776976860,
+      "company_name": "Oracle Corporation"
+    },
+    "PDYN": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": -19.82,
+      "dr_5": -20.11,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 266963109,
+      "company_name": "Palladyne AI Corp."
+    },
+    "PL": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": -26.22,
+      "dr_5": -33.93,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 10726018668,
+      "company_name": "Planet Labs PBC"
+    },
+    "POET": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": -21.96,
+      "dr_5": 0.24,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 1565671381,
+      "company_name": "POET Technologies Inc."
+    },
+    "QCOM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": -10.96,
+      "dr_5": -13.07,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 227600760000,
+      "company_name": "QUALCOMM Incorporated"
+    },
+    "SCCO": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": -10.7,
+      "dr_5": -9.31,
+      "sector": "Basic Materials",
+      "industry": "Copper",
+      "market_cap": 144313314772,
+      "company_name": "Southern Copper Corporation"
+    },
+    "SMCI": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": -12.03,
+      "dr_5": -9.1,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 25043045520,
+      "company_name": "Super Micro Computer, Inc."
+    },
+    "SNDK": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": -12.48,
+      "dr_5": -5.13,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 230919308970,
+      "company_name": "Sandisk Corporation"
+    },
+    "STRL": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": -12.59,
+      "dr_5": 1.27,
+      "sector": "Industrials",
+      "industry": "Engineering & Construction",
+      "market_cap": 27078206388,
+      "company_name": "Sterling Infrastructure, Inc."
+    },
+    "STX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 15,
+      "dr_1": -9.0,
+      "dr_5": -2.61,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 190027350630,
+      "company_name": "Seagate Technology Holdings plc"
+    },
+    "TE": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": -21.48,
+      "dr_5": -9.05,
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 1637340594,
+      "company_name": "T1 Energy Inc"
+    },
+    "WDC": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": -11.05,
+      "dr_5": -0.74,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 176380673040,
+      "company_name": "Western Digital Corporation"
+    },
+    "ZUMZ": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": -25.9,
+      "dr_5": -29.24,
+      "sector": "Consumer Cyclical",
+      "industry": "Apparel - Retail",
+      "market_cap": 300077006,
+      "company_name": "Zumiez Inc."
+    }
+  },
+  "slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "ticker_count": 15,
+      "tickers": [
+        "MU",
+        "MRVL",
+        "ARM",
+        "SNDK",
+        "GLW",
+        "WDC",
+        "QCOM",
+        "AMD",
+        "SCCO",
+        "INTC",
+        "ORCL",
+        "LRCX",
+        "AMAT",
+        "KLAC",
+        "STX"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "ASTS",
+        "NBIS",
+        "NOK",
+        "FSLR",
+        "IONQ",
+        "FN",
+        "STRL",
+        "CRCL",
+        "SMCI",
+        "BE"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "PL",
+        "ZUMZ",
+        "POET",
+        "TE",
+        "BRUN",
+        "MX",
+        "BLDP",
+        "DGXX",
+        "PDYN",
+        "FCEL"
+      ]
+    }
+  ]
+}

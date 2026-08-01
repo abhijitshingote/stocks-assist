@@ -1,0 +1,461 @@
+{
+  "asof": "2026-06-12",
+  "source": "stock_metrics (DB) — bottom dr_1",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_by_bucket": {
+    "mega": 15,
+    "large": 10,
+    "mid_small": 10
+  },
+  "unique_tickers": 35,
+  "by_ticker": {
+    "AD": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": -22.92,
+      "dr_5": -25.01,
+      "sector": "Communication Services",
+      "industry": "Telecommunications Services",
+      "market_cap": 4514322782,
+      "company_name": "Array Digital Infrastructure, Inc."
+    },
+    "ADBE": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": -4.91,
+      "dr_5": -14.45,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 88438960000,
+      "company_name": "Adobe Inc."
+    },
+    "ADSK": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": -5.51,
+      "dr_5": -10.07,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 47313427844,
+      "company_name": "Autodesk, Inc."
+    },
+    "APP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": -3.51,
+      "dr_5": -14.76,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 165611470485,
+      "company_name": "AppLovin Corporation"
+    },
+    "BABA": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": -2.7,
+      "dr_5": -10.8,
+      "sector": "Consumer Cyclical",
+      "industry": "Specialty Retail",
+      "market_cap": 266920450881,
+      "company_name": "Alibaba Group Holding Limited"
+    },
+    "BOT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": -6.53,
+      "dr_5": -3.6,
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "market_cap": 708784913,
+      "company_name": "RoboStrategy, Inc. Common Stock"
+    },
+    "BP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 15,
+      "dr_1": -1.15,
+      "dr_5": -2.63,
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "market_cap": 112636589750,
+      "company_name": "BP p.l.c."
+    },
+    "BSY": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": -7.08,
+      "dr_5": -8.84,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 8935046891,
+      "company_name": "Bentley Systems, Incorporated"
+    },
+    "CBRS": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": -4.39,
+      "dr_5": 4.41,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 50194141138,
+      "company_name": "Cerebras Systems Inc."
+    },
+    "COP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": -3.84,
+      "dr_5": -2.27,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 141833788294,
+      "company_name": "ConocoPhillips"
+    },
+    "CRM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": -2.92,
+      "dr_5": -12.19,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 139983480000,
+      "company_name": "Salesforce, Inc."
+    },
+    "CVX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": -2.55,
+      "dr_5": -1.13,
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "market_cap": 371951216000,
+      "company_name": "Chevron Corporation"
+    },
+    "DAN": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": -15.72,
+      "dr_5": -18.36,
+      "sector": "Consumer Cyclical",
+      "industry": "Auto - Parts",
+      "market_cap": 4425801846,
+      "company_name": "Dana Incorporated"
+    },
+    "DHR": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 13,
+      "dr_1": -1.49,
+      "dr_5": -2.76,
+      "sector": "Healthcare",
+      "industry": "Medical - Diagnostics & Research",
+      "market_cap": 126379523157,
+      "company_name": "Danaher Corporation"
+    },
+    "DVN": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": -4.11,
+      "dr_5": -2.37,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 27386469061,
+      "company_name": "Devon Energy Corporation"
+    },
+    "EOG": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": -2.92,
+      "dr_5": -2.35,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 73145940570,
+      "company_name": "EOG Resources, Inc."
+    },
+    "EQT": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": -3.04,
+      "dr_5": -6.98,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 32080766620,
+      "company_name": "EQT Corporation"
+    },
+    "FANG": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": -3.49,
+      "dr_5": -6.44,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 54642237120,
+      "company_name": "Diamondback Energy, Inc."
+    },
+    "MSFT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": -2.64,
+      "dr_5": -9.2,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 2878925188650,
+      "company_name": "Microsoft Corporation"
+    },
+    "NOW": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 12,
+      "dr_1": -2.32,
+      "dr_5": -14.0,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 110319016760,
+      "company_name": "ServiceNow, Inc."
+    },
+    "OCC": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": -8.89,
+      "dr_5": 65.32,
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "market_cap": 237625316,
+      "company_name": "Optical Cable Corporation"
+    },
+    "ORCL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": -9.13,
+      "dr_5": -22.95,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 529480068600,
+      "company_name": "Oracle Corporation"
+    },
+    "OXM": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": -18.45,
+      "dr_5": -19.95,
+      "sector": "Consumer Cyclical",
+      "industry": "Apparel - Manufacturers",
+      "market_cap": 535237418,
+      "company_name": "Oxford Industries, Inc."
+    },
+    "OXY": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": -3.44,
+      "dr_5": -4.45,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 56246592341,
+      "company_name": "Occidental Petroleum Corporation"
+    },
+    "PCT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": -9.38,
+      "dr_5": -36.21,
+      "sector": "Industrials",
+      "industry": "Industrial - Pollution & Treatment Controls",
+      "market_cap": 1787836191,
+      "company_name": "PureCycle Technologies, Inc."
+    },
+    "PTC": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": -10.6,
+      "dr_5": -13.3,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 15602550480,
+      "company_name": "PTC Inc."
+    },
+    "SAP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": -4.23,
+      "dr_5": -12.56,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 208483875543,
+      "company_name": "SAP SE"
+    },
+    "SPGI": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": -3.06,
+      "dr_5": -1.51,
+      "sector": "Financial Services",
+      "industry": "Financial - Data & Stock Exchanges",
+      "market_cap": 126483760000,
+      "company_name": "S&P Global Inc."
+    },
+    "SPOT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 11,
+      "dr_1": -2.53,
+      "dr_5": -1.27,
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "market_cap": 104487890197,
+      "company_name": "Spotify Technology S.A."
+    },
+    "TMO": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 14,
+      "dr_1": -1.25,
+      "dr_5": -0.89,
+      "sector": "Healthcare",
+      "industry": "Medical - Diagnostics & Research",
+      "market_cap": 183606787470,
+      "company_name": "Thermo Fisher Scientific Inc."
+    },
+    "VCX": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": -15.57,
+      "dr_5": -30.0,
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "market_cap": 11837127500,
+      "company_name": "Fundrise Growth Tech Fund, LLC"
+    },
+    "VG": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": -3.67,
+      "dr_5": -3.05,
+      "sector": "Energy",
+      "industry": "Oil & Gas Midstream",
+      "market_cap": 30449862454,
+      "company_name": "Venture Global, Inc."
+    },
+    "WDAY": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": -4.39,
+      "dr_5": -11.69,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 34932599389,
+      "company_name": "Workday, Inc."
+    },
+    "XOM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": -2.93,
+      "dr_5": -3.34,
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "market_cap": 617224504500,
+      "company_name": "Exxon Mobil Corporation"
+    },
+    "ZG": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": -6.58,
+      "dr_5": -9.46,
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "market_cap": 8194101681,
+      "company_name": "Zillow Group, Inc. Class A"
+    }
+  },
+  "slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "ticker_count": 15,
+      "tickers": [
+        "ORCL",
+        "SAP",
+        "COP",
+        "APP",
+        "SPGI",
+        "XOM",
+        "CRM",
+        "BABA",
+        "MSFT",
+        "CVX",
+        "SPOT",
+        "NOW",
+        "DHR",
+        "TMO",
+        "BP"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "ADSK",
+        "ADBE",
+        "CBRS",
+        "WDAY",
+        "DVN",
+        "VG",
+        "FANG",
+        "OXY",
+        "EQT",
+        "EOG"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "AD",
+        "OXM",
+        "DAN",
+        "VCX",
+        "PTC",
+        "PCT",
+        "OCC",
+        "BSY",
+        "ZG",
+        "BOT"
+      ]
+    }
+  ]
+}

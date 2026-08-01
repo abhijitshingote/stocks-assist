@@ -1,0 +1,119 @@
+{% extends "mobile/_base.html" %}
+{% block title %}{{ ticker }} — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_screener_styles.html" %}{% endblock %}
+{% block body %}
+<div class="phone stock-page" id="phone">
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <span>Loading {{ ticker }}…</span>
+  </div>
+
+  <header class="app-header">
+    <div class="header-row1">
+      <a class="logo logo-link" href="/m">stocks_assist</a>
+      {% include "mobile/_ticker_search.html" %}
+      {% include "mobile/_nav_button.html" %}
+    </div>
+  </header>
+
+  <div class="workspace stock-workspace">
+    <div class="analyze-zone" id="analyzeZone">
+      <div class="detail-compact">
+        <div class="detail-row-a">
+          <div class="left">
+            <div class="tk" id="detailTk">{{ ticker }}</div>
+            <div class="co-line" id="detailCoLine">
+              <span class="co" id="detailCo"></span><span class="si" id="detailSectorIndustry"></span>
+            </div>
+          </div>
+          <div class="right">
+            <div class="price" id="detailPx">—</div>
+            <div class="chg" id="detailChg">—</div>
+          </div>
+        </div>
+        <div class="detail-row-b">
+          <span class="tag mcap" id="detailMcap"></span>
+          <span class="tag ti" id="detailTi65" style="display:none"></span>
+          <span class="tag float" id="detailLowFloat" style="display:none">Low Float</span>
+          <a class="detail-link" id="detailLink" href="/stock/{{ ticker }}">Desktop →</a>
+        </div>
+        <div class="detail-row-c">
+          <button class="icon-btn" type="button" title="Abi ticker notes" id="notesBtn">📝</button>
+          <button class="icon-btn" type="button" id="wlBtn">+ WL</button>
+          <div class="tf-group" id="tfBar">
+            <button type="button" data-days="30">1M</button>
+            <button type="button" data-days="90">3M</button>
+            <button type="button" data-days="180">6M</button>
+            <button type="button" class="active" data-days="365">1Y</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-tabs">
+        <div class="main-seg" role="tablist" aria-label="Detail panel">
+          <button type="button" data-panel="metrics">Metrics</button>
+          <button type="button" data-panel="news">News</button>
+          <button type="button" class="active" data-panel="chart">Chart</button>
+        </div>
+      </div>
+
+      <div class="main-panel">
+        <div class="main-panel-view panel-scroll" id="mainPanelMetrics">
+          <div class="notes-box" id="abiNotesBox">
+            <div class="h">Abi ticker notes</div>
+            <div class="notes-body empty" id="abiNotesBody">No Abi ticker notes yet.</div>
+          </div>
+          <div class="ms-tags" id="tagsStrip"></div>
+          <div id="metricsContent"></div>
+        </div>
+
+        <div class="main-panel-view panel-scroll" id="mainPanelNews">
+          <div class="news-header-bar">
+            <div class="news-actions">
+              <button type="button" id="loadNewsBtn">Load</button>
+              <button type="button" id="benzingaNewsBtn">Benzinga</button>
+            </div>
+            <div class="news-source-filters" id="newsFilters" hidden></div>
+          </div>
+          <div id="newsContent"></div>
+        </div>
+
+        <div class="main-panel-view active" id="mainPanelChart">
+          <div class="charts">
+            <div class="chart-main-wrap">
+              <div class="chart-canvas" id="stockChartWrap">
+                <span class="ohlc" id="ohlc" style="display:none"></span>
+                <div id="stockChartContainer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stock-error" id="stockError" hidden>
+    <p>Could not load <b id="stockErrorTicker">{{ ticker }}</b>.</p>
+    <a href="/m">Back to dashboard</a>
+  </div>
+
+  {% include "mobile/_nav_drawer.html" %}
+</div>
+
+<div class="wl-modal-overlay" id="notesModalOverlay">
+  <div class="wl-modal">
+    <div class="wl-modal-title">Abi ticker notes for <span class="ticker-hl" id="notesModalTicker"></span></div>
+    <textarea id="notesModalNotes" placeholder="Abi ticker notes (markdown supported)…"></textarea>
+    <div class="wl-modal-actions">
+      <button class="wl-remove" id="notesModalRemoveBtn" style="display:none" type="button">Delete</button>
+      <button class="wl-cancel" type="button" id="notesModalCancelBtn">Cancel</button>
+      <button class="wl-save" id="notesModalSaveBtn" type="button">Save</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>window.__STOCK_TICKER__ = {{ ticker | tojson }};</script>
+{% include "mobile/_stock_libs.html" %}
+<script src="{{ url_for('static', filename='js/mobile/pages/stock.js') }}"></script>
+{% endblock %}

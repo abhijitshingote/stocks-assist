@@ -54,9 +54,10 @@ const CHART_CONFIG = {
     defaultHeight: 300,
     rsiHeight: 120,
     
-    // Height ratio: candlestick:volume = 3:1
-    candlestickRatio: 0.75,
-    volumeRatio: 0.25,
+    // Height ratio: candlestick:volume = ~72:28 (matches thinkorswim layout
+    // measured from reference screenshot).
+    candlestickRatio: 0.72,
+    volumeRatio: 0.28,
 
     /** Logical bars of empty space after the last bar (time scale) */
     rightBarOffset: 3,
@@ -208,6 +209,8 @@ class StockChart {
      * @param {number} options.height - Chart height (default: 300)
      * @param {boolean} options.showRSI - Show RSI sub-chart (default: false)
      * @param {string} options.rsiContainerId - ID of RSI container (required if showRSI is true)
+     * @param {boolean} options.showVolspikeMarkers - Show spike/gap markers on chart (default: true)
+     * @param {boolean} options.compact - Narrow price scale for tight layouts (default: false)
      */
     constructor(containerId, options = {}) {
         this.containerId = containerId;
@@ -215,6 +218,8 @@ class StockChart {
             height: options.height || CHART_CONFIG.defaultHeight,
             showRSI: options.showRSI || false,
             rsiContainerId: options.rsiContainerId || null,
+            showVolspikeMarkers: options.showVolspikeMarkers !== false,
+            compact: options.compact || false,
         };
         
         this.chart = null;
@@ -249,12 +254,20 @@ class StockChart {
     async load(ticker) {
         this.ticker = ticker.toUpperCase();
         
-        // Fetch all data in parallel (OHLC, earnings, and volspike events)
-        const [ohlcData, earningsData, volspikeEvents] = await Promise.all([
+        // Fetch all data in parallel (OHLC, earnings, and optionally volspike events)
+        const fetches = [
             fetchOHLCData(this.ticker),
             fetchEarningsData(this.ticker),
-            fetchVolspikeEvents(this.ticker),
-        ]);
+        ];
+        if (this.options.showVolspikeMarkers) {
+            fetches.push(fetchVolspikeEvents(this.ticker));
+        }
+        const results = await Promise.all(fetches);
+        const ohlcData = results[0];
+        const earningsData = results[1];
+        const volspikeEvents = this.options.showVolspikeMarkers
+            ? results[2]
+            : { spikeDays: [], gapDays: [] };
         
         if (!ohlcData || ohlcData.length === 0) {
             throw new Error('No chart data available');
@@ -298,8 +311,59 @@ class StockChart {
             this.rsiChart.timeScale().fitContent();
             this.rsiChart.timeScale().applyOptions(ro);
         }
+        this._schedulePriceScaleSync();
     }
     
+    /**
+     * Resize chart panes to fit the given outer height and width.
+     *
+     * @param {number} totalHeight - Available height for the chart container
+     * @param {number} totalWidth - Available width for the chart container
+     */
+    resizeToHeight(totalHeight, totalWidth) {
+        if (!this.chart || !totalWidth) return;
+
+        const container = document.getElementById(this.containerId);
+        const height = Math.max(totalHeight, 120);
+        const legendH = this.legendContainer ? this.legendContainer.offsetHeight : 0;
+        const chartAreaH = height - legendH;
+        if (chartAreaH < 80) return;
+
+        const minVolumeH = this.options.compact ? 44 : 40;
+        let volumeH = Math.floor(chartAreaH * CHART_CONFIG.volumeRatio);
+        if (volumeH < minVolumeH && chartAreaH > minVolumeH + 100) {
+            volumeH = minVolumeH;
+        }
+        let priceH = chartAreaH - volumeH;
+        if (priceH < 60) {
+            priceH = Math.max(chartAreaH - minVolumeH, 60);
+            volumeH = chartAreaH - priceH;
+        }
+
+        if (container) {
+            container.style.height = height + 'px';
+            container.style.maxHeight = height + 'px';
+            container.style.flex = '0 0 auto';
+        }
+        if (this.priceContainer) {
+            this.priceContainer.style.flex = '0 0 auto';
+            this.priceContainer.style.height = priceH + 'px';
+            this.priceContainer.style.marginBottom = '0';
+        }
+        if (this.volumeContainer) {
+            this.volumeContainer.style.flex = '0 0 auto';
+            this.volumeContainer.style.height = volumeH + 'px';
+            this.volumeContainer.style.marginTop = '0';
+        }
+
+        this.chart.applyOptions({ height: priceH, width: totalWidth });
+        if (this.volumeChart) {
+            this.volumeChart.applyOptions({ height: volumeH, width: totalWidth });
+        }
+        this._refitTimeScales();
+        this._schedulePriceScaleSync();
+    }
+
     /**
      * Get chart statistics for current view
      * 
@@ -386,6 +450,92 @@ class StockChart {
     // ========================================================================
     // Private Methods
     // ========================================================================
+
+    _layoutOptions() {
+        return {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: CHART_CONFIG.textColor,
+            fontFamily: "'JetBrains Mono', monospace",
+            ...(this.options.compact ? { fontSize: 10 } : {}),
+        };
+    }
+
+    _priceScaleOptions(scaleMargins) {
+        return {
+            borderColor: CHART_CONFIG.borderColor,
+            scaleMargins,
+            minimumWidth: this.options.compact ? 36 : 80,
+        };
+    }
+
+    _timeScaleOptions(visible) {
+        return {
+            borderColor: CHART_CONFIG.borderColor,
+            timeVisible: true,
+            secondsVisible: false,
+            visible,
+            rightOffset: CHART_CONFIG.rightBarOffset,
+        };
+    }
+
+    _compactPriceFormatter(price) {
+        if (price >= 1000) return price.toFixed(0);
+        if (price >= 100) return price.toFixed(1);
+        return price.toFixed(2);
+    }
+
+    _compactVolumeFormatter(volume) {
+        if (volume >= 1e9) return (volume / 1e9).toFixed(1) + 'B';
+        if (volume >= 1e6) return (volume / 1e6).toFixed(0) + 'M';
+        if (volume >= 1e3) return (volume / 1e3).toFixed(0) + 'K';
+        return String(Math.round(volume));
+    }
+
+    /**
+     * Keep price and volume panes sharing the same right-gutter width.
+     */
+    syncPriceScaleWidths() {
+        if (!this.chart || !this.volumeChart) return;
+        const priceW = this.chart.priceScale('right').width();
+        const volumeW = this.volumeChart.priceScale('right').width();
+        let target = Math.max(priceW, volumeW);
+        if (target < 1) return;
+        if (this.options.compact) {
+            target = Math.max(target, 36);
+        }
+        const opts = { minimumWidth: target };
+        this.chart.priceScale('right').applyOptions(opts);
+        this.volumeChart.priceScale('right').applyOptions(opts);
+    }
+
+    _schedulePriceScaleSync() {
+        requestAnimationFrame(() => {
+            this._syncLayoutAfterScaleChange();
+            requestAnimationFrame(() => this._syncLayoutAfterScaleChange());
+        });
+    }
+
+    _syncLayoutAfterScaleChange() {
+        const container = document.getElementById(this.containerId);
+        const w = container?.clientWidth;
+        this.syncPriceScaleWidths();
+        if (w && this.chart) {
+            this.chart.applyOptions({ width: w });
+            if (this.volumeChart) this.volumeChart.applyOptions({ width: w });
+        }
+    }
+
+    _refitTimeScales() {
+        const ro = { rightOffset: CHART_CONFIG.rightBarOffset };
+        if (this.chart) {
+            this.chart.timeScale().fitContent();
+            this.chart.timeScale().applyOptions(ro);
+        }
+        if (this.volumeChart) {
+            this.volumeChart.timeScale().fitContent();
+            this.volumeChart.timeScale().applyOptions(ro);
+        }
+    }
     
     _initChart() {
         const container = document.getElementById(this.containerId);
@@ -405,25 +555,26 @@ class StockChart {
         this.priceContainer = document.createElement('div');
         this.priceContainer.style.width = '100%';
         this.priceContainer.style.height = `${priceHeight}px`;
+        this.priceContainer.style.flexShrink = '0';
         container.appendChild(this.priceContainer);
         
         this.volumeContainer = document.createElement('div');
         this.volumeContainer.style.width = '100%';
         this.volumeContainer.style.height = `${volumeHeight}px`;
+        this.volumeContainer.style.flexShrink = '0';
         container.appendChild(this.volumeContainer);
         
         // Create main price chart
         this.chart = LightweightCharts.createChart(this.priceContainer, {
             width: container.clientWidth,
             height: priceHeight,
-            layout: {
-                background: { type: 'solid', color: 'transparent' },
-                textColor: CHART_CONFIG.textColor,
-                fontFamily: "'JetBrains Mono', monospace",
-            },
+            layout: this._layoutOptions(),
+            ...(this.options.compact ? {
+                localization: { priceFormatter: (price) => this._compactPriceFormatter(price) },
+            } : {}),
             grid: {
-                vertLines: { color: CHART_CONFIG.gridColor },
-                horzLines: { color: CHART_CONFIG.gridColor },
+                vertLines: { visible: false },
+                horzLines: { visible: false },
             },
             crosshair: {
                 mode: LightweightCharts.CrosshairMode.Normal,
@@ -438,18 +589,9 @@ class StockChart {
                     style: LightweightCharts.LineStyle.Dashed,
                 },
             },
-            rightPriceScale: {
-                borderColor: CHART_CONFIG.borderColor,
-                scaleMargins: { top: 0.05, bottom: 0.05 },
-                minimumWidth: 80,
-            },
-            timeScale: {
-                borderColor: CHART_CONFIG.borderColor,
-                timeVisible: true,
-                secondsVisible: false,
-                visible: false, // Hide time scale on price chart, show on volume
-                rightOffset: CHART_CONFIG.rightBarOffset,
-            },
+            rightPriceScale: this._priceScaleOptions({ top: 0.05, bottom: 0.05 }),
+            // Compact: dates on price pane (volume pane too short for labels)
+            timeScale: this._timeScaleOptions(this.options.compact),
             handleScroll: false,
             handleScale: false,
         });
@@ -525,22 +667,27 @@ class StockChart {
                     this.rsiChart.applyOptions({ width: rsiContainer.clientWidth });
                 }
             }
+            this._schedulePriceScaleSync();
         };
         window.addEventListener('resize', this.resizeHandler);
     }
     
     _createLegend(container) {
         this.legendContainer = document.createElement('div');
+        const legendGap = this.options.compact ? 8 : 12;
+        const legendPad = this.options.compact ? '4px 6px' : '6px 8px';
+        const legendFont = this.options.compact ? 10 : 11;
         this.legendContainer.style.cssText = `
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            padding: 6px 8px;
-            font-size: 11px;
+            gap: ${legendGap}px;
+            padding: ${legendPad};
+            font-size: ${legendFont}px;
             font-family: 'JetBrains Mono', monospace;
             background: rgba(22, 27, 34, 0.8);
             border-radius: 4px;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            flex-shrink: 0;
         `;
         
         const maConfigs = [
@@ -605,14 +752,13 @@ class StockChart {
         this.volumeChart = LightweightCharts.createChart(this.volumeContainer, {
             width: width,
             height: height,
-            layout: {
-                background: { type: 'solid', color: 'transparent' },
-                textColor: CHART_CONFIG.textColor,
-                fontFamily: "'JetBrains Mono', monospace",
-            },
+            layout: this._layoutOptions(),
+            ...(this.options.compact ? {
+                localization: { priceFormatter: (v) => this._compactVolumeFormatter(v) },
+            } : {}),
             grid: {
-                vertLines: { color: CHART_CONFIG.gridColor },
-                horzLines: { color: CHART_CONFIG.gridColor },
+                vertLines: { visible: false },
+                horzLines: { visible: false },
             },
             crosshair: {
                 mode: LightweightCharts.CrosshairMode.Normal,
@@ -627,23 +773,16 @@ class StockChart {
                     style: LightweightCharts.LineStyle.Dashed,
                 },
             },
-            rightPriceScale: {
-                borderColor: CHART_CONFIG.borderColor,
-                scaleMargins: { top: 0.1, bottom: 0.1 },
-                minimumWidth: 80,
-            },
-            timeScale: {
-                borderColor: CHART_CONFIG.borderColor,
-                timeVisible: true,
-                secondsVisible: false,
-                rightOffset: CHART_CONFIG.rightBarOffset,
-            },
+            rightPriceScale: this._priceScaleOptions({ top: 0.1, bottom: 0.1 }),
+            timeScale: this._timeScaleOptions(!this.options.compact),
             handleScroll: false,
             handleScale: false,
         });
         
         this.volumeSeries = this.volumeChart.addHistogramSeries({
-            priceFormat: { type: 'volume' },
+            priceFormat: this.options.compact
+                ? { type: 'custom', formatter: (v) => this._compactVolumeFormatter(v) }
+                : { type: 'volume' },
             priceScaleId: 'right',
         });
         
@@ -696,8 +835,8 @@ class StockChart {
                 fontFamily: "'JetBrains Mono', monospace",
             },
             grid: {
-                vertLines: { color: CHART_CONFIG.gridColor },
-                horzLines: { color: CHART_CONFIG.gridColor },
+                vertLines: { visible: false },
+                horzLines: { visible: false },
             },
             crosshair: {
                 mode: LightweightCharts.CrosshairMode.Normal,
@@ -879,36 +1018,37 @@ class StockChart {
             });
         });
         
-        // Volume spike markers (fetched from API)
-        if (this.spikeDays && this.spikeDays.length > 0) {
-            this.spikeDays.forEach(date => {
-                if (dataTimeSet.has(date)) {
-                    allMarkers.push({
-                        time: date,
-                        position: 'aboveBar',
-                        color: CHART_CONFIG.spikeMarkerColor,
-                        shape: 'circle',
-                        text: 'Spike',
-                        size: 1,
-                    });
-                }
-            });
-        }
-        
-        // Gap markers (fetched from API)
-        if (this.gapDays && this.gapDays.length > 0) {
-            this.gapDays.forEach(date => {
-                if (dataTimeSet.has(date)) {
-                    allMarkers.push({
-                        time: date,
-                        position: 'aboveBar',
-                        color: CHART_CONFIG.gapMarkerColor,
-                        shape: 'circle',
-                        text: 'Gap',
-                        size: 1,
-                    });
-                }
-            });
+        // Volume spike and gap markers (fetched from API)
+        if (this.options.showVolspikeMarkers) {
+            if (this.spikeDays && this.spikeDays.length > 0) {
+                this.spikeDays.forEach(date => {
+                    if (dataTimeSet.has(date)) {
+                        allMarkers.push({
+                            time: date,
+                            position: 'aboveBar',
+                            color: CHART_CONFIG.spikeMarkerColor,
+                            shape: 'circle',
+                            text: 'Spike',
+                            size: 1,
+                        });
+                    }
+                });
+            }
+            
+            if (this.gapDays && this.gapDays.length > 0) {
+                this.gapDays.forEach(date => {
+                    if (dataTimeSet.has(date)) {
+                        allMarkers.push({
+                            time: date,
+                            position: 'aboveBar',
+                            color: CHART_CONFIG.gapMarkerColor,
+                            shape: 'circle',
+                            text: 'Gap',
+                            size: 1,
+                        });
+                    }
+                });
+            }
         }
         
         // Sort markers by time (required by lightweight-charts)

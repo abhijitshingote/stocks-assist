@@ -1,0 +1,8 @@
+<header class="app-header utility-header">
+  <div class="header-row1">
+    <a class="logo logo-link" href="/m">stocks_assist</a>
+    {% include "mobile/_ticker_search.html" %}
+    {% include "mobile/_nav_button.html" %}
+  </div>
+  {% if page_title %}<div class="utility-title">{{ page_title }}</div>{% endif %}
+</header>

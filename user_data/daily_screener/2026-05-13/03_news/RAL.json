@@ -1,0 +1,26 @@
+{
+  "ticker": "RAL",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Raised forward guidance alongside an earnings release, which investors treated as the key positive despite an EPS miss (Investing.com earnings recap, 2026-05-12)",
+    "BofA raised its price target on Ralliant on the back of a cost\u2011savings plan, reinforcing a re\u2011rating narrative around margin improvement (Google Finance news, early May 2026)",
+    "RAL has emerged as a top quarterly performer with strong gains and bullish technical signals, drawing in momentum and quant flows after a large volume spike and gap move (Tickeron analysis and volume_spike screen, May 2026)"
+  ],
+  "latest_material_date": "2026-05-12",
+  "theme_tags": [
+    "earnings-beat-and-raise",
+    "turnaround-and-recovery",
+    "breakout-and-momentum",
+    "special-situation-re-rating"
+  ],
+  "summary": "The recent 20\u201360 day move in Ralliant is being driven primarily by a fundamental re\u2011rating: management raised forward guidance despite missing on the latest earnings print, and Bank of America followed by lifting its price target on a cost\u2011savings/margin\u2011improvement story. That combination of better forward outlook plus a credible cost\u2011cut plan has shifted sentiment from balance\u2011sheet/earnings risk (negative P/E, low GF score) toward a turnaround narrative. Once that news hit, the stock triggered volume\u2011spike and momentum screens, bringing in technical and quant buyers, which helped extend the move to ~30%+ on 8x normal volume rather than it being just a one\u2011day earnings pop.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"RAL\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Raised forward guidance alongside an earnings release, which investors treated as the key positive despite an EPS miss (Investing.com earnings recap, 2026-05-12)\",\n    \"BofA raised its price target on Ralliant on the back of a cost\u2011savings plan, reinforcing a re\u2011rating narrative around margin improvement (Google Finance news, early May 2026)\",\n    \"RAL has emerged as a top quarterly performer with strong gains and bullish technical signals, drawing in momentum and quant flows after a large volume spike and gap move (Tickeron analysis and volume_spike screen, May 2026)\"\n  ],\n  \"latest_material_date\": \"2026-05-12\",\n  \"theme_tags\": [\n    \"earnings-beat-and-raise\",\n    \"turnaround-and-recovery\",\n    \"breakout-and-momentum\",\n    \"special-situation-re-rating\"\n  ],\n  \"summary\": \"The recent 20\u201360 day move in Ralliant is being driven primarily by a fundamental re\u2011rating: management raised forward guidance despite missing on the latest earnings print, and Bank of America followed by lifting its price target on a cost\u2011savings/margin\u2011improvement story. That combination of better forward outlook plus a credible cost\u2011cut plan has shifted sentiment from balance\u2011sheet/earnings risk (negative P/E, low GF score) toward a turnaround narrative. Once that news hit, the stock triggered volume\u2011spike and momentum screens, bringing in technical and quant buyers, which helped extend the move to ~30%+ on 8x normal volume rather than it being just a one\u2011day earnings pop.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Stocks Assist{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
     <style>
         :root {
             --bg-dark: #0d1117;
@@ -19,6 +20,79 @@
             --accent-blue: #58a6ff;
             --accent-yellow: #d29922;
             --accent-purple: #a371f7;
+        }
+
+        /* Light theme mode */
+        body.light-theme {
+            --bg-dark: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f2f5;
+            --border-color: #d0d7de;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --text-muted: #6e7681;
+            --accent-green: #1a7f37;
+            --accent-red: #da3633;
+            --accent-blue: #0969da;
+            --accent-yellow: #bf8700;
+            --accent-purple: #8250df;
+        }
+
+        /* Light theme for cards */
+        body.light-theme .card {
+            background: #ffffff;
+            border-color: #d0d7de;
+        }
+
+        body.light-theme .card:hover {
+            background: #f0f2f5;
+            border-color: #0969da;
+        }
+
+        body.light-theme .wl-modal {
+            background: #ffffff;
+            border-color: #d0d7de;
+        }
+
+        body.light-theme .wl-modal textarea {
+            background: #f8f9fa;
+            border-color: #d0d7de;
+            color: #24292f;
+        }
+
+        body.light-theme .btn-secondary {
+            background: #f8f9fa;
+            border-color: #d0d7de;
+            color: #24292f;
+        }
+
+        body.light-theme .btn-secondary:hover {
+            background: #f0f2f5;
+            border-color: #0969da;
+        }
+
+        body.light-theme nav {
+            background: #ffffff;
+            border-color: #d0d7de;
+        }
+
+        body.light-theme .nav-search input {
+            background: #f8f9fa;
+            border-color: #d0d7de;
+            color: #24292f;
+        }
+
+        body.light-theme .nav-indicator-card {
+            background: #f8f9fa;
+            border-color: #d0d7de;
+        }
+
+        body.light-theme .nav-links a {
+            color: #57606a;
+        }
+
+        body.light-theme .nav-links a:hover {
+            color: #24292f;
         }
 
         * {
@@ -194,29 +268,103 @@
         .nav-indicator-change.up { color: var(--accent-green); }
         .nav-indicator-change.down { color: var(--accent-red); }
 
+        .nav-menu-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            margin-left: auto;
+            padding: 0.35rem 0.65rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .nav-menu-toggle:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-green);
+        }
+
+        .nav-menu-toggle .nav-menu-icon {
+            font-size: 0.85rem;
+            line-height: 1;
+        }
+
         @media (max-width: 900px) {
             nav .container {
                 flex-wrap: wrap;
                 gap: 0.5rem;
             }
-            
+
             .nav-search {
                 order: 3;
                 width: 100%;
                 margin-left: 0;
             }
-            
+
             .nav-search input {
                 width: 100%;
             }
-            
-            .nav-links {
-                order: 2;
-                width: 100%;
-            }
-            
+
             .nav-row {
                 gap: 0.5rem 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 0.35rem 0.75rem;
+            }
+
+            .nav-menu-toggle {
+                display: inline-flex;
+                order: 2;
+            }
+
+            .nav-links {
+                display: none;
+                order: 5;
+                width: 100%;
+                max-height: min(55vh, 420px);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 0.25rem 0 0.5rem;
+                border-top: 1px solid var(--border-color);
+            }
+
+            body.nav-menu-open .nav-links {
+                display: flex;
+            }
+
+            .nav-indicators {
+                order: 4;
+                width: 100%;
+                margin-left: 0;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                gap: 0.35rem;
+            }
+
+            #autoCommitLabel,
+            #themeLabelShort {
+                display: none;
+            }
+
+            #autoCommitBtn,
+            .theme-toggle {
+                margin-right: 0 !important;
+                padding: 0.3rem 0.5rem !important;
+            }
+
+            .nav-indicator-card {
+                min-width: 62px;
+                padding: 0.2rem 0.45rem;
             }
         }
 
@@ -377,6 +525,40 @@
             border-color: var(--accent-purple);
         }
         .wl-modal-actions .wl-save:hover { background: #b585ff; }
+        /* ── Abi Dislike Button (mirrors .abi-wl-btn, red accent) ── */
+        .abi-dl-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.15rem 0.4rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .abi-dl-btn:hover {
+            border-color: var(--accent-red);
+            color: var(--text-primary);
+        }
+        .abi-dl-btn.is-disliked {
+            background: rgba(248, 81, 73, 0.18);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        /* Dislike modal reuses .wl-modal-* layout styles via dual classes;
+           only the accent colors swap. */
+        .wl-modal.dl-theme .ticker-hl { color: var(--accent-red); }
+        .wl-modal.dl-theme textarea:focus { border-color: var(--accent-red); }
+        .wl-modal-actions .dl-save {
+            background: var(--accent-red);
+            color: #fff;
+            border-color: var(--accent-red);
+        }
+        .wl-modal-actions .dl-save:hover { background: #ff6b62; }
+
         .wl-modal-actions .wl-remove {
             background: transparent;
             color: var(--accent-red);
@@ -385,10 +567,56 @@
         }
         .wl-modal-actions .wl-remove:hover { background: rgba(248, 81, 73, 0.15); }
 
+        /* ── Hide-nav toggle (extra screen real estate) ───────────────── */
+        body.nav-hidden nav {
+            display: none;
+        }
+
+        /* Floating toggle button, pinned to the top-right corner. */
+        .nav-hide-toggle {
+            position: fixed;
+            top: 6px;
+            right: 10px;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .nav-hide-toggle:hover {
+            opacity: 1;
+            color: var(--text-primary);
+            border-color: var(--accent-green);
+        }
+
+        /* When the nav is hidden, keep the toggle subtle until hovered. */
+        body.nav-hidden .nav-hide-toggle {
+            opacity: 0.35;
+        }
+        body.nav-hidden .nav-hide-toggle:hover {
+            opacity: 1;
+        }
+
         {% block extra_styles %}{% endblock %}
     </style>
+    {% block extra_head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
+    <button type="button" class="nav-hide-toggle" id="navHideToggle" title="Hide/show nav bar (press \ )">
+        <span id="navHideIcon">▲</span>
+        <span id="navHideLabel">Hide nav</span>
+    </button>
     <nav>
         <div class="container">
             <div class="logo-group">
@@ -398,22 +626,44 @@
             <div class="nav-search">
                 <input type="text" id="navTickerInput" placeholder="Ticker..." maxlength="10" onkeypress="navGoToStock(event)">
             </div>
-            <div class="nav-links">
+            <button type="button" class="nav-menu-toggle" id="navMenuToggle" aria-expanded="false" aria-controls="navLinksPanel" title="Show navigation links">
+                <span class="nav-menu-icon" aria-hidden="true">☰</span>
+                <span>Menu</span>
+            </button>
+            <div class="nav-links" id="navLinksPanel">
                 <div class="nav-row">
+                    <a href="/daily-shortlist" class="nav-highlight">Daily Shortlist</a>
+                    <a href="/daily-themes">Daily Themes</a>
                     <a href="/high-sales-growth">High Growth</a>
                     <a href="/volspike-gapper" class="nav-highlight">Vol Spike & Gaps</a>
                     <a href="/top-performance">Top Returns</a>
+                    <a href="/all-stocks">All Stocks</a>
+                    <a href="/top-losers">Top Losers</a>
                     <a href="/rsi">Relative Strength</a>
                     <a href="/rs-screener">RS Screener</a>
+                    <a href="/technical-screener">Technical</a>
                     <a href="/main-view">Main View</a>
                     <a href="/abi-watchlist">Abi Watchlist</a>
+                    <a href="/abi-general-notes">Abi General Notes</a>
+                    <a href="/abi-dislikes">Dislikes</a>
                     <a href="/themes">Themes</a>
+                    <a href="/etfs">ETFs</a>
                     <a href="/context">Context</a>
                     <a href="/context-2">Context-2</a>
+                    <a href="/market-brief">Market Brief</a>
+                    <a href="/market-news">Market News</a>
                     <a href="/logs">Logs</a>
                 </div>
             </div>
             <div class="nav-indicators">
+                <button id="autoCommitBtn" style="display: flex; align-items: center; gap: 0.4rem; margin-right: 0.8rem; cursor: pointer; padding: 0.3rem 0.8rem; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 6px; transition: all 0.2s; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; font-weight: 600;" title="Auto-commit user_data changes">
+                    <span id="autoCommitIcon" style="font-size: 0.9rem;">💾</span>
+                    <span id="autoCommitLabel">Save</span>
+                </button>
+                <div class="theme-toggle" id="themeToggle" style="display: flex; align-items: center; gap: 0.4rem; margin-right: 0.8rem; cursor: pointer; padding: 0.3rem 0.6rem; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 6px; transition: all 0.2s;" title="Toggle light/dark theme">
+                    <span id="themeIcon" style="font-size: 1rem;">🌙</span>
+                    <span id="themeLabelShort" style="font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); text-transform: uppercase;">Dark</span>
+                </div>
                 <div class="nav-indicator-card" id="vix-card">
                     <span class="nav-indicator-label">VIX</span>
                     <span class="nav-indicator-value" id="vix-value">--</span>
@@ -440,13 +690,13 @@
                 .then(r => r.json())
                 .then(data => {
                     if (data.latest_date) {
-                        const d = new Date(data.latest_date + 'T00:00:00');
-                        const datePart = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                        let label = datePart;
-                        if (data.last_update) {
-                            const ts = new Date(data.last_update);
-                            const timePart = ts.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
-                            label = datePart + ', ' + timePart + ' EST';
+                        const ENG_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                        let label = data.nav_data_thru_label;
+                        if (!label) {
+                            const parts = data.latest_date.split('-').map(Number);
+                            const mo = parts[1];
+                            const day = parts[2];
+                            label = ENG_MONTHS[mo - 1] + ' ' + day;
                         }
                         document.getElementById('latest-date').textContent = label;
                         document.getElementById('data-date').classList.add('loaded');
@@ -481,6 +731,66 @@
             })
             .catch(() => {});
 
+        // Mobile nav menu toggle
+        (function() {
+            const btn = document.getElementById('navMenuToggle');
+            const panel = document.getElementById('navLinksPanel');
+            if (!btn || !panel) return;
+
+            btn.addEventListener('click', function() {
+                const open = document.body.classList.toggle('nav-menu-open');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+
+            panel.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    document.body.classList.remove('nav-menu-open');
+                    btn.setAttribute('aria-expanded', 'false');
+                });
+            });
+        })();
+
+        // Hide/show nav bar for more screen real estate. State persists
+        // across pages via localStorage. Toggle with the floating button
+        // or by pressing the "\" key.
+        (function() {
+            const NAV_HIDDEN_KEY = 'stocks-assist-nav-hidden';
+            const toggle = document.getElementById('navHideToggle');
+            const icon = document.getElementById('navHideIcon');
+            const label = document.getElementById('navHideLabel');
+            if (!toggle) return;
+
+            function apply(hidden) {
+                document.body.classList.toggle('nav-hidden', hidden);
+                if (icon) icon.textContent = hidden ? '▼' : '▲';
+                if (label) label.textContent = hidden ? 'Show nav' : 'Hide nav';
+                try { localStorage.setItem(NAV_HIDDEN_KEY, hidden ? '1' : '0'); } catch (e) {}
+                // Nudge charts / listeners to recompute available space.
+                window.dispatchEvent(new Event('resize'));
+            }
+
+            function isHidden() {
+                return document.body.classList.contains('nav-hidden');
+            }
+
+            toggle.addEventListener('click', function() { apply(!isHidden()); });
+
+            document.addEventListener('keydown', function(e) {
+                // Ignore when typing in an input/textarea.
+                const tag = (e.target && e.target.tagName) || '';
+                if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+                if (e.key === '\\') {
+                    e.preventDefault();
+                    apply(!isHidden());
+                }
+            });
+
+            // Restore saved state on load.
+            let saved = '0';
+            try { saved = localStorage.getItem(NAV_HIDDEN_KEY) || '0'; } catch (e) {}
+            apply(saved === '1');
+        })();
+
         // Navbar ticker search
         function navGoToStock(event) {
             if (event.key === 'Enter') {
@@ -492,82 +802,383 @@
         }
     </script>
 
-    <!-- Abi Watchlist Modal (shared across pages) -->
-    <div class="wl-modal-overlay" id="wlModalOverlay">
+    <script>
+    // Global theme manager
+    (function() {
+        const THEME_KEY = 'stocks-assist-theme';
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeLabelShort = document.getElementById('themeLabelShort');
+        
+        function applyTheme(theme) {
+            const isDark = theme === 'dark';
+            if (isDark) {
+                document.body.classList.remove('light-theme');
+                themeIcon.textContent = '🌙';
+                themeLabelShort.textContent = 'Dark';
+            } else {
+                document.body.classList.add('light-theme');
+                themeIcon.textContent = '☀️';
+                themeLabelShort.textContent = 'Light';
+            }
+            localStorage.setItem(THEME_KEY, theme);
+        }
+        
+        function toggleTheme() {
+            const current = localStorage.getItem(THEME_KEY) || 'dark';
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
+        
+        function initTheme() {
+            const saved = localStorage.getItem(THEME_KEY) || 'dark';
+            applyTheme(saved);
+        }
+        
+        themeToggle.addEventListener('click', toggleTheme);
+        themeToggle.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+        
+        // Initialize theme on page load
+        initTheme();
+        
+        // Make theme manager globally accessible
+        window.themeManager = {
+            applyTheme,
+            toggleTheme,
+            initTheme,
+            getCurrent: () => localStorage.getItem(THEME_KEY) || 'dark'
+        };
+    })();
+    </script>
+    <!-- Abi ticker notes are decoupled from the watchlist: this modal saves
+         notes for ANY ticker without touching watchlist or dislike
+         membership. Watchlist toggling is handled separately by
+         `window._wlToggle` (no modal). -->
+    <div class="wl-modal-overlay" id="notesModalOverlay">
         <div class="wl-modal">
-            <div class="wl-modal-title">Add <span class="ticker-hl" id="wlModalTicker"></span> to Abi Watchlist</div>
-            <textarea id="wlModalNotes" placeholder="Notes (optional)..."></textarea>
+            <div class="wl-modal-title">Abi ticker notes for <span class="ticker-hl" id="notesModalTicker"></span></div>
+            <textarea id="notesModalNotes" placeholder="Abi ticker notes (markdown supported)..."></textarea>
             <div class="wl-modal-actions">
-                <button class="wl-remove" id="wlModalRemoveBtn" style="display:none;" onclick="window._wlRemove()">Remove</button>
-                <button class="wl-cancel" onclick="window._wlClose()">Cancel</button>
-                <button class="wl-save" id="wlModalSaveBtn" onclick="window._wlSave()">Add</button>
+                <button class="wl-remove" id="notesModalRemoveBtn" style="display:none;" onclick="window._notesDelete()">Delete Abi ticker note</button>
+                <button class="wl-cancel" onclick="window._notesClose()">Cancel</button>
+                <button class="wl-save" id="notesModalSaveBtn" onclick="window._notesSave()">Save</button>
             </div>
         </div>
     </div>
     <script>
     (function(){
-        const overlay = document.getElementById('wlModalOverlay');
-        const tickerEl = document.getElementById('wlModalTicker');
-        const notesEl = document.getElementById('wlModalNotes');
-        const removeBtn = document.getElementById('wlModalRemoveBtn');
-        const saveBtn = document.getElementById('wlModalSaveBtn');
+        const overlay = document.getElementById('notesModalOverlay');
+        const tickerEl = document.getElementById('notesModalTicker');
+        const notesEl = document.getElementById('notesModalNotes');
+        const removeBtn = document.getElementById('notesModalRemoveBtn');
+        const saveBtn = document.getElementById('notesModalSaveBtn');
         let _ticker = null;
-        let _isInWl = false;
+        let _hadNote = false;
         let _onDone = null;
 
-        window._wlOpen = function(ticker, currentNotes, inWatchlist, onDone) {
+        // _notesOpen(ticker, currentNotes, hasExistingNote, onDone)
+        //   onDone(action, ticker, newNotes) where action ∈ {'saved','removed'}
+        window._notesOpen = function(ticker, currentNotes, hasExistingNote, onDone) {
             _ticker = ticker;
-            _isInWl = !!inWatchlist;
+            _hadNote = !!hasExistingNote;
             _onDone = onDone || null;
             tickerEl.textContent = ticker;
             notesEl.value = currentNotes || '';
-            removeBtn.style.display = _isInWl ? 'inline-block' : 'none';
-            saveBtn.textContent = _isInWl ? 'Update' : 'Add';
-            document.querySelector('.wl-modal-title').innerHTML = (_isInWl ? 'Edit ' : 'Add ') + '<span class="ticker-hl">' + ticker + '</span>' + (_isInWl ? ' Watchlist Notes' : ' to Abi Watchlist');
+            removeBtn.style.display = _hadNote ? 'inline-block' : 'none';
+            saveBtn.textContent = _hadNote ? 'Save' : 'Add';
             overlay.classList.add('visible');
             notesEl.focus();
         };
 
-        window._wlClose = function() {
+        window._notesClose = function() {
             overlay.classList.remove('visible');
             _ticker = null;
         };
 
-        window._wlSave = async function() {
+        window._notesSave = async function() {
             if (!_ticker) return;
             const notes = notesEl.value.trim();
             try {
-                if (_isInWl) {
-                    await fetch('/api/frontend/abi-watchlist/' + _ticker, {
+                await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {
+                    method: 'PUT',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({notes})
+                });
+            } catch(e) { console.error('Abi ticker notes save error', e); }
+            overlay.classList.remove('visible');
+            // If the user cleared the textarea, treat it as a removal so
+            // callers can update their UI accordingly. Otherwise it's a save.
+            if (_onDone) _onDone(notes ? 'saved' : 'removed', _ticker, notes);
+            _ticker = null;
+        };
+
+        window._notesDelete = async function() {
+            if (!_ticker) return;
+            try {
+                await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {method:'DELETE'});
+            } catch(e) { console.error('Abi ticker notes delete error', e); }
+            overlay.classList.remove('visible');
+            if (_onDone) _onDone('removed', _ticker, '');
+            _ticker = null;
+        };
+
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) window._notesClose();
+        });
+    })();
+    </script>
+
+    <!-- Backwards-compat shims for legacy `_wlOpen` callers. The watchlist
+         modal has been replaced by the Abi ticker notes modal (notes are decoupled
+         from membership). Pages that still call `_wlOpen(ticker, notes,
+         inWl, cb)` get rerouted to the Abi ticker notes modal so the trader can edit
+         their Abi ticker note; watchlist membership is left untouched. -->
+    <script>
+    window._wlOpen = function(ticker, currentNotes, inWatchlist, onDone) {
+        const had = !!(currentNotes && String(currentNotes).trim());
+        window._notesOpen(ticker, currentNotes || '', had, onDone || null);
+    };
+    window._wlClose = function() { window._notesClose(); };
+    window._wlSave = function() { window._notesSave(); };
+    window._wlRemove = function() { window._notesDelete(); };
+    </script>
+
+    <!-- Watchlist toggle (no modal). Adds the ticker if it isn't on the
+         watchlist, removes it if it is. The optional `onDone` callback is
+         invoked with the new boolean state so the page can update its UI. -->
+    <script>
+    window._wlToggle = async function(ticker, currentlyIn, onDone) {
+        if (!ticker) return;
+        try {
+            if (currentlyIn) {
+                await fetch('/api/frontend/abi-watchlist/' + ticker, {method: 'DELETE'});
+                if (onDone) onDone(false, ticker);
+            } else {
+                await fetch('/api/frontend/abi-watchlist', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ticker})
+                });
+                if (onDone) onDone(true, ticker);
+            }
+        } catch (e) {
+            console.error('Watchlist toggle error', e);
+        }
+    };
+
+    // Open the Abi ticker notes modal for a ticker, looking up any existing note
+    // first so the textarea is pre-filled. Mirrors `_dlOpenForTicker`.
+    window._notesOpenForTicker = async function(ticker, onDone) {
+        if (!ticker) return;
+        let currentNotes = '';
+        let hasNote = false;
+        try {
+            const resp = await fetch('/api/frontend/abi-ticker-notes/' + ticker);
+            if (resp.ok) {
+                const data = await resp.json();
+                if (data && data.notes) {
+                    currentNotes = data.notes;
+                    hasNote = true;
+                }
+            }
+        } catch (e) { console.error('Abi ticker note lookup failed', e); }
+        window._notesOpen(ticker, currentNotes, hasNote, onDone || null);
+    };
+    </script>
+
+    <!-- Abi Dislike Modal (shared across pages) -->
+    <!-- Membership in `abi_dislikes.json` is the veto signal for the daily
+         screener. The textarea here is the optional rationale; it is saved to
+         `abi_ticker_notes.json` via the Abi ticker notes endpoint, not to the
+         dislikes file (notes are decoupled from membership). -->
+    <div class="wl-modal-overlay" id="dlModalOverlay">
+        <div class="wl-modal dl-theme">
+            <div class="wl-modal-title" id="dlModalTitleEl">Block <span class="ticker-hl" id="dlModalTicker"></span> from screeners</div>
+            <textarea id="dlModalNotes" placeholder="Why are you blocking this? (optional - e.g. 'AVOID - thesis broken', 'SHORT bias', 'too speculative')..."></textarea>
+            <div class="wl-modal-actions">
+                <button class="wl-remove" id="dlModalRemoveBtn" style="display:none;" onclick="window._dlRemove()">Remove</button>
+                <button class="wl-cancel" onclick="window._dlClose()">Cancel</button>
+                <button class="wl-save dl-save" id="dlModalSaveBtn" onclick="window._dlSave()">Block</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function(){
+        const overlay = document.getElementById('dlModalOverlay');
+        const tickerEl = document.getElementById('dlModalTicker');
+        const notesEl = document.getElementById('dlModalNotes');
+        const titleEl = document.getElementById('dlModalTitleEl');
+        const removeBtn = document.getElementById('dlModalRemoveBtn');
+        const saveBtn = document.getElementById('dlModalSaveBtn');
+        let _ticker = null;
+        let _isDisliked = false;
+        let _onDone = null;
+
+        window._dlOpen = function(ticker, currentNotes, isDisliked, onDone) {
+            _ticker = ticker;
+            _isDisliked = !!isDisliked;
+            _onDone = onDone || null;
+            tickerEl.textContent = ticker;
+            notesEl.value = currentNotes || '';
+            removeBtn.style.display = _isDisliked ? 'inline-block' : 'none';
+            saveBtn.textContent = _isDisliked ? 'Update' : 'Block';
+            titleEl.innerHTML = (_isDisliked ? 'Edit dislike notes for ' : 'Block ') + '<span class="ticker-hl">' + ticker + '</span>' + (_isDisliked ? '' : ' from screeners');
+            overlay.classList.add('visible');
+            notesEl.focus();
+        };
+
+        window._dlClose = function() {
+            overlay.classList.remove('visible');
+            _ticker = null;
+        };
+
+        window._dlSave = async function() {
+            if (!_ticker) return;
+            const notes = notesEl.value.trim();
+            try {
+                if (_isDisliked) {
+                    await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {
                         method: 'PUT',
                         headers: {'Content-Type':'application/json'},
                         body: JSON.stringify({notes})
                     });
                 } else {
-                    await fetch('/api/frontend/abi-watchlist', {
+                    await fetch('/api/frontend/abi-dislikes', {
                         method: 'POST',
                         headers: {'Content-Type':'application/json'},
-                        body: JSON.stringify({ticker: _ticker, notes})
+                        body: JSON.stringify({ticker: _ticker})
                     });
+                    if (notes) {
+                        await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {
+                            method: 'PUT',
+                            headers: {'Content-Type':'application/json'},
+                            body: JSON.stringify({notes})
+                        });
+                    }
                 }
-            } catch(e) { console.error('Watchlist save error', e); }
+            } catch(e) { console.error('Dislike save error', e); }
             overlay.classList.remove('visible');
             if (_onDone) _onDone('saved', _ticker, notes);
             _ticker = null;
         };
 
-        window._wlRemove = async function() {
+        window._dlRemove = async function() {
             if (!_ticker) return;
             try {
-                await fetch('/api/frontend/abi-watchlist/' + _ticker, {method:'DELETE'});
-            } catch(e) { console.error('Watchlist remove error', e); }
+                await fetch('/api/frontend/abi-dislikes/' + _ticker, {method:'DELETE'});
+            } catch(e) { console.error('Dislike remove error', e); }
             overlay.classList.remove('visible');
             if (_onDone) _onDone('removed', _ticker);
             _ticker = null;
         };
 
         overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) window._wlClose();
+            if (e.target === overlay) window._dlClose();
+        });
+    })();
+    </script>
+
+    <script>
+    // Shared helper: open the dislike modal for a ticker, automatically
+    // detecting whether it's already disliked (so the modal shows
+    // Update/Remove instead of Block) without each page tracking state.
+    // Usage on screener pages: onclick="window._dlOpenForTicker(selectedTicker)"
+    window._dlOpenForTicker = async function(ticker, onDone) {
+        if (!ticker) return;
+        let isDisliked = false;
+        let notes = '';
+        try {
+            const resp = await fetch('/api/frontend/abi-dislikes/batch-check', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({tickers: [ticker]})
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                const entry = data[ticker.toUpperCase()];
+                if (entry) { isDisliked = true; notes = entry.notes || ''; }
+            }
+        } catch (e) { console.error('Dislike lookup failed', e); }
+        window._dlOpen(ticker, notes, isDisliked, function(action, t, newNotes) {
+            // Re-style any dislike buttons on the page for this ticker.
+            const isNowDisliked = action === 'saved';
+            document.querySelectorAll('.abi-dl-btn[data-ticker="' + (t || ticker) + '"]').forEach(btn => {
+                btn.classList.toggle('is-disliked', isNowDisliked);
+            });
+            if (onDone) onDone(action, t, newNotes);
+        });
+    };
+    </script>
+
+    <script>
+    // Auto-commit button handler
+    (function() {
+        const autoCommitBtn = document.getElementById('autoCommitBtn');
+        const autoCommitIcon = document.getElementById('autoCommitIcon');
+        const autoCommitLabel = document.getElementById('autoCommitLabel');
+
+        if (!autoCommitBtn) return;
+
+        autoCommitBtn.addEventListener('click', async function() {
+            if (autoCommitBtn.disabled) return;
+
+            autoCommitBtn.disabled = true;
+            autoCommitIcon.textContent = '⏳';
+            autoCommitLabel.textContent = 'Saving...';
+
+            try {
+                const response = await fetch('/api/frontend/auto-commit', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: '{}'
+                });
+
+                let data = {};
+                const ct = response.headers.get('content-type') || '';
+                if (ct.includes('application/json')) {
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        console.error('Auto-commit: invalid JSON response', e);
+                    }
+                } else {
+                    const text = await response.text();
+                    if (text) console.error('Auto-commit non-JSON response:', response.status, text.slice(0, 500));
+                }
+
+                if (response.ok) {
+                    autoCommitIcon.textContent = '✅';
+                    autoCommitLabel.textContent = 'Saved!';
+                    setTimeout(() => {
+                        autoCommitIcon.textContent = '💾';
+                        autoCommitLabel.textContent = 'Save';
+                        autoCommitBtn.disabled = false;
+                    }, 2000);
+                } else {
+                    autoCommitIcon.textContent = '❌';
+                    autoCommitLabel.textContent = 'Error';
+                    console.error('Auto-commit error:', data.error || data.message);
+                    setTimeout(() => {
+                        autoCommitIcon.textContent = '💾';
+                        autoCommitLabel.textContent = 'Save';
+                        autoCommitBtn.disabled = false;
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Auto-commit error:', error);
+                autoCommitIcon.textContent = '❌';
+                autoCommitLabel.textContent = 'Error';
+                setTimeout(() => {
+                    autoCommitIcon.textContent = '💾';
+                    autoCommitLabel.textContent = 'Save';
+                    autoCommitBtn.disabled = false;
+                }, 2000);
+            }
         });
     })();
     </script>

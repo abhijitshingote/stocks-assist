@@ -1,0 +1,25 @@
+{
+  "ticker": "BAK",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Brazil\u2019s Petrobras decides not to exercise its waiver/right of first refusal over the sale of Novonor\u2019s controlling stake in Braskem, effectively clearing the way for a third\u2011party buyer (Reuters, 2026-04-23)",
+    "Reports that Novonor has agreed to sell its Braskem stake to private equity group IG4 and partners, reviving the long\u2011running Braskem M&A story and raising expectations for a control transaction at a premium to the undisturbed price (Reuters, 2026-04-20)",
+    "Follow\u2011through buying and technical re\u2011rating as traders reposition around an event\u2011driven, takeover\u2011speculation name: BAK shows a 1\u2011day move of ~28%, volume >5x 10\u2011day average, and an RSI in the 97th percentile, consistent with a momentum/short\u2011covering squeeze layered on top of the M&A headlines (volume spike event logged 2026-05-12)"
+  ],
+  "latest_material_date": "2026-04-23",
+  "theme_tags": [
+    "special-situation-re-rating",
+    "turnaround-and-recovery",
+    "small-cap-relief-rally"
+  ],
+  "summary": "The stock\u2019s sharp move is being driven primarily by a renewed M&A/control-change narrative, not by a sudden improvement in fundamentals. In late April, Petrobras said it would not exercise its waiver over Novonor\u2019s Braskem stake, and reports that Novonor agreed to sell that stake to IG4 effectively reopened the door to a control transaction that investors hope will come at a premium to the prior trading range. Against a backdrop of weak earnings and still\u2011pressured petrochemical margins, that strategic overhang clearing is what the market is repricing. The latest 1\u2011day surge looks like an acceleration of that re\u2011rating, amplified by event\u2011driven flows, momentum buying, and likely short covering on very high volume rather than by new operational data.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"BAK\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Brazil\u2019s Petrobras decides not to exercise its waiver/right of first refusal over the sale of Novonor\u2019s controlling stake in Braskem, effectively clearing the way for a third\u2011party buyer (Reuters, 2026-04-23)\",\n    \"Reports that Novonor has agreed to sell its Braskem stake to private equity group IG4 and partners, reviving the long\u2011running Braskem M&A story and raising expectations for a control transaction at a premium to the undisturbed price (Reuters, 2026-04-20)\",\n    \"Follow\u2011through buying and technical re\u2011rating as traders reposition around an event\u2011driven, takeover\u2011speculation name: BAK shows a 1\u2011day move of ~28%, volume >5x 10\u2011day average, and an RSI in the 97th percentile, consistent with a momentum/short\u2011covering squeeze layered on top of the M&A headlines (volume spike event logged 2026-05-12)\"\n  ],\n  \"latest_material_date\": \"2026-04-23\",\n  \"theme_tags\": [\n    \"special-situation-re-rating\",\n    \"turnaround-and-recovery\",\n    \"small-cap-relief-rally\"\n  ],\n  \"summary\": \"The stock\u2019s sharp move is being driven primarily by a renewed M&A/control-change narrative, not by a sudden improvement in fundamentals. In late April, Petrobras said it would not exercise its waiver over Novonor\u2019s Braskem stake, and reports that Novonor agreed to sell that stake to IG4 effectively reopened the door to a control transaction that investors hope will come at a premium to the prior trading range. Against a backdrop of weak earnings and still\u2011pressured petrochemical margins, that strategic overhang clearing is what the market is repricing. The latest 1\u2011day surge looks like an acceleration of that re\u2011rating, amplified by event\u2011driven flows, momentum buying, and likely short covering on very high volume rather than by new operational data.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

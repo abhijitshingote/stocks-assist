@@ -26,8 +26,10 @@ services:
       - .env
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/stocks_db
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       - POLYGON_API_KEY=${POLYGON_API_KEY}
       - PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - FMP_API_KEY=${FMP_API_KEY}
       - SMTP_SERVER=${SMTP_SERVER}
       - SMTP_PORT=${SMTP_PORT}

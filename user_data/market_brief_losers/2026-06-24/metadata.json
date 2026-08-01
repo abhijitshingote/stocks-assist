@@ -1,0 +1,544 @@
+{
+  "asof": "2026-06-24",
+  "pipeline": "market_brief_losers",
+  "source_scope": "ticker_only",
+  "windows": {
+    "ticker_window": "2026-06-23 05:00 UTC → 2026-06-24 13:01 UTC (session 2026-06-24, ticker −24h vs general)",
+    "anchor_session": "2026-06-24",
+    "ticker_published_gte_utc": "2026-06-23T05:00:00+00:00",
+    "published_lte_utc": "2026-06-24T13:01:09.212613+00:00"
+  },
+  "counts": {
+    "api_by_fetch": {
+      "ticker": {
+        "AAOI": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "ADI": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ALAB": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "AMAT": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "ANET": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ARM": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "AXTI": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "CAMT": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "COHR": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "CRDO": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "ENTG": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "EOSE": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ETN": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "FLNC": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "GEV": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "GLW": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "HQ": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "HYLN": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "KLAC": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "LITE": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "MCHP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "MRVL": {
+          "api_rows": 9,
+          "in_window": 9,
+          "error": null
+        },
+        "MU": {
+          "api_rows": 25,
+          "in_window": 25,
+          "error": null
+        },
+        "ON": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "PRIM": {
+          "api_rows": 14,
+          "in_window": 14,
+          "error": null
+        },
+        "QCOM": {
+          "api_rows": 6,
+          "in_window": 6,
+          "error": null
+        },
+        "SHAZ": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "SNDK": {
+          "api_rows": 10,
+          "in_window": 10,
+          "error": null
+        },
+        "STM": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "SUNB": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "TSEM": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "TXN": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "VELO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "VRT": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "WDC": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        }
+      },
+      "ticker_totals": {
+        "api_rows": 103,
+        "in_window": 103,
+        "error": null
+      }
+    },
+    "api_total_rows": 103,
+    "after_dedupe_unique": 67,
+    "upserted": 67,
+    "deduped_published": {
+      "earliest_utc": "2026-06-23T05:30:40+00:00",
+      "latest_utc": "2026-06-24T12:58:22+00:00",
+      "with_published": 67
+    },
+    "prompt": {
+      "articles_total": 67,
+      "by_section": {
+        "Ticker: Bottom 10 · 1D return · Large cap": 7,
+        "Ticker: Bottom 10 · 1D return · Mid & small cap": 15,
+        "Ticker: Bottom 15 · 1D return · Mega cap": 45
+      }
+    }
+  },
+  "fetch_warnings": [],
+  "ingest_pools": {
+    "ticker": {
+      "AAOI": [
+        "60045165",
+        "60038304"
+      ],
+      "ADI": [],
+      "ALAB": [
+        "60059003",
+        "60039123"
+      ],
+      "AMAT": [
+        "60059003",
+        "60051651",
+        "60050661",
+        "60040547",
+        "60039325"
+      ],
+      "ANET": [],
+      "ARM": [
+        "60067746",
+        "60059003",
+        "60049302",
+        "60039495"
+      ],
+      "AXTI": [
+        "60051484"
+      ],
+      "CAMT": [
+        "60051484"
+      ],
+      "COHR": [],
+      "CRDO": [
+        "60059003",
+        "60039552"
+      ],
+      "ENTG": [],
+      "EOSE": [],
+      "ETN": [],
+      "FLNC": [],
+      "GEV": [
+        "60050661",
+        "60048078",
+        "60035306"
+      ],
+      "GLW": [
+        "60050661"
+      ],
+      "HQ": [
+        "60066379"
+      ],
+      "HYLN": [
+        "60051485"
+      ],
+      "KLAC": [
+        "60059003",
+        "60050661",
+        "60039622"
+      ],
+      "LITE": [],
+      "MCHP": [],
+      "MRVL": [
+        "60063715",
+        "60062938",
+        "60059003",
+        "60052728",
+        "60051651",
+        "60050661",
+        "60048825",
+        "60039707",
+        "60035767"
+      ],
+      "MU": [
+        "60063311",
+        "60066684",
+        "60066523",
+        "60065371",
+        "60065267",
+        "60065159",
+        "60063709",
+        "60063535",
+        "60063179",
+        "60062500",
+        "60062350",
+        "60062001",
+        "60061974",
+        "60061465",
+        "60059003",
+        "60055143",
+        "60054308",
+        "60052728",
+        "60051651",
+        "60050661",
+        "60049614",
+        "60046788",
+        "60041725",
+        "60040547",
+        "60039744"
+      ],
+      "ON": [
+        "60052728",
+        "60050661"
+      ],
+      "PRIM": [
+        "60051485",
+        "60048906",
+        "60046173",
+        "60042770",
+        "60040738",
+        "60039695",
+        "60035618",
+        "60039232",
+        "60038433",
+        "60038303",
+        "60037236",
+        "60037218",
+        "60035542",
+        "60034113"
+      ],
+      "QCOM": [
+        "60066546",
+        "60066346",
+        "60062938",
+        "60052565",
+        "60051651",
+        "60039032"
+      ],
+      "SHAZ": [],
+      "SNDK": [
+        "60065371",
+        "60063179",
+        "60062001",
+        "60051651",
+        "60051484",
+        "60050661",
+        "60046788",
+        "60041725",
+        "60040926",
+        "60038303"
+      ],
+      "STM": [
+        "60063096",
+        "60038303"
+      ],
+      "SUNB": [
+        "60042061",
+        "60041928"
+      ],
+      "TSEM": [
+        "60038432",
+        "60038303",
+        "60035542"
+      ],
+      "TXN": [],
+      "VELO": [],
+      "VRT": [
+        "60050661",
+        "60036183"
+      ],
+      "WDC": [
+        "60051651",
+        "60046788"
+      ]
+    }
+  },
+  "universe_symbols": [
+    "AAOI",
+    "ADI",
+    "ALAB",
+    "AMAT",
+    "ANET",
+    "ARM",
+    "AXTI",
+    "CAMT",
+    "COHR",
+    "CRDO",
+    "ENTG",
+    "EOSE",
+    "ETN",
+    "FLNC",
+    "GEV",
+    "GLW",
+    "HQ",
+    "HYLN",
+    "KLAC",
+    "LITE",
+    "MCHP",
+    "MRVL",
+    "MU",
+    "ON",
+    "PRIM",
+    "QCOM",
+    "SHAZ",
+    "SNDK",
+    "STM",
+    "SUNB",
+    "TSEM",
+    "TXN",
+    "VELO",
+    "VRT",
+    "WDC"
+  ],
+  "losers_universe_slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "selection_count": 15,
+      "tickers": [
+        "SNDK",
+        "MU",
+        "ARM",
+        "VRT",
+        "MRVL",
+        "ADI",
+        "TXN",
+        "GEV",
+        "WDC",
+        "KLAC",
+        "QCOM",
+        "GLW",
+        "AMAT",
+        "ANET",
+        "ETN"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "selection_count": 10,
+      "tickers": [
+        "TSEM",
+        "CRDO",
+        "COHR",
+        "ON",
+        "MCHP",
+        "STM",
+        "SUNB",
+        "ALAB",
+        "ENTG",
+        "LITE"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "selection_count": 10,
+      "tickers": [
+        "PRIM",
+        "HYLN",
+        "HQ",
+        "AXTI",
+        "VELO",
+        "FLNC",
+        "CAMT",
+        "AAOI",
+        "EOSE",
+        "SHAZ"
+      ]
+    }
+  ],
+  "losers_universe_overview": "source/losers_universe/overview.md",
+  "article_ids": [
+    "60065371",
+    "60063179",
+    "60062001",
+    "60051651",
+    "60051484",
+    "60050661",
+    "60046788",
+    "60041725",
+    "60040926",
+    "60038303",
+    "60063311",
+    "60066684",
+    "60066523",
+    "60065267",
+    "60065159",
+    "60063709",
+    "60063535",
+    "60062500",
+    "60062350",
+    "60061974",
+    "60061465",
+    "60059003",
+    "60055143",
+    "60054308",
+    "60052728",
+    "60049614",
+    "60040547",
+    "60039744",
+    "60067746",
+    "60049302",
+    "60039495",
+    "60036183",
+    "60063715",
+    "60062938",
+    "60048825",
+    "60039707",
+    "60035767",
+    "60048078",
+    "60035306",
+    "60039622",
+    "60066546",
+    "60066346",
+    "60052565",
+    "60039032",
+    "60039325",
+    "60038432",
+    "60035542",
+    "60039552",
+    "60063096",
+    "60042061",
+    "60041928",
+    "60039123",
+    "60051485",
+    "60048906",
+    "60046173",
+    "60042770",
+    "60040738",
+    "60039695",
+    "60035618",
+    "60039232",
+    "60038433",
+    "60037236",
+    "60037218",
+    "60034113",
+    "60066379",
+    "60045165",
+    "60038304"
+  ]
+}

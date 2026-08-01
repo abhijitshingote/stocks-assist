@@ -1,0 +1,1349 @@
+<!doctype html>
+<!-- Standalone design preview — no backend wiring. URL: /static/preview/main-view-hybrid-2.html -->
+<html lang="en"><head><meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Main View Preview — Hybrid v2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f8fc;
+      --surface: #ffffff;
+      --surface-warm: #eef1ff;
+      --fg: #111827;
+      --fg-2: #374151;
+      --muted: #6b7280;
+      --meta: #4f46e5;
+      --border: #dfe3ed;
+      --border-soft: #eef1f7;
+      --accent: #4f46e5;
+      --accent-on: #ffffff;
+      --accent-hover: color-mix(in oklab, var(--accent), black 8%);
+      --accent-active: color-mix(in oklab, var(--accent), black 14%);
+      --success: #10b981;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --font-display: Inter, system-ui, sans-serif;
+      --font-body: Inter, system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --text-xs: 12px;
+      --text-sm: 14px;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-pill: 9999px;
+      --elev-ring: 0 0 0 1px var(--border);
+      --elev-raised: 0 22px 58px rgba(17, 24, 39, 0.11);
+      --focus-ring: 0 0 0 4px rgba(79, 70, 229, 0.24);
+      --motion-fast: 150ms;
+      --motion-base: 240ms;
+      --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+      --green: var(--success);
+      --red: var(--danger);
+      --blue: var(--accent);
+      --yellow: var(--warn);
+      --purple: var(--accent);
+      --surface-2: var(--surface-warm);
+      --ease: var(--ease-standard);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --list-h: 0px;
+      --header-h: 44px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-body);
+      background: color-mix(in oklab, var(--accent) 6%, #e8eaf4);
+      color: var(--fg);
+      display: flex;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+      font-size: var(--text-xs);
+      line-height: 1.52;
+    }
+    .phone {
+      width: 100%;
+      max-width: 390px;
+      height: 100dvh;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--elev-raised);
+      border-left: var(--elev-ring);
+      border-right: var(--elev-ring);
+    }
+
+    /* ── App header ── */
+    .app-header {
+      flex-shrink: 0;
+      padding: calc(10px + var(--safe-top)) 16px 10px;
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--surface);
+    }
+    .header-row1 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .logo {
+      font: 700 0.8rem var(--font-display);
+      color: var(--accent);
+      letter-spacing: -0.025em;
+      white-space: nowrap;
+    }
+    .search-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: var(--text-sm);
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .search-box span { color: var(--muted); }
+    .menu-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--fg-2);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font: 600 0.75rem var(--font-body);
+      cursor: pointer;
+      transition: background var(--motion-fast) var(--ease-standard);
+    }
+    .menu-btn:hover { background: var(--bg); }
+    .header-row2 {
+      display: flex;
+      gap: 14px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .header-row2 b { color: var(--fg); font-weight: 600; }
+    .header-row2 .up { color: var(--success); }
+    .header-row2 .down { color: var(--danger); }
+
+    /* ── Hint ── */
+    .hint {
+      position: absolute;
+      top: calc(80px + var(--safe-top));
+      left: 16px; right: 16px;
+      z-index: 100;
+      background: color-mix(in oklab, var(--surface) 94%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.45;
+      pointer-events: none;
+      box-shadow: var(--elev-raised);
+      animation: fadeHint 8s forwards;
+    }
+    @keyframes fadeHint { 0%,75% { opacity:1 } 100% { opacity:0 } }
+
+    /* ── Filter summary chip (analyze mode) ── */
+    .filter-summary {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--surface-warm);
+      cursor: pointer;
+      transition: background var(--motion-fast) var(--ease-standard);
+    }
+    .filter-summary:active { background: var(--surface); }
+    .filter-summary .chip {
+      flex: 1;
+      font-size: 0.65rem;
+      color: var(--fg);
+    }
+    .filter-summary .chip b { color: var(--accent); font-weight: 600; }
+    .filter-summary .chev {
+      color: var(--muted);
+      font-size: 0.55rem;
+      transition: transform 0.2s var(--ease);
+    }
+    .phone.filters-open .filter-summary .chev { transform: rotate(180deg); }
+
+    /* ── Filter drawer (expandable) ── */
+    .filter-drawer {
+      flex-shrink: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.28s var(--ease);
+      border-bottom: 1px solid transparent;
+      background: var(--surface);
+    }
+    .phone.filters-open .filter-drawer {
+      max-height: 220px;
+      border-bottom-color: var(--border);
+    }
+    .filter-inner { padding: 8px 0 10px; }
+    .filter-stats {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 12px 6px;
+      font-size: 0.55rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .filter-stats b { color: var(--accent); font-weight: 700; }
+    .strip {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 4px 12px 6px;
+      scrollbar-width: none;
+    }
+    .strip::-webkit-scrollbar { display: none; }
+    .strip-label {
+      flex-shrink: 0;
+      font-size: 0.48rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 6px 0;
+      min-width: 28px;
+    }
+    .pill {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--fg-2);
+      font: 500 0.7rem var(--font-body);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--motion-fast) var(--ease-standard);
+    }
+    .pill .n {
+      font-size: 0.5rem;
+      opacity: 0.7;
+      margin-left: 3px;
+    }
+    .pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-on);
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+    }
+    .pill.more {
+      border-style: dashed;
+      color: var(--accent);
+      background: var(--surface-warm);
+    }
+    .industry-strip {
+      background: var(--surface-warm);
+      border-top: 1px solid var(--border-soft);
+    }
+
+    /* ── Main column ── */
+    .workspace {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ── Resizable list zone ── */
+    .list-zone {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      height: calc(var(--list-h) + 52px);
+      transition: height 0.25s var(--ease);
+      overflow: hidden;
+    }
+    .list-zone.mode-collapsed { height: 52px; }
+    .list-zone.mode-half { height: 38vh; }
+    .list-zone.mode-full { height: 58vh; }
+
+    .chip-row {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .chip-row .label {
+      font-size: 0.5rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    .chip-row .label b { color: var(--accent); }
+    .copy-sm {
+      margin-left: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--fg-2);
+      font: 600 0.65rem var(--font-body);
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background var(--motion-fast) var(--ease-standard);
+    }
+    .copy-sm:hover { background: var(--bg); }
+    .chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      flex: 1;
+      scrollbar-width: none;
+      scroll-snap-type: x proximity;
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .tchip {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      scroll-snap-align: start;
+      transition: all var(--motion-fast) var(--ease-standard);
+      box-shadow: var(--elev-ring);
+    }
+    .tchip.active {
+      border-color: var(--accent);
+      background: var(--surface-warm);
+      box-shadow: 0 4px 16px rgba(79, 70, 229, 0.18);
+    }
+    .tchip .tk { font-weight: 700; font-size: 0.75rem; font-family: var(--font-mono); }
+    .tchip .ret { font-size: 0.65rem; margin-left: 4px; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    .tchip .ret.up { color: var(--success); }
+    .tchip .ret.down { color: var(--danger); }
+
+    .list-handle {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 0;
+      cursor: ns-resize;
+      touch-action: none;
+      background: var(--surface-2);
+    }
+    .list-handle::before {
+      content: '';
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+    }
+    .list-table-wrap {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+    .list-zone.mode-collapsed .list-handle,
+    .list-zone.mode-collapsed .list-table-wrap { display: none; }
+
+    .stock-table { width: 100%; border-collapse: collapse; font-size: 0.65rem; }
+    .stock-table th {
+      position: sticky;
+      top: 0;
+      background: var(--surface-2);
+      padding: 5px 8px;
+      text-align: left;
+      font-size: 0.48rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+    }
+    .stock-table td {
+      padding: 7px 8px;
+      border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+      font-variant-numeric: tabular-nums;
+    }
+    .stock-table tr { cursor: pointer; }
+    .stock-table tr.active {
+      background: var(--surface-warm);
+    }
+    .stock-table tr.active td:first-child {
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+    .stock-table .up { color: var(--success); }
+    .stock-table .down { color: var(--danger); }
+    .stars { color: var(--warn); font-size: 0.55rem; }
+    .stock-table td, .stock-table th { font-family: var(--font-mono); }
+
+    /* ── Detail + main panel zone ── */
+    .analyze-zone {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+      padding-bottom: calc(44px + var(--safe-bottom));
+    }
+
+    .detail-compact {
+      flex-shrink: 0;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--surface);
+    }
+    .detail-row-a {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .detail-row-a .left .tk {
+      font: 700 1.25rem var(--font-display);
+      letter-spacing: -0.025em;
+    }
+    .detail-row-a .left .co {
+      font-size: 0.62rem;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+    .detail-row-a .right { text-align: right; }
+    .detail-row-a .price { font: 700 0.85rem var(--font-mono); font-variant-numeric: tabular-nums; }
+    .detail-row-a .chg { font-size: 0.62rem; font-weight: 600; }
+    .detail-row-a .chg.up { color: var(--success); }
+    .detail-row-a .chg.down { color: var(--danger); }
+
+    .detail-row-b {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .tag {
+      font-size: 0.6rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: var(--bg);
+    }
+    .tag.mcap { color: var(--warn); border-color: color-mix(in oklab, var(--warn) 35%, var(--border)); background: color-mix(in oklab, var(--warn) 8%, var(--surface)); }
+    .tag.ti { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 30%, var(--border)); background: var(--surface-warm); }
+    .tag.float { color: var(--warn); border-color: color-mix(in oklab, var(--warn) 35%, var(--border)); }
+    .detail-link {
+      margin-left: auto;
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .detail-row-c {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .icon-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--fg-2);
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-standard);
+    }
+    .icon-btn.on {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--surface-warm);
+    }
+    .tf-group {
+      display: flex;
+      margin-left: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 3px;
+      gap: 2px;
+    }
+    .tf-group button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font: 600 0.65rem var(--font-mono);
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: var(--radius-pill);
+      transition: all var(--motion-fast) var(--ease-standard);
+    }
+    .tf-group button.active {
+      background: var(--surface);
+      color: var(--accent);
+      box-shadow: var(--elev-ring);
+    }
+
+    /* ── Main tab bar ── */
+    .main-tabs {
+      flex-shrink: 0;
+      padding: 0 16px 10px;
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--surface);
+    }
+    .main-seg {
+      display: flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+    .main-seg button {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font: 600 0.75rem var(--font-body);
+      padding: 10px 6px;
+      cursor: pointer;
+      border-radius: calc(var(--radius-md) - 4px);
+      transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
+    }
+    .main-seg button.active {
+      background: var(--surface);
+      color: var(--fg);
+      box-shadow: var(--elev-ring);
+    }
+
+    /* ── Main content panels ── */
+    .main-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .main-panel-view {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      min-height: 0;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .main-panel-view.active { display: flex; }
+    .main-panel-view::-webkit-scrollbar { display: none; }
+    .main-panel-view.panel-scroll {
+      padding: 8px 12px 16px;
+    }
+
+    /* ── Charts panel ── */
+    .charts {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .acc-panel { border-bottom: 1px solid var(--border); background: var(--surface); }
+    .acc-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.55rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .acc-head .arr { transition: transform 0.2s var(--ease); font-size: 0.45rem; }
+    .acc-panel.collapsed .acc-body { display: none; }
+    .acc-panel.collapsed .acc-head .arr { transform: rotate(-90deg); }
+    .acc-body { height: 56px; padding: 0 8px 6px; }
+    .acc-body svg { width: 100%; height: 100%; }
+
+    .chart-main-wrap {
+      flex: 1;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+    }
+    .chart-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .chart-toolbar .title {
+      font: 600 0.58rem var(--font-mono);
+      color: var(--fg);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .ema-dots {
+      display: flex;
+      gap: 6px;
+      margin-left: auto;
+    }
+    .ema-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+    }
+    .ema-dot.on { border-color: transparent; }
+    .ema-dot.e10.on { background: var(--success); }
+    .ema-dot.e20.on { background: var(--accent); }
+    .ema-dot.e50 { opacity: 0.4; }
+    .ema-dot.e200 { opacity: 0.4; }
+    .chart-menu-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      width: 26px; height: 26px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .chart-canvas {
+      flex: 1;
+      min-height: 200px;
+      position: relative;
+      padding: 4px 8px 8px;
+    }
+    .ohlc {
+      position: absolute;
+      top: 8px; left: 12px;
+      font-size: 0.6rem;
+      color: var(--fg-2);
+      background: color-mix(in oklab, var(--surface) 92%, transparent);
+      backdrop-filter: blur(8px);
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      box-shadow: var(--elev-ring);
+    }
+    .chart-canvas svg { width: 100%; height: 100%; }
+
+    .news-toolbar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .news-toolbar button {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--fg-2);
+      font: 600 0.7rem var(--font-body);
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: all var(--motion-fast) var(--ease-standard);
+    }
+    .news-toolbar button.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--surface-warm);
+    }
+
+    .notes-box {
+      background: var(--surface-warm);
+      border: 1px solid color-mix(in oklab, var(--accent) 20%, var(--border));
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 0.75rem;
+      line-height: 1.52;
+      color: var(--fg-2);
+    }
+    .notes-box .h {
+      font-size: 0.48rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .metric-block {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: var(--elev-ring);
+    }
+    .metric-block .mh {
+      padding: 5px 10px;
+      font-size: 0.48rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .metric-grid .cell {
+      background: var(--surface);
+      padding: 10px 4px;
+      text-align: center;
+    }
+    .metric-grid .cell .l { font-size: 0.4rem; color: var(--muted); }
+    .metric-grid .cell .v { font: 700 0.62rem var(--font-mono); margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .metric-grid .v.up { color: var(--success); }
+    .metric-grid .v.down { color: var(--danger); }
+
+    .news-item {
+      display: flex;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      background: var(--surface);
+      box-shadow: var(--elev-ring);
+      transition: box-shadow var(--motion-fast) var(--ease-standard);
+    }
+    .news-item:hover { box-shadow: var(--elev-raised); }
+    .news-item .thumb {
+      width: 44px; height: 36px;
+      border-radius: 4px;
+      background: var(--surface-2);
+      flex-shrink: 0;
+    }
+    .news-item .t { font-size: 0.62rem; font-weight: 600; line-height: 1.3; }
+    .news-item .m { font-size: 0.48rem; color: var(--muted); margin-top: 3px; }
+
+    /* ── Sector bottom sheet ── */
+    .sector-sheet {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      z-index: 60;
+      background: var(--surface);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      max-height: 70vh;
+      transform: translateY(100%);
+      transition: transform var(--motion-base) var(--ease-standard);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -24px 64px rgba(17, 24, 39, 0.18);
+    }
+    .sector-sheet.open { transform: translateY(0); }
+    .sector-sheet .sh {
+      padding: 14px 12px 8px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sector-sheet .close {
+      background: none;
+      border: 0;
+      color: var(--accent);
+      font: 600 0.8rem var(--font-body);
+      cursor: pointer;
+    }
+    .sector-search {
+      margin: 8px 12px;
+      padding: 8px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--fg);
+      font: 0.65rem var(--font-mono);
+      width: calc(100% - 24px);
+    }
+    .sector-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 12px 24px;
+    }
+    .sector-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 0.65rem;
+    }
+    .sector-item.active { color: var(--accent); font-weight: 600; }
+    .sector-item .cnt { color: var(--muted); }
+
+    /* ── Chart overflow menu ── */
+    .chart-pop {
+      position: absolute;
+      right: 10px;
+      top: 42px;
+      z-index: 30;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 6px 0;
+      min-width: 180px;
+      box-shadow: var(--elev-raised);
+      display: none;
+    }
+    .chart-pop.open { display: block; }
+    .chart-pop label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      font-size: 0.62rem;
+      cursor: pointer;
+    }
+    .chart-pop label:hover { background: var(--surface-2); }
+    .chart-pop input { accent-color: var(--accent); }
+
+    /* ── Mode toggle (demo helper) ── */
+    .mode-toggle {
+      position: absolute;
+      bottom: calc(10px + var(--safe-bottom));
+      right: 16px;
+      z-index: 55;
+      display: flex;
+      gap: 6px;
+      background: var(--surface);
+      padding: 4px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      box-shadow: var(--elev-raised);
+    }
+    .mode-toggle button {
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      font: 600 0.65rem var(--font-body);
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: all var(--motion-fast) var(--ease-standard);
+    }
+    .mode-toggle button.active {
+      background: var(--accent);
+      color: var(--accent-on);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.32);
+    }
+  </style>
+</head>
+<body>
+  <div class="phone" id="phone">
+    <div class="hint">Hybrid layout — tap filter chip · drag list handle · switch Metrics / News / Chart tabs</div>
+
+    <header class="app-header">
+      <div class="header-row1">
+        <span class="logo">stocks_assist</span>
+        <div class="search-box"><span>⌕</span> <span id="searchTicker">NAKA</span></div>
+        <button class="menu-btn" type="button">Menu</button>
+      </div>
+      <div class="header-row2">
+        <span>VIX <b class="up">14.2</b></span>
+        <span>10Y <b>4.28%</b></span>
+        <span>Stocks <b>1018</b></span>
+        <span>Showing <b id="showingCount">47</b></span>
+      </div>
+    </header>
+
+    <!-- A: collapsed filter summary -->
+    <div class="filter-summary" id="filterSummary" role="button" tabindex="0" aria-expanded="false">
+      <span class="chip" id="filterChipText"><b>Mid</b> · Financial Svcs · <b>47</b> stocks</span>
+      <span class="chev">▼</span>
+    </div>
+
+    <!-- B: expandable filter drawer -->
+    <div class="filter-drawer" id="filterDrawer">
+      <div class="filter-inner">
+        <div class="filter-stats">
+          <span>Stocks: <b>1018</b></span>
+          <span>Showing: <b id="showingCount2">47</b></span>
+        </div>
+        <div class="strip" role="tablist" aria-label="Market cap">
+          <span class="strip-label">Cap</span>
+          <button class="pill" type="button" data-cap="all">All</button>
+          <button class="pill" type="button" data-cap="mega">Mega</button>
+          <button class="pill" type="button" data-cap="large">Large</button>
+          <button class="pill active" type="button" data-cap="mid">Mid</button>
+          <button class="pill" type="button" data-cap="small">Small</button>
+          <button class="pill" type="button" data-cap="micro">Micro</button>
+        </div>
+        <div class="strip" role="tablist" aria-label="Sector">
+          <span class="strip-label">Sec</span>
+          <button class="pill sector-pill" type="button">All <span class="n">1018</span></button>
+          <button class="pill sector-pill" type="button">Tech <span class="n">234</span></button>
+          <button class="pill sector-pill" type="button">Ind <span class="n">189</span></button>
+          <button class="pill sector-pill" type="button">Health <span class="n">156</span></button>
+          <button class="pill sector-pill active" type="button">Fin Svcs <span class="n">47</span></button>
+          <button class="pill more" type="button" id="moreSectors">+12</button>
+        </div>
+        <div class="strip industry-strip">
+          <span class="strip-label">Ind</span>
+          <button class="pill active" type="button">All Fin <span class="n">47</span></button>
+          <button class="pill" type="button">Banks <span class="n">12</span></button>
+          <button class="pill" type="button">Insurance <span class="n">8</span></button>
+          <button class="pill" type="button">Capital Mkts <span class="n">6</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <!-- C: resizable list -->
+      <div class="list-zone mode-collapsed" id="listZone">
+        <div class="chip-row">
+          <span class="label">List · <b>47</b></span>
+          <div class="chips" id="chipStrip">
+            <div class="tchip active" data-ticker="NAKA"><span class="tk">NAKA</span><span class="ret down">−8.2%</span></div>
+            <div class="tchip" data-ticker="HYLN"><span class="tk">HYLN</span><span class="ret down">−10%</span></div>
+            <div class="tchip" data-ticker="AGL"><span class="tk">AGL</span><span class="ret up">+1.2%</span></div>
+            <div class="tchip" data-ticker="APPS"><span class="tk">APPS</span><span class="ret down">−3.1%</span></div>
+            <div class="tchip" data-ticker="SOFI"><span class="tk">SOFI</span><span class="ret up">+2.4%</span></div>
+            <div class="tchip" data-ticker="UPST"><span class="tk">UPST</span><span class="ret down">−1.8%</span></div>
+          </div>
+          <button class="copy-sm" type="button" id="copyBtn">Copy</button>
+        </div>
+        <div class="list-handle" id="listHandle" aria-label="Resize list"></div>
+        <div class="list-table-wrap">
+          <table class="stock-table">
+            <thead>
+              <tr><th>SN</th><th>Ticker</th><th>MCap</th><th>Ret</th><th>★</th></tr>
+            </thead>
+            <tbody id="stockTableBody">
+              <tr class="active" data-ticker="NAKA"><td>1</td><td>NAKA</td><td>$4B</td><td class="down">−8.2%</td><td></td></tr>
+              <tr data-ticker="HYLN"><td>2</td><td>HYLN</td><td>$1.2B</td><td class="down">−10%</td><td>★</td></tr>
+              <tr data-ticker="AGL"><td>3</td><td>AGL</td><td>$2.8B</td><td class="up">+1.2%</td><td></td></tr>
+              <tr data-ticker="APPS"><td>4</td><td>APPS</td><td>$1.9B</td><td class="down">−3.1%</td><td>★★</td></tr>
+              <tr data-ticker="SOFI"><td>5</td><td>SOFI</td><td>$12B</td><td class="up">+2.4%</td><td>★★★</td></tr>
+              <tr data-ticker="UPST"><td>6</td><td>UPST</td><td>$3.1B</td><td class="down">−1.8%</td><td></td></tr>
+              <tr data-ticker="AFRM"><td>7</td><td>AFRM</td><td>$8B</td><td class="up">+0.6%</td><td>★</td></tr>
+              <tr data-ticker="LC"><td>8</td><td>LC</td><td>$1.4B</td><td class="down">−4.2%</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="analyze-zone" id="analyzeZone">
+        <div class="detail-compact">
+          <div class="detail-row-a">
+            <div class="left">
+              <div class="tk" id="detailTk">NAKA</div>
+              <div class="co" id="detailCo">Nakamoto Inc.</div>
+            </div>
+            <div class="right">
+              <div class="price" id="detailPx">$4.43</div>
+              <div class="chg down" id="detailChg">−8.2%</div>
+            </div>
+          </div>
+          <div class="detail-row-b">
+            <span class="tag mcap" id="detailMcap">$4B</span>
+            <span class="tag">Fin Svcs</span>
+            <span class="tag ti">TI65 4.60</span>
+            <span class="tag float">Low Float</span>
+            <a class="detail-link" href="#">Detail →</a>
+          </div>
+          <div class="detail-row-c">
+            <button class="icon-btn" type="button" title="Notes">📝</button>
+            <button class="icon-btn on" type="button" id="wlBtn">★ WL</button>
+            <button class="icon-btn" type="button">Abi</button>
+            <div class="tf-group" id="tfBar">
+              <button type="button">1M</button>
+              <button type="button">3M</button>
+              <button type="button">6M</button>
+              <button type="button" class="active">1Y</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-tabs">
+          <div class="main-seg" role="tablist" aria-label="Main view panel">
+            <button type="button" data-panel="metrics">Metrics</button>
+            <button type="button" data-panel="news">News</button>
+            <button type="button" class="active" data-panel="chart">Chart</button>
+          </div>
+        </div>
+
+        <div class="main-panel">
+          <div class="main-panel-view panel-scroll" id="mainPanelMetrics">
+            <div class="notes-box">
+              <div class="h">Abi ticker notes</div>
+              Bitcoin treasury play. Watch BTC correlation and dilution risk on recent offering.
+            </div>
+            <div class="metric-block">
+              <div class="mh">Price &amp; Market</div>
+              <div class="metric-grid">
+                <div class="cell"><div class="l">Price</div><div class="v" id="metricPx">4.43</div></div>
+                <div class="cell"><div class="l">MCap</div><div class="v">$4B</div></div>
+                <div class="cell"><div class="l">Vol</div><div class="v">8.2M</div></div>
+                <div class="cell"><div class="l">$Vol</div><div class="v">$36M</div></div>
+              </div>
+            </div>
+            <div class="metric-block">
+              <div class="mh">Returns</div>
+              <div class="metric-grid">
+                <div class="cell"><div class="l">1D</div><div class="v down" id="metric1d">−8.2%</div></div>
+                <div class="cell"><div class="l">5D</div><div class="v down">−11%</div></div>
+                <div class="cell"><div class="l">20D</div><div class="v down">−14%</div></div>
+                <div class="cell"><div class="l">60D</div><div class="v up">+22%</div></div>
+              </div>
+            </div>
+            <div class="metric-block">
+              <div class="mh">Revenue Growth</div>
+              <div class="metric-grid">
+                <div class="cell"><div class="l">T−1</div><div class="v up">+180%</div></div>
+                <div class="cell"><div class="l">T</div><div class="v up">+95%</div></div>
+                <div class="cell"><div class="l">T+1</div><div class="v">—</div></div>
+                <div class="cell"><div class="l">T+2</div><div class="v">—</div></div>
+              </div>
+            </div>
+            <div class="metric-block">
+              <div class="mh">P/S · P/E</div>
+              <div class="metric-grid">
+                <div class="cell"><div class="l">P/S</div><div class="v">12.4</div></div>
+                <div class="cell"><div class="l">Fwd P/E</div><div class="v">—</div></div>
+                <div class="cell"><div class="l">PEG</div><div class="v">—</div></div>
+                <div class="cell"><div class="l">EV/Rev</div><div class="v">11.8</div></div>
+              </div>
+            </div>
+            <div class="metric-block">
+              <div class="mh">Technical · Float</div>
+              <div class="metric-grid">
+                <div class="cell"><div class="l">RSI</div><div class="v">38</div></div>
+                <div class="cell"><div class="l">ATR%</div><div class="v">6.8%</div></div>
+                <div class="cell"><div class="l">V/Avg</div><div class="v">2.1×</div></div>
+                <div class="cell"><div class="l">Short%</div><div class="v">8.4%</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="main-panel-view panel-scroll" id="mainPanelNews">
+            <div class="news-toolbar">
+              <button type="button" class="active">Load</button>
+              <button type="button">Benzinga</button>
+              <button type="button">SA</button>
+              <button type="button">Yahoo</button>
+              <button type="button">FMP</button>
+            </div>
+            <div class="news-item">
+              <div class="thumb"></div>
+              <div>
+                <div class="t">Nakamoto Holdings adds to BTC treasury position</div>
+                <div class="m">SA · 3h ago</div>
+              </div>
+            </div>
+            <div class="news-item">
+              <div class="thumb"></div>
+              <div>
+                <div class="t">Financial services names slide on rate uncertainty</div>
+                <div class="m">Yahoo · 6h ago</div>
+              </div>
+            </div>
+            <div class="news-item">
+              <div class="thumb"></div>
+              <div>
+                <div class="t">Low-float mid caps see elevated volatility this week</div>
+                <div class="m">FMP · Yesterday</div>
+              </div>
+            </div>
+            <div class="news-item">
+              <div class="thumb"></div>
+              <div>
+                <div class="t">Bitcoin-linked equities underperform as BTC consolidates</div>
+                <div class="m">Benzinga · Yesterday</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="main-panel-view active" id="mainPanelChart">
+            <div class="charts">
+              <div class="acc-panel collapsed" id="spyPanel">
+                <div class="acc-head" data-acc="spyPanel"><span>SPY</span><span class="arr">▼</span></div>
+                <div class="acc-body">
+                  <svg viewBox="0 0 360 56" preserveAspectRatio="none">
+                    <polyline fill="none" stroke="var(--success)" stroke-width="1.5" points="0,40 60,35 120,38 180,28 240,32 300,22 360,18"></polyline>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="chart-main-wrap">
+                <div class="chart-toolbar">
+                  <span class="title" id="chartTitle">NAKA Chart</span>
+                  <div class="ema-dots" aria-label="EMA toggles">
+                    <span class="ema-dot e10 on" data-ema="10" title="EMA 10"></span>
+                    <span class="ema-dot e20 on" data-ema="20" title="EMA 20"></span>
+                    <span class="ema-dot e50" data-ema="50" title="EMA 50"></span>
+                    <span class="ema-dot e200" data-ema="200" title="EMA 200"></span>
+                  </div>
+                  <button class="chart-menu-btn" type="button" id="chartMenuBtn" aria-label="Chart options">⋯</button>
+                </div>
+                <div class="chart-pop" id="chartPop">
+                  <label><input type="checkbox" checked=""> EMA 10</label>
+                  <label><input type="checkbox" checked=""> EMA 20</label>
+                  <label><input type="checkbox"> EMA 50</label>
+                  <label><input type="checkbox"> EMA 200</label>
+                  <label><input type="checkbox" checked=""> Volume</label>
+                  <label><input type="checkbox"> Spike labels</label>
+                </div>
+                <div class="chart-canvas">
+                  <span class="ohlc" id="ohlc">O 4.52 · H 4.68 · L 4.38 · C 4.43</span>
+                  <svg viewBox="0 0 360 200" preserveAspectRatio="none">
+                    <g stroke="var(--border)" stroke-width="0.5" opacity="0.6">
+                      <line x1="0" y1="50" x2="360" y2="50"></line><line x1="0" y1="100" x2="360" y2="100"></line><line x1="0" y1="150" x2="360" y2="150"></line>
+                    </g>
+                    <polyline fill="color-mix(in srgb, var(--red) 15%, transparent)" stroke="none" points="0,200 0,120 40,110 80,130 120,100 160,115 200,90 240,105 280,75 320,95 360,85 360,200"></polyline>
+                    <polyline fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" points="0,120 40,110 80,130 120,100 160,115 200,90 240,105 280,75 320,95 360,85"></polyline>
+                    <polyline fill="none" stroke="var(--green)" stroke-width="1" opacity="0.7" points="0,100 360,70"></polyline>
+                    <polyline fill="none" stroke="var(--blue)" stroke-width="1" opacity="0.7" points="0,110 360,80"></polyline>
+                    <g opacity="0.5">
+                      <rect x="20" y="175" width="6" height="25" fill="var(--red)"></rect>
+                      <rect x="35" y="180" width="6" height="20" fill="var(--green)"></rect>
+                      <rect x="50" y="170" width="6" height="30" fill="var(--red)"></rect>
+                      <rect x="65" y="178" width="6" height="22" fill="var(--red)"></rect>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="acc-panel collapsed" id="rsiPanel">
+                <div class="acc-head" data-acc="rsiPanel"><span>RSI MktCap</span><span class="arr">▼</span></div>
+                <div class="acc-body">
+                  <svg viewBox="0 0 360 56" preserveAspectRatio="none">
+                    <line x1="0" y1="18" x2="360" y2="18" stroke="var(--border)" stroke-dasharray="3"></line>
+                    <line x1="0" y1="38" x2="360" y2="38" stroke="var(--border)" stroke-dasharray="3"></line>
+                    <polyline fill="none" stroke="var(--accent)" stroke-width="1.5" points="0,42 90,38 180,32 270,35 360,28"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- Sector picker sheet -->
+    <div class="sector-sheet" id="sectorSheet">
+      <div class="sh">
+        <span>All sectors</span>
+        <button class="close" type="button" id="closeSector">Done</button>
+      </div>
+      <input class="sector-search" type="search" placeholder="Search sectors…">
+      <div class="sector-list" id="sectorList">
+        <div class="sector-item"><span>All</span><span class="cnt">1018</span></div>
+        <div class="sector-item"><span>Technology</span><span class="cnt">234</span></div>
+        <div class="sector-item"><span>Industrials</span><span class="cnt">189</span></div>
+        <div class="sector-item"><span>Healthcare</span><span class="cnt">156</span></div>
+        <div class="sector-item active"><span>Financial Services</span><span class="cnt">47</span></div>
+        <div class="sector-item"><span>Consumer Cyclical</span><span class="cnt">98</span></div>
+        <div class="sector-item"><span>Energy</span><span class="cnt">72</span></div>
+        <div class="sector-item"><span>Real Estate</span><span class="cnt">41</span></div>
+        <div class="sector-item"><span>Utilities</span><span class="cnt">38</span></div>
+        <div class="sector-item"><span>Basic Materials</span><span class="cnt">55</span></div>
+      </div>
+    </div>
+
+    <div class="mode-toggle">
+      <button type="button" class="active" data-mode="analyze">Analyze</button>
+      <button type="button" data-mode="browse">Browse</button>
+    </div>
+  </div>
+
+  <script>
+    const phone = document.getElementById('phone');
+    const listZone = document.getElementById('listZone');
+    const filterSummary = document.getElementById('filterSummary');
+    const sectorSheet = document.getElementById('sectorSheet');
+
+    const stocks = {
+      NAKA: { co: 'Nakamoto Inc.', px: '$4.43', chg: '−8.2%', up: false, mcap: '$4B', ohlc: 'O 4.52 · H 4.68 · L 4.38 · C 4.43' },
+      HYLN: { co: 'Hyliion Holdings', px: '$2.14', chg: '−10%', up: false, mcap: '$1.2B', ohlc: 'O 2.28 · H 2.31 · L 2.10 · C 2.14' },
+      AGL: { co: 'agilon health', px: '$6.82', chg: '+1.2%', up: true, mcap: '$2.8B', ohlc: 'O 6.70 · H 6.95 · L 6.65 · C 6.82' },
+      APPS: { co: 'Digital Turbine', px: '$4.12', chg: '−3.1%', up: false, mcap: '$1.9B', ohlc: 'O 4.28 · H 4.30 · L 4.05 · C 4.12' },
+      SOFI: { co: 'SoFi Technologies', px: '$14.20', chg: '+2.4%', up: true, mcap: '$12B', ohlc: 'O 13.85 · H 14.35 · L 13.80 · C 14.20' },
+      UPST: { co: 'Upstart Holdings', px: '$48.60', chg: '−1.8%', up: false, mcap: '$3.1B', ohlc: 'O 49.2 · H 49.8 · L 48.1 · C 48.60' },
+    };
+
+    function selectStock(ticker) {
+      const s = stocks[ticker] || stocks.NAKA;
+      document.getElementById('detailTk').textContent = ticker;
+      document.getElementById('detailCo').textContent = s.co;
+      document.getElementById('detailPx').textContent = s.px;
+      document.getElementById('detailMcap').textContent = s.mcap;
+      const chg = document.getElementById('detailChg');
+      chg.textContent = s.chg;
+      chg.className = 'chg ' + (s.up ? 'up' : 'down');
+      document.getElementById('chartTitle').textContent = ticker + ' Chart';
+      document.getElementById('ohlc').textContent = s.ohlc;
+      document.getElementById('searchTicker').textContent = ticker;
+      document.getElementById('metricPx').textContent = s.px.replace('$', '');
+      const metric1d = document.getElementById('metric1d');
+      metric1d.textContent = s.chg;
+      metric1d.className = 'v ' + (s.up ? 'up' : 'down');
+      document.querySelectorAll('.tchip').forEach(c => c.classList.toggle('active', c.dataset.ticker === ticker));
+      document.querySelectorAll('#stockTableBody tr').forEach(r => r.classList.toggle('active', r.dataset.ticker === ticker));
+      setAnalyzeMode();
+    }
+
+    document.querySelectorAll('.tchip').forEach(c => c.addEventListener('click', () => selectStock(c.dataset.ticker)));
+    document.querySelectorAll('#stockTableBody tr').forEach(r => r.addEventListener('click', () => selectStock(r.dataset.ticker)));
+
+    // Filter summary toggle
+    filterSummary.addEventListener('click', () => {
+      const open = phone.classList.toggle('filters-open');
+      filterSummary.setAttribute('aria-expanded', open);
+    });
+
+    // Cap pills
+    document.querySelectorAll('[data-cap]').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('[data-cap]').forEach(x => x.classList.remove('active'));
+        p.classList.add('active');
+        const label = p.textContent;
+        document.getElementById('filterChipText').innerHTML = '<b>' + label + '</b> · Financial Svcs · <b>47</b> stocks';
+      });
+    });
+
+    // Sector pills
+    document.querySelectorAll('.sector-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('.sector-pill').forEach(x => x.classList.remove('active'));
+        p.classList.add('active');
+        const name = p.textContent.replace(/\s+\d+$/, '').trim();
+        document.getElementById('filterChipText').innerHTML = '<b>Mid</b> · <b>' + name + '</b> · <b>47</b> stocks';
+      });
+    });
+
+    document.getElementById('moreSectors').addEventListener('click', () => sectorSheet.classList.add('open'));
+    document.getElementById('closeSector').addEventListener('click', () => sectorSheet.classList.remove('open'));
+
+    // Accordions
+    document.querySelectorAll('[data-acc]').forEach(h => {
+      h.addEventListener('click', () => document.getElementById(h.dataset.acc).classList.toggle('collapsed'));
+    });
+
+    // Chart menu
+    const chartPop = document.getElementById('chartPop');
+    document.getElementById('chartMenuBtn').addEventListener('click', e => {
+      e.stopPropagation();
+      chartPop.classList.toggle('open');
+    });
+    document.addEventListener('click', () => chartPop.classList.remove('open'));
+    document.querySelectorAll('.ema-dot').forEach(d => {
+      d.addEventListener('click', () => d.classList.toggle('on'));
+    });
+
+    // Timeframes
+    document.querySelectorAll('#tfBar button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#tfBar button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+
+    // Main panel tabs — Metrics | News | Chart
+    let activeMainPanel = 'chart';
+    function setMainPanel(panel) {
+      activeMainPanel = panel;
+      document.querySelectorAll('.main-seg button').forEach(x => {
+        x.classList.toggle('active', x.dataset.panel === panel);
+      });
+      document.getElementById('mainPanelMetrics').classList.toggle('active', panel === 'metrics');
+      document.getElementById('mainPanelNews').classList.toggle('active', panel === 'news');
+      document.getElementById('mainPanelChart').classList.toggle('active', panel === 'chart');
+    }
+    document.querySelectorAll('.main-seg button').forEach(b => {
+      b.addEventListener('click', () => setMainPanel(b.dataset.panel));
+    });
+    document.querySelectorAll('.news-toolbar button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.news-toolbar button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+
+    document.getElementById('wlBtn').addEventListener('click', function () {
+      this.classList.toggle('on');
+    });
+    document.getElementById('copyBtn').addEventListener('click', function () {
+      this.textContent = '✓';
+      setTimeout(() => { this.textContent = 'Copy'; }, 1200);
+    });
+
+    // List resize via drag
+    const listModes = ['mode-collapsed', 'mode-half', 'mode-full'];
+    let listModeIdx = 0;
+    function setListMode(idx) {
+      listModeIdx = Math.max(0, Math.min(2, idx));
+      listZone.className = 'list-zone ' + listModes[listModeIdx];
+    }
+    let listDragStartY = 0;
+    let listDragStartIdx = 0;
+    document.getElementById('listHandle').addEventListener('pointerdown', e => {
+      listDragStartY = e.clientY;
+      listDragStartIdx = listModeIdx;
+      e.target.setPointerCapture(e.pointerId);
+    });
+    document.getElementById('listHandle').addEventListener('pointerup', e => {
+      const dy = e.clientY - listDragStartY;
+      if (dy < -30) setListMode(listDragStartIdx + 1);
+      else if (dy > 30) setListMode(listDragStartIdx - 1);
+      else setListMode(listDragStartIdx);
+    });
+    document.getElementById('listHandle').addEventListener('click', () => {
+      setListMode((listModeIdx + 1) % 3);
+    });
+
+    // Browse vs Analyze modes
+    function setAnalyzeMode() {
+      phone.classList.remove('filters-open');
+      filterSummary.setAttribute('aria-expanded', 'false');
+      setListMode(0);
+      setMainPanel('chart');
+    }
+    function setBrowseMode() {
+      phone.classList.add('filters-open');
+      filterSummary.setAttribute('aria-expanded', 'true');
+      setListMode(1);
+    }
+    document.querySelectorAll('.mode-toggle button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.mode-toggle button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        if (b.dataset.mode === 'browse') setBrowseMode();
+        else setAnalyzeMode();
+      });
+    });
+  </script>
+
+
+</body></html>

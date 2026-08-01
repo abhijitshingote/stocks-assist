@@ -1,0 +1,14 @@
+{
+  "source_kind": "ticker",
+  "source_key": "MDB",
+  "window": "2026-05-21 05:00 EDT → 2026-05-26 06:00 EDT (session 2026-05-22, ticker −24h vs general)",
+  "anchor_session": "2026-05-22",
+  "published_gte_utc": "2026-05-21T09:00:00+00:00",
+  "published_lte_utc": "2026-05-26T10:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 0,
+  "articles": [],
+  "section": "vol_spike_5d/large",
+  "label": "Vol spike / gapper · last 5D · Large cap",
+  "rank": 10
+}

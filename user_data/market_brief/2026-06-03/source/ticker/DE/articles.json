@@ -1,0 +1,37 @@
+{
+  "source_kind": "ticker",
+  "source_key": "DE",
+  "window": "2026-06-01 05:00 UTC → 2026-06-03 06:00 UTC (session 2026-06-02, ticker −24h vs general)",
+  "anchor_session": "2026-06-02",
+  "published_gte_utc": "2026-06-01T05:00:00+00:00",
+  "published_lte_utc": "2026-06-03T06:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 1,
+  "articles": [
+    {
+      "benzinga_id": 52904423,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-01T13:38:18Z",
+      "last_updated": "2026-06-01T13:38:19Z",
+      "title": "RBC Capital Reiterates Outperform on Deere, Maintains $752 Price Target",
+      "teaser": "RBC Capital  analyst Sabahat Khan   reiterates Deere (NYSE:DE) with a Outperform and maintains $752 price target.",
+      "body": "RBC Capital  analyst Sabahat Khan   reiterates Deere (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/DE\">DE</a>) with a Outperform and maintains $752 price target.",
+      "url": "https://www.benzinga.com/news/26/06/52904423/rbc-capital-reiterates-outperform-on-deere-maintains-752-price-target",
+      "images": [],
+      "channels": [
+        "news",
+        "price target",
+        "reiteration",
+        "hot",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "DE"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "r1d/mega",
+  "label": "Top 10 · 1D return · Mega cap",
+  "rank": 5
+}

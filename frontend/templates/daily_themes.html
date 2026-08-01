@@ -1,0 +1,534 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Themes - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+.dt-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+.dt-toolbar select, .dt-toolbar input {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.35rem 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+}
+.dt-toolbar select:focus, .dt-toolbar input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+.dt-toolbar .dt-meta {
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    margin-left: auto;
+}
+
+.dt-source-tabs {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.dt-source-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    padding: 0.55rem 1rem;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.dt-source-tab:hover { color: var(--text-primary); }
+.dt-source-tab.active {
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
+}
+.dt-source-tab .dt-tab-count {
+    margin-left: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    background: var(--bg-dark);
+    padding: 0.05rem 0.4rem;
+    border-radius: 6px;
+    color: var(--text-muted);
+}
+.dt-source-tab.active .dt-tab-count {
+    color: var(--accent-blue);
+    background: rgba(88, 166, 255, 0.15);
+}
+
+.dt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 0.85rem;
+}
+
+.dt-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left-width: 3px;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    transition: border-color 0.15s, background 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.dt-card:hover { background: var(--bg-card-hover); border-color: var(--accent-blue); }
+
+.dt-card.src-user_taste { border-left-color: var(--accent-purple); }
+.dt-card.src-curated { border-left-color: var(--accent-blue); }
+.dt-card.src-hot_market { border-left-color: var(--accent-yellow); }
+.dt-card.src-multi { border-left-color: var(--accent-green); }
+
+.dt-card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+.dt-card-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+.dt-card-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
+.dt-card-weight {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.dt-card-sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+.dt-source-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-dark);
+    color: var(--text-secondary);
+    text-transform: lowercase;
+}
+.dt-source-chip.user_taste { color: var(--accent-purple); border-color: rgba(163,113,247,0.4); }
+.dt-source-chip.curated { color: var(--accent-blue); border-color: rgba(88,166,255,0.4); }
+.dt-source-chip.hot_market { color: var(--accent-yellow); border-color: rgba(210,153,34,0.4); }
+
+.dt-card-desc {
+    font-size: 0.83rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+.dt-card-anti {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    background: var(--bg-dark);
+    border-left: 2px solid var(--accent-red);
+    border-radius: 0 4px 4px 0;
+    padding: 0.4rem 0.55rem;
+    line-height: 1.4;
+}
+.dt-card-anti .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--accent-red);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.dt-card-tickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.15rem;
+}
+.dt-ticker-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.12rem 0.45rem;
+    text-decoration: none;
+    transition: all 0.12s;
+}
+.dt-ticker-chip:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+    background: rgba(88,166,255,0.12);
+}
+
+.dt-summary {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+}
+.dt-summary-pill {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.2rem 0.55rem;
+}
+
+.dt-empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3rem 1rem;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+}
+
+.dt-search {
+    width: 220px;
+}
+
+.dt-filter-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+}
+.dt-filter-row label { display: inline-flex; align-items: center; gap: 0.35rem; }
+{% endblock %}
+
+{% block content %}
+<div class="dt-toolbar">
+    <strong style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;">Daily Themes</strong>
+    <select id="dtDateSelect"></select>
+    <a href="/daily-shortlist" style="color:var(--accent-blue); font-family:'JetBrains Mono',monospace; font-size:0.72rem; text-decoration: none;">→ daily shortlist</a>
+    <span class="dt-meta" id="dtMeta">Loading...</span>
+</div>
+
+<div class="dt-summary" id="dtSummary"></div>
+
+<div class="dt-source-tabs">
+    <button class="dt-source-tab active" data-tab="all">All <span class="dt-tab-count" id="dtCount-all">0</span></button>
+    <button class="dt-source-tab" data-tab="user_taste">Your Taste <span class="dt-tab-count" id="dtCount-user_taste">0</span></button>
+    <button class="dt-source-tab" data-tab="curated">Curated <span class="dt-tab-count" id="dtCount-curated">0</span></button>
+    <button class="dt-source-tab" data-tab="hot_market">Hot Market <span class="dt-tab-count" id="dtCount-hot_market">0</span></button>
+</div>
+
+<div class="dt-filter-row">
+    <label>Search:
+        <input type="text" id="dtSearch" class="dt-search" placeholder="tag, ticker, description...">
+    </label>
+    <label>Sort:
+        <select id="dtSort">
+            <option value="weight">weight (high → low)</option>
+            <option value="label">label (A → Z)</option>
+            <option value="examples">example tickers (most → least)</option>
+        </select>
+    </label>
+</div>
+
+<div id="dtGrid" class="dt-grid">
+    <div class="dt-empty">Loading...</div>
+</div>
+
+<script>
+const dtState = {
+    date: null,
+    data: null,
+    activeTab: 'all',
+    search: '',
+    sort: 'weight',
+};
+
+function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+}
+
+async function dtLoadDates() {
+    const sel = document.getElementById('dtDateSelect');
+    sel.innerHTML = '';
+    try {
+        const r = await fetch('/api/frontend/daily-shortlist/themes/dates');
+        const data = await r.json();
+        const dates = data.dates || [];
+        if (!dates.length) {
+            sel.innerHTML = '<option value="">(no theme runs)</option>';
+            document.getElementById('dtGrid').innerHTML =
+                '<div class="dt-empty">No theme artifacts yet. Run the daily shortlist pipeline first.</div>';
+            document.getElementById('dtMeta').textContent = 'no artifacts';
+            return;
+        }
+        for (const d of dates) {
+            const opt = document.createElement('option');
+            opt.value = d.date;
+            opt.textContent = d.date;
+            sel.appendChild(opt);
+        }
+        dtState.date = dates[0].date;
+        sel.value = dtState.date;
+        sel.addEventListener('change', () => {
+            dtState.date = sel.value;
+            dtLoadThemes();
+        });
+        await dtLoadThemes();
+    } catch (e) {
+        document.getElementById('dtGrid').innerHTML =
+            '<div class="dt-empty">Failed to load dates: ' + escapeHtml(e.message) + '</div>';
+    }
+}
+
+async function dtLoadThemes() {
+    if (!dtState.date) return;
+    document.getElementById('dtGrid').innerHTML = '<div class="dt-empty">Loading ' + dtState.date + '...</div>';
+    try {
+        const r = await fetch('/api/frontend/daily-shortlist/themes/' + dtState.date);
+        if (!r.ok) {
+            const e = await r.json().catch(() => ({}));
+            document.getElementById('dtGrid').innerHTML =
+                '<div class="dt-empty">Failed: ' + escapeHtml(e.error || r.statusText) + '</div>';
+            return;
+        }
+        dtState.data = await r.json();
+        dtRenderMeta();
+        dtRenderSummary();
+        dtRenderCounts();
+        dtRender();
+    } catch (e) {
+        document.getElementById('dtGrid').innerHTML =
+            '<div class="dt-empty">Error: ' + escapeHtml(e.message) + '</div>';
+    }
+}
+
+function dtRenderMeta() {
+    const merged = dtState.data.merged || {};
+    const themes = merged.themes || [];
+    const meta = document.getElementById('dtMeta');
+    meta.textContent = themes.length + ' themes'
+        + ' • user=' + (merged.user_taste_count || 0)
+        + ' • curated=' + (merged.curated_count || 0)
+        + ' • market=' + (merged.hot_market_count || 0)
+        + (merged.watchlist_hash ? ' • wl_hash=' + merged.watchlist_hash : '');
+}
+
+function dtRenderSummary() {
+    const merged = dtState.data.merged || {};
+    const market = dtState.data.market || {};
+    const user = dtState.data.user || {};
+    const summary = document.getElementById('dtSummary');
+    summary.innerHTML = '';
+    const pills = [
+        ['Your taste themes', merged.user_taste_count || 0, 'user_taste'],
+        ['Curated themes', merged.curated_count || 0, 'curated'],
+        ['Hot market themes', merged.hot_market_count || 0, 'hot_market'],
+        ['Merged total', merged.merged_count || (merged.themes || []).length, 'all'],
+    ];
+    for (const [label, n, src] of pills) {
+        const p = document.createElement('span');
+        p.className = 'dt-summary-pill';
+        p.textContent = label + ': ' + n;
+        summary.appendChild(p);
+    }
+    const fetched = market.fetched_at || user.fetched_at;
+    if (fetched) {
+        const p = document.createElement('span');
+        p.className = 'dt-summary-pill';
+        p.textContent = 'market fetched: ' + new Date(fetched).toLocaleString();
+        summary.appendChild(p);
+    }
+}
+
+function dtRenderCounts() {
+    const themes = ((dtState.data.merged || {}).themes) || [];
+    const total = themes.length;
+    const ut = themes.filter(t => (t.sources || [t.source]).includes('user_taste')).length;
+    const cu = themes.filter(t => (t.sources || [t.source]).includes('curated')).length;
+    const hm = themes.filter(t => (t.sources || [t.source]).includes('hot_market')).length;
+    document.getElementById('dtCount-all').textContent = total;
+    document.getElementById('dtCount-user_taste').textContent = ut;
+    document.getElementById('dtCount-curated').textContent = cu;
+    document.getElementById('dtCount-hot_market').textContent = hm;
+}
+
+function dtMatches(t) {
+    if (dtState.activeTab !== 'all') {
+        const srcs = t.sources || (t.source ? [t.source] : []);
+        if (!srcs.includes(dtState.activeTab)) return false;
+    }
+    if (dtState.search) {
+        const q = dtState.search.toLowerCase();
+        const descs = (t.descriptions || []).join(' ') || t.description || '';
+        const hay = [
+            t.tag, t.label, descs, t.anti_pattern,
+            (t.example_tickers || []).join(' '),
+            (t.sources || []).join(' '), t.source,
+        ].filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+    }
+    return true;
+}
+
+function dtSort(arr) {
+    const s = dtState.sort;
+    const sorted = [...arr];
+    if (s === 'weight') {
+        sorted.sort((a, b) => (b.weight || 0) - (a.weight || 0));
+    } else if (s === 'label') {
+        sorted.sort((a, b) => (a.label || '').localeCompare(b.label || ''));
+    } else if (s === 'examples') {
+        sorted.sort((a, b) => (b.example_tickers || []).length - (a.example_tickers || []).length);
+    }
+    return sorted;
+}
+
+function dtRender() {
+    const grid = document.getElementById('dtGrid');
+    const themes = ((dtState.data.merged || {}).themes) || [];
+    let list = themes.filter(dtMatches);
+    list = dtSort(list);
+    if (!list.length) {
+        grid.innerHTML = '<div class="dt-empty">No themes match the current filters.</div>';
+        return;
+    }
+    grid.innerHTML = '';
+    for (const t of list) {
+        grid.appendChild(dtRenderCard(t));
+    }
+}
+
+function dtRenderCard(t) {
+    const card = document.createElement('div');
+    const srcs = t.sources || (t.source ? [t.source] : []);
+    let srcClass = 'src-multi';
+    if (srcs.length === 1) srcClass = 'src-' + srcs[0];
+    card.className = 'dt-card ' + srcClass;
+
+    const head = document.createElement('div');
+    head.className = 'dt-card-head';
+    const titleWrap = document.createElement('div');
+    titleWrap.innerHTML = `
+        <div class="dt-card-title">${escapeHtml(t.label || t.tag)}</div>
+        <div class="dt-card-tag">${escapeHtml(t.tag)}</div>
+    `;
+    head.appendChild(titleWrap);
+    const weight = document.createElement('span');
+    weight.className = 'dt-card-weight';
+    weight.textContent = 'w=' + (t.weight != null ? Number(t.weight).toFixed(1) : '?');
+    head.appendChild(weight);
+    card.appendChild(head);
+
+    const srcBox = document.createElement('div');
+    srcBox.className = 'dt-card-sources';
+    for (const s of srcs) {
+        const chip = document.createElement('span');
+        chip.className = 'dt-source-chip ' + s;
+        chip.textContent = s.replace('_', ' ');
+        srcBox.appendChild(chip);
+    }
+    if (srcs.length) card.appendChild(srcBox);
+
+    const descs = (t.descriptions || []).filter(Boolean);
+    if (t.description && !descs.length) descs.push(t.description);
+    for (const d of descs) {
+        const el = document.createElement('div');
+        el.className = 'dt-card-desc';
+        el.textContent = d;
+        card.appendChild(el);
+    }
+
+    if (t.anti_pattern) {
+        const anti = document.createElement('div');
+        anti.className = 'dt-card-anti';
+        anti.innerHTML = '<span class="label">anti-pattern</span>' + escapeHtml(t.anti_pattern);
+        card.appendChild(anti);
+    }
+
+    const tickers = t.example_tickers || [];
+    if (tickers.length) {
+        const tickBox = document.createElement('div');
+        tickBox.className = 'dt-card-tickers';
+        for (const tk of tickers) {
+            const a = document.createElement('a');
+            a.className = 'dt-ticker-chip';
+            a.href = '/stock/' + encodeURIComponent(tk);
+            a.target = '_blank';
+            a.textContent = tk;
+            tickBox.appendChild(a);
+        }
+        card.appendChild(tickBox);
+    }
+
+    return card;
+}
+
+document.querySelectorAll('.dt-source-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.dt-source-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        dtState.activeTab = tab.dataset.tab;
+        dtRender();
+    });
+});
+
+document.getElementById('dtSearch').addEventListener('input', e => {
+    dtState.search = e.target.value.trim();
+    dtRender();
+});
+document.getElementById('dtSort').addEventListener('change', e => {
+    dtState.sort = e.target.value;
+    dtRender();
+});
+
+dtLoadDates();
+</script>
+{% endblock %}

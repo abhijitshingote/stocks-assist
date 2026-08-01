@@ -1,0 +1,461 @@
+{
+  "asof": "2026-06-28",
+  "source": "stock_metrics (DB) — bottom dr_1",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_by_bucket": {
+    "mega": 15,
+    "large": 10,
+    "mid_small": 10
+  },
+  "unique_tickers": 35,
+  "by_ticker": {
+    "ADI": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": -6.77,
+      "dr_5": -10.48,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 188458846646,
+      "company_name": "Analog Devices, Inc."
+    },
+    "ANET": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": -6.09,
+      "dr_5": -8.02,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 198445103429,
+      "company_name": "Arista Networks, Inc."
+    },
+    "ARM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": -4.96,
+      "dr_5": -25.02,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 355663280000,
+      "company_name": "Arm Holdings plc American Depositary Shares"
+    },
+    "ARQQ": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": -11.2,
+      "dr_5": -0.33,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 422182224,
+      "company_name": "Arqit Quantum Inc."
+    },
+    "BE": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": -10.06,
+      "dr_5": -17.17,
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 71685543613,
+      "company_name": "Bloom Energy Corporation"
+    },
+    "BHC": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": -10.01,
+      "dr_5": -0.1,
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - Specialty & Generic",
+      "market_cap": 1777744065,
+      "company_name": "Bausch Health Companies Inc."
+    },
+    "COCO": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": -13.09,
+      "dr_5": -13.13,
+      "sector": "Consumer Defensive",
+      "industry": "Beverages - Non-Alcoholic",
+      "market_cap": 4209772916,
+      "company_name": "The Vita Coco Company, Inc."
+    },
+    "DELL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 14,
+      "dr_1": -4.17,
+      "dr_5": -5.11,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 265361609219,
+      "company_name": "Dell Technologies Inc."
+    },
+    "DIOD": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": -11.54,
+      "dr_5": -14.77,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 4784684599,
+      "company_name": "Diodes Incorporated"
+    },
+    "ENTG": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": -8.12,
+      "dr_5": -10.36,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 24585789000,
+      "company_name": "Entegris, Inc."
+    },
+    "EROC": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": -9.21,
+      "dr_5": -16.49,
+      "sector": "Industrials",
+      "industry": "Industrial - Machinery",
+      "market_cap": 662874556,
+      "company_name": "ERock, Inc."
+    },
+    "FLEX": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": -8.58,
+      "dr_5": -0.77,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 53747652600,
+      "company_name": "Flex Ltd."
+    },
+    "FORM": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": -10.1,
+      "dr_5": -10.78,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 10191806891,
+      "company_name": "FormFactor, Inc."
+    },
+    "FRO": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": -8.63,
+      "dr_5": -13.77,
+      "sector": "Industrials",
+      "industry": "Marine Shipping",
+      "market_cap": 7907565017,
+      "company_name": "Frontline Plc"
+    },
+    "GFS": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": -6.97,
+      "dr_5": -7.69,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 43752663583,
+      "company_name": "GLOBALFOUNDRIES Inc."
+    },
+    "HYLN": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": -8.53,
+      "dr_5": -46.36,
+      "sector": "Industrials",
+      "industry": "Auto - Parts",
+      "market_cap": 788206401,
+      "company_name": "Hyliion Holdings Corp."
+    },
+    "KLAC": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 13,
+      "dr_1": -4.19,
+      "dr_5": -5.23,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 324793459200,
+      "company_name": "KLA Corporation"
+    },
+    "MCHP": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": -6.85,
+      "dr_5": -12.5,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 47665006470,
+      "company_name": "Microchip Technology Incorporated"
+    },
+    "MRVL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": -5.06,
+      "dr_5": -14.95,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 233370396000,
+      "company_name": "Marvell Technology, Inc."
+    },
+    "MS": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 15,
+      "dr_1": -4.12,
+      "dr_5": -4.85,
+      "sector": "Financial Services",
+      "industry": "Financial - Capital Markets",
+      "market_cap": 334463245445,
+      "company_name": "Morgan Stanley"
+    },
+    "MU": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 11,
+      "dr_1": -4.82,
+      "dr_5": 0.86,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 1278842178700,
+      "company_name": "Micron Technology, Inc."
+    },
+    "NOK": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": -8.06,
+      "dr_5": -5.13,
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "market_cap": 69779524640,
+      "company_name": "Nokia Oyj"
+    },
+    "NXPI": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": -6.72,
+      "dr_5": -11.34,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 69939538305,
+      "company_name": "NXP Semiconductors N.V."
+    },
+    "ON": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": -23.2,
+      "dr_5": -25.45,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 35526006950,
+      "company_name": "ON Semiconductor Corporation"
+    },
+    "QCOM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": -6.1,
+      "dr_5": -14.45,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 199617060000,
+      "company_name": "QUALCOMM Incorporated"
+    },
+    "SNDK": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": -7.37,
+      "dr_5": -2.58,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 309612721223,
+      "company_name": "Sandisk Corporation"
+    },
+    "STX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": -11.27,
+      "dr_5": -15.63,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 201783677100,
+      "company_name": "Seagate Technology Holdings plc"
+    },
+    "TMDX": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": -12.34,
+      "dr_5": -13.99,
+      "sector": "Healthcare",
+      "industry": "Medical - Devices",
+      "market_cap": 2365347996,
+      "company_name": "TransMedics Group, Inc."
+    },
+    "TSEM": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": -8.29,
+      "dr_5": -13.62,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 27929096904,
+      "company_name": "Tower Semiconductor Ltd."
+    },
+    "TT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 12,
+      "dr_1": -4.69,
+      "dr_5": -0.87,
+      "sector": "Industrials",
+      "industry": "Industrial - Machinery",
+      "market_cap": 105640201904,
+      "company_name": "Trane Technologies plc"
+    },
+    "TXN": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": -5.42,
+      "dr_5": -8.87,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 259763294525,
+      "company_name": "Texas Instruments Incorporated"
+    },
+    "UMC": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": -7.48,
+      "dr_5": 6.31,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 63805675338,
+      "company_name": "United Microelectronics Corporation"
+    },
+    "VC": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": -10.3,
+      "dr_5": -11.36,
+      "sector": "Consumer Cyclical",
+      "industry": "Auto - Parts",
+      "market_cap": 2751619685,
+      "company_name": "Visteon Corporation"
+    },
+    "VRT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": -6.48,
+      "dr_5": -9.12,
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 116749874623,
+      "company_name": "Vertiv Holdings Co"
+    },
+    "WDC": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": -12.04,
+      "dr_5": -21.44,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 202138758900,
+      "company_name": "Western Digital Corporation"
+    }
+  },
+  "slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "ticker_count": 15,
+      "tickers": [
+        "WDC",
+        "STX",
+        "SNDK",
+        "ADI",
+        "VRT",
+        "QCOM",
+        "ANET",
+        "TXN",
+        "MRVL",
+        "ARM",
+        "MU",
+        "TT",
+        "KLAC",
+        "DELL",
+        "MS"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "ON",
+        "BE",
+        "FLEX",
+        "TSEM",
+        "ENTG",
+        "NOK",
+        "UMC",
+        "GFS",
+        "MCHP",
+        "NXPI"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "COCO",
+        "TMDX",
+        "DIOD",
+        "ARQQ",
+        "VC",
+        "FORM",
+        "BHC",
+        "EROC",
+        "FRO",
+        "HYLN"
+      ]
+    }
+  ]
+}

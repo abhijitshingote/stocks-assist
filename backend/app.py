@@ -1,34 +1,49 @@
 """Flask API for stocks database."""
 
-from flask import Flask, jsonify, request
+from __future__ import annotations
+
+from flask import Flask, jsonify, request, send_file
+import io
 from flask_cors import CORS
-from sqlalchemy import create_engine, func, desc, text, or_
+from sqlalchemy import create_engine, func, desc, asc, text, or_, bindparam
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
-    StockVolspikeGapper, MainView, StockNotes, StockPreference, SharesFloat, AbiNotes, MarketBreadth,
-    RsScreener
+    StockVolspikeGapper, MainView, SharesFloat, MarketBreadth,
+    RsScreener, BenzingaArticle,
 )
+import benzinga_news as benzinga_news_service
 import os
 import json
 import logging
 import time
 import pytz
-from datetime import date, datetime
+from datetime import date, datetime, timezone
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
-# Path to persist stock notes (survives database resets)
-STOCK_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_notes.json')
-# Path to persist stock preferences (survives database resets)
-STOCK_PREFERENCES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'stock_preferences.json')
-# Path to persist abi notes (survives database resets)
-ABI_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_notes.json')
+# Path to persist abi general notes (survives database resets)
+ABI_GENERAL_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_general_notes.json')
 # Path to persist abi watchlist (survives database resets)
 ABI_WATCHLIST_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_watchlist.json')
+# Path to persist explicit thumbs-down list (separate from watchlist).
+# Watchlist `stars: 0` means "unrated"; dislikes are tracked here instead.
+ABI_DISLIKES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_dislikes.json')
+# Path to persist per-ticker Abi ticker notes (free-form). Decoupled from
+# watchlist / dislikes membership. (Daily screener still consumes only notes
+# for tickers on the watchlist - see daily_screener/config.py.)
+ABI_TICKER_NOTES_FILE = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'abi_ticker_notes.json'
+)
+# Daily screener feedback (per-date, per-ticker corrections from the user).
+# Used by Stage 5 of the daily_screener pipeline to calibrate the judge.
+DAILY_SCREENER_FEEDBACK_FILE = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'daily_screener_feedback.json'
+)
 
 app = Flask(__name__)
 CORS(app)
@@ -118,6 +133,43 @@ def apply_global_liquidity_filters(query, metrics_model=StockMetrics):
     
     return query
 
+
+_ENG_MONTH_ABBR = (
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+)
+
+
+def _fmt_est_edt_abbr(dt_eastern):
+    """US Eastern: always label EST or EDT (never generic ET or locale zone names)."""
+    return 'EDT' if dt_eastern.dst() else 'EST'
+
+
+def _fmt_time_12h_eng(dt):
+    hour12 = dt.hour % 12
+    if hour12 == 0:
+        hour12 = 12
+    ampm = 'AM' if dt.hour < 12 else 'PM'
+    return f'{hour12}:{dt.minute:02d} {ampm}'
+
+
+def _fmt_month_day_eng(d):
+    return f'{_ENG_MONTH_ABBR[d.month - 1]} {d.day}'
+
+
+def _fmt_full_date_eng(d):
+    return f'{_ENG_MONTH_ABBR[d.month - 1]} {d.day}, {d.year}'
+
+
+def _nav_data_thru_label(latest_date, et_dt, abbr):
+    """OHLC session date + last OHLC sync time in US/Eastern."""
+    time_part = f'{_fmt_time_12h_eng(et_dt)} {abbr}'
+    session = _fmt_month_day_eng(latest_date)
+    if et_dt.date() == latest_date:
+        return f'{session}, {time_part}'
+    return f'{session}, as of {_fmt_month_day_eng(et_dt.date())}, {time_part}'
+
+
 @app.route('/api/health')
 def health():
     try:
@@ -154,16 +206,32 @@ def get_latest_date():
         if not latest_date:
             return jsonify({'error': 'No price data available'}), 404
 
-        latest_update = s.query(SyncMetadata).order_by(desc(SyncMetadata.last_synced_at)).first()
+        ohlc_sync = s.query(SyncMetadata).filter(SyncMetadata.key == 'ohlc_last_sync').first()
+        latest_update = ohlc_sync or s.query(SyncMetadata).order_by(
+            desc(SyncMetadata.last_synced_at)
+        ).first()
 
         response = {
             'latest_date': latest_date.strftime('%Y-%m-%d'),
-            'formatted_date': latest_date.strftime('%B %d, %Y')
+            'formatted_date': _fmt_full_date_eng(latest_date),
         }
 
         if latest_update and latest_update.last_synced_at:
-            response['last_update'] = latest_update.last_synced_at.strftime('%Y-%m-%d %H:%M:%S')
-            response['last_update_formatted'] = latest_update.last_synced_at.strftime('%b %d, %Y %I:%M %p')
+            raw = latest_update.last_synced_at
+            # ETL scripts store naive UTC wall times in sync_metadata.last_synced_at.
+            if raw.tzinfo is None:
+                utc_dt = pytz.UTC.localize(raw)
+            else:
+                utc_dt = raw.astimezone(pytz.UTC)
+            eastern = pytz.timezone('US/Eastern')
+            et_dt = utc_dt.astimezone(eastern)
+            abbr = _fmt_est_edt_abbr(et_dt)
+            response['last_update'] = utc_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+            response['last_update_formatted'] = (
+                f'{_ENG_MONTH_ABBR[et_dt.month - 1]} {et_dt.day}, {et_dt.year} '
+                f'{_fmt_time_12h_eng(et_dt)} {abbr}'
+            )
+            response['nav_data_thru_label'] = _nav_data_thru_label(latest_date, et_dt, abbr)
 
         return jsonify(response)
     except Exception as e:
@@ -1595,6 +1663,215 @@ def get_top_performance_mega():
 
 
 # ============================================================================
+# Bottom Performance (Top Losers) Endpoints
+# ============================================================================
+
+def get_bottom_performance_stocks(session, market_cap_category=None):
+    """
+    Get union of bottom 30 stocks by dr_1, dr_5, and dr_20 from stock_metrics.
+    Returns combined list with all columns for consistency with other pages.
+    This is the inverse of get_top_performance_stocks - showing biggest losers.
+    """
+    try:
+        def build_query(return_column, limit=30):
+            query = session.query(
+                StockMetrics.ticker,
+                StockMetrics.company_name,
+                StockMetrics.country,
+                StockMetrics.sector,
+                StockMetrics.industry,
+                StockMetrics.ipo_date,
+                StockMetrics.market_cap,
+                StockMetrics.current_price,
+                StockMetrics.range_52_week,
+                StockMetrics.volume,
+                StockMetrics.dollar_volume,
+                StockMetrics.avg_vol_10d,
+                StockMetrics.vol_vs_10d_avg,
+                StockMetrics.ti65,
+                StockMetrics.rsi,
+                StockMetrics.rsi_mktcap,
+                StockMetrics.dr_1,
+                StockMetrics.dr_5,
+                StockMetrics.dr_20,
+                StockMetrics.dr_60,
+                StockMetrics.dr_120,
+                StockMetrics.atr20,
+                StockMetrics.pe_t_minus_1,
+                StockMetrics.pe_t,
+                StockMetrics.pe_t_plus_1,
+                StockMetrics.pe_t_plus_2,
+                StockMetrics.ps_t_minus_1,
+                StockMetrics.ps_t,
+                StockMetrics.ps_t_plus_1,
+                StockMetrics.ps_t_plus_2,
+                StockMetrics.rev_growth_t_minus_1,
+                StockMetrics.rev_growth_t,
+                StockMetrics.rev_growth_t_plus_1,
+                StockMetrics.rev_growth_t_plus_2,
+                StockMetrics.eps_growth_t_minus_1,
+                StockMetrics.eps_growth_t,
+                StockMetrics.eps_growth_t_plus_1,
+                StockMetrics.eps_growth_t_plus_2,
+                StockMetrics.short_float,
+                StockMetrics.short_ratio,
+                StockMetrics.short_interest,
+                StockMetrics.low_float,
+                StockMetrics.float_shares,
+                StockMetrics.outstanding_shares,
+                StockMetrics.free_float,
+                StockMetrics.updated_at,
+                StockVolspikeGapper.last_event_date,
+                StockVolspikeGapper.last_event_type,
+                StockVolspikeGapper.last_event_magnitude,
+                StockVolspikeGapper.last_event_return,
+                MainView.tags,
+            ).outerjoin(
+                StockVolspikeGapper, StockVolspikeGapper.ticker == StockMetrics.ticker
+            ).outerjoin(
+                MainView, MainView.ticker == StockMetrics.ticker
+            ).filter(
+                getattr(StockMetrics, return_column).isnot(None),
+                StockMetrics.market_cap.isnot(None)
+            )
+
+            if market_cap_category:
+                category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+                if category:
+                    query = query.filter(StockMetrics.market_cap >= category['min'])
+                    if category['max'] is not None:
+                        query = query.filter(StockMetrics.market_cap < category['max'])
+
+            query = apply_global_liquidity_filters(query)
+            query = query.order_by(asc(getattr(StockMetrics, return_column))).limit(limit)
+            return query
+
+        bottom_1d = build_query('dr_1').all()
+        bottom_5d = build_query('dr_5').all()
+        bottom_20d = build_query('dr_20').all()
+
+        seen_tickers = set()
+        combined_stocks = []
+
+        for stock_list in [bottom_1d, bottom_5d, bottom_20d]:
+            for stock in stock_list:
+                if stock.ticker not in seen_tickers:
+                    seen_tickers.add(stock.ticker)
+                    combined_stocks.append(stock)
+
+        results = []
+        for stock in combined_stocks:
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'country': stock.country,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
+                'market_cap': stock.market_cap,
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'range_52_week': stock.range_52_week,
+                'volume': int(stock.volume) if stock.volume else None,
+                'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
+                'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
+                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
+                'ti65': round(stock.ti65, 2) if stock.ti65 else None,
+                'rsi': stock.rsi,
+                'rsi_mktcap': stock.rsi_mktcap,
+                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
+                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
+                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
+                'dr_60': round(stock.dr_60, 2) if stock.dr_60 else None,
+                'dr_120': round(stock.dr_120, 2) if stock.dr_120 else None,
+                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
+                'pe_t_minus_1': round(stock.pe_t_minus_1, 2) if stock.pe_t_minus_1 else None,
+                'pe_t': round(stock.pe_t, 2) if stock.pe_t else None,
+                'pe_t_plus_1': round(stock.pe_t_plus_1, 2) if stock.pe_t_plus_1 else None,
+                'pe_t_plus_2': round(stock.pe_t_plus_2, 2) if stock.pe_t_plus_2 else None,
+                'ps_t_minus_1': round(stock.ps_t_minus_1, 2) if stock.ps_t_minus_1 else None,
+                'ps_t': round(stock.ps_t, 2) if stock.ps_t else None,
+                'ps_t_plus_1': round(stock.ps_t_plus_1, 2) if stock.ps_t_plus_1 else None,
+                'ps_t_plus_2': round(stock.ps_t_plus_2, 2) if stock.ps_t_plus_2 else None,
+                'rev_growth_t_minus_1': round(stock.rev_growth_t_minus_1, 2) if stock.rev_growth_t_minus_1 else None,
+                'rev_growth_t': round(stock.rev_growth_t, 2) if stock.rev_growth_t else None,
+                'rev_growth_t_plus_1': round(stock.rev_growth_t_plus_1, 2) if stock.rev_growth_t_plus_1 else None,
+                'rev_growth_t_plus_2': round(stock.rev_growth_t_plus_2, 2) if stock.rev_growth_t_plus_2 else None,
+                'eps_growth_t_minus_1': round(stock.eps_growth_t_minus_1, 2) if stock.eps_growth_t_minus_1 else None,
+                'eps_growth_t': round(stock.eps_growth_t, 2) if stock.eps_growth_t else None,
+                'eps_growth_t_plus_1': round(stock.eps_growth_t_plus_1, 2) if stock.eps_growth_t_plus_1 else None,
+                'eps_growth_t_plus_2': round(stock.eps_growth_t_plus_2, 2) if stock.eps_growth_t_plus_2 else None,
+                'short_float': round(stock.short_float, 2) if stock.short_float else None,
+                'short_ratio': round(stock.short_ratio, 2) if stock.short_ratio else None,
+                'short_interest': round(stock.short_interest, 2) if stock.short_interest else None,
+                'low_float': stock.low_float,
+                'float_shares': stock.float_shares,
+                'outstanding_shares': stock.outstanding_shares,
+                'free_float': round(stock.free_float, 2) if stock.free_float else None,
+                'last_event_date': stock.last_event_date.strftime('%Y-%m-%d') if stock.last_event_date else None,
+                'last_event_type': stock.last_event_type,
+                'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
+                'last_event_return': float(stock.last_event_return) if stock.last_event_return else None,
+                'tags': stock.tags,
+                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
+            })
+        
+        return results
+    
+    except Exception as e:
+        logger.error(f"Error getting bottom performance stocks: {str(e)}")
+        return []
+
+
+@app.route('/api/BottomPerformance-All')
+def get_bottom_performance_all():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-MicroCap')
+def get_bottom_performance_micro():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-SmallCap')
+def get_bottom_performance_small():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-MidCap')
+def get_bottom_performance_mid():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-LargeCap')
+def get_bottom_performance_large():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/BottomPerformance-MegaCap')
+def get_bottom_performance_mega():
+    s = Session()
+    try:
+        return jsonify(get_bottom_performance_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
 # Volume Spike & Gapper Endpoints
 # ============================================================================
 
@@ -1963,6 +2240,195 @@ def get_main_view_mega():
         s.close()
 
 
+def _format_all_stocks_row(r):
+    spike_dates = [d for d in (r['volume_spike_days'] or '').split(',') if d.strip()]
+    gap_dates = [d for d in (r['gap_days'] or '').split(',') if d.strip()]
+    return {
+        'ticker': r['ticker'],
+        'company_name': r['company_name'],
+        'country': r['country'],
+        'sector': r['sector'],
+        'industry': r['industry'],
+        'ipo_date': r['ipo_date'].strftime('%Y-%m-%d') if r['ipo_date'] else None,
+        'market_cap': r['market_cap'],
+        'current_price': round(r['current_price'], 2) if r['current_price'] else None,
+        'range_52_week': r['range_52_week'],
+        'volume': int(r['volume']) if r['volume'] else None,
+        'dollar_volume': round(r['dollar_volume'], 2) if r['dollar_volume'] else None,
+        'avg_vol_10d': float(r['avg_vol_10d']) if r['avg_vol_10d'] else None,
+        'vol_vs_10d_avg': float(r['vol_vs_10d_avg']) if r['vol_vs_10d_avg'] else None,
+        'ti65': round(r['ti65'], 2) if r['ti65'] else None,
+        'dr_1': round(r['dr_1'], 2) if r['dr_1'] else None,
+        'dr_5': round(r['dr_5'], 2) if r['dr_5'] else None,
+        'dr_20': round(r['dr_20'], 2) if r['dr_20'] else None,
+        'dr_60': round(r['dr_60'], 2) if r['dr_60'] else None,
+        'dr_120': round(r['dr_120'], 2) if r['dr_120'] else None,
+        'atr20': round(r['atr20'], 2) if r['atr20'] else None,
+        'pe_t_minus_1': round(r['pe_t_minus_1'], 2) if r['pe_t_minus_1'] else None,
+        'pe_t': round(r['pe_t'], 2) if r['pe_t'] else None,
+        'pe_t_plus_1': round(r['pe_t_plus_1'], 2) if r['pe_t_plus_1'] else None,
+        'pe_t_plus_2': round(r['pe_t_plus_2'], 2) if r['pe_t_plus_2'] else None,
+        'ps_t_minus_1': round(r['ps_t_minus_1'], 2) if r['ps_t_minus_1'] else None,
+        'ps_t': round(r['ps_t'], 2) if r['ps_t'] else None,
+        'ps_t_plus_1': round(r['ps_t_plus_1'], 2) if r['ps_t_plus_1'] else None,
+        'ps_t_plus_2': round(r['ps_t_plus_2'], 2) if r['ps_t_plus_2'] else None,
+        'rev_growth_t_minus_1': round(r['rev_growth_t_minus_1'], 2) if r['rev_growth_t_minus_1'] else None,
+        'rev_growth_t': round(r['rev_growth_t'], 2) if r['rev_growth_t'] else None,
+        'rev_growth_t_plus_1': round(r['rev_growth_t_plus_1'], 2) if r['rev_growth_t_plus_1'] else None,
+        'rev_growth_t_plus_2': round(r['rev_growth_t_plus_2'], 2) if r['rev_growth_t_plus_2'] else None,
+        'eps_growth_t_minus_1': round(r['eps_growth_t_minus_1'], 2) if r['eps_growth_t_minus_1'] else None,
+        'eps_growth_t': round(r['eps_growth_t'], 2) if r['eps_growth_t'] else None,
+        'eps_growth_t_plus_1': round(r['eps_growth_t_plus_1'], 2) if r['eps_growth_t_plus_1'] else None,
+        'eps_growth_t_plus_2': round(r['eps_growth_t_plus_2'], 2) if r['eps_growth_t_plus_2'] else None,
+        'rsi': r['rsi'],
+        'rsi_mktcap': r['rsi_mktcap'],
+        'short_float': round(r['short_float'], 2) if r['short_float'] else None,
+        'short_ratio': round(r['short_ratio'], 2) if r['short_ratio'] else None,
+        'short_interest': round(r['short_interest'], 2) if r['short_interest'] else None,
+        'low_float': r['low_float'],
+        'float_shares': r['float_shares'],
+        'outstanding_shares': r['outstanding_shares'],
+        'free_float': round(r['free_float'], 2) if r['free_float'] else None,
+        'spike_day_count': r['spike_day_count'] or 0,
+        'avg_volume_spike': round(r['avg_volume_spike'], 2) if r['avg_volume_spike'] else None,
+        'volume_spike_days': spike_dates,
+        'gapper_day_count': r['gapper_day_count'] or 0,
+        'avg_return_gapper': round(r['avg_return_gapper'], 4) if r['avg_return_gapper'] else None,
+        'gap_days': gap_dates,
+        'last_event_date': r['last_event_date'].strftime('%Y-%m-%d') if r['last_event_date'] else None,
+        'last_event_type': r['last_event_type'],
+        'last_event_magnitude': float(r['last_event_magnitude']) if r['last_event_magnitude'] else None,
+        'last_event_return': float(r['last_event_return']) if r['last_event_return'] else None,
+        'tags': r['tags'] or '',
+    }
+
+
+_ALL_STOCKS_SQL = """
+    SELECT
+        sm.ticker,
+        sm.company_name,
+        sm.country,
+        sm.sector,
+        sm.industry,
+        sm.ipo_date,
+        sm.market_cap,
+        sm.current_price,
+        sm.range_52_week,
+        sm.volume,
+        sm.dollar_volume,
+        sm.avg_vol_10d,
+        sm.vol_vs_10d_avg,
+        sm.TI65,
+        sm.dr_1, sm.dr_5, sm.dr_20, sm.dr_60, sm.dr_120,
+        sm.atr20,
+        sm.pe_t_minus_1, sm.pe_t, sm.pe_t_plus_1, sm.pe_t_plus_2,
+        sm.ps_t_minus_1, sm.ps_t, sm.ps_t_plus_1, sm.ps_t_plus_2,
+        sm.rev_growth_t_minus_1, sm.rev_growth_t,
+        sm.rev_growth_t_plus_1, sm.rev_growth_t_plus_2,
+        sm.eps_growth_t_minus_1, sm.eps_growth_t,
+        sm.eps_growth_t_plus_1, sm.eps_growth_t_plus_2,
+        sm.rsi, sm.rsi_mktcap,
+        sm.short_float, sm.short_ratio, sm.short_interest, sm.low_float,
+        sm.float_shares, sm.outstanding_shares, sm.free_float,
+        svg.spike_day_count,
+        svg.avg_volume_spike,
+        svg.volume_spike_days,
+        svg.gapper_day_count,
+        svg.avg_return_gapper,
+        svg.gap_days,
+        svg.last_event_date,
+        svg.last_event_type,
+        svg.last_event_magnitude,
+        svg.last_event_return,
+        ARRAY_TO_STRING(
+            ARRAY(
+                SELECT DISTINCT tag FROM UNNEST(ARRAY[
+                    CASE WHEN
+                        (COALESCE(sm.rev_growth_t::numeric, sm.rev_growth_t_plus_1::numeric) +
+                         COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t::numeric)) / 2 > 25
+                        OR
+                        (COALESCE(sm.rev_growth_t_plus_1::numeric, sm.rev_growth_t_plus_2::numeric) +
+                         COALESCE(sm.rev_growth_t_plus_2::numeric, sm.rev_growth_t_plus_1::numeric)) / 2 > 25
+                    THEN 'high_sales_growth' END,
+                    CASE WHEN sm.TI65 > 1.05 THEN 'TI65' END,
+                    CASE WHEN svg.spike_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '30 days'
+                         THEN 'volume_spike (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')' END,
+                    CASE WHEN svg.gapper_day_count > 0 AND svg.last_event_date >= CURRENT_DATE - INTERVAL '30 days'
+                         THEN 'gapper (' || TO_CHAR(svg.last_event_date, 'YYYY-MM-DD') || ')' END
+                ]) AS tag
+                WHERE tag IS NOT NULL
+            ), ', '
+        ) AS tags
+    FROM stock_metrics sm
+    LEFT JOIN stock_volspike_gapper svg ON sm.ticker = svg.ticker
+    WHERE sm.industry <> 'Biotechnology'
+      AND sm.current_price > 3
+      AND sm.avg_vol_10d * (
+            SELECT AVG(close) FROM (
+                SELECT o.close FROM ohlc o
+                WHERE o.ticker = sm.ticker
+                ORDER BY o."date" DESC LIMIT 10
+            ) AS last10
+      ) > 10000000
+"""
+
+
+def _fetch_all_stocks(session, tickers=None):
+    ticker_filter = ''
+    params = {}
+    if tickers:
+        ticker_filter = ' AND sm.ticker IN :tickers'
+        params = {'tickers': tickers}
+
+    sql = text(_ALL_STOCKS_SQL + ticker_filter + '\n    ORDER BY sm.TI65 DESC NULLS LAST')
+    if tickers:
+        sql = sql.bindparams(bindparam('tickers', expanding=True))
+    rows = session.execute(sql, params).mappings().all()
+    return [_format_all_stocks_row(r) for r in rows]
+
+
+@app.route('/api/AllStocks')
+def get_all_stocks():
+    """
+    Full liquid universe (price > $3, avg 10d $-volume > $10M, non-Biotech).
+    Pulled live from stock_metrics LEFT JOIN stock_volspike_gapper so tickers
+    without volspike/gapper rows are still included (those columns return NULL
+    and `tags` is computed inline, mirroring main_view_update.py).
+    """
+    s = Session()
+    try:
+        return jsonify(_fetch_all_stocks(s))
+    except Exception as e:
+        logger.error(f"Error in AllStocks endpoint: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/AllStocks-ByTickers')
+def get_all_stocks_by_tickers():
+    """
+    AllStocks data for a specific ticker list (comma-separated via 'tickers' param).
+    Same stock_metrics source and liquidity filters as /api/AllStocks.
+    """
+    tickers_param = request.args.get('tickers', '').strip()
+    if not tickers_param:
+        return jsonify([])
+
+    tickers = [t.strip().upper() for t in tickers_param.split(',') if t.strip()]
+    if not tickers:
+        return jsonify([])
+
+    s = Session()
+    try:
+        return jsonify(_fetch_all_stocks(s, tickers=tickers))
+    except Exception as e:
+        logger.error(f"Error in AllStocks-ByTickers endpoint: {e}")
+        return jsonify([])
+    finally:
+        s.close()
+
+
 @app.route('/api/MainView-ByTickers')
 def get_main_view_by_tickers():
     """
@@ -2164,762 +2630,26 @@ def get_high_sales_growth_mega():
         s.close()
 
 
-# ============================================================
-# Stock Notes API Endpoints
-# ============================================================
-
-def export_all_notes_to_file():
-    """Export all stock notes to JSON file for persistence across database resets."""
-    s = Session()
-    try:
-        notes = s.query(StockNotes).filter(StockNotes.notes.isnot(None), StockNotes.notes != '').all()
-        
-        data = {}
-        for note in notes:
-            data[note.ticker] = {
-                'notes': note.notes,
-                'created_at': note.created_at.isoformat() if note.created_at else None,
-                'updated_at': note.updated_at.isoformat() if note.updated_at else None
-            }
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(STOCK_NOTES_FILE), exist_ok=True)
-        
-        with open(STOCK_NOTES_FILE, 'w') as f:
-            json.dump(data, f, indent=2)
-        
-        logger.info(f"Exported {len(data)} stock notes to {STOCK_NOTES_FILE}")
-    except Exception as e:
-        logger.error(f"Error exporting stock notes: {str(e)}")
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/<ticker>', methods=['GET'])
-def get_stock_notes(ticker):
-    """Get notes for a specific stock."""
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        note = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        if note:
-            return jsonify({
-                'ticker': note.ticker,
-                'notes': note.notes,
-                'updated_at': note.updated_at.isoformat() if note.updated_at else None
-            })
-        return jsonify({
-            'ticker': ticker,
-            'notes': None,
-            'updated_at': None
-        })
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/<ticker>', methods=['PUT'])
-def update_stock_notes(ticker):
-    """Create or update notes for a specific stock."""
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        data = request.get_json()
-        
-        if not data or 'notes' not in data:
-            return jsonify({'error': 'notes field is required'}), 400
-        
-        notes_content = data['notes']
-        
-        # Check if notes already exist for this ticker
-        existing = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        
-        if existing:
-            # Update existing notes
-            existing.notes = notes_content if notes_content else None
-            s.commit()
-            
-            # Export all notes to file for persistence
-            export_all_notes_to_file()
-            
-            return jsonify({
-                'ticker': existing.ticker,
-                'notes': existing.notes,
-                'updated_at': existing.updated_at.isoformat() if existing.updated_at else None,
-                'message': 'Notes updated successfully'
-            })
-        else:
-            # Create new notes entry
-            new_note = StockNotes(ticker=ticker, notes=notes_content if notes_content else None)
-            s.add(new_note)
-            s.commit()
-            
-            # Export all notes to file for persistence
-            export_all_notes_to_file()
-            
-            return jsonify({
-                'ticker': new_note.ticker,
-                'notes': new_note.notes,
-                'updated_at': new_note.updated_at.isoformat() if new_note.updated_at else None,
-                'message': 'Notes created successfully'
-            }), 201
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error updating stock notes for {ticker}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/batch', methods=['POST'])
-def get_stock_notes_batch():
-    """Get notes for multiple tickers at once (for screener views)."""
-    s = Session()
-    try:
-        data = request.get_json()
-        
-        if not data or 'tickers' not in data:
-            return jsonify({'error': 'tickers field is required'}), 400
-        
-        tickers = [t.upper() for t in data['tickers']]
-        
-        notes = s.query(StockNotes).filter(StockNotes.ticker.in_(tickers)).all()
-        
-        result = {}
-        for note in notes:
-            if note.notes:  # Only include non-empty notes
-                result[note.ticker] = {
-                    'notes': note.notes,
-                    'updated_at': note.updated_at.isoformat() if note.updated_at else None
-                }
-        
-        return jsonify(result)
-    finally:
-        s.close()
-
+# Stock Notes endpoints removed (along with AI Stock Research). This store
+# has been deprecated. Per-ticker notes are now served exclusively by the
+# file-only abi_ticker_notes store (user_data/abi_ticker_notes.json). The
+# AI research integration (Perplexity / Claude web search) has been removed
+# with it; reintroduce it later as a feature that writes into
+# abi_ticker_notes if you want it back.
 
 # ============================================================
-# AI Stock Research (Perplexity API) Endpoints
+# (AI Stock Research endpoints removed; see note above.)
 # ============================================================
 
-# Path to AI prompt templates
-AI_PROMPT_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'ai_prompts', 'stock_research_prompt.txt')
-CLAUDE_PROMPT_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'ai_prompts', 'claude_stock_research_prompt.txt')
+# (AI Stock Research, prompt template helpers, Perplexity / Claude wrappers
+# all removed along with the stock_notes store they wrote into. If you want
+# AI research back, reintroduce it as a feature that writes into
+# user_data/abi_ticker_notes.json instead of the deprecated DB store.)
 
 
-def get_company_name_for_ticker(session, ticker):
-    """Get company name for a ticker from the database."""
-    ticker_obj = session.query(Ticker).filter(Ticker.ticker == ticker.upper()).first()
-    if ticker_obj and ticker_obj.company_name:
-        return ticker_obj.company_name
-    return ticker.upper()
-
-
-def load_ai_prompt_template():
-    """Load the AI prompt template from file."""
-    try:
-        if os.path.exists(AI_PROMPT_FILE):
-            with open(AI_PROMPT_FILE, 'r') as f:
-                return f.read()
-        else:
-            logger.warning(f"AI prompt file not found at {AI_PROMPT_FILE}, using default prompt")
-            return None
-    except Exception as e:
-        logger.error(f"Error loading AI prompt template: {str(e)}")
-        return None
-
-
-def load_claude_prompt_template():
-    """Load the Claude AI prompt template from file."""
-    try:
-        if os.path.exists(CLAUDE_PROMPT_FILE):
-            with open(CLAUDE_PROMPT_FILE, 'r') as f:
-                return f.read()
-        else:
-            logger.warning(f"Claude prompt file not found at {CLAUDE_PROMPT_FILE}")
-            return None
-    except Exception as e:
-        logger.error(f"Error loading Claude prompt template: {str(e)}")
-        return None
-
-
-def call_perplexity_api(prompt, model='sonar'):
-    """
-    Call the Perplexity API with the given prompt.
-    
-    Args:
-        prompt: The prompt text to send
-        model: 'sonar' or 'sonar-pro'
-    
-    Returns:
-        Tuple of (response_text, error_message)
-        - On success: (response_text, None)
-        - On API credit failure: (None, 'INSUFFICIENT_CREDITS')
-        - On other errors: (None, error_message)
-    """
-    import requests
-    
-    api_key = os.getenv('PERPLEXITY_API_KEY')
-    if not api_key:
-        return None, 'PERPLEXITY_API_KEY not configured'
-    
-    # Map model names to Perplexity API model identifiers
-    model_map = {
-        'sonar': 'sonar',
-        'sonar-pro': 'sonar-pro'
-    }
-    api_model = model_map.get(model, 'sonar')
-    
-    url = "https://api.perplexity.ai/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-    
-    payload = {
-        "model": api_model,
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        "max_tokens": 20000,
-        "temperature": 0.1,
-        "return_citations": False
-    }
-    
-    try:
-        response = requests.post(url, headers=headers, json=payload, timeout=120)
-        
-        # Check for API credit issues
-        if response.status_code == 402:
-            return None, 'INSUFFICIENT_CREDITS'
-        
-        if response.status_code == 429:
-            return None, 'RATE_LIMITED'
-        
-        if response.status_code != 200:
-            error_detail = response.text[:500] if response.text else 'Unknown error'
-            logger.error(f"Perplexity API error {response.status_code}: {error_detail}")
-            return None, f'API error: {response.status_code}'
-        
-        data = response.json()
-        
-        if 'choices' in data and len(data['choices']) > 0:
-            content = data['choices'][0].get('message', {}).get('content', '')
-            return content, None
-        else:
-            return None, 'No response content from API'
-            
-    except requests.exceptions.Timeout:
-        return None, 'API request timed out (120s)'
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Perplexity API request error: {str(e)}")
-        return None, f'Request error: {str(e)}'
-    except Exception as e:
-        logger.error(f"Unexpected error calling Perplexity API: {str(e)}")
-        return None, f'Unexpected error: {str(e)}'
-
-
-def call_claude_api_with_web_search(ticker: str, company_name: str, months: int = 12):
-    """
-    Call Claude API with web search to get stock news summary.
-    
-    Args:
-        ticker: Stock ticker symbol
-        company_name: Full company name
-        months: How many months back to search
-    
-    Returns:
-        Tuple of (response_text, error_message)
-        - On success: (response_text, None)
-        - On rate limit: (None, 'RATE_LIMITED')
-        - On other errors: (None, error_message)
-    """
-    try:
-        from anthropic import Anthropic
-    except ImportError:
-        return None, 'anthropic package not installed. Run: pip install anthropic'
-    
-    api_key = os.getenv('ANTHROPIC_API_KEY')
-    if not api_key:
-        return None, 'ANTHROPIC_API_KEY not configured'
-    
-    client = Anthropic(api_key=api_key)
-    
-    # Load prompt from file
-    template = load_claude_prompt_template()
-    if not template:
-        return None, f'Claude prompt template not found at {CLAUDE_PROMPT_FILE}'
-    
-    # Replace placeholders
-    prompt = template.replace('[company_name]', company_name)
-    prompt = prompt.replace('[ticker]', ticker)
-    prompt = prompt.replace('[months]', str(months))
-
-    # Retry logic for rate limits
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            response = client.messages.create(
-                model="claude-sonnet-4-5-20250929",
-                max_tokens=4096,
-                system="You are a financial analyst. Use web search to find current, accurate information about stock-moving events. Be thorough and factual.",
-                tools=[{
-                    "type": "web_search_20250305",
-                    "name": "web_search"
-                }],
-                messages=[{"role": "user", "content": prompt}]
-            )
-            
-            # Extract all text from response blocks
-            text_parts = []
-            for block in response.content:
-                if hasattr(block, 'type') and block.type == "text":
-                    text_parts.append(block.text)
-            
-            summary = "\n".join(text_parts)
-            return summary, None
-            
-        except Exception as e:
-            error_msg = str(e)
-            
-            # Rate limit - wait and retry
-            if "429" in error_msg or "rate_limit" in error_msg:
-                if attempt < max_retries - 1:
-                    wait_time = 60 * (attempt + 1)
-                    logger.info(f"Claude rate limit hit. Waiting {wait_time}s before retry...")
-                    time.sleep(wait_time)
-                    continue
-                return None, 'RATE_LIMITED'
-            
-            logger.error(f"Claude API error: {error_msg}")
-            return None, f'API error: {error_msg}'
-    
-    return None, 'Max retries exceeded'
-
-
-@app.route('/api/stock-notes/ai-research/<ticker>', methods=['POST'])
-def generate_ai_stock_research(ticker):
-    """
-    Generate AI stock research notes using Perplexity API.
-    Appends the generated notes to existing notes and saves to DB.
-    
-    Request body (optional):
-    {
-        "model": "sonar" or "sonar-pro" (default: "sonar"),
-        "custom_prompt": "Optional custom prompt override"
-    }
-    
-    Returns:
-    {
-        "ticker": "AAPL",
-        "ai_notes": "Generated AI research notes...",
-        "notes": "Full combined notes (existing + AI)",
-        "updated_at": "2024-01-20T...",
-        "model_used": "sonar",
-        "message": "success"
-    }
-    
-    Error responses:
-    - 402: Insufficient API credits
-    - 429: Rate limited
-    - 500: Other errors
-    """
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        data = request.get_json() or {}
-        
-        model = data.get('model', 'sonar')
-        custom_prompt = data.get('custom_prompt')
-        
-        # Validate model
-        if model not in ['sonar', 'sonar-pro']:
-            return jsonify({'error': 'model must be "sonar" or "sonar-pro"'}), 400
-        
-        # Get company name
-        company_name = get_company_name_for_ticker(s, ticker)
-        
-        # Build prompt from template file
-        if custom_prompt:
-            prompt = custom_prompt
-        else:
-            template = load_ai_prompt_template()
-            if not template:
-                return jsonify({
-                    'error': 'AI prompt template file not found. Please create the template at user_data/ai_prompts/stock_research_prompt.txt',
-                    'error_type': 'MISSING_TEMPLATE'
-                }), 500
-            
-            # Replace placeholders in template
-            # Supports both [placeholder] and {placeholder} formats
-            prompt = template.replace('[company_name]', company_name)
-            prompt = prompt.replace('[ticker]', ticker)
-        
-        # Call Perplexity API
-        logger.info(f"Calling Perplexity API for {ticker} with model {model}")
-        ai_response, error = call_perplexity_api(prompt, model)
-        
-        if error:
-            # Handle specific error types
-            if error == 'INSUFFICIENT_CREDITS':
-                return jsonify({
-                    'error': 'Insufficient Perplexity API credits. Please add credits to your account.',
-                    'error_type': 'INSUFFICIENT_CREDITS'
-                }), 402
-            elif error == 'RATE_LIMITED':
-                return jsonify({
-                    'error': 'Perplexity API rate limited. Please try again in a few minutes.',
-                    'error_type': 'RATE_LIMITED'
-                }), 429
-            else:
-                return jsonify({
-                    'error': f'Failed to generate AI research: {error}',
-                    'error_type': 'API_ERROR'
-                }), 500
-        
-        # Format AI notes with timestamp
-        from datetime import datetime
-        import pytz
-        eastern = pytz.timezone('US/Eastern')
-        now = datetime.now(eastern)
-        timestamp = now.strftime('%Y-%m-%d %H:%M:%S %Z')
-        
-        ai_notes_formatted = f"\n\n---\n\n## AI Research ({model}) - {timestamp}\n\n{ai_response}"
-        
-        # Get existing notes
-        existing = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        current_notes = existing.notes if existing and existing.notes else ''
-        
-        # Combine notes
-        combined_notes = current_notes + ai_notes_formatted
-        
-        # Save to database
-        if existing:
-            existing.notes = combined_notes
-        else:
-            new_note = StockNotes(ticker=ticker, notes=combined_notes)
-            s.add(new_note)
-        
-        s.commit()
-        
-        # Export all notes to file for persistence
-        export_all_notes_to_file()
-        
-        # Get updated timestamp
-        updated_note = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        
-        return jsonify({
-            'ticker': ticker,
-            'ai_notes': ai_response,
-            'notes': combined_notes,
-            'updated_at': updated_note.updated_at.isoformat() if updated_note and updated_note.updated_at else None,
-            'model_used': model,
-            'message': 'AI research notes generated and saved successfully'
-        })
-        
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error generating AI research for {ticker}: {str(e)}")
-        return jsonify({
-            'error': f'Unexpected error: {str(e)}',
-            'error_type': 'INTERNAL_ERROR'
-        }), 500
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/ai-research-claude/<ticker>', methods=['POST'])
-def generate_ai_stock_research_claude(ticker):
-    """
-    Generate AI stock research notes using Claude API with web search.
-    Appends the generated notes to existing notes and saves to DB.
-    
-    Request body (optional):
-    {
-        "months": 12  (default: 12 months of news)
-    }
-    
-    Returns:
-    {
-        "ticker": "AAPL",
-        "ai_notes": "Generated AI research notes...",
-        "notes": "Full combined notes (existing + AI)",
-        "updated_at": "2024-01-20T...",
-        "model_used": "claude-web-search",
-        "message": "success"
-    }
-    """
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        data = request.get_json() or {}
-        
-        months = data.get('months', 12)
-        
-        # Get company name
-        company_name = get_company_name_for_ticker(s, ticker)
-        
-        # Call Claude API with web search
-        logger.info(f"Calling Claude API with web search for {ticker}")
-        ai_response, error = call_claude_api_with_web_search(ticker, company_name, months)
-        
-        if error:
-            if error == 'RATE_LIMITED':
-                return jsonify({
-                    'error': 'Claude API rate limited. Please try again in a few minutes.',
-                    'error_type': 'RATE_LIMITED'
-                }), 429
-            else:
-                return jsonify({
-                    'error': f'Failed to generate AI research: {error}',
-                    'error_type': 'API_ERROR'
-                }), 500
-        
-        # Format AI notes with timestamp
-        from datetime import datetime
-        import pytz
-        eastern = pytz.timezone('US/Eastern')
-        now = datetime.now(eastern)
-        timestamp = now.strftime('%Y-%m-%d %H:%M:%S %Z')
-        
-        ai_notes_formatted = f"\n\n---\n\n## AI Research (Claude Web Search) - {timestamp}\n\n{ai_response}"
-        
-        # Get existing notes
-        existing = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        current_notes = existing.notes if existing and existing.notes else ''
-        
-        # Combine notes
-        combined_notes = current_notes + ai_notes_formatted
-        
-        # Save to database
-        if existing:
-            existing.notes = combined_notes
-        else:
-            new_note = StockNotes(ticker=ticker, notes=combined_notes)
-            s.add(new_note)
-        
-        s.commit()
-        
-        # Export all notes to file for persistence
-        export_all_notes_to_file()
-        
-        # Get updated timestamp
-        updated_note = s.query(StockNotes).filter(StockNotes.ticker == ticker).first()
-        
-        return jsonify({
-            'ticker': ticker,
-            'ai_notes': ai_response,
-            'notes': combined_notes,
-            'updated_at': updated_note.updated_at.isoformat() if updated_note and updated_note.updated_at else None,
-            'model_used': 'claude-web-search',
-            'message': 'AI research notes generated and saved successfully'
-        })
-        
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error generating Claude AI research for {ticker}: {str(e)}")
-        return jsonify({
-            'error': f'Unexpected error: {str(e)}',
-            'error_type': 'INTERNAL_ERROR'
-        }), 500
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-notes/ai-prompt', methods=['GET'])
-def get_ai_prompt_template():
-    """Get the current AI prompt template."""
-    template = load_ai_prompt_template()
-    if template:
-        return jsonify({
-            'prompt': template,
-            'path': AI_PROMPT_FILE
-        })
-    return jsonify({
-        'prompt': None,
-        'error': 'Prompt template not found',
-        'path': AI_PROMPT_FILE
-    }), 404
-
-
-@app.route('/api/stock-notes/ai-prompt', methods=['PUT'])
-def update_ai_prompt_template():
-    """Update the AI prompt template."""
-    data = request.get_json()
-    
-    if not data or 'prompt' not in data:
-        return jsonify({'error': 'prompt field is required'}), 400
-    
-    try:
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(AI_PROMPT_FILE), exist_ok=True)
-        
-        with open(AI_PROMPT_FILE, 'w') as f:
-            f.write(data['prompt'])
-        
-        return jsonify({
-            'message': 'Prompt template updated successfully',
-            'path': AI_PROMPT_FILE
-        })
-    except Exception as e:
-        logger.error(f"Error updating AI prompt template: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-
-# ============================================================
-# Stock Preferences API Endpoints
-# ============================================================
-
-def export_all_preferences_to_file():
-    """Export all stock preferences to JSON file for persistence across database resets."""
-    s = Session()
-    try:
-        prefs = s.query(StockPreference).filter(StockPreference.preference.isnot(None)).all()
-        
-        data = {}
-        for pref in prefs:
-            data[pref.ticker] = {
-                'preference': pref.preference,
-                'created_at': pref.created_at.isoformat() if pref.created_at else None,
-                'updated_at': pref.updated_at.isoformat() if pref.updated_at else None
-            }
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(STOCK_PREFERENCES_FILE), exist_ok=True)
-        
-        with open(STOCK_PREFERENCES_FILE, 'w') as f:
-            json.dump(data, f, indent=2)
-        
-        logger.info(f"Exported {len(data)} stock preferences to {STOCK_PREFERENCES_FILE}")
-    except Exception as e:
-        logger.error(f"Error exporting stock preferences: {str(e)}")
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-preferences/<ticker>', methods=['GET'])
-def get_stock_preference(ticker):
-    """Get preference for a specific stock."""
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        pref = s.query(StockPreference).filter(StockPreference.ticker == ticker).first()
-        if pref:
-            return jsonify({
-                'ticker': pref.ticker,
-                'preference': pref.preference,
-                'updated_at': pref.updated_at.isoformat() if pref.updated_at else None
-            })
-        return jsonify({
-            'ticker': ticker,
-            'preference': None,
-            'updated_at': None
-        })
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-preferences/<ticker>', methods=['PUT'])
-def update_stock_preference(ticker):
-    """Create or update preference for a specific stock."""
-    s = Session()
-    try:
-        ticker = ticker.upper()
-        data = request.get_json()
-        
-        if not data or 'preference' not in data:
-            return jsonify({'error': 'preference field is required'}), 400
-        
-        preference_value = data['preference']
-        
-        # Validate preference value
-        if preference_value is not None and preference_value not in ['favorite', 'dislike']:
-            return jsonify({'error': 'preference must be "favorite", "dislike", or null'}), 400
-        
-        # Check if preference already exists for this ticker
-        existing = s.query(StockPreference).filter(StockPreference.ticker == ticker).first()
-        
-        if existing:
-            # Update existing preference
-            existing.preference = preference_value
-            s.commit()
-            
-            # Export all preferences to file for persistence
-            export_all_preferences_to_file()
-            
-            return jsonify({
-                'ticker': existing.ticker,
-                'preference': existing.preference,
-                'updated_at': existing.updated_at.isoformat() if existing.updated_at else None,
-                'message': 'Preference updated successfully'
-            })
-        else:
-            # Create new preference entry
-            new_pref = StockPreference(ticker=ticker, preference=preference_value)
-            s.add(new_pref)
-            s.commit()
-            
-            # Export all preferences to file for persistence
-            export_all_preferences_to_file()
-            
-            return jsonify({
-                'ticker': new_pref.ticker,
-                'preference': new_pref.preference,
-                'updated_at': new_pref.updated_at.isoformat() if new_pref.updated_at else None,
-                'message': 'Preference created successfully'
-            }), 201
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error updating stock preference for {ticker}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-preferences/batch', methods=['POST'])
-def get_stock_preferences_batch():
-    """Get preferences for multiple tickers at once."""
-    s = Session()
-    try:
-        data = request.get_json()
-        
-        if not data or 'tickers' not in data:
-            return jsonify({'error': 'tickers field is required'}), 400
-        
-        tickers = [t.upper() for t in data['tickers']]
-        
-        prefs = s.query(StockPreference).filter(StockPreference.ticker.in_(tickers)).all()
-        
-        result = {}
-        for pref in prefs:
-            if pref.preference:  # Only include non-null preferences
-                result[pref.ticker] = {
-                    'preference': pref.preference,
-                    'updated_at': pref.updated_at.isoformat() if pref.updated_at else None
-                }
-        
-        return jsonify(result)
-    finally:
-        s.close()
-
-
-@app.route('/api/stock-preferences/list/<preference_type>')
-def list_stock_preferences(preference_type):
-    """List all stocks with a specific preference (favorites or dislikes)."""
-    s = Session()
-    try:
-        if preference_type not in ['favorite', 'dislike']:
-            return jsonify({'error': 'preference_type must be "favorite" or "dislike"'}), 400
-        
-        prefs = s.query(StockPreference).filter(StockPreference.preference == preference_type).all()
-        
-        tickers = [pref.ticker for pref in prefs]
-        
-        return jsonify({'tickers': tickers, 'count': len(tickers)})
-    finally:
-        s.close()
+# Stock Preferences endpoints removed: this store has been deprecated and
+# replaced by the file-only abi_watchlist (favorites) and abi_dislikes
+# stores. Same UX, no DB dependency, lives entirely under user_data/.
 
 
 # ============================================================================
@@ -3325,252 +3055,421 @@ def get_stock_news(ticker):
 
 
 # ============================================================
-# Abi Notes API Endpoints (date-based personal notes)
+# Benzinga News (Polygon/Massive API + Postgres cache)
 # ============================================================
 
-def export_all_abi_notes_to_file():
-    """Export all abi notes to JSON file for persistence across database resets."""
-    s = Session()
-    try:
-        notes = s.query(AbiNotes).order_by(AbiNotes.note_date.desc(), AbiNotes.id.desc()).all()
-        
-        data = []
-        for note in notes:
-            data.append({
-                'id': note.id,
-                'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
-                'title': note.title,
-                'content': note.content,
-                'tags': note.tags,
-                'created_at': note.created_at.isoformat() if note.created_at else None,
-                'updated_at': note.updated_at.isoformat() if note.updated_at else None
-            })
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(ABI_NOTES_FILE), exist_ok=True)
-        
-        with open(ABI_NOTES_FILE, 'w') as f:
-            json.dump(data, f, indent=2)
-        
-        logger.info(f"Exported {len(data)} abi notes to {ABI_NOTES_FILE}")
-    except Exception as e:
-        logger.error(f"Error exporting abi notes: {str(e)}")
-    finally:
-        s.close()
+def _ensure_benzinga_table():
+    BenzingaArticle.__table__.create(engine, checkfirst=True)
 
 
-@app.route('/api/abi-notes', methods=['GET'])
-def get_abi_notes():
-    """Get all abi notes, optionally filtered by date range or search query."""
-    s = Session()
+@app.route('/api/benzinga-news/<ticker>', methods=['GET'])
+def get_benzinga_news_cached(ticker):
+    """Return Benzinga articles for a ticker from the database."""
+    ticker = ticker.upper()
+    limit = request.args.get('limit', 40, type=int)
     try:
-        query = s.query(AbiNotes)
-        
-        # Optional date filtering
-        start_date = request.args.get('start_date')
-        end_date = request.args.get('end_date')
-        search = request.args.get('search')
-        tag = request.args.get('tag')
-        
-        if start_date:
-            query = query.filter(AbiNotes.note_date >= start_date)
-        if end_date:
-            query = query.filter(AbiNotes.note_date <= end_date)
-        if search:
-            search_term = f'%{search}%'
-            query = query.filter(
-                or_(
-                    AbiNotes.title.ilike(search_term),
-                    AbiNotes.content.ilike(search_term)
-                )
+        _ensure_benzinga_table()
+        session = Session()
+        try:
+            articles = benzinga_news_service.get_cached_benzinga_news(
+                session, ticker, limit=limit
             )
-        if tag:
-            query = query.filter(AbiNotes.tags.ilike(f'%{tag}%'))
+            return jsonify({
+                'ticker': ticker,
+                'count': len(articles),
+                'from_cache': True,
+                'articles': articles,
+            })
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error(f"Error loading cached Benzinga news for {ticker}: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/benzinga-news/<ticker>', methods=['POST'])
+def refresh_benzinga_news(ticker):
+    """Fetch Benzinga news from API, upsert to DB, return fresh articles."""
+    ticker = ticker.upper()
+    limit = request.args.get('limit', 40, type=int)
+    try:
+        _ensure_benzinga_table()
+        session = Session()
+        try:
+            articles = benzinga_news_service.refresh_benzinga_news(
+                session, ticker, limit=limit
+            )
+            return jsonify({
+                'ticker': ticker,
+                'count': len(articles),
+                'from_cache': False,
+                'articles': articles,
+            })
+        finally:
+            session.close()
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error refreshing Benzinga news for {ticker}: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/benzinga-news/market', methods=['GET'])
+def get_market_benzinga_news():
+    """Return market-wide Benzinga articles from database cache."""
+    limit = request.args.get('limit', 200, type=int)
+    channel = request.args.get('channel', None)
+    try:
+        _ensure_benzinga_table()
+        session = Session()
+        try:
+            from datetime import timedelta
+
+            days = benzinga_news_service.DEFAULT_REFRESH_LOOKBACK_DAYS
+            end = datetime.now(timezone.utc)
+            since = end - timedelta(days=days)
+            articles_rows = benzinga_news_service.load_articles_published_between(
+                session, since, end, limit=limit
+            )
+
+            # Filter by channel if requested
+            if channel:
+                articles_rows = [
+                    row for row in articles_rows
+                    if row.channels and channel in row.channels
+                ]
+            
+            # Convert to JSON
+            articles = [benzinga_news_service.article_to_json(row) for row in articles_rows]
+            
+            # Get available channels
+            channels_available = set()
+            for row in articles_rows:
+                if row.channels:
+                    channels_available.update(row.channels)
+            
+            return jsonify({
+                'count': len(articles),
+                'articles': articles,
+                'channels_available': sorted(list(channels_available)),
+                'window': {
+                    'label': f'Last {days} days',
+                    'start_utc': since.isoformat(),
+                    'end_utc': end.isoformat(),
+                }
+            })
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error(f"Error loading market Benzinga news: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/benzinga-news/market', methods=['POST'])
+def refresh_market_benzinga_news():
+    """Refresh Benzinga cache (3-day lookback) and return articles from DB."""
+    limit = request.args.get('limit', 200, type=int)
+    try:
+        _ensure_benzinga_table()
+        session = Session()
+        try:
+            from datetime import timedelta
+
+            days = benzinga_news_service.DEFAULT_REFRESH_LOOKBACK_DAYS
+            end = datetime.now(timezone.utc)
+            since = end - timedelta(days=days)
+            refresh = benzinga_news_service.refresh_benzinga_articles(
+                session,
+                days=days,
+                limit=benzinga_news_service.DEFAULT_REFRESH_API_LIMIT,
+                purge_days=benzinga_news_service.DEFAULT_ARTICLE_RETENTION_DAYS,
+            )
+
+            articles_rows = benzinga_news_service.load_articles_published_between(
+                session, since, end, limit=limit
+            )
+            articles = [benzinga_news_service.article_to_json(row) for row in articles_rows]
+
+            channels_available = set()
+            for row in articles_rows:
+                if row.channels:
+                    channels_available.update(row.channels)
+
+            return jsonify({
+                'count': len(articles),
+                'fetched_from_api': refresh.unique_upserted,
+                'articles': articles,
+                'channels_available': sorted(list(channels_available)),
+                'window': {
+                    'label': f'Last {days} days',
+                    'start_utc': since.isoformat(),
+                    'end_utc': end.isoformat(),
+                },
+            })
+        finally:
+            session.close()
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error refreshing market Benzinga news: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/market-news/fmp', methods=['GET'])
+def get_market_fmp_news():
+    """Fetch general market news from FMP (not ticker-specific)."""
+    limit = request.args.get('limit', 100, type=int)
+    fmp_api_key = os.getenv('FMP_API_KEY')
+    
+    if not fmp_api_key:
+        return jsonify({'error': 'FMP_API_KEY not configured'}), 400
+    
+    try:
+        import requests as req
+        resp = req.get(
+            'https://financialmodelingprep.com/api/v3/fmp/articles',
+            params={'limit': limit, 'apikey': fmp_api_key},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        articles = resp.json()
         
-        notes = query.order_by(AbiNotes.note_date.desc(), AbiNotes.id.desc()).all()
+        if not isinstance(articles, list):
+            return jsonify({'error': 'Invalid response from FMP'}), 500
         
         results = []
-        for note in notes:
+        for a in articles:
             results.append({
-                'id': note.id,
-                'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
-                'title': note.title,
-                'content': note.content,
-                'tags': note.tags,
-                'created_at': note.created_at.isoformat() if note.created_at else None,
-                'updated_at': note.updated_at.isoformat() if note.updated_at else None
+                'title': a.get('title'),
+                'url': a.get('link'),
+                'published_date': a.get('date'),
+                'site': a.get('site', 'FMP'),
+                'text': a.get('content', '')[:300] if a.get('content') else '',
+                'image': a.get('image'),
+                'source': 'FMP',
             })
         
-        return jsonify(results)
-    finally:
-        s.close()
-
-
-@app.route('/api/abi-notes/<int:note_id>', methods=['GET'])
-def get_abi_note(note_id):
-    """Get a specific abi note by ID."""
-    s = Session()
-    try:
-        note = s.query(AbiNotes).filter(AbiNotes.id == note_id).first()
-        
-        if not note:
-            return jsonify({'error': 'Note not found'}), 404
-        
         return jsonify({
-            'id': note.id,
-            'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
-            'title': note.title,
-            'content': note.content,
-            'tags': note.tags,
-            'created_at': note.created_at.isoformat() if note.created_at else None,
-            'updated_at': note.updated_at.isoformat() if note.updated_at else None
+            'count': len(results),
+            'articles': results,
         })
-    finally:
-        s.close()
+    except Exception as e:
+        logger.error(f"Error fetching FMP market news: {e}")
+        return jsonify({'error': str(e)}), 500
 
 
-@app.route('/api/abi-notes', methods=['POST'])
-def create_abi_note():
-    """Create a new abi note."""
-    s = Session()
+@app.route('/api/market-news/seeking-alpha', methods=['GET'])
+def get_market_seeking_alpha_news():
+    """Fetch general market news from Seeking Alpha RSS."""
+    limit = request.args.get('limit', 100, type=int)
+    
     try:
-        data = request.get_json()
-        
-        if not data:
-            return jsonify({'error': 'Request body is required'}), 400
-        
-        # note_date defaults to today if not provided
-        note_date_str = data.get('note_date')
-        if note_date_str:
-            from datetime import datetime
-            note_date = datetime.strptime(note_date_str, '%Y-%m-%d').date()
-        else:
-            note_date = date.today()
-        
-        new_note = AbiNotes(
-            note_date=note_date,
-            title=data.get('title'),
-            content=data.get('content'),
-            tags=data.get('tags')
-        )
-        
-        s.add(new_note)
-        s.commit()
-        
-        # Export all notes to file for persistence
-        export_all_abi_notes_to_file()
+        # General market news feed from Seeking Alpha
+        url = 'https://seekingalpha.com/market_currents.xml'
+        articles = _fetch_rss_items(url, 'Seeking Alpha', None, limit)
         
         return jsonify({
-            'id': new_note.id,
-            'note_date': new_note.note_date.strftime('%Y-%m-%d') if new_note.note_date else None,
-            'title': new_note.title,
-            'content': new_note.content,
-            'tags': new_note.tags,
-            'created_at': new_note.created_at.isoformat() if new_note.created_at else None,
-            'updated_at': new_note.updated_at.isoformat() if new_note.updated_at else None,
-            'message': 'Note created successfully'
-        }), 201
+            'count': len(articles),
+            'articles': articles,
+        })
     except Exception as e:
-        s.rollback()
-        logger.error(f"Error creating abi note: {str(e)}")
+        logger.error(f"Error fetching Seeking Alpha market news: {e}")
         return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
 
 
-@app.route('/api/abi-notes/<int:note_id>', methods=['PUT'])
-def update_abi_note(note_id):
-    """Update an existing abi note."""
-    s = Session()
+# ============================================================
+# Abi General Notes API Endpoints (date-based personal notes)
+# ============================================================
+#
+# File-only store. Same pattern as abi_watchlist / abi_ticker_notes /
+# abi_dislikes: user_data/abi_general_notes.json IS the source of truth,
+# read & written on every request. No Postgres dependency, no DB-to-file
+# snapshot, no seed script. Survives container/DB resets automatically and
+# rides along with the auto_commit.sh user_data backup.
+#
+# Schema: a JSON list of note objects, each with:
+#   id (int)         — local, monotonically increasing; assigned on create
+#   note_date (str)  — "YYYY-MM-DD"; defaults to today
+#   title (str)
+#   content (str)
+#   tags (str)       — comma-separated
+#   created_at (str) — ISO 8601 Eastern
+#   updated_at (str) — ISO 8601 Eastern
+
+def _abi_general_notes_now_iso():
+    """Eastern time ISO 8601, matches the old DB-default behavior."""
+    return datetime.now(pytz.timezone("US/Eastern")).isoformat()
+
+
+def _load_abi_general_notes():
+    """Read the notes list from disk. Returns [] if missing or unreadable.
+
+    Defensive: an empty/corrupt file should not 500 the API.
+    """
+    if not os.path.exists(ABI_GENERAL_NOTES_FILE):
+        return []
     try:
-        data = request.get_json()
-        
-        if not data:
-            return jsonify({'error': 'Request body is required'}), 400
-        
-        note = s.query(AbiNotes).filter(AbiNotes.id == note_id).first()
-        
-        if not note:
-            return jsonify({'error': 'Note not found'}), 404
-        
-        # Update fields if provided
+        with open(ABI_GENERAL_NOTES_FILE, 'r') as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except (json.JSONDecodeError, OSError) as e:
+        logger.error(f"Error reading {ABI_GENERAL_NOTES_FILE}: {e}")
+        return []
+
+
+def _save_abi_general_notes(notes):
+    """Persist notes list to disk. Same ordering convention as the API GET
+    (note_date desc, id desc) so the on-disk file is always readable in the
+    same order the UI shows it."""
+    notes_sorted = sorted(
+        notes,
+        key=lambda n: (n.get('note_date') or '', n.get('id') or 0),
+        reverse=True,
+    )
+    os.makedirs(os.path.dirname(ABI_GENERAL_NOTES_FILE), exist_ok=True)
+    with open(ABI_GENERAL_NOTES_FILE, 'w') as f:
+        json.dump(notes_sorted, f, indent=2)
+
+
+def _next_abi_general_note_id(notes):
+    """Monotonically increasing id. Old DB used autoincrement; we mimic that
+    so existing frontend code (which routes on `<int:note_id>`) keeps
+    working without changes."""
+    return (max((int(n.get('id') or 0) for n in notes), default=0)) + 1
+
+
+@app.route('/api/abi-general-notes', methods=['GET'])
+def get_abi_general_notes():
+    """Get all abi general notes, optionally filtered by date range, search
+    query, or tag. Filtering is done in Python over the in-memory list — fine
+    for the size of this store (handful of notes)."""
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    search = (request.args.get('search') or '').lower()
+    tag = (request.args.get('tag') or '').lower()
+
+    notes = _load_abi_general_notes()
+    results = []
+    for n in notes:
+        nd = n.get('note_date') or ''
+        if start_date and nd < start_date:
+            continue
+        if end_date and nd > end_date:
+            continue
+        if search:
+            title = (n.get('title') or '').lower()
+            content = (n.get('content') or '').lower()
+            if search not in title and search not in content:
+                continue
+        if tag:
+            tags = (n.get('tags') or '').lower()
+            if tag not in tags:
+                continue
+        results.append(n)
+
+    results.sort(
+        key=lambda n: (n.get('note_date') or '', n.get('id') or 0),
+        reverse=True,
+    )
+    return jsonify(results)
+
+
+@app.route('/api/abi-general-notes/<int:note_id>', methods=['GET'])
+def get_abi_general_note(note_id):
+    """Get a specific abi general note by ID."""
+    for n in _load_abi_general_notes():
+        if int(n.get('id') or 0) == note_id:
+            return jsonify(n)
+    return jsonify({'error': 'Note not found'}), 404
+
+
+@app.route('/api/abi-general-notes', methods=['POST'])
+def create_abi_general_note():
+    """Create a new abi general note."""
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Request body is required'}), 400
+
+    note_date_str = data.get('note_date')
+    if note_date_str:
+        try:
+            datetime.strptime(note_date_str, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'invalid note_date (expected YYYY-MM-DD)'}), 400
+    else:
+        note_date_str = date.today().strftime('%Y-%m-%d')
+
+    notes = _load_abi_general_notes()
+    now = _abi_general_notes_now_iso()
+    new_note = {
+        'id': _next_abi_general_note_id(notes),
+        'note_date': note_date_str,
+        'title': data.get('title'),
+        'content': data.get('content'),
+        'tags': data.get('tags'),
+        'created_at': now,
+        'updated_at': now,
+    }
+    notes.append(new_note)
+    _save_abi_general_notes(notes)
+
+    return jsonify({**new_note, 'message': 'Note created successfully'}), 201
+
+
+@app.route('/api/abi-general-notes/<int:note_id>', methods=['PUT'])
+def update_abi_general_note(note_id):
+    """Update an existing abi general note."""
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Request body is required'}), 400
+
+    notes = _load_abi_general_notes()
+    for n in notes:
+        if int(n.get('id') or 0) != note_id:
+            continue
         if 'note_date' in data:
-            from datetime import datetime
-            note.note_date = datetime.strptime(data['note_date'], '%Y-%m-%d').date()
+            try:
+                datetime.strptime(data['note_date'], '%Y-%m-%d')
+            except (ValueError, TypeError):
+                return jsonify({'error': 'invalid note_date (expected YYYY-MM-DD)'}), 400
+            n['note_date'] = data['note_date']
         if 'title' in data:
-            note.title = data['title']
+            n['title'] = data['title']
         if 'content' in data:
-            note.content = data['content']
+            n['content'] = data['content']
         if 'tags' in data:
-            note.tags = data['tags']
-        
-        s.commit()
-        
-        # Export all notes to file for persistence
-        export_all_abi_notes_to_file()
-        
-        return jsonify({
-            'id': note.id,
-            'note_date': note.note_date.strftime('%Y-%m-%d') if note.note_date else None,
-            'title': note.title,
-            'content': note.content,
-            'tags': note.tags,
-            'created_at': note.created_at.isoformat() if note.created_at else None,
-            'updated_at': note.updated_at.isoformat() if note.updated_at else None,
-            'message': 'Note updated successfully'
-        })
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error updating abi note {note_id}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
+            n['tags'] = data['tags']
+        n['updated_at'] = _abi_general_notes_now_iso()
+        _save_abi_general_notes(notes)
+        return jsonify({**n, 'message': 'Note updated successfully'})
+
+    return jsonify({'error': 'Note not found'}), 404
 
 
-@app.route('/api/abi-notes/<int:note_id>', methods=['DELETE'])
-def delete_abi_note(note_id):
-    """Delete an abi note."""
-    s = Session()
-    try:
-        note = s.query(AbiNotes).filter(AbiNotes.id == note_id).first()
-        
-        if not note:
-            return jsonify({'error': 'Note not found'}), 404
-        
-        s.delete(note)
-        s.commit()
-        
-        # Export all notes to file for persistence
-        export_all_abi_notes_to_file()
-        
-        return jsonify({'message': 'Note deleted successfully', 'id': note_id})
-    except Exception as e:
-        s.rollback()
-        logger.error(f"Error deleting abi note {note_id}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
+@app.route('/api/abi-general-notes/<int:note_id>', methods=['DELETE'])
+def delete_abi_general_note(note_id):
+    """Delete an abi general note."""
+    notes = _load_abi_general_notes()
+    remaining = [n for n in notes if int(n.get('id') or 0) != note_id]
+    if len(remaining) == len(notes):
+        return jsonify({'error': 'Note not found'}), 404
+    _save_abi_general_notes(remaining)
+    return jsonify({'message': 'Note deleted successfully', 'id': note_id})
 
 
-@app.route('/api/abi-notes/tags', methods=['GET'])
-def get_abi_notes_tags():
-    """Get all unique tags used in abi notes."""
-    s = Session()
-    try:
-        notes = s.query(AbiNotes.tags).filter(AbiNotes.tags.isnot(None), AbiNotes.tags != '').all()
-        
-        # Extract unique tags
-        all_tags = set()
-        for (tags,) in notes:
-            if tags:
-                for tag in tags.split(','):
-                    tag = tag.strip()
-                    if tag:
-                        all_tags.add(tag)
-        
-        return jsonify({'tags': sorted(list(all_tags))})
-    finally:
-        s.close()
+@app.route('/api/abi-general-notes/tags', methods=['GET'])
+def get_abi_general_notes_tags():
+    """Get all unique tags used in abi general notes."""
+    all_tags = set()
+    for n in _load_abi_general_notes():
+        tags = n.get('tags')
+        if not tags:
+            continue
+        for t in tags.split(','):
+            t = t.strip()
+            if t:
+                all_tags.add(t)
+    return jsonify({'tags': sorted(all_tags)})
 
 
 # ============================================================================
@@ -3763,6 +3662,102 @@ def get_sector_performance():
             return jsonify(get_sector_performance_data(conn))
     except Exception as e:
         logger.error(f"Error in sector performance endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+def get_etf_returns_data(connection, symbols):
+    """
+    Calculate 1D, 5D, 20D, 60D, 120D performance for a given list of ETF symbols
+    from the index_prices table. Returns a list of dicts keyed by symbol.
+    """
+    if not symbols:
+        return []
+    try:
+        # Same global trading-date grid approach as get_sector_performance_data,
+        # extended with a 120D timeframe.
+        query = """
+        WITH trading_dates AS (
+            SELECT DISTINCT date
+            FROM index_prices
+            ORDER BY date DESC
+            LIMIT 121
+        ),
+        latest_date AS (
+            SELECT MAX(date) as max_date FROM trading_dates
+        ),
+        date_1d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 1),
+        date_5d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 5),
+        date_20d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 20),
+        date_60d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 60),
+        date_120d_ago AS (SELECT date as d FROM trading_dates ORDER BY date DESC LIMIT 1 OFFSET 120)
+        SELECT
+            ip_today.symbol,
+            ip_today.close_price as current_price,
+            CASE WHEN ip_1d.close_price > 0 THEN
+                ((ip_today.close_price - ip_1d.close_price) / ip_1d.close_price * 100) END as dr_1,
+            CASE WHEN ip_5d.close_price > 0 THEN
+                ((ip_today.close_price - ip_5d.close_price) / ip_5d.close_price * 100) END as dr_5,
+            CASE WHEN ip_20d.close_price > 0 THEN
+                ((ip_today.close_price - ip_20d.close_price) / ip_20d.close_price * 100) END as dr_20,
+            CASE WHEN ip_60d.close_price > 0 THEN
+                ((ip_today.close_price - ip_60d.close_price) / ip_60d.close_price * 100) END as dr_60,
+            CASE WHEN ip_120d.close_price > 0 THEN
+                ((ip_today.close_price - ip_120d.close_price) / ip_120d.close_price * 100) END as dr_120,
+            ld.max_date as latest_date
+        FROM index_prices ip_today
+        CROSS JOIN latest_date ld
+        LEFT JOIN index_prices ip_1d
+            ON ip_today.symbol = ip_1d.symbol AND ip_1d.date = (SELECT d FROM date_1d_ago)
+        LEFT JOIN index_prices ip_5d
+            ON ip_today.symbol = ip_5d.symbol AND ip_5d.date = (SELECT d FROM date_5d_ago)
+        LEFT JOIN index_prices ip_20d
+            ON ip_today.symbol = ip_20d.symbol AND ip_20d.date = (SELECT d FROM date_20d_ago)
+        LEFT JOIN index_prices ip_60d
+            ON ip_today.symbol = ip_60d.symbol AND ip_60d.date = (SELECT d FROM date_60d_ago)
+        LEFT JOIN index_prices ip_120d
+            ON ip_today.symbol = ip_120d.symbol AND ip_120d.date = (SELECT d FROM date_120d_ago)
+        WHERE ip_today.date = ld.max_date
+          AND ip_today.symbol IN :symbols
+        ORDER BY ip_today.symbol
+        """
+        stmt = text(query).bindparams(bindparam('symbols', expanding=True))
+        result = connection.execute(stmt, {'symbols': symbols})
+
+        def r(v):
+            return round(float(v), 2) if v is not None else None
+
+        results = []
+        latest_date = None
+        for row in result.fetchall():
+            latest_date = row[7].strftime('%Y-%m-%d') if row[7] else latest_date
+            results.append({
+                'symbol': row[0],
+                'current_price': r(row[1]),
+                'dr_1': r(row[2]),
+                'dr_5': r(row[3]),
+                'dr_20': r(row[4]),
+                'dr_60': r(row[5]),
+                'dr_120': r(row[6]),
+            })
+        return {'latest_date': latest_date, 'etfs': results}
+    except Exception as e:
+        logger.error(f"Error getting ETF returns data: {str(e)}")
+        return {'latest_date': None, 'etfs': []}
+
+
+@app.route('/api/etf-performance')
+def get_etf_performance():
+    """Get 1D/5D/20D/60D/120D performance for a comma-separated list of ETF symbols."""
+    symbols_param = request.args.get('symbols', '')
+    symbols = [s.strip().upper() for s in symbols_param.split(',') if s.strip()]
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            return jsonify(get_etf_returns_data(conn, symbols))
+    except Exception as e:
+        logger.error(f"Error in ETF performance endpoint: {str(e)}")
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
@@ -4064,13 +4059,37 @@ def get_index_ohlc_data(symbol):
 # RS Screener Endpoints (multi-timeframe relative strength)
 # ============================================================================
 
+def _parse_52w_high(range_52_week):
+    if not range_52_week:
+        return None
+    try:
+        parts = str(range_52_week).split('-')
+        if len(parts) < 2:
+            return None
+        return float(parts[-1].strip())
+    except (ValueError, TypeError):
+        return None
+
+
+def _pct_from_52w_high(current_price, range_52_week):
+    high = _parse_52w_high(range_52_week)
+    if high is None or not current_price or high <= 0:
+        return None
+    return round((current_price / high - 1) * 100, 2)
+
+
 @app.route('/api/rs-screener')
 @app.route('/api/rs-screener/<market_cap>')
 def get_rs_screener(market_cap=None):
     """Get RS screener data, optionally filtered by market cap category."""
     s = Session()
     try:
-        query = s.query(RsScreener).filter(
+        query = s.query(
+            RsScreener,
+            StockMetrics.range_52_week_ohlc,
+        ).outerjoin(
+            StockMetrics, RsScreener.ticker == StockMetrics.ticker
+        ).filter(
             RsScreener.market_cap.isnot(None),
             RsScreener.rs_2d_rank.isnot(None),
         )
@@ -4088,7 +4107,6 @@ def get_rs_screener(market_cap=None):
         price_min = GLOBAL_LIQUIDITY_FILTERS.get('price_min')
 
         if avg_vol_min or dollar_vol_min or price_min:
-            query = query.join(StockMetrics, RsScreener.ticker == StockMetrics.ticker)
             if avg_vol_min:
                 query = query.filter(StockMetrics.avg_vol_10d >= avg_vol_min)
             if dollar_vol_min:
@@ -4096,10 +4114,10 @@ def get_rs_screener(market_cap=None):
             if price_min:
                 query = query.filter(StockMetrics.current_price >= price_min)
 
-        stocks = query.all()
+        rows = query.all()
 
         results = []
-        for stock in stocks:
+        for stock, range_52_week_ohlc in rows:
             results.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
@@ -4107,6 +4125,7 @@ def get_rs_screener(market_cap=None):
                 'industry': stock.industry,
                 'market_cap': stock.market_cap,
                 'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'pct_from_52w_high': _pct_from_52w_high(stock.current_price, range_52_week_ohlc),
                 'rs_2d': float(stock.rs_2d) if stock.rs_2d is not None else None,
                 'rs_5d': float(stock.rs_5d) if stock.rs_5d is not None else None,
                 'rs_10d': float(stock.rs_10d) if stock.rs_10d is not None else None,
@@ -4117,6 +4136,9 @@ def get_rs_screener(market_cap=None):
                 'rs_10d_rank': stock.rs_10d_rank,
                 'rs_20d_rank': stock.rs_20d_rank,
                 'rs_60d_rank': stock.rs_60d_rank,
+                'rs_rating': stock.rs_rating,
+                'rs_vs_spy': float(stock.rs_vs_spy) if stock.rs_vs_spy is not None else None,
+                'rs_line_new_high': bool(stock.rs_line_new_high) if stock.rs_line_new_high is not None else False,
             })
 
         return jsonify(results)
@@ -4200,17 +4222,149 @@ def get_treasury_10y():
 
 
 # ============================================================================
-# Abi Watchlist Endpoints (JSON file-based personal watchlist with notes)
+# Abi Ticker Notes Endpoints (JSON file-based per-ticker notes)
 # ============================================================================
+# Abi ticker notes are decoupled from watchlist / dislike membership. The daily
+# screener still only consumes notes whose ticker is on the watchlist (see
+# daily_screener stages s3/s4/s5).
 
-def _load_watchlist():
-    """Load watchlist from JSON file."""
-    if os.path.exists(ABI_WATCHLIST_FILE):
+
+def _load_abi_ticker_notes():
+    """Load Abi ticker notes from JSON. Returns {TICKER: {notes, created_at, updated_at}}."""
+    if os.path.exists(ABI_TICKER_NOTES_FILE):
         try:
-            with open(ABI_WATCHLIST_FILE, 'r') as f:
+            with open(ABI_TICKER_NOTES_FILE, 'r') as f:
                 return json.load(f)
         except Exception:
             return {}
+    return {}
+
+
+def _save_abi_ticker_notes(data):
+    """Save Abi ticker notes to JSON file."""
+    os.makedirs(os.path.dirname(ABI_TICKER_NOTES_FILE), exist_ok=True)
+    with open(ABI_TICKER_NOTES_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+
+@app.route('/api/abi-ticker-notes', methods=['GET'])
+def get_abi_ticker_notes_all():
+    """Get all Abi ticker notes: {TICKER: {notes, created_at, updated_at}, ...}."""
+    return jsonify(_load_abi_ticker_notes())
+
+
+@app.route('/api/abi-ticker-notes/<ticker>', methods=['GET'])
+def get_abi_ticker_note(ticker):
+    """Get Abi ticker notes for a single ticker."""
+    ticker = ticker.upper()
+    comments = _load_abi_ticker_notes()
+    if ticker not in comments:
+        return jsonify({'ticker': ticker, 'notes': '', 'has_ticker_note': False})
+    return jsonify({
+        'ticker': ticker,
+        'notes': comments[ticker].get('notes', ''),
+        'created_at': comments[ticker].get('created_at'),
+        'updated_at': comments[ticker].get('updated_at'),
+        'has_ticker_note': True,
+    })
+
+
+@app.route('/api/abi-ticker-notes/<ticker>', methods=['PUT'])
+def upsert_abi_ticker_note(ticker):
+    """Create or update Abi ticker notes for a ticker. Body: {notes}.
+
+    Empty notes clears / removes the entry entirely (PUT '' is equivalent to DELETE).
+    """
+    ticker = ticker.upper()
+    data = request.get_json() or {}
+    if 'notes' not in data:
+        return jsonify({'error': 'notes field is required'}), 400
+
+    notes = (data.get('notes') or '').rstrip()
+    comments = _load_abi_ticker_notes()
+    now_iso = datetime.now(pytz.timezone("US/Eastern")).isoformat()
+
+    if not notes:
+        if ticker in comments:
+            del comments[ticker]
+            _save_abi_ticker_notes(comments)
+        return jsonify({'ticker': ticker, 'notes': '', 'status': 'cleared'})
+
+    if ticker in comments:
+        comments[ticker]['notes'] = notes
+        comments[ticker]['updated_at'] = now_iso
+        comments[ticker].setdefault('created_at', now_iso)
+        status = 'updated'
+    else:
+        comments[ticker] = {
+            'notes': notes,
+            'created_at': now_iso,
+            'updated_at': now_iso,
+        }
+        status = 'created'
+
+    _save_abi_ticker_notes(comments)
+    return jsonify({
+        'ticker': ticker,
+        'notes': comments[ticker]['notes'],
+        'created_at': comments[ticker]['created_at'],
+        'updated_at': comments[ticker]['updated_at'],
+        'status': status,
+    })
+
+
+@app.route('/api/abi-ticker-notes/<ticker>', methods=['DELETE'])
+def delete_abi_ticker_note(ticker):
+    """Delete Abi ticker notes for a ticker."""
+    ticker = ticker.upper()
+    comments = _load_abi_ticker_notes()
+    if ticker in comments:
+        del comments[ticker]
+        _save_abi_ticker_notes(comments)
+    return jsonify({'ticker': ticker, 'status': 'removed'})
+
+
+@app.route('/api/abi-ticker-notes/batch-check', methods=['POST'])
+def batch_check_abi_ticker_notes():
+    """Return {TICKER: {notes, created_at, updated_at}, ...} for tickers that have notes."""
+    data = request.get_json()
+    if not data or 'tickers' not in data:
+        return jsonify({'error': 'tickers field is required'}), 400
+
+    comments = _load_abi_ticker_notes()
+    result = {}
+    for t in data['tickers']:
+        t_upper = t.upper()
+        if t_upper in comments:
+            result[t_upper] = comments[t_upper]
+    return jsonify(result)
+
+
+# ============================================================================
+# Abi Watchlist Endpoints (JSON file-based personal watchlist)
+# ============================================================================
+# The watchlist tracks list membership + star ratings. Per-ticker Abi ticker
+# notes were moved to abi_ticker_notes.json (decoupled from membership). The
+# response shape still includes a `notes` field, populated from that file, so
+# existing UI code that reads `wl[ticker].notes` keeps working.
+
+def _load_watchlist():
+    """Load watchlist from JSON (membership, stars, timestamps). Ignores any
+    embedded ``notes`` keys in the file — Abi ticker notes live only in
+    abi_ticker_notes.json.
+    """
+    if os.path.exists(ABI_WATCHLIST_FILE):
+        try:
+            with open(ABI_WATCHLIST_FILE, 'r') as f:
+                data = json.load(f)
+        except Exception:
+            return {}
+        if not isinstance(data, dict):
+            return {}
+        for entry in data.values():
+            if isinstance(entry, dict) and 'notes' in entry:
+                del entry['notes']
+        return data
     return {}
 
 
@@ -4221,10 +4375,27 @@ def _save_watchlist(data):
         json.dump(data, f, indent=2)
 
 
+def _watchlist_with_comments():
+    """Return watchlist data merged with Abi ticker notes: each entry has
+    ``notes`` from abi_ticker_notes.json (or '').
+    """
+    wl = _load_watchlist()
+    comments = _load_abi_ticker_notes()
+    out = {}
+    for tk, entry in wl.items():
+        if not isinstance(entry, dict):
+            continue
+        merged = {k: v for k, v in entry.items() if k != 'notes'}
+        merged['notes'] = (comments.get(tk) or {}).get('notes', '')
+        out[tk] = merged
+    return out
+
+
 @app.route('/api/abi-watchlist', methods=['GET'])
 def get_abi_watchlist():
-    """Get all watchlist items: {TICKER: {notes, added_at}, ...}."""
-    return jsonify(_load_watchlist())
+    """Get all watchlist items: {TICKER: {notes, stars, added_at}, ...}.
+    Notes are sourced from abi_ticker_notes.json (decoupled from membership)."""
+    return jsonify(_watchlist_with_comments())
 
 
 def _coerce_stars(value):
@@ -4240,54 +4411,49 @@ def _coerce_stars(value):
 
 @app.route('/api/abi-watchlist', methods=['POST'])
 def add_to_abi_watchlist():
-    """Add a ticker to the watchlist with optional notes and stars (0-3)."""
+    """Add a ticker to the watchlist with optional stars (0-3)."""
     data = request.get_json()
     if not data or 'ticker' not in data:
         return jsonify({'error': 'ticker field is required'}), 400
 
     ticker = data['ticker'].upper()
-    notes = data.get('notes', '')
     stars = _coerce_stars(data.get('stars', 0)) or 0
 
     wl = _load_watchlist()
     wl[ticker] = {
-        'notes': notes,
         'stars': stars,
         'added_at': datetime.now(pytz.timezone("US/Eastern")).isoformat(),
     }
     _save_watchlist(wl)
-    return jsonify({'ticker': ticker, 'notes': notes, 'stars': stars, 'status': 'added'})
+
+    final_notes = (_load_abi_ticker_notes().get(ticker) or {}).get('notes', '')
+    return jsonify({'ticker': ticker, 'notes': final_notes, 'stars': stars, 'status': 'added'})
 
 
 @app.route('/api/abi-watchlist/<ticker>', methods=['PUT'])
 def update_abi_watchlist(ticker):
-    """Partial update for a watchlist ticker. Accepts notes and/or stars (0-3)."""
+    """Update stars (0-3) for a watchlist ticker."""
     ticker = ticker.upper()
     data = request.get_json() or {}
 
-    has_notes = 'notes' in data
-    has_stars = 'stars' in data
-    if not has_notes and not has_stars:
-        return jsonify({'error': 'at least one of notes or stars is required'}), 400
+    if 'stars' not in data:
+        return jsonify({'error': 'stars field is required'}), 400
 
-    if has_stars:
-        stars = _coerce_stars(data.get('stars'))
-        if stars is None:
-            return jsonify({'error': 'stars must be an integer between 0 and 3'}), 400
+    stars = _coerce_stars(data.get('stars'))
+    if stars is None:
+        return jsonify({'error': 'stars must be an integer between 0 and 3'}), 400
 
     wl = _load_watchlist()
     if ticker not in wl:
         return jsonify({'error': 'ticker not in watchlist'}), 404
 
-    if has_notes:
-        wl[ticker]['notes'] = data['notes']
-    if has_stars:
-        wl[ticker]['stars'] = stars
-
+    wl[ticker]['stars'] = stars
     _save_watchlist(wl)
+
+    final_notes = (_load_abi_ticker_notes().get(ticker) or {}).get('notes', '')
     return jsonify({
         'ticker': ticker,
-        'notes': wl[ticker].get('notes', ''),
+        'notes': final_notes,
         'stars': wl[ticker].get('stars', 0),
         'status': 'updated',
     })
@@ -4295,7 +4461,7 @@ def update_abi_watchlist(ticker):
 
 @app.route('/api/abi-watchlist/<ticker>', methods=['DELETE'])
 def remove_from_abi_watchlist(ticker):
-    """Remove a ticker from the watchlist."""
+    """Remove a ticker from the watchlist. Abi ticker notes for that ticker are unchanged."""
     ticker = ticker.upper()
     wl = _load_watchlist()
     if ticker in wl:
@@ -4306,12 +4472,14 @@ def remove_from_abi_watchlist(ticker):
 
 @app.route('/api/abi-watchlist/batch-check', methods=['POST'])
 def batch_check_abi_watchlist():
-    """Check which tickers from a list are in the watchlist."""
+    """Return watchlist data (Abi ticker notes joined under `notes`) for any
+    of the given tickers that are on the watchlist. Tickers not on the
+    watchlist are omitted from the response."""
     data = request.get_json()
     if not data or 'tickers' not in data:
         return jsonify({'error': 'tickers field is required'}), 400
 
-    wl = _load_watchlist()
+    wl = _watchlist_with_comments()
     result = {}
     for t in data['tickers']:
         t_upper = t.upper()
@@ -4324,6 +4492,7 @@ def batch_check_abi_watchlist():
 def get_abi_watchlist_data():
     """Get watchlist tickers with full MainView data for the watchlist page."""
     wl = _load_watchlist()
+    comments = _load_abi_ticker_notes()
     tickers = list(wl.keys())
 
     if not tickers:
@@ -4396,7 +4565,7 @@ def get_abi_watchlist_data():
                 'last_event_return': float(stock.last_event_return) if stock.last_event_return else None,
                 'tags': stock.tags,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None,
-                'watchlist_notes': wl.get(stock.ticker, {}).get('notes', ''),
+                'watchlist_notes': (comments.get(stock.ticker) or {}).get('notes', ''),
                 'watchlist_added_at': wl.get(stock.ticker, {}).get('added_at', ''),
                 'watchlist_stars': int(wl.get(stock.ticker, {}).get('stars', 0) or 0),
             }
@@ -4408,6 +4577,1452 @@ def get_abi_watchlist_data():
         return jsonify([])
     finally:
         s.close()
+
+
+# ============================================================================
+# Abi Dislikes Endpoints (JSON file-based thumbs-down list)
+# ============================================================================
+# This list is separate from the watchlist on purpose:
+#   - Watchlist `stars: 0` means "on the watchlist but not yet rated" (neutral).
+#   - Anything in this dislikes file is an explicit "do not surface this".
+# The daily screener pipeline (Stage 1) reads this file as its veto source.
+#
+# Per-ticker notes (the "why is this blocked" rationale) live in
+# abi_ticker_notes.json now; the dislikes file only tracks membership. The API
+# response shape still includes a `notes` field populated from abi_ticker_notes.json.
+
+def _load_dislikes():
+    """Load the dislikes file. Ignores embedded ``notes`` keys — Abi ticker notes
+    live only in abi_ticker_notes.json.
+    """
+    if os.path.exists(ABI_DISLIKES_FILE):
+        try:
+            with open(ABI_DISLIKES_FILE, 'r') as f:
+                data = json.load(f)
+        except Exception:
+            return {}
+        if not isinstance(data, dict):
+            return {}
+        for entry in data.values():
+            if isinstance(entry, dict) and 'notes' in entry:
+                del entry['notes']
+        return data
+    return {}
+
+
+def _save_dislikes(data):
+    os.makedirs(os.path.dirname(ABI_DISLIKES_FILE), exist_ok=True)
+    with open(ABI_DISLIKES_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+
+def _dislikes_with_comments():
+    """Return dislikes data joined with Abi ticker notes: each entry will
+    have a `notes` field populated from abi_ticker_notes.json (or '' if no
+    Abi ticker note exists)."""
+    dl = _load_dislikes()
+    comments = _load_abi_ticker_notes()
+    out = {}
+    for tk, entry in dl.items():
+        if not isinstance(entry, dict):
+            continue
+        merged = {k: v for k, v in entry.items() if k != 'notes'}
+        merged['notes'] = (comments.get(tk) or {}).get('notes', '')
+        out[tk] = merged
+    return out
+
+
+@app.route('/api/abi-dislikes', methods=['GET'])
+def get_abi_dislikes():
+    """Get all dislikes: {TICKER: {notes, added_at}, ...}.
+    Notes are sourced from abi_ticker_notes.json (decoupled from membership)."""
+    return jsonify(_dislikes_with_comments())
+
+
+@app.route('/api/abi-dislikes', methods=['POST'])
+def add_to_abi_dislikes():
+    """Add a ticker to the dislikes list (membership only)."""
+    data = request.get_json()
+    if not data or 'ticker' not in data:
+        return jsonify({'error': 'ticker field is required'}), 400
+
+    ticker = data['ticker'].upper()
+
+    dl = _load_dislikes()
+    dl[ticker] = {
+        'added_at': datetime.now(pytz.timezone("US/Eastern")).isoformat(),
+    }
+    _save_dislikes(dl)
+
+    final_notes = (_load_abi_ticker_notes().get(ticker) or {}).get('notes', '')
+    return jsonify({'ticker': ticker, 'notes': final_notes, 'status': 'added'})
+
+
+@app.route('/api/abi-dislikes/<ticker>', methods=['DELETE'])
+def remove_from_abi_dislikes(ticker):
+    """Remove a ticker from the dislikes list. Abi ticker notes for that ticker are unchanged."""
+    ticker = ticker.upper()
+    dl = _load_dislikes()
+    if ticker in dl:
+        del dl[ticker]
+        _save_dislikes(dl)
+    return jsonify({'ticker': ticker, 'status': 'removed'})
+
+
+@app.route('/api/abi-dislikes/batch-check', methods=['POST'])
+def batch_check_abi_dislikes():
+    """Return dislikes data (Abi ticker notes joined under `notes`) for any
+    of the given tickers that are disliked."""
+    data = request.get_json()
+    if not data or 'tickers' not in data:
+        return jsonify({'error': 'tickers field is required'}), 400
+
+    dl = _dislikes_with_comments()
+    result = {}
+    for t in data['tickers']:
+        t_upper = t.upper()
+        if t_upper in dl:
+            result[t_upper] = dl[t_upper]
+    return jsonify(result)
+
+
+# ============================================================================
+# Technical Screener Endpoints
+# ============================================================================
+# These endpoints surface intraday/technical setups from the latest OHLC bar.
+# Each criterion is exposed as a separate sub-endpoint so additional setups
+# (e.g. inside bars, opening drives, etc.) can be added over time without
+# changing the route surface for existing ones.
+#
+# Currently supported criteria:
+#   - reversal: Biggest reversal from low-of-day to close (in % terms),
+#               i.e. how far price recovered off the intraday low.
+# ============================================================================
+
+
+def _get_index_reversal_context(session, latest_date, symbols=('SPY', 'QQQ')):
+    """Compute low-to-close reversal % on ``latest_date`` for the given index/ETF symbols.
+
+    Returns a list of dicts (one per symbol) with the same shape used elsewhere
+    on the page so the frontend can render them in a context panel.
+    """
+    context = []
+    rows = session.query(
+        IndexPrice.symbol,
+        IndexPrice.open_price,
+        IndexPrice.high_price,
+        IndexPrice.low_price,
+        IndexPrice.close_price,
+    ).filter(
+        IndexPrice.symbol.in_(list(symbols)),
+        IndexPrice.date == latest_date,
+    ).all()
+
+    by_symbol = {r.symbol: r for r in rows}
+
+    for sym in symbols:
+        r = by_symbol.get(sym)
+        if not r or r.low_price is None or r.close_price is None or r.open_price is None:
+            context.append({
+                'symbol': sym,
+                'open': None,
+                'high': None,
+                'low': None,
+                'close': None,
+                'reversal_pct': None,
+                'day_change_pct': None,
+            })
+            continue
+
+        reversal_pct = ((r.close_price - r.low_price) / r.low_price * 100.0) if r.low_price else None
+        day_change_pct = ((r.close_price - r.open_price) / r.open_price * 100.0) if r.open_price else None
+        context.append({
+            'symbol': sym,
+            'open': round(r.open_price, 2),
+            'high': round(r.high_price, 2) if r.high_price is not None else None,
+            'low': round(r.low_price, 2),
+            'close': round(r.close_price, 2),
+            'reversal_pct': round(reversal_pct, 2) if reversal_pct is not None else None,
+            'day_change_pct': round(day_change_pct, 2) if day_change_pct is not None else None,
+        })
+
+    return context
+
+
+def get_technical_reversal_stocks(session, market_cap_category=None, limit=100):
+    """Return stocks ranked by largest low-of-day to close reversal % on the
+    latest trading day, joined with the full screener metrics set so the
+    Top-Returns-style detail panel can render the same metric sections.
+
+    Reversal % = (close - low) / low * 100
+    """
+    try:
+        latest_date = get_latest_price_date(session)
+        if not latest_date:
+            return {'latest_date': None, 'context': [], 'stocks': []}
+
+        reversal_expr = ((OHLC.close - OHLC.low) / OHLC.low * 100.0).label('reversal_pct')
+        day_change_expr = ((OHLC.close - OHLC.open) / OHLC.open * 100.0).label('day_change_pct')
+
+        query = session.query(
+            StockMetrics.ticker,
+            StockMetrics.company_name,
+            StockMetrics.country,
+            StockMetrics.sector,
+            StockMetrics.industry,
+            StockMetrics.ipo_date,
+            StockMetrics.market_cap,
+            StockMetrics.current_price,
+            StockMetrics.range_52_week,
+            StockMetrics.volume,
+            StockMetrics.dollar_volume,
+            StockMetrics.avg_vol_10d,
+            StockMetrics.vol_vs_10d_avg,
+            StockMetrics.ti65,
+            StockMetrics.rsi,
+            StockMetrics.rsi_mktcap,
+            StockMetrics.dr_1,
+            StockMetrics.dr_5,
+            StockMetrics.dr_20,
+            StockMetrics.dr_60,
+            StockMetrics.dr_120,
+            StockMetrics.atr20,
+            StockMetrics.pe_t_minus_1,
+            StockMetrics.pe_t,
+            StockMetrics.pe_t_plus_1,
+            StockMetrics.pe_t_plus_2,
+            StockMetrics.ps_t_minus_1,
+            StockMetrics.ps_t,
+            StockMetrics.ps_t_plus_1,
+            StockMetrics.ps_t_plus_2,
+            StockMetrics.rev_growth_t_minus_1,
+            StockMetrics.rev_growth_t,
+            StockMetrics.rev_growth_t_plus_1,
+            StockMetrics.rev_growth_t_plus_2,
+            StockMetrics.eps_growth_t_minus_1,
+            StockMetrics.eps_growth_t,
+            StockMetrics.eps_growth_t_plus_1,
+            StockMetrics.eps_growth_t_plus_2,
+            StockMetrics.short_float,
+            StockMetrics.short_ratio,
+            StockMetrics.short_interest,
+            StockMetrics.low_float,
+            StockMetrics.float_shares,
+            StockMetrics.outstanding_shares,
+            StockMetrics.free_float,
+            StockMetrics.updated_at,
+            StockVolspikeGapper.last_event_date,
+            StockVolspikeGapper.last_event_type,
+            StockVolspikeGapper.last_event_magnitude,
+            StockVolspikeGapper.last_event_return,
+            MainView.tags,
+            OHLC.open.label('day_open'),
+            OHLC.high.label('day_high'),
+            OHLC.low.label('day_low'),
+            OHLC.close.label('day_close'),
+            reversal_expr,
+            day_change_expr,
+        ).outerjoin(
+            StockVolspikeGapper, StockVolspikeGapper.ticker == StockMetrics.ticker
+        ).outerjoin(
+            MainView, MainView.ticker == StockMetrics.ticker
+        ).join(
+            OHLC,
+            (OHLC.ticker == StockMetrics.ticker) & (OHLC.date == latest_date)
+        ).filter(
+            OHLC.low.isnot(None),
+            OHLC.low > 0,
+            OHLC.close.isnot(None),
+            StockMetrics.market_cap.isnot(None),
+        )
+
+        if market_cap_category:
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                query = query.filter(StockMetrics.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(StockMetrics.market_cap < category['max'])
+
+        query = apply_global_liquidity_filters(query)
+        query = query.order_by(desc(reversal_expr)).limit(limit)
+
+        results = []
+        for r in query.all():
+            results.append({
+                'ticker': r.ticker,
+                'company_name': r.company_name,
+                'country': r.country,
+                'sector': r.sector,
+                'industry': r.industry,
+                'ipo_date': r.ipo_date.strftime('%Y-%m-%d') if r.ipo_date else None,
+                'market_cap': r.market_cap,
+                'current_price': round(r.current_price, 2) if r.current_price else None,
+                'range_52_week': r.range_52_week,
+                'volume': int(r.volume) if r.volume else None,
+                'dollar_volume': round(r.dollar_volume, 2) if r.dollar_volume else None,
+                'avg_vol_10d': float(r.avg_vol_10d) if r.avg_vol_10d else None,
+                'vol_vs_10d_avg': round(r.vol_vs_10d_avg, 2) if r.vol_vs_10d_avg else None,
+                'ti65': round(r.ti65, 2) if r.ti65 else None,
+                'rsi': r.rsi,
+                'rsi_mktcap': r.rsi_mktcap,
+                'dr_1': round(r.dr_1, 2) if r.dr_1 is not None else None,
+                'dr_5': round(r.dr_5, 2) if r.dr_5 is not None else None,
+                'dr_20': round(r.dr_20, 2) if r.dr_20 is not None else None,
+                'dr_60': round(r.dr_60, 2) if r.dr_60 is not None else None,
+                'dr_120': round(r.dr_120, 2) if r.dr_120 is not None else None,
+                'atr20': round(r.atr20, 2) if r.atr20 else None,
+                'pe_t_minus_1': round(r.pe_t_minus_1, 2) if r.pe_t_minus_1 else None,
+                'pe_t': round(r.pe_t, 2) if r.pe_t else None,
+                'pe_t_plus_1': round(r.pe_t_plus_1, 2) if r.pe_t_plus_1 else None,
+                'pe_t_plus_2': round(r.pe_t_plus_2, 2) if r.pe_t_plus_2 else None,
+                'ps_t_minus_1': round(r.ps_t_minus_1, 2) if r.ps_t_minus_1 else None,
+                'ps_t': round(r.ps_t, 2) if r.ps_t else None,
+                'ps_t_plus_1': round(r.ps_t_plus_1, 2) if r.ps_t_plus_1 else None,
+                'ps_t_plus_2': round(r.ps_t_plus_2, 2) if r.ps_t_plus_2 else None,
+                'rev_growth_t_minus_1': round(r.rev_growth_t_minus_1, 2) if r.rev_growth_t_minus_1 else None,
+                'rev_growth_t': round(r.rev_growth_t, 2) if r.rev_growth_t else None,
+                'rev_growth_t_plus_1': round(r.rev_growth_t_plus_1, 2) if r.rev_growth_t_plus_1 else None,
+                'rev_growth_t_plus_2': round(r.rev_growth_t_plus_2, 2) if r.rev_growth_t_plus_2 else None,
+                'eps_growth_t_minus_1': round(r.eps_growth_t_minus_1, 2) if r.eps_growth_t_minus_1 else None,
+                'eps_growth_t': round(r.eps_growth_t, 2) if r.eps_growth_t else None,
+                'eps_growth_t_plus_1': round(r.eps_growth_t_plus_1, 2) if r.eps_growth_t_plus_1 else None,
+                'eps_growth_t_plus_2': round(r.eps_growth_t_plus_2, 2) if r.eps_growth_t_plus_2 else None,
+                'short_float': round(r.short_float, 2) if r.short_float else None,
+                'short_ratio': round(r.short_ratio, 2) if r.short_ratio else None,
+                'short_interest': round(r.short_interest, 2) if r.short_interest else None,
+                'low_float': r.low_float,
+                'float_shares': r.float_shares,
+                'outstanding_shares': r.outstanding_shares,
+                'free_float': round(r.free_float, 2) if r.free_float else None,
+                'last_event_date': r.last_event_date.strftime('%Y-%m-%d') if r.last_event_date else None,
+                'last_event_type': r.last_event_type,
+                'last_event_magnitude': float(r.last_event_magnitude) if r.last_event_magnitude else None,
+                'last_event_return': float(r.last_event_return) if r.last_event_return else None,
+                'tags': r.tags,
+                'updated_at': r.updated_at.strftime('%Y-%m-%d %H:%M:%S') if r.updated_at else None,
+                'day_open': round(r.day_open, 2) if r.day_open is not None else None,
+                'day_high': round(r.day_high, 2) if r.day_high is not None else None,
+                'day_low': round(r.day_low, 2) if r.day_low is not None else None,
+                'day_close': round(r.day_close, 2) if r.day_close is not None else None,
+                'reversal_pct': round(r.reversal_pct, 2) if r.reversal_pct is not None else None,
+                'day_change_pct': round(r.day_change_pct, 2) if r.day_change_pct is not None else None,
+            })
+
+        context = _get_index_reversal_context(session, latest_date)
+
+        return {
+            'latest_date': latest_date.strftime('%Y-%m-%d'),
+            'context': context,
+            'stocks': results,
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting technical reversal stocks: {str(e)}")
+        return {'latest_date': None, 'context': [], 'stocks': []}
+
+
+@app.route('/api/TechnicalScreener-Reversal-All')
+def get_technical_reversal_all():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-MicroCap')
+def get_technical_reversal_micro():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-SmallCap')
+def get_technical_reversal_small():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-MidCap')
+def get_technical_reversal_mid():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-LargeCap')
+def get_technical_reversal_large():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+@app.route('/api/TechnicalScreener-Reversal-MegaCap')
+def get_technical_reversal_mega():
+    s = Session()
+    try:
+        return jsonify(get_technical_reversal_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
+
+# ============================================================================
+# Daily Shortlist (Screening Agent) Endpoints
+# ============================================================================
+
+# Daily screener artifacts live under user_data/ so the auto_commit.sh
+# backup (which git-pushes user_data/) preserves them across resets.
+# Must stay in sync with daily_screener/config.py: OUTPUTS_DIR.
+DAILY_SCREENER_OUTPUTS_DIR = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'daily_screener'
+)
+
+
+def _compute_daily_shortlist_funnel(date: str):
+    """Read per-stage artifacts under user_data/daily_screener/<date>/ and
+    construct a compact funnel summary the UI can render. Works retroactively
+    even if s6_audit didn't write a funnel block."""
+    base = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date)
+
+    def _safe_read(name):
+        path = os.path.join(base, name)
+        if not os.path.exists(path):
+            return None
+        try:
+            with open(path, 'r') as f:
+                return json.load(f)
+        except Exception:
+            return None
+
+    universe = _safe_read('00_universe.json') or {}
+    momentum = _safe_read('01_momentum.json') or {}
+    news = _safe_read('03_news.json') or {}
+    judged = _safe_read('04_judged.json') or {}
+    summary = _safe_read('run_summary.json') or {}
+
+    source_counts = universe.get('source_counts') or {}
+    raw_total = int(universe.get('raw_total') or sum(int(v or 0) for v in source_counts.values()))
+
+    disliked = int(universe.get('disliked_count') or 0)
+    industry = int(universe.get('industry_dropped_count') or 0)
+    universe_survivors = int(universe.get('total_universe') or 0)
+
+    # Prefer fields written by s1; fall back to the (lossy) computation for
+    # older artifacts that didn't capture them.
+    unique_after_dedup = universe.get('unique_after_dedup')
+    if unique_after_dedup is None:
+        unique_after_dedup = universe_survivors + disliked + industry
+    unique_after_dedup = int(unique_after_dedup)
+
+    survivors_after_filters = universe.get('survivors_after_filters')
+    if survivors_after_filters is None:
+        survivors_after_filters = unique_after_dedup - disliked - industry
+    survivors_after_filters = int(survivors_after_filters)
+
+    truncated_count = int(universe.get('truncated_count') or 0)
+    max_tickers_cap = universe.get('max_tickers_cap')
+
+    momentum_survivors = int(momentum.get('survivor_count') or 0)
+    momentum_dropped = int(momentum.get('drop_count') or 0)
+
+    news_results = int(news.get('result_count') or 0)
+    news_failures = int(news.get('failure_count') or 0)
+
+    verdicts = judged.get('verdict_counts') or {}
+
+    stages_meta = (summary.get('stages') or {}) if isinstance(summary, dict) else {}
+    timings = {
+        name: data.get('elapsed_s')
+        for name, data in stages_meta.items()
+        if isinstance(data, dict)
+    } if stages_meta else None
+
+    return {
+        'source_counts': source_counts,
+        'raw_total': raw_total,
+        'unique_after_dedup': unique_after_dedup,
+        'industry_dropped': industry,
+        'disliked_dropped': disliked,
+        'survivors_after_filters': survivors_after_filters,
+        'max_tickers_cap': max_tickers_cap,
+        'truncated_count': truncated_count,
+        'universe_survivors': universe_survivors,
+        'momentum_survivors': momentum_survivors,
+        'momentum_dropped': momentum_dropped,
+        'news_results': news_results,
+        'news_failures': news_failures,
+        'judged_pick': int(verdicts.get('PICK') or 0),
+        'judged_watch': int(verdicts.get('WATCH') or 0),
+        'judged_skip': int(verdicts.get('SKIP') or 0),
+        'timings': timings,
+    }
+
+
+def _list_daily_shortlist_dates():
+    """List YYYY-MM-DD folders under user_data/daily_screener/ that contain a 05_audit.json."""
+    if not os.path.isdir(DAILY_SCREENER_OUTPUTS_DIR):
+        return []
+    entries = []
+    for name in os.listdir(DAILY_SCREENER_OUTPUTS_DIR):
+        full = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, name)
+        if not os.path.isdir(full):
+            continue
+        # Validate date-like name
+        try:
+            datetime.strptime(name, '%Y-%m-%d')
+        except ValueError:
+            continue
+        audit_path = os.path.join(full, '05_audit.json')
+        if os.path.exists(audit_path):
+            try:
+                mtime = os.path.getmtime(audit_path)
+            except OSError:
+                mtime = None
+            entries.append({
+                'date': name,
+                'audit_mtime': mtime,
+                'has_audit': True,
+            })
+        else:
+            entries.append({'date': name, 'audit_mtime': None, 'has_audit': False})
+    entries.sort(key=lambda e: e['date'], reverse=True)
+    return entries
+
+
+@app.route('/api/daily-shortlist/dates', methods=['GET'])
+def daily_shortlist_dates():
+    """List available daily shortlist dates."""
+    return jsonify({'dates': _list_daily_shortlist_dates()})
+
+
+@app.route('/api/daily-shortlist/<date>', methods=['GET'])
+def daily_shortlist_for_date(date):
+    """Return the audit artifact for a given date, enriched with watchlist /
+    preference status so the UI can render in-line actions."""
+    # Validate date format
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+
+    audit_path = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date, '05_audit.json')
+    if not os.path.exists(audit_path):
+        return jsonify({'error': 'no audit artifact for date', 'date': date}), 404
+
+    try:
+        with open(audit_path, 'r') as f:
+            audit = json.load(f)
+    except Exception as e:
+        logger.error(f"failed to read audit {audit_path}: {e}")
+        return jsonify({'error': f'failed to read audit: {e}'}), 500
+
+    rows = audit.get('rows', []) or []
+    tickers = sorted({(r.get('ticker') or '').upper() for r in rows if r.get('ticker')})
+
+    feedback_for_date = _load_feedback().get(date, {}) or {}
+
+    s = Session()
+    try:
+        wl = _load_watchlist()
+        dl = _load_dislikes()
+        comments = _load_abi_ticker_notes()
+        # Pull MainView tags for these tickers (useful for the UI "tags" column).
+        mvs = {
+            m.ticker: m
+            for m in s.query(MainView).filter(MainView.ticker.in_(tickers)).all()
+        }
+
+        enriched = []
+        for r in rows:
+            t = (r.get('ticker') or '').upper()
+            wl_entry = wl.get(t) if t in wl else None
+            dl_entry = dl.get(t) if t in dl else None
+            comment_notes = (comments.get(t) or {}).get('notes', '')
+            mv = mvs.get(t)
+            enriched_row = dict(r)
+            enriched_row['watchlist'] = (
+                {
+                    'in_watchlist': True,
+                    # Abi ticker note text joined under `watchlist.notes` for the UI.
+                    'notes': comment_notes,
+                    'stars': int(wl_entry.get('stars', 0) or 0) if isinstance(wl_entry, dict) else 0,
+                }
+                if wl_entry is not None
+                else {'in_watchlist': False, 'notes': comment_notes, 'stars': 0}
+            )
+            enriched_row['dislike'] = (
+                {
+                    'is_disliked': True,
+                    'notes': comment_notes,
+                }
+                if dl_entry is not None
+                else {'is_disliked': False, 'notes': comment_notes}
+            )
+            # Top-level `ticker_note`: the canonical Abi ticker note. The UI
+            # should prefer this over `watchlist.notes` / `dislike.notes`.
+            enriched_row['ticker_note'] = {
+                'notes': comment_notes,
+                'created_at': (comments.get(t) or {}).get('created_at'),
+                'updated_at': (comments.get(t) or {}).get('updated_at'),
+                'has_ticker_note': bool(comment_notes),
+            }
+            enriched_row['feedback'] = feedback_for_date.get(t)
+            if mv is not None:
+                enriched_row.setdefault('tags', mv.tags)
+                if enriched_row.get('current_price') is None and mv.current_price is not None:
+                    enriched_row['current_price'] = round(mv.current_price, 2)
+            enriched.append(enriched_row)
+    finally:
+        s.close()
+
+    return jsonify({
+        'date': audit.get('date', date),
+        'total_universe': audit.get('total_universe'),
+        'verdict_counts': audit.get('verdict_counts'),
+        'source_counts': audit.get('source_counts'),
+        'funnel': _compute_daily_shortlist_funnel(date),
+        'rows': enriched,
+    })
+
+
+@app.route('/api/daily-shortlist/run', methods=['POST'])
+def daily_shortlist_run():
+    """Trigger a pipeline run as a background subprocess. Returns immediately
+    with the date being processed. Optional JSON body:
+      { "max_tickers": 5, "from_stage": 1, "force_refresh_themes": false }
+    """
+    import subprocess
+    import sys as _sys
+
+    data = request.get_json(silent=True) or {}
+    args = [
+        _sys.executable, '-m', 'daily_screener.run',
+    ]
+    if 'max_tickers' in data:
+        args += ['--max-tickers', str(int(data['max_tickers']))]
+    if 'from_stage' in data:
+        args += ['--from-stage', str(int(data['from_stage']))]
+    if data.get('force_refresh_themes'):
+        args += ['--force-refresh-themes']
+    if data.get('date'):
+        args += ['--date', str(data['date'])]
+    if data.get('verbose'):
+        args += ['--verbose']
+
+    cwd = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    try:
+        proc = subprocess.Popen(
+            args,
+            cwd=cwd,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    except Exception as e:
+        logger.error(f"failed to start daily_screener.run: {e}")
+        return jsonify({'error': f'failed to start: {e}'}), 500
+
+    return jsonify({
+        'status': 'started',
+        'pid': proc.pid,
+        'cmd': args,
+        'cwd': cwd,
+    })
+
+
+# ============================================================================
+# Daily Shortlist Feedback (per-date, per-ticker corrections)
+# ============================================================================
+# The user clicks "Feedback" on a row in /daily-shortlist if they think the
+# agent's verdict was wrong (e.g. PICK that should have been SKIP, or SKIP
+# that should have been PICK). We capture both the agent's verdict at the
+# time and what the user thinks it should have been, plus a free-text reason.
+#
+# Stage 5 of the daily_screener pipeline reads this file and feeds recent
+# corrections into the judge prompt as calibration examples.
+
+_VALID_VERDICTS = {'PICK', 'WATCH', 'SKIP'}
+
+
+def _load_feedback():
+    """Load the feedback file. Returns {date: {ticker: record}}."""
+    if not os.path.exists(DAILY_SCREENER_FEEDBACK_FILE):
+        return {}
+    try:
+        with open(DAILY_SCREENER_FEEDBACK_FILE, 'r') as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception as e:
+        logger.error(f"failed to read feedback file: {e}")
+        return {}
+
+
+def _save_feedback(data):
+    os.makedirs(os.path.dirname(DAILY_SCREENER_FEEDBACK_FILE), exist_ok=True)
+    with open(DAILY_SCREENER_FEEDBACK_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+
+@app.route('/api/daily-shortlist/feedback/<date>', methods=['GET'])
+def daily_shortlist_feedback_for_date(date):
+    """Return all feedback entries for a given date as {ticker: record}."""
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+    data = _load_feedback()
+    return jsonify(data.get(date, {}))
+
+
+@app.route('/api/daily-shortlist/feedback', methods=['GET'])
+def daily_shortlist_feedback_all():
+    """Return all feedback entries flattened into a list, newest first.
+
+    Optional ?limit=N to cap the list (handy for the judge prompt).
+    """
+    limit = request.args.get('limit', type=int)
+    data = _load_feedback()
+    flat = []
+    for date_key in sorted(data.keys(), reverse=True):
+        per_date = data[date_key]
+        if not isinstance(per_date, dict):
+            continue
+        for ticker, rec in per_date.items():
+            if not isinstance(rec, dict):
+                continue
+            flat.append({'date': date_key, 'ticker': ticker, **rec})
+    if limit:
+        flat = flat[:limit]
+    return jsonify({'count': len(flat), 'feedback': flat})
+
+
+@app.route('/api/daily-shortlist/feedback/<date>/<ticker>', methods=['PUT'])
+def upsert_daily_shortlist_feedback(date, ticker):
+    """Upsert a feedback record for (date, ticker).
+
+    Request body:
+      {
+        "expected_verdict": "PICK|WATCH|SKIP",
+        "reason": "free text",
+        # Optional snapshot fields - capture the agent's state at the time so
+        # we can show it later even if the audit artifact changes:
+        "agent_verdict": "PICK|WATCH|SKIP",
+        "agent_rationale": "...",
+        "agent_composite_score": 76.5,
+        "agent_news_materiality": 2,
+        "agent_theme_fit": 3,
+        "agent_matched_themes": [...]
+      }
+    """
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+
+    payload = request.get_json(silent=True) or {}
+
+    expected = (payload.get('expected_verdict') or '').upper()
+    if expected not in _VALID_VERDICTS:
+        return jsonify({
+            'error': f'expected_verdict must be one of {sorted(_VALID_VERDICTS)}'
+        }), 400
+
+    agent_verdict = (payload.get('agent_verdict') or '').upper() or None
+    if agent_verdict is not None and agent_verdict not in _VALID_VERDICTS:
+        return jsonify({
+            'error': f'agent_verdict must be one of {sorted(_VALID_VERDICTS)} if provided'
+        }), 400
+
+    ticker_u = (ticker or '').upper()
+    if not ticker_u:
+        return jsonify({'error': 'ticker is required'}), 400
+
+    data = _load_feedback()
+    per_date = data.setdefault(date, {})
+    existing = per_date.get(ticker_u) or {}
+    now_iso = datetime.now(pytz.timezone('US/Eastern')).isoformat()
+
+    record = {
+        'expected_verdict': expected,
+        'reason': (payload.get('reason') or '').strip(),
+        'agent_verdict': agent_verdict or existing.get('agent_verdict'),
+        'agent_rationale': payload.get('agent_rationale')
+            if 'agent_rationale' in payload else existing.get('agent_rationale'),
+        'agent_composite_score': payload.get('agent_composite_score')
+            if 'agent_composite_score' in payload else existing.get('agent_composite_score'),
+        'agent_news_materiality': payload.get('agent_news_materiality')
+            if 'agent_news_materiality' in payload else existing.get('agent_news_materiality'),
+        'agent_theme_fit': payload.get('agent_theme_fit')
+            if 'agent_theme_fit' in payload else existing.get('agent_theme_fit'),
+        'agent_matched_themes': payload.get('agent_matched_themes')
+            if 'agent_matched_themes' in payload else existing.get('agent_matched_themes'),
+        'created_at': existing.get('created_at') or now_iso,
+        'updated_at': now_iso,
+    }
+    per_date[ticker_u] = record
+    _save_feedback(data)
+    return jsonify({'date': date, 'ticker': ticker_u, 'status': 'saved', **record})
+
+
+@app.route('/api/daily-shortlist/feedback/<date>/<ticker>', methods=['DELETE'])
+def delete_daily_shortlist_feedback(date, ticker):
+    """Remove a feedback record for (date, ticker)."""
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+
+    ticker_u = (ticker or '').upper()
+    data = _load_feedback()
+    if date in data and ticker_u in data[date]:
+        del data[date][ticker_u]
+        if not data[date]:
+            del data[date]
+        _save_feedback(data)
+        return jsonify({'date': date, 'ticker': ticker_u, 'status': 'removed'})
+    return jsonify({'date': date, 'ticker': ticker_u, 'status': 'not_found'}), 404
+
+
+# ============================================================================
+# Daily Shortlist Themes (read the 02_theme_vector.json artifact)
+# ============================================================================
+
+@app.route('/api/daily-shortlist/themes/<date>', methods=['GET'])
+def daily_shortlist_themes_for_date(date):
+    """Return the merged theme vector for a date plus the per-source raw lists.
+
+    Reads:
+      - 02_theme_vector.json (merged, weighted vector — primary)
+      - 02a_market_themes.json (hot market themes, source: hot_market)
+      - 02b_user_themes.json (user-taste themes from watchlist, source: user_taste)
+    """
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
+
+    base = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date)
+    if not os.path.isdir(base):
+        return jsonify({'error': 'no theme artifacts for date', 'date': date}), 404
+
+    def _read(name):
+        path = os.path.join(base, name)
+        if not os.path.exists(path):
+            return None
+        try:
+            with open(path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"failed to read {path}: {e}")
+            return None
+
+    merged = _read('02_theme_vector.json')
+    market = _read('02a_market_themes.json')
+    user = _read('02b_user_themes.json')
+
+    if merged is None and market is None and user is None:
+        return jsonify({'error': 'no theme artifacts for date', 'date': date}), 404
+
+    return jsonify({
+        'date': date,
+        'merged': merged or {},
+        'market': market or {},
+        'user': user or {},
+    })
+
+
+@app.route('/api/daily-shortlist/themes/dates', methods=['GET'])
+def daily_shortlist_theme_dates():
+    """List dates that have a 02_theme_vector.json artifact."""
+    if not os.path.isdir(DAILY_SCREENER_OUTPUTS_DIR):
+        return jsonify({'dates': []})
+    entries = []
+    for name in os.listdir(DAILY_SCREENER_OUTPUTS_DIR):
+        full = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, name)
+        if not os.path.isdir(full):
+            continue
+        try:
+            datetime.strptime(name, '%Y-%m-%d')
+        except ValueError:
+            continue
+        tv_path = os.path.join(full, '02_theme_vector.json')
+        if os.path.exists(tv_path):
+            try:
+                mtime = os.path.getmtime(tv_path)
+            except OSError:
+                mtime = None
+            entries.append({'date': name, 'mtime': mtime})
+    entries.sort(key=lambda e: e['date'], reverse=True)
+    return jsonify({'dates': entries})
+
+
+# ============================================================
+# Market Brief Endpoints
+# ============================================================
+
+# Market brief artifacts live under user_data/ so the auto_commit.sh
+# backup preserves them across resets. Must stay in sync with
+# market_brief/config.py: OUTPUTS_DIR.
+MARKET_BRIEF_OUTPUTS_DIR = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'market_brief'
+)
+MARKET_BRIEF_LOSERS_OUTPUTS_DIR = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'market_brief_losers'
+)
+MARKET_BRIEF_TZ = ZoneInfo('America/New_York')
+
+
+def _market_brief_today() -> str:
+    """Calendar date for the market brief (US Eastern, pre-market context)."""
+    return datetime.now(MARKET_BRIEF_TZ).strftime('%Y-%m-%d')
+
+
+def _market_brief_has_source(brief_dir: str) -> bool:
+    source_dir = os.path.join(brief_dir, 'source')
+    return os.path.isdir(source_dir) and bool(os.listdir(source_dir))
+
+
+def _load_losers_brief_fields(date_str: str) -> dict:
+    """Optional R1D losers brief from market_brief_losers output dir."""
+    losers_dir = os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, date_str)
+    result: dict = {
+        'has_losers_brief': False,
+        'losers_markdown': None,
+        'losers_status': 'empty',
+    }
+    if not os.path.isdir(losers_dir):
+        return result
+
+    result['losers_status'] = _market_brief_run_status(losers_dir)
+    status_payload = _read_market_brief_status_file(losers_dir)
+    if status_payload:
+        result['losers_run_status'] = status_payload
+
+    costs_path = os.path.join(losers_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
+        with open(costs_path, 'r', encoding='utf-8') as f:
+            result['losers_run_costs'] = json.load(f)
+
+    brief_path = os.path.join(losers_dir, '02_brief.md')
+    if os.path.isfile(brief_path):
+        with open(brief_path, 'r', encoding='utf-8') as f:
+            result['has_losers_brief'] = True
+            result['losers_markdown'] = f.read()
+    return result
+
+
+def _losers_brief_has_source(brief_dir: str) -> bool:
+    source_dir = os.path.join(brief_dir, 'source', 'losers_universe')
+    return os.path.isdir(source_dir) and bool(os.listdir(source_dir))
+
+
+def _market_brief_run_stale(brief_dir: str, status_payload: dict) -> bool:
+    """True if status says running but nothing has updated recently (crashed run)."""
+    stale_after_s = 900  # 15 minutes without log/cost activity
+    now = time.time()
+    candidates = [
+        os.path.join(brief_dir, 'subprocess.log'),
+        os.path.join(brief_dir, 'run.log'),
+        os.path.join(brief_dir, 'run_costs.json'),
+        os.path.join(brief_dir, 'status.json'),
+    ]
+    latest_mtime = None
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                mtime = os.path.getmtime(path)
+                latest_mtime = mtime if latest_mtime is None else max(latest_mtime, mtime)
+            except OSError:
+                pass
+    if latest_mtime is None:
+        updated_at = status_payload.get('updated_at')
+        if updated_at:
+            try:
+                dt = datetime.fromisoformat(updated_at.replace('Z', '+00:00'))
+                latest_mtime = dt.timestamp()
+            except ValueError:
+                return False
+        else:
+            return True
+    return (now - latest_mtime) > stale_after_s
+
+
+def _mark_market_brief_stale_failed(brief_dir: str, status_payload: dict) -> None:
+    """Persist failed status when a run stopped updating (crashed subprocess)."""
+    status_path = os.path.join(brief_dir, 'status.json')
+    payload = {
+        'status': 'failed',
+        'stage': 'stale',
+        'error': 'Run stopped responding (no log activity for 15+ minutes)',
+        'updated_at': datetime.now(timezone.utc).isoformat(),
+        'previous': status_payload,
+    }
+    try:
+        with open(status_path, 'w', encoding='utf-8') as f:
+            json.dump(payload, f, indent=2)
+    except OSError:
+        pass
+
+
+def _read_market_brief_status_file(brief_dir: str) -> dict | None:
+    status_path = os.path.join(brief_dir, 'status.json')
+    if not os.path.exists(status_path):
+        return None
+    try:
+        with open(status_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return None
+
+
+def _market_brief_run_status(brief_dir: str) -> str:
+    """Return complete | running | ready | error | failed for a dated output folder."""
+    status_payload = _read_market_brief_status_file(brief_dir)
+    if status_payload:
+        status = status_payload.get('status')
+        if status == 'running':
+            if _market_brief_run_stale(brief_dir, status_payload):
+                _mark_market_brief_stale_failed(brief_dir, status_payload)
+                return 'failed'
+            return 'running'
+        if status == 'failed':
+            return 'failed'
+        if status == 'error':
+            return 'error'
+
+    if status_payload and status_payload.get('status') == 'complete':
+        return 'complete'
+
+    brief_md = os.path.join(brief_dir, '02_brief.md')
+    brief_json = os.path.join(brief_dir, '02_brief.json')
+    if os.path.exists(brief_md) or os.path.exists(brief_json):
+        return 'complete'
+
+    run_log = os.path.join(brief_dir, 'run.log')
+    subprocess_log = os.path.join(brief_dir, 'subprocess.log')
+    for log_path in (run_log, subprocess_log):
+        if os.path.exists(log_path):
+            try:
+                age_s = time.time() - os.path.getmtime(log_path)
+                if age_s < 1800:
+                    return 'running'
+            except OSError:
+                pass
+
+    costs_path = os.path.join(brief_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
+        try:
+            age_s = time.time() - os.path.getmtime(costs_path)
+            if age_s < 1800:
+                return 'running'
+        except OSError:
+            pass
+
+    if os.path.isdir(os.path.join(brief_dir, '00_news')):
+        return 'running'
+
+    if _market_brief_has_source(brief_dir):
+        return 'ready'
+
+    return 'failed'
+
+
+@app.route('/api/market-brief/dates', methods=['GET'])
+def market_brief_dates():
+    """List dates that have market brief outputs (including in-progress runs)."""
+    if not os.path.isdir(MARKET_BRIEF_OUTPUTS_DIR):
+        return jsonify({'dates': []})
+    entries = []
+    for name in os.listdir(MARKET_BRIEF_OUTPUTS_DIR):
+        full = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, name)
+        if not os.path.isdir(full):
+            continue
+        try:
+            datetime.strptime(name, '%Y-%m-%d')
+        except ValueError:
+            continue
+
+        status = _market_brief_run_status(full)
+        brief_md = os.path.join(full, '02_brief.md')
+        brief_json = os.path.join(full, '02_brief.json')
+        mtime_path = (
+            brief_json if os.path.exists(brief_json)
+            else brief_md if os.path.exists(brief_md)
+            else os.path.join(full, 'run.log')
+        )
+        try:
+            mtime = os.path.getmtime(mtime_path) if os.path.exists(mtime_path) else None
+        except OSError:
+            mtime = None
+
+        stage = None
+        status_path = os.path.join(full, 'status.json')
+        if os.path.exists(status_path):
+            try:
+                with open(status_path, 'r', encoding='utf-8') as f:
+                    stage = json.load(f).get('stage')
+            except (json.JSONDecodeError, OSError):
+                pass
+
+        entries.append({
+            'date': name,
+            'mtime': mtime,
+            'status': status,
+            'stage': stage,
+        })
+    entries.sort(key=lambda e: e['date'], reverse=True)
+
+    today = _market_brief_today()
+    if not any(e['date'] == today for e in entries):
+        entries.insert(0, {
+            'date': today,
+            'mtime': None,
+            'status': 'empty',
+            'stage': None,
+            'is_today': True,
+        })
+    else:
+        for e in entries:
+            if e['date'] == today:
+                e['is_today'] = True
+
+    return jsonify({'dates': entries, 'today': today})
+
+
+@app.route('/api/market-brief/<date_str>', methods=['GET'])
+def market_brief_for_date(date_str):
+    """Get market brief content for a specific date."""
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+    if not os.path.isdir(brief_dir):
+        if date_str == _market_brief_today():
+            return jsonify({
+                'date': date_str,
+                'status': 'empty',
+                'has_source': False,
+                'is_today': True,
+            })
+        return jsonify({'error': 'No brief found for this date'}), 404
+
+    result = {
+        'date': date_str,
+        'status': _market_brief_run_status(brief_dir),
+        'has_source': _market_brief_has_source(brief_dir),
+        'is_today': date_str == _market_brief_today(),
+    }
+
+    status_path = os.path.join(brief_dir, 'status.json')
+    if os.path.exists(status_path):
+        try:
+            with open(status_path, 'r', encoding='utf-8') as f:
+                result['run_status'] = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    brief_md_path = os.path.join(brief_dir, '02_brief.md')
+    if os.path.exists(brief_md_path):
+        with open(brief_md_path, 'r', encoding='utf-8') as f:
+            result['markdown'] = f.read()
+
+    brief_json_path = os.path.join(brief_dir, '02_brief.json')
+    if os.path.exists(brief_json_path):
+        with open(brief_json_path, 'r', encoding='utf-8') as f:
+            result['json'] = json.load(f)
+
+    usage_path = os.path.join(brief_dir, 'usage.json')
+    if os.path.exists(usage_path):
+        with open(usage_path, 'r', encoding='utf-8') as f:
+            result['usage'] = json.load(f)
+
+    costs_path = os.path.join(brief_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
+        with open(costs_path, 'r', encoding='utf-8') as f:
+            result['run_costs'] = json.load(f)
+
+    result.update(_load_losers_brief_fields(date_str))
+
+    return jsonify(result)
+
+
+@app.route('/api/market-brief/<date_str>/pdf', methods=['GET'])
+def market_brief_pdf(date_str):
+    """Download 02_brief.md as a PDF."""
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+    brief_md_path = os.path.join(brief_dir, '02_brief.md')
+    if not os.path.isfile(brief_md_path):
+        return jsonify({'error': 'No brief markdown for this date'}), 404
+
+    with open(brief_md_path, 'r', encoding='utf-8') as f:
+        md = f.read()
+
+    import sys
+
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if root not in sys.path:
+        sys.path.insert(0, root)
+    from market_brief.pdf_export import markdown_to_pdf_bytes
+
+    try:
+        pdf_bytes = markdown_to_pdf_bytes(md, title=f'Market Brief — {date_str}')
+    except Exception as e:  # noqa: BLE001
+        logger.exception('PDF export failed for %s: %s', date_str, e)
+        return jsonify({'error': f'PDF export failed: {e}'}), 500
+
+    return send_file(
+        io.BytesIO(pdf_bytes),
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name=f'market-brief-{date_str}.pdf',
+    )
+
+
+@app.route('/api/market-brief/<date_str>/costs', methods=['GET'])
+def market_brief_costs(date_str):
+    """Return run status + optional run_costs.json for live progress polling."""
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+    if not os.path.isdir(brief_dir):
+        return jsonify({'error': 'No brief folder for this date'}), 404
+
+    result = {
+        'date': date_str,
+        'status': _market_brief_run_status(brief_dir),
+    }
+    status_payload = _read_market_brief_status_file(brief_dir)
+    if status_payload:
+        result['run_status'] = status_payload
+
+    costs_path = os.path.join(brief_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
+        with open(costs_path, 'r', encoding='utf-8') as f:
+            result['run_costs'] = json.load(f)
+
+    return jsonify(result)
+
+
+def _start_market_brief_subprocess(cmd: list, outdir: str, asof: str):
+    """Launch a detached market-brief subprocess; return error message or None."""
+    import subprocess
+
+    project_root = os.path.dirname(os.path.dirname(__file__))
+    os.makedirs(outdir, exist_ok=True)
+
+    with open(os.path.join(outdir, 'status.json'), 'w', encoding='utf-8') as f:
+        json.dump({
+            'status': 'running',
+            'stage': 'queued',
+            'updated_at': datetime.now(timezone.utc).isoformat(),
+        }, f)
+
+    log_path = os.path.join(outdir, 'subprocess.log')
+    try:
+        log_file = open(log_path, 'a', encoding='utf-8')
+        subprocess.Popen(
+            cmd,
+            cwd=project_root,
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
+    except OSError as e:
+        logger.error(f"Failed to start market brief subprocess: {e}")
+        return str(e)
+    return None
+
+
+@app.route('/api/market-brief/generate', methods=['POST'])
+def market_brief_generate():
+    """Run full pipeline: Benzinga fetch + Anthropic Steps 3–4."""
+    data = request.get_json() or {}
+    asof = data.get('asof') or data.get('date')
+    if not asof:
+        asof = _market_brief_today()
+    else:
+        try:
+            datetime.strptime(asof, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    outdir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, asof)
+
+    existing = _market_brief_run_status(outdir)
+    if existing == 'running':
+        return jsonify({
+            'status': 'already_running',
+            'message': f'Market brief pipeline for {asof} is already running',
+            'asof': asof,
+        }), 409
+
+    cmd = ['python', '-m', 'market_brief.run_pipeline', '--date', asof]
+    if data.get('skip_ingest') in (True, 'true', '1', 1):
+        if not _market_brief_has_source(outdir):
+            return jsonify({
+                'error': 'No source data for this date',
+                'message': 'Cannot skip ingest without existing source/',
+                'asof': asof,
+            }), 400
+        cmd.append('--skip-ingest')
+    elif data.get('skip_llm') in (True, 'true', '1', 1) or data.get(
+        'skip_llm_summary'
+    ) in (True, 'true', '1', 1):
+        cmd.append('--skip-llm')
+    elif data.get('resume') in (True, 'true', '1', 1):
+        cmd.append('--skip-ingest')
+        cmd.append('--resume')
+
+    err = _start_market_brief_subprocess(cmd, outdir, asof)
+    if err:
+        return jsonify({'error': err}), 500
+
+    return jsonify({
+        'status': 'started',
+        'message': 'Market brief pipeline started',
+        'asof': asof,
+    })
+
+
+@app.route('/api/market-brief/run', methods=['POST'])
+def market_brief_run():
+    """Trigger full market brief run (ingest + legacy pipeline, or pipeline-only)."""
+    data = request.get_json() or {}
+    if not data.get('asof') and not data.get('date'):
+        data = dict(data)
+        data['asof'] = _market_brief_today()
+
+    return market_brief_generate()
+
+
+@app.route('/api/market-brief-losers/<date_str>/costs', methods=['GET'])
+def market_brief_losers_costs(date_str):
+    """Return losers brief run status + optional run_costs.json."""
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    brief_dir = os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, date_str)
+    if not os.path.isdir(brief_dir):
+        return jsonify({'error': 'No losers brief folder for this date'}), 404
+
+    result = {
+        'date': date_str,
+        'status': _market_brief_run_status(brief_dir),
+    }
+    status_payload = _read_market_brief_status_file(brief_dir)
+    if status_payload:
+        result['run_status'] = status_payload
+
+    costs_path = os.path.join(brief_dir, 'run_costs.json')
+    if os.path.exists(costs_path):
+        with open(costs_path, 'r', encoding='utf-8') as f:
+            result['run_costs'] = json.load(f)
+
+    return jsonify(result)
+
+
+@app.route('/api/market-brief-losers/generate', methods=['POST'])
+def market_brief_losers_generate():
+    """Run R1D losers pipeline: ticker-only ingest + DeepSeek synthesis."""
+    data = request.get_json() or {}
+    asof = data.get('asof') or data.get('date')
+    if not asof:
+        asof = _market_brief_today()
+    else:
+        try:
+            datetime.strptime(asof, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    outdir = os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, asof)
+
+    existing = _market_brief_run_status(outdir)
+    if existing == 'running':
+        return jsonify({
+            'status': 'already_running',
+            'message': f'Losers brief pipeline for {asof} is already running',
+            'asof': asof,
+        }), 409
+
+    cmd = ['python', '-m', 'market_brief_losers.run_pipeline', '--date', asof]
+    if data.get('skip_ingest') in (True, 'true', '1', 1):
+        if not _losers_brief_has_source(outdir):
+            return jsonify({
+                'error': 'No source data for this date',
+                'message': 'Cannot skip ingest without existing source/losers_universe/',
+                'asof': asof,
+            }), 400
+        cmd.append('--skip-ingest')
+    elif data.get('skip_llm') in (True, 'true', '1', 1):
+        cmd.append('--skip-llm')
+    elif data.get('resume') in (True, 'true', '1', 1):
+        cmd.append('--skip-ingest')
+        cmd.append('--resume')
+
+    err = _start_market_brief_subprocess(cmd, outdir, asof)
+    if err:
+        return jsonify({'error': err}), 500
+
+    return jsonify({
+        'status': 'started',
+        'message': 'Losers brief pipeline started',
+        'asof': asof,
+    })
+
+
+@app.route('/api/auto-commit', methods=['POST'])
+def auto_commit():
+    """Trigger auto_commit.sh script to commit and push user_data changes."""
+    try:
+        import subprocess
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'auto_commit.sh')
+        
+        # Make script executable
+        os.chmod(script_path, 0o755)
+        
+        # Run the script
+        result = subprocess.run(['bash', script_path], capture_output=True, text=True, timeout=30)
+        
+        if result.returncode == 0:
+            return jsonify({
+                'status': 'success',
+                'message': 'Auto-commit completed successfully',
+                'output': result.stdout
+            }), 200
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Auto-commit failed',
+                'error': result.stderr
+            }), 500
+    except subprocess.TimeoutExpired:
+        return jsonify({
+            'status': 'error',
+            'message': 'Auto-commit timed out after 30 seconds'
+        }), 500
+    except Exception as e:
+        logger.error(f"Error in auto_commit: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Error running auto-commit',
+            'error': str(e)
+        }), 500
 
 
 if __name__ == '__main__':

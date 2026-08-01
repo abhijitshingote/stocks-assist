@@ -1,0 +1,29 @@
+{
+  "ticker": "FLNC",
+  "has_material_news": true,
+  "headline_drivers": [
+    "FQ2/FY25 earnings print with improved profitability and positive net income (net income ~$6.3M vs loss prior quarter), alongside FY revenue run-rate in the ~$2.7B range and maintained path to profitability (reported in early May 2026)",
+    "Order momentum and backlog strength: management commentary around record contracted backlog in the mid\u2011single\u2011digit billions of dollars and year\u2011to\u2011date order intake roughly doubling YoY, with ~50% of new orders from new customers, signaling sustained demand for utility-scale storage",
+    "Data-center / hyperscaler growth narrative: company discussion of rapidly expanding data-center storage pipeline (double\u2011digit GWh, up sharply QoQ) and MSAs signed with two major hyperscalers, with first purchase order expected in the near term, fueling an AI/data\u2011center\u2013infrastructure re\u2011rating",
+    "Sector and sentiment tailwinds: investors rotating into grid-scale storage and AI\u2011power infrastructure names following stronger demand commentary across power/energy\u2011storage peers, plus a high\u2011short\u2011interest squeeze/technical breakout after a multi\u2011month trough and prior 52\u2011week low near $4\u20135"
+  ],
+  "latest_material_date": "2026-05-08",
+  "theme_tags": [
+    "earnings-surprise-momentum",
+    "data-center-infrastructure",
+    "ai-power-buildout",
+    "turnaround-and-recovery",
+    "special-situation-re-rating",
+    "small-cap-relief-rally"
+  ],
+  "summary": "The big move in FLNC over the last week is primarily a re\u2011rating off its early\u2011May earnings and backlog narrative, not a random squeeze. The company showed a clean inflection toward profitability (swinging to positive net income with improving margins), confirmed a multi\u2011billion\u2011dollar contracted backlog and sharply higher order intake, and highlighted a fast\u2011growing data\u2011center/hyperscaler pipeline that ties it directly into the AI power build\u2011out. That combination \u2013 proof the business model is working, visibility on multi\u2011year demand, and an emerging hyperscaler angle \u2013 triggered aggressive buying in a name that had been heavily sold and volatile, amplifying the move via short covering and technical breakout behavior on 1.7x+ normal volume.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"FLNC\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"FQ2/FY25 earnings print with improved profitability and positive net income (net income ~$6.3M vs loss prior quarter), alongside FY revenue run-rate in the ~$2.7B range and maintained path to profitability (reported in early May 2026)\",\n    \"Order momentum and backlog strength: management commentary around record contracted backlog in the mid\u2011single\u2011digit billions of dollars and year\u2011to\u2011date order intake roughly doubling YoY, with ~50% of new orders from new customers, signaling sustained demand for utility-scale storage\",\n    \"Data-center / hyperscaler growth narrative: company discussion of rapidly expanding data-center storage pipeline (double\u2011digit GWh, up sharply QoQ) and MSAs signed with two major hyperscalers, with first purchase order expected in the near term, fueling an AI/data\u2011center\u2013infrastructure re\u2011rating\",\n    \"Sector and sentiment tailwinds: investors rotating into grid-scale storage and AI\u2011power infrastructure names following stronger demand commentary across power/energy\u2011storage peers, plus a high\u2011short\u2011interest squeeze/technical breakout after a multi\u2011month trough and prior 52\u2011week low near $4\u20135\"\n  ],\n  \"latest_material_date\": \"2026-05-08\",\n  \"theme_tags\": [\n    \"earnings-surprise-momentum\",\n    \"data-center-infrastructure\",\n    \"ai-power-buildout\",\n    \"turnaround-and-recovery\",\n    \"special-situation-re-rating\",\n    \"small-cap-relief-rally\"\n  ],\n  \"summary\": \"The big move in FLNC over the last week is primarily a re\u2011rating off its early\u2011May earnings and backlog narrative, not a random squeeze. The company showed a clean inflection toward profitability (swinging to positive net income with improving margins), confirmed a multi\u2011billion\u2011dollar contracted backlog and sharply higher order intake, and highlighted a fast\u2011growing data\u2011center/hyperscaler pipeline that ties it directly into the AI power build\u2011out. That combination \u2013 proof the business model is working, visibility on multi\u2011year demand, and an emerging hyperscaler angle \u2013 triggered aggressive buying in a name that had been heavily sold and volatile, amplifying the move via short covering and technical breakout behavior on 1.7x+ normal volume.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

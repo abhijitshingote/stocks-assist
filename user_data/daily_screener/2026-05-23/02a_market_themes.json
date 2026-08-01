@@ -1,0 +1,205 @@
+{
+  "themes": [
+    {
+      "tag": "ai-megacap-and-nvidia-lead",
+      "label": "Ai Megacap And Nvidia Lead",
+      "description": "Mega-cap tech \u2014 especially Nvidia and the rest of the \u2018Magnificent Seven\u2019 \u2014 continues to drive index-level gains as investors crowd into perceived secular AI winners and momentum leaders making new highs.",
+      "example_tickers": [
+        "NVDA",
+        "MSFT",
+        "GOOGL",
+        "META",
+        "AMZN",
+        "AAPL",
+        "AVGO",
+        "TSLA"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "ai-infrastructure-and-power-buildout",
+      "label": "Ai Infrastructure And Power Buildout",
+      "description": "The market is rewarding companies leveraged to the physical buildout behind AI \u2014 power generation, grid upgrades, data center infrastructure, and high-performance compute \u2014 as hyperscaler capex guides remain aggressive.",
+      "example_tickers": [
+        "NVDA",
+        "AMD",
+        "AVGO",
+        "MU",
+        "PLTR",
+        "HPE",
+        "SMCI",
+        "ACLS"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "short-covering-in-underowned-cyclicals",
+      "label": "Short Covering In Underowned Cyclicals",
+      "description": "A sharp squeeze in under-owned and heavily shorted cyclicals and small caps has accompanied the index rally, as improving risk sentiment and fear-of-missing-out force bears to cover.",
+      "example_tickers": [
+        "IWM",
+        "XRT",
+        "CAR",
+        "UPST",
+        "DKS",
+        "MARA",
+        "HOOD",
+        "RBLX"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "crypto-and-blockchain-beta",
+      "label": "Crypto And Blockchain Beta",
+      "description": "Crypto-linked equities and blockchain ETFs are catching a bid alongside renewed strength in digital assets, with traders using them as high-beta proxies for bitcoin and broader crypto sentiment.",
+      "example_tickers": [
+        "COIN",
+        "MARA",
+        "RIOT",
+        "MSTR",
+        "HUT",
+        "BITX",
+        "WGMI",
+        "DAPP"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "copper-and-electrification-trade",
+      "label": "Copper And Electrification Trade",
+      "description": "Copper-related plays are moving as investors position for tight physical markets and long-term demand from electrification, EVs, and data center power needs, with copper ETFs and miners seeing inflows.",
+      "example_tickers": [
+        "FCX",
+        "SCCO",
+        "TECK",
+        "VALE",
+        "CPER",
+        "COPX",
+        "RIO"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "banks-and-credit-resilience",
+      "label": "Banks And Credit Resilience",
+      "description": "US banks are trading better after management teams downplayed systemic credit stress and private credit contagion in recent updates, easing one of the key overhangs on the macro narrative.",
+      "example_tickers": [
+        "JPM",
+        "BAC",
+        "WFC",
+        "C",
+        "GS",
+        "MS",
+        "KRE",
+        "XLF"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "us-outperformance-vs-europe-uk",
+      "label": "Us Outperformance Vs Europe Uk",
+      "description": "Flows continue to favor US equities over European and UK markets amid currency headwinds, energy uncertainty, and weaker growth narratives abroad, reinforcing a \u2018there is no alternative to US\u2019 mindset.",
+      "example_tickers": [
+        "SPY",
+        "QQQ",
+        "IVV",
+        "VGK",
+        "EWG",
+        "EWU",
+        "EZU"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "ai-software-and-productivity-tools",
+      "label": "Ai Software And Productivity Tools",
+      "description": "AI-embedded software and productivity platforms are seeing renewed interest as enterprises ramp adoption and vendors highlight AI-driven upsell and pricing power in guidance.",
+      "example_tickers": [
+        "MSFT",
+        "CRM",
+        "ADBE",
+        "NOW",
+        "DDOG",
+        "SNOW",
+        "CRM",
+        "MDB"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "risk-on-meme-and-retail-speculation",
+      "label": "Risk On Meme And Retail Speculation",
+      "description": "The broader risk-on tone has spilled into meme and high-volatility retail favorites, where low float and options activity are amplifying rapid upside moves on light fundamental catalysts.",
+      "example_tickers": [
+        "GME",
+        "AMC",
+        "BBBYQ",
+        "CVNA",
+        "TSLA",
+        "HOOD",
+        "RBLX"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "defense-and-geopolitical-tension",
+      "label": "Defense And Geopolitical Tension",
+      "description": "Persistent geopolitical tensions and ongoing conflict headlines are keeping defense and aerospace names bid, with investors treating them as structural beneficiaries of higher global defense spending.",
+      "example_tickers": [
+        "LMT",
+        "RTX",
+        "NOC",
+        "GD",
+        "HII",
+        "BA",
+        "ITA"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "glp1-obesity-and-healthcare-shift",
+      "label": "Glp1 Obesity And Healthcare Shift",
+      "description": "Weight-loss and diabetes GLP-1 drugs remain a central healthcare narrative as new data and uptake trends shape expectations for long-term demand, supply constraints, and spillover effects across healthcare sub-sectors.",
+      "example_tickers": [
+        "LLY",
+        "NVO",
+        "PFE",
+        "MRK",
+        "DXCM",
+        "PODD",
+        "UNH",
+        "HUM"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    },
+    {
+      "tag": "oil-and-energy-uncertainty",
+      "label": "Oil And Energy Uncertainty",
+      "description": "Energy names are reacting to ongoing uncertainty around supply, OPEC+ dynamics, and geopolitical risk premia, with traders using them both as macro hedges and yield vehicles.",
+      "example_tickers": [
+        "XOM",
+        "CVX",
+        "SLB",
+        "EOG",
+        "PXD",
+        "XLE",
+        "OXY",
+        "HES"
+      ],
+      "source": "hot_market",
+      "weight": 1.5
+    }
+  ],
+  "fetched_at": "2026-05-23T18:44:27.992810"
+}

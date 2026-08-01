@@ -160,9 +160,11 @@ case $ACTION in
         "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
         "db_scripts/update_data/main_view_update.py:Update main screener view"
         "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
-        "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
-        "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
-        "db_scripts/initialize_data/seed_abi_notes.py:Seed user abi notes"
+        # stock_notes is removed; superseded by file-only
+        # abi_ticker_notes.json. Nothing to seed.
+        # stock_preferences is removed; superseded by file-only
+        # abi_watchlist.json + abi_dislikes.json. Nothing to seed.
+        # abi_general_notes is also a file-only store; the JSON IS the data.
     )
 
     total_scripts=${#scripts[@]}
@@ -446,9 +448,11 @@ case $ACTION in
             "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
             "db_scripts/update_data/main_view_update.py:Update main screener view"
             "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
-            "db_scripts/initialize_data/seed_stock_notes.py:Seed user stock notes"
-            "db_scripts/initialize_data/seed_stock_preferences.py:Seed user stock preferences"
-            "db_scripts/initialize_data/seed_abi_notes.py:Seed user abi notes"
+            # stock_notes is removed; superseded by file-only
+            # abi_ticker_notes.json. Nothing to seed.
+            # stock_preferences is removed; superseded by file-only
+            # abi_watchlist.json + abi_dislikes.json. Nothing to seed.
+            # abi_general_notes is also a file-only store; the JSON IS the data.
         )
 
         total_scripts=${#scripts[@]}
@@ -500,36 +504,6 @@ case $ACTION in
                 exit 1
             fi
         done
-
-        # Step 3: Preserve user data from live
-        echo ""
-        echo "📋 Step 2.5: Preserving user data from live..." | tee -a $LOG_FILE
-        docker-compose -f $COMPOSE_FILE exec -T $BACKEND_SERVICE python -c "
-from sqlalchemy import create_engine, text
-import os
-engine = create_engine(os.getenv('DATABASE_URL'))
-with engine.connect() as conn:
-    try:
-        conn.execute(text('''
-            INSERT INTO staging.stock_notes (ticker, notes, created_at, updated_at)
-            SELECT ticker, notes, created_at, updated_at FROM public.stock_notes
-            ON CONFLICT (ticker) DO UPDATE SET notes = EXCLUDED.notes, updated_at = EXCLUDED.updated_at
-        '''))
-        conn.execute(text('''
-            INSERT INTO staging.stock_preferences (ticker, preference, created_at, updated_at)
-            SELECT ticker, preference, created_at, updated_at FROM public.stock_preferences
-            ON CONFLICT (ticker) DO UPDATE SET preference = EXCLUDED.preference, updated_at = EXCLUDED.updated_at
-        '''))
-        conn.execute(text('''
-            INSERT INTO staging.abi_notes (note_date, title, content, tags, created_at, updated_at)
-            SELECT note_date, title, content, tags, created_at, updated_at FROM public.abi_notes
-        '''))
-        conn.commit()
-        print('User data preserved')
-    except Exception as e:
-        print(f'Could not preserve user data (may not exist): {e}')
-" >> $LOG_FILE 2>&1
-        echo "✅ User data preserved" | tee -a $LOG_FILE
 
         # Step 4: Swap schemas (unless --no-swap)
         if [ "$NO_SWAP" = "true" ]; then

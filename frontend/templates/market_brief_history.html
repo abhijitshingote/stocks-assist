@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-market-brief-history{% endblock %}
+
+{% block title %}Market Brief History - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+<style>
+    body.page-market-brief-history main {
+        max-width: 920px;
+        margin: 0 auto;
+    }
+
+    .mbh-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .mbh-header h1 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+
+    .mbh-meta {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+    }
+
+    .mbh-link {
+        font-size: 0.75rem;
+        color: var(--accent-blue);
+        text-decoration: none;
+    }
+
+    .mbh-link:hover {
+        text-decoration: underline;
+    }
+
+    .mbh-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .mbh-row {
+        display: grid;
+        grid-template-columns: 7.5rem 1fr;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-color);
+        align-items: start;
+    }
+
+    .mbh-date {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--accent-green);
+        white-space: nowrap;
+        padding-top: 0.1rem;
+    }
+
+    .mbh-date a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .mbh-date a:hover {
+        text-decoration: underline;
+    }
+
+    .mbh-weekday {
+        display: block;
+        font-size: 0.65rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        margin-top: 0.15rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .mbh-text {
+        font-size: 0.9rem;
+        line-height: 1.55;
+        color: var(--text-primary);
+    }
+
+    .mbh-text strong {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .mbh-threads {
+        margin: 0.55rem 0 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .mbh-threads li {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        color: var(--text-secondary);
+        padding-left: 0.85rem;
+        position: relative;
+    }
+
+    .mbh-threads li::before {
+        content: '·';
+        position: absolute;
+        left: 0.15rem;
+        color: var(--accent-blue);
+        font-weight: 700;
+    }
+
+    .mbh-empty,
+    .mbh-loading,
+    .mbh-error {
+        padding: 2rem 0;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    .mbh-error {
+        color: var(--accent-red);
+    }
+
+    @media (max-width: 640px) {
+        .mbh-row {
+            grid-template-columns: 1fr;
+            gap: 0.35rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mbh-header">
+    <h1><span class="mono text-green">$</span> Market Brief History</h1>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+        <span class="mbh-meta" id="mbh-count"></span>
+        <a class="mbh-link" href="/market-brief">Full briefs →</a>
+    </div>
+</div>
+
+<div id="mbh-list" class="mbh-list">
+    <div class="mbh-loading">Loading one-liners…</div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    function escapeHtml(text) {
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function inlineMarkdown(text) {
+        let html = escapeHtml(text);
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+        return html;
+    }
+
+    function formatDateParts(dateStr) {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        const dt = new Date(Date.UTC(y, m - 1, d));
+        return {
+            label: dateStr,
+            weekday: WEEKDAYS[dt.getUTCDay()],
+        };
+    }
+
+    function renderThreads(threads) {
+        if (!threads || !threads.length) {
+            return '';
+        }
+        const items = threads.map((t) => `<li>${escapeHtml(t)}</li>`).join('');
+        return `<ul class="mbh-threads">${items}</ul>`;
+    }
+
+    async function loadOneLiners() {
+        const listEl = document.getElementById('mbh-list');
+        const countEl = document.getElementById('mbh-count');
+        try {
+            const response = await fetch('/api/frontend/market-brief/one-liners');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const data = await response.json();
+            const entries = data.entries || [];
+            countEl.textContent = `${entries.length} entries`;
+
+            if (!entries.length) {
+                listEl.innerHTML = '<div class="mbh-empty">No one-liners found.</div>';
+                return;
+            }
+
+            listEl.innerHTML = entries.map((entry) => {
+                const parts = formatDateParts(entry.date);
+                return `
+                    <article class="mbh-row">
+                        <div class="mbh-date">
+                            <a href="/market-brief?date=${encodeURIComponent(entry.date)}">${parts.label}</a>
+                            <span class="mbh-weekday">${parts.weekday}</span>
+                        </div>
+                        <div class="mbh-body">
+                            <div class="mbh-text">${inlineMarkdown(entry.one_liner)}</div>
+                            ${renderThreads(entry.narrative_threads)}
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        } catch (err) {
+            listEl.innerHTML = `<div class="mbh-error">Failed to load: ${escapeHtml(err.message)}</div>`;
+            countEl.textContent = '';
+        }
+    }
+
+    loadOneLiners();
+</script>
+{% endblock %}

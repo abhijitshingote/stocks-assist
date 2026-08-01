@@ -1,0 +1,5897 @@
+{
+  "date": "2026-05-23",
+  "momentum_threshold": 50,
+  "max_llm_grade": 60,
+  "factor_weights": {
+    "multi_screen": 20,
+    "recent_event": 20,
+    "dr5_atr_norm": 20,
+    "trend_alignment": 15,
+    "vol_vs_avg": 10,
+    "rsi_mktcap": 15
+  },
+  "survivor_count": 60,
+  "drop_count": 83,
+  "survivors": [
+    {
+      "ticker": "VUZI",
+      "company_name": "Vuzix Corporation",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "market_cap": 427433446,
+      "current_price": 5.175,
+      "sources": [
+        "top_20d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 9.06,
+      "dr_5": 72.5,
+      "dr_20": 109.51,
+      "dr_60": 68.02,
+      "atr20": 11.35,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 1.81,
+      "last_event_date": "2026-05-19",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 3.6,
+      "momentum_score": 95.04,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 4d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 19.04,
+          "reason": "dr5=72.5% atr=11.3% norm=2.86"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=109.5, 60d=68.0)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.81x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "RGTI",
+      "company_name": "Rigetti Computing, Inc.",
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 8781976481,
+      "current_price": 25.8,
+      "sources": [
+        "top_1d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 20.59,
+      "dr_5": 44.54,
+      "dr_20": 55.33,
+      "dr_60": 38.41,
+      "atr20": 10.47,
+      "rsi_mktcap": 100,
+      "vol_vs_10d_avg": 4.93,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 5.66,
+      "momentum_score": 92.68,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 12.68,
+          "reason": "dr5=44.5% atr=10.5% norm=1.90"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=55.3, 60d=38.4)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 4.93x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      }
+    },
+    {
+      "ticker": "QBTS",
+      "company_name": "D-Wave Quantum Inc.",
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 10790365394,
+      "current_price": 28.38,
+      "sources": [
+        "top_1d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 12.13,
+      "dr_5": 39.46,
+      "dr_20": 53.49,
+      "dr_60": 40.91,
+      "atr20": 10.45,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 4.13,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 4.53,
+      "momentum_score": 91.26,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 11.26,
+          "reason": "dr5=39.5% atr=10.4% norm=1.69"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=53.5, 60d=40.9)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 4.13x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "DUOT",
+      "company_name": "Duos Technologies Group, Inc.",
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 225395372,
+      "current_price": 12.1299,
+      "sources": [
+        "top_1d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 13.63,
+      "dr_5": 35.23,
+      "dr_20": 42.54,
+      "dr_60": 38.0,
+      "atr20": 7.96,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 1.47,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.2021,
+      "momentum_score": 89.2,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 13.2,
+          "reason": "dr5=35.2% atr=8.0% norm=1.98"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=42.5, 60d=38.0)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.47x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "LPTH",
+      "company_name": "LightPath Technologies, Inc.",
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 811551254,
+      "current_price": 17.01,
+      "sources": [
+        "top_1d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 19.62,
+      "dr_5": 47.66,
+      "dr_20": 5.72,
+      "dr_60": 52.69,
+      "atr20": 11.82,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 1.84,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1962,
+      "momentum_score": 88.02,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 12.02,
+          "reason": "dr5=47.7% atr=11.8% norm=1.80"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=5.7, 60d=52.7)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.84x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "NTAP",
+      "company_name": "NetApp, Inc.",
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 27601690515,
+      "current_price": 141.67,
+      "sources": [
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 15.01,
+      "dr_5": 18.13,
+      "dr_20": 30.32,
+      "dr_60": 42.9,
+      "atr20": 3.7,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 2.37,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1501,
+      "momentum_score": 86.61,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 14.61,
+          "reason": "dr5=18.1% atr=3.7% norm=2.19"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=30.3, 60d=42.9)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.37x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "BB",
+      "company_name": "BlackBerry Limited",
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 4635745729,
+      "current_price": 7.8812,
+      "sources": [
+        "main_view",
+        "top_1d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 18.03,
+      "dr_5": 27.32,
+      "dr_20": 54.84,
+      "dr_60": 124.54,
+      "atr20": 7.77,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 1.83,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1803,
+      "momentum_score": 86.48,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "4 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 10.48,
+          "reason": "dr5=27.3% atr=7.8% norm=1.57"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=54.8, 60d=124.5)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.83x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "KULR",
+      "company_name": "KULR Technology Group, Inc.",
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 213245512,
+      "current_price": 4.5201,
+      "sources": [
+        "top_1d",
+        "top_20d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 17.12,
+      "dr_5": 25.56,
+      "dr_20": 87.56,
+      "dr_60": 54.27,
+      "atr20": 12.14,
+      "rsi_mktcap": 98,
+      "vol_vs_10d_avg": 2.08,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1712,
+      "momentum_score": 86.28,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "4 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 6.28,
+          "reason": "dr5=25.6% atr=12.1% norm=0.94"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=87.6, 60d=54.3)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.08x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      }
+    },
+    {
+      "ticker": "HPQ",
+      "company_name": "HP Inc.",
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 23169927720,
+      "current_price": 25.345,
+      "sources": [
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 16.39,
+      "dr_5": 21.79,
+      "dr_20": 28.07,
+      "dr_60": 34.74,
+      "atr20": 4.66,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 2.87,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1639,
+      "momentum_score": 85.94,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 13.94,
+          "reason": "dr5=21.8% atr=4.7% norm=2.09"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=28.1, 60d=34.7)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.87x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "HYLN",
+      "company_name": "Hyliion Holdings Corp.",
+      "sector": "Consumer Cyclical",
+      "industry": "Auto - Parts",
+      "market_cap": 1068178730,
+      "current_price": 5.78,
+      "sources": [
+        "main_view",
+        "top_1d",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 36.48,
+      "dr_5": 23.77,
+      "dr_20": 201.04,
+      "dr_60": 168.84,
+      "atr20": 13.23,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 2.13,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.3648,
+      "momentum_score": 85.36,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "4 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 5.36,
+          "reason": "dr5=23.8% atr=13.2% norm=0.80"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=201.0, 60d=168.8)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.13x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "DXYZ",
+      "company_name": "Destiny Tech100 Inc.",
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "market_cap": 722860888,
+      "current_price": 64.135,
+      "sources": [
+        "main_view",
+        "top_20d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 3.49,
+      "dr_5": 34.68,
+      "dr_20": 117.85,
+      "dr_60": 129.71,
+      "atr20": 14.67,
+      "rsi_mktcap": 98,
+      "vol_vs_10d_avg": 1.34,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.2508,
+      "momentum_score": 83.05,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "4 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 7.05,
+          "reason": "dr5=34.7% atr=14.7% norm=1.06"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=117.8, 60d=129.7)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.34x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      }
+    },
+    {
+      "ticker": "ARQQ",
+      "company_name": "Arqit Quantum Inc.",
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 273751014,
+      "current_price": 17.585,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 6.06,
+      "dr_5": 31.82,
+      "dr_20": 21.03,
+      "dr_60": 0.72,
+      "atr20": 8.88,
+      "rsi_mktcap": 96,
+      "vol_vs_10d_avg": 3.87,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 4.57,
+      "momentum_score": 82.68,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 10.68,
+          "reason": "dr5=31.8% atr=8.9% norm=1.60"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=21.0, 60d=0.7)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 3.87x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      }
+    },
+    {
+      "ticker": "DELL",
+      "company_name": "Dell Technologies Inc.",
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 199274024311,
+      "current_price": 296.015,
+      "sources": [
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 17.19,
+      "dr_5": 22.33,
+      "dr_20": 36.99,
+      "dr_60": 143.73,
+      "atr20": 6.38,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 2.24,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1719,
+      "momentum_score": 82.43,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 10.43,
+          "reason": "dr5=22.3% atr=6.4% norm=1.57"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=37.0, 60d=143.7)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.24x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "RAMP",
+      "company_name": "LiveRamp Holdings, Inc.",
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 2265303199,
+      "current_price": 37.715,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": -0.34,
+      "dr_5": 27.16,
+      "dr_20": 28.94,
+      "dr_60": 38.35,
+      "atr20": 3.99,
+      "rsi_mktcap": 95,
+      "vol_vs_10d_avg": 0.66,
+      "last_event_date": "2026-05-18",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 23.0,
+      "momentum_score": 82.0,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 5d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 20.0,
+          "reason": "dr5=27.2% atr=4.0% norm=3.04"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=28.9, 60d=38.4)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.66x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=95"
+        }
+      }
+    },
+    {
+      "ticker": "HIVE",
+      "company_name": "HIVE Digital Technologies Ltd.",
+      "sector": "Financial Services",
+      "industry": "Information Technology Services",
+      "market_cap": 1030755054,
+      "current_price": 4.0899,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 7.21,
+      "dr_5": 52.04,
+      "dr_20": 62.3,
+      "dr_60": 79.38,
+      "atr20": 11.17,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 1.51,
+      "last_event_date": "2026-05-20",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1514,
+      "momentum_score": 81.89,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 3d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 13.89,
+          "reason": "dr5=52.0% atr=11.2% norm=2.08"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=62.3, 60d=79.4)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.51x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "HLIT",
+      "company_name": "Harmonic Inc.",
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "market_cap": 1649145827,
+      "current_price": 15.12,
+      "sources": [
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 19.38,
+      "dr_5": 20.57,
+      "dr_20": 43.18,
+      "dr_60": 43.59,
+      "atr20": 6.4,
+      "rsi_mktcap": 96,
+      "vol_vs_10d_avg": 4.67,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 5.38,
+      "momentum_score": 81.58,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 9.58,
+          "reason": "dr5=20.6% atr=6.4% norm=1.44"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=43.2, 60d=43.6)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 4.67x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      }
+    },
+    {
+      "ticker": "SHAZ",
+      "company_name": "SharonAI Holdings, Inc. Class A Common Stock",
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 666405611,
+      "current_price": 65.2368,
+      "sources": [
+        "main_view",
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 16.25,
+      "dr_5": 20.97,
+      "dr_20": 54.63,
+      "dr_60": 137.05,
+      "atr20": 12.01,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 1.97,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1625,
+      "momentum_score": 81.21,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 5.21,
+          "reason": "dr5=21.0% atr=12.0% norm=0.78"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=54.6, 60d=137.1)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.97x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "ALAB",
+      "company_name": "Astera Labs, Inc. Common Stock",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 52601668320,
+      "current_price": 303.51,
+      "sources": [
+        "main_view",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 2.48,
+      "dr_5": 30.44,
+      "dr_20": 42.6,
+      "dr_60": 143.45,
+      "atr20": 9.57,
+      "rsi_mktcap": 100,
+      "vol_vs_10d_avg": 0.86,
+      "last_event_date": "2026-05-19",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1658,
+      "momentum_score": 79.48,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 4d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 9.48,
+          "reason": "dr5=30.4% atr=9.6% norm=1.42"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=42.6, 60d=143.4)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.86x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      }
+    },
+    {
+      "ticker": "INFQ",
+      "company_name": "Infleqtion, Inc.",
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 2837129859,
+      "current_price": 15.935,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 7.89,
+      "dr_5": 28.09,
+      "dr_20": 20.08,
+      "dr_60": 23.62,
+      "atr20": 11.8,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 4.64,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 5.27,
+      "momentum_score": 79.1,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 7.1,
+          "reason": "dr5=28.1% atr=11.8% norm=1.06"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=20.1, 60d=23.6)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 4.64x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "OPTX",
+      "company_name": "Syntec Optics Holdings, Inc.",
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 430189086,
+      "current_price": 10.6799,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 0.28,
+      "dr_5": 49.16,
+      "dr_20": 11.48,
+      "dr_60": 61.57,
+      "atr20": 14.41,
+      "rsi_mktcap": 98,
+      "vol_vs_10d_avg": 1.34,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 4.26,
+      "momentum_score": 78.17,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 10.17,
+          "reason": "dr5=49.2% atr=14.4% norm=1.53"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=11.5, 60d=61.6)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.34x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      }
+    },
+    {
+      "ticker": "BIRK",
+      "company_name": "Birkenstock Holding plc",
+      "sector": "Consumer Cyclical",
+      "industry": "Apparel - Footwear & Accessories",
+      "market_cap": 7610032597,
+      "current_price": 41.44,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 4.29,
+      "dr_5": 32.86,
+      "dr_20": 5.18,
+      "dr_60": 1.22,
+      "atr20": 6.14,
+      "rsi_mktcap": 96,
+      "vol_vs_10d_avg": 1.16,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.214,
+      "momentum_score": 77.96,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 15.96,
+          "reason": "dr5=32.9% atr=6.1% norm=2.39"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=5.2, 60d=1.2)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.16x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      }
+    },
+    {
+      "ticker": "NVTS",
+      "company_name": "Navitas Semiconductor Corporation",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 6836105250,
+      "current_price": 29.2101,
+      "sources": [
+        "main_view",
+        "top_1d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 18.84,
+      "dr_5": 37.01,
+      "dr_20": 69.04,
+      "dr_60": 207.15,
+      "atr20": 14.84,
+      "rsi_mktcap": 100,
+      "vol_vs_10d_avg": 1.22,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1884,
+      "momentum_score": 77.44,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "4 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 7.44,
+          "reason": "dr5=37.0% atr=14.8% norm=1.12"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=69.0, 60d=207.2)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.22x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      }
+    },
+    {
+      "ticker": "TE",
+      "company_name": "T1 Energy Inc",
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 1402938706,
+      "current_price": 7.825,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": -10.47,
+      "dr_5": 38.01,
+      "dr_20": 47.92,
+      "dr_60": 7.34,
+      "atr20": 12.06,
+      "rsi_mktcap": 96,
+      "vol_vs_10d_avg": 1.61,
+      "last_event_date": "2026-05-20",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 4.61,
+      "momentum_score": 77.4,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 3d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 9.4,
+          "reason": "dr5=38.0% atr=12.1% norm=1.41"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=47.9, 60d=7.3)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.61x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      }
+    },
+    {
+      "ticker": "CRNC",
+      "company_name": "Cerence Inc.",
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 496162044,
+      "current_price": 11.15,
+      "sources": [
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 15.42,
+      "dr_5": 13.89,
+      "dr_20": 27.57,
+      "dr_60": 41.68,
+      "atr20": 8.42,
+      "rsi_mktcap": 93,
+      "vol_vs_10d_avg": 3.66,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 4.29,
+      "momentum_score": 76.92,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.92,
+          "reason": "dr5=13.9% atr=8.4% norm=0.74"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=27.6, 60d=41.7)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 3.66x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=93"
+        }
+      }
+    },
+    {
+      "ticker": "SPCE",
+      "company_name": "Virgin Galactic Holdings, Inc.",
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 202114284,
+      "current_price": 3.215,
+      "sources": [
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 18.21,
+      "dr_5": 14.41,
+      "dr_20": 24.61,
+      "dr_60": 21.78,
+      "atr20": 9.9,
+      "rsi_mktcap": 96,
+      "vol_vs_10d_avg": 3.61,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 3.81,
+      "momentum_score": 76.34,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.34,
+          "reason": "dr5=14.4% atr=9.9% norm=0.65"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=24.6, 60d=21.8)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 3.61x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      }
+    },
+    {
+      "ticker": "RDW",
+      "company_name": "Redwire Corporation",
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 2626743188,
+      "current_price": 17.47,
+      "sources": [
+        "top_1d",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 18.4,
+      "dr_5": 24.25,
+      "dr_20": 80.48,
+      "dr_60": 82.93,
+      "atr20": 12.38,
+      "rsi_mktcap": 100,
+      "vol_vs_10d_avg": 1.12,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.184,
+      "momentum_score": 75.84,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 5.84,
+          "reason": "dr5=24.2% atr=12.4% norm=0.88"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=80.5, 60d=82.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.12x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      }
+    },
+    {
+      "ticker": "EVC",
+      "company_name": "Entravision Communications Corporation",
+      "sector": "Communication Services",
+      "industry": "Broadcasting",
+      "market_cap": 905665531,
+      "current_price": 9.695,
+      "sources": [
+        "main_view",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 2.97,
+      "dr_5": 23.82,
+      "dr_20": 158.53,
+      "dr_60": 204.87,
+      "atr20": 14.45,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 0.34,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1645,
+      "momentum_score": 74.91,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.91,
+          "reason": "dr5=23.8% atr=14.4% norm=0.74"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=158.5, 60d=204.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.34x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "WYFI",
+      "company_name": "WhiteFiber, Inc. Ordinary Shares",
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 1165763181,
+      "current_price": 29.735,
+      "sources": [
+        "main_view",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 0.68,
+      "dr_5": 22.87,
+      "dr_20": 79.67,
+      "dr_60": 60.64,
+      "atr20": 13.97,
+      "rsi_mktcap": 98,
+      "vol_vs_10d_avg": 0.6,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.204,
+      "momentum_score": 74.88,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.88,
+          "reason": "dr5=22.9% atr=14.0% norm=0.73"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=79.7, 60d=60.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.60x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      }
+    },
+    {
+      "ticker": "BKKT",
+      "company_name": "Bakkt Holdings, Inc.",
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 208519114,
+      "current_price": 11.7601,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": -5.38,
+      "dr_5": 42.03,
+      "dr_20": 33.18,
+      "dr_60": 13.08,
+      "atr20": 10.91,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 1.27,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.2287,
+      "momentum_score": 73.49,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 11.49,
+          "reason": "dr5=42.0% atr=10.9% norm=1.72"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=33.2, 60d=13.1)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.27x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "FCEL",
+      "company_name": "FuelCell Energy, Inc.",
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 1324976429,
+      "current_price": 25.3,
+      "sources": [
+        "main_view",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": -3.91,
+      "dr_5": 18.45,
+      "dr_20": 126.3,
+      "dr_60": 178.94,
+      "atr20": 17.35,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 0.83,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.3002,
+      "momentum_score": 73.17,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 3.17,
+          "reason": "dr5=18.4% atr=17.4% norm=0.48"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=126.3, 60d=178.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.83x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "IMAX",
+      "company_name": "IMAX Corporation",
+      "sector": "Communication Services",
+      "industry": "Entertainment",
+      "market_cap": 2145935424,
+      "current_price": 38.87,
+      "sources": [
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 15.55,
+      "dr_5": 15.72,
+      "dr_20": 6.64,
+      "dr_60": -6.94,
+      "atr20": 4.83,
+      "rsi_mktcap": 90,
+      "vol_vs_10d_avg": 3.21,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1555,
+      "momentum_score": 72.7,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 9.7,
+          "reason": "dr5=15.7% atr=4.8% norm=1.46"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=6.6, 60d=-6.9)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 3.21x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=90"
+        }
+      }
+    },
+    {
+      "ticker": "WOLF",
+      "company_name": "Wolfspeed, Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 3373584393,
+      "current_price": 69.77,
+      "sources": [
+        "main_view",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 0.3,
+      "dr_5": 12.3,
+      "dr_20": 123.41,
+      "dr_60": 245.23,
+      "atr20": 17.93,
+      "rsi_mktcap": 100,
+      "vol_vs_10d_avg": 0.8,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.2099,
+      "momentum_score": 72.05,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 2.05,
+          "reason": "dr5=12.3% atr=17.9% norm=0.31"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=123.4, 60d=245.2)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.80x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      }
+    },
+    {
+      "ticker": "AXTI",
+      "company_name": "AXT, Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 6530344277,
+      "current_price": 135.79,
+      "sources": [
+        "main_view",
+        "top_1d",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 12.28,
+      "dr_5": 9.7,
+      "dr_20": 78.3,
+      "dr_60": 265.81,
+      "atr20": 14.3,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 0.74,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1615,
+      "momentum_score": 72.02,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "4 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 2.02,
+          "reason": "dr5=9.7% atr=14.3% norm=0.30"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=78.3, 60d=265.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.74x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "VOYG",
+      "company_name": "Voyager Technologies, Inc.",
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 2645462376,
+      "current_price": 44.91,
+      "sources": [
+        "top_1d",
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 11.88,
+      "dr_5": 30.4,
+      "dr_20": 56.59,
+      "dr_60": 56.7,
+      "atr20": 10.04,
+      "rsi_mktcap": 100,
+      "vol_vs_10d_avg": 1.17,
+      "last_event_date": "2026-05-13",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1507,
+      "momentum_score": 69.03,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 9.03,
+          "reason": "dr5=30.4% atr=10.0% norm=1.35"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=56.6, 60d=56.7)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.17x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      }
+    },
+    {
+      "ticker": "UTI",
+      "company_name": "Universal Technical Institute, Inc.",
+      "sector": "Consumer Defensive",
+      "industry": "Education & Training Services",
+      "market_cap": 2205758923,
+      "current_price": 40.66,
+      "sources": [
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 12.04,
+      "dr_5": 2.78,
+      "dr_20": 14.57,
+      "dr_60": 18.2,
+      "atr20": 5.95,
+      "rsi_mktcap": 84,
+      "vol_vs_10d_avg": 3.08,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 3.58,
+      "momentum_score": 68.89,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 1.39,
+          "reason": "dr5=2.8% atr=6.0% norm=0.21"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=14.6, 60d=18.2)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 3.08x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=84"
+        }
+      }
+    },
+    {
+      "ticker": "ENPH",
+      "company_name": "Enphase Energy, Inc.",
+      "sector": "Energy",
+      "industry": "Solar",
+      "market_cap": 8439025940,
+      "current_price": 64.0363,
+      "sources": [
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 3.37,
+      "dr_5": 21.07,
+      "dr_20": 79.02,
+      "dr_60": 39.91,
+      "atr20": 10.0,
+      "rsi_mktcap": 100,
+      "vol_vs_10d_avg": 0.97,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1796,
+      "momentum_score": 68.28,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 6.28,
+          "reason": "dr5=21.1% atr=10.0% norm=0.94"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=79.0, 60d=39.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.97x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      }
+    },
+    {
+      "ticker": "MX",
+      "company_name": "Magnachip Semiconductor Corporation",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 201153768,
+      "current_price": 5.525,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": -2.99,
+      "dr_5": 27.3,
+      "dr_20": 5.24,
+      "dr_60": 93.86,
+      "atr20": 14.02,
+      "rsi_mktcap": 96,
+      "vol_vs_10d_avg": 1.22,
+      "last_event_date": "2026-05-20",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1887,
+      "momentum_score": 67.81,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 3d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 5.81,
+          "reason": "dr5=27.3% atr=14.0% norm=0.87"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=5.2, 60d=93.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.22x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      }
+    },
+    {
+      "ticker": "FLY",
+      "company_name": "Firefly Aerospace Inc.",
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 7931642895,
+      "current_price": 49.38,
+      "sources": [
+        "top_1d",
+        "volspike_gapper"
+      ],
+      "dr_1": 16.22,
+      "dr_5": 22.14,
+      "dr_20": 40.56,
+      "dr_60": 129.35,
+      "atr20": 11.37,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 1.1,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1622,
+      "momentum_score": 67.81,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 5.81,
+          "reason": "dr5=22.1% atr=11.4% norm=0.87"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=40.6, 60d=129.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.10x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "VSH",
+      "company_name": "Vishay Intertechnology, Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 6430999995,
+      "current_price": 47.38,
+      "sources": [
+        "main_view",
+        "top_1d",
+        "top_5d"
+      ],
+      "dr_1": 12.97,
+      "dr_5": 27.26,
+      "dr_20": 68.07,
+      "dr_60": 143.6,
+      "atr20": 6.89,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 1.33,
+      "last_event_date": null,
+      "last_event_type": null,
+      "last_event_magnitude": null,
+      "momentum_score": 67.8,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "no event"
+        },
+        "dr5_atr_norm": {
+          "points": 11.8,
+          "reason": "dr5=27.3% atr=6.9% norm=1.77"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=68.1, 60d=143.6)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.33x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "GFS",
+      "company_name": "GLOBALFOUNDRIES Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 47651572434,
+      "current_price": 85.6656,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": 6.28,
+      "dr_5": 20.6,
+      "dr_20": 38.64,
+      "dr_60": 82.58,
+      "atr20": 6.62,
+      "rsi_mktcap": 98,
+      "vol_vs_10d_avg": 1.97,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.0628,
+      "momentum_score": 65.28,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 9.28,
+          "reason": "dr5=20.6% atr=6.6% norm=1.39"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=38.6, 60d=82.6)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.97x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      }
+    },
+    {
+      "ticker": "AVR",
+      "company_name": "Anteris Technologies Global Corp.",
+      "sector": "Healthcare",
+      "industry": "Medical - Devices",
+      "market_cap": 353904995,
+      "current_price": 9.4628,
+      "sources": [
+        "top_20d",
+        "top_5d"
+      ],
+      "dr_1": 5.55,
+      "dr_5": 30.7,
+      "dr_20": 69.58,
+      "dr_60": 49.26,
+      "atr20": 6.98,
+      "rsi_mktcap": 98,
+      "vol_vs_10d_avg": 2.23,
+      "last_event_date": "2026-01-22",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 4.47,
+      "momentum_score": 65.11,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (121d)"
+        },
+        "dr5_atr_norm": {
+          "points": 13.11,
+          "reason": "dr5=30.7% atr=7.0% norm=1.97"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=69.6, 60d=49.3)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.23x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      }
+    },
+    {
+      "ticker": "VPG",
+      "company_name": "Vishay Precision Group, Inc.",
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 1513121646,
+      "current_price": 112.82,
+      "sources": [
+        "main_view",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 9.73,
+      "dr_5": 15.93,
+      "dr_20": 86.11,
+      "dr_60": 138.72,
+      "atr20": 9.6,
+      "rsi_mktcap": 98,
+      "vol_vs_10d_avg": 0.73,
+      "last_event_date": "2026-05-13",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 4.59,
+      "momentum_score": 64.95,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.95,
+          "reason": "dr5=15.9% atr=9.6% norm=0.74"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=86.1, 60d=138.7)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.73x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      }
+    },
+    {
+      "ticker": "QUBT",
+      "company_name": "Quantum Computing, Inc.",
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 1680315000,
+      "current_price": 12.18,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": 6.98,
+      "dr_5": 15.89,
+      "dr_20": 36.24,
+      "dr_60": 34.73,
+      "atr20": 11.05,
+      "rsi_mktcap": 96,
+      "vol_vs_10d_avg": 2.09,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1878,
+      "momentum_score": 64.29,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.29,
+          "reason": "dr5=15.9% atr=11.1% norm=0.64"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=36.2, 60d=34.7)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.09x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      }
+    },
+    {
+      "ticker": "PENG",
+      "company_name": "Penguin Solutions, Inc.",
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 2796725901,
+      "current_price": 53.0,
+      "sources": [
+        "main_view",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 7.92,
+      "dr_5": 13.2,
+      "dr_20": 72.69,
+      "dr_60": 158.66,
+      "atr20": 9.64,
+      "rsi_mktcap": 99,
+      "vol_vs_10d_avg": 0.63,
+      "last_event_date": "2026-05-13",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 3.5,
+      "momentum_score": 64.08,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.08,
+          "reason": "dr5=13.2% atr=9.6% norm=0.61"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=72.7, 60d=158.7)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.63x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      }
+    },
+    {
+      "ticker": "GENI",
+      "company_name": "Genius Sports Limited",
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "market_cap": 1377828300,
+      "current_price": 5.375,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 9.25,
+      "dr_5": 26.77,
+      "dr_20": 20.25,
+      "dr_60": -15.88,
+      "atr20": 7.33,
+      "rsi_mktcap": 92,
+      "vol_vs_10d_avg": 1.05,
+      "last_event_date": "2026-05-18",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.2122,
+      "momentum_score": 63.89,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 5d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 10.89,
+          "reason": "dr5=26.8% atr=7.3% norm=1.63"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=20.2, 60d=-15.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.05x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=92"
+        }
+      }
+    },
+    {
+      "ticker": "NBIS",
+      "company_name": "Nebius Group N.V.",
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "market_cap": 51544800000,
+      "current_price": 211.7,
+      "sources": [
+        "main_view",
+        "volspike_gapper"
+      ],
+      "dr_1": -3.52,
+      "dr_5": -3.75,
+      "dr_20": 43.86,
+      "dr_60": 101.85,
+      "atr20": 10.47,
+      "rsi_mktcap": 96,
+      "vol_vs_10d_avg": 0.47,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1457,
+      "momentum_score": 62.0,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-3.8% atr=10.5% norm=-0.16"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=43.9, 60d=101.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.47x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      }
+    },
+    {
+      "ticker": "GH",
+      "company_name": "Guardant Health, Inc.",
+      "sector": "Healthcare",
+      "industry": "Medical - Diagnostics & Research",
+      "market_cap": 15772761555,
+      "current_price": 118.2557,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": 0.36,
+      "dr_5": 24.58,
+      "dr_20": 33.01,
+      "dr_60": 20.71,
+      "atr20": 6.17,
+      "rsi_mktcap": 98,
+      "vol_vs_10d_avg": 0.88,
+      "last_event_date": "2026-05-20",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1506,
+      "momentum_score": 61.88,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 3d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 11.88,
+          "reason": "dr5=24.6% atr=6.2% norm=1.78"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=33.0, 60d=20.7)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.88x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      }
+    },
+    {
+      "ticker": "CMBT",
+      "company_name": "Cmb.Tech N.V.",
+      "sector": "Industrials",
+      "industry": "Marine Shipping",
+      "market_cap": 3866333549,
+      "current_price": 16.845,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": -2.6,
+      "dr_5": 12.75,
+      "dr_20": 31.09,
+      "dr_60": 17.8,
+      "atr20": 3.71,
+      "rsi_mktcap": 95,
+      "vol_vs_10d_avg": 0.72,
+      "last_event_date": "2026-05-19",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.0984,
+      "momentum_score": 60.25,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 4d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 10.25,
+          "reason": "dr5=12.8% atr=3.7% norm=1.54"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=31.1, 60d=17.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.72x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=95"
+        }
+      }
+    },
+    {
+      "ticker": "RXT",
+      "company_name": "Rackspace Technology, Inc.",
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 1034273371,
+      "current_price": 4.27,
+      "sources": [
+        "main_view",
+        "top_20d",
+        "volspike_gapper"
+      ],
+      "dr_1": 0.35,
+      "dr_5": -26.63,
+      "dr_20": 170.25,
+      "dr_60": 87.28,
+      "atr20": 25.23,
+      "rsi_mktcap": 98,
+      "vol_vs_10d_avg": 0.33,
+      "last_event_date": "2026-05-14",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.2634,
+      "momentum_score": 60.0,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-26.6% atr=25.2% norm=-0.47"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=170.2, 60d=87.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.33x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      }
+    },
+    {
+      "ticker": "BLDP",
+      "company_name": "Ballard Power Systems Inc.",
+      "sector": "Industrials",
+      "industry": "Industrial - Machinery",
+      "market_cap": 1667058020,
+      "current_price": 5.55,
+      "sources": [
+        "main_view",
+        "volspike_gapper"
+      ],
+      "dr_1": 3.74,
+      "dr_5": 24.72,
+      "dr_20": 69.21,
+      "dr_60": 151.13,
+      "atr20": 10.98,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 1.1,
+      "last_event_date": "2026-05-15",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 4.15,
+      "momentum_score": 58.71,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 8d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 6.71,
+          "reason": "dr5=24.7% atr=11.0% norm=1.01"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=69.2, 60d=151.1)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.10x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "AGYS",
+      "company_name": "Agilysys, Inc.",
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 2244158688,
+      "current_price": 79.9063,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": 0.44,
+      "dr_5": 18.66,
+      "dr_20": 19.69,
+      "dr_60": 8.94,
+      "atr20": 6.67,
+      "rsi_mktcap": 95,
+      "vol_vs_10d_avg": 0.33,
+      "last_event_date": "2026-05-19",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 9.4,
+      "momentum_score": 58.34,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 4d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 8.34,
+          "reason": "dr5=18.7% atr=6.7% norm=1.25"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=19.7, 60d=8.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.33x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=95"
+        }
+      }
+    },
+    {
+      "ticker": "D",
+      "company_name": "Dominion Energy, Inc.",
+      "sector": "Utilities",
+      "industry": "Regulated Electric",
+      "market_cap": 59512719850,
+      "current_price": 67.97,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": -0.35,
+      "dr_5": 10.11,
+      "dr_20": 8.61,
+      "dr_60": 7.29,
+      "atr20": 2.38,
+      "rsi_mktcap": 81,
+      "vol_vs_10d_avg": 0.51,
+      "last_event_date": "2026-05-18",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 6.26,
+      "momentum_score": 58.16,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 5d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 12.66,
+          "reason": "dr5=10.1% atr=2.4% norm=1.90"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=8.6, 60d=7.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.51x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=81"
+        }
+      }
+    },
+    {
+      "ticker": "EL",
+      "company_name": "The Est\u00e9e Lauder Companies Inc.",
+      "sector": "Consumer Defensive",
+      "industry": "Household & Personal Products",
+      "market_cap": 31943104381,
+      "current_price": 88.01,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": 11.49,
+      "dr_5": 9.63,
+      "dr_20": 13.09,
+      "dr_60": -21.35,
+      "atr20": 4.74,
+      "rsi_mktcap": 90,
+      "vol_vs_10d_avg": 2.07,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1149,
+      "momentum_score": 57.06,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 6.06,
+          "reason": "dr5=9.6% atr=4.7% norm=0.91"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=13.1, 60d=-21.4)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.07x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=90"
+        }
+      }
+    },
+    {
+      "ticker": "BIO",
+      "company_name": "Bio-Rad Laboratories, Inc.",
+      "sector": "Healthcare",
+      "industry": "Medical - Devices",
+      "market_cap": 7779135208,
+      "current_price": 288.145,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": -0.22,
+      "dr_5": 16.41,
+      "dr_20": 0.11,
+      "dr_60": 4.7,
+      "atr20": 4.36,
+      "rsi_mktcap": 82,
+      "vol_vs_10d_avg": 0.27,
+      "last_event_date": "2026-05-18",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1401,
+      "momentum_score": 56.72,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 5d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 11.22,
+          "reason": "dr5=16.4% atr=4.4% norm=1.68"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=0.1, 60d=4.7)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.27x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=82"
+        }
+      }
+    },
+    {
+      "ticker": "LAES",
+      "company_name": "SEALSQ Corp",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 481966875,
+      "current_price": 3.325,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": 0.91,
+      "dr_5": 15.85,
+      "dr_20": 12.71,
+      "dr_60": -19.49,
+      "atr20": 9.18,
+      "rsi_mktcap": 92,
+      "vol_vs_10d_avg": 2.3,
+      "last_event_date": "2026-05-21",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1561,
+      "momentum_score": 56.15,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 5.15,
+          "reason": "dr5=15.8% atr=9.2% norm=0.77"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=12.7, 60d=-19.5)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.30x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=92"
+        }
+      }
+    },
+    {
+      "ticker": "AIP",
+      "company_name": "Arteris, Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 1675119434,
+      "current_price": 36.44,
+      "sources": [
+        "main_view",
+        "volspike_gapper"
+      ],
+      "dr_1": 2.75,
+      "dr_5": 8.1,
+      "dr_20": 36.38,
+      "dr_60": 111.61,
+      "atr20": 7.72,
+      "rsi_mktcap": 94,
+      "vol_vs_10d_avg": 0.61,
+      "last_event_date": "2026-05-13",
+      "last_event_type": "volume_spike",
+      "last_event_magnitude": 3.62,
+      "momentum_score": 55.13,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 3.13,
+          "reason": "dr5=8.1% atr=7.7% norm=0.47"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=36.4, 60d=111.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.61x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=94"
+        }
+      }
+    },
+    {
+      "ticker": "TTMI",
+      "company_name": "TTM Technologies, Inc.",
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 19723192000,
+      "current_price": 187.7726,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": 8.01,
+      "dr_5": 12.2,
+      "dr_20": 26.01,
+      "dr_60": 74.57,
+      "atr20": 8.68,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 1.18,
+      "last_event_date": "2026-05-22",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.0801,
+      "momentum_score": 54.19,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.19,
+          "reason": "dr5=12.2% atr=8.7% norm=0.63"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=26.0, 60d=74.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.18x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "SG",
+      "company_name": "Sweetgreen, Inc.",
+      "sector": "Consumer Cyclical",
+      "industry": "Restaurants",
+      "market_cap": 1164154546,
+      "current_price": 9.705,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": 8.07,
+      "dr_5": 19.96,
+      "dr_20": 35.92,
+      "dr_60": 58.06,
+      "atr20": 8.22,
+      "rsi_mktcap": 96,
+      "vol_vs_10d_avg": 1.56,
+      "last_event_date": "2026-05-15",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1742,
+      "momentum_score": 53.24,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 8d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 7.24,
+          "reason": "dr5=20.0% atr=8.2% norm=1.09"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=35.9, 60d=58.1)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.56x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      }
+    },
+    {
+      "ticker": "PSNL",
+      "company_name": "Personalis, Inc.",
+      "sector": "Healthcare",
+      "industry": "Medical - Diagnostics & Research",
+      "market_cap": 752172828,
+      "current_price": 8.4797,
+      "sources": [
+        "top_5d",
+        "volspike_gapper"
+      ],
+      "dr_1": 3.6,
+      "dr_5": 33.33,
+      "dr_20": 39.01,
+      "dr_60": -6.09,
+      "atr20": 9.87,
+      "rsi_mktcap": 97,
+      "vol_vs_10d_avg": 0.92,
+      "last_event_date": "2026-05-13",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.0579,
+      "momentum_score": 53.07,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 10.07,
+          "reason": "dr5=33.3% atr=9.9% norm=1.51"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=39.0, 60d=-6.1)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.92x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      }
+    },
+    {
+      "ticker": "BRC",
+      "company_name": "Brady Corporation",
+      "sector": "Industrials",
+      "industry": "Security & Protection Services",
+      "market_cap": 4123311556,
+      "current_price": 86.88,
+      "sources": [
+        "volspike_gapper"
+      ],
+      "dr_1": 1.48,
+      "dr_5": 22.44,
+      "dr_20": 7.66,
+      "dr_60": -5.59,
+      "atr20": 4.07,
+      "rsi_mktcap": 83,
+      "vol_vs_10d_avg": 1.24,
+      "last_event_date": "2026-05-18",
+      "last_event_type": "gapper",
+      "last_event_magnitude": 0.1749,
+      "momentum_score": 52.94,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 5d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 16.44,
+          "reason": "dr5=22.4% atr=4.1% norm=2.47"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=7.7, 60d=-5.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.24x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=83"
+        }
+      }
+    }
+  ],
+  "drops": [
+    {
+      "ticker": "ARM",
+      "company_name": "Arm Holdings plc American Depositary Shares",
+      "sources": [
+        "top_5d"
+      ],
+      "momentum_score": 45.76,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (17d)"
+        },
+        "dr5_atr_norm": {
+          "points": 15.76,
+          "reason": "dr5=44.9% atr=8.5% norm=2.36"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=29.1, 60d=134.5)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.03x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      },
+      "drop_reason": "momentum_score 45.8 < threshold 50"
+    },
+    {
+      "ticker": "VCX",
+      "company_name": "Fundrise Growth Tech Fund, LLC",
+      "sources": [
+        "main_view",
+        "top_20d",
+        "top_5d"
+      ],
+      "momentum_score": 45.8,
+      "factors": {
+        "multi_screen": {
+          "points": 20,
+          "reason": "3 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (12d)"
+        },
+        "dr5_atr_norm": {
+          "points": 4.8,
+          "reason": "dr5=32.0% atr=19.9% norm=0.72"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=204.2, 60d=0.0)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.72x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      },
+      "drop_reason": "momentum_score 45.8 < threshold 50"
+    },
+    {
+      "ticker": "RXO",
+      "company_name": "RXO, Inc.",
+      "sources": [
+        "top_5d"
+      ],
+      "momentum_score": 41.63,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (16d)"
+        },
+        "dr5_atr_norm": {
+          "points": 11.63,
+          "reason": "dr5=31.9% atr=8.2% norm=1.74"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=27.2, 60d=58.2)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.48x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      },
+      "drop_reason": "momentum_score 41.6 < threshold 50"
+    },
+    {
+      "ticker": "SWMR",
+      "company_name": "Swarmer, Inc Common Stock",
+      "sources": [
+        "top_5d"
+      ],
+      "momentum_score": 35.6,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (12d)"
+        },
+        "dr5_atr_norm": {
+          "points": 8.6,
+          "reason": "dr5=31.1% atr=10.8% norm=1.29"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=2.6, 60d=0.0)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.89x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=94"
+        }
+      },
+      "drop_reason": "momentum_score 35.6 < threshold 50"
+    },
+    {
+      "ticker": "AZTA",
+      "company_name": "Azenta, Inc.",
+      "sources": [
+        "top_5d"
+      ],
+      "momentum_score": 10.71,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (183d)"
+        },
+        "dr5_atr_norm": {
+          "points": 10.71,
+          "reason": "dr5=25.8% atr=7.2% norm=1.61"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-22.2, 60d=-26.4)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.42x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=29"
+        }
+      },
+      "drop_reason": "momentum_score 10.7 < threshold 50"
+    },
+    {
+      "ticker": "AAP",
+      "company_name": "Advance Auto Parts, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 47.05,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 10.55,
+          "reason": "dr5=21.0% atr=5.9% norm=1.58"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=-1.9, 60d=9.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.14x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=80"
+        }
+      },
+      "drop_reason": "momentum_score 47.0 < threshold 50"
+    },
+    {
+      "ticker": "AEVA",
+      "company_name": "Aeva Technologies, Inc.",
+      "sources": [
+        "top_1d"
+      ],
+      "momentum_score": 34.48,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (11d)"
+        },
+        "dr5_atr_norm": {
+          "points": 4.48,
+          "reason": "dr5=19.3% atr=12.9% norm=0.67"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=51.1, 60d=79.1)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.22x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 34.5 < threshold 50"
+    },
+    {
+      "ticker": "FEIM",
+      "company_name": "Frequency Electronics, Inc.",
+      "sources": [
+        "top_1d"
+      ],
+      "momentum_score": 42.73,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (22d)"
+        },
+        "dr5_atr_norm": {
+          "points": 6.73,
+          "reason": "dr5=18.5% atr=8.2% norm=1.01"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=31.5, 60d=33.3)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.53x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=95"
+        }
+      },
+      "drop_reason": "momentum_score 42.7 < threshold 50"
+    },
+    {
+      "ticker": "VELO",
+      "company_name": "Velo3D, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 43.77,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 3.77,
+          "reason": "dr5=18.4% atr=14.6% norm=0.56"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=26.8, 60d=103.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.09x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      },
+      "drop_reason": "momentum_score 43.8 < threshold 50"
+    },
+    {
+      "ticker": "QCOM",
+      "company_name": "QUALCOMM Incorporated",
+      "sources": [
+        "top_1d"
+      ],
+      "momentum_score": 35.54,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (12d)"
+        },
+        "dr5_atr_norm": {
+          "points": 5.54,
+          "reason": "dr5=17.5% atr=9.4% norm=0.83"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=59.1, 60d=62.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.89x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 35.5 < threshold 50"
+    },
+    {
+      "ticker": "RL",
+      "company_name": "Ralph Lauren Corporation",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 48.66,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 12.16,
+          "reason": "dr5=15.1% atr=3.7% norm=1.82"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=1.4, 60d=-0.7)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.79x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=88"
+        }
+      },
+      "drop_reason": "momentum_score 48.7 < threshold 50"
+    },
+    {
+      "ticker": "AMBQ",
+      "company_name": "Ambiq Micro, Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 46.25,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (11d)"
+        },
+        "dr5_atr_norm": {
+          "points": 4.25,
+          "reason": "dr5=14.8% atr=10.4% norm=0.64"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=128.3, 60d=150.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.66x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      },
+      "drop_reason": "momentum_score 46.2 < threshold 50"
+    },
+    {
+      "ticker": "INDI",
+      "company_name": "indie Semiconductor, Inc.",
+      "sources": [
+        "top_1d"
+      ],
+      "momentum_score": 44.47,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (26d)"
+        },
+        "dr5_atr_norm": {
+          "points": 4.47,
+          "reason": "dr5=13.7% atr=9.2% norm=0.67"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=30.2, 60d=29.1)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.51x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=92"
+        }
+      },
+      "drop_reason": "momentum_score 44.5 < threshold 50"
+    },
+    {
+      "ticker": "STUB",
+      "company_name": "StubHub Holdings, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 45.62,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 5.62,
+          "reason": "dr5=13.5% atr=7.2% norm=0.84"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=40.0, 60d=5.5)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.52x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      },
+      "drop_reason": "momentum_score 45.6 < threshold 50"
+    },
+    {
+      "ticker": "BAND",
+      "company_name": "Bandwidth Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 45.93,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (22d)"
+        },
+        "dr5_atr_norm": {
+          "points": 3.93,
+          "reason": "dr5=13.2% atr=10.0% norm=0.59"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=153.3, 60d=312.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.63x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 45.9 < threshold 50"
+    },
+    {
+      "ticker": "CMPS",
+      "company_name": "COMPASS Pathways plc",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 44.96,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.96,
+          "reason": "dr5=12.9% atr=7.8% norm=0.74"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=22.2, 60d=59.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.86x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=94"
+        }
+      },
+      "drop_reason": "momentum_score 45.0 < threshold 50"
+    },
+    {
+      "ticker": "ARX",
+      "company_name": "Accelerant Holdings",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 45.52,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 5.52,
+          "reason": "dr5=11.9% atr=6.4% norm=0.83"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=31.6, 60d=61.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.81x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      },
+      "drop_reason": "momentum_score 45.5 < threshold 50"
+    },
+    {
+      "ticker": "FLO",
+      "company_name": "Flowers Foods, Inc.",
+      "sources": [
+        "top_1d"
+      ],
+      "momentum_score": 12.32,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "no event"
+        },
+        "dr5_atr_norm": {
+          "points": 6.32,
+          "reason": "dr5=11.3% atr=5.3% norm=0.95"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-9.2, 60d=-19.4)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.30x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=35"
+        }
+      },
+      "drop_reason": "momentum_score 12.3 < threshold 50"
+    },
+    {
+      "ticker": "F",
+      "company_name": "Ford Motor Company",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 46.49,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 6.49,
+          "reason": "dr5=10.6% atr=4.9% norm=0.97"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=19.8, 60d=2.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.14x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=95"
+        }
+      },
+      "drop_reason": "momentum_score 46.5 < threshold 50"
+    },
+    {
+      "ticker": "HIMX",
+      "company_name": "Himax Technologies, Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 44.62,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (12d)"
+        },
+        "dr5_atr_norm": {
+          "points": 2.62,
+          "reason": "dr5=10.2% atr=11.7% norm=0.39"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=73.8, 60d=179.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.51x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      },
+      "drop_reason": "momentum_score 44.6 < threshold 50"
+    },
+    {
+      "ticker": "INTC",
+      "company_name": "Intel Corporation",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 33.58,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (29d)"
+        },
+        "dr5_atr_norm": {
+          "points": 3.58,
+          "reason": "dr5=9.9% atr=8.3% norm=0.54"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=44.9, 60d=163.0)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.49x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=91"
+        }
+      },
+      "drop_reason": "momentum_score 33.6 < threshold 50"
+    },
+    {
+      "ticker": "KEEL",
+      "company_name": "Keel Infrastructure Corp.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 32.67,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (17d)"
+        },
+        "dr5_atr_norm": {
+          "points": 2.67,
+          "reason": "dr5=9.7% atr=10.8% norm=0.40"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=46.4, 60d=106.7)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.98x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      },
+      "drop_reason": "momentum_score 32.7 < threshold 50"
+    },
+    {
+      "ticker": "XNDU",
+      "company_name": "Xanadu Quantum Technologies Limited Class B Subordinate Voting Shares",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 27.57,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 3d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 1.57,
+          "reason": "dr5=9.6% atr=18.2% norm=0.24"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-51.9, 60d=0.0)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.61x"
+        },
+        "rsi_mktcap": {
+          "points": 6.0,
+          "reason": "rsi_mktcap=72"
+        }
+      },
+      "drop_reason": "momentum_score 27.6 < threshold 50"
+    },
+    {
+      "ticker": "STM",
+      "company_name": "STMicroelectronics N.V.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 35.25,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (30d)"
+        },
+        "dr5_atr_norm": {
+          "points": 5.25,
+          "reason": "dr5=8.8% atr=5.0% norm=0.79"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=32.4, 60d=94.4)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.57x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=94"
+        }
+      },
+      "drop_reason": "momentum_score 35.2 < threshold 50"
+    },
+    {
+      "ticker": "KLAR",
+      "company_name": "Klarna Group plc",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 44.24,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.24,
+          "reason": "dr5=8.8% atr=6.2% norm=0.64"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=17.3, 60d=16.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.68x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=92"
+        }
+      },
+      "drop_reason": "momentum_score 44.2 < threshold 50"
+    },
+    {
+      "ticker": "RERE",
+      "company_name": "ATRenew Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 40.27,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 4d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 4.27,
+          "reason": "dr5=8.2% atr=5.7% norm=0.64"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-2.2, 60d=-21.9)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.56x"
+        },
+        "rsi_mktcap": {
+          "points": 6.0,
+          "reason": "rsi_mktcap=75"
+        }
+      },
+      "drop_reason": "momentum_score 40.3 < threshold 50"
+    },
+    {
+      "ticker": "RKLB",
+      "company_name": "Rocket Lab USA, Inc.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 32.38,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (15d)"
+        },
+        "dr5_atr_norm": {
+          "points": 2.38,
+          "reason": "dr5=8.1% atr=10.1% norm=0.36"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=69.2, 60d=85.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.96x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      },
+      "drop_reason": "momentum_score 32.4 < threshold 50"
+    },
+    {
+      "ticker": "OSS",
+      "company_name": "One Stop Systems, Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 43.95,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (17d)"
+        },
+        "dr5_atr_norm": {
+          "points": 1.95,
+          "reason": "dr5=8.0% atr=12.3% norm=0.29"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=83.2, 60d=94.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.62x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 44.0 < threshold 50"
+    },
+    {
+      "ticker": "PURR",
+      "company_name": "Hyperliquid Strategies Inc Common Stock",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 48.56,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 2.56,
+          "reason": "dr5=7.8% atr=9.1% norm=0.38"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=25.6, 60d=77.3)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.80x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=91"
+        }
+      },
+      "drop_reason": "momentum_score 48.6 < threshold 50"
+    },
+    {
+      "ticker": "CEVA",
+      "company_name": "CEVA, Inc.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 32.72,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (23d)"
+        },
+        "dr5_atr_norm": {
+          "points": 2.72,
+          "reason": "dr5=7.3% atr=8.0% norm=0.41"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=35.7, 60d=81.4)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.52x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=93"
+        }
+      },
+      "drop_reason": "momentum_score 32.7 < threshold 50"
+    },
+    {
+      "ticker": "DDOG",
+      "company_name": "Datadog, Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 45.13,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (16d)"
+        },
+        "dr5_atr_norm": {
+          "points": 3.13,
+          "reason": "dr5=6.9% atr=6.5% norm=0.47"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=71.7, 60d=90.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.31x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      },
+      "drop_reason": "momentum_score 45.1 < threshold 50"
+    },
+    {
+      "ticker": "RELL",
+      "company_name": "Richardson Electronics, Ltd.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 48.73,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 2.73,
+          "reason": "dr5=6.6% atr=7.2% norm=0.41"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=25.2, 60d=38.6)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.95x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=94"
+        }
+      },
+      "drop_reason": "momentum_score 48.7 < threshold 50"
+    },
+    {
+      "ticker": "SATL",
+      "company_name": "Satellogic Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 43.61,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (51d)"
+        },
+        "dr5_atr_norm": {
+          "points": 1.61,
+          "reason": "dr5=6.1% atr=11.3% norm=0.24"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=69.3, 60d=227.4)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.99x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      },
+      "drop_reason": "momentum_score 43.6 < threshold 50"
+    },
+    {
+      "ticker": "SNDK",
+      "company_name": "Sandisk Corporation",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 32.05,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (15d)"
+        },
+        "dr5_atr_norm": {
+          "points": 2.05,
+          "reason": "dr5=6.1% atr=8.9% norm=0.31"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=50.9, 60d=129.2)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.50x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=92"
+        }
+      },
+      "drop_reason": "momentum_score 32.0 < threshold 50"
+    },
+    {
+      "ticker": "UMC",
+      "company_name": "United Microelectronics Corporation",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 33.22,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (36d)"
+        },
+        "dr5_atr_norm": {
+          "points": 3.22,
+          "reason": "dr5=6.0% atr=5.5% norm=0.48"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=48.4, 60d=76.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.48x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 33.2 < threshold 50"
+    },
+    {
+      "ticker": "ATOM",
+      "company_name": "Atomera Incorporated",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 32.2,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 1.2,
+          "reason": "dr5=5.9% atr=14.6% norm=0.18"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=8.4, 60d=78.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.53x"
+        },
+        "rsi_mktcap": {
+          "points": 6.0,
+          "reason": "rsi_mktcap=74"
+        }
+      },
+      "drop_reason": "momentum_score 32.2 < threshold 50"
+    },
+    {
+      "ticker": "MXL",
+      "company_name": "MaxLinear, Inc.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 31.22,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (15d)"
+        },
+        "dr5_atr_norm": {
+          "points": 1.22,
+          "reason": "dr5=5.8% atr=14.1% norm=0.18"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=61.9, 60d=445.0)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.77x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 31.2 < threshold 50"
+    },
+    {
+      "ticker": "SIMO",
+      "company_name": "Silicon Motion Technology Corporation",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 43.6,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (24d)"
+        },
+        "dr5_atr_norm": {
+          "points": 1.6,
+          "reason": "dr5=5.4% atr=10.0% norm=0.24"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=78.5, 60d=109.0)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.51x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 43.6 < threshold 50"
+    },
+    {
+      "ticker": "OUST",
+      "company_name": "Ouster, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 41.21,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 1.21,
+          "reason": "dr5=4.9% atr=12.0% norm=0.18"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=29.6, 60d=86.2)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.76x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 41.2 < threshold 50"
+    },
+    {
+      "ticker": "MU",
+      "company_name": "Micron Technology, Inc.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 31.75,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (15d)"
+        },
+        "dr5_atr_norm": {
+          "points": 1.75,
+          "reason": "dr5=4.7% atr=8.1% norm=0.26"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=52.8, 60d=82.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.58x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=94"
+        }
+      },
+      "drop_reason": "momentum_score 31.8 < threshold 50"
+    },
+    {
+      "ticker": "CIGI",
+      "company_name": "Colliers International Group Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 13.31,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 3.31,
+          "reason": "dr5=4.7% atr=4.2% norm=0.50"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-11.5, 60d=-20.4)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.26x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=40"
+        }
+      },
+      "drop_reason": "momentum_score 13.3 < threshold 50"
+    },
+    {
+      "ticker": "CPA",
+      "company_name": "Copa Holdings, S.A.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 33.66,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 2.66,
+          "reason": "dr5=4.2% atr=4.7% norm=0.40"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=16.3, 60d=-7.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.36x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=93"
+        }
+      },
+      "drop_reason": "momentum_score 33.7 < threshold 50"
+    },
+    {
+      "ticker": "HUT",
+      "company_name": "Hut 8 Corp.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 31.22,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (17d)"
+        },
+        "dr5_atr_norm": {
+          "points": 1.22,
+          "reason": "dr5=3.9% atr=9.4% norm=0.18"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=38.5, 60d=94.1)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.46x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 31.2 < threshold 50"
+    },
+    {
+      "ticker": "TSEM",
+      "company_name": "Tower Semiconductor Ltd.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 41.24,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 1.24,
+          "reason": "dr5=3.5% atr=8.3% norm=0.19"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=41.4, 60d=128.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.45x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 41.2 < threshold 50"
+    },
+    {
+      "ticker": "DGXX",
+      "company_name": "Digi Power X Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 42.59,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (12d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.59,
+          "reason": "dr5=3.2% atr=16.1% norm=0.09"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=129.5, 60d=180.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.49x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 42.6 < threshold 50"
+    },
+    {
+      "ticker": "GLOB",
+      "company_name": "Globant S.A.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 11.31,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 8d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 1.31,
+          "reason": "dr5=2.9% atr=6.6% norm=0.20"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-6.6, 60d=-14.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.39x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=35"
+        }
+      },
+      "drop_reason": "momentum_score 11.3 < threshold 50"
+    },
+    {
+      "ticker": "AGL",
+      "company_name": "Agilon Health, Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 42.42,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (11d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.42,
+          "reason": "dr5=2.5% atr=18.1% norm=0.06"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=219.7, 60d=463.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.37x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      },
+      "drop_reason": "momentum_score 42.4 < threshold 50"
+    },
+    {
+      "ticker": "CLOV",
+      "company_name": "Clover Health Investments, Corp.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 31.12,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (129d)"
+        },
+        "dr5_atr_norm": {
+          "points": 1.12,
+          "reason": "dr5=2.5% atr=6.6% norm=0.17"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=46.4, 60d=65.4)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.51x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=95"
+        }
+      },
+      "drop_reason": "momentum_score 31.1 < threshold 50"
+    },
+    {
+      "ticker": "XMTR",
+      "company_name": "Xometry, Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 42.87,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (16d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.87,
+          "reason": "dr5=2.4% atr=8.3% norm=0.13"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=84.9, 60d=94.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.19x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      },
+      "drop_reason": "momentum_score 42.9 < threshold 50"
+    },
+    {
+      "ticker": "DOCN",
+      "company_name": "DigitalOcean Holdings, Inc.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 30.76,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (18d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.76,
+          "reason": "dr5=2.3% atr=9.2% norm=0.11"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=66.5, 60d=192.1)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.28x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=96"
+        }
+      },
+      "drop_reason": "momentum_score 30.8 < threshold 50"
+    },
+    {
+      "ticker": "STAA",
+      "company_name": "STAAR Surgical Company",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 41.26,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 1.26,
+          "reason": "dr5=2.2% atr=5.3% norm=0.19"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=27.7, 60d=61.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.49x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=91"
+        }
+      },
+      "drop_reason": "momentum_score 41.3 < threshold 50"
+    },
+    {
+      "ticker": "CSCO",
+      "company_name": "Cisco Systems, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 41.46,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 1.46,
+          "reason": "dr5=1.8% atr=3.6% norm=0.22"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=35.2, 60d=54.0)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.58x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=93"
+        }
+      },
+      "drop_reason": "momentum_score 41.5 < threshold 50"
+    },
+    {
+      "ticker": "KNX",
+      "company_name": "Knight-Swift Transportation Holdings Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 36.67,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 1.17,
+          "reason": "dr5=1.7% atr=4.3% norm=0.17"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=7.7, 60d=13.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.33x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=86"
+        }
+      },
+      "drop_reason": "momentum_score 36.7 < threshold 50"
+    },
+    {
+      "ticker": "SEDG",
+      "company_name": "SolarEdge Technologies, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 40.42,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 8d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.42,
+          "reason": "dr5=1.6% atr=11.0% norm=0.06"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=36.9, 60d=55.2)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.62x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "momentum_score 40.4 < threshold 50"
+    },
+    {
+      "ticker": "UMAC",
+      "company_name": "Unusual Machines, Inc.",
+      "sources": [
+        "top_1d"
+      ],
+      "momentum_score": 36.48,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (106d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.48,
+          "reason": "dr5=1.5% atr=9.2% norm=0.07"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=12.2, 60d=19.5)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.62x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=93"
+        }
+      },
+      "drop_reason": "momentum_score 36.5 < threshold 50"
+    },
+    {
+      "ticker": "VIK",
+      "company_name": "Viking Holdings Ltd",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 25.83,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.83,
+          "reason": "dr5=1.2% atr=4.3% norm=0.12"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=3.5, 60d=6.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.55x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=57"
+        }
+      },
+      "drop_reason": "momentum_score 25.8 < threshold 50"
+    },
+    {
+      "ticker": "CLBT",
+      "company_name": "Cellebrite DI Ltd.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 16.48,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.48,
+          "reason": "dr5=0.8% atr=5.0% norm=0.07"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=3.0, 60d=-4.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.42x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=29"
+        }
+      },
+      "drop_reason": "momentum_score 16.5 < threshold 50"
+    },
+    {
+      "ticker": "KOPN",
+      "company_name": "Kopin Corporation",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 25.58,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (11d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.08,
+          "reason": "dr5=0.4% atr=14.0% norm=0.01"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=37.0, 60d=118.5)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.51x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=89"
+        }
+      },
+      "drop_reason": "momentum_score 25.6 < threshold 50"
+    },
+    {
+      "ticker": "PSIX",
+      "company_name": "Power Solutions International, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 10.02,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.02,
+          "reason": "dr5=0.1% atr=10.8% norm=0.00"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-49.7, 60d=-57.9)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.34x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=1"
+        }
+      },
+      "drop_reason": "momentum_score 10.0 < threshold 50"
+    },
+    {
+      "ticker": "INOD",
+      "company_name": "Innodata Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 42.0,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (12d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-1.4% atr=14.5% norm=-0.04"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=123.7, 60d=99.0)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.35x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=100"
+        }
+      },
+      "drop_reason": "momentum_score 42.0 < threshold 50"
+    },
+    {
+      "ticker": "FIHL",
+      "company_name": "Fidelis Insurance Holdings Limited",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 35.5,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-1.7% atr=3.2% norm=-0.24"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=8.3, 60d=14.7)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.07x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=83"
+        }
+      },
+      "drop_reason": "momentum_score 35.5 < threshold 50"
+    },
+    {
+      "ticker": "FIG",
+      "company_name": "Figma, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 31.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 8d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-1.8% atr=7.6% norm=-0.11"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=28.9, 60d=-25.5)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.61x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=91"
+        }
+      },
+      "drop_reason": "momentum_score 31.0 < threshold 50"
+    },
+    {
+      "ticker": "BABA",
+      "company_name": "Alibaba Group Holding Limited",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 10.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-2.4% atr=3.7% norm=-0.29"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-4.7, 60d=-12.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.76x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=6"
+        }
+      },
+      "drop_reason": "momentum_score 10.0 < threshold 50"
+    },
+    {
+      "ticker": "MICC",
+      "company_name": "The Magnum Ice Cream Company N.V.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 26.5,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 8d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-3.5% atr=3.9% norm=-0.41"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=21.5, 60d=-0.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.46x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=87"
+        }
+      },
+      "drop_reason": "momentum_score 26.5 < threshold 50"
+    },
+    {
+      "ticker": "FLEX",
+      "company_name": "Flex Ltd.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 30.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (17d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-3.7% atr=6.8% norm=-0.24"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=45.2, 60d=110.0)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.32x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      },
+      "drop_reason": "momentum_score 30.0 < threshold 50"
+    },
+    {
+      "ticker": "JD",
+      "company_name": "JD.com, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 25.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-4.7% atr=2.8% norm=-0.76"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=0.8, 60d=13.1)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.69x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=39"
+        }
+      },
+      "drop_reason": "momentum_score 25.0 < threshold 50"
+    },
+    {
+      "ticker": "AAOI",
+      "company_name": "Applied Optoelectronics, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 31.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-5.9% atr=13.7% norm=-0.19"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=10.4, 60d=233.5)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.69x"
+        },
+        "rsi_mktcap": {
+          "points": 6.0,
+          "reason": "rsi_mktcap=78"
+        }
+      },
+      "drop_reason": "momentum_score 31.0 < threshold 50"
+    },
+    {
+      "ticker": "VNET",
+      "company_name": "VNET Group, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 16.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-6.0% atr=7.4% norm=-0.36"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=2.9, 60d=-16.7)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.83x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=59"
+        }
+      },
+      "drop_reason": "momentum_score 16.0 < threshold 50"
+    },
+    {
+      "ticker": "MRAM",
+      "company_name": "Everspin Technologies, Inc.",
+      "sources": [
+        "main_view",
+        "top_20d"
+      ],
+      "momentum_score": 42.0,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (11d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-6.8% atr=20.0% norm=-0.15"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=148.8, 60d=212.5)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.73x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=99"
+        }
+      },
+      "drop_reason": "momentum_score 42.0 < threshold 50"
+    },
+    {
+      "ticker": "KC",
+      "company_name": "Kingsoft Cloud Holdings Limited",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 16.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-7.1% atr=6.2% norm=-0.51"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=-12.9, 60d=13.0)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.18x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=9"
+        }
+      },
+      "drop_reason": "momentum_score 16.0 < threshold 50"
+    },
+    {
+      "ticker": "FRMI",
+      "company_name": "Fermi Inc. Common Stock",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 26.5,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-7.5% atr=9.9% norm=-0.34"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=11.6, 60d=-44.5)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.49x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=88"
+        }
+      },
+      "drop_reason": "momentum_score 26.5 < threshold 50"
+    },
+    {
+      "ticker": "AUR",
+      "company_name": "Aurora Innovation, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 35.5,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-8.5% atr=8.4% norm=-0.45"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=43.7, 60d=49.8)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.47x"
+        },
+        "rsi_mktcap": {
+          "points": 10.5,
+          "reason": "rsi_mktcap=89"
+        }
+      },
+      "drop_reason": "momentum_score 35.5 < threshold 50"
+    },
+    {
+      "ticker": "POET",
+      "company_name": "POET Technologies Inc.",
+      "sources": [
+        "main_view",
+        "volspike_gapper"
+      ],
+      "momentum_score": 43.0,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-8.7% atr=20.4% norm=-0.19"
+        },
+        "trend_alignment": {
+          "points": 6.0,
+          "reason": "partial (20d=-3.5, 60d=133.6)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.44x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=95"
+        }
+      },
+      "drop_reason": "momentum_score 43.0 < threshold 50"
+    },
+    {
+      "ticker": "NXT",
+      "company_name": "Nextpower Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 31.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-9.4% atr=8.2% norm=-0.51"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=7.6, 60d=22.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.74x"
+        },
+        "rsi_mktcap": {
+          "points": 6.0,
+          "reason": "rsi_mktcap=73"
+        }
+      },
+      "drop_reason": "momentum_score 31.0 < threshold 50"
+    },
+    {
+      "ticker": "ALMU",
+      "company_name": "Aeluma, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 25.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-10.3% atr=16.4% norm=-0.28"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=16.1, 60d=39.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.27x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=38"
+        }
+      },
+      "drop_reason": "momentum_score 25.0 < threshold 50"
+    },
+    {
+      "ticker": "STRL",
+      "company_name": "Sterling Infrastructure, Inc.",
+      "sources": [
+        "main_view"
+      ],
+      "momentum_score": 21.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (18d)"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-13.7% atr=8.7% norm=-0.70"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=47.4, 60d=69.1)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.37x"
+        },
+        "rsi_mktcap": {
+          "points": 6.0,
+          "reason": "rsi_mktcap=78"
+        }
+      },
+      "drop_reason": "momentum_score 21.0 < threshold 50"
+    },
+    {
+      "ticker": "ONDS",
+      "company_name": "Ondas Holdings Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 10.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-13.9% atr=8.9% norm=-0.70"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-13.3, 60d=-12.5)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.75x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=11"
+        }
+      },
+      "drop_reason": "momentum_score 10.0 < threshold 50"
+    },
+    {
+      "ticker": "GDS",
+      "company_name": "GDS Holdings Limited",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 10.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 10d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-17.5% atr=5.5% norm=-1.44"
+        },
+        "trend_alignment": {
+          "points": 0.0,
+          "reason": "both down (20d=-22.4, 60d=-16.2)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 1.22x"
+        },
+        "rsi_mktcap": {
+          "points": 0.0,
+          "reason": "rsi_mktcap=1"
+        }
+      },
+      "drop_reason": "momentum_score 10.0 < threshold 50"
+    },
+    {
+      "ticker": "BRUN",
+      "company_name": "Boost Run Inc. Class A Common Stock",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 40.0,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 8d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-18.1% atr=14.9% norm=-0.54"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=43.6, 60d=126.2)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.56x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=93"
+        }
+      },
+      "drop_reason": "momentum_score 40.0 < threshold 50"
+    },
+    {
+      "ticker": "APLD",
+      "company_name": "Applied Digital Corporation",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 52.21,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 2d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 2.21,
+          "reason": "dr5=7.4% atr=10.0% norm=0.33"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=30.7, 60d=59.5)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.83x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      },
+      "drop_reason": "capped: only top 60 go to LLM stages"
+    },
+    {
+      "ticker": "PCT",
+      "company_name": "PureCycle Technologies, Inc.",
+      "sources": [
+        "main_view",
+        "volspike_gapper"
+      ],
+      "momentum_score": 52.0,
+      "factors": {
+        "multi_screen": {
+          "points": 12.0,
+          "reason": "2 screens"
+        },
+        "recent_event": {
+          "points": 10.0,
+          "reason": "event 9d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 0.0,
+          "reason": "dr5=-10.2% atr=9.1% norm=-0.50"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=55.6, 60d=39.3)"
+        },
+        "vol_vs_avg": {
+          "points": 0.0,
+          "reason": "vol 0.53x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=98"
+        }
+      },
+      "drop_reason": "capped: only top 60 go to LLM stages"
+    },
+    {
+      "ticker": "LION",
+      "company_name": "Lionsgate Studios Corp.",
+      "sources": [
+        "top_1d"
+      ],
+      "momentum_score": 51.19,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 0.0,
+          "reason": "event stale (36d)"
+        },
+        "dr5_atr_norm": {
+          "points": 11.19,
+          "reason": "dr5=17.0% atr=4.5% norm=1.68"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=29.4, 60d=79.2)"
+        },
+        "vol_vs_avg": {
+          "points": 10,
+          "reason": "vol 2.51x"
+        },
+        "rsi_mktcap": {
+          "points": 15,
+          "reason": "rsi_mktcap=97"
+        }
+      },
+      "drop_reason": "capped: only top 60 go to LLM stages"
+    },
+    {
+      "ticker": "ZM",
+      "company_name": "Zoom Communications, Inc.",
+      "sources": [
+        "volspike_gapper"
+      ],
+      "momentum_score": 50.35,
+      "factors": {
+        "multi_screen": {
+          "points": 0.0,
+          "reason": "1 screen"
+        },
+        "recent_event": {
+          "points": 20,
+          "reason": "event 1d ago"
+        },
+        "dr5_atr_norm": {
+          "points": 3.35,
+          "reason": "dr5=5.3% atr=4.8% norm=0.50"
+        },
+        "trend_alignment": {
+          "points": 15,
+          "reason": "both up (20d=14.6, 60d=39.7)"
+        },
+        "vol_vs_avg": {
+          "points": 6.0,
+          "reason": "vol 1.66x"
+        },
+        "rsi_mktcap": {
+          "points": 6.0,
+          "reason": "rsi_mktcap=77"
+        }
+      },
+      "drop_reason": "capped: only top 60 go to LLM stages"
+    }
+  ]
+}

@@ -935,7 +935,9 @@
                     <span id="detailTi65"></span>
                     <span id="detailLowFloat"></span>
                     <div class="detail-actions">
-                        <button class="abi-wl-btn in-watchlist" id="detailWlBtn" title="Edit watchlist notes" onclick="openWatchlistModal()">★ Watchlist</button>
+                        <button class="abi-wl-btn in-watchlist" id="detailWlBtn" title="Remove from watchlist" onclick="toggleWatchlistForSelected()">★ Watchlist</button>
+                        <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes for this ticker" onclick="openWatchlistModal()">📝 Abi ticker notes</button>
+                        <button class="abi-dl-btn" id="detailDlBtn" title="Move to dislikes (blocks from screeners)" onclick="window._dlOpenForTicker(selectedTicker)">👎</button>
                     </div>
                     <div class="chart-timeframes" id="chartTimeframes">
                         <button data-days="30">1M</button>
@@ -986,7 +988,10 @@
                     <span class="side-chevron" aria-hidden="true">▼</span>
                 </button>
                 <span class="side-stack-title"><span class="notes-icon">📰</span> News</span>
-                <button type="button" class="news-load-btn" id="sideLoadNewsBtn">Load News</button>
+                <div class="news-actions-row">
+                    <button type="button" class="news-load-btn" id="sideLoadNewsBtn">Load News</button>
+                    <button type="button" class="news-benzinga-btn" id="sideBenzingaNewsBtn">Get Benzinga News</button>
+                </div>
             </div>
             <div class="side-stack-body" id="sideNewsStackBody">
                 <div class="side-news-inner" id="sideNewsInner">
@@ -1006,10 +1011,10 @@
             <div class="mv-metrics-body side-metrics-body" id="sideMetricsBody">
                 <div class="wl-notes-section" id="wlNotesSection" style="display:none;">
                     <span class="ms-section-title">
-                        <span>Watchlist Notes</span>
+                        <span>Abi ticker notes</span>
                         <a class="wl-notes-edit" onclick="openWatchlistModal()">Edit</a>
                     </span>
-                    <div class="wl-notes-text empty" id="wlNotesText">No notes</div>
+                    <div class="wl-notes-text empty" id="wlNotesText">No Abi ticker notes</div>
                 </div>
                 <div class="ms-tags" id="tagsStrip"></div>
                 <div id="metricsContent"></div>
@@ -1023,6 +1028,8 @@
 <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="/static/js/stock-chart.js"></script>
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
 <script src="/static/js/side-news-panel.js"></script>
 <script>
 (function() {
@@ -1082,7 +1089,7 @@
             width: container.clientWidth,
             height: height,
             layout: { background: { type: 'solid', color: 'transparent' }, textColor: CHART_CONFIG.textColor, fontFamily: "'JetBrains Mono', monospace" },
-            grid: { vertLines: { color: CHART_CONFIG.gridColor }, horzLines: { color: CHART_CONFIG.gridColor } },
+            grid: { vertLines: { visible: false }, horzLines: { visible: false } },
             crosshair: { mode: LightweightCharts.CrosshairMode.Normal, vertLine: { width: 1, color: CHART_CONFIG.crosshairColor, style: LightweightCharts.LineStyle.Dashed }, horzLine: { width: 1, color: CHART_CONFIG.crosshairColor, style: LightweightCharts.LineStyle.Dashed } },
             rightPriceScale: { borderColor: CHART_CONFIG.borderColor, scaleMargins: { top: 0.1, bottom: 0.1 } },
             timeScale: { borderColor: CHART_CONFIG.borderColor, visible: !!showTimeAxis },
@@ -1300,25 +1307,42 @@
             textEl.innerHTML = marked.parse(wl.notes);
             textEl.classList.remove('empty');
         } else {
-            textEl.innerHTML = '<em>No notes</em>';
+            textEl.innerHTML = '<em>No Abi ticker notes</em>';
             textEl.classList.add('empty');
         }
     }
 
+    // Open the Abi ticker notes modal for the selected ticker. Saves to abi_ticker_notes.json
+    // - watchlist membership is independent and is changed via the watchlist
+    // toggle button instead.
     window.openWatchlistModal = function() {
         if (!selectedTicker) return;
         const wl = watchlistData[selectedTicker];
-        window._wlOpen(selectedTicker, wl ? wl.notes : '', true, function(action, ticker, notes) {
-            if (action === 'saved') {
-                const prev = watchlistData[ticker] || {};
-                watchlistData[ticker] = {
-                    ...prev,
-                    notes: notes || '',
-                    stars: Number.isFinite(prev.stars) ? prev.stars : 0,
-                };
-                updateWatchlistNotes(ticker);
-            } else if (action === 'removed') {
-                delete watchlistData[ticker];
+        const currentNotes = (wl && wl.notes) || '';
+        const had = !!currentNotes;
+        window._notesOpen(selectedTicker, currentNotes, had, function(action, ticker, notes) {
+            const prev = watchlistData[ticker] || { stars: 0 };
+            const newNotes = action === 'saved' ? (notes || '') : '';
+            watchlistData[ticker] = {
+                ...prev,
+                notes: newNotes,
+                stars: Number.isFinite(prev.stars) ? prev.stars : 0,
+            };
+            updateWatchlistNotes(ticker);
+        });
+    };
+
+    // Toggle watchlist membership for the selected ticker. Removing from the
+    // watchlist no longer wipes the ticker's comment - that lives in
+    // abi_ticker_notes.json and stays available everywhere else.
+    window.toggleWatchlistForSelected = function() {
+        if (!selectedTicker) return;
+        const ticker = selectedTicker;
+        // We're on the watchlist page so the only meaningful action is REMOVE.
+        window._wlToggle(ticker, true, function(nowIn) {
+            if (!nowIn) {
+                // Drop from this page's local list. The comment (if any) is
+                // preserved server-side.
                 allStocks = allStocks.filter(s => s.ticker !== ticker);
                 renderList();
                 if (allStocks.length > 0) {

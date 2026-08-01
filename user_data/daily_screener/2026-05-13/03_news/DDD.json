@@ -1,0 +1,25 @@
+{
+  "ticker": "DDD",
+  "has_material_news": true,
+  "headline_drivers": [
+    "3D Systems reported Q1 CY2026 results on 2026-05-12, with revenue of $95.54M vs. $92.2M expected (+3.6% beat), GAAP EPS of -$0.03 vs. -$0.11 expected, and adjusted EBITDA of $0.774M versus -$36.58M free cash flow in the year-ago quarter; the stock jumped on the print and then continued higher on extreme volume.",
+    "The move appears amplified by a momentum/short-covering setup: volume ran at 11.4x the 10-day average, RSI is in the 97th percentile, and the name is on vol-spike/gapper screens after a 55.1% 20-day rally.",
+    "Public market coverage around the same window highlights a bullish Q1 report and a sharp re-rating in the shares, but I did not find a separate named-customer or acquisition catalyst that would better explain the size of the move."
+  ],
+  "latest_material_date": "2026-05-12",
+  "theme_tags": [
+    "earnings-surprise-momentum",
+    "breakout-and-momentum",
+    "small-cap-relief-rally"
+  ],
+  "summary": "The market is primarily reacting to a Q1 earnings surprise and a follow-through momentum squeeze, not to a new strategic partnership or customer win. 3D Systems beat on revenue and EPS, showed a sharp improvement in adjusted EBITDA, and the stock then traded on unusually heavy volume, which fits a short-covering/breakout pattern. I searched the likely catalyst buckets, but no clearer named-customer, analyst-supply-chain, M&A, or regulatory driver surfaced from the provided results.",
+  "ok": true,
+  "raw": "{\"ticker\":\"DDD\",\"has_material_news\":true,\"headline_drivers\":[\"3D Systems reported Q1 CY2026 results on 2026-05-12, with revenue of $95.54M vs. $92.2M expected (+3.6% beat), GAAP EPS of -$0.03 vs. -$0.11 expected, and adjusted EBITDA of $0.774M versus -$36.58M free cash flow in the year-ago quarter; the stock jumped on the print and then continued higher on extreme volume.\",\"The move appears amplified by a momentum/short-covering setup: volume ran at 11.4x the 10-day average, RSI is in the 97th percentile, and the name is on vol-spike/gapper screens after a 55.1% 20-day rally.\",\"Public market coverage around the same window highlights a bullish Q1 report and a sharp re-rating in the shares, but I did not find a separate named-customer or acquisition catalyst that would better explain the size of the move.\"],\"latest_material_date\":\"2026-05-12\",\"theme_tags\":[\"earnings-surprise-momentum\",\"breakout-and-momentum\",\"small-cap-relief-rally\"],\"summary\":\"The market is primarily reacting to a Q1 earnings surprise and a follow-through momentum squeeze, not to a new strategic partnership or customer win. 3D Systems beat on revenue and EPS, showed a sharp improvement in adjusted EBITDA, and the stock then traded on unusually heavy volume, which fits a short-covering/breakout pattern. I searched the likely catalyst buckets, but no clearer named-customer, analyst-supply-chain, M&A, or regulatory driver surfaced from the provided results.\"}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

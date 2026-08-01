@@ -1,0 +1,461 @@
+{
+  "asof": "2026-06-11",
+  "source": "stock_metrics (DB) — bottom dr_1",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_by_bucket": {
+    "mega": 15,
+    "large": 10,
+    "mid_small": 10
+  },
+  "unique_tickers": 35,
+  "by_ticker": {
+    "APP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": -4.27,
+      "dr_5": -12.23,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 189365747465,
+      "company_name": "AppLovin Corporation"
+    },
+    "ARM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 13,
+      "dr_1": -3.94,
+      "dr_5": -25.16,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 368558960000,
+      "company_name": "Arm Holdings plc American Depositary Shares"
+    },
+    "AU": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": -6.57,
+      "dr_5": -13.88,
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "market_cap": 39676324225,
+      "company_name": "AngloGold Ashanti Plc"
+    },
+    "AVGO": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": -4.71,
+      "dr_5": -23.27,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 1877769401774,
+      "company_name": "Broadcom Inc."
+    },
+    "BE": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": -9.67,
+      "dr_5": -18.76,
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 66625287201,
+      "company_name": "Bloom Energy Corporation"
+    },
+    "BOT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": -15.76,
+      "dr_5": 24.9,
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "market_cap": 865098748,
+      "company_name": "RoboStrategy, Inc. Common Stock"
+    },
+    "CAT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": -6.22,
+      "dr_5": -7.51,
+      "sector": "Industrials",
+      "industry": "Agricultural - Machinery",
+      "market_cap": 406707923225,
+      "company_name": "Caterpillar Inc."
+    },
+    "CCJ": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": -6.76,
+      "dr_5": -17.81,
+      "sector": "Energy",
+      "industry": "Uranium",
+      "market_cap": 44541957660,
+      "company_name": "Cameco Corporation"
+    },
+    "CCL": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": -6.86,
+      "dr_5": -4.81,
+      "sector": "Consumer Cyclical",
+      "industry": "Leisure",
+      "market_cap": 36110589945,
+      "company_name": "Carnival Corporation & plc"
+    },
+    "CGEM": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": -10.65,
+      "dr_5": -22.37,
+      "sector": "Healthcare",
+      "industry": "Medical - Pharmaceuticals",
+      "market_cap": 775599960,
+      "company_name": "Cullinan Therapeutics, Inc."
+    },
+    "CYD": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": -10.09,
+      "dr_5": -17.32,
+      "sector": "Industrials",
+      "industry": "Industrial - Machinery",
+      "market_cap": 1989596615,
+      "company_name": "China Yuchai International Limited"
+    },
+    "EQPT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": -10.44,
+      "dr_5": -8.93,
+      "sector": "Industrials",
+      "industry": "Rental & Leasing Services",
+      "market_cap": 5070215678,
+      "company_name": "EquipmentShare.com Inc."
+    },
+    "ETN": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": -5.35,
+      "dr_5": -10.33,
+      "sector": "Industrials",
+      "industry": "Industrial - Machinery",
+      "market_cap": 147193851750,
+      "company_name": "Eaton Corporation plc"
+    },
+    "EZPW": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": -10.38,
+      "dr_5": -9.82,
+      "sector": "Financial Services",
+      "industry": "Financial - Credit Services",
+      "market_cap": 1878205430,
+      "company_name": "EZCORP, Inc."
+    },
+    "FLEX": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": -6.26,
+      "dr_5": -15.13,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 53934505380,
+      "company_name": "Flex Ltd."
+    },
+    "GEV": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": -6.44,
+      "dr_5": -10.58,
+      "sector": "Utilities",
+      "industry": "Renewable Utilities",
+      "market_cap": 247262708000,
+      "company_name": "GE Vernova Inc."
+    },
+    "LAZ": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": -13.19,
+      "dr_5": -12.96,
+      "sector": "Financial Services",
+      "industry": "Financial - Capital Markets",
+      "market_cap": 4351930053,
+      "company_name": "Lazard Ltd"
+    },
+    "NEM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": -4.65,
+      "dr_5": -14.03,
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "market_cap": 105196649364,
+      "company_name": "Newmont Corporation"
+    },
+    "NET": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": -6.81,
+      "dr_5": -17.94,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 83463987029,
+      "company_name": "Cloudflare, Inc."
+    },
+    "NRG": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": -6.61,
+      "dr_5": -9.71,
+      "sector": "Utilities",
+      "industry": "Independent Power Producers",
+      "market_cap": 25455517605,
+      "company_name": "NRG Energy, Inc."
+    },
+    "PWR": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": -5.23,
+      "dr_5": -9.41,
+      "sector": "Industrials",
+      "industry": "Engineering & Construction",
+      "market_cap": 102436958400,
+      "company_name": "Quanta Services, Inc."
+    },
+    "QCOM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": -5.58,
+      "dr_5": -23.24,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 229529580000,
+      "company_name": "QUALCOMM Incorporated"
+    },
+    "SAP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 12,
+      "dr_1": -4.18,
+      "dr_5": -5.35,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 208483875543,
+      "company_name": "SAP SE"
+    },
+    "SMCI": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": -25.34,
+      "dr_5": -35.43,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 24441627520,
+      "company_name": "Super Micro Computer, Inc."
+    },
+    "STRL": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": -7.78,
+      "dr_5": -19.05,
+      "sector": "Industrials",
+      "industry": "Engineering & Construction",
+      "market_cap": 25778042517,
+      "company_name": "Sterling Infrastructure, Inc."
+    },
+    "STX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 14,
+      "dr_1": -3.83,
+      "dr_5": -13.28,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 196088260500,
+      "company_name": "Seagate Technology Holdings plc"
+    },
+    "SW": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": -7.01,
+      "dr_5": -9.12,
+      "sector": "Consumer Cyclical",
+      "industry": "Packaging & Containers",
+      "market_cap": 20582591642,
+      "company_name": "Smurfit Westrock Plc"
+    },
+    "TSM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 15,
+      "dr_1": -3.8,
+      "dr_5": -6.84,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 2213589664000,
+      "company_name": "Taiwan Semiconductor Manufacturing Company Limited"
+    },
+    "TT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": -4.25,
+      "dr_5": -3.88,
+      "sector": "Industrials",
+      "industry": "Construction",
+      "market_cap": 101308619831,
+      "company_name": "Trane Technologies plc"
+    },
+    "UEC": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": -9.93,
+      "dr_5": -33.84,
+      "sector": "Energy",
+      "industry": "Uranium",
+      "market_cap": 4617881820,
+      "company_name": "Uranium Energy Corp."
+    },
+    "ULCC": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": -9.76,
+      "dr_5": 1.14,
+      "sector": "Industrials",
+      "industry": "Airlines, Airports & Air Services",
+      "market_cap": 1459160150,
+      "company_name": "Frontier Group Holdings, Inc."
+    },
+    "VRT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 11,
+      "dr_1": -4.19,
+      "dr_5": -16.86,
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 111207184408,
+      "company_name": "Vertiv Holdings Co"
+    },
+    "WDC": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": -4.31,
+      "dr_5": -17.06,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 178448765040,
+      "company_name": "Western Digital Corporation"
+    },
+    "WOLF": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": -9.83,
+      "dr_5": -30.45,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 2357980322,
+      "company_name": "Wolfspeed, Inc."
+    },
+    "XE": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": -9.76,
+      "dr_5": -31.32,
+      "sector": "Industrials",
+      "industry": "Industrial - Machinery",
+      "market_cap": 407544593,
+      "company_name": "X-Energy, Inc. Class A Common Stock"
+    }
+  },
+  "slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "ticker_count": 15,
+      "tickers": [
+        "GEV",
+        "CAT",
+        "QCOM",
+        "ETN",
+        "PWR",
+        "AVGO",
+        "NEM",
+        "WDC",
+        "APP",
+        "TT",
+        "VRT",
+        "SAP",
+        "ARM",
+        "STX",
+        "TSM"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "SMCI",
+        "BE",
+        "STRL",
+        "SW",
+        "CCL",
+        "NET",
+        "CCJ",
+        "NRG",
+        "AU",
+        "FLEX"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "BOT",
+        "LAZ",
+        "CGEM",
+        "EQPT",
+        "EZPW",
+        "CYD",
+        "UEC",
+        "WOLF",
+        "ULCC",
+        "XE"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{% extends "mobile/_base.html" %}
+{% set page_title = 'Home' %}
+{% block title %}Stocks Assist — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_utility_styles.html" %}{% endblock %}
+{% block body %}
+<div class="phone" id="phone">
+  {% include "mobile/_utility_header.html" %}
+  <div class="utility-body utility-scroll home-page">
+    <div class="home-section-label">Main Indices</div>
+    <div class="home-card-grid" id="mainIndicesGrid">
+      <div class="home-loading"><div class="spinner"></div>Loading…</div>
+    </div>
+    <div class="home-chart-panel" id="mainIndicesChartContainer">
+      <div class="home-chart-head">
+        <span class="home-chart-title" id="mainIndicesChartTitle"></span>
+        <div class="ctx-tf-bar" id="mainIndicesTimeframe">
+          <button type="button" data-days="30">1M</button>
+          <button type="button" data-days="90">3M</button>
+          <button type="button" data-days="180">6M</button>
+          <button type="button" data-days="365" class="active">1Y</button>
+        </div>
+      </div>
+      <div class="home-chart-wrap" id="mainIndicesChartWrapper"></div>
+    </div>
+
+    <div class="home-section-label">Commodities &amp; Rates</div>
+    <div class="home-card-grid" id="commoditiesGrid">
+      <div class="home-loading"><div class="spinner"></div>Loading…</div>
+    </div>
+    <div class="home-chart-panel" id="commoditiesChartContainer">
+      <div class="home-chart-head">
+        <span class="home-chart-title" id="commoditiesChartTitle"></span>
+        <div class="ctx-tf-bar" id="commoditiesTimeframe">
+          <button type="button" data-days="30">1M</button>
+          <button type="button" data-days="90">3M</button>
+          <button type="button" data-days="180">6M</button>
+          <button type="button" data-days="365" class="active">1Y</button>
+        </div>
+      </div>
+      <div class="home-chart-wrap" id="commoditiesChartWrapper"></div>
+    </div>
+
+    <div class="home-section-head">
+      <span class="home-section-label" style="margin:0">Sector ETFs</span>
+      <div class="home-sort-row" id="sectorSort">
+        <button type="button" class="home-sort-btn active" data-sort="dr_1">1D</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_5">5D</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_20">20D</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_60">60D</button>
+      </div>
+    </div>
+    <div class="home-sub-label">Risk On</div>
+    <div class="home-sector-grid" id="riskOnGrid">
+      <div class="home-loading"><div class="spinner"></div>Loading…</div>
+    </div>
+    <div class="home-sub-label">Risk Off</div>
+    <div class="home-sector-grid" id="riskOffGrid">
+      <div class="home-loading"><div class="spinner"></div>Loading…</div>
+    </div>
+    <div class="home-chart-panel" id="sectorsChartContainer">
+      <div class="home-chart-head">
+        <span class="home-chart-title" id="sectorsChartTitle"></span>
+        <div class="ctx-tf-bar" id="sectorsTimeframe">
+          <button type="button" data-days="30">1M</button>
+          <button type="button" data-days="90">3M</button>
+          <button type="button" data-days="180">6M</button>
+          <button type="button" data-days="365" class="active">1Y</button>
+        </div>
+      </div>
+      <div class="home-chart-wrap" id="sectorsChartWrapper"></div>
+    </div>
+
+    <div class="home-section-label">Market Breadth</div>
+    <div class="home-breadth-stats" id="breadthStats">
+      <div class="home-breadth-stat">
+        <div class="label">Above 50 DMA</div>
+        <div class="value ret-pos" id="above50dma">—</div>
+        <div class="sub" id="above50dmaPct">—</div>
+      </div>
+      <div class="home-breadth-stat">
+        <div class="label">Above 200 DMA</div>
+        <div class="value ret-pos" id="above200dma">—</div>
+        <div class="sub" id="above200dmaPct">—</div>
+      </div>
+      <div class="home-breadth-stat">
+        <div class="label">Up 4%+ Today</div>
+        <div class="value ret-pos" id="up4pct">—</div>
+      </div>
+      <div class="home-breadth-stat">
+        <div class="label">Down 4%+ Today</div>
+        <div class="value ret-neg" id="down4pct">—</div>
+      </div>
+    </div>
+    <div class="home-breadth-chart-box">
+      <div class="home-sub-label">SPY (S&amp;P 500)</div>
+      <div class="home-breadth-chart" id="spyChartContainer"></div>
+    </div>
+    <div class="home-breadth-chart-box">
+      <div class="home-sub-label">% Above Moving Averages</div>
+      <div class="home-breadth-chart" id="dmaChartContainer"></div>
+    </div>
+    <div class="home-breadth-chart-box">
+      <div class="home-sub-label">Daily 4%+ Movers <span class="home-movers-tip" id="moversTooltip"></span></div>
+      <div class="home-breadth-chart" id="moversChartContainer"></div>
+    </div>
+  </div>
+  {% include "mobile/_nav_drawer.html" %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="{{ url_for('static', filename='js/mobile/pages/index.js') }}"></script>
+{% include "mobile/_nav_libs.html" %}
+{% endblock %}

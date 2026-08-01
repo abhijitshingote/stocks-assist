@@ -28,6 +28,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from models import IndexPrice, SyncMetadata
 from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration
+from db_scripts.etf_symbols import ETF_SYMBOLS
 
 # Script name for logging
 SCRIPT_NAME = 'seed_index_prices_fmp'
@@ -37,18 +38,8 @@ load_dotenv()
 
 BASE_URL = 'https://financialmodelingprep.com/stable'
 
-# ETFs to track
-ETFS = ['SPY', 'QQQ', 'IWM', '^VIX',
-        # Commodities & Rates  
-        'GLD', 'SLV', 'USO', 'TLT',
-        # Sector ETFs - Risk On
-        'XLB', 'XLC', 'XLY', 'XLE', 'XLF', 'XLV', 'XLI', 'XLK',
-        # Sector ETFs - Risk Off
-        'XLP', 'XLRE', 'XLU',
-        # Tech / Growth
-        'IGM', 'SOXX', 'IGV', 'ARTY', 'BAI', 'IBB', 'IHF', 'IHI', 'IHE', 
-        'IDNA', 'IEZ', 'IEO', 'FILL', 'ITA', 'IYT', 'ICOP', 'RING', 'ILIT', 'PICK', 'SLVP',
-        'WOOD', 'IAI', 'IYG', 'IAK', 'IAT', 'REM', 'REZ', 'IDGT', 'ITB']
+# ETFs to track (single source of truth: db_scripts/etf_symbols.py)
+ETFS = ETF_SYMBOLS
 
 def get_eastern_now():
     """Get current datetime in US/Eastern timezone"""

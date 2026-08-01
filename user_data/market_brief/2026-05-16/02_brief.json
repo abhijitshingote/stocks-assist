@@ -1,0 +1,681 @@
+{
+  "asof": "2026-05-16",
+  "tldr": [
+    {
+      "text": "SPY -1.21%, QQQ -1.51%, SOXX -3.92%, XLK -1.76%, while IGV +1.26% held up better on Friday May 15, 2026; broad risk-off into the weekend hit semis/hardware hardest, while software and a few idiosyncratic winners outperformed.",
+      "tickers": [
+        "SPY",
+        "QQQ",
+        "SOXX",
+        "XLK",
+        "IGV"
+      ]
+    },
+    {
+      "text": "MU -6.83% as memory names sold off hard on DRAM/HBM de-risking despite no new filing.",
+      "tickers": [
+        "MU"
+      ]
+    },
+    {
+      "text": "AXTI +12.33% bucked the semiconductor selloff on AI/indium phosphide demand and a $632.5M equity raise.",
+      "tickers": [
+        "AXTI"
+      ]
+    },
+    {
+      "text": "WOLF -10.93% led power/WBG losers on SiC/EV de-risking and balance-sheet worries.",
+      "tickers": [
+        "WOLF"
+      ]
+    },
+    {
+      "text": "GSIT -9.42% and other speculative memory/IP names were hit on positioning and thin liquidity.",
+      "tickers": [
+        "GSIT",
+        "MRAM"
+      ]
+    },
+    {
+      "text": "MSFT +3.63% and broader software (TEAM, NOW, CRM, ADBE, INTU, SNOW, DDOG, ZS) showed strong relative strength versus hardware and semis.",
+      "tickers": [
+        "MSFT",
+        "TEAM",
+        "NOW",
+        "CRM",
+        "ADBE",
+        "INTU",
+        "SNOW",
+        "DDOG",
+        "ZS"
+      ]
+    },
+    {
+      "text": "QCOM +2.03% and RF names (SWKS, QRVO, MXL) reversed weakness and outperformed into the close.",
+      "tickers": [
+        "QCOM",
+        "SWKS",
+        "QRVO",
+        "MXL"
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "name": "Software & SaaS strength",
+      "bullets": [
+        {
+          "text": "Software broadly outperformed with IGV +1.26% on a weak tech tape, reinforcing a rotation toward software and AI monetization over hardware beta.",
+          "tickers": [
+            "IGV"
+          ]
+        },
+        {
+          "text": "TEAM +7.39% was the standout leader in collaboration/dev tools, consistent with an earnings/guide-style rerating.",
+          "tickers": [
+            "TEAM"
+          ]
+        },
+        {
+          "text": "NOW +5.02%, CRM +4.05%, ADBE +4.77%, and INTU +4.14% reflected strong enterprise and creative/document software demand.",
+          "tickers": [
+            "NOW",
+            "CRM",
+            "ADBE",
+            "INTU"
+          ]
+        },
+        {
+          "text": "SNOW +4.19% and DDOG +3.38% showed continued strength in data and observability software.",
+          "tickers": [
+            "SNOW",
+            "DDOG"
+          ]
+        },
+        {
+          "text": "ZS +4.36% highlighted ongoing bid for cybersecurity software.",
+          "tickers": [
+            "ZS"
+          ]
+        },
+        {
+          "text": "MSFT +3.63% advanced despite broad tech weakness, underscoring perceived strength of its AI/software monetization.",
+          "tickers": [
+            "MSFT"
+          ]
+        },
+        {
+          "text": "ORCL -0.91% lagged broader software even as enterprise peers were strong, with no fresh company-specific catalyst cited.",
+          "tickers": [
+            "ORCL"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Semiconductors and AI compute de-risking",
+      "bullets": [
+        {
+          "text": "SOXX -3.92% as semiconductors and hardware led downside in a broad risk-off session.",
+          "tickers": [
+            "SOXX"
+          ]
+        },
+        {
+          "text": "MU -6.83% was the clearest HBM/memory stress point as memory names sold off on de-risking without new filings.",
+          "tickers": [
+            "MU"
+          ]
+        },
+        {
+          "text": "GSIT -9.42% and MRAM -9.02% saw sharp selling in speculative memory/IP tied to AI and micro-cap positioning.",
+          "tickers": [
+            "GSIT",
+            "MRAM"
+          ]
+        },
+        {
+          "text": "RMBS -2.75% gave back some gains as memory IP weakened.",
+          "tickers": [
+            "RMBS"
+          ]
+        },
+        {
+          "text": "ASX -3.46% and AMKR -2.69% reflected pressure in advanced packaging/OSAT, while TSEM -1.08% and UMC +0.03% showed relatively better performance in mature-node foundry.",
+          "tickers": [
+            "ASX",
+            "AMKR",
+            "TSEM",
+            "UMC"
+          ]
+        },
+        {
+          "text": "NVDA -3.60%, AMD -4.45%, AVGO -3.07%, TSM -3.11%, and ARM -6.19% indicated broad de-risking in AI compute and design beta after earlier strength.",
+          "tickers": [
+            "NVDA",
+            "AMD",
+            "AVGO",
+            "TSM",
+            "ARM"
+          ]
+        },
+        {
+          "text": "INTC -5.71% traded weak on foundry skepticism with pre-market downside carrying through to the close.",
+          "tickers": [
+            "INTC"
+          ]
+        },
+        {
+          "text": "QCOM +2.03% stood out with relative strength versus the red semi tape after reversing early weakness.",
+          "tickers": [
+            "QCOM"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AI infrastructure and data center",
+      "bullets": [
+        {
+          "text": "AI infrastructure proxies were weak as investors de-risked hyperscaler and data center supply chains.",
+          "tickers": []
+        },
+        {
+          "text": "SMCI -5.08% reflected concerns over AI server builders tied to hyperscaler vendor lists and margin worries.",
+          "tickers": [
+            "SMCI"
+          ]
+        },
+        {
+          "text": "ANET -2.86% and VRT -1.98% sold off as AI data-center networking and power names were de-risked.",
+          "tickers": [
+            "ANET",
+            "VRT"
+          ]
+        },
+        {
+          "text": "AMZN -1.64% was pressured by its hyperscaler capex exposure, while MSFT +3.63% benefited from perceived software capture of AI spend.",
+          "tickers": [
+            "AMZN",
+            "MSFT"
+          ]
+        },
+        {
+          "text": "AAOI -5.53%, LITE -2.83%, COHR -2.45%, LASR -6.22%, and IPGP -3.16% showed weakness across optics and industrial photonics tied to AI-capex proxy de-risking.",
+          "tickers": [
+            "AAOI",
+            "LITE",
+            "COHR",
+            "LASR",
+            "IPGP"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Internet, platforms, and ad-tech",
+      "bullets": [
+        {
+          "text": "MSFT +3.63% delivered the best relative move among large internet/platform names.",
+          "tickers": [
+            "MSFT"
+          ]
+        },
+        {
+          "text": "TTD +3.08%, SNAP +2.89%, and PINS +1.83% outperformed on ad-tech and ad-supported engagement strength.",
+          "tickers": [
+            "TTD",
+            "SNAP",
+            "PINS"
+          ]
+        },
+        {
+          "text": "GOOGL -1.15%, AMZN -1.64%, and RBLX -1.91% lagged as broader internet beta traded softer.",
+          "tickers": [
+            "GOOGL",
+            "AMZN",
+            "RBLX"
+          ]
+        },
+        {
+          "text": "META -0.21% and NFLX -0.52% were relatively resilient but still closed modestly red.",
+          "tickers": [
+            "META",
+            "NFLX"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Communications, networking, and RF",
+      "bullets": [
+        {
+          "text": "CSCO +2.08% outperformed on a weak day as investors focused on its software/security mix and AI networking commentary.",
+          "tickers": [
+            "CSCO"
+          ]
+        },
+        {
+          "text": "AVGO -3.07% and MRVL -1.65% weakened as AI networking and custom silicon names were de-risked.",
+          "tickers": [
+            "AVGO",
+            "MRVL"
+          ]
+        },
+        {
+          "text": "NOK -3.55% and ERIC -1.58% extended weakness in traditional telecom gear.",
+          "tickers": [
+            "NOK",
+            "ERIC"
+          ]
+        },
+        {
+          "text": "In wireless and RF, HIMX -6.34% and INDI -3.67% sold off, while SWKS +3.64%, QRVO +2.50%, QCOM +2.03%, and MXL +5.19% outperformed late in the session.",
+          "tickers": [
+            "HIMX",
+            "INDI",
+            "SWKS",
+            "QRVO",
+            "QCOM",
+            "MXL"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EdgeAI and security",
+      "bullets": [
+        {
+          "text": "AKAM -3.34% declined amid ongoing edge/security transition concerns.",
+          "tickers": [
+            "AKAM"
+          ]
+        },
+        {
+          "text": "NET -1.45% pulled back but was more resilient than AKAM.",
+          "tickers": [
+            "NET"
+          ]
+        },
+        {
+          "text": "AMBQ +1.12% showed relative strength as an EdgeAI software name.",
+          "tickers": [
+            "AMBQ"
+          ]
+        },
+        {
+          "text": "AI compute flow included NVDA -3.60%, AMD -4.45%, ARM -6.19%, and ALAB +2.75% as one of the few green AI-adjacent names.",
+          "tickers": [
+            "NVDA",
+            "AMD",
+            "ARM",
+            "ALAB"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Optical, substrates, and AXTI financing",
+      "bullets": [
+        {
+          "text": "POET -15.19% led speculative optical unwinding with no fresh press release or filing in the prior 24–48 hours.",
+          "tickers": [
+            "POET"
+          ]
+        },
+        {
+          "text": "AXTI +12.33% rallied on compound-substrate strength tied to AI optics and RF bottlenecks, alongside a large equity raise.",
+          "tickers": [
+            "AXTI"
+          ]
+        },
+        {
+          "text": "AXTI priced an 8.56M share stock offering at $64.25 per share for roughly $550M in gross proceeds, up to about $632.5M including the underwriter option, with proceeds earmarked for Beijing Tongmei capacity and R&D.",
+          "tickers": [
+            "AXTI"
+          ]
+        },
+        {
+          "text": "Commentary framed AXTI as an AI demand and indium phosphide backlog story, with backlog above $100M and Q2 EPS guidance of $0.06–$0.08.",
+          "tickers": [
+            "AXTI"
+          ]
+        },
+        {
+          "text": "AAOI -5.53%, LITE -2.83%, LASR -6.22%, and IPGP -3.16% showed broad weakness across optical hardware, lasers, and industrial photonics.",
+          "tickers": [
+            "AAOI",
+            "LITE",
+            "LASR",
+            "IPGP"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chip equipment, capex, and foundry",
+      "bullets": [
+        {
+          "text": "ASML -5.17%, KLAC -4.54%, and LRCX -4.45% were sold aggressively as chip equipment names de-rated.",
+          "tickers": [
+            "ASML",
+            "KLAC",
+            "LRCX"
+          ]
+        },
+        {
+          "text": "AMAT -0.52% was relatively resilient compared with other tool makers.",
+          "tickers": [
+            "AMAT"
+          ]
+        },
+        {
+          "text": "ACMR +1.02% bucked the weak tool tape as a China-domestic WFE beneficiary.",
+          "tickers": [
+            "ACMR"
+          ]
+        },
+        {
+          "text": "Subsystem suppliers UCTT -0.92% and ICHR -1.45% moved lower in line with the tool complex.",
+          "tickers": [
+            "UCTT",
+            "ICHR"
+          ]
+        },
+        {
+          "text": "Foundry-related names were weak overall, with SITM -5.85%, GFS -3.68%, ASX -3.46%, and TSM -3.11%, while UMC +0.03% remained slightly positive.",
+          "tickers": [
+            "SITM",
+            "GFS",
+            "ASX",
+            "TSM",
+            "UMC"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Analog, power, and wide-bandgap",
+      "bullets": [
+        {
+          "text": "Analog and mixed-signal names broadly de-rated, with AOSL -5.43% the sharpest loser.",
+          "tickers": [
+            "AOSL"
+          ]
+        },
+        {
+          "text": "STM -4.45%, ALGM -4.36%, ON -4.13%, MPWR -3.16%, and VSH -3.15% reflected widespread weakness across analog and power.",
+          "tickers": [
+            "STM",
+            "ALGM",
+            "ON",
+            "MPWR",
+            "VSH"
+          ]
+        },
+        {
+          "text": "TXN -1.70% and ADI -2.05% were weaker but fared better than many smaller analog peers, while NXPI -0.27% held up relatively well on auto content exposure.",
+          "tickers": [
+            "TXN",
+            "ADI",
+            "NXPI"
+          ]
+        },
+        {
+          "text": "POWI +1.58% was the lone notable green analog/power name.",
+          "tickers": [
+            "POWI"
+          ]
+        },
+        {
+          "text": "In power and wide-bandgap, WOLF -10.93%, AEHR -5.43%, NVTS -4.02%, and SMTC -1.59% all traded lower on SiC and GaN de-risking.",
+          "tickers": [
+            "WOLF",
+            "AEHR",
+            "NVTS",
+            "SMTC"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Market color and intraday flow",
+      "bullets": [
+        {
+          "text": "Pre-market commentary highlighted early strength in PANW +5%, COIN +3.7%, NVDA +2%, and AVGO +2%, but semiconductor strength reversed by the close.",
+          "tickers": [
+            "PANW",
+            "COIN",
+            "NVDA",
+            "AVGO"
+          ]
+        },
+        {
+          "text": "MarketPulse flagged INTC and MU lower pre-market on foundry and memory concerns, consistent with weak closes.",
+          "tickers": [
+            "INTC",
+            "MU"
+          ]
+        },
+        {
+          "text": "For AMD, NVDA, ARM, and AVGO, probes cited valuation and export-control chatter as overhangs, though no new company filings or earnings catalysts were identified.",
+          "tickers": [
+            "AMD",
+            "NVDA",
+            "ARM",
+            "AVGO"
+          ]
+        },
+        {
+          "text": "CSCO’s relative strength was linked to its software/security mix and AI networking commentary.",
+          "tickers": [
+            "CSCO"
+          ]
+        }
+      ]
+    }
+  ],
+  "callouts": [
+    {
+      "ticker": "AXTI",
+      "summary": "+12.33% on AI-datacenter and compound-semiconductor enthusiasm, supported by a $550M equity offering at $64.25 per share with potential proceeds up to $632.5M and messaging around indium phosphide and backlog.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "WOLF",
+      "summary": "-10.93% driven by SiC/EV de-risking and ongoing balance-sheet concerns despite no new filings.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "MU",
+      "summary": "-6.83% as HBM and memory positions were cut in a broad de-risking move without company-specific news.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "GSIT",
+      "summary": "-9.42% on micro-cap AI and memory-adjacent de-risking in thin liquidity, with no new company catalyst.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "MRAM",
+      "summary": "-9.02% on profit-taking and de-risking in speculative MRAM exposure.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "POET",
+      "summary": "-15.19% amid a speculative optical unwind with no fresh press release or filing in the prior 24–48 hours.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "NVMI",
+      "summary": "-6.62% as process-control and metrology names de-rated in the broader tools selloff.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "ARM",
+      "summary": "-6.19% on concerns around valuation and export controls affecting its AI/CPU architecture story.",
+      "angle": "regulatory",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "INTC",
+      "summary": "-5.71% as foundry skepticism and related commentary weighed on shares.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "AMD",
+      "summary": "-4.45% on AI GPU profit-taking and crowded positioning after a strong run.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "NVDA",
+      "summary": "-3.60% despite earlier pre-market strength, reflecting positioning and macro-sensitive de-risking in AI compute.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "AVGO",
+      "summary": "-3.07% after pre-market gains faded, as investors de-risked AI infrastructure and custom silicon exposure.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "QCOM",
+      "summary": "+2.03% on an intraday reversal from pre-market weakness tied to China concerns, highlighting relative strength in mobile and RF.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "MSFT",
+      "summary": "+3.63% as investors favored its software and AI monetization over hardware beta in a weak tech tape.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "TEAM",
+      "summary": "+7.39% on software leadership and an earnings/guide-style rerating in collaboration and developer tools.",
+      "angle": "earnings",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "CSCO",
+      "summary": "+2.08% supported by interest in its software/security mix and AI networking positioning.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "AEHR",
+      "summary": "-5.43% alongside other SiC power names as investors de-risked wide-bandgap and test exposure.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "NVTS",
+      "summary": "-4.02% on GaN and power semiconductor de-rating within the broader power complex.",
+      "angle": "supply_chain",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "ASML",
+      "summary": "-5.17% as part of a broad pullback in chip equipment and lithography tied to capex sensitivity.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "KLAC",
+      "summary": "-4.54% amid weakness in process-control tools within the chip equipment complex.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "LRCX",
+      "summary": "-4.45% in a sharp selloff across wafer fab equipment and capex-sensitive names.",
+      "angle": "other",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "TTD",
+      "summary": "+3.08% on ad-tech strength among ad-supported platforms.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "SNAP",
+      "summary": "+2.89% as ad-supported social media names benefited from ad-tech strength.",
+      "angle": "product",
+      "confidence": "confirmed"
+    },
+    {
+      "ticker": "PINS",
+      "summary": "+1.83% on constructive ad-tech and engagement trends.",
+      "angle": "product",
+      "confidence": "confirmed"
+    }
+  ],
+  "watch_tomorrow": [
+    {
+      "text": "AXTI — watch whether Friday’s squeeze follows through after the $550M offering pricing and AI-optics/substrate headlines.",
+      "tickers": [
+        "AXTI"
+      ]
+    },
+    {
+      "text": "NVDA, AMD, AVGO, MU — monitor whether Friday’s semiconductor selloff in AI compute and memory extends or mean-reverts.",
+      "tickers": [
+        "NVDA",
+        "AMD",
+        "AVGO",
+        "MU"
+      ]
+    },
+    {
+      "text": "WOLF, AEHR, NVTS — look for any continuation in power and wide-bandgap de-risking after sharp weakness.",
+      "tickers": [
+        "WOLF",
+        "AEHR",
+        "NVTS"
+      ]
+    },
+    {
+      "text": "TEAM, NOW, CRM, MSFT — track whether software leadership and AI/software monetization themes continue.",
+      "tickers": [
+        "TEAM",
+        "NOW",
+        "CRM",
+        "MSFT"
+      ]
+    },
+    {
+      "text": "QCOM, SWKS, QRVO, MXL — see if late-day RF and connectivity strength persists after sector-wide selling.",
+      "tickers": [
+        "QCOM",
+        "SWKS",
+        "QRVO",
+        "MXL"
+      ]
+    },
+    {
+      "text": "INTC — any weekend headlines on foundry strategy, customer wins, or capex could drive outsized moves.",
+      "tickers": [
+        "INTC"
+      ]
+    },
+    {
+      "text": "SOXX, IGV, QQQ — monitor whether the software-vs-semi rotation persists into the next session and sets the tone for tech and growth.",
+      "tickers": [
+        "SOXX",
+        "IGV",
+        "QQQ"
+      ]
+    }
+  ]
+}

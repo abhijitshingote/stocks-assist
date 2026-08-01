@@ -1,0 +1,498 @@
+{
+  "asof": "2026-07-10",
+  "pipeline": "market_brief_losers",
+  "source_scope": "ticker_only",
+  "windows": {
+    "ticker_window": "2026-07-09 05:00 UTC → 2026-07-10 12:35 UTC (session 2026-07-10, ticker −24h vs general)",
+    "anchor_session": "2026-07-10",
+    "ticker_published_gte_utc": "2026-07-09T05:00:00+00:00",
+    "published_lte_utc": "2026-07-10T12:35:41.814863+00:00"
+  },
+  "counts": {
+    "api_by_fetch": {
+      "ticker": {
+        "AMX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "AXON": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "AZN": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "AZO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "BOIL": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "BP": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "BRBR": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "CABO": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "CB": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "CINF": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "COP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "COST": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "CRM": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "DOW": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "DVN": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "EPAC": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "GVA": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "IBM": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "ICE": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "JNJ": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "LMT": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "MCK": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "MDA": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "NTR": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "PBR": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "PEP": {
+          "api_rows": 14,
+          "in_window": 14,
+          "error": null
+        },
+        "PLTR": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "PM": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ROAD": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "RXT": {
+          "api_rows": 9,
+          "in_window": 9,
+          "error": null
+        },
+        "STUB": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "TSAT": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "TW": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "UL": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "XOM": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        }
+      },
+      "ticker_totals": {
+        "api_rows": 66,
+        "in_window": 66,
+        "error": null
+      }
+    },
+    "api_total_rows": 66,
+    "after_dedupe_unique": 60,
+    "upserted": 60,
+    "deduped_published": {
+      "earliest_utc": "2026-07-09T05:51:46+00:00",
+      "latest_utc": "2026-07-10T12:35:03+00:00",
+      "with_published": 60
+    },
+    "prompt": {
+      "articles_total": 60,
+      "by_section": {
+        "Ticker: Bottom 10 · 1D return · Large cap": 5,
+        "Ticker: Bottom 10 · 1D return · Mid & small cap": 14,
+        "Ticker: Bottom 15 · 1D return · Mega cap": 41
+      }
+    }
+  },
+  "fetch_warnings": [],
+  "ingest_pools": {
+    "ticker": {
+      "AMX": [],
+      "AXON": [],
+      "AZN": [
+        "60354116",
+        "60353746",
+        "60349590"
+      ],
+      "AZO": [],
+      "BOIL": [],
+      "BP": [
+        "60356780"
+      ],
+      "BRBR": [
+        "60357461"
+      ],
+      "CABO": [
+        "60351520"
+      ],
+      "CB": [
+        "60370308",
+        "60361567",
+        "60356557",
+        "60355927"
+      ],
+      "CINF": [],
+      "COP": [],
+      "COST": [
+        "60378824",
+        "60363569",
+        "60356557",
+        "60355741"
+      ],
+      "CRM": [
+        "60368882",
+        "60354428",
+        "60351081"
+      ],
+      "DOW": [],
+      "DVN": [
+        "60358100"
+      ],
+      "EPAC": [
+        "60351193",
+        "60349338"
+      ],
+      "GVA": [
+        "60366960",
+        "60351203"
+      ],
+      "IBM": [
+        "60379579",
+        "60368889",
+        "60356414",
+        "60351836",
+        "60351015"
+      ],
+      "ICE": [
+        "60357166",
+        "60356361"
+      ],
+      "JNJ": [
+        "60368131"
+      ],
+      "LMT": [
+        "60360287"
+      ],
+      "MCK": [
+        "60362116"
+      ],
+      "MDA": [
+        "60366960",
+        "60356509",
+        "60353916",
+        "60353746"
+      ],
+      "NTR": [],
+      "PBR": [],
+      "PEP": [
+        "60380226",
+        "60378108",
+        "60377780",
+        "60376565",
+        "60364676",
+        "60358938",
+        "60356415",
+        "60354996",
+        "60352522",
+        "60351225",
+        "60350972",
+        "60350218",
+        "60349720",
+        "60349569"
+      ],
+      "PLTR": [
+        "60380582",
+        "60367402",
+        "60358793",
+        "60354315",
+        "60352939"
+      ],
+      "PM": [],
+      "ROAD": [],
+      "RXT": [
+        "60367402",
+        "60366959",
+        "60364676",
+        "60358120",
+        "60354371",
+        "60353915",
+        "60353445",
+        "60353151",
+        "60352939"
+      ],
+      "STUB": [],
+      "TSAT": [],
+      "TW": [
+        "60358712"
+      ],
+      "UL": [],
+      "XOM": [
+        "60356788"
+      ]
+    }
+  },
+  "universe_symbols": [
+    "AMX",
+    "AXON",
+    "AZN",
+    "AZO",
+    "BOIL",
+    "BP",
+    "BRBR",
+    "CABO",
+    "CB",
+    "CINF",
+    "COP",
+    "COST",
+    "CRM",
+    "DOW",
+    "DVN",
+    "EPAC",
+    "GVA",
+    "IBM",
+    "ICE",
+    "JNJ",
+    "LMT",
+    "MCK",
+    "MDA",
+    "NTR",
+    "PBR",
+    "PEP",
+    "PLTR",
+    "PM",
+    "ROAD",
+    "RXT",
+    "STUB",
+    "TSAT",
+    "TW",
+    "UL",
+    "XOM"
+  ],
+  "losers_universe_slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "selection_count": 15,
+      "tickers": [
+        "AZN",
+        "COST",
+        "PEP",
+        "PM",
+        "CRM",
+        "IBM",
+        "XOM",
+        "PLTR",
+        "JNJ",
+        "CB",
+        "LMT",
+        "COP",
+        "PBR",
+        "UL",
+        "BP"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "selection_count": 10,
+      "tickers": [
+        "AXON",
+        "CINF",
+        "TW",
+        "MCK",
+        "NTR",
+        "AMX",
+        "ICE",
+        "AZO",
+        "DOW",
+        "DVN"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "selection_count": 10,
+      "tickers": [
+        "RXT",
+        "CABO",
+        "BOIL",
+        "GVA",
+        "STUB",
+        "BRBR",
+        "MDA",
+        "ROAD",
+        "TSAT",
+        "EPAC"
+      ]
+    }
+  ],
+  "losers_universe_overview": "source/losers_universe/overview.md",
+  "article_ids": [
+    "60354116",
+    "60353746",
+    "60349590",
+    "60378824",
+    "60363569",
+    "60356557",
+    "60355741",
+    "60380226",
+    "60378108",
+    "60377780",
+    "60376565",
+    "60364676",
+    "60358938",
+    "60356415",
+    "60354996",
+    "60352522",
+    "60351225",
+    "60350972",
+    "60350218",
+    "60349720",
+    "60349569",
+    "60368882",
+    "60354428",
+    "60351081",
+    "60379579",
+    "60368889",
+    "60356414",
+    "60351836",
+    "60351015",
+    "60356788",
+    "60380582",
+    "60367402",
+    "60358793",
+    "60354315",
+    "60352939",
+    "60368131",
+    "60370308",
+    "60361567",
+    "60355927",
+    "60360287",
+    "60356780",
+    "60358712",
+    "60362116",
+    "60357166",
+    "60356361",
+    "60358100",
+    "60366959",
+    "60358120",
+    "60354371",
+    "60353915",
+    "60353445",
+    "60353151",
+    "60351520",
+    "60366960",
+    "60351203",
+    "60357461",
+    "60356509",
+    "60353916",
+    "60351193",
+    "60349338"
+  ]
+}

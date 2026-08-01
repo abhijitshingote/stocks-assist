@@ -1,0 +1,51 @@
+{
+  "source_kind": "ticker",
+  "source_key": "STM",
+  "window": "2026-05-21 05:00 EDT → 2026-05-26 06:00 EDT (session 2026-05-22, ticker −24h vs general)",
+  "anchor_session": "2026-05-22",
+  "published_gte_utc": "2026-05-21T09:00:00+00:00",
+  "published_lte_utc": "2026-05-26T10:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 1,
+  "articles": [
+    {
+      "benzinga_id": 52735056,
+      "author": "piero cingari",
+      "published": "2026-05-21T21:16:57Z",
+      "last_updated": "2026-05-21T21:16:58Z",
+      "title": "A New Chipmaker Just Topped Micron&#39;s 2026 Return, Thanks To Nvidia",
+      "teaser": "Arm Holdings surged 38% in three sessions to leapfrog Micron in SOXX&#39;s 2026 return ranking, fueled by Nvidia earnings.",
+      "body": "<p><strong>Nvidia Corp.</strong>&#8216;s <a class=\"ticker-link\" data-ticker=\"NVDA\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/NVDA\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/NVDA\">NVDA</a>)</a> record quarter handed the market a clear winner this week. It wasn&#8217;t Nvidia.</p>\n\n\n\n<p>Shares of <strong>Arm Holdings plc</strong> <a class=\"ticker-link\" data-ticker=\"ARM\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/ARM\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/ARM\">ARM</a>)</a> climbed 38% in three sessions, leapfrogging <strong>Micron Technology Inc. </strong><a class=\"ticker-link\" data-ticker=\"MU\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/MU\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/MU\">MU</a>)</a> to claim second place in the year-to-date performance ranking of the <strong>iShares Semiconductor ETF</strong> <a class=\"ticker-link\" data-ticker=\"SOXX\" data-exchange=\"NASDAQ\" href=\"https://www.benzinga.com/quote/SOXX\" target=\"_blank\" rel=\"noopener\">(NASDAQ:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/SOXX\">SOXX</a>)</a>.</p>\n\n\n\n<p>The British chip designer is now up roughly 170% in 2026.</p>\n\n\n\n<p><strong>Chart: Shares Of Arm Holdings Notched Best 3-Day Rally In Over 2 Years </strong></p>\n\n\n\n<figure class=\"wp-block-image size-large\"><img loading=\"lazy\" decoding=\"async\" width=\"1024\" height=\"809\" src=\"https://editorial-assets.benzinga.com/wp-content/uploads/2026/05/21164052/image-576-1024x809.png\" alt=\"\" class=\"wp-image-1472280\" srcset=\"https://editorial-assets.benzinga.com/wp-content/uploads/2026/05/21164052/image-576-1024x809.png 1024w,https://editorial-assets.benzinga.com/wp-content/uploads/2026/05/21164052/image-576-300x237.png 300w,https://editorial-assets.benzinga.com/wp-content/uploads/2026/05/21164052/image-576-768x607.png 768w,https://editorial-assets.benzinga.com/wp-content/uploads/2026/05/21164052/image-576-1536x1214.png 1536w,https://editorial-assets.benzinga.com/wp-content/uploads/2026/05/21164052/image-576.png 1702w\" sizes=\"(max-width: 1024px) 100vw, 1024px\" /></figure>\n\n\n\n<h2 class=\"wp-block-heading\">What Drove the Move</h2>\n\n\n\n<p>The catalyst stack has three layers. </p>\n\n\n\n<p>At the top sits Nvidia Corp.&#8217;s record quarter, which lifted every name with credible exposure to artificial-intelligence infrastructure. </p>\n\n\n\n<p>Below that, a fresh Bernstein initiation on May 18 reframed the Arm bull case. And under both sits Arm&#8217;s own fourth-quarter fiscal 2026 print earlier this month — quarterly revenue of $1.49 billion, up 20% year over year, with licensing revenue climbing 29% to $819 million.</p>\n\n\n\n<p>Bernstein analyst David Dai initiated coverage with an Outperform rating and a $300 price target — a level that was about 45% above the stock when the note dropped, and is now only about 1% above where shares closed Thursday at $298.</p>\n\n\n\n<p>&#8220;Arm stands out in server CPUs given its unparalleled power efficiency,&#8221; Dai said in a note to clients.</p>\n\n\n\n<p>The framing matters. Dai argued that Arm sits &#8220;at the center of the renaissance of CPUs&#8221; that he sees taking hold as the AI workload mix shifts from chatbot-style large language models toward autonomous agents — software systems that handle multi-step tasks on their own.</p>\n\n\n\n<p>Agentic workloads lean more heavily on general-purpose central processing units than on the graphics processors that have driven the AI trade so far. Bernstein expects the server CPU market to quadruple to $137 billion by the end of the decade.</p>\n\n\n\n<h2 class=\"wp-block-heading\">The Hyperscaler Migration Is the Real Story</h2>\n\n\n\n<p>Royalty math is the part that turns a thesis into a re-rating. Arm earns more per chip on a data-center processor than on a mobile one. As hyperscalers — Alphabet Inc., Microsoft Corp., Meta Platforms Inc., Amazon.com Inc. — keep designing their own custom silicon on Arm&#8217;s architecture instead of buying x86 chips, the company&#8217;s revenue mix tilts toward the higher-royalty end of its book.</p>\n\n\n\n<p>Chief Executive Officer <strong>Rene Haas</strong> said on Arm&#8217;s earnings call this month that committed customer demand for the company&#8217;s AGI CPU now exceeds $2 billion across fiscal 2027 and fiscal 2028 — more than double the figure disclosed six weeks earlier at the product&#8217;s launch.</p>\n\n\n\n<p>That number is what Bernstein is underwriting. It is also what allows the bank to defend a $300 price target on a stock trading at roughly 190 times forward earnings.</p>\n\n\n\n<h2 class=\"wp-block-heading\">Top-Performing Semiconductors In 2026</h2>\n\n\n\n<p>Below are the top five performers within the iShares Semiconductor ETF year to date:</p>\n\n\n\n<figure class=\"wp-block-table is-style-stripes\"><table class=\"has-fixed-layout\"><thead><tr><th>Rank</th><th>Company</th><th>YTD Return (%)</th></tr></thead><tbody><tr><td>1</td><td><strong>Intel Corp.</strong>&nbsp;<strong>INTC</strong></td><td>+219.91</td></tr><tr><td>2</td><td><strong>Arm Holdings plc</strong>&nbsp;<strong>ARM</strong></td><td>+169.77</td></tr><tr><td>3</td><td><strong>Micron Technology Inc.</strong>&nbsp;<strong>MU</strong></td><td>+165.74</td></tr><tr><td>4</td><td><strong>STMicroelectronics N.V.</strong>&nbsp;<strong>(NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/STM\">STM</a>)</strong></td><td>+153.62</td></tr><tr><td>5</td><td><strong>United Microelectronics Corp.</strong>&nbsp;(NYSE: <strong>UMC</strong>)</td><td>+133.13</td></tr></tbody></table></figure>\n\n\n\n<p><em>Photo: Shutterstock</em></p>",
+      "url": "https://www.benzinga.com/markets/tech/26/05/52735056/arm-holdings-soxx-2026-best-performing-semiconductors-return-passes-micron-nvidia",
+      "images": [
+        "https://cdn.benzinga.com/files/images/story/2026/05/21/Silicon-Wafer-With-Microchips-Used-In-El.jpeg?width=250&height=187",
+        "https://cdn.benzinga.com/files/images/story/2026/05/21/Silicon-Wafer-With-Microchips-Used-In-El.jpeg?width=1024&height=768",
+        "https://cdn.benzinga.com/files/images/story/2026/05/21/Silicon-Wafer-With-Microchips-Used-In-El.jpeg?width=2048&height=1536"
+      ],
+      "channels": [
+        "analyst color",
+        "equities",
+        "large cap",
+        "sector etfs",
+        "analyst ratings",
+        "tech",
+        "etfs"
+      ],
+      "tickers": [
+        "ARM",
+        "INTC",
+        "MU",
+        "NVDA",
+        "SOXX",
+        "STM"
+      ],
+      "tags": [
+        "semiconductors",
+        "stories that matter"
+      ]
+    }
+  ],
+  "section": "main_view_ti65/large",
+  "label": "Top 10 · Main View TI65 · Large cap",
+  "rank": 7
+}

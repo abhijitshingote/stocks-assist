@@ -1,0 +1,36 @@
+{
+  "source_kind": "ticker",
+  "source_key": "CIB",
+  "window": "2026-05-31 05:00 UTC → 2026-06-02 06:00 UTC (session 2026-06-01, ticker −24h vs general)",
+  "anchor_session": "2026-06-01",
+  "published_gte_utc": "2026-05-31T05:00:00+00:00",
+  "published_lte_utc": "2026-06-02T06:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 1,
+  "articles": [
+    {
+      "benzinga_id": 52916526,
+      "author": "benzinga newsdesk",
+      "published": "2026-06-01T17:11:19Z",
+      "last_updated": "2026-06-01T17:11:20Z",
+      "title": "B of A Securities Upgrades Grupo Cibest to Neutral, Raises Price Target to $75",
+      "teaser": "B of A Securities  analyst Ernesto Gabilondo   upgrades Grupo Cibest (NYSE:CIB) from Underperform to Neutral and raises the price target from $68 to $75.",
+      "body": "B of A Securities  analyst Ernesto Gabilondo   upgrades Grupo Cibest (NYSE:<a class=\"ticker\" href=\"https://www.benzinga.com/quote/CIB\">CIB</a>) from Underperform to Neutral and raises the price target from $68 to $75.",
+      "url": "https://www.benzinga.com/news/26/06/52916526/b-of-a-securities-upgrades-grupo-cibest-to-neutral-raises-price-target-to-75",
+      "images": [],
+      "channels": [
+        "news",
+        "upgrades",
+        "price target",
+        "analyst ratings"
+      ],
+      "tickers": [
+        "CIB"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "vol_spike_5d/mid_small",
+  "label": "Vol spike / gapper · last 5D · Mid & small cap",
+  "rank": 6
+}

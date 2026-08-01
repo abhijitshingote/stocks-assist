@@ -1,0 +1,49 @@
+{
+  "source_kind": "ticker",
+  "source_key": "PURR",
+  "window": "2026-05-21 05:00 EDT → 2026-05-26 06:00 EDT (session 2026-05-22, ticker −24h vs general)",
+  "anchor_session": "2026-05-22",
+  "published_gte_utc": "2026-05-21T09:00:00+00:00",
+  "published_lte_utc": "2026-05-26T10:00:00+00:00",
+  "api_limit": 25,
+  "article_count": 2,
+  "articles": [
+    {
+      "benzinga_id": 52754331,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-22T18:30:05Z",
+      "last_updated": "2026-05-22T18:30:05Z",
+      "title": "Hyperliquid Strategies Option Alert: Jul 17 $10 Calls Sweep (3) near the Ask: 1000 @ $1.05 vs 886 OI; Ref=$7.97",
+      "url": "https://www.benzinga.com/trading-ideas/26/05/52754331/hyperliquid-strategies-option-alert-jul-17-10-calls-sweep-3-near-the-ask-1000-1-05-vs-886-oi-ref-7-",
+      "images": [],
+      "channels": [
+        "trading ideas"
+      ],
+      "tickers": [
+        "PURR"
+      ],
+      "tags": []
+    },
+    {
+      "benzinga_id": 52739631,
+      "author": "benzinga newsdesk",
+      "published": "2026-05-22T10:12:57Z",
+      "last_updated": "2026-05-22T10:12:58Z",
+      "title": "Hyperliquid Strategies Files Secondary Offering Of 35,156,660 Shares By Rorschach Advisors",
+      "teaser": "- SEC filing",
+      "body": "<p>- SEC filing</p>",
+      "url": "https://www.benzinga.com/news/26/05/52739631/hyperliquid-strategies-files-secondary-offering-of-35-156-660-shares-by-rorschach-advisors",
+      "images": [],
+      "channels": [
+        "news"
+      ],
+      "tickers": [
+        "PURR"
+      ],
+      "tags": []
+    }
+  ],
+  "section": "r1d/mid_small",
+  "label": "Top 10 · 1D return · Mid & small cap",
+  "rank": 7
+}

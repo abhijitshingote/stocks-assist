@@ -1,0 +1,481 @@
+{
+  "asof": "2026-06-11",
+  "pipeline": "market_brief_losers",
+  "source_scope": "ticker_only",
+  "windows": {
+    "ticker_window": "2026-06-10 05:00 UTC → 2026-06-11 10:27 UTC (session 2026-06-11, ticker −24h vs general)",
+    "anchor_session": "2026-06-11",
+    "ticker_published_gte_utc": "2026-06-10T05:00:00+00:00",
+    "published_lte_utc": "2026-06-11T10:27:03.823356+00:00"
+  },
+  "counts": {
+    "api_by_fetch": {
+      "ticker": {
+        "APP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ARM": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "AU": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "AVGO": {
+          "api_rows": 6,
+          "in_window": 6,
+          "error": null
+        },
+        "BE": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "BOT": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "CAT": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "CCJ": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "CCL": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "CGEM": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "CYD": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "EQPT": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ETN": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "EZPW": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "FLEX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "GEV": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "LAZ": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "NEM": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NET": {
+          "api_rows": 8,
+          "in_window": 8,
+          "error": null
+        },
+        "NRG": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "PWR": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "QCOM": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "SAP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "SMCI": {
+          "api_rows": 13,
+          "in_window": 13,
+          "error": null
+        },
+        "STRL": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "STX": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "SW": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "TSM": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "TT": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "UEC": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "ULCC": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "VRT": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "WDC": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "WOLF": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "XE": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        }
+      },
+      "ticker_totals": {
+        "api_rows": 60,
+        "in_window": 60,
+        "error": null
+      }
+    },
+    "api_total_rows": 60,
+    "after_dedupe_unique": 52,
+    "upserted": 52,
+    "deduped_published": {
+      "earliest_utc": "2026-06-10T05:39:26+00:00",
+      "latest_utc": "2026-06-11T09:58:13+00:00",
+      "with_published": 52
+    },
+    "prompt": {
+      "articles_total": 52,
+      "by_section": {
+        "Ticker: Bottom 10 · 1D return · Large cap": 22,
+        "Ticker: Bottom 10 · 1D return · Mid & small cap": 7,
+        "Ticker: Bottom 15 · 1D return · Mega cap": 23
+      }
+    }
+  },
+  "fetch_warnings": [],
+  "ingest_pools": {
+    "ticker": {
+      "APP": [],
+      "ARM": [
+        "53122333"
+      ],
+      "AU": [],
+      "AVGO": [
+        "53133511",
+        "53124895",
+        "53124067",
+        "53117786",
+        "53112323",
+        "53111785"
+      ],
+      "BE": [
+        "53124729",
+        "53113492"
+      ],
+      "BOT": [],
+      "CAT": [
+        "53132743",
+        "53129742",
+        "53127078",
+        "53124729"
+      ],
+      "CCJ": [],
+      "CCL": [
+        "53124294",
+        "53111491"
+      ],
+      "CGEM": [
+        "53110642"
+      ],
+      "CYD": [],
+      "EQPT": [],
+      "ETN": [],
+      "EZPW": [],
+      "FLEX": [],
+      "GEV": [
+        "53124729",
+        "53112454"
+      ],
+      "LAZ": [
+        "53124067",
+        "53109878"
+      ],
+      "NEM": [],
+      "NET": [
+        "53121863",
+        "53116903",
+        "53114134",
+        "53113516",
+        "53113129",
+        "53111954",
+        "53109773",
+        "53108876"
+      ],
+      "NRG": [],
+      "PWR": [],
+      "QCOM": [
+        "53132114",
+        "53122093",
+        "53120915",
+        "53117519"
+      ],
+      "SAP": [],
+      "SMCI": [
+        "53134862",
+        "53126043",
+        "53124067",
+        "53123783",
+        "53122726",
+        "53108423",
+        "53111785",
+        "53111735",
+        "53111512",
+        "53111409",
+        "53111392",
+        "53108839",
+        "53107226"
+      ],
+      "STRL": [],
+      "STX": [
+        "53130732"
+      ],
+      "SW": [],
+      "TSM": [
+        "53111785",
+        "53109449",
+        "53108675",
+        "53108284",
+        "53107258"
+      ],
+      "TT": [
+        "53109632"
+      ],
+      "UEC": [
+        "53118847",
+        "53112306",
+        "53111062",
+        "53109371"
+      ],
+      "ULCC": [
+        "53116455"
+      ],
+      "VRT": [
+        "53122488",
+        "53112454"
+      ],
+      "WDC": [],
+      "WOLF": [
+        "53123783"
+      ],
+      "XE": []
+    }
+  },
+  "universe_symbols": [
+    "APP",
+    "ARM",
+    "AU",
+    "AVGO",
+    "BE",
+    "BOT",
+    "CAT",
+    "CCJ",
+    "CCL",
+    "CGEM",
+    "CYD",
+    "EQPT",
+    "ETN",
+    "EZPW",
+    "FLEX",
+    "GEV",
+    "LAZ",
+    "NEM",
+    "NET",
+    "NRG",
+    "PWR",
+    "QCOM",
+    "SAP",
+    "SMCI",
+    "STRL",
+    "STX",
+    "SW",
+    "TSM",
+    "TT",
+    "UEC",
+    "ULCC",
+    "VRT",
+    "WDC",
+    "WOLF",
+    "XE"
+  ],
+  "losers_universe_slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "selection_count": 15,
+      "tickers": [
+        "GEV",
+        "CAT",
+        "QCOM",
+        "ETN",
+        "PWR",
+        "AVGO",
+        "NEM",
+        "WDC",
+        "APP",
+        "TT",
+        "VRT",
+        "SAP",
+        "ARM",
+        "STX",
+        "TSM"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "selection_count": 10,
+      "tickers": [
+        "SMCI",
+        "BE",
+        "STRL",
+        "SW",
+        "CCL",
+        "NET",
+        "CCJ",
+        "NRG",
+        "AU",
+        "FLEX"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "selection_count": 10,
+      "tickers": [
+        "BOT",
+        "LAZ",
+        "CGEM",
+        "EQPT",
+        "EZPW",
+        "CYD",
+        "UEC",
+        "WOLF",
+        "ULCC",
+        "XE"
+      ]
+    }
+  ],
+  "losers_universe_overview": "source/losers_universe/overview.md",
+  "article_ids": [
+    "53124729",
+    "53112454",
+    "53132743",
+    "53129742",
+    "53127078",
+    "53132114",
+    "53122093",
+    "53120915",
+    "53117519",
+    "53133511",
+    "53124895",
+    "53124067",
+    "53117786",
+    "53112323",
+    "53111785",
+    "53109632",
+    "53122488",
+    "53122333",
+    "53130732",
+    "53109449",
+    "53108675",
+    "53108284",
+    "53107258",
+    "53134862",
+    "53126043",
+    "53123783",
+    "53122726",
+    "53108423",
+    "53111735",
+    "53111512",
+    "53111409",
+    "53111392",
+    "53108839",
+    "53107226",
+    "53113492",
+    "53124294",
+    "53111491",
+    "53121863",
+    "53116903",
+    "53114134",
+    "53113516",
+    "53113129",
+    "53111954",
+    "53109773",
+    "53108876",
+    "53109878",
+    "53110642",
+    "53118847",
+    "53112306",
+    "53111062",
+    "53109371",
+    "53116455"
+  ]
+}

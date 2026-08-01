@@ -1,0 +1,461 @@
+{
+  "asof": "2026-07-10",
+  "source": "stock_metrics (DB) — bottom dr_1",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_by_bucket": {
+    "mega": 15,
+    "large": 10,
+    "mid_small": 10
+  },
+  "unique_tickers": 35,
+  "by_ticker": {
+    "AMX": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": -2.78,
+      "dr_5": 0.68,
+      "sector": "Communication Services",
+      "industry": "Telecommunications Services",
+      "market_cap": 77597520000,
+      "company_name": "América Móvil, S.A.B. de C.V."
+    },
+    "AXON": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": -4.17,
+      "dr_5": -3.5,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 46910408814,
+      "company_name": "Axon Enterprise, Inc."
+    },
+    "AZN": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": -5.38,
+      "dr_5": -7.62,
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - General",
+      "market_cap": 276815224136,
+      "company_name": "AstraZeneca PLC"
+    },
+    "AZO": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": -2.59,
+      "dr_5": -4.21,
+      "sector": "Consumer Cyclical",
+      "industry": "Specialty Retail",
+      "market_cap": 49145817896,
+      "company_name": "AutoZone, Inc."
+    },
+    "BOIL": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": -11.92,
+      "dr_5": -10.25,
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "market_cap": 332941787,
+      "company_name": "ProShares Ultra Bloomberg Natural Gas"
+    },
+    "BP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 15,
+      "dr_1": -1.55,
+      "dr_5": 3.62,
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "market_cap": 101097567750,
+      "company_name": "BP p.l.c."
+    },
+    "BRBR": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": -9.79,
+      "dr_5": -13.71,
+      "sector": "Consumer Defensive",
+      "industry": "Packaged Foods",
+      "market_cap": 1412777700,
+      "company_name": "BellRing Brands, Inc."
+    },
+    "CABO": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": -13.14,
+      "dr_5": -27.23,
+      "sector": "Communication Services",
+      "industry": "Telecommunications Services",
+      "market_cap": 200081420,
+      "company_name": "Cable One, Inc."
+    },
+    "CB": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": -2.3,
+      "dr_5": -3.14,
+      "sector": "Financial Services",
+      "industry": "Insurance - Property & Casualty",
+      "market_cap": 134897744867,
+      "company_name": "Chubb Limited"
+    },
+    "CINF": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": -4.13,
+      "dr_5": -8.1,
+      "sector": "Financial Services",
+      "industry": "Insurance - Property & Casualty",
+      "market_cap": 27136740410,
+      "company_name": "Cincinnati Financial Corporation"
+    },
+    "COP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 12,
+      "dr_1": -1.78,
+      "dr_5": 3.65,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 131600118636,
+      "company_name": "ConocoPhillips"
+    },
+    "COST": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": -4.18,
+      "dr_5": -3.6,
+      "sector": "Consumer Defensive",
+      "industry": "Discount Stores",
+      "market_cap": 404883022630,
+      "company_name": "Costco Wholesale Corporation"
+    },
+    "CRM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": -2.77,
+      "dr_5": -2.62,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 133087500000,
+      "company_name": "Salesforce, Inc."
+    },
+    "DOW": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": -2.55,
+      "dr_5": 3.45,
+      "sector": "Basic Materials",
+      "industry": "Chemicals",
+      "market_cap": 20541118500,
+      "company_name": "Dow Inc."
+    },
+    "DVN": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": -2.49,
+      "dr_5": 4.47,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 26112535284,
+      "company_name": "Devon Energy Corporation"
+    },
+    "EPAC": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": -7.13,
+      "dr_5": -1.99,
+      "sector": "Industrials",
+      "industry": "Industrial - Machinery",
+      "market_cap": 1782783482,
+      "company_name": "Enerpac Tool Group Corp."
+    },
+    "GVA": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": -11.46,
+      "dr_5": -12.53,
+      "sector": "Industrials",
+      "industry": "Engineering & Construction",
+      "market_cap": 5493710460,
+      "company_name": "Granite Construction Incorporated"
+    },
+    "IBM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": -2.65,
+      "dr_5": 2.23,
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 277548040500,
+      "company_name": "International Business Machines Corporation"
+    },
+    "ICE": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": -2.68,
+      "dr_5": 1.02,
+      "sector": "Financial Services",
+      "industry": "Financial - Data & Stock Exchanges",
+      "market_cap": 76406393199,
+      "company_name": "Intercontinental Exchange, Inc."
+    },
+    "JNJ": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": -2.33,
+      "dr_5": -1.24,
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - General",
+      "market_cap": 623710702000,
+      "company_name": "Johnson & Johnson"
+    },
+    "LMT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 11,
+      "dr_1": -1.96,
+      "dr_5": -5.01,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 119491895482,
+      "company_name": "Lockheed Martin Corporation"
+    },
+    "MCK": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": -3.39,
+      "dr_5": 0.81,
+      "sector": "Healthcare",
+      "industry": "Medical - Distribution",
+      "market_cap": 92820609180,
+      "company_name": "McKesson Corporation"
+    },
+    "MDA": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": -9.25,
+      "dr_5": -11.82,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 4910397076,
+      "company_name": "MDA Space Ltd"
+    },
+    "NTR": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": -2.9,
+      "dr_5": -0.16,
+      "sector": "Basic Materials",
+      "industry": "Agricultural Inputs",
+      "market_cap": 30995120494,
+      "company_name": "Nutrien Ltd."
+    },
+    "PBR": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 13,
+      "dr_1": -1.65,
+      "dr_5": 5.54,
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "market_cap": 109747557731,
+      "company_name": "Petróleo Brasileiro S.A. - Petrobras"
+    },
+    "PEP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": -4.12,
+      "dr_5": -4.65,
+      "sector": "Consumer Defensive",
+      "industry": "Beverages - Non-Alcoholic",
+      "market_cap": 188446474128,
+      "company_name": "PepsiCo, Inc."
+    },
+    "PLTR": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": -2.36,
+      "dr_5": -0.59,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 296284872800,
+      "company_name": "Palantir Technologies Inc."
+    },
+    "PM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": -2.87,
+      "dr_5": -0.29,
+      "sector": "Consumer Defensive",
+      "industry": "Tobacco",
+      "market_cap": 282364106130,
+      "company_name": "Philip Morris International Inc."
+    },
+    "ROAD": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": -7.5,
+      "dr_5": -11.83,
+      "sector": "Industrials",
+      "industry": "Engineering & Construction",
+      "market_cap": 5397154328,
+      "company_name": "Construction Partners, Inc."
+    },
+    "RXT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": -32.87,
+      "dr_5": -25.32,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 1089102321,
+      "company_name": "Rackspace Technology, Inc."
+    },
+    "STUB": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": -9.95,
+      "dr_5": -10.48,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 4039917696,
+      "company_name": "StubHub Holdings, Inc."
+    },
+    "TSAT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": -7.27,
+      "dr_5": -7.58,
+      "sector": "Communication Services",
+      "industry": "Telecommunications Services",
+      "market_cap": 627983273,
+      "company_name": "Telesat Corporation"
+    },
+    "TW": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": -3.49,
+      "dr_5": -5.49,
+      "sector": "Financial Services",
+      "industry": "Financial - Capital Markets",
+      "market_cap": 20696733029,
+      "company_name": "Tradeweb Markets Inc."
+    },
+    "UL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 14,
+      "dr_1": -1.6,
+      "dr_5": -2.22,
+      "sector": "Consumer Defensive",
+      "industry": "Household & Personal Products",
+      "market_cap": 131388317400,
+      "company_name": "Unilever PLC"
+    },
+    "XOM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": -2.49,
+      "dr_5": 0.49,
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "market_cap": 569391391644,
+      "company_name": "Exxon Mobil Corporation"
+    }
+  },
+  "slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "ticker_count": 15,
+      "tickers": [
+        "AZN",
+        "COST",
+        "PEP",
+        "PM",
+        "CRM",
+        "IBM",
+        "XOM",
+        "PLTR",
+        "JNJ",
+        "CB",
+        "LMT",
+        "COP",
+        "PBR",
+        "UL",
+        "BP"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "AXON",
+        "CINF",
+        "TW",
+        "MCK",
+        "NTR",
+        "AMX",
+        "ICE",
+        "AZO",
+        "DOW",
+        "DVN"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "RXT",
+        "CABO",
+        "BOIL",
+        "GVA",
+        "STUB",
+        "BRBR",
+        "MDA",
+        "ROAD",
+        "TSAT",
+        "EPAC"
+      ]
+    }
+  ]
+}

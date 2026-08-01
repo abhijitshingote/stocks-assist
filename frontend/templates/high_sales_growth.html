@@ -1054,7 +1054,9 @@
                         <span class="sector-industry" id="detailSectorIndustry"></span>
                         <a class="stock-link" id="detailLink" href="#" target="_blank">Detail →</a>
                     </span>
-                    <button class="abi-wl-btn" id="detailWlBtn" title="Abi Watchlist" onclick="openWatchlistModal()">+ Watchlist</button>
+                    <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership" onclick="toggleWatchlistForSelected()">+ Watchlist</button>
+                    <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes for this ticker" onclick="openNotesModalForSelected()">📝 Abi ticker notes</button>
+                    <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners" onclick="window._dlOpenForTicker(selectedTicker)">👎</button>
                     <div class="chart-timeframes" id="chartTimeframes">
                         <button data-days="30">1M</button>
                         <button data-days="90">3M</button>
@@ -1083,7 +1085,10 @@
                     <span class="side-chevron" aria-hidden="true">▼</span>
                 </button>
                 <span class="side-stack-title"><span class="notes-icon">📰</span> News</span>
-                <button type="button" class="news-load-btn" id="sideLoadNewsBtn">Load News</button>
+                <div class="news-actions-row">
+                    <button type="button" class="news-load-btn" id="sideLoadNewsBtn">Load News</button>
+                    <button type="button" class="news-benzinga-btn" id="sideBenzingaNewsBtn">Get Benzinga News</button>
+                </div>
             </div>
             <div class="side-stack-body" id="sideNewsStackBody">
                 <div class="side-news-inner" id="sideNewsInner">
@@ -1103,10 +1108,10 @@
             <div class="hsg-metrics-body side-metrics-body" id="sideMetricsBody">
                 <div class="wl-notes-section" id="wlNotesSection" style="display:none;">
                     <span class="ms-section-title">
-                        <span>Watchlist Notes</span>
-                        <a class="wl-notes-edit" onclick="openWatchlistModal()">Edit</a>
+                        <span>Abi ticker notes</span>
+                        <a class="wl-notes-edit" onclick="openNotesModalForSelected()">Edit</a>
                     </span>
-                    <div class="wl-notes-text empty" id="wlNotesText">No notes</div>
+                    <div class="wl-notes-text empty" id="wlNotesText">No Abi ticker notes</div>
                 </div>
                 <div class="ms-tags" id="tagsStrip"></div>
                 <div id="metricsContent"></div>
@@ -1120,6 +1125,8 @@
 <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="/static/js/stock-chart.js"></script>
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
 <script src="/static/js/side-news-panel.js"></script>
 <script>
 (function() {
@@ -1434,8 +1441,11 @@
         await loadChart(ticker);
     }
 
-    // ── Watchlist ──
+    // ── Watchlist + Abi ticker notes ──
+    // `watchlistStatus` is membership + stars only; per-ticker notes live in
+    // `abiTickerNotesStatus` (decoupled from watchlist membership).
     let watchlistStatus = {};
+    let abiTickerNotesStatus = {};
 
     function getStars(ticker) {
         const wl = watchlistStatus[ticker];
@@ -1475,20 +1485,26 @@
     }
 
     async function loadWatchlistForStocks(tickers) {
+        if (!tickers || tickers.length === 0) return;
         try {
-            const resp = await fetch('/api/frontend/abi-watchlist/batch-check', {
-                method: 'POST', headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({tickers}),
-            });
-            if (resp.ok) {
-                watchlistStatus = await resp.json();
-                renderList();
-                if (selectedTicker) {
-                    updateWatchlistBtn(selectedTicker);
-                    updateWatchlistNotes(selectedTicker);
-                }
+            const [wlResp, cmtResp] = await Promise.all([
+                fetch('/api/frontend/abi-watchlist/batch-check', {
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({tickers}),
+                }),
+                fetch('/api/frontend/abi-ticker-notes/batch-check', {
+                    method: 'POST', headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({tickers}),
+                }),
+            ]);
+            if (wlResp.ok) watchlistStatus = await wlResp.json();
+            if (cmtResp.ok) abiTickerNotesStatus = await cmtResp.json();
+            renderList();
+            if (selectedTicker) {
+                updateWatchlistBtn(selectedTicker);
+                updateWatchlistNotes(selectedTicker);
             }
-        } catch(e) { console.error('Error loading watchlist:', e); }
+        } catch(e) { console.error('Error loading watchlist/comments:', e); }
     }
     function updateWatchlistBtn(ticker) {
         const btn = document.getElementById('detailWlBtn');
@@ -1500,28 +1516,36 @@
     function updateWatchlistNotes(ticker) {
         const section = document.getElementById('wlNotesSection');
         const textEl = document.getElementById('wlNotesText');
-        const wl = watchlistStatus[ticker];
-        if (wl && wl.notes) {
-            section.style.display = 'block';
-            textEl.innerHTML = marked.parse(wl.notes);
+        if (!ticker) { section.style.display = 'none'; return; }
+        section.style.display = 'block';
+        const cmt = abiTickerNotesStatus[ticker];
+        if (cmt && cmt.notes) {
+            textEl.innerHTML = marked.parse(cmt.notes);
             textEl.classList.remove('empty');
-        } else if (wl) {
-            section.style.display = 'block';
-            textEl.innerHTML = '<em>No notes</em>';
-            textEl.classList.add('empty');
         } else {
-            section.style.display = 'none';
+            textEl.innerHTML = '<em>No Abi ticker notes</em>';
+            textEl.classList.add('empty');
         }
     }
-    window.openWatchlistModal = function() {
+    window.toggleWatchlistForSelected = function() {
         if (!selectedTicker) return;
         const inWl = !!watchlistStatus[selectedTicker];
-        window._wlOpen(selectedTicker, inWl ? (watchlistStatus[selectedTicker].notes||'') : '', inWl, function(action, ticker, notes) {
-            if (action === 'saved') watchlistStatus[ticker] = {notes: notes||'', stars: watchlistStatus[ticker]?.stars || 0};
-            else if (action === 'removed') delete watchlistStatus[ticker];
+        window._wlToggle(selectedTicker, inWl, function(nowIn, ticker) {
+            if (nowIn) watchlistStatus[ticker] = watchlistStatus[ticker] || { stars: 0 };
+            else delete watchlistStatus[ticker];
             updateWatchlistBtn(ticker);
-            updateWatchlistNotes(ticker);
             renderList();
+        });
+    };
+    window.openNotesModalForSelected = function() {
+        if (!selectedTicker) return;
+        const cmt = abiTickerNotesStatus[selectedTicker];
+        const currentNotes = (cmt && cmt.notes) || '';
+        const had = !!currentNotes;
+        window._notesOpen(selectedTicker, currentNotes, had, function(action, ticker, newNotes) {
+            if (action === 'saved') abiTickerNotesStatus[ticker] = { notes: newNotes || '' };
+            else if (action === 'removed') delete abiTickerNotesStatus[ticker];
+            updateWatchlistNotes(ticker);
         });
     };
 

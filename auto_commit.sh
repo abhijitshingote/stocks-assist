@@ -1,5 +1,14 @@
-#!/bin/bash
-cd /home/ubuntu/stocks-assist
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
 git add user_data/
-git commit -m "Auto-backup user_data - $(date)" --allow-empty
-git push origin main
+
+if git diff --cached --quiet; then
+  echo "No changes in user_data to commit."
+  exit 0
+fi
+
+git commit -m "Auto-backup user_data - $(date)"
+git push --force origin

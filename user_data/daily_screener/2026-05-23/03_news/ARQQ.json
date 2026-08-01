@@ -1,0 +1,25 @@
+{
+  "ticker": "ARQQ",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Pre-announced H1 FY2026 revenue ramp from ~$67k to ~$620\u2013630k (+~9x YoY) with cash of $28.9M as of Mar 31, 2026, signaling early commercial traction after a long period of minimal sales (prelim results PR ahead of May 21, 2026 earnings call)",
+    "Confirmed H1 FY2026 results around $623k revenue on May 21, 2026, reinforcing that the pre-announced step-up was real rather than aspirational and helping de\u2011risk the going-concern / commercialization story",
+    "New product & ecosystem momentum in 2026: launch of Encryption Intelligence (Jan 22, 2026) plus integrations such as Arqit\u2019s quantum\u2011safe software pre-installed in Intel TDX NetSec accelerator designs and a strategic VPN/router collaboration with 6WIND (Feb 19, 2026), which collectively underpin a more credible near\u2011term use case for telco and cloud security customers"
+  ],
+  "latest_material_date": "2026-05-21",
+  "theme_tags": [
+    "margin-and-growth-inflection",
+    "story-driven-momentum",
+    "risk-on-meme-and-retail-speculation"
+  ],
+  "summary": "The recent 30%+ move in ARQQ over 5 days on ~4x normal volume is primarily the market reacting to evidence that Arqit is finally converting its quantum\u2011safe encryption story into tangible revenue: H1 FY2026 sales jumped from about $67k a year ago to roughly $620k, and that ramp was pre-announced and then confirmed with the May 21 earnings release. That development, combined with a healthier cash position and a 2026 product/partner slate (Encryption Intelligence launch, Intel TDX integration, 6WIND VPN/router collaboration), is driving a growth\u2011inflection narrative in a very small revenue base. Given the company is still unprofitable and highly speculative, the magnitude of the move also looks amplified by technical factors and retail/\u2018story\u2019 momentum rather than just fundamentals alone.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"ARQQ\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Pre-announced H1 FY2026 revenue ramp from ~$67k to ~$620\u2013630k (+~9x YoY) with cash of $28.9M as of Mar 31, 2026, signaling early commercial traction after a long period of minimal sales (prelim results PR ahead of May 21, 2026 earnings call)\",\n    \"Confirmed H1 FY2026 results around $623k revenue on May 21, 2026, reinforcing that the pre-announced step-up was real rather than aspirational and helping de\u2011risk the going-concern / commercialization story\",\n    \"New product & ecosystem momentum in 2026: launch of Encryption Intelligence (Jan 22, 2026) plus integrations such as Arqit\u2019s quantum\u2011safe software pre-installed in Intel TDX NetSec accelerator designs and a strategic VPN/router collaboration with 6WIND (Feb 19, 2026), which collectively underpin a more credible near\u2011term use case for telco and cloud security customers\"\n  ],\n  \"latest_material_date\": \"2026-05-21\",\n  \"theme_tags\": [\"margin-and-growth-inflection\", \"story-driven-momentum\", \"risk-on-meme-and-retail-speculation\"],\n  \"summary\": \"The recent 30%+ move in ARQQ over 5 days on ~4x normal volume is primarily the market reacting to evidence that Arqit is finally converting its quantum\u2011safe encryption story into tangible revenue: H1 FY2026 sales jumped from about $67k a year ago to roughly $620k, and that ramp was pre-announced and then confirmed with the May 21 earnings release. That development, combined with a healthier cash position and a 2026 product/partner slate (Encryption Intelligence launch, Intel TDX integration, 6WIND VPN/router collaboration), is driving a growth\u2011inflection narrative in a very small revenue base. Given the company is still unprofitable and highly speculative, the magnitude of the move also looks amplified by technical factors and retail/\u2018story\u2019 momentum rather than just fundamentals alone.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

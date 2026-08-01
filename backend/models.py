@@ -1,5 +1,7 @@
 import os
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, Boolean, ForeignKey, UniqueConstraint, BigInteger
+from sqlalchemy import Index as sa_Index
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -275,7 +277,8 @@ class StockMetrics(Base):
     ipo_date = Column(Date)
     market_cap = Column(BigInteger)
     current_price = Column(Float)
-    range_52_week = Column(String(50))
+    range_52_week = Column(String(50))       # FMP profile range (may be stale)
+    range_52_week_ohlc = Column(String(50))  # MIN(low)-MAX(high) over last 252 trading days
     volume = Column(BigInteger)
     dollar_volume = Column(Float)
     avg_vol_10d = Column(Float)
@@ -517,40 +520,17 @@ class MainView(Base):
     ticker_rel = relationship("Ticker")
 
 
-# ------------------------------------------------------------
-# 15. StockNotes (user-entered long-form notes/comments per stock)
-# ------------------------------------------------------------
-class StockNotes(Base):
-    __tablename__ = "stock_notes"
-
-    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
-    
-    # Long-form notes content (markdown supported)
-    notes = Column(Text)
-    
-    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
-    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
-
-    ticker_rel = relationship("Ticker")
+# 15. StockNotes removed: this feature is deprecated. Per-ticker notes are
+# now served exclusively by the file-only abi_ticker_notes store
+# (user_data/abi_ticker_notes.json). The AI research integration that wrote
+# into this table has been removed entirely. Kept the numbering of
+# subsequent sections as-is to avoid churn.
 
 
-# ------------------------------------------------------------
-# 16. StockPreference (user favorite/dislike status per stock)
-# ------------------------------------------------------------
-class StockPreference(Base):
-    __tablename__ = "stock_preferences"
-
-    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
-    
-    # Preference status: 'favorite', 'dislike', or None (neutral)
-    preference = Column(String(20))
-    
-    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
-    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
-
-    ticker_rel = relationship("Ticker")
+# 16. StockPreference removed: this feature is deprecated. The favorite/
+# dislike UX is now served by the file-only abi_watchlist (favorites) and
+# abi_dislikes (dislikes) stores under user_data/. Kept the numbering of
+# subsequent sections as-is to avoid churn.
 
 
 # ------------------------------------------------------------
@@ -577,29 +557,9 @@ class SharesFloat(Base):
     ticker_rel = relationship("Ticker")
 
 
-# ------------------------------------------------------------
-# 18. AbiNotes (user-entered free-form notes by date)
-# ------------------------------------------------------------
-class AbiNotes(Base):
-    __tablename__ = "abi_notes"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    
-    # Date the note is associated with (not necessarily when created)
-    note_date = Column(Date, nullable=False)
-    
-    # Optional title/summary for the note
-    title = Column(String(255))
-    
-    # Long-form notes content (markdown supported)
-    content = Column(Text)
-    
-    # Optional tags for categorization (comma-separated)
-    tags = Column(String(500))
-    
-    created_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")))
-    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+# 18. AbiGeneralNotes removed: this store is now file-only, backed by
+# user_data/abi_general_notes.json (see backend/app.py for the API).
+# Kept the numbering of subsequent sections as-is to avoid churn.
 
 
 # ------------------------------------------------------------
@@ -657,8 +617,48 @@ class RsScreener(Base):
     rs_10d_rank = Column(Integer)
     rs_20d_rank = Column(Integer)
     rs_60d_rank = Column(Integer)
-    
+
+    # IBD / MarketSmith style RS Rating (1-99): percentile of weighted trailing
+    # 12-month performance (recent quarter weighted 2x), ranked across whole universe.
+    rs_rating = Column(Integer)
+    # Relative strength value vs SPX: (1+strength_stock)/(1+strength_spx)*100.
+    # 100 = in line with SPX over the weighted year; >100 = outperforming.
+    rs_vs_spy = Column(Float)
+    # RS Line (close / SPY close) at a 252-day high (MarketSmith "RS line new high").
+    rs_line_new_high = Column(Boolean)
+
     updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
     ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
+# 21. BenzingaArticle (Polygon/Massive Benzinga news, per fetch ticker)
+# ------------------------------------------------------------
+class BenzingaArticle(Base):
+    __tablename__ = "benzinga_articles"
+    __table_args__ = (
+        UniqueConstraint("benzinga_id", name="uq_benzinga_articles_benzinga_id"),
+        sa_Index("ix_benzinga_articles_ticker_published", "ticker", "published"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    benzinga_id = Column(BigInteger, nullable=False)
+    ticker = Column(String(20), nullable=False, index=True)
+    title = Column(Text)
+    teaser = Column(Text)
+    body_html = Column(Text)
+    body_text = Column(Text)
+    url = Column(Text)
+    author = Column(String(255))
+    published = Column(DateTime(timezone=True), index=True)
+    last_updated = Column(DateTime(timezone=True))
+    channels = Column(JSONB)
+    tags = Column(JSONB)
+    tickers = Column(JSONB)
+    images = Column(JSONB)
+    fetched_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+    )

@@ -1,0 +1,25 @@
+{
+  "ticker": "INFQ",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Infleqtion said on May 22, 2026 that its stock surged 18.4% (+$2.70) amid heavy volume, with the move aligning to ongoing investor reaction around its 2026 guidance of $40M revenue versus $32.5M in 2025 and improving loss from operations to $35.3M from $53M (company commentary surfaced in May 2026 coverage).",
+    "Market attention also appears tied to broader validation of the neutral-atom quantum-computing thesis, after Google Quantum AI expanded research into neutral-atom systems and commentary highlighted the potential for 10,000-20,000 qubit architectures (reported in May 2026), which is reinforcing a re-rating across quantum names including INFQ.",
+    "The stock is also showing classic momentum/technical follow-through: +28.1% over 5 days, +20.1% over 20 days, volume at 4.64x 10-day average, and a 99th percentile RSI mkt cap reading, consistent with a breakout-and-new-highs / story-driven-momentum trade rather than a single isolated earnings event."
+  ],
+  "latest_material_date": "2026-05-22",
+  "theme_tags": [
+    "story-driven-momentum",
+    "breakout-and-new-highs",
+    "ai-infrastructure-enablers"
+  ],
+  "summary": "The move looks like a mix of fundamental validation and momentum, not a single clean one-day catalyst. The biggest re-rating driver is the market leaning into Infleqtion\u2019s improving commercialization story \u2014 2026 revenue guidance of $40M vs. $32.5M last year and a narrower operating loss \u2014 while the neutral-atom quantum theme got a boost from Google Quantum AI\u2019s expanded work in that area. On top of that, the stock is clearly in a technical squeeze/breakout phase with unusually high volume, so some of the recent upside is likely trend-following and short-covering rather than fresh company-specific news alone.",
+  "ok": true,
+  "raw": "{\"ticker\":\"INFQ\",\"has_material_news\":true,\"headline_drivers\":[\"Infleqtion said on May 22, 2026 that its stock surged 18.4% (+$2.70) amid heavy volume, with the move aligning to ongoing investor reaction around its 2026 guidance of $40M revenue versus $32.5M in 2025 and improving loss from operations to $35.3M from $53M (company commentary surfaced in May 2026 coverage).\",\"Market attention also appears tied to broader validation of the neutral-atom quantum-computing thesis, after Google Quantum AI expanded research into neutral-atom systems and commentary highlighted the potential for 10,000-20,000 qubit architectures (reported in May 2026), which is reinforcing a re-rating across quantum names including INFQ.\",\"The stock is also showing classic momentum/technical follow-through: +28.1% over 5 days, +20.1% over 20 days, volume at 4.64x 10-day average, and a 99th percentile RSI mkt cap reading, consistent with a breakout-and-new-highs / story-driven-momentum trade rather than a single isolated earnings event.\"],\"latest_material_date\":\"2026-05-22\",\"theme_tags\":[\"story-driven-momentum\",\"breakout-and-new-highs\",\"ai-infrastructure-enablers\"],\"summary\":\"The move looks like a mix of fundamental validation and momentum, not a single clean one-day catalyst. The biggest re-rating driver is the market leaning into Infleqtion\u2019s improving commercialization story \u2014 2026 revenue guidance of $40M vs. $32.5M last year and a narrower operating loss \u2014 while the neutral-atom quantum theme got a boost from Google Quantum AI\u2019s expanded work in that area. On top of that, the stock is clearly in a technical squeeze/breakout phase with unusually high volume, so some of the recent upside is likely trend-following and short-covering rather than fresh company-specific news alone.\"}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

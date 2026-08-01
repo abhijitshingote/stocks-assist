@@ -24,7 +24,7 @@ import argparse
 # Add backend and db_scripts to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../backend'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
-from models import Base, Ticker, OHLC
+from models import Base, Ticker, OHLC, SyncMetadata
 from db_scripts.logger import get_logger, write_summary, flush_logger, format_duration, ProgressTracker, get_test_ticker_limit
 from db_scripts.fmp_utils import RateLimiter
 
@@ -95,6 +95,17 @@ def is_market_closed():
     now_et = datetime.now(eastern)
     market_close_with_buffer = now_et.replace(hour=16, minute=30, second=0, microsecond=0)
     return now_et >= market_close_with_buffer
+
+
+def update_ohlc_sync_metadata(session):
+    """Record OHLC refresh time (naive UTC, same convention as seed_ohlc_from_fmp)."""
+    stmt = insert(SyncMetadata).values(key='ohlc_last_sync', last_synced_at=datetime.utcnow())
+    stmt = stmt.on_conflict_do_update(
+        index_elements=['key'],
+        set_={'last_synced_at': datetime.utcnow()},
+    )
+    session.execute(stmt)
+    session.commit()
 
 
 def get_tickers_already_updated(session, target_date):
@@ -334,6 +345,7 @@ def main():
         if price_records:
             logger.info("💾 Phase 2: Saving prices to database...")
             upserted_count = bulk_upsert_prices(session, engine, price_records)
+            update_ohlc_sync_metadata(session)
             logger.info(f"💾 DB Write: {upserted_count:,} records saved for {target_date}")
             write_summary(SCRIPT_NAME, 'SUCCESS', f'Updated prices for {target_date}', upserted_count, duration_seconds=total_time)
         else:

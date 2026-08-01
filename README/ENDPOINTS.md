@@ -1,114 +1,271 @@
-I'll extract all the GET endpoints from your backend API:
+# API & routes
 
-[1 tool called]
+Source of truth: `backend/app.py`, `frontend/app.py`.
 
-Based on the backend code, here are all the **GET endpoints** you can paste directly into your browser at `http://localhost:5001`:
+## Base URLs
 
-## 📊 **Scanner/Screener Endpoints**
+| Service | Container port | Host (docker-compose) |
+|---------|----------------|-------------------------|
+| Backend | 5000 | `http://localhost:5001` |
+| Frontend | 5000 | `http://localhost:5002` |
 
-### Returns (1D, 5D, 20D, 60D, 120D)
-```
-http://localhost:5001/api/Return1D-Above200M
-http://localhost:5001/api/Return1D-Below200M
-http://localhost:5001/api/Return5D-Above200M
-http://localhost:5001/api/Return5D-Below200M
-http://localhost:5001/api/Return20D-Above200M
-http://localhost:5001/api/Return20D-Below200M
-http://localhost:5001/api/Return60D-Above200M
-http://localhost:5001/api/Return60D-Below200M
-http://localhost:5001/api/Return120D-Above200M
-http://localhost:5001/api/Return120D-Below200M
-```
+Frontend pages and `/api/frontend/*` call the backend via `BACKEND_URL` (default `http://localhost:5001`). Direct backend calls skip the BFF layer.
 
-### Gap Scanner
-```
-http://localhost:5001/api/Gapper-Above200M
-http://localhost:5001/api/Gapper-Below200M
-```
+Health check: `GET http://localhost:5001/api/health`
 
-### Volume Scanner
-```
-http://localhost:5001/api/Volume-Above200M
-http://localhost:5001/api/Volume-Below200M
-```
+## Conventions
 
-### Sea Change Scanner
-```
-http://localhost:5001/api/SeaChange-Above200M
-http://localhost:5001/api/SeaChange-Below200M
-```
+### Market-cap suffix
 
-### All Returns (Combined)
-```
-http://localhost:5001/api/AllReturns-Above200M
-http://localhost:5001/api/AllReturns-Below200M
-```
+Most screener routes use `{Bucket}`:
 
-### RSI
-```
-http://localhost:5001/api/rsi
-```
+| Suffix | `market_cap` range (USD) |
+|--------|--------------------------|
+| `MicroCap` | 0 – 200M |
+| `SmallCap` | 200M – 2B |
+| `MidCap` | 2B – 20B |
+| `LargeCap` | 20B – 100B |
+| `MegaCap` | ≥ 100B |
+| `All` | no cap filter |
 
-## 📈 **Stock Data Endpoints**
+Frontend proxies use lowercase slugs: `all`, `micro`, `small`, `mid`, `large`, `mega`.
 
-### General Stock Info
-```
-http://localhost:5001/api/stocks
-http://localhost:5001/api/sectors
-http://localhost:5001/api/industries
-http://localhost:5001/api/exchanges
-http://localhost:5001/api/market_cap_distribution
-```
+### Global filters (most `stock_metrics` / `main_view` screeners)
 
-### Specific Stock Data (replace `TICKER` with actual ticker like AAPL)
-```
-http://localhost:5001/api/stock/AAPL
-http://localhost:5001/api/stock/AAPL/prices
-http://localhost:5001/api/stock/AAPL/earnings
-```
+From `backend/app.py`:
 
-## 💬 **Comments & Notes**
+- `industry NOT IN {'Biotechnology'}`
+- `avg_vol_10d >= 50_000`
+- `dollar_volume >= 10_000_000`
+- `current_price >= 3`
 
-### Comments (replace `TICKER` with actual ticker)
-```
-http://localhost:5001/api/comments/AAPL
-http://localhost:5001/api/ai-comments/AAPL
-```
+### Return threshold constants (Return\* routes)
 
-### Concise Notes
-```
-http://localhost:5001/api/concise-notes/AAPL
-```
-
-## 🚩 **Flags & Lists**
-
-### Flags (replace `TICKER` with actual ticker)
-```
-http://localhost:5001/api/flags/AAPL
-```
-
-### Lists
-```
-http://localhost:5001/api/shortlist
-http://localhost:5001/api/blacklist
-```
-
-## 📰 **News**
-
-### Finviz News (replace `TICKER` with actual ticker)
-```
-http://localhost:5001/api/finviz-news/AAPL
-```
-
-## 🗓️ **System Info**
-
-### Latest Date in Database
-```
-http://localhost:5001/api/latest_date
-```
+`RETURN_THRESHOLDS = {1: 5, 5: 10, 20: 15, 60: 20, 120: 30}` (%). Used by `get_momentum_stocks` (see note under Return scanners).
 
 ---
 
-**Note:** The POST/PUT/DELETE endpoints (like adding comments, updating flags, etc.) can't be accessed directly in a browser - you'll need to use the frontend at `http://localhost:5002` or a tool like Postman/curl to test those.
+## Backend (`/api/*`)
 
-Try starting with `http://localhost:5001/api/latest_date` to verify your backend is working! 🚀
+### System
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/health` | DB connectivity + ticker count |
+| GET | `/api/stats` | Row counts per base table |
+| GET | `/api/latest_date` | Latest OHLC date + `sync_metadata` last sync |
+
+### Single ticker
+
+| Method | Path | Source |
+|--------|------|--------|
+| GET | `/api/stock/<ticker>` | `stock_metrics` + volspike/gapper + float |
+| GET | `/api/ohlc/<ticker>` | `ohlc` ⋈ `historical_rsi` (~400d); includes dma_50/200, ema_10/20, rsi_mktcap |
+| GET | `/api/earnings-eps/<ticker>` | `earnings` actual vs estimate (chart annotations) |
+| GET | `/api/volspike-events/<ticker>` | Spike/gap event dates from `stock_volspike_gapper` |
+| GET | `/api/earnings/<ticker>` | Full earnings history |
+| GET | `/api/analyst-estimates/<ticker>` | `analyst_estimates` |
+| GET | `/api/ratios-ttm/<ticker>` | `ratios_ttm` |
+| GET | `/api/company-profile/<ticker>` | `company_profiles` |
+| GET | `/api/stock-news/<ticker>` | FMP + Yahoo RSS + Seeking Alpha RSS (merged) |
+
+### Market / index (no ticker)
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/sector-performance` | ETF/index `dr_1/5/20/60` from `index_prices` |
+| GET | `/api/homepage` | Main indices, commodities, risk-on/off sectors + 50/200 DMA distance |
+| GET | `/api/market-breadth` | 1Y `market_breadth` series |
+| GET | `/api/index-ohlc/<symbol>` | `index_prices` OHLC (~800d) for charts |
+| GET | `/api/vix-latest` | `^VIX` latest close + change |
+| GET | `/api/treasury-10y` | Scraped US10Y yield (CNBC) |
+| GET | `/api/sector-rsi` | Per-sector mcap-weighted RSI (top 10 names/sector) |
+
+### RS screener
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/rs-screener` | All caps; `rs_*_rank` from `rs_screener` |
+| GET | `/api/rs-screener/<market_cap>` | `micro`…`mega` slug (not `MicroCap` suffix) |
+
+### Screener families (× `All` \| `MicroCap` \| … \| `MegaCap`)
+
+Pattern: `GET /api/{Family}-{Bucket}` unless noted.
+
+| Family | Filter / sort (summary) |
+|--------|-------------------------|
+| **Return** `Return{1\|5\|20\|60\|120}D-*` | Intended: `dr_N >= RETURN_THRESHOLDS[N]`; calls `get_momentum_stocks` (**handler missing in `app.py` — will 500**). Not proxied by frontend. |
+| **Gapper** `Gapper-*` | Calls `get_gapper_stocks` (**missing**). Not proxied. |
+| **Volume** `Volume-*` | Calls `get_volume_spike_stocks` (**missing**). Not proxied. |
+| **RSI** `RSI-*` | `rsi IS NOT NULL`; order `rsi DESC`; limit 100 |
+| **RSIMktCap** `RSIMktCap-*` | Sort by `rsi_mktcap` |
+| **RSIMomentum** `RSIMomentum-*` | `historical_rsi`: `rsi_mktcap` change over 5 sessions; order change DESC |
+| **RSI index** `RSI-SPX`, `RSI-NDX`, `RSI-DJI` | Optional `/<market_cap>` slug on same handler |
+| **TopPerformance** `TopPerformance-*` | Union: top 30 by `dr_1`, `dr_5`, `dr_20` each (deduped) |
+| **BottomPerformance** `BottomPerformance-*` | Same windows; ascending sort |
+| **VolspikeGapper** `VolspikeGapper-*` | `spike_day_count > 0 OR gapper_day_count > 0`; order `last_event_date DESC` |
+| **MainView** `MainView-*` | Full `main_view` row |
+| **HighSalesGrowth** `HighSalesGrowth-*` | `main_view.tags LIKE '%high_sales_growth%'`; order `rev_growth_t_plus_1 DESC` |
+| **TechnicalScreener-Reversal** `TechnicalScreener-Reversal-*` | Latest day `(close-low)/low*100` reversal %; liquidity filters |
+
+**MainView query param**
+
+| Method | Path | Query |
+|--------|------|-------|
+| GET | `/api/MainView-ByTickers` | `tickers=AAPL,MSFT` (comma-separated) |
+
+### News (Benzinga / external)
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/benzinga-news/<ticker>` | Cached `benzinga_articles` |
+| POST | `/api/benzinga-news/<ticker>` | Refresh from Polygon |
+| GET/POST | `/api/benzinga-news/market` | Market-wide Benzinga |
+| GET | `/api/market-news/fmp` | FMP general news |
+| GET | `/api/market-news/seeking-alpha` | SA RSS |
+
+### User data (`user_data/*.json`)
+
+| Method | Path | File |
+|--------|------|------|
+| GET/POST | `/api/abi-general-notes` | `abi_general_notes.json` |
+| GET/PUT/DELETE | `/api/abi-general-notes/<note_id>` | |
+| GET | `/api/abi-general-notes/tags` | |
+| GET | `/api/abi-ticker-notes` | `abi_ticker_notes.json` |
+| GET/PUT/DELETE | `/api/abi-ticker-notes/<ticker>` | |
+| POST | `/api/abi-ticker-notes/batch-check` | body: `{ "tickers": [...] }` |
+| GET/POST | `/api/abi-watchlist` | `abi_watchlist.json` |
+| PUT/DELETE | `/api/abi-watchlist/<ticker>` | |
+| POST | `/api/abi-watchlist/batch-check` | |
+| GET | `/api/abi-watchlist/data` | watchlist + `stock_metrics` join |
+| GET/POST | `/api/abi-dislikes` | `abi_dislikes.json` |
+| DELETE | `/api/abi-dislikes/<ticker>` | |
+| POST | `/api/abi-dislikes/batch-check` | |
+
+### Daily screener (artifacts under `user_data/daily_screener/<date>/`)
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/daily-shortlist/dates` | |
+| GET | `/api/daily-shortlist/<date>` | `05_audit.json` + funnel + watchlist/dislike enrichment |
+| POST | `/api/daily-shortlist/run` | Spawns `daily_screener.run`; body: `max_tickers`, `from_stage`, `force_refresh_themes`, `date` |
+| GET | `/api/daily-shortlist/feedback/<date>` | |
+| GET | `/api/daily-shortlist/feedback` | All dates; optional `?limit=` |
+| PUT/DELETE | `/api/daily-shortlist/feedback/<date>/<ticker>` | |
+| GET | `/api/daily-shortlist/themes/dates` | |
+| GET | `/api/daily-shortlist/themes/<date>` | `02a_market_themes.json`, `02b_user_themes.json` |
+
+### Market brief (`user_data/market_brief/<date>/`)
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/market-brief/dates` | |
+| GET | `/api/market-brief/<date_str>` | |
+| GET | `/api/market-brief/<date_str>/pdf` | |
+| GET | `/api/market-brief/<date_str>/costs` | `run_costs.json` polling |
+| POST | `/api/market-brief/generate` | Steps 3–4 on existing source |
+| POST | `/api/market-brief/run` | Full pipeline subprocess |
+| POST | `/api/auto-commit` | `auto_commit.sh` on `user_data/` |
+
+---
+
+## Frontend
+
+### HTML pages
+
+| Path | Template / purpose |
+|------|-------------------|
+| `/` | Home |
+| `/main-view` | `main_view` screener |
+| `/top-performance`, `/top-losers` | Top / bottom return unions |
+| `/volspike-gapper` | Vol spike + gapper |
+| `/technical-screener` | Reversal criterion |
+| `/high-sales-growth` | Tagged main_view rows |
+| `/rsi`, `/rsi-mktcap`, `/rsi-momentum` | RSI variants |
+| `/rsi-spx`, `/rsi-ndx`, `/rsi-dji` | Index constituents RSI |
+| `/sector-rsi`, `/sector-performance` | |
+| `/rs-screener` | Relative strength |
+| `/stock/<ticker>` | Detail + charts |
+| `/themes` | `user_data/themes.json` editor |
+| `/context`, `/context-2` | Macro context |
+| `/abi-general-notes` | (`/abi-notes` → 301) |
+| `/abi-watchlist`, `/abi-dislikes` | |
+| `/daily-shortlist`, `/daily-themes` | Pipeline output |
+| `/market-news`, `/market-brief` | |
+| `/logs` | Log viewer |
+
+### BFF: `/api/frontend/*`
+
+Proxies to backend unless noted. Market-cap path segments use `all|micro|small|mid|large|mega`.
+
+| Frontend | Backend / storage |
+|----------|-----------------|
+| `GET /api/frontend/stock/<ticker>` | `/api/stock/<ticker>` |
+| `GET /api/frontend/ohlc/<ticker>` | `/api/ohlc/<ticker>` |
+| `GET /api/frontend/earnings-eps/<ticker>` | `/api/earnings-eps/<ticker>` |
+| `GET /api/frontend/volspike-events/<ticker>` | `/api/volspike-events/<ticker>` |
+| `GET /api/frontend/earnings/<ticker>` | `/api/earnings/<ticker>` |
+| `GET /api/frontend/analyst-estimates/<ticker>` | `/api/analyst-estimates/<ticker>` |
+| `GET /api/frontend/ratios-ttm/<ticker>` | `/api/ratios-ttm/<ticker>` |
+| `GET /api/frontend/company-profile/<ticker>` | `/api/company-profile/<ticker>` |
+| `GET /api/frontend/stock-news/<ticker>` | `/api/stock-news/<ticker>` |
+| `GET/POST /api/frontend/benzinga-news/...` | `/api/benzinga-news/...` |
+| `GET /api/frontend/market-news/fmp` | `/api/market-news/fmp` |
+| `GET /api/frontend/market-news/seeking-alpha` | `/api/market-news/seeking-alpha` |
+| `GET /api/frontend/latest-date` | `/api/latest_date` |
+| `GET /api/frontend/sector-rsi` | `/api/sector-rsi` |
+| `GET /api/frontend/sector-performance` | `/api/sector-performance` |
+| `GET /api/frontend/homepage` | `/api/homepage` |
+| `GET /api/frontend/market-breadth` | `/api/market-breadth` |
+| `GET /api/frontend/index-ohlc/<symbol>` | `/api/index-ohlc/<symbol>` |
+| `GET /api/frontend/vix-latest` | `/api/vix-latest` |
+| `GET /api/frontend/treasury-10y` | `/api/treasury-10y` |
+| `GET /api/frontend/rsi/<market_cap>` | `/api/RSI-{Bucket}` |
+| `GET /api/frontend/rsi-mktcap/<market_cap>` | `/api/RSIMktCap-{Bucket}` |
+| `GET /api/frontend/rsi-momentum/<market_cap>` | `/api/RSIMomentum-{Bucket}` |
+| `GET /api/frontend/rsi-index/<index>[/<market_cap>]` | `/api/RSI-{SPX\|NDX\|DJI}[/<slug>]` |
+| `GET /api/frontend/top-performance/<market_cap>` | `/api/TopPerformance-{Bucket}` |
+| `GET /api/frontend/top-losers/<market_cap>` | `/api/BottomPerformance-{Bucket}` |
+| `GET /api/frontend/volspike-gapper/<market_cap>` | `/api/VolspikeGapper-{Bucket}` |
+| `GET /api/frontend/main-view/<market_cap>` | `/api/MainView-{Bucket}` |
+| `GET /api/frontend/main-view/by-tickers?tickers=` | `/api/MainView-ByTickers` |
+| `GET /api/frontend/high-sales-growth/<market_cap>` | `/api/HighSalesGrowth-{Bucket}` |
+| `GET /api/frontend/technical-screener/<criterion>/<market_cap>` | `/api/TechnicalScreener-{Criterion}-{Bucket}` (`criterion`: `reversal`) |
+| `GET /api/frontend/rs-screener/<market_cap>` | `/api/rs-screener/<market_cap>` |
+| `GET/PUT /api/frontend/themes` | **`user_data/themes.json`** (frontend only) |
+| `GET /api/frontend/theme-proposals` | `/api/theme-proposals` (**no backend route registered**) |
+| `POST /api/frontend/theme-proposals/apply` | `/api/theme-proposals/apply` (**no backend route**) |
+| `GET/POST/PUT/DELETE /api/frontend/abi-*` | matching `/api/abi-*` |
+| `GET/POST /api/frontend/daily-shortlist/...` | matching `/api/daily-shortlist/...` |
+| `GET /api/frontend/daily-shortlist/feedback-all` | `/api/daily-shortlist/feedback` |
+| `GET/POST /api/frontend/market-brief/...` | matching `/api/market-brief/...` |
+| `POST /api/frontend/auto-commit` | `/api/auto-commit` |
+
+### Frontend-only
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/frontend/logs` | Lists `logs/*.log` |
+| GET | `/api/frontend/logs/<filename>` | Optional `?lines=N`; filename must match `^[\w\-\.]+\.log$` |
+
+---
+
+## Examples
+
+```bash
+# Backend
+curl -s http://localhost:5001/api/latest_date | jq .
+curl -s 'http://localhost:5001/api/MainView-ByTickers?tickers=AAPL,NVDA' | jq .
+curl -s http://localhost:5001/api/rs-screener/mid | jq '.[0:3]'
+
+# Frontend BFF
+curl -s http://localhost:5002/api/frontend/homepage | jq .
+curl -s http://localhost:5002/api/frontend/main-view/all | jq 'length'
+
+# Mutations need JSON body
+curl -s -X PUT http://localhost:5001/api/abi-ticker-notes/AAPL \
+  -H 'Content-Type: application/json' \
+  -d '{"notes":"test"}'
+```
+
+Non-GET routes require `curl`, Postman, or the UI — not the browser address bar alone.

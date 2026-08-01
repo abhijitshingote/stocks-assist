@@ -1,0 +1,34 @@
+{
+  "ticker": "TE",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Q1 2026 results beat expectations on production and sales, and management reaffirmed 2026 output guidance of 3.1\u20134.2 GW (mid-May 2026 earnings release / commentary)",
+    "A large institutional stake disclosure was reported on 2026-05-23, which appears to have added a validation / squeeze catalyst on top of the earlier fundamentals-driven move",
+    "I did not find any confirmed marquee-buyer adoption, qualification, mass-production, or design-win disclosure from Apple, NVIDIA, TSMC, Google, Microsoft, Amazon, Meta, Tesla, OpenAI, Anthropic, a major auto OEM, or a major defense prime in the last 60 days",
+    "I also did not find a named Ming-Chi Kuo, DigiTimes, Wedbush, Loop Capital, Needham, or Morgan Stanley supply-chain note tying T1 Energy to a marquee customer in the last 90 days",
+    "Q1 2026 results beat expectations with stronger production and sales; company reaffirmed full\u2011year 2026 production/sales guidance of 3.1\u20134.2 GW (Q1 2026 earnings release and follow\u2011up commentary, mid\u2011May 2026, referenced by Simply Wall St)",
+    "Major institutional stake disclosed, triggering a sharp rerating and heavy volume as investors interpret it as a vote of confidence in the long\u2011term solar/battery strategy (institutional ownership disclosure reported by Investing.com, 2026\u201105\u201123)"
+  ],
+  "latest_material_date": "2026-05-23",
+  "theme_tags": [
+    "solar-manufacturing",
+    "institutional-flow",
+    "earnings",
+    "earnings-beat-and-raise",
+    "margin-and-growth-inflection",
+    "story-driven-momentum",
+    "short-covering-in-underowned-cyclicals",
+    "ai-infrastructure-and-power-buildout",
+    "oil-and-energy-uncertainty"
+  ],
+  "summary": "The recent surge in T1 Energy is being driven by a combination of a fundamental reset and a positioning squeeze. First, Q1 2026 results came in ahead of Wall Street expectations on production and sales, with management reaffirming an aggressive 3.1\u20134.2 GW 2026 output guide, which improves visibility on growth and margins in its solar/battery supply\u2011chain build\u2011out. Second, a large institutional stake disclosure then hit the tape on May 23, which the market is treating as validation of the long\u2011term story and has pulled in momentum/short\u2011covering flows, pushing the stock up nearly 50% over 20 days on 1.6x+ normal volume. Valuation screens (stock still quoted as below fair value and with very high forecast earnings growth) are reinforcing the move, but the immediate catalyst for the most recent leg higher is the institutional buying disclosure layered on top of the earlier earnings beat.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"TE\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Q1 2026 results beat expectations with stronger production and sales; company reaffirmed full\u2011year 2026 production/sales guidance of 3.1\u20134.2 GW (Q1 2026 earnings release and follow\u2011up commentary, mid\u2011May 2026, referenced by Simply Wall St)\",\n    \"Major institutional stake disclosed, triggering a sharp rerating and heavy volume as investors interpret it as a vote of confidence in the long\u2011term solar/battery strategy (institutional ownership disclosure reported by Investing.com, 2026\u201105\u201123)\"\n  ],\n  \"latest_material_date\": \"2026-05-23\",\n  \"theme_tags\": [\n    \"earnings-beat-and-raise\",\n    \"margin-and-growth-inflection\",\n    \"story-driven-momentum\",\n    \"short-covering-in-underowned-cyclicals\",\n    \"ai-infrastructure-and-power-buildout\",\n    \"oil-and-energy-uncertainty\"\n  ],\n  \"summary\": \"The recent surge in T1 Energy is being driven by a combination of a fundamental reset and a positioning squeeze. First, Q1 2026 results came in ahead of Wall Street expectations on production and sales, with management reaffirming an aggressive 3.1\u20134.2 GW 2026 output guide, which improves visibility on growth and margins in its solar/battery supply\u2011chain build\u2011out. Second, a large institutional stake disclosure then hit the tape on May 23, which the market is treating as validation of the long\u2011term story and has pulled in momentum/short\u2011covering flows, pushing the stock up nearly 50% over 20 days on 1.6x+ normal volume. Valuation screens (stock still quoted as below fair value and with very high forecast earnings growth) are reinforcing the move, but the immediate catalyst for the most recent leg higher is the institutional buying disclosure layered on top of the earlier earnings beat.\"\n}",
+  "_verify": {
+    "triggered": true,
+    "reason": "weak_driver_big_move (dr5=38.0%, dr20=47.9%)",
+    "pass2_ok": true,
+    "pass2_error": null,
+    "pass2_raw": "{\n  \"ticker\": \"TE\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Q1 2026 results beat expectations on production and sales, and management reaffirmed 2026 output guidance of 3.1\u20134.2 GW (mid-May 2026 earnings release / commentary)\",\n    \"A large institutional stake disclosure was reported on 2026-05-23, which appears to have added a validation / squeeze catalyst on top of the earlier fundamentals-driven move\",\n    \"I did not find any confirmed marquee-buyer adoption, qualification, mass-production, or design-win disclosure from Apple, NVIDIA, TSMC, Google, Microsoft, Amazon, Meta, Tesla, OpenAI, Anthropic, a major auto OEM, or a major defense prime in the last 60 days\",\n    \"I also did not find a named Ming-Chi Kuo, DigiTimes, Wedbush, Loop Capital, Needham, or Morgan Stanley supply-chain note tying T1 Energy to a marquee customer in the last 90 days\"\n  ],\n  \"latest_material_date\": \"2026-05-23\",\n  \"theme_tags\": [\n    \"solar-manufacturing\",\n    \"institutional-flow\",\n    \"earnings\"\n  ],\n  \"summary\": \"After a focused verification pass, I could not confirm any hidden marquee-customer catalyst, supply-chain rumor, design win, or patent/customer roadmap link behind TE's move. The best-supported drivers are still the Q1 2026 beat plus reaffirmed 3.1\u20134.2 GW 2026 guide, followed by a large institutional stake disclosure on 2026-05-23 that likely amplified momentum and short-covering. In other words, this still looks primarily like a fundamentals-plus-positioning squeeze rather than a new major-customer reveal.\"\n}"
+  }
+}

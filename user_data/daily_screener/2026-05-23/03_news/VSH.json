@@ -1,0 +1,38 @@
+{
+  "ticker": "VSH",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Q1 2026 results and outlook: Vishay reported revenues of $839.2M, GAAP EPS of $0.05, gross margin of 21.0%, book-to-bill of 1.34, and backlog of 5.7 months; management guided Q2 2026 revenue to $875M-$905M and gross margin around 22% (earnings release dated 2026-05-13)",
+    "BofA Securities re-rated the name after earnings, lifting its price target to $28 from $18 on 2026-05-22, which likely reinforced the post-earnings breakout",
+    "Verification pass did not find a named marquee-buyer adoption/qualification/mass-production announcement, supply-chain note from Ming-Chi Kuo/DigiTimes/Wedbush/Loop/Needham/Morgan Stanley, or a patent/disclosure tying Vishay to Apple/NVIDIA/TSMC/Google/Microsoft/Amazon/Meta/Tesla/OpenAI/Anthropic or a major auto/defense prime in the last 60-90 days",
+    "The move still appears primarily explained by the earnings inflection plus raised guidance and backlog confirmation, with momentum/short-covering as downstream effects rather than the core catalyst",
+    "Q1 2026 earnings beat and return to profitability: GAAP EPS $0.05 vs $0.03 consensus on $839.24M revenue, plus a strong 1.34 book-to-bill and 5.7 months of backlog, signaling the start of a new upcycle (reported late May 2026)",
+    "Upbeat forward guidance: management guided Q2 2026 revenue to $875M\u2013$905M vs ~ $857.8M consensus and targeted ~22% gross margin, implying accelerating demand and stabilizing profitability (late May 2026 earnings release)",
+    "Analyst re-rating: BofA Securities raised its VSH price target to $28 from $18, explicitly flagging an improving cycle and giving fundamental cover for momentum and re-rating in a previously lagging chip name (late May 2026)",
+    "Product and end\u2011market narrative: launch of new automotive and industrial components (widebody optocouplers, 3,000 W TVS devices for EV and solar) tied into the company\u2019s \u2018Vishay 3.0\u2019 upcycle story and a growing backlog, reinforcing a multi\u2011quarter demand narrative (late May 2026 earnings/news coverage)"
+  ],
+  "latest_material_date": "2026-05-22",
+  "theme_tags": [
+    "semiconductors",
+    "earnings-upturn",
+    "auto-industrial",
+    "earnings-beat-and-raise",
+    "margin-and-growth-inflection",
+    "big-contract-and-backlog",
+    "story-driven-momentum",
+    "breakout-and-new-highs",
+    "short-covering-in-underowned-cyclicals",
+    "power-and-wide-bandgap",
+    "analog-and-mixed-signal"
+  ],
+  "summary": "I could not verify any hidden marquee-customer win, supply-chain rumor, or major analyst note tying VSH to a specific Apple/NVIDIA/TSMC-style customer roadmap. The strongest confirmed catalyst remains the 2026-05-13 Q1 print: revenue of $839.2M, EPS of $0.05, 21.0% gross margin, 1.34 book-to-bill, and 5.7 months of backlog, followed by Q2 revenue guidance of $875M-$905M and ~22% gross margin. That was then reinforced by BofA\u2019s 2026-05-22 target hike to $28 from $18. So the rally looks fundamentally justified by a sharp cyclic upturn and better forward guidance, with momentum/short covering amplifying the move; I did not find a separate named customer catalyst.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"VSH\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Q1 2026 earnings beat and return to profitability: GAAP EPS $0.05 vs $0.03 consensus on $839.24M revenue, plus a strong 1.34 book-to-bill and 5.7 months of backlog, signaling the start of a new upcycle (reported late May 2026)\",\n    \"Upbeat forward guidance: management guided Q2 2026 revenue to $875M\u2013$905M vs ~ $857.8M consensus and targeted ~22% gross margin, implying accelerating demand and stabilizing profitability (late May 2026 earnings release)\",\n    \"Analyst re-rating: BofA Securities raised its VSH price target to $28 from $18, explicitly flagging an improving cycle and giving fundamental cover for momentum and re-rating in a previously lagging chip name (late May 2026)\",\n    \"Product and end\u2011market narrative: launch of new automotive and industrial components (widebody optocouplers, 3,000 W TVS devices for EV and solar) tied into the company\u2019s \u2018Vishay 3.0\u2019 upcycle story and a growing backlog, reinforcing a multi\u2011quarter demand narrative (late May 2026 earnings/news coverage)\"\n  ],\n  \"latest_material_date\": \"2026-05-22\",\n  \"theme_tags\": [\n    \"earnings-beat-and-raise\",\n    \"margin-and-growth-inflection\",\n    \"big-contract-and-backlog\",\n    \"story-driven-momentum\",\n    \"breakout-and-new-highs\",\n    \"short-covering-in-underowned-cyclicals\",\n    \"power-and-wide-bandgap\",\n    \"analog-and-mixed-signal\"\n  ],\n  \"summary\": \"The market is reacting to a clear inflection in fundamentals at Vishay: a Q1 2026 beat on both EPS ($0.05 vs $0.03) and revenue ($839M) combined with a very strong 1.34 book-to-bill and 5.7 months of backlog that validates a \u2018Vishay 3.0\u2019 upcycle narrative. Management then raised the bar with Q2 revenue guidance ($875M\u2013$905M vs ~ $858M consensus) and ~22% gross margin targets, which, alongside new EV/solar/auto products, supports a multi\u2011quarter growth and margin recovery story. BofA\u2019s target hike from $18 to $28 provides a visible re\u2011rating catalyst, and with VSH having been an under\u2011owned laggard, the sharp move and elevated volume look like a mix of fundamental re\u2011pricing, momentum chasing, and likely short covering rather than a single customer win or regulatory shock.\"\n}",
+  "_verify": {
+    "triggered": true,
+    "reason": "weak_driver_big_move (dr5=27.3%, dr20=68.1%)",
+    "pass2_ok": true,
+    "pass2_error": null,
+    "pass2_raw": "{\n  \"ticker\": \"VSH\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Q1 2026 results and outlook: Vishay reported revenues of $839.2M, GAAP EPS of $0.05, gross margin of 21.0%, book-to-bill of 1.34, and backlog of 5.7 months; management guided Q2 2026 revenue to $875M-$905M and gross margin around 22% (earnings release dated 2026-05-13)\",\n    \"BofA Securities re-rated the name after earnings, lifting its price target to $28 from $18 on 2026-05-22, which likely reinforced the post-earnings breakout\",\n    \"Verification pass did not find a named marquee-buyer adoption/qualification/mass-production announcement, supply-chain note from Ming-Chi Kuo/DigiTimes/Wedbush/Loop/Needham/Morgan Stanley, or a patent/disclosure tying Vishay to Apple/NVIDIA/TSMC/Google/Microsoft/Amazon/Meta/Tesla/OpenAI/Anthropic or a major auto/defense prime in the last 60-90 days\",\n    \"The move still appears primarily explained by the earnings inflection plus raised guidance and backlog confirmation, with momentum/short-covering as downstream effects rather than the core catalyst\"\n  ],\n  \"latest_material_date\": \"2026-05-22\",\n  \"theme_tags\": [\"semiconductors\", \"earnings-upturn\", \"auto-industrial\"],\n  \"summary\": \"I could not verify any hidden marquee-customer win, supply-chain rumor, or major analyst note tying VSH to a specific Apple/NVIDIA/TSMC-style customer roadmap. The strongest confirmed catalyst remains the 2026-05-13 Q1 print: revenue of $839.2M, EPS of $0.05, 21.0% gross margin, 1.34 book-to-bill, and 5.7 months of backlog, followed by Q2 revenue guidance of $875M-$905M and ~22% gross margin. That was then reinforced by BofA\u2019s 2026-05-22 target hike to $28 from $18. So the rally looks fundamentally justified by a sharp cyclic upturn and better forward guidance, with momentum/short covering amplifying the move; I did not find a separate named customer catalyst.\"\n}"
+  }
+}

@@ -75,7 +75,7 @@
     /* ── Themes grid ── */
     .themes-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
         gap: 0.5rem;
     }
 
@@ -128,7 +128,7 @@
     /* ── Column headers ── */
     .theme-col-headers {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 56px 56px 56px;
+        grid-template-columns: minmax(0, 1fr) 52px 48px 56px 56px 56px;
         gap: 0.35rem;
         padding: 0.25rem 0.6rem;
         border-bottom: 1px solid rgba(48, 54, 61, 0.5);
@@ -151,7 +151,7 @@
 
     .theme-stock-item {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 56px 56px 56px;
+        grid-template-columns: minmax(0, 1fr) 52px 48px 56px 56px 56px;
         gap: 0.35rem;
         align-items: center;
         padding: 0.4rem 0.6rem;
@@ -220,6 +220,17 @@
     .theme-stock-item .ret.negative { color: var(--accent-red); }
     .theme-stock-item .ret.muted { color: var(--text-muted); }
 
+    .theme-stock-item .val {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-align: right;
+        white-space: nowrap;
+        color: var(--text-secondary);
+    }
+
+    .theme-stock-item .val.muted { color: var(--text-muted); }
+
     .theme-stock-item.missing {
         opacity: 0.45;
     }
@@ -286,7 +297,7 @@
 (function() {
     // ── State ──
     let THEMES = [];  // Loaded from API (user_data/themes.json)
-    let stockMap = {}; // ticker → MainView row
+    let stockMap = {}; // ticker → stock_metrics row
     let currentSort = 'default';
 
     // ── Formatting helpers ──
@@ -304,6 +315,14 @@
         if (v >= 1e9) return '$' + (v / 1e9).toFixed(0) + 'B';
         if (v >= 1e6) return '$' + (v / 1e6).toFixed(0) + 'M';
         return '$' + v.toLocaleString();
+    }
+    function fmtPrice(v) {
+        if (v == null) return '—';
+        return '$' + v.toFixed(2);
+    }
+    function fmtPe(v) {
+        if (v == null) return '—';
+        return v.toFixed(1);
     }
 
     // ── Data loading ──
@@ -329,7 +348,7 @@
         document.getElementById('totalTickers').textContent = allTickers.length;
 
         try {
-            const url = '/api/frontend/main-view/by-tickers?tickers=' + encodeURIComponent(allTickers.join(','));
+            const url = '/api/frontend/all-stocks/by-tickers?tickers=' + encodeURIComponent(allTickers.join(','));
             const resp = await fetch(url);
             const rows = await resp.json();
             if (Array.isArray(rows)) {
@@ -379,6 +398,8 @@
                     </div>
                     <div class="theme-col-headers">
                         <span>Ticker</span>
+                        <span class="col-num">Price</span>
+                        <span class="col-num">PE T+1</span>
                         <span class="col-num">1D</span>
                         <span class="col-num">5D</span>
                         <span class="col-num">20D</span>
@@ -400,6 +421,8 @@
                         </span>
                         <span class="company">No data</span>
                     </span>
+                    <span class="val muted">—</span>
+                    <span class="val muted">—</span>
                     <span class="ret muted">—</span>
                     <span class="ret muted">—</span>
                     <span class="ret muted">—</span>
@@ -418,6 +441,8 @@
                     </span>
                     <span class="company">${company}</span>
                 </span>
+                <span class="val">${fmtPrice(s.current_price)}</span>
+                <span class="val">${fmtPe(s.pe_t_plus_1)}</span>
                 <span class="ret ${retCls(s.dr_1)}">${fmtRet(s.dr_1)}</span>
                 <span class="ret ${retCls(s.dr_5)}">${fmtRet(s.dr_5)}</span>
                 <span class="ret ${retCls(s.dr_20)}">${fmtRet(s.dr_20)}</span>

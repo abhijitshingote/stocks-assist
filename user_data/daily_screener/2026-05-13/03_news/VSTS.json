@@ -1,0 +1,27 @@
+{
+  "ticker": "VSTS",
+  "has_material_news": true,
+  "headline_drivers": [
+    "Fiscal Q2 2026 earnings beat and outlook raise: EPS $0.16 vs $0.09 consensus, revenue $659.4M vs $655.3M expected, and FY 2026 revenue guidance raised to around $2.7B (Vestis press release and earnings call, 2026-05-12)",
+    "Multiple analyst target hikes following the print: Robert W. Baird lifting target from $10 to $14 (neutral) and Stifel Nicolaus raising from $8.50 to $11 (MarketBeat summary, 2026-05-13)",
+    "Momentum/technical re-rating on high volume: stock up ~29% on the day with ~13x average volume, appearing on top-1d and volume-spike screens after a >50% 60\u2011day move from a prior depressed base (StockInvest/MarketBeat price and volume data, mid\u2011May 2026)"
+  ],
+  "latest_material_date": "2026-05-12",
+  "theme_tags": [
+    "earnings-beat-and-raise",
+    "turnaround-and-recovery",
+    "breakout-and-momentum",
+    "small-cap-relief-rally",
+    "earnings-surprise-momentum"
+  ],
+  "summary": "The move in Vestis is being driven primarily by a clean beat-and-raise quarter plus a valuation re\u2011rating from the sell side. On May 12 the company reported Q2 2026 EPS of $0.16 vs $0.09 expected and slightly better\u2011than\u2011forecast revenue of $659.4M, while raising its full\u2011year 2026 revenue outlook to roughly $2.7B, which helped validate a turnaround narrative after prior weakness. That print triggered a wave of analyst price-target increases (e.g., Baird to $14, Stifel to $11), signaling that the Street is reassessing fair value higher from what had been a discounted multiple. The 30%+ one\u2011day jump on ~13x normal volume suggests the market is now repricing the stock on this improved earnings trajectory and sentiment shift, with technical momentum and short-term traders amplifying the move rather than any separate big-ticket customer, M&A, or regulatory catalyst.",
+  "ok": true,
+  "raw": "{\n  \"ticker\": \"VSTS\",\n  \"has_material_news\": true,\n  \"headline_drivers\": [\n    \"Fiscal Q2 2026 earnings beat and outlook raise: EPS $0.16 vs $0.09 consensus, revenue $659.4M vs $655.3M expected, and FY 2026 revenue guidance raised to around $2.7B (Vestis press release and earnings call, 2026-05-12)\",\n    \"Multiple analyst target hikes following the print: Robert W. Baird lifting target from $10 to $14 (neutral) and Stifel Nicolaus raising from $8.50 to $11 (MarketBeat summary, 2026-05-13)\",\n    \"Momentum/technical re-rating on high volume: stock up ~29% on the day with ~13x average volume, appearing on top-1d and volume-spike screens after a >50% 60\u2011day move from a prior depressed base (StockInvest/MarketBeat price and volume data, mid\u2011May 2026)\"\n  ],\n  \"latest_material_date\": \"2026-05-12\",\n  \"theme_tags\": [\n    \"earnings-beat-and-raise\",\n    \"turnaround-and-recovery\",\n    \"breakout-and-momentum\",\n    \"small-cap-relief-rally\",\n    \"earnings-surprise-momentum\"\n  ],\n  \"summary\": \"The move in Vestis is being driven primarily by a clean beat-and-raise quarter plus a valuation re\u2011rating from the sell side. On May 12 the company reported Q2 2026 EPS of $0.16 vs $0.09 expected and slightly better\u2011than\u2011forecast revenue of $659.4M, while raising its full\u2011year 2026 revenue outlook to roughly $2.7B, which helped validate a turnaround narrative after prior weakness. That print triggered a wave of analyst price-target increases (e.g., Baird to $14, Stifel to $11), signaling that the Street is reassessing fair value higher from what had been a discounted multiple. The 30%+ one\u2011day jump on ~13x normal volume suggests the market is now repricing the stock on this improved earnings trajectory and sentiment shift, with technical momentum and short-term traders amplifying the move rather than any separate big-ticket customer, M&A, or regulatory catalyst.\"\n}",
+  "_verify": {
+    "triggered": false,
+    "reason": "skip_verify",
+    "pass2_ok": false,
+    "pass2_error": null,
+    "pass2_raw": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "started_at": "2026-06-12T13:26:20.479801+00:00",
+  "completed_at": "2026-06-12T13:28:53.502853+00:00",
+  "call_count": 1,
+  "current_step": null,
+  "pricing_note": "Token counts from DeepSeek Chat Completions API response.usage. USD estimated from published api-docs.deepseek.com pricing (input cache miss, cache hit, output).",
+  "total_input_tokens": 123964,
+  "total_output_tokens": 10021,
+  "total_cache_creation_input_tokens": 0,
+  "total_cache_read_input_tokens": 0,
+  "total_cost_usd": 0.0626,
+  "calls": [
+    {
+      "step": "synthesis",
+      "api_model": "deepseek-v4-pro",
+      "pricing_model": "deepseek-v4-pro",
+      "input_tokens": 123964,
+      "output_tokens": 10021,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "input_cost_usd": 0.053924,
+      "output_cost_usd": 0.008718,
+      "cache_write_cost_usd": 0.0,
+      "cache_read_cost_usd": 0.0,
+      "total_cost_usd": 0.062643,
+      "model": "deepseek-v4-pro"
+    }
+  ]
+}

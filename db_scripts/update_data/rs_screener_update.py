@@ -7,6 +7,14 @@ percentile ranks within market cap buckets.
 Timeframes: 2D, 5D, 10D, 20D, 60D
 RS = stock return - SPY return over each window
 Ranks = NTILE(100) within market cap bucket for each timeframe
+
+Also computes IBD / MarketSmith style metrics (reverse-engineered, Skyte method):
+- rs_vs_spy: (1+strength_stock)/(1+strength_spx)*100 where strength is the
+  weighted trailing 12-month return 0.4*ROC(63)+0.2*ROC(126)+0.2*ROC(189)+
+  0.2*ROC(252). 100 = in line with SPX; >100 = outperforming.
+- rs_rating (1-99): percentile of weighted strength across the whole eligible
+  universe (SPX normalization is a per-day constant, so ranking is unaffected).
+- rs_line_new_high: RS Line (close / SPY close) at a 252-trading-day high.
 """
 
 import os
@@ -106,6 +114,98 @@ def compute_rs_screener(connection):
           AND t.is_etf = FALSE
           AND t.is_fund = FALSE
     ),
+    -- IBD / MarketSmith RS Rating: weighted trailing 12-month performance,
+    -- most recent quarter (63 td) weighted 2x. Weighted strength is normalized
+    -- against SPX's own weighted strength ((1+stock)/(1+spx)*100, Skyte method),
+    -- then percentile-ranked 1-99 across the whole eligible universe.
+    ibd_perf AS (
+        SELECT
+            o.ticker,
+            o.date,
+            o.close AS c0,
+            LAG(o.close, 63)  OVER w AS c63,
+            LAG(o.close, 126) OVER w AS c126,
+            LAG(o.close, 189) OVER w AS c189,
+            LAG(o.close, 252) OVER w AS c252
+        FROM ohlc o
+        WINDOW w AS (PARTITION BY o.ticker ORDER BY o.date)
+    ),
+    ibd_latest AS (
+        SELECT
+            p.ticker,
+            (
+                0.4 * (p.c0 / NULLIF(p.c63,  0) - 1)
+              + 0.2 * (p.c0 / NULLIF(p.c126, 0) - 1)
+              + 0.2 * (p.c0 / NULLIF(p.c189, 0) - 1)
+              + 0.2 * (p.c0 / NULLIF(p.c252, 0) - 1)
+            ) AS strength
+        FROM ibd_perf p
+        JOIN latest_date ld ON p.date = ld.d
+        WHERE p.c63 IS NOT NULL AND p.c126 IS NOT NULL
+          AND p.c189 IS NOT NULL AND p.c252 IS NOT NULL
+    ),
+    -- SPX (SPY) weighted strength: single scalar for the latest day
+    spy_strength AS (
+        SELECT
+            (
+                0.4 * (q.s0 / NULLIF(q.s63,  0) - 1)
+              + 0.2 * (q.s0 / NULLIF(q.s126, 0) - 1)
+              + 0.2 * (q.s0 / NULLIF(q.s189, 0) - 1)
+              + 0.2 * (q.s0 / NULLIF(q.s252, 0) - 1)
+            ) AS strength
+        FROM (
+            SELECT
+                ip.date,
+                ip.close_price AS s0,
+                LAG(ip.close_price, 63)  OVER (ORDER BY ip.date) AS s63,
+                LAG(ip.close_price, 126) OVER (ORDER BY ip.date) AS s126,
+                LAG(ip.close_price, 189) OVER (ORDER BY ip.date) AS s189,
+                LAG(ip.close_price, 252) OVER (ORDER BY ip.date) AS s252
+            FROM index_prices ip
+            WHERE ip.symbol = 'SPY'
+        ) q
+        JOIN latest_date ld ON q.date = ld.d
+    ),
+    ibd_ranked AS (
+        SELECT
+            il.ticker,
+            ROUND(((1 + il.strength) / NULLIF(1 + ss.strength, 0) * 100)::numeric, 2) AS rs_vs_spy,
+            NTILE(99) OVER (ORDER BY il.strength) AS rs_rating
+        FROM ibd_latest il
+        CROSS JOIN spy_strength ss
+        JOIN market_cap_bucket mcb ON il.ticker = mcb.ticker
+    ),
+    -- RS Line (close / SPY close) new-high flag over trailing 252 trading days
+    rs_line AS (
+        SELECT
+            o.ticker,
+            o.date,
+            o.close / NULLIF(ip.close_price, 0) AS rsl
+        FROM ohlc o
+        JOIN index_prices ip ON o.date = ip.date AND ip.symbol = 'SPY'
+    ),
+    rs_line_flagged AS (
+        SELECT
+            rl.ticker,
+            rl.date,
+            rl.rsl,
+            MAX(rl.rsl) OVER (
+                PARTITION BY rl.ticker ORDER BY rl.date
+                ROWS BETWEEN 251 PRECEDING AND CURRENT ROW
+            ) AS rsl_max_252,
+            COUNT(*) OVER (
+                PARTITION BY rl.ticker ORDER BY rl.date
+                ROWS BETWEEN 251 PRECEDING AND CURRENT ROW
+            ) AS cnt
+        FROM rs_line rl
+    ),
+    rs_line_latest AS (
+        SELECT
+            f.ticker,
+            (f.cnt >= 60 AND f.rsl >= f.rsl_max_252) AS rs_line_new_high
+        FROM rs_line_flagged f
+        JOIN latest_date ld ON f.date = ld.d
+    ),
     ranked AS (
         SELECT
             rs.ticker,
@@ -126,6 +226,7 @@ def compute_rs_screener(connection):
         ticker, company_name, sector, industry, market_cap, current_price,
         rs_2d, rs_5d, rs_10d, rs_20d, rs_60d,
         rs_2d_rank, rs_5d_rank, rs_10d_rank, rs_20d_rank, rs_60d_rank,
+        rs_rating, rs_vs_spy, rs_line_new_high,
         updated_at
     )
     SELECT
@@ -137,10 +238,13 @@ def compute_rs_screener(connection):
         sm.current_price,
         r.rs_2d, r.rs_5d, r.rs_10d, r.rs_20d, r.rs_60d,
         r.rs_2d_rank, r.rs_5d_rank, r.rs_10d_rank, r.rs_20d_rank, r.rs_60d_rank,
+        ibd.rs_rating, ibd.rs_vs_spy, rll.rs_line_new_high,
         NOW()
     FROM ranked r
     JOIN tickers t ON r.ticker = t.ticker
     LEFT JOIN stock_metrics sm ON r.ticker = sm.ticker
+    LEFT JOIN ibd_ranked ibd ON r.ticker = ibd.ticker
+    LEFT JOIN rs_line_latest rll ON r.ticker = rll.ticker
     ON CONFLICT (ticker)
     DO UPDATE SET
         company_name = EXCLUDED.company_name,
@@ -158,6 +262,9 @@ def compute_rs_screener(connection):
         rs_10d_rank = EXCLUDED.rs_10d_rank,
         rs_20d_rank = EXCLUDED.rs_20d_rank,
         rs_60d_rank = EXCLUDED.rs_60d_rank,
+        rs_rating = EXCLUDED.rs_rating,
+        rs_vs_spy = EXCLUDED.rs_vs_spy,
+        rs_line_new_high = EXCLUDED.rs_line_new_high,
         updated_at = NOW()
     """
 

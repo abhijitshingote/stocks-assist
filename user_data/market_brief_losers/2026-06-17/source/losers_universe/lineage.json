@@ -1,0 +1,461 @@
+{
+  "asof": "2026-06-17",
+  "source": "stock_metrics (DB) — bottom dr_1",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_by_bucket": {
+    "mega": 15,
+    "large": 10,
+    "mid_small": 10
+  },
+  "unique_tickers": 35,
+  "by_ticker": {
+    "ADI": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 15,
+      "dr_1": -2.24,
+      "dr_5": 4.5,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 203500094441,
+      "company_name": "Analog Devices, Inc."
+    },
+    "ALAB": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": -5.97,
+      "dr_5": 8.47,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 62932424803,
+      "company_name": "Astera Labs, Inc. Common Stock"
+    },
+    "ALTO": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": -12.8,
+      "dr_5": -7.55,
+      "sector": "Basic Materials",
+      "industry": "Chemicals - Specialty",
+      "market_cap": 435853985,
+      "company_name": "Alto Ingredients, Inc."
+    },
+    "AMD": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": -6.07,
+      "dr_5": 9.56,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 834166042000,
+      "company_name": "Advanced Micro Devices, Inc."
+    },
+    "ASML": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": -4.22,
+      "dr_5": 2.99,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 718245697128,
+      "company_name": "ASML Holding N.V."
+    },
+    "AVGO": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": -3.86,
+      "dr_5": -2.93,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 1874201065200,
+      "company_name": "Broadcom Inc."
+    },
+    "AXTI": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": -15.13,
+      "dr_5": 20.92,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 5012038073,
+      "company_name": "AXT, Inc."
+    },
+    "BLSH": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": -11.0,
+      "dr_5": -4.46,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 4126351494,
+      "company_name": "Bullish"
+    },
+    "BOT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": -17.36,
+      "dr_5": -25.29,
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "market_cap": 717502805,
+      "company_name": "RoboStrategy, Inc. Common Stock"
+    },
+    "CIEN": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": -7.3,
+      "dr_5": -1.7,
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "market_cap": 65597039584,
+      "company_name": "Ciena Corporation"
+    },
+    "COHR": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": -7.21,
+      "dr_5": 8.44,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 63536309176,
+      "company_name": "Coherent, Inc."
+    },
+    "ELVR": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": -12.08,
+      "dr_5": 24.14,
+      "sector": "Basic Materials",
+      "industry": "Other Precious Metals",
+      "market_cap": 6835170074,
+      "company_name": "Elevra Lithium Limited"
+    },
+    "ENTG": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": -5.9,
+      "dr_5": 14.5,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 24808146999,
+      "company_name": "Entegris, Inc."
+    },
+    "FN": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": -7.14,
+      "dr_5": 2.91,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 21892329437,
+      "company_name": "Fabrinet"
+    },
+    "GIL": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": -18.24,
+      "dr_5": -14.75,
+      "sector": "Consumer Cyclical",
+      "industry": "Apparel - Manufacturers",
+      "market_cap": 9481866099,
+      "company_name": "Gildan Activewear Inc."
+    },
+    "GLW": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": -6.35,
+      "dr_5": 3.14,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 154226298240,
+      "company_name": "Corning Incorporated"
+    },
+    "HUN": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": -18.48,
+      "dr_5": -10.12,
+      "sector": "Basic Materials",
+      "industry": "Chemicals",
+      "market_cap": 2269892805,
+      "company_name": "Huntsman Corporation"
+    },
+    "INTC": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": -7.76,
+      "dr_5": 11.21,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 626088820000,
+      "company_name": "Intel Corporation"
+    },
+    "IONQ": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": -8.97,
+      "dr_5": 0.34,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 21593666491,
+      "company_name": "IonQ, Inc."
+    },
+    "KLAC": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": -6.18,
+      "dr_5": -88.75,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 334956317600,
+      "company_name": "KLA Corporation"
+    },
+    "LITE": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": -8.55,
+      "dr_5": 8.41,
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "market_cap": 71697368000,
+      "company_name": "Lumentum Holdings Inc."
+    },
+    "LRCX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": -3.97,
+      "dr_5": 15.22,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 476467170000,
+      "company_name": "Lam Research Corporation"
+    },
+    "MPWR": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": -8.17,
+      "dr_5": 0.46,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 78002227100,
+      "company_name": "Monolithic Power Systems, Inc."
+    },
+    "MRVL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": -7.33,
+      "dr_5": 9.94,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 244681560000,
+      "company_name": "Marvell Technology, Inc."
+    },
+    "MU": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": -4.7,
+      "dr_5": 13.86,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 1226958962700,
+      "company_name": "Micron Technology, Inc."
+    },
+    "NFLX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 11,
+      "dr_1": -3.28,
+      "dr_5": -3.46,
+      "sector": "Communication Services",
+      "industry": "Entertainment",
+      "market_cap": 343896036000,
+      "company_name": "Netflix, Inc."
+    },
+    "PDD": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 14,
+      "dr_1": -2.32,
+      "dr_5": -0.14,
+      "sector": "Consumer Cyclical",
+      "industry": "Specialty Retail",
+      "market_cap": 116092215278,
+      "company_name": "PDD Holdings Inc."
+    },
+    "QUBT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": -10.28,
+      "dr_5": 5.86,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 1515150000,
+      "company_name": "Quantum Computing, Inc."
+    },
+    "SNDK": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 12,
+      "dr_1": -3.09,
+      "dr_5": 23.54,
+      "sector": "Technology",
+      "industry": "Hardware, Equipment & Parts",
+      "market_cap": 316656610181,
+      "company_name": "Sandisk Corporation"
+    },
+    "STM": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": -5.78,
+      "dr_5": 2.95,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 68703789031,
+      "company_name": "STMicroelectronics N.V."
+    },
+    "TSEM": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": -6.29,
+      "dr_5": 19.02,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 32275311856,
+      "company_name": "Tower Semiconductor Ltd."
+    },
+    "TSM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 13,
+      "dr_1": -2.87,
+      "dr_5": 0.24,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 2289312272000,
+      "company_name": "Taiwan Semiconductor Manufacturing Company Limited"
+    },
+    "VCX": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": -13.83,
+      "dr_5": -38.25,
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "market_cap": 11837127500,
+      "company_name": "Fundrise Growth Tech Fund, LLC"
+    },
+    "VRT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": -3.46,
+      "dr_5": 5.23,
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 119815062974,
+      "company_name": "Vertiv Holdings Co"
+    },
+    "WOLF": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": -10.15,
+      "dr_5": -8.22,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 2085347911,
+      "company_name": "Wolfspeed, Inc."
+    }
+  },
+  "slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "ticker_count": 15,
+      "tickers": [
+        "INTC",
+        "MRVL",
+        "GLW",
+        "KLAC",
+        "AMD",
+        "MU",
+        "ASML",
+        "LRCX",
+        "AVGO",
+        "VRT",
+        "NFLX",
+        "SNDK",
+        "TSM",
+        "PDD",
+        "ADI"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "IONQ",
+        "LITE",
+        "MPWR",
+        "CIEN",
+        "COHR",
+        "FN",
+        "TSEM",
+        "ALAB",
+        "ENTG",
+        "STM"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "HUN",
+        "GIL",
+        "BOT",
+        "AXTI",
+        "VCX",
+        "ALTO",
+        "ELVR",
+        "BLSH",
+        "QUBT",
+        "WOLF"
+      ]
+    }
+  ]
+}

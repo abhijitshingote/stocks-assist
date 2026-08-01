@@ -1,6 +1,6 @@
 """Frontend Flask app - renders templates and proxies API calls to backend."""
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, Response
 import os
 import json
 import requests
@@ -121,6 +121,18 @@ def top_performance_page():
     return render_template('top_performance.html')
 
 
+@app.route('/all-stocks')
+def all_stocks_page():
+    """All Stocks page - main_view universe filtered only by sector/industry"""
+    return render_template('all_stocks.html')
+
+
+@app.route('/top-losers')
+def top_losers_page():
+    """Top Losers page - Union of bottom stocks by 1D, 5D, 20D returns"""
+    return render_template('top_losers.html')
+
+
 @app.route('/volspike-gapper')
 def volspike_gapper_page():
     """Volume Spike & Gapper page - Stocks with unusual volume and gap activity"""
@@ -133,15 +145,130 @@ def main_view_page():
     return render_template('main_view.html')
 
 
+@app.route('/main-view-hybrid')
+def main_view_hybrid_page():
+    """Standalone hybrid mobile layout preview — live data via existing frontend proxies"""
+    return render_template('main_view_hybrid.html')
+
+
+# Mobile-optimized page routes (separate templates; desktop routes unchanged)
+@app.route('/m')
+@app.route('/m/')
+def m_index():
+    return render_template('mobile/index.html')
+
+
+@app.route('/m/main-view')
+def m_main_view():
+    return render_template('main_view_hybrid.html')
+
+
+@app.route('/m/high-sales-growth')
+def m_high_sales_growth():
+    return render_template('mobile/high_sales_growth.html')
+
+
+@app.route('/m/volspike-gapper')
+def m_volspike_gapper():
+    return render_template('mobile/volspike_gapper.html')
+
+
+@app.route('/m/top-performance')
+def m_top_performance():
+    return render_template('mobile/top_performance.html')
+
+
+@app.route('/m/top-losers')
+def m_top_losers():
+    return render_template('mobile/top_losers.html')
+
+
+@app.route('/m/abi-watchlist')
+def m_abi_watchlist():
+    return render_template('mobile/abi_watchlist.html')
+
+
+@app.route('/m/abi-general-notes')
+def m_abi_general_notes():
+    return render_template('mobile/abi_general_notes.html')
+
+
+@app.route('/m/context')
+def m_context():
+    return render_template('mobile/context.html')
+
+
+@app.route('/m/context-2')
+def m_context2():
+    return render_template('mobile/context2.html')
+
+
+@app.route('/m/market-brief')
+def m_market_brief():
+    return render_template('mobile/market_brief.html')
+
+
+@app.route('/m/market-news')
+def m_market_news():
+    return render_template('mobile/market_news.html')
+
+
+@app.route('/m/logs')
+def m_logs():
+    return render_template('mobile/logs.html')
+
+
+@app.route('/m/stock/<ticker>')
+def m_stock_detail(ticker):
+    """Mobile stock detail page"""
+    return render_template('mobile/stock.html', ticker=ticker.upper())
+
+
+@app.route('/technical-screener')
+def technical_screener_page():
+    """Technical Screener page - intraday/technical setups (reversal, etc.)"""
+    return render_template('technical_screener.html')
+
+
 @app.route('/themes')
 def themes_page():
     """Themes page - curated thematic watchlists shown side-by-side"""
     return render_template('themes.html')
 
 
+@app.route('/etfs')
+def etfs_page():
+    """ETFs page - thematic / sub-sector ETF performance across timeframes"""
+    return render_template('etfs.html')
+
+
 # User data directory for themes
 USER_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'user_data')
 THEMES_FILE = os.path.join(USER_DATA_DIR, 'themes.json')
+ETFS_FILE = os.path.join(USER_DATA_DIR, 'etfs.json')
+
+
+@app.route('/api/frontend/etfs', methods=['GET'])
+def api_get_etfs():
+    """Get the curated ETF groups from user_data/etfs.json"""
+    try:
+        if os.path.exists(ETFS_FILE):
+            with open(ETFS_FILE, 'r') as f:
+                return jsonify(json.load(f)), 200
+        return jsonify([]), 200
+    except Exception as e:
+        logger.error(f"Error reading etfs file: {e}")
+        return jsonify({'error': 'Failed to read etfs'}), 500
+
+
+@app.route('/api/frontend/etf-performance')
+def api_etf_performance():
+    """Proxy: ETF performance (1D/5D/20D/60D/120D) for a list of symbols"""
+    symbols = request.args.get('symbols', '')
+    data, status_code = make_backend_request(f'/api/etf-performance?symbols={symbols}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch ETF performance'}), status_code
+    return jsonify(data), status_code
 
 
 @app.route('/api/frontend/themes', methods=['GET'])
@@ -171,6 +298,38 @@ def api_save_themes():
     except Exception as e:
         logger.error(f"Error saving themes file: {e}")
         return jsonify({'error': 'Failed to save themes'}), 500
+
+
+@app.route('/api/frontend/theme-proposals', methods=['GET'])
+def api_get_theme_proposals():
+    """Proxy: theme discovery proposals from backend."""
+    data, status_code = make_backend_request('/api/theme-proposals')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch theme proposals'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/theme-proposals/apply', methods=['POST'])
+def api_apply_theme_proposals():
+    """Proxy: apply approved theme proposals to themes.json."""
+    data, status_code = make_backend_request(
+        '/api/theme-proposals/apply',
+        method='POST',
+        json_data=request.get_json() or {},
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to apply theme proposals'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/all-stocks/by-tickers')
+def api_all_stocks_by_tickers():
+    """Proxy: AllStocks data filtered to a specific ticker list"""
+    tickers = request.args.get('tickers', '')
+    data, status_code = make_backend_request(f'/api/AllStocks-ByTickers?tickers={tickers}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch themes data'}), status_code
+    return jsonify(data), status_code
 
 
 @app.route('/api/frontend/main-view/by-tickers')
@@ -333,6 +492,15 @@ def api_rsi_index(index_type, market_cap=None):
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/all-stocks')
+def api_all_stocks():
+    """Proxy: AllStocks — full liquid universe (stock_metrics LEFT JOIN volspike/gapper)"""
+    data, status_code = make_backend_request('/api/AllStocks')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch All Stocks data'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/top-performance/<market_cap>')
 def api_top_performance(market_cap):
     """Proxy endpoint for Top Performance (union of top stocks by 1D, 5D, 20D returns) from backend"""
@@ -351,6 +519,27 @@ def api_top_performance(market_cap):
     data, status_code = make_backend_request(f'/api/TopPerformance-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch Top Performance data'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/top-losers/<market_cap>')
+def api_top_losers(market_cap):
+    """Proxy endpoint for Top Losers (union of bottom stocks by 1D, 5D, 20D returns) from backend"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+    
+    data, status_code = make_backend_request(f'/api/BottomPerformance-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Top Losers data'}), status_code
     return jsonify(data), status_code
 
 
@@ -396,6 +585,37 @@ def api_main_view(market_cap):
     return jsonify(data), status_code
 
 
+@app.route('/api/frontend/technical-screener/<criterion>/<market_cap>')
+def api_technical_screener(criterion, market_cap):
+    """Proxy endpoint for Technical Screener data from backend.
+
+    Supported criteria:
+      - reversal: biggest low-to-close reversal % for the latest trading day
+    """
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    criterion_map = {
+        'reversal': 'Reversal',
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    endpoint_criterion = criterion_map.get(criterion.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+    if not endpoint_criterion:
+        return jsonify({'error': 'Invalid technical screener criterion'}), 400
+
+    data, status_code = make_backend_request(f'/api/TechnicalScreener-{endpoint_criterion}-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Technical Screener data'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/context')
 def context_page():
     """Context page - Market context with QQQ/SPY charts and DMA analysis"""
@@ -435,191 +655,92 @@ def api_high_sales_growth(market_cap):
     return jsonify(data), status_code
 
 
-# ============================================================
-# Stock Notes Endpoints
-# ============================================================
-
-@app.route('/api/frontend/stock-notes/<ticker>', methods=['GET'])
-def api_get_stock_notes(ticker):
-    """Proxy endpoint to get notes for a specific stock"""
-    data, status_code = make_backend_request(f'/api/stock-notes/{ticker}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock notes'}), status_code
-    return jsonify(data), status_code
+# Stock Notes + AI Research proxy endpoints removed: the underlying
+# DB-backed store has been deprecated. Per-ticker notes are now served by
+# the file-only abi_ticker_notes endpoints. The AI research integration
+# (Perplexity / Claude) was removed along with stock_notes; if you want it
+# back, reintroduce it as a feature that writes into abi_ticker_notes.json.
 
 
-@app.route('/api/frontend/stock-notes/<ticker>', methods=['PUT'])
-def api_update_stock_notes(ticker):
-    """Proxy endpoint to create or update notes for a specific stock"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request(f'/api/stock-notes/{ticker}', method='PUT', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to update stock notes'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-notes/batch', methods=['POST'])
-def api_get_stock_notes_batch():
-    """Proxy endpoint to get notes for multiple tickers at once"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request('/api/stock-notes/batch', method='POST', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock notes batch'}), status_code
-    return jsonify(data), status_code
+# Stock Preferences endpoints removed: superseded by file-only
+# abi_watchlist (favorites) and abi_dislikes (dislikes) endpoints elsewhere
+# in this file. The UI in stock.html / main_view.html no longer renders the
+# favorite/dislike controls that called these.
 
 
 # ============================================================
-# AI Stock Research Endpoints
-# ============================================================
-
-@app.route('/api/frontend/stock-notes/ai-research/<ticker>', methods=['POST'])
-def api_generate_ai_research(ticker):
-    """Proxy endpoint to generate AI stock research notes using Perplexity API"""
-    json_data = request.get_json() or {}
-    data, status_code = make_backend_request(f'/api/stock-notes/ai-research/{ticker}', method='POST', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to generate AI research'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-notes/ai-research-claude/<ticker>', methods=['POST'])
-def api_generate_ai_research_claude(ticker):
-    """Proxy endpoint to generate AI stock research notes using Claude API with web search"""
-    json_data = request.get_json() or {}
-    data, status_code = make_backend_request(f'/api/stock-notes/ai-research-claude/{ticker}', method='POST', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to generate AI research'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-notes/ai-prompt', methods=['GET'])
-def api_get_ai_prompt():
-    """Proxy endpoint to get the AI prompt template"""
-    data, status_code = make_backend_request('/api/stock-notes/ai-prompt')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch AI prompt template'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-notes/ai-prompt', methods=['PUT'])
-def api_update_ai_prompt():
-    """Proxy endpoint to update the AI prompt template"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request('/api/stock-notes/ai-prompt', method='PUT', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to update AI prompt template'}), status_code
-    return jsonify(data), status_code
-
-
-# ============================================================
-# Stock Preferences Endpoints
-# ============================================================
-
-@app.route('/api/frontend/stock-preferences/<ticker>', methods=['GET'])
-def api_get_stock_preference(ticker):
-    """Proxy endpoint to get preference for a specific stock"""
-    data, status_code = make_backend_request(f'/api/stock-preferences/{ticker}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock preference'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-preferences/<ticker>', methods=['PUT'])
-def api_update_stock_preference(ticker):
-    """Proxy endpoint to create or update preference for a specific stock"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request(f'/api/stock-preferences/{ticker}', method='PUT', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to update stock preference'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-preferences/batch', methods=['POST'])
-def api_get_stock_preferences_batch():
-    """Proxy endpoint to get preferences for multiple tickers at once"""
-    json_data = request.get_json()
-    data, status_code = make_backend_request('/api/stock-preferences/batch', method='POST', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock preferences batch'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/stock-preferences/list/<preference_type>')
-def api_list_stock_preferences(preference_type):
-    """Proxy endpoint to list all stocks with a specific preference"""
-    data, status_code = make_backend_request(f'/api/stock-preferences/list/{preference_type}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch stock preferences list'}), status_code
-    return jsonify(data), status_code
-
-
-# ============================================================
-# Abi Notes Endpoints
+# Abi General Notes Endpoints
 # ============================================================
 
 @app.route('/abi-notes')
-def abi_notes_page():
-    """Abi Notes page - personal date-based notes"""
-    return render_template('abi_notes.html')
+def abi_notes_legacy_redirect():
+    """Old URL; permanent redirect to Abi General Notes."""
+    return redirect('/abi-general-notes', code=301)
 
 
-@app.route('/api/frontend/abi-notes', methods=['GET'])
-def api_get_abi_notes():
-    """Proxy endpoint to get all abi notes"""
+@app.route('/abi-general-notes')
+def abi_general_notes_page():
+    """Abi General Notes page - personal date-based notes"""
+    return render_template('abi_general_notes.html')
+
+
+@app.route('/api/frontend/abi-general-notes', methods=['GET'])
+def api_get_abi_general_notes():
+    """Proxy endpoint to get all abi general notes"""
     # Pass through query parameters
     params = request.args.to_dict()
     query_string = '&'.join(f'{k}={v}' for k, v in params.items())
-    endpoint = f'/api/abi-notes?{query_string}' if query_string else '/api/abi-notes'
+    endpoint = f'/api/abi-general-notes?{query_string}' if query_string else '/api/abi-general-notes'
     data, status_code = make_backend_request(endpoint)
     if data is None:
-        return jsonify({'error': 'Failed to fetch abi notes'}), status_code
+        return jsonify({'error': 'Failed to fetch abi general notes'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes', methods=['POST'])
-def api_create_abi_note():
-    """Proxy endpoint to create a new abi note"""
+@app.route('/api/frontend/abi-general-notes', methods=['POST'])
+def api_create_abi_general_note():
+    """Proxy endpoint to create a new abi general note"""
     json_data = request.get_json()
-    data, status_code = make_backend_request('/api/abi-notes', method='POST', json_data=json_data)
+    data, status_code = make_backend_request('/api/abi-general-notes', method='POST', json_data=json_data)
     if data is None:
-        return jsonify({'error': 'Failed to create abi note'}), status_code
+        return jsonify({'error': 'Failed to create abi general note'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes/<int:note_id>', methods=['GET'])
-def api_get_abi_note(note_id):
-    """Proxy endpoint to get a specific abi note"""
-    data, status_code = make_backend_request(f'/api/abi-notes/{note_id}')
+@app.route('/api/frontend/abi-general-notes/<int:note_id>', methods=['GET'])
+def api_get_abi_general_note(note_id):
+    """Proxy endpoint to get a specific abi general note"""
+    data, status_code = make_backend_request(f'/api/abi-general-notes/{note_id}')
     if data is None:
-        return jsonify({'error': 'Failed to fetch abi note'}), status_code
+        return jsonify({'error': 'Failed to fetch abi general note'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes/<int:note_id>', methods=['PUT'])
-def api_update_abi_note(note_id):
-    """Proxy endpoint to update an abi note"""
+@app.route('/api/frontend/abi-general-notes/<int:note_id>', methods=['PUT'])
+def api_update_abi_general_note(note_id):
+    """Proxy endpoint to update an abi general note"""
     json_data = request.get_json()
-    data, status_code = make_backend_request(f'/api/abi-notes/{note_id}', method='PUT', json_data=json_data)
+    data, status_code = make_backend_request(f'/api/abi-general-notes/{note_id}', method='PUT', json_data=json_data)
     if data is None:
-        return jsonify({'error': 'Failed to update abi note'}), status_code
+        return jsonify({'error': 'Failed to update abi general note'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes/<int:note_id>', methods=['DELETE'])
-def api_delete_abi_note(note_id):
-    """Proxy endpoint to delete an abi note"""
-    data, status_code = make_backend_request(f'/api/abi-notes/{note_id}', method='DELETE', json_data={})
+@app.route('/api/frontend/abi-general-notes/<int:note_id>', methods=['DELETE'])
+def api_delete_abi_general_note(note_id):
+    """Proxy endpoint to delete an abi general note"""
+    data, status_code = make_backend_request(f'/api/abi-general-notes/{note_id}', method='DELETE', json_data={})
     if data is None:
-        return jsonify({'error': 'Failed to delete abi note'}), status_code
+        return jsonify({'error': 'Failed to delete abi general note'}), status_code
     return jsonify(data), status_code
 
 
-@app.route('/api/frontend/abi-notes/tags', methods=['GET'])
-def api_get_abi_notes_tags():
+@app.route('/api/frontend/abi-general-notes/tags', methods=['GET'])
+def api_get_abi_general_notes_tags():
     """Proxy endpoint to get all unique tags"""
-    data, status_code = make_backend_request('/api/abi-notes/tags')
+    data, status_code = make_backend_request('/api/abi-general-notes/tags')
     if data is None:
-        return jsonify({'error': 'Failed to fetch abi notes tags'}), status_code
+        return jsonify({'error': 'Failed to fetch abi general notes tags'}), status_code
     return jsonify(data), status_code
 
 
@@ -670,6 +791,77 @@ def api_stock_news(ticker):
     data, status_code = make_backend_request(f'/api/stock-news/{ticker}?limit={limit}')
     if data is None:
         return jsonify({'error': 'Failed to fetch stock news'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/benzinga-news/<ticker>', methods=['GET'])
+def api_benzinga_news_get(ticker):
+    """Proxy: cached Benzinga news from database."""
+    limit = request.args.get('limit', 40, type=int)
+    data, status_code = make_backend_request(f'/api/benzinga-news/{ticker}?limit={limit}')
+    if data is None:
+        return jsonify({'error': 'Failed to load Benzinga news'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/benzinga-news/<ticker>', methods=['POST'])
+def api_benzinga_news_refresh(ticker):
+    """Proxy: refresh Benzinga news from API and store in database."""
+    limit = request.args.get('limit', 40, type=int)
+    data, status_code = make_backend_request(
+        f'/api/benzinga-news/{ticker}?limit={limit}',
+        method='POST',
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to refresh Benzinga news'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/benzinga-news/market', methods=['GET'])
+def api_benzinga_market_news():
+    """Proxy: market-wide Benzinga news from database cache."""
+    limit = request.args.get('limit', 200, type=int)
+    channel = request.args.get('channel', '')
+    params = f'limit={limit}'
+    if channel:
+        params += f'&channel={channel}'
+    data, status_code = make_backend_request(f'/api/benzinga-news/market?{params}')
+    if data is None:
+        return jsonify({'error': 'Failed to load market Benzinga news'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/benzinga-news/market', methods=['POST'])
+def api_benzinga_market_news_refresh():
+    """Proxy: fetch fresh market Benzinga news from API and upsert to DB."""
+    limit = request.args.get('limit', 200, type=int)
+    api_limit = request.args.get('api_limit', 100, type=int)
+    data, status_code = make_backend_request(
+        f'/api/benzinga-news/market?limit={limit}&api_limit={api_limit}',
+        method='POST',
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to refresh Benzinga news from API'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-news/fmp', methods=['GET'])
+def api_market_fmp_news():
+    """Proxy: general market news from FMP."""
+    limit = request.args.get('limit', 100, type=int)
+    data, status_code = make_backend_request(f'/api/market-news/fmp?limit={limit}')
+    if data is None:
+        return jsonify({'error': 'Failed to load FMP market news'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-news/seeking-alpha', methods=['GET'])
+def api_market_seeking_alpha_news():
+    """Proxy: general market news from Seeking Alpha."""
+    limit = request.args.get('limit', 100, type=int)
+    data, status_code = make_backend_request(f'/api/market-news/seeking-alpha?limit={limit}')
+    if data is None:
+        return jsonify({'error': 'Failed to load Seeking Alpha market news'}), status_code
     return jsonify(data), status_code
 
 
@@ -803,6 +995,226 @@ def api_abi_watchlist_data():
     return jsonify(data), status_code
 
 
+# ============================================================
+# Abi Dislikes Endpoints (parallel to watchlist, thumbs-down list with notes)
+# ============================================================
+# Replaces the legacy DB-backed `preference='dislike'`. Dislike entries get
+# filtered out of the daily screener pipeline and are surfaced as "you blocked
+# this and here's why" anywhere they would otherwise appear.
+
+@app.route('/abi-dislikes')
+def abi_dislikes_page():
+    """Abi Dislikes page - thumbs-down list with notes."""
+    return render_template('abi_dislikes.html')
+
+
+@app.route('/api/frontend/abi-dislikes', methods=['GET'])
+def api_get_abi_dislikes():
+    data, status_code = make_backend_request('/api/abi-dislikes')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch dislikes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-dislikes', methods=['POST'])
+def api_add_to_abi_dislikes():
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/abi-dislikes', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to add to dislikes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-dislikes/<ticker>', methods=['DELETE'])
+def api_delete_from_abi_dislikes(ticker):
+    data, status_code = make_backend_request(f'/api/abi-dislikes/{ticker}', method='DELETE', json_data={})
+    if data is None:
+        return jsonify({'error': 'Failed to remove from dislikes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-dislikes/batch-check', methods=['POST'])
+def api_batch_check_abi_dislikes():
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/abi-dislikes/batch-check', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to check dislikes'}), status_code
+    return jsonify(data), status_code
+
+
+# ============================================================
+# Abi Ticker Notes Endpoints (per-ticker notes, decoupled from
+# watchlist/dislike membership)
+# ============================================================
+# Abi ticker notes can exist for any ticker. The daily screener only consumes
+# notes for tickers on the watchlist.
+
+@app.route('/api/frontend/abi-ticker-notes', methods=['GET'])
+def api_get_abi_ticker_notes_all():
+    """Proxy endpoint to get all Abi ticker notes."""
+    data, status_code = make_backend_request('/api/abi-ticker-notes')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Abi ticker notes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-ticker-notes/<ticker>', methods=['GET'])
+def api_get_abi_ticker_note(ticker):
+    """Proxy endpoint to get Abi ticker notes for a single ticker."""
+    data, status_code = make_backend_request(f'/api/abi-ticker-notes/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Abi ticker notes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-ticker-notes/<ticker>', methods=['PUT'])
+def api_upsert_abi_ticker_note(ticker):
+    """Proxy endpoint to create or update Abi ticker notes for a ticker."""
+    json_data = request.get_json()
+    data, status_code = make_backend_request(
+        f'/api/abi-ticker-notes/{ticker}', method='PUT', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to save Abi ticker notes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-ticker-notes/<ticker>', methods=['DELETE'])
+def api_delete_abi_ticker_note(ticker):
+    """Proxy endpoint to delete Abi ticker notes for a ticker."""
+    data, status_code = make_backend_request(
+        f'/api/abi-ticker-notes/{ticker}', method='DELETE', json_data={}
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to delete Abi ticker notes'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-ticker-notes/batch-check', methods=['POST'])
+def api_batch_check_abi_ticker_notes():
+    """Proxy endpoint to fetch Abi ticker notes for a list of tickers."""
+    json_data = request.get_json()
+    data, status_code = make_backend_request(
+        '/api/abi-ticker-notes/batch-check', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Abi ticker notes'}), status_code
+    return jsonify(data), status_code
+
+
+# ============================================================
+# Daily Shortlist Endpoints
+# ============================================================
+
+@app.route('/daily-shortlist')
+def daily_shortlist_page():
+    """Daily Shortlist page - screened candidates with Picks/Watch/Rejected tabs"""
+    return render_template('daily_shortlist.html')
+
+
+@app.route('/api/frontend/daily-shortlist/dates')
+def api_daily_shortlist_dates():
+    """Proxy: list of dates with daily shortlist artifacts"""
+    data, status_code = make_backend_request('/api/daily-shortlist/dates')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch dates'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/<date>')
+def api_daily_shortlist_for_date(date):
+    """Proxy: full audit artifact for a specific date"""
+    data, status_code = make_backend_request(f'/api/daily-shortlist/{date}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch daily shortlist'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/run', methods=['POST'])
+def api_daily_shortlist_run():
+    """Proxy: kick off a daily shortlist pipeline run"""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        '/api/daily-shortlist/run', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to start run'}), status_code
+    return jsonify(data), status_code
+
+
+# ----- Daily Shortlist Feedback proxies -----
+
+@app.route('/api/frontend/daily-shortlist/feedback/<date>', methods=['GET'])
+def api_daily_shortlist_feedback_for_date(date):
+    """Proxy: feedback for a given date as {ticker: record}"""
+    data, status_code = make_backend_request(f'/api/daily-shortlist/feedback/{date}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch feedback'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/feedback/<date>/<ticker>', methods=['PUT'])
+def api_daily_shortlist_feedback_upsert(date, ticker):
+    """Proxy: upsert feedback for (date, ticker)"""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        f'/api/daily-shortlist/feedback/{date}/{ticker}',
+        method='PUT', json_data=json_data,
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to save feedback'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/feedback/<date>/<ticker>', methods=['DELETE'])
+def api_daily_shortlist_feedback_delete(date, ticker):
+    """Proxy: delete a feedback entry for (date, ticker)"""
+    data, status_code = make_backend_request(
+        f'/api/daily-shortlist/feedback/{date}/{ticker}',
+        method='DELETE', json_data={},
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to delete feedback'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/feedback-all', methods=['GET'])
+def api_daily_shortlist_feedback_all():
+    """Proxy: all feedback entries, flattened. Optional ?limit=N."""
+    qs = request.query_string.decode() if request.query_string else ''
+    endpoint = '/api/daily-shortlist/feedback' + (('?' + qs) if qs else '')
+    data, status_code = make_backend_request(endpoint)
+    if data is None:
+        return jsonify({'error': 'Failed to fetch all feedback'}), status_code
+    return jsonify(data), status_code
+
+
+# ----- Daily Themes (visualization) -----
+
+@app.route('/daily-themes')
+def daily_themes_page():
+    """Daily Themes page - visualize the theme vector for any pipeline run"""
+    return render_template('daily_themes.html')
+
+
+@app.route('/api/frontend/daily-shortlist/themes/dates', methods=['GET'])
+def api_daily_themes_dates():
+    """Proxy: list of dates that have a theme vector artifact"""
+    data, status_code = make_backend_request('/api/daily-shortlist/themes/dates')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch theme dates'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/daily-shortlist/themes/<date>', methods=['GET'])
+def api_daily_themes_for_date(date):
+    """Proxy: theme vector + per-source raw lists for a given date"""
+    data, status_code = make_backend_request(f'/api/daily-shortlist/themes/{date}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch themes'}), status_code
+    return jsonify(data), status_code
+
+
 @app.route('/api/frontend/rs-screener/<market_cap>')
 def api_rs_screener(market_cap):
     """Proxy endpoint for RS Screener data from backend"""
@@ -825,9 +1237,15 @@ def logs_page():
 @app.route('/api/frontend/logs')
 def api_list_logs():
     """List available log files"""
-    import glob
     from pathlib import Path
-    
+    from datetime import datetime, timezone
+    from zoneinfo import ZoneInfo
+
+    et = ZoneInfo('America/New_York')
+
+    def _est_edt_abbr(dt_et):
+        return 'EDT' if dt_et.dst() else 'EST'
+
     # Look for logs in the project root's logs directory
     # In Docker, the project is mounted at /app
     logs_dir = Path('/app/logs')
@@ -838,11 +1256,16 @@ def api_list_logs():
     if logs_dir.exists():
         for log_file in sorted(logs_dir.glob('*.log'), key=lambda x: x.stat().st_mtime, reverse=True):
             stat = log_file.stat()
+            mt_et = datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc).astimezone(et)
             log_files.append({
                 'name': log_file.name,
                 'size': stat.st_size,
                 'modified': stat.st_mtime,
-                'modified_str': __import__('datetime').datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M:%S')
+                'modified_str': (
+                    f'{mt_et.year}-{mt_et.month:02d}-{mt_et.day:02d} '
+                    f'{mt_et.hour:02d}:{mt_et.minute:02d}:{mt_et.second:02d} '
+                    f'{_est_edt_abbr(mt_et)}'
+                ),
             })
     
     return jsonify({'logs': log_files})
@@ -888,6 +1311,143 @@ def api_get_log(filename):
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# ============================================================
+# Market News Page
+# ============================================================
+
+@app.route('/market-news')
+def market_news_page():
+    """Market News page - aggregated news from multiple sources"""
+    return render_template('market_news.html')
+
+
+# ============================================================
+# Market Brief Endpoints
+# ============================================================
+
+@app.route('/market-brief')
+def market_brief_page():
+    """Market Brief page - daily AI-generated market summary"""
+    return render_template('market_brief.html')
+
+
+@app.route('/api/frontend/market-brief/dates', methods=['GET'])
+def api_market_brief_dates():
+    """Proxy endpoint to list market brief dates"""
+    data, status_code = make_backend_request('/api/market-brief/dates')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch market brief dates'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief/<date_str>', methods=['GET'])
+def api_market_brief_for_date(date_str):
+    """Proxy endpoint to get market brief for a specific date"""
+    data, status_code = make_backend_request(f'/api/market-brief/{date_str}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch market brief'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief/<date_str>/costs', methods=['GET'])
+def api_market_brief_costs(date_str):
+    """Proxy endpoint for live run cost polling."""
+    data, status_code = make_backend_request(f'/api/market-brief/{date_str}/costs')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch run costs'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief/<date_str>/pdf', methods=['GET'])
+def api_market_brief_pdf(date_str):
+    """Proxy PDF download from backend."""
+    try:
+        url = f"{BACKEND_URL}/api/market-brief/{date_str}/pdf"
+        response = requests.get(url, timeout=180)
+        if response.status_code >= 400:
+            try:
+                err = response.json()
+                msg = err.get('error', response.text)
+            except ValueError:
+                msg = response.text or 'PDF export failed'
+            return jsonify({'error': msg}), response.status_code
+        headers = {}
+        cd = response.headers.get('Content-Disposition')
+        if cd:
+            headers['Content-Disposition'] = cd
+        return Response(response.content, mimetype='application/pdf', headers=headers)
+    except requests.RequestException as e:
+        logger.error('PDF proxy error: %s', e)
+        return jsonify({'error': 'Failed to export PDF'}), 500
+
+
+@app.route('/api/frontend/market-brief/generate', methods=['POST'])
+def api_market_brief_generate():
+    """Proxy endpoint to run Steps 3–4 pipeline on existing source data."""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        '/api/market-brief/generate', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to start market brief pipeline'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief/run', methods=['POST'])
+def api_market_brief_run():
+    """Proxy endpoint to trigger market brief generation"""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request('/api/market-brief/run', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to start market brief run'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief-losers/generate', methods=['POST'])
+def api_market_brief_losers_generate():
+    """Proxy endpoint to start R1D losers brief pipeline."""
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        '/api/market-brief-losers/generate', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to start losers brief pipeline'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/market-brief-losers/<date_str>/costs', methods=['GET'])
+def api_market_brief_losers_costs(date_str):
+    """Proxy endpoint for losers brief run progress."""
+    data, status_code = make_backend_request(f'/api/market-brief-losers/{date_str}/costs')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch losers brief run status'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/auto-commit', methods=['POST'])
+def api_auto_commit():
+    """Proxy to backend: run auto_commit.sh for user_data backup."""
+    json_data = request.get_json() or {}
+    try:
+        url = f'{BACKEND_URL}/api/auto-commit'
+        r = requests.post(url, json=json_data, timeout=45)
+        try:
+            payload = r.json()
+        except ValueError:
+            payload = {
+                'status': 'error',
+                'message': 'Unexpected response from backend',
+                'error': (r.text or '')[:500],
+            }
+        return jsonify(payload), r.status_code
+    except requests.Timeout:
+        logger.error('Auto-commit proxy: backend request timed out')
+        return jsonify({'status': 'error', 'message': 'Backend timed out'}), 504
+    except requests.RequestException as e:
+        logger.error('Auto-commit proxy: %s', e)
+        return jsonify({'status': 'error', 'message': str(e)}), 502
 
 
 if __name__ == '__main__':

@@ -1,0 +1,48 @@
+# Software & SaaS — overview
+
+_kind: sector · elapsed: 27.6s_
+
+## Tape on Monday May 18, 2026
+
+SPY -0.08%, QQQ -0.43%, SOXX -2.49%, IGV +1.19%, XLK -1.08%: under the surface, semis and broad tech faded while software and SaaS saw aggressive buying, helped by rotation into “asset‑light AI beneficiaries” as rates and oil eased on tentative progress headlines around the Middle East war and a brief pullback in yields.  
+Key driver for software: continued repositioning toward infra/app-layer AI and cybersecurity after recent megacap/semis outperformance and ongoing optimism around software names with clear AI monetization stories.
+
+---
+
+## Decliners on Monday May 18, 2026
+
+- **SOXX Monday May 18, 2026 close: -2.49%** — FACT: VanEck Semiconductor ETF underperformed sharply, giving back part of its recent AI-driven run. Crosscurrents from Friday’s spike in the 10‑year and rising concerns about inventory normalization/China exposure in some chip names weighed on the group, and investors rotated from “picks-and-shovels” AI into application/cyber names. *Read‑through*: near-term valuation pressure on high-multiple semis and semi‑adjacent infra (e.g., GPU/accelerator ecosystem), while software AI beneficiaries looked like a relative safe haven.
+
+- **XLK Monday May 18, 2026 close: -1.08%** — FACT: Tech sector ETF lagged despite strength in software because the hardware/semis and some megacaps faded. The weak close versus intraday action aligns with Schwab’s note of a market that “wavered” amid conflicting war headlines and lingering rate worries. *Read‑through*: generalist money continues to trim broad tech beta and concentrate in specific software/cyber names perceived as better positioned for AI and less exposed to capex cycles.
+
+- **ORCL Monday May 18, 2026 close: -4.38% (close $184.50)** — MARKET CHATTER + FACT: Underperformed sharply within large-cap software. No fresh company press release, but several desks flagged (1) lingering skepticism about the pace of Oracle Cloud Infrastructure (OCI) share gains vs hyperscalers and (2) position‑trimming after a strong YTD run into upcoming earnings season. Some sell‑side commentary over the last 48–72 hours has emphasized that ORCL is more capex-intensive and less “pure play” AI application exposure than peers, which may be pushing AI-focused flows toward names like MSFT, NOW, SNOW. *Read‑through*: sets up ORCL as a potential mean-reversion candidate into its next print if fundamentals hold, but near-term flows favor higher-growth AI and cyber.
+
+---
+
+## Advancers on Monday May 18, 2026
+
+- **IGV Monday May 18, 2026 close: +1.19% (close $92.87)** — FACT: iShares Expanded Tech-Software ETF outperformed SPY and QQQ as investors rotated into software after a soft end to last week. The move aligns with broad strength in application, infra, and cybersecurity names with clear AI stories and subscription visibility. *Read‑through*: factor bid back into high-quality, recurring-revenue software; IGV may see follow‑through if bond yields stabilize or drift lower.
+
+- **MSFT Monday May 18, 2026 close: +0.13% (close $422.49)** — FACT: Modest gain, outperforming QQQ despite choppy macro. Over the past 72 hours, the tape has been digesting continued Copilot adoption commentary and chatter around Azure AI demand. *Read‑through*: MSFT remains the defensive “AI software core” for generalist PMs; its resilience provides a sentiment anchor for the entire software complex — especially for ecosystem partners like SNOW, DDOG, and security vendors integrating with Microsoft’s stack.
+
+- **CRM Monday May 18, 2026 close: +3.22% (close $179.10)** — MARKET CHATTER + FACT: Strong outperformance on the back of (1) ongoing positioning into CRM’s AI Data Cloud and Einstein Copilot narrative, and (2) short-covering/rotation after underperformance vs other large-cap software YTD. Recent sell‑side notes have highlighted improved margin discipline and potential for generative AI up‑sell across Sales/Service/Marketing Clouds. *Read‑through*: constructive for broader “data + workflow” SaaS complex (NOW, SNOW, MDB), where investors are looking for evidence of AI‑driven seat expansion and pricing power.
+
+- **NOW Monday May 18, 2026 close: +8.26% (close $102.92)** — MARKET CHATTER + FACT: One of the standout movers. Multiple desks flagged strong buy interest tied to ServiceNow’s GenAI “Now Assist” traction and its growing role as a platform layer for enterprise workflows, including security and operations. The move looks like a continuation of post‑earnings re‑rating plus renewed AI enthusiasm after recent conferences where management emphasized early AI deal activity and higher ACVs. *Read‑through*: bullish signal for high‑quality, large-cap workflow/vertical SaaS that can embed GenAI into existing processes (CRM, INTU, TEAM). Raises the bar for upcoming peers’ commentary on AI adoption.
+
+- **SNOW Monday May 18, 2026 close: +3.99% (close $163.75)** — MARKET CHATTER + FACT: Bid higher ahead of its upcoming earnings event and Snowflake Summit, where investors expect more detail on Snowpark Container Services, Snowflake Cortex, and on‑platform AI/ML workloads. There’s also some “new CEO” positioning as the Street evaluates the transition and the strategy to deepen app‑layer AI. *Read‑through*: positive tone for the broader data/analytics cluster (MDB, ESTC) and for software providers enabling on‑top‑of‑data AI apps.
+
+- **DDOG Monday May 18, 2026 close: +0.09% (close $208.16)** — FACT: Essentially flat but green on the day, outperforming QQQ and XLK. The name continues to benefit from the narrative that observability is a critical enabler of AI-era distributed architectures (microservices, serverless, multi‑cloud) and from improving usage trends commentary in recent quarters. *Read‑through*: supportive for observability/logging/search peers (ESTC) and cloud‑native infra plays as investors look for “plumbing” names that monetize rising AI workloads.
+
+- **MDB Monday May 18, 2026 close: +7.17% (close $334.54)** — MARKET CHATTER + FACT: Strong move as investors lean into MongoDB’s position at the intersection of modern databases and AI application development. Over the last few days, sell‑side and developer community discussions have highlighted Atlas’ role in new GenAI projects and vector search capabilities. Some desks also pointed to heavy short interest and recent underperformance, setting up a squeeze. *Read‑through*: constructive signal for modern data platforms enabling flexible, developer‑friendly AI apps; positive read‑through to ESTC, SNOW, and TEAM (which are often part of the same modern dev stack).
+
+- **ESTC Monday May 18, 2026 close: +6.25% (close $53.76)** — MARKET CHATTER + FACT: Elastic rallied in sympathy with MDB and SNOW, with incremental AI-related buzz around Elasticsearch’s vector and semantic search capabilities. Recent product updates around AI Search and Observability are resonating as enterprises look to build GenAI experiences on top of existing content. *Read‑through*: suggests investors are re‑rating “search + logs + vector” platforms as differentiated AI infrastructure rather than commodity tools.
+
+- **PANW Monday May 18, 2026 close: +1.88% (close $247.40)** — FACT: Continued strength as the Street digests Palo Alto’s platformization strategy and shift toward AI‑driven security operations. Pre‑earnings positioning and recent commentary around consolidating point solutions onto PANW platforms (Prisma, Cortex) continue to support the stock. *Read‑through*: underpins the “platform winners” theme in cyber and raises competitive pressure on smaller point solutions.
+
+- **CRWD Monday May 18, 2026 close: +3.73% (close $616.23)** — MARKET CHATTER + FACT: CrowdStrike traded strongly as investors focused on Falcon’s AI‑native architecture and expanding module adoption (Identity, Cloud, LogScale). Some buy-side notes cited ongoing share gains and the potential for AI‑driven automation in SecOps to drive further up‑sell. *Read‑through*: supportive for high‑quality endpoint and XDR plays; confirms that security remains a top spending priority even against a mixed macro tape.
+
+- **ZS Monday May 18, 2026 close: +8.53% (close $174.79)** — FACT: One of the biggest movers in software/cyber. The rally reflects bullish positioning on secure access/zero trust as core to cloud and AI-era architectures, plus short-covering after choppy performance earlier in the year. Zscaler has been emphasizing AI‑enhanced threat detection and data protection in recent commentary, which appears to be resonating. *Read‑through*: positive for cloud‑native security names; reinforces the idea that AI and zero trust are converging themes driving multi‑year security spend.
+
+- **TEAM Monday May 18, 2026 close: +1.26% (close $88.56)** — FACT: Atlassian gained as investors continue to digest its cloud migration progress and early AI features (Atlassian Intelligence) across Jira and Confluence. The stock tends to trade as a higher‑beta play on dev productivity and collaboration, and it participated in the software rotation. *Read‑through*: constructive for dev‑tool chains and collaboration SaaS; links into broader spending on tools that help engineering teams ship AI‑enabled features faster.
+
+- **ADBE Monday May 18, 2026 close: +2.69% (close $254.25)** — MARKET CHATTER + FACT: Adobe bounced as the market reassessed prior concerns about GenAI disruption in creative tools and leaned into the Firefly/GenStudio monetization story. Recent product news around AI‑assisted content generation and marketing workflows, plus improving commentary around enterprise adoptio

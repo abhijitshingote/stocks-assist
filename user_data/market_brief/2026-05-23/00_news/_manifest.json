@@ -1,0 +1,27 @@
+{
+  "window": "2026-05-22 05:00 EDT → 2026-05-25 06:00 EDT (session 2026-05-22, rule: Mon before 9:30 AM ET → prior Friday 5:00 AM ET)",
+  "anchor_session": "2026-05-22",
+  "published_gte_utc": "2026-05-22T09:00:00+00:00",
+  "published_lte_utc": "2026-05-25T10:00:00+00:00",
+  "article_count": 263,
+  "topics": {
+    "Semiconductors": 43,
+    "AI Infrastructure": 53,
+    "Software & SaaS": 21,
+    "Internet & Platforms": 44,
+    "Communications & Networking": 9,
+    "EdgeAI": 0,
+    "AI Compute": 29,
+    "Optical & Photonics": 0,
+    "Chip Equipment": 1,
+    "Memory & Interconnect": 14,
+    "Wireless & Mobile": 12,
+    "Analog & Mixed-Signal": 9,
+    "Power & Wide-Bandgap": 4,
+    "Test & Advanced Packaging": 2,
+    "Fab & Foundry": 8,
+    "Specialty Materials & IP Licensing": 1
+  },
+  "unassigned": 176,
+  "macro": 176
+}

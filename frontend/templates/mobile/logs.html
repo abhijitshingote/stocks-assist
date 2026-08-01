@@ -1,0 +1,37 @@
+{% extends "mobile/_base.html" %}
+{% set page_title = 'Logs' %}
+{% block title %}Logs — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_utility_styles.html" %}{% endblock %}
+{% block body %}
+<div class="phone" id="phone">
+  {% include "mobile/_utility_header.html" %}
+  <div class="utility-body md-layout" id="logsLayout">
+    <div class="md-list-pane">
+      <div class="md-toolbar">
+        <span class="md-item-meta" id="logCount">—</span>
+        <span class="spacer"></span>
+        <button type="button" class="md-btn" id="btnRefreshList">Refresh</button>
+        <button type="button" class="md-btn" id="btnAutoRefresh">Auto</button>
+      </div>
+      <div class="md-list" id="logList"></div>
+    </div>
+    <div class="md-detail-pane">
+      <div class="md-detail-head">
+        <button type="button" class="md-back" data-md-back>← List</button>
+        <span class="md-detail-title" id="currentLogName">—</span>
+        <button type="button" class="md-btn" id="btnScrollTop">Top</button>
+        <button type="button" class="md-btn" id="btnScrollBottom">End</button>
+      </div>
+      <div class="log-viewer" id="logContent">
+        <div class="md-empty">Select a log file</div>
+      </div>
+    </div>
+  </div>
+  {% include "mobile/_nav_drawer.html" %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/mobile/master-detail.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mobile/pages/logs.js') }}"></script>
+{% include "mobile/_nav_libs.html" %}
+{% endblock %}
