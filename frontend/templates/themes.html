@@ -4,7 +4,13 @@
 
 {% block title %}Themes - Stocks Assist{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/card-grid.css') }}">
+{% endblock %}
+
 {% block extra_styles %}
+    :root { --card-grid-accent: var(--accent-purple); }
+
     main {
         max-width: 100% !important;
         padding: 0.4rem 0.6rem !important;

@@ -1,0 +1,49 @@
+/* Design tokens — single source of truth.
+   Loaded on every desktop page via base.html.
+   Mobile pages (templates/mobile/_base.html) load mobile/shell.css separately;
+   that file already defines its own :root block with compatible values. */
+
+:root {
+    /* Core palette */
+    --bg-dark: #0d1117;
+    --bg-card: #161b22;
+    --bg-card-hover: #1c2128;
+    --border-color: #30363d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --accent-green: #3fb950;
+    --accent-red: #f85149;
+    --accent-blue: #58a6ff;
+    --accent-yellow: #d29922;
+    --accent-purple: #a371f7;
+
+    /* Typography */
+    --font-display: 'Outfit', sans-serif;
+    --font-body: 'Outfit', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Screener accent — overridden per screener page */
+    --screener-accent: var(--accent-blue);
+
+    /* Breakpoints (documented; consumed via media queries in responsive.css)
+       Phone   : max-width  640px  — phone screen; dedicated /m/* site
+       Tablet  : 641–1024px        — iPad; desktop layout with tuned spacing
+       Desktop : min-width 1025px  — full desktop, max-width capped at 1400px */
+}
+
+/* Light theme overrides */
+body.light-theme {
+    --bg-dark: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f0f2f5;
+    --border-color: #d0d7de;
+    --text-primary: #24292f;
+    --text-secondary: #57606a;
+    --text-muted: #6e7681;
+    --accent-green: #1a7f37;
+    --accent-red: #da3633;
+    --accent-blue: #0969da;
+    --accent-yellow: #bf8700;
+    --accent-purple: #8250df;
+}

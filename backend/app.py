@@ -272,6 +272,7 @@ def get_stock_metrics_data(session, ticker):
         'market_cap': metrics.market_cap,
         'current_price': round(metrics.current_price, 2) if metrics.current_price else None,
         'range_52_week': metrics.range_52_week,
+        'at_52w_high': bool(metrics.at_52w_high) if metrics.at_52w_high is not None else False,
         'volume': metrics.volume,
         'dollar_volume': metrics.dollar_volume,
         'avg_vol_10d': metrics.avg_vol_10d,
@@ -1468,6 +1469,7 @@ def get_top_performance_stocks(session, market_cap_category=None):
                 StockMetrics.market_cap,
                 StockMetrics.current_price,
                 StockMetrics.range_52_week,
+                StockMetrics.at_52w_high,
                 StockMetrics.volume,
                 StockMetrics.dollar_volume,
                 StockMetrics.avg_vol_10d,
@@ -1562,6 +1564,7 @@ def get_top_performance_stocks(session, market_cap_category=None):
                 'market_cap': stock.market_cap,
                 'current_price': round(stock.current_price, 2) if stock.current_price else None,
                 'range_52_week': stock.range_52_week,
+                'at_52w_high': bool(stock.at_52w_high) if stock.at_52w_high is not None else False,
                 'volume': int(stock.volume) if stock.volume else None,
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
@@ -1684,6 +1687,7 @@ def get_bottom_performance_stocks(session, market_cap_category=None):
                 StockMetrics.market_cap,
                 StockMetrics.current_price,
                 StockMetrics.range_52_week,
+                StockMetrics.at_52w_high,
                 StockMetrics.volume,
                 StockMetrics.dollar_volume,
                 StockMetrics.avg_vol_10d,
@@ -1771,6 +1775,7 @@ def get_bottom_performance_stocks(session, market_cap_category=None):
                 'market_cap': stock.market_cap,
                 'current_price': round(stock.current_price, 2) if stock.current_price else None,
                 'range_52_week': stock.range_52_week,
+                'at_52w_high': bool(stock.at_52w_high) if stock.at_52w_high is not None else False,
                 'volume': int(stock.volume) if stock.volume else None,
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
@@ -1902,6 +1907,7 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
             StockMetrics.market_cap,
             StockMetrics.current_price,
             StockMetrics.range_52_week,
+            StockMetrics.at_52w_high,
             StockMetrics.volume,
             StockMetrics.dollar_volume,
             StockMetrics.avg_vol_10d,
@@ -1987,6 +1993,7 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
                 'market_cap': stock.market_cap,
                 'current_price': round(stock.current_price, 2) if stock.current_price else None,
                 'range_52_week': stock.range_52_week,
+                'at_52w_high': bool(stock.at_52w_high) if stock.at_52w_high is not None else False,
                 'volume': int(stock.volume) if stock.volume else None,
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
@@ -2131,6 +2138,7 @@ def get_main_view_stocks(session, market_cap_category=None):
                 'market_cap': stock.market_cap,
                 'current_price': round(stock.current_price, 2) if stock.current_price else None,
                 'range_52_week': stock.range_52_week,
+                'at_52w_high': bool(stock.at_52w_high) if stock.at_52w_high is not None else False,
                 'volume': int(stock.volume) if stock.volume else None,
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
@@ -2253,6 +2261,7 @@ def _format_all_stocks_row(r):
         'market_cap': r['market_cap'],
         'current_price': round(r['current_price'], 2) if r['current_price'] else None,
         'range_52_week': r['range_52_week'],
+        'at_52w_high': bool(r.get('at_52w_high')) if r.get('at_52w_high') is not None else False,
         'volume': int(r['volume']) if r['volume'] else None,
         'dollar_volume': round(r['dollar_volume'], 2) if r['dollar_volume'] else None,
         'avg_vol_10d': float(r['avg_vol_10d']) if r['avg_vol_10d'] else None,
@@ -2314,6 +2323,7 @@ _ALL_STOCKS_SQL = """
         sm.market_cap,
         sm.current_price,
         sm.range_52_week,
+        sm.at_52w_high,
         sm.volume,
         sm.dollar_volume,
         sm.avg_vol_10d,
@@ -2524,6 +2534,7 @@ def get_high_sales_growth_stocks(session, market_cap_category=None):
                 'market_cap': stock.market_cap,
                 'current_price': round(stock.current_price, 2) if stock.current_price else None,
                 'range_52_week': stock.range_52_week,
+                'at_52w_high': bool(stock.at_52w_high) if stock.at_52w_high is not None else False,
                 'volume': int(stock.volume) if stock.volume else None,
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
@@ -4087,6 +4098,8 @@ def get_rs_screener(market_cap=None):
         query = s.query(
             RsScreener,
             StockMetrics.range_52_week_ohlc,
+            StockMetrics.at_52w_high,
+            StockMetrics.dr_1,
         ).outerjoin(
             StockMetrics, RsScreener.ticker == StockMetrics.ticker
         ).filter(
@@ -4117,7 +4130,7 @@ def get_rs_screener(market_cap=None):
         rows = query.all()
 
         results = []
-        for stock, range_52_week_ohlc in rows:
+        for stock, range_52_week_ohlc, at_52w_high, dr_1 in rows:
             results.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
@@ -4126,6 +4139,8 @@ def get_rs_screener(market_cap=None):
                 'market_cap': stock.market_cap,
                 'current_price': round(stock.current_price, 2) if stock.current_price else None,
                 'pct_from_52w_high': _pct_from_52w_high(stock.current_price, range_52_week_ohlc),
+                'at_52w_high': bool(at_52w_high) if at_52w_high is not None else False,
+                'dr_1': round(dr_1, 2) if dr_1 is not None else None,
                 'rs_2d': float(stock.rs_2d) if stock.rs_2d is not None else None,
                 'rs_5d': float(stock.rs_5d) if stock.rs_5d is not None else None,
                 'rs_10d': float(stock.rs_10d) if stock.rs_10d is not None else None,
@@ -4517,6 +4532,7 @@ def get_abi_watchlist_data():
                 'market_cap': stock.market_cap,
                 'current_price': round(stock.current_price, 2) if stock.current_price else None,
                 'range_52_week': stock.range_52_week,
+                'at_52w_high': bool(stock.at_52w_high) if stock.at_52w_high is not None else False,
                 'volume': int(stock.volume) if stock.volume else None,
                 'dollar_volume': round(stock.dollar_volume, 2) if stock.dollar_volume else None,
                 'avg_vol_10d': float(stock.avg_vol_10d) if stock.avg_vol_10d else None,
@@ -4774,6 +4790,7 @@ def get_technical_reversal_stocks(session, market_cap_category=None, limit=100):
             StockMetrics.market_cap,
             StockMetrics.current_price,
             StockMetrics.range_52_week,
+            StockMetrics.at_52w_high,
             StockMetrics.volume,
             StockMetrics.dollar_volume,
             StockMetrics.avg_vol_10d,
@@ -4858,6 +4875,7 @@ def get_technical_reversal_stocks(session, market_cap_category=None, limit=100):
                 'market_cap': r.market_cap,
                 'current_price': round(r.current_price, 2) if r.current_price else None,
                 'range_52_week': r.range_52_week,
+                'at_52w_high': bool(r.at_52w_high) if r.at_52w_high is not None else False,
                 'volume': int(r.volume) if r.volume else None,
                 'dollar_volume': round(r.dollar_volume, 2) if r.dollar_volume else None,
                 'avg_vol_10d': float(r.avg_vol_10d) if r.avg_vol_10d else None,

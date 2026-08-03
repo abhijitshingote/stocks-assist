@@ -1,8 +1,13 @@
-# Relative Strength Screener
+# Relative Strength Screener (Slow / Fast)
 
-A new screener page with adjustable multi-timeframe relative strength scoring and a chart-heavy layout.
+A screener page with a chart-heavy layout and a **Slow RS / Fast RS mode toggle** at the top of the right panel.
 
-Relative strength is simply **stock return minus SPY return** over a given timeframe. The feature computes RS across multiple windows and lets the user tune weights via sliders so they can experiment with how the screened stock list changes.
+Relative strength is simply **stock return minus SPY return** over a given timeframe. The page exposes two distinct rankings that share the same underlying data:
+
+- **Slow RS** — the IBD/MarketSmith **RS Rating** (1–99), computed in the backend from a fixed-weight trailing-12-month strength (`0.4×63d + 0.2×126d + 0.2×189d + 0.2×252d`). This is the clean, canonical ranking. No sliders; the list is sorted purely by `rs_rating` (unrated tickers last, tie-broken by RS vs SPX).
+- **Fast RS** — a fast, user-tunable ranking. The list is sorted **purely** by a slider-weighted blend of the multi-timeframe RS percentile ranks (2D/5D/10D/20D/60D). The sliders fully drive the ordering in this mode.
+
+The mode toggle only changes how the left-hand list is ranked and labeled; the chart, SPY overlay, RSI subchart, metrics strip, and sector/industry/market-cap filters are shared across both modes.
 
 ## Architecture
 
@@ -58,13 +63,16 @@ The **composite score** is NOT computed server-side. The frontend applies the us
 
 ### Frontend
 
-Frontend receives the raw RS values and ranks per stock. It applies weights from the sliders to produce a composite score:
+Frontend receives the raw RS values, the per-timeframe percentile ranks, and the IBD `rs_rating` per stock. Ranking depends on the active mode:
+
+- **Slow RS:** sort by `rs_rating` descending (unrated tickers last, tie-broken by `rs_vs_spy`). The right cell of each row shows the RS Rating badge. Sliders are hidden.
+- **Fast RS:** sort by the normalized slider-weighted composite of the percentile ranks:
 
 ```
-composite = w_2d * rs_2d_rank + w_5d * rs_5d_rank + w_10d * rs_10d_rank + w_20d * rs_20d_rank + w_60d * rs_60d_rank
+composite = Σ (w_tf / Σw) * rs_tf_rank   for tf in {2d, 5d, 10d, 20d, 60d}
 ```
 
-Weights default to equal (each 20%) and are adjustable via sliders that range 0–100. The stock list re-sorts on every slider change without a server round-trip.
+Sliders range 0–100 (defaults 10/25/50/50/50). The stock list re-sorts on every slider change without a server round-trip, and the right cell of each row shows the composite score.
 
 ## UI Layout
 
@@ -89,15 +97,20 @@ The layout for this page is different from other screener pages.
 ```
 
 ### Stock List (left panel, ~15-20% width)
-- Scrollable list of tickers sorted by composite score (descending).
-- Each row: ticker symbol, composite score.
+- Scrollable list of tickers, sorted by RS Rating (Slow) or composite score (Fast), descending.
+- Each row: ticker symbol + the ranking value for the active mode (RS Rating badge in Slow, composite score in Fast). Blue dot (RS line new high) and 52W tags shown in both modes.
 - Clicking a ticker loads its chart in the main panel.
 - Bucketed by market cap using the same tab system as other pages.
 
-### Sliders (top of right panel)
+### Mode toggle (top of right panel)
+- Slow RS / Fast RS buttons. Slow is the default.
+- Switching to Fast reveals the slider bar and re-labels the list header to "RS Score".
+
+### Sliders (Fast RS only — top of right panel)
 - Five horizontal sliders, one per timeframe (2D, 5D, 10D, 20D, 60D).
-- Range 0–100, default all equal.
+- Range 0–100, defaults 10/25/50/50/50, with a Reset button.
 - Changing any slider immediately re-computes composite scores and re-sorts the stock list.
+- Hidden entirely in Slow RS mode.
 
 ### Chart (main area, ~80-85% width)
 - OHLC candlestick chart for the selected stock.

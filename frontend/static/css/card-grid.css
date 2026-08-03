@@ -1,0 +1,215 @@
+/* Card Grid — shared layout for Theme Card Grid and ETF Card Grid.
+   See COMPONENTS.md: "Theme Card Grid" and "ETF Card Grid".
+
+   Each page sets --card-grid-accent to theme its headers. */
+
+:root {
+    --card-grid-accent: var(--accent-purple); /* default; overridden per page */
+}
+
+/* ── Grid container ──────────────────────────────────────────────── */
+.card-grid,
+.th-grid,
+.etf-grid {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+}
+
+/* ── Individual card ─────────────────────────────────────────────── */
+.card-grid-card,
+.theme-card,
+.etf-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* ── Card header ─────────────────────────────────────────────────── */
+.card-grid-header,
+.theme-card-header,
+.etf-card-header {
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--border-color);
+    background: color-mix(in srgb, var(--card-grid-accent) 6%, transparent);
+}
+
+/* ── Card title row ──────────────────────────────────────────────── */
+.card-grid-title,
+.theme-card-title,
+.etf-card-title {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--card-grid-accent);
+    letter-spacing: -0.3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Count pill (number of stocks in card) */
+.card-grid-title .count-pill,
+.theme-card-title .count-pill,
+.etf-card-title .count-pill {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.05rem 0.35rem;
+}
+
+/* Aggregate return badge (1D performance of the whole group) */
+.card-grid-title .ret-badge,
+.theme-card-title .ret-badge,
+.etf-card-title .ret-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.05rem 0.3rem;
+    border-radius: 4px;
+}
+
+.card-grid-title .ret-badge.positive,
+.theme-card-title .ret-badge.positive,
+.etf-card-title .ret-badge.positive {
+    color: var(--accent-green);
+    background: rgba(63, 185, 80, 0.15);
+}
+
+.card-grid-title .ret-badge.negative,
+.theme-card-title .ret-badge.negative,
+.etf-card-title .ret-badge.negative {
+    color: var(--accent-red);
+    background: rgba(248, 81, 73, 0.15);
+}
+
+/* ── Card description text ───────────────────────────────────────── */
+.card-grid-desc,
+.theme-card-desc,
+.etf-card-desc {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Card stock list ─────────────────────────────────────────────── */
+.card-grid-body,
+.theme-card-body,
+.etf-card-body {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+    max-height: 200px;
+    padding: 0.15rem 0;
+}
+
+/* Individual stock row inside the card */
+.card-grid-stock-item,
+.theme-stock-item,
+.etf-stock-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem 0.55rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.3);
+    transition: background 0.12s;
+    gap: 0.4rem;
+}
+
+.card-grid-stock-item:hover,
+.theme-stock-item:hover,
+.etf-stock-item:hover { background: var(--bg-card-hover); }
+
+.card-grid-stock-item:last-child,
+.theme-stock-item:last-child,
+.etf-stock-item:last-child { border-bottom: none; }
+
+/* Stock identity column */
+.card-grid-stock-item .stock-info,
+.theme-stock-item .stock-info,
+.etf-stock-item .stock-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 0.05rem;
+}
+
+.card-grid-stock-item .ticker,
+.theme-stock-item .ticker,
+.etf-stock-item .ticker {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    flex-shrink: 0;
+}
+
+.card-grid-stock-item .ticker-mcap,
+.theme-stock-item .ticker-mcap,
+.etf-stock-item .ticker-mcap {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: #f0c040;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.card-grid-stock-item .company,
+.theme-stock-item .company,
+.etf-stock-item .company {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Return/value column */
+.card-grid-stock-item .ret,
+.theme-stock-item .ret,
+.etf-stock-item .ret,
+.card-grid-stock-item .val,
+.theme-stock-item .val,
+.etf-stock-item .val {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.card-grid-stock-item .ret.positive,
+.theme-stock-item .ret.positive,
+.etf-stock-item .ret.positive { color: var(--accent-green); }
+
+.card-grid-stock-item .ret.negative,
+.theme-stock-item .ret.negative,
+.etf-stock-item .ret.negative { color: var(--accent-red); }
+
+.card-grid-stock-item .ret.muted,
+.theme-stock-item .ret.muted,
+.etf-stock-item .ret.muted,
+.card-grid-stock-item .val.muted,
+.theme-stock-item .val.muted,
+.etf-stock-item .val.muted { color: var(--text-muted); }
+
+/* Tablet responsive */
+@media (max-width: 1024px) {
+    .card-grid,
+    .th-grid,
+    .etf-grid { grid-template-columns: 1fr; }
+}

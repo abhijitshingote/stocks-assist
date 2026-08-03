@@ -53,6 +53,10 @@ def init_db():
 def truncate_main_view(connection):
     """Truncate the main_view table"""
     logger.info("Truncating main_view table...")
+    # Ensure newer columns exist on pre-existing tables (safe no-op if already present)
+    connection.execute(text(
+        "ALTER TABLE main_view ADD COLUMN IF NOT EXISTS at_52w_high BOOLEAN"
+    ))
     connection.execute(text("TRUNCATE TABLE main_view"))
     logger.info("main_view table truncated")
 
@@ -76,6 +80,7 @@ def compute_and_load_main_view(connection):
         market_cap,
         current_price,
         range_52_week,
+        at_52w_high,
         volume,
         dollar_volume,
         avg_vol_10d,
@@ -137,6 +142,7 @@ def compute_and_load_main_view(connection):
             sm.market_cap,
             sm.current_price,
             sm.range_52_week,
+            sm.at_52w_high,
             sm.volume,
             sm.dollar_volume,
             sm.avg_vol_10d,

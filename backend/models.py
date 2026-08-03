@@ -279,6 +279,7 @@ class StockMetrics(Base):
     current_price = Column(Float)
     range_52_week = Column(String(50))       # FMP profile range (may be stale)
     range_52_week_ohlc = Column(String(50))  # MIN(low)-MAX(high) over last 252 trading days
+    at_52w_high = Column(Boolean)            # latest day's high within 0.5% of 252-day max high
     volume = Column(BigInteger)
     dollar_volume = Column(Float)
     avg_vol_10d = Column(Float)
@@ -444,6 +445,7 @@ class MainView(Base):
     market_cap = Column(BigInteger)
     current_price = Column(Float)
     range_52_week = Column(String(50))
+    at_52w_high = Column(Boolean)
     volume = Column(BigInteger)
     dollar_volume = Column(Float)
     avg_vol_10d = Column(Float)

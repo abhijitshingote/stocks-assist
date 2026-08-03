@@ -61,6 +61,12 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/help')
+def help_page():
+    """Reference page - concise technical description of each page's business logic"""
+    return render_template('help.html')
+
+
 @app.route('/rsi')
 def rsi_page():
     """RSI by Market Cap page"""
@@ -93,20 +99,47 @@ def rsi_momentum_page():
 
 @app.route('/rsi-spx')
 def rsi_spx_page():
-    """RSI S&P 500 page - RSI percentile within S&P 500 universe"""
-    return render_template('rsi_spx.html')
+    """RSI S&P 500 — shared rsi_index.html template"""
+    return render_template('rsi_index.html',
+        rsi_page_title='RSI S&P 500',
+        rsi_slug='spx',
+        rsi_label='SPX',
+        rsi_gradient='linear-gradient(135deg, #e63946 0%, #f4a261 100%)',
+        rsi_color='#e63946',
+        rsi_description='Relative Strength percentile within the S&P 500 universe',
+        rsi_subtitle='Compare stocks against other S&P 500 constituents for peer-relative momentum',
+        rsi_info_text='RSI SPX ranks each stock\'s relative strength only against other S&P 500 constituents. This provides an apples-to-apples comparison within the large-cap universe. Use the market cap filter below to focus on specific size categories.',
+    )
 
 
 @app.route('/rsi-ndx')
 def rsi_ndx_page():
-    """RSI NASDAQ 100 page - RSI percentile within NASDAQ 100 universe"""
-    return render_template('rsi_ndx.html')
+    """RSI NASDAQ 100 — shared rsi_index.html template"""
+    return render_template('rsi_index.html',
+        rsi_page_title='RSI NASDAQ 100',
+        rsi_slug='ndx',
+        rsi_label='NDX',
+        rsi_gradient='linear-gradient(135deg, #00b4d8 0%, #0077b6 100%)',
+        rsi_color='#00b4d8',
+        rsi_description='Relative Strength percentile within the NASDAQ 100 universe',
+        rsi_subtitle='Compare stocks against other NASDAQ 100 constituents for peer-relative momentum',
+        rsi_info_text='RSI NDX ranks each stock\'s relative strength only against other NASDAQ 100 constituents. This provides a focused comparison within the tech-heavy NASDAQ universe. Use the market cap filter below to focus on specific size categories.',
+    )
 
 
 @app.route('/rsi-dji')
 def rsi_dji_page():
-    """RSI Dow Jones page - RSI percentile within Dow Jones universe"""
-    return render_template('rsi_dji.html')
+    """RSI Dow Jones — shared rsi_index.html template"""
+    return render_template('rsi_index.html',
+        rsi_page_title='RSI Dow Jones',
+        rsi_slug='dji',
+        rsi_label='DJI',
+        rsi_gradient='linear-gradient(135deg, #ffd60a 0%, #ffc300 100%)',
+        rsi_color='#ffd60a',
+        rsi_description='Relative Strength percentile within the Dow Jones Industrial Average',
+        rsi_subtitle='Compare stocks against the 30 blue-chip Dow Jones constituents',
+        rsi_info_text='RSI DJI ranks each stock\'s relative strength only against other Dow Jones Industrial Average constituents. This provides a focused comparison among the 30 blue-chip industrial leaders. Use the market cap filter below to focus on specific size categories.',
+    )
 
 
 @app.route('/rs-screener')
@@ -1326,6 +1359,12 @@ def market_news_page():
 # ============================================================
 # Market Brief Endpoints
 # ============================================================
+
+@app.route('/market-brief/history')
+def market_brief_history_page():
+    """Market Brief History — browse past AI-generated market briefs."""
+    return render_template('market_brief_history.html')
+
 
 @app.route('/market-brief')
 def market_brief_page():

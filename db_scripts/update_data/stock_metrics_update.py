@@ -58,6 +58,10 @@ def init_db():
 def truncate_stock_metrics(connection):
     """Truncate the stock_metrics table"""
     logger.info("Truncating stock_metrics table...")
+    # Ensure newer columns exist on pre-existing tables (safe no-op if already present)
+    connection.execute(text(
+        "ALTER TABLE stock_metrics ADD COLUMN IF NOT EXISTS at_52w_high BOOLEAN"
+    ))
     connection.execute(text("TRUNCATE TABLE stock_metrics"))
     logger.info("stock_metrics table truncated")
 
@@ -180,6 +184,7 @@ def compute_and_load_metrics(connection):
         SELECT 
             o_today.ticker,
             o_today.close as current_close,
+            o_today.high as today_high,
             o_today.volume as today_volume,
             ROUND(((o_today.close - o_1d.close) / NULLIF(o_1d.close, 0) * 100)::numeric, 2) as dr_1,
             ROUND(((o_today.close - o_5d.close) / NULLIF(o_5d.close, 0) * 100)::numeric, 2) as dr_5,
@@ -327,6 +332,7 @@ def compute_and_load_metrics(connection):
         current_price,
         range_52_week,
         range_52_week_ohlc,
+        at_52w_high,
         volume,
         dollar_volume,
         avg_vol_10d,
@@ -380,6 +386,12 @@ def compute_and_load_metrics(connection):
                 ROUND(r52.low_52w::numeric, 2)::text || '-' || ROUND(r52.high_52w::numeric, 2)::text
             ELSE NULL
         END AS range_52_week_ohlc,
+        -- At/near 52-week high: latest day's intraday high within 0.5% of the 252-day max high
+        CASE
+            WHEN r52.high_52w IS NOT NULL AND pc.today_high IS NOT NULL AND r52.high_52w > 0
+                 AND pc.today_high >= 0.995 * r52.high_52w THEN TRUE
+            ELSE FALSE
+        END AS at_52w_high,
         pc.today_volume as volume,
         ROUND((pc.current_close::numeric * pc.today_volume::numeric), 0) as dollar_volume,
         ROUND(va.avg_vol_10d::numeric, 2) as avg_vol_10d,

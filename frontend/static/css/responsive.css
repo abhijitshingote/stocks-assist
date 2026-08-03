@@ -1,6 +1,12 @@
 /**
- * Shared mobile / small-screen styles for Stocks Assist.
+ * Responsive overrides for the desktop layout.
  * Loaded from base.html on every page.
+ *
+ * Breakpoint tiers (see also tokens.css):
+ *   Tablet  ≤ 1024px — iPad range; desktop layout, tuned spacing
+ *   Phone   ≤ 640px  — phone-specific overrides (dedicated mobile site at /m/*)
+ *
+ * Note: the screener 3-column layout collapses at ≤1024px via screener.css.
  */
 
 html {
@@ -13,8 +19,8 @@ body {
     max-width: 100%;
 }
 
-/* ── Tablet and below ───────────────────────────────────────────── */
-@media (max-width: 768px) {
+/* ── Tablet and below (≤1024px) ─────────────────────────────────── */
+@media (max-width: 1024px) {
     main {
         padding: 1rem 0.75rem !important;
     }
@@ -184,8 +190,8 @@ body {
 
 }
 
-/* ── Phone ──────────────────────────────────────────────────────── */
-@media (max-width: 480px) {
+/* ── Phone (≤640px) ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
     .page-header h1 {
         font-size: 1.35rem !important;
     }

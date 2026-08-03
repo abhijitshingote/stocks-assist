@@ -1,0 +1,159 @@
+{# Shared desktop screener shell.
+   Included by screener page wrappers via {% include "desktop/_screener_shell.html" %}.
+
+   Required Jinja variables (set in the including template before this include):
+     screener_label  — e.g. "Top Losers"
+     screener_stats_label — e.g. "Top Losers"   (shown in stats bar)
+
+   Optional Jinja variables (defaults preserve the standard screener layout):
+     show_cap_tabs        — bool, default true. Show the market-cap tab strip.
+     show_sector_bar      — bool, default true. Show the sector/industry filter bars.
+     topbar_extra_controls — safe HTML, default ''. Injected before #screenerExtraControls
+                             (page-specific filters like recency/criterion tabs).
+     detail_header_extras — safe HTML, default ''. Injected into the detail header,
+                             right after the ticker-info span (e.g. TI65 / reversal badges).
+     subchart_top         — safe HTML, default ''. Chart panel above the main price chart.
+     subchart_bottom      — safe HTML, default ''. Chart panel below the main price chart.
+     below_topbar_extra   — safe HTML, default ''. Injected below the top bar (e.g. Fast RS sliders).
+#}
+
+<div class="tp-top-bar">
+    {% if show_cap_tabs is not defined or show_cap_tabs %}
+    <div class="cap-tabs">
+        <button class="cap-tab active" data-cap="all">All<span class="cap-label">No Filter</span></button>
+        <button class="cap-tab" data-cap="mega">Mega<span class="cap-label">&gt;$100B</span></button>
+        <button class="cap-tab" data-cap="large">Large<span class="cap-label">$20B–$100B</span></button>
+        <button class="cap-tab" data-cap="mid">Mid<span class="cap-label">$2B–$20B</span></button>
+        <button class="cap-tab" data-cap="small">Small<span class="cap-label">$200M–$2B</span></button>
+        <button class="cap-tab" data-cap="micro">Micro<span class="cap-label">&lt;$200M</span></button>
+    </div>
+    {% endif %}
+    <div class="stats-compact">
+        <div>{{ screener_stats_label }}: <span class="accent-val" id="totalStocks">—</span></div>
+    </div>
+    {{ topbar_extra_controls | default('') | safe }}
+    <!-- Placeholder for page-specific extra controls (populated by screener-app.js config.extraControlsHtml) -->
+    <div id="screenerExtraControls" class="screener-extra-controls"></div>
+    <div class="wide-toggle-wrap">
+        <button type="button" class="wide-toggle" id="wideToggle" title="Full-width layout for large displays">Wide layout</button>
+    </div>
+</div>
+
+{{ below_topbar_extra | default('') | safe }}
+
+{% if show_sector_bar is not defined or show_sector_bar %}
+<!-- Sector filter bar -->
+<div class="si-bar" id="sectorBar"></div>
+<!-- Industry filter bar (shown when a sector is selected) -->
+<div class="si-bar industry-bar" id="industryBar"></div>
+{% endif %}
+
+<div class="loading-container" id="loadingState">
+    <div class="screener-spinner"></div>
+    <span>Loading {{ screener_label | lower }} data…</span>
+</div>
+
+<div class="tp-layout" id="mainLayout" style="display: none;">
+    <!-- Stock List Panel -->
+    <div class="tp-left">
+        <div class="tp-left-header">
+            <span id="listHeaderLabel">{{ screener_label }}</span>
+            <span style="display: flex; align-items: center;">
+                <span class="stock-count" id="stockCount">0</span>
+                {{ left_header_extra | default('') | safe }}
+                <button type="button" class="copy-tickers-btn" id="copyTickersBtn" title="Copy visible tickers to clipboard">📋 Copy</button>
+            </span>
+        </div>
+        <div class="stock-list" id="stockList"></div>
+    </div>
+
+    <!-- Center: chart + stock detail header -->
+    <div class="tp-center" id="tpCenter">
+        <div class="tp-right-placeholder" id="rightPlaceholder">
+            Select a stock from the list
+        </div>
+
+        <div id="detailHeader" style="display: none;">
+            <div class="chart-panel" style="padding: 0.2rem 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                    <span class="chart-ticker-info">
+                        <span class="ticker-name" id="detailTicker">—</span>
+                        <span class="company-name" id="detailCompany"></span>
+                        <span class="mktcap-badge" id="detailMktCap"></span>
+                        <span class="sector-industry" id="detailSectorIndustry"></span>
+                        <a class="stock-link" id="detailLink" href="#" target="_blank">Detail →</a>
+                    </span>
+                    {{ detail_header_extras | default('') | safe }}
+                    <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership"
+                        onclick="window._screener_toggleWatchlist()">+ Watchlist</button>
+                    <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes"
+                        onclick="window._screener_openNotes()">📝 Abi ticker notes</button>
+                    <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners"
+                        onclick="window._dlOpenForTicker(document.getElementById('detailTicker').textContent)">👎</button>
+                    <div class="chart-timeframes" id="chartTimeframes">
+                        <button data-days="30">1M</button>
+                        <button data-days="90">3M</button>
+                        <button data-days="180">6M</button>
+                        <button data-days="365" class="active">1Y</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-container" id="chartsContainer" style="display: none;">
+            {{ subchart_top | default('') | safe }}
+            <div class="chart-panel" id="stockChartPanel" style="flex: 1; min-height: 200px;">
+                <div class="chart-panel-header">
+                    <span class="chart-panel-title" id="stockChartTitle">Stock Chart</span>
+                </div>
+                <div id="stockChartContainer"></div>
+            </div>
+            {{ subchart_bottom | default('') | safe }}
+        </div>
+    </div>
+
+    <!-- Right column: News + Metrics -->
+    <div class="tp-right-column" id="tpRightColumn">
+        <button type="button" class="tp-col-toggle" id="tpColToggle" aria-expanded="true" title="Collapse panel to widen chart">›</button>
+        <div class="tp-stack-panel" id="tpNewsStack">
+            <div class="tp-stack-head" id="tpNewsHeadRow">
+                <button type="button" class="tp-collapse-icon" id="tpNewsCollapseBtn"
+                    aria-expanded="true" aria-controls="tpNewsStackBody" title="Collapse/expand news">
+                    <span class="tp-chevron" aria-hidden="true">▼</span>
+                </button>
+                <span class="tp-stack-title"><span>📰</span> News</span>
+                <div class="news-actions-row">
+                    <button type="button" class="news-load-btn" id="tpLoadNewsBtn">Load News</button>
+                    <button type="button" class="news-benzinga-btn" id="tpBenzingaNewsBtn">Get Benzinga</button>
+                </div>
+            </div>
+            <div class="tp-stack-body" id="tpNewsStackBody">
+                <div class="tp-news-inner" id="tpNewsInner">
+                    <div id="tpNewsContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tp-stack-panel tp-metrics-stack" id="tpMetricsStack">
+            <div class="tp-metrics-header" id="tpMetricsHead"
+                role="button" tabindex="0" aria-expanded="true" aria-controls="tpMetricsBody">
+                <span class="tp-chevron" aria-hidden="true">▼</span>
+                <div class="tp-metrics-header-main">
+                    <span class="tp-metrics-ticker" id="metricsTicker">—</span>
+                    <span class="tp-metrics-company" id="metricsCompany"></span>
+                </div>
+            </div>
+            <div class="tp-metrics-body" id="tpMetricsBody">
+                <div class="wl-notes-section" id="wlNotesSection" style="display: none;">
+                    <span class="ms-section-title">
+                        <span>Abi ticker notes</span>
+                        <a class="wl-notes-edit" onclick="window._screener_openNotes()">Edit</a>
+                    </span>
+                    <div class="wl-notes-text empty" id="wlNotesText">No Abi ticker notes</div>
+                </div>
+                <div class="ms-tags" id="tagsStrip"></div>
+                <div id="metricsContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
