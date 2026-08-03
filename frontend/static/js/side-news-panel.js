@@ -66,6 +66,33 @@
         const metricsStack = document.getElementById('sideMetricsStack');
         const metricsHead = document.getElementById('sideMetricsHead');
         bindCollapsibleHead(metricsStack, metricsHead);
+
+        setupColumnToggle();
+    }
+
+    // Collapse/expand the entire right column so the chart can use the freed width.
+    function setupColumnToggle() {
+        const rightCol = document.getElementById('sideRightColumn');
+        const colToggle = document.getElementById('sideColToggle');
+        if (!rightCol || !colToggle) return;
+
+        const STORAGE_KEY = 'sideColCollapsed';
+
+        const apply = (collapsed) => {
+            rightCol.classList.toggle('col-collapsed', collapsed);
+            colToggle.setAttribute('aria-expanded', String(!collapsed));
+            colToggle.textContent = collapsed ? '‹' : '›';
+            colToggle.title = collapsed ? 'Expand panel' : 'Collapse panel to widen chart';
+            rafResize();
+        };
+
+        apply(localStorage.getItem(STORAGE_KEY) === '1');
+
+        colToggle.addEventListener('click', () => {
+            const collapsed = !rightCol.classList.contains('col-collapsed');
+            localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0');
+            apply(collapsed);
+        });
     }
 
     function setNewsTicker(ticker) {

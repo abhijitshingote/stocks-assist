@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
-{% block body_class %}page-main-view{% endblock %}
+{% block body_class %}screener-page page-main-view{% endblock %}
 
 {% block title %}Main View - Stocks Assist{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
+{% endblock %}
 
 {% block extra_styles %}
     /* Side News Panel Styles */
@@ -14,8 +18,37 @@
         gap: 0.35rem;
         min-height: 0;
         height: 100%;
+        transition: width 0.15s ease, min-width 0.15s ease;
     }
     .side-right-column.visible { display: flex; }
+    .side-col-toggle {
+        align-self: flex-end;
+        flex: 0 0 auto;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 0.85rem;
+        line-height: 1;
+        padding: 0.15rem 0.4rem;
+        font-family: inherit;
+        transition: color 0.15s, border-color 0.15s;
+    }
+    .side-col-toggle:hover { color: var(--text-primary); border-color: var(--accent-blue); }
+    .side-right-column.col-collapsed {
+        width: 26px !important;
+        min-width: 26px !important;
+        gap: 0;
+    }
+    .side-right-column.col-collapsed .side-stack-panel { display: none; }
+    .side-right-column.col-collapsed .side-col-toggle {
+        align-self: stretch;
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     .side-stack-panel {
         display: flex;
         flex-direction: column;
@@ -468,9 +501,13 @@
     }
 
     /* ── Left panel: stock list ── */
+    /* Stock list panel chrome. The list internals (.stock-list, .stock-item,
+       .sn, .ticker, .ret, .star-rating, .has-stars, .hidden-by-filter,
+       .tag-near-52w, .copy-tickers-btn) are standardized in screener.css. */
     .mv-left {
-        width: 180px;
-        min-width: 150px;
+        width: 200px;
+        min-width: 170px;
+        flex: 0 0 auto;
         display: flex;
         flex-direction: column;
         background: var(--bg-card);
@@ -490,133 +527,8 @@
     }
 
     .mv-left-header .stock-count {
-        font-family: 'JetBrains Mono', monospace;
-        color: var(--accent-green);
-    }
-
-    .copy-tickers-btn {
-        background: transparent;
-        border: 1px solid var(--border-color);
-        color: var(--text-secondary);
-        cursor: pointer;
-        font-size: 0.6rem;
-        font-family: 'JetBrains Mono', monospace;
-        padding: 0.05rem 0.3rem;
-        border-radius: 3px;
-        margin-left: 0.35rem;
-        transition: all 0.15s;
-        line-height: 1.2;
-        white-space: nowrap;
-    }
-
-    .copy-tickers-btn:hover {
-        border-color: var(--accent-blue);
-        color: var(--text-primary);
-    }
-
-    .copy-tickers-btn.copied {
-        border-color: var(--accent-green);
-        color: var(--accent-green);
-    }
-
-    .stock-list {
-        flex: 1;
-        overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: var(--border-color) transparent;
-    }
-
-    .stock-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.45rem 0.6rem;
-        cursor: pointer;
-        border-bottom: 1px solid rgba(48, 54, 61, 0.3);
-        transition: background 0.15s;
-        gap: 0.5rem;
-    }
-
-    .stock-item:hover {
-        background: var(--bg-card-hover);
-    }
-
-    .stock-item.active {
-        background: rgba(88, 166, 255, 0.12);
-        border-left: 2px solid var(--accent-blue);
-    }
-
-    .stock-item .sn {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.65rem;
-        color: var(--text-muted);
-        font-weight: 500;
-        min-width: 1.6rem;
-        text-align: right;
-        margin-right: 0.35rem;
-        flex-shrink: 0;
-    }
-
-    .stock-item .ticker {
-        font-family: 'JetBrains Mono', monospace;
-        font-weight: 700;
-        color: var(--text-primary);
-        font-size: 0.8rem;
-    }
-
-    .stock-item .ticker-mcap {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.68rem;
-        color: #f0c040;
-        font-weight: 700;
-        margin-left: 0.3rem;
-    }
-
-    .stock-item .ret {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.8rem;
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
-    .stock-item .ret.positive { color: var(--accent-green); }
-    .stock-item .ret.negative { color: var(--accent-red); }
-    .stock-item .ret.muted { color: var(--text-muted); }
-
-    /* ── Star rating widget ── */
-    .star-rating {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.05rem;
-        margin-right: 0.35rem;
-        line-height: 1;
-        flex-shrink: 0;
-    }
-    .star-rating .star {
-        font-size: 0.85rem;
-        cursor: pointer;
-        color: #3a3f47;
-        transition: color 0.12s, transform 0.08s;
-        user-select: none;
-        line-height: 1;
-    }
-    .star-rating .star.filled {
-        color: #ffd700;
-        text-shadow: 0 0 4px rgba(255, 215, 0, 0.35);
-    }
-    .star-rating .star:hover {
-        color: #ffd700;
-        transform: scale(1.15);
-    }
-    .stock-item.has-stars {
-        background: rgba(255, 215, 0, 0.04);
-    }
-    .stock-item.has-stars.active {
-        background: rgba(88, 166, 255, 0.12);
-    }
-
-    .stock-item.hidden-by-filter {
-        display: none;
+        font-family: var(--font-mono);
+        color: var(--screener-accent);
     }
 
     /* ── Center panel: header + charts (fills height) ── */
@@ -1264,6 +1176,7 @@
 
     <!-- Right: news + metrics stacked -->
     <div class="side-right-column" id="sideRightColumn">
+        <button type="button" class="side-col-toggle" id="sideColToggle" aria-expanded="true" title="Collapse panel to widen chart">›</button>
         <div class="side-stack-panel" id="sideNewsStack">
             <div class="side-stack-head" id="sideNewsHeadRow">
                 <button type="button" class="side-collapse-icon" id="sideNewsCollapseBtn" aria-expanded="true" aria-controls="sideNewsStackBody" title="Collapse or expand news">
@@ -1589,13 +1502,19 @@
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
             const stars = getStars(s.ticker);
             const hasStarsCls = stars > 0 ? ' has-stars' : '';
-            return `<div class="stock-item${isActive}${hasStarsCls}${hidden}" data-ticker="${s.ticker}">
-                <span style="display:flex;align-items:center;min-width:0;">
-                    ${starsHtml(s.ticker)}
-                    <span class="sn">${i + 1}.</span>
-                    <span class="ticker">${s.ticker}<span class="ticker-mcap">${mcapStr}</span></span>
-                </span>
-                <span class="ret ${retClass}">${retStr}</span>
+            const badge = s.at_52w_high ? '<span class="tag-near-52w" title="At/near 52-week high">52W</span>' : '';
+            return `<div class="stock-item two-row${isActive}${hasStarsCls}${hidden}" data-ticker="${s.ticker}">
+                <div class="stock-main-row">
+                    <span class="si-left">
+                        ${starsHtml(s.ticker)}
+                        <span class="sn">${i + 1}.</span>
+                        <span class="ticker">${s.ticker}</span>${badge}
+                    </span>
+                    <span class="ret ${retClass}">${retStr}</span>
+                </div>
+                <div class="stock-extra-row">
+                    ${mcapStr ? `<span class="ticker-mcap">${mcapStr}</span>` : ''}
+                </div>
             </div>`;
         }).join('');
 
