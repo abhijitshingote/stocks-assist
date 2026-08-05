@@ -196,6 +196,59 @@ async function fetchVolspikeEvents(ticker) {
     }
 }
 
+/**
+ * Fetch headline fundamentals (market cap, current + forward PE/PS, rev
+ * growth) for the prominent metrics strip rendered in the chart legend.
+ */
+async function fetchStockMetrics(ticker) {
+    try {
+        const response = await fetch(`/api/frontend/stock/${ticker}`);
+        const data = await response.json();
+        if (!data || data.error) return null;
+        return {
+            market_cap: data.market_cap,
+            pe_t: data.pe_t,
+            pe_t_plus_1: data.pe_t_plus_1,
+            ps_t: data.ps_t,
+            ps_t_plus_1: data.ps_t_plus_1,
+            rev_growth_t_plus_1: data.rev_growth_t_plus_1,
+        };
+    } catch (e) {
+        console.warn(`Could not fetch metrics for ${ticker}:`, e);
+        return null;
+    }
+}
+
+/**
+ * Format a market-cap dollar amount using compact suffixes (T/B/M/K).
+ */
+function formatMarketCapCompact(num) {
+    if (num == null) return '--';
+    if (num >= 1e12) return '$' + (num / 1e12).toFixed(2) + 'T';
+    if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
+    if (num >= 1e6) return '$' + (num / 1e6).toFixed(1) + 'M';
+    if (num >= 1e3) return '$' + (num / 1e3).toFixed(1) + 'K';
+    return '$' + num.toLocaleString();
+}
+
+/**
+ * Format a forward valuation ratio (PE / PS). Returns '--' for non-positive
+ * or missing values, which are not meaningful for these multiples.
+ */
+function formatForwardRatio(value, decimals = 1) {
+    if (value == null || value <= 0) return '--';
+    return Number(value).toFixed(decimals);
+}
+
+/**
+ * Format a growth percentage with a leading sign for positive values.
+ */
+function formatGrowthPct(value) {
+    if (value == null) return '--';
+    const sign = value >= 0 ? '+' : '';
+    return sign + Number(value).toFixed(1) + '%';
+}
+
 // ============================================================================
 // StockChart Class
 // ============================================================================
@@ -232,6 +285,7 @@ class StockChart {
         this.earningsData = [];
         this.spikeDays = [];
         this.gapDays = [];
+        this.metricsData = null;
         this.currentTimeframe = getStoredTimeframe();
         this.ticker = null;
         this.resizeHandler = null;
@@ -254,10 +308,12 @@ class StockChart {
     async load(ticker) {
         this.ticker = ticker.toUpperCase();
         
-        // Fetch all data in parallel (OHLC, earnings, and optionally volspike events)
+        // Fetch all data in parallel (OHLC, earnings, volspike events, and
+        // headline fundamentals for the prominent metrics strip in the legend).
         const fetches = [
             fetchOHLCData(this.ticker),
             fetchEarningsData(this.ticker),
+            fetchStockMetrics(this.ticker),
         ];
         if (this.options.showVolspikeMarkers) {
             fetches.push(fetchVolspikeEvents(this.ticker));
@@ -265,8 +321,9 @@ class StockChart {
         const results = await Promise.all(fetches);
         const ohlcData = results[0];
         const earningsData = results[1];
+        this.metricsData = results[2];
         const volspikeEvents = this.options.showVolspikeMarkers
-            ? results[2]
+            ? results[3]
             : { spikeDays: [], gapDays: [] };
         
         if (!ohlcData || ohlcData.length === 0) {
@@ -680,6 +737,7 @@ class StockChart {
         this.legendContainer.style.cssText = `
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
             gap: ${legendGap}px;
             padding: ${legendPad};
             font-size: ${legendFont}px;
@@ -744,7 +802,85 @@ class StockChart {
             item.appendChild(labelText);
             this.legendContainer.appendChild(item);
         });
-        
+
+        // ── Prominent fundamentals strip ──────────────────────────────
+        // Rendered on the same legend row as the MA toggles, but with a
+        // larger, cleaner font so market cap / forward valuation / growth
+        // are readable at a glance.
+        const metrics = this.metricsData || {};
+        const metricsRow = document.createElement('div');
+        metricsRow.className = 'chart-metrics-strip';
+        metricsRow.style.cssText = `
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: ${this.options.compact ? 14 : 22}px;
+            margin-left: auto;
+            padding-left: ${this.options.compact ? 8 : 12}px;
+            border-left: 1px solid ${CHART_CONFIG.borderColor};
+            font-family: 'Outfit', sans-serif;
+        `;
+
+        const metricItems = [
+            {
+                label: 'Mkt Cap',
+                value: formatMarketCapCompact(metrics.market_cap),
+                color: 'var(--text-primary, #e6edf3)',
+            },
+            {
+                label: 'PE (T / T+1)',
+                value: formatForwardRatio(metrics.pe_t, 1) + ' / ' + formatForwardRatio(metrics.pe_t_plus_1, 1),
+                color: 'var(--text-primary, #e6edf3)',
+            },
+            {
+                label: 'P/S (T / T+1)',
+                value: formatForwardRatio(metrics.ps_t, 1) + ' / ' + formatForwardRatio(metrics.ps_t_plus_1, 1),
+                color: 'var(--text-primary, #e6edf3)',
+            },
+            {
+                label: 'Rev Gr (T+1)',
+                value: formatGrowthPct(metrics.rev_growth_t_plus_1),
+                color: metrics.rev_growth_t_plus_1 == null
+                    ? 'var(--text-muted, #6e7681)'
+                    : (metrics.rev_growth_t_plus_1 >= 0
+                        ? 'var(--accent-green, #3fb950)'
+                        : 'var(--accent-red, #f85149)'),
+            },
+        ];
+
+        metricItems.forEach(m => {
+            const cell = document.createElement('div');
+            cell.style.cssText = `
+                display: flex;
+                flex-direction: column;
+                line-height: 1.1;
+            `;
+            const labelEl = document.createElement('span');
+            labelEl.textContent = m.label;
+            labelEl.style.cssText = `
+                font-size: ${this.options.compact ? 9 : 10}px;
+                font-weight: 600;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: ${CHART_CONFIG.textColor};
+                margin-bottom: 2px;
+            `;
+            const valueEl = document.createElement('span');
+            valueEl.textContent = m.value;
+            valueEl.style.cssText = `
+                font-size: ${this.options.compact ? 15 : 18}px;
+                font-weight: 600;
+                font-family: 'JetBrains Mono', monospace;
+                color: ${m.color};
+                letter-spacing: 0.01em;
+            `;
+            cell.appendChild(labelEl);
+            cell.appendChild(valueEl);
+            metricsRow.appendChild(cell);
+        });
+
+        this.legendContainer.appendChild(metricsRow);
+
         container.appendChild(this.legendContainer);
     }
     

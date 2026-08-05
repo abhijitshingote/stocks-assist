@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    {% block extra_head %}{% endblock %}
     <style>
         body.light-theme nav {
             background: #ffffff;
@@ -337,7 +338,6 @@
 
         {% block extra_styles %}{% endblock %}
     </style>
-    {% block extra_head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
     <button type="button" class="nav-hide-toggle" id="navHideToggle" title="Hide/show nav bar (press \ )">
