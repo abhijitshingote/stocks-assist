@@ -199,7 +199,7 @@
             const crit = CRITERIA[currentCriterion];
             const cv = s[crit.field];
             const critStr = cv != null ? (cv >= 0 ? '+' : '') + cv.toFixed(crit.decimals) + '%' : '—';
-            return `<span class="crit-val" title="${crit.headerLabel}">${critStr}</span>`;
+            return `<span class="list-extra" title="${crit.headerLabel}">${critStr}</span>`;
         },
         prependMetricsFn: (s, h) => {
             let items = '';

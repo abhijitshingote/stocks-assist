@@ -98,12 +98,6 @@
     let recencyCutoff = null;
     let screenerApi = null;
 
-    function escAttr(s) {
-        return String(s == null ? '' : s)
-            .replace(/&/g, '&amp;').replace(/"/g, '&quot;')
-            .replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
     function recencyDays(filter) {
         if (filter === 'all') return null;
         const n = parseInt(filter, 10);
@@ -127,28 +121,6 @@
         recencyCutoff = cutoffStrForTradingDays(days, stocks);
     }
 
-    // ── Collapsed day-group persistence ──
-    const COLLAPSED_DAYS_KEY = 'vsg_collapsed_days';
-    function getCollapsedDays() {
-        try { return JSON.parse(localStorage.getItem(COLLAPSED_DAYS_KEY)) || {}; }
-        catch { return {}; }
-    }
-    function setCollapsedDays(collapsed) {
-        localStorage.setItem(COLLAPSED_DAYS_KEY, JSON.stringify(collapsed));
-    }
-    function toggleDayCollapsed(date) {
-        const collapsed = getCollapsedDays();
-        collapsed[date] = !collapsed[date];
-        setCollapsedDays(collapsed);
-        return collapsed[date];
-    }
-    function updateCollapseAllBtn() {
-        const btn = document.getElementById('collapseAllBtn');
-        if (!btn) return;
-        const headers = document.querySelectorAll('.day-group-header');
-        const anyExpanded = Array.from(headers).some(h => !h.classList.contains('collapsed'));
-        btn.textContent = anyExpanded ? '▼ All' : '▶ All';
-    }
     function formatDisplayDate(dateStr) {
         if (!dateStr) return dateStr;
         try {
@@ -158,6 +130,21 @@
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             return `${days[date.getDay()]}, ${months[date.getMonth()]} ${d}`;
         } catch { return dateStr; }
+    }
+
+    function eventExtraHtml(s) {
+        const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
+        const evtClass = s.last_event_type === 'volume_spike' ? 'spike' : s.last_event_type === 'gapper' ? 'gap' : '';
+        let magStr = '';
+        if (s.last_event_magnitude != null) {
+            if (s.last_event_type === 'volume_spike') {
+                magStr = s.last_event_magnitude.toFixed(1) + 'x vol';
+            } else if (s.last_event_type === 'gapper') {
+                magStr = (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(1) + '% gap';
+            }
+        }
+        return (evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : '') +
+            (magStr ? `<span class="list-extra event-mag">${magStr}</span>` : '');
     }
 
     DesktopScreener.init({
@@ -182,13 +169,15 @@
             return s.last_event_date && s.last_event_date >= recencyCutoff;
         },
 
+        groupByFn: (s) => s.last_event_date || 'Unknown',
+        groupLabelFn: (key) => key === 'Unknown' ? 'Unknown Date' : formatDisplayDate(key),
+        groupCollapseStorageKey: 'vsg_collapsed_days',
+
+        listExtraFn: eventExtraHtml,
+
         onDataLoaded: () => { recomputeCutoff(); },
 
-        // Day-grouped list render (overrides the default flat list).
-        renderListFn: ({ listEl, stocks, isVisible, selectedTicker, helpers }) => {
-            const visible = stocks.filter(isVisible);
-
-            // Stats
+        onListRendered: ({ visible, stocks }) => {
             document.getElementById('totalStocks').textContent = visible.length;
             document.getElementById('withSpikes').textContent = visible.filter(d => d.spike_day_count > 0).length;
             document.getElementById('withGaps').textContent = visible.filter(d => d.gapper_day_count > 0).length;
@@ -200,82 +189,6 @@
             document.getElementById('count1D').textContent = countForDays(1);
             document.getElementById('count5D').textContent = countForDays(5);
             document.getElementById('count20D').textContent = countForDays(20);
-
-            // Group by last_event_date (visible is already date-desc / return-desc sorted)
-            const groups = {};
-            visible.forEach(s => {
-                const date = s.last_event_date || 'Unknown';
-                (groups[date] = groups[date] || []).push(s);
-            });
-            const sortedDates = Object.keys(groups).sort((a, b) => {
-                if (a === 'Unknown') return 1;
-                if (b === 'Unknown') return -1;
-                return b.localeCompare(a);
-            });
-
-            const collapsed = getCollapsedDays();
-            let html = '';
-            let runningIdx = 0;
-            sortedDates.forEach(date => {
-                const rows = groups[date];
-                const isCollapsed = collapsed[date] ? ' collapsed' : '';
-                const displayDate = date === 'Unknown' ? 'Unknown Date' : formatDisplayDate(date);
-                html += `<div class="day-group-header${isCollapsed}" data-date="${escAttr(date)}">
-                    <span class="day-group-chevron">▼</span>
-                    <span class="day-group-date">${displayDate}</span>
-                    <span class="day-group-count">${rows.length}</span>
-                </div>`;
-                html += `<div class="day-group-items">`;
-                rows.forEach(s => {
-                    runningIdx++;
-                    const isActive = s.ticker === selectedTicker ? ' active' : '';
-                    const ret1d = s.dr_1;
-                    const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
-                    const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
-                    const mcapStr = s.market_cap ? ' (' + helpers.fmtMktCap(s.market_cap) + ')' : '';
-                    const stars = helpers.getStars(s.ticker);
-                    const hasStarsCls = stars > 0 ? ' has-stars' : '';
-                    const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
-                    const evtClass = s.last_event_type === 'volume_spike' ? 'spike' : s.last_event_type === 'gapper' ? 'gap' : '';
-                    let magStr = '';
-                    if (s.last_event_magnitude != null) {
-                        if (s.last_event_type === 'volume_spike') {
-                            magStr = s.last_event_magnitude.toFixed(1) + 'x vol';
-                        } else if (s.last_event_type === 'gapper') {
-                            magStr = (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(1) + '% gap';
-                        }
-                    }
-                    const badge = s.at_52w_high ? '<span class="tag-near-52w" title="At/near 52-week high">52W</span>' : '';
-                    html += `<div class="stock-item two-row${isActive}${hasStarsCls}" data-ticker="${s.ticker}">
-                        <div class="stock-main-row">
-                            <span class="si-left">
-                                ${helpers.starsHtml(s.ticker)}
-                                <span class="sn">${runningIdx}.</span>
-                                <span class="ticker">${s.ticker}</span>${badge}
-                            </span>
-                            <span class="ret ${retClass}">${retStr}</span>
-                        </div>
-                        <div class="stock-extra-row">
-                            ${mcapStr ? `<span class="ticker-mcap">${mcapStr}</span>` : ''}
-                            ${evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : ''}
-                            ${magStr ? `<span class="event-mag">${magStr}</span>` : ''}
-                        </div>
-                    </div>`;
-                });
-                html += `</div>`;
-            });
-            listEl.innerHTML = html;
-
-            listEl.querySelectorAll('.day-group-header').forEach(headerEl => {
-                headerEl.addEventListener('click', () => {
-                    const date = headerEl.dataset.date;
-                    const nowCollapsed = toggleDayCollapsed(date);
-                    headerEl.classList.toggle('collapsed', nowCollapsed);
-                    updateCollapseAllBtn();
-                });
-            });
-            updateCollapseAllBtn();
-            return visible.length;
         },
 
         onReady: (api) => {
@@ -290,21 +203,6 @@
                     recomputeCutoff();
                     api.rerenderFn();
                 });
-            });
-
-            document.getElementById('collapseAllBtn')?.addEventListener('click', () => {
-                const headers = document.querySelectorAll('.day-group-header');
-                if (!headers.length) return;
-                const anyExpanded = Array.from(headers).some(h => !h.classList.contains('collapsed'));
-                const collapsed = getCollapsedDays();
-                headers.forEach(h => {
-                    const date = h.dataset.date;
-                    collapsed[date] = anyExpanded;
-                    h.classList.toggle('collapsed', anyExpanded);
-                });
-                setCollapsedDays(collapsed);
-                const btn = document.getElementById('collapseAllBtn');
-                if (btn) btn.textContent = anyExpanded ? '▶ All' : '▼ All';
             });
         },
     });

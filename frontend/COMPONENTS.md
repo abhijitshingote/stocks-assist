@@ -121,7 +121,7 @@ One layout system for all 9 desktop screener pages: shared shell + `screener.css
 | **CSS** | `static/css/screener.css` |
 | **JS engine** | `static/js/desktop/screener-app.js` — `DesktopScreener.init(config)` |
 | **Jinja slots** | `screener_label`, `screener_stats_label`, `show_cap_tabs`, `show_sector_bar`, `topbar_extra_controls`, `below_topbar_extra`, `detail_header_extras`, `subchart_top`, `subchart_bottom`, `left_header_extra` |
-| **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `wideStorageKey`, `listValueFn`, `listExtraFn`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn`, `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch` |
+| **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `wideStorageKey`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch` |
 | **Used by** | All 9 desktop screener templates above (thin wrappers) |
 
 ### Cap Tab Strip
@@ -144,9 +144,9 @@ One layout system for all 9 desktop screener pages: shared shell + `screener.css
 ### Stock List Panel
 | | |
 |---|---|
-| **CSS class** | `.tp-left` / `.stock-list` / `.stock-item` |
+| **CSS class** | `.tp-left` / `.stock-list` / `.stock-item.two-row` / `.list-extra` / `.day-group-*` |
 | **CSS file** | `static/css/screener.css` |
-| **JS** | `renderList()` in `screener-app.js` (override via `renderListFn`) |
+| **JS** | Canonical `stockRowHtml()` + `renderList()` in `screener-app.js`. Page hooks: `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`. Prefer those over `renderListFn`. |
 
 ### Star Rating Widget
 | | |

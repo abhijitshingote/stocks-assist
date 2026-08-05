@@ -377,14 +377,14 @@
 .stock-item.has-stars.active { background: color-mix(in srgb, var(--screener-accent) 12%, transparent); }
 
 /* ── Additive stock-list vocabulary (shared across all screeners) ──────
-   The base row above is identical everywhere. The classes below are
-   opt-in extras a page can render on top of the standard row:
+   Base row (.stock-item.two-row) is identical everywhere via screener-app.js.
+   Opt-in extras a page can add via listExtraFn / listPrefixFn / groupByFn:
      • .tag-near-52w  → 52W-high proximity badge (shown on every page)
-     • .stock-main-row / .stock-extra-row → two-row items (volspike)
-     • .day-group-*   → collapsible date groups (volspike)
-     • .mini-badge / .event-mag → event badges (volspike)
-     • .crit-val      → per-criterion value pill (technical screener)
-     • .ticker-cell / .right-cell / .rs-* / .score → RS screener extras
+     • .list-extra / .event-mag → primary second-row metric (bold mono)
+     • .day-group-*   → collapsible groups (groupByFn)
+     • .mini-badge    → small type tags (S/G)
+     • .crit-val      → legacy alias of .list-extra
+     • .rs-* / .score → RS screener extras
    Anything using these must NOT redefine them inline. */
 
 /* 52W-high proximity badge */
@@ -401,19 +401,19 @@
     margin-left: 0.3rem;
 }
 
-/* Per-criterion value pill (technical screener additive) */
+/* Primary second-row metric — same weight as Vol Spike event magnitude */
+.stock-item .list-extra,
+.stock-item .event-mag,
 .stock-item .crit-val {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    background: rgba(139, 148, 158, 0.12);
-    padding: 0.02rem 0.28rem;
-    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
     white-space: nowrap;
 }
 
-/* Two-row items (volspike) */
+/* Two-row items (standard for all screeners) */
 .stock-item.two-row { flex-direction: column; align-items: stretch; gap: 0; }
 
 .stock-item .stock-main-row {
@@ -470,15 +470,7 @@
     font-weight: 600;
 }
 
-.stock-item .event-mag {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: 0.01em;
-}
-
-/* Collapsible day-group headers (volspike) */
+/* Collapsible day-group headers (groupByFn) */
 .day-group-header {
     display: flex;
     align-items: center;
@@ -549,8 +541,9 @@
 
 .stock-item .score {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
 }
 
 /* ── Abi ticker notes in metrics pane ───────────────────────────── */

@@ -21,9 +21,22 @@
                               cls: '' | 'positive' | 'negative' | 'muted'
                               Defaults to 1D return (dr_1) when omitted.
      listExtraFn:    null | function (stock) → html string
-                              Additive metric rendered as a pill to the LEFT of the
-                              standard return value (e.g. revenue growth, criterion).
-                              Use the shared '.crit-val' pill class for consistency.
+                              Additive HTML in the second row (after mcap). Prefer
+                              '.list-extra' / '.event-mag' for the primary secondary
+                              metric; '.mini-badge' for small type tags.
+     listPrefixFn:   null | function (stock) → html string
+                              HTML injected in the main row between serial # and ticker
+                              (e.g. RS blue-dot).
+     groupByFn:      null | function (stock) → string key
+                              When set, the standard list renderer groups visible rows
+                              under collapsible headers (same chrome as Vol Spike).
+     groupLabelFn:   null | function (key) → display string
+                              Header label for a group key (defaults to the key).
+     groupCollapseStorageKey: null | string
+                              localStorage key for collapsed group state. If omitted,
+                              collapse state is in-memory for the session only.
+     onListRendered: null | function ({ visible, stocks, helpers })
+                              After every list paint (sector filter, resort, etc.).
      capFilterFn:    null | function(stock, cap) → boolean
                               Override client-side cap filtering (when capFilter='client').
                               Receives the stock object and the selected cap slug.
@@ -48,8 +61,8 @@
                               Extra per-stock visibility filter, AND-ed with sector/industry
                               (e.g. recency filter). Call rerenderFn() after changing its inputs.
      renderListFn:   null | function ({ listEl, stocks, isVisible, selectedTicker, helpers })
-                              Full stock-list render override (e.g. day-grouped lists).
-                              Responsible for innerHTML + wiring row/star clicks via helpers.
+                              Escape hatch — full stock-list render override. Prefer
+                              groupByFn / listExtraFn / listPrefixFn instead.
      updateMetricsFn: null | function (stock, container, helpers)
                               Metrics-panel HTML override.
      prependMetricsFn: null | function (stock, helpers) → html string
@@ -496,6 +509,45 @@ window.DesktopScreener = (function () {
 
         // ── Stock list ─────────────────────────────────────────────
         // Wire click + star handlers on the current list DOM. Reused by the
+        // ── Collapsible group state (used when config.groupByFn is set) ──
+        let sessionCollapsedGroups = {};
+
+        function getCollapsedGroups() {
+            const key = config.groupCollapseStorageKey;
+            if (!key) return sessionCollapsedGroups;
+            try { return JSON.parse(localStorage.getItem(key)) || {}; }
+            catch { return {}; }
+        }
+
+        function setCollapsedGroups(collapsed) {
+            const key = config.groupCollapseStorageKey;
+            if (!key) { sessionCollapsedGroups = collapsed; return; }
+            localStorage.setItem(key, JSON.stringify(collapsed));
+        }
+
+        function updateCollapseAllBtn() {
+            const btn = document.getElementById('collapseAllBtn');
+            if (!btn) return;
+            const headers = document.querySelectorAll('.day-group-header');
+            if (!headers.length) { btn.textContent = '▼ All'; return; }
+            const anyExpanded = Array.from(headers).some(h => !h.classList.contains('collapsed'));
+            btn.textContent = anyExpanded ? '▼ All' : '▶ All';
+        }
+
+        function bindGroupHeaders(listEl) {
+            listEl.querySelectorAll('.day-group-header').forEach(headerEl => {
+                headerEl.addEventListener('click', () => {
+                    const gkey = headerEl.dataset.date;
+                    const collapsed = getCollapsedGroups();
+                    collapsed[gkey] = !collapsed[gkey];
+                    setCollapsedGroups(collapsed);
+                    headerEl.classList.toggle('collapsed', !!collapsed[gkey]);
+                    updateCollapseAllBtn();
+                });
+            });
+            updateCollapseAllBtn();
+        }
+
         // default renderer and available to renderListFn overrides via helpers.
         function bindListRows(listEl) {
             listEl.querySelectorAll('.stock-item').forEach(el => {
@@ -517,6 +569,75 @@ window.DesktopScreener = (function () {
             });
         }
 
+        function badge52w(s) {
+            return s.at_52w_high ? '<span class="tag-near-52w" title="At/near 52-week high">52W</span>' : '';
+        }
+
+        function defaultListValue(s) {
+            const v = s.dr_1;
+            return {
+                text: v != null ? (v >= 0 ? '+' : '') + v.toFixed(1) + '%' : '—',
+                cls: v != null ? (v >= 0 ? 'positive' : 'negative') : 'muted',
+            };
+        }
+
+        // Canonical two-row stock item — same markup every screener uses.
+        function stockRowHtml(s, idx, hiddenCls) {
+            const isActive = s.ticker === selectedTicker ? ' active' : '';
+            const listVal = config.listValueFn ? config.listValueFn(s) : defaultListValue(s);
+            const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
+            const stars = getStars(s.ticker);
+            const hasStarsCls = stars > 0 ? ' has-stars' : '';
+            const extra = config.listExtraFn ? config.listExtraFn(s) : '';
+            const prefix = config.listPrefixFn ? config.listPrefixFn(s) : '';
+            return `<div class="stock-item two-row${isActive}${hasStarsCls}${hiddenCls || ''}" data-ticker="${s.ticker}">` +
+                `<div class="stock-main-row">` +
+                    `<span class="si-left">` +
+                    starsHtml(s.ticker) +
+                    `<span class="sn">${idx}.</span>` +
+                    prefix +
+                    `<span class="ticker">${s.ticker}</span>` +
+                    badge52w(s) +
+                    `</span>` +
+                    `<span class="ret ${listVal.cls}">${listVal.text}</span>` +
+                `</div>` +
+                `<div class="stock-extra-row">` +
+                    (mcapStr ? `<span class="ticker-mcap">${mcapStr}</span>` : '') +
+                    extra +
+                `</div>` +
+                `</div>`;
+        }
+
+        function renderGroupedList(listEl, visible) {
+            // Preserve first-seen order from the already-sorted visible array.
+            const groups = new Map();
+            visible.forEach(s => {
+                const key = config.groupByFn(s) || 'Unknown';
+                if (!groups.has(key)) groups.set(key, []);
+                groups.get(key).push(s);
+            });
+
+            const collapsed = getCollapsedGroups();
+            let html = '';
+            let runningIdx = 0;
+            groups.forEach((rows, key) => {
+                const isCollapsed = collapsed[key] ? ' collapsed' : '';
+                const label = config.groupLabelFn ? config.groupLabelFn(key) : key;
+                html += `<div class="day-group-header${isCollapsed}" data-date="${escAttr(key)}">` +
+                    `<span class="day-group-chevron">▼</span>` +
+                    `<span class="day-group-date">${label}</span>` +
+                    `<span class="day-group-count">${rows.length}</span>` +
+                    `</div><div class="day-group-items">`;
+                rows.forEach(s => {
+                    runningIdx++;
+                    html += stockRowHtml(s, runningIdx, '');
+                });
+                html += `</div>`;
+            });
+            listEl.innerHTML = html;
+            bindGroupHeaders(listEl);
+        }
+
         function renderList() {
             const listEl = document.getElementById('stockList');
 
@@ -531,52 +652,41 @@ window.DesktopScreener = (function () {
                 const countElC = document.getElementById('stockCount');
                 if (countElC && typeof visibleCount === 'number') countElC.textContent = visibleCount;
                 bindListRows(listEl);
+                if (config.onListRendered) {
+                    config.onListRendered({
+                        visible: filteredStocks.filter(passesSectorIndustry),
+                        stocks: filteredStocks,
+                        helpers,
+                    });
+                }
                 return;
             }
 
             let visibleCount = 0;
-            listEl.innerHTML = filteredStocks.map((s, i) => {
-                const isActive = s.ticker === selectedTicker ? ' active' : '';
-                const listVal = config.listValueFn ? config.listValueFn(s) : defaultListValue(s);
-                const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
-                const hidden = passesSectorIndustry(s) ? '' : ' hidden-by-filter';
-                if (!hidden) visibleCount++;
-                const stars = getStars(s.ticker);
-                const hasStarsCls = stars > 0 ? ' has-stars' : '';
-                const extra = config.listExtraFn ? config.listExtraFn(s) : '';
-                return `<div class="stock-item two-row${isActive}${hasStarsCls}${hidden}" data-ticker="${s.ticker}">` +
-                    `<div class="stock-main-row">` +
-                        `<span class="si-left">` +
-                        starsHtml(s.ticker) +
-                        `<span class="sn">${i + 1}.</span>` +
-                        `<span class="ticker">${s.ticker}</span>` +
-                        badge52w(s) +
-                        `</span>` +
-                        `<span class="ret ${listVal.cls}">${listVal.text}</span>` +
-                    `</div>` +
-                    `<div class="stock-extra-row">` +
-                        (mcapStr ? `<span class="ticker-mcap">${mcapStr}</span>` : '') +
-                        extra +
-                    `</div>` +
-                    `</div>`;
-            }).join('');
+            if (config.groupByFn) {
+                const visible = filteredStocks.filter(passesSectorIndustry);
+                visibleCount = visible.length;
+                renderGroupedList(listEl, visible);
+            } else {
+                listEl.innerHTML = filteredStocks.map((s, i) => {
+                    const hidden = passesSectorIndustry(s) ? '' : ' hidden-by-filter';
+                    if (!hidden) visibleCount++;
+                    return stockRowHtml(s, i + 1, hidden);
+                }).join('');
+            }
 
             const countEl = document.getElementById('stockCount');
             if (countEl) countEl.textContent = visibleCount;
 
             bindListRows(listEl);
-        }
 
-        function badge52w(s) {
-            return s.at_52w_high ? '<span class="tag-near-52w" title="At/near 52-week high">52W</span>' : '';
-        }
-
-        function defaultListValue(s) {
-            const v = s.dr_1;
-            return {
-                text: v != null ? (v >= 0 ? '+' : '') + v.toFixed(1) + '%' : '—',
-                cls: v != null ? (v >= 0 ? 'positive' : 'negative') : 'muted',
-            };
+            if (config.onListRendered) {
+                config.onListRendered({
+                    visible: filteredStocks.filter(passesSectorIndustry),
+                    stocks: filteredStocks,
+                    helpers,
+                });
+            }
         }
 
         // ── Select stock ───────────────────────────────────────────
@@ -937,6 +1047,22 @@ window.DesktopScreener = (function () {
             selectStock: (t) => selectStock(t),
             getSelectedTicker: () => selectedTicker,
         };
+
+        // ── Collapse-all for grouped lists ─────────────────────────
+        if (config.groupByFn) {
+            document.getElementById('collapseAllBtn')?.addEventListener('click', () => {
+                const headers = document.querySelectorAll('.day-group-header');
+                if (!headers.length) return;
+                const anyExpanded = Array.from(headers).some(h => !h.classList.contains('collapsed'));
+                const collapsed = getCollapsedGroups();
+                headers.forEach(h => {
+                    collapsed[h.dataset.date] = anyExpanded;
+                    h.classList.toggle('collapsed', anyExpanded);
+                });
+                setCollapsedGroups(collapsed);
+                updateCollapseAllBtn();
+            });
+        }
 
         // ── Init ───────────────────────────────────────────────────
         setupNewsAndPanels();

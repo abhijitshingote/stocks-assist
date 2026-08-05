@@ -495,38 +495,14 @@
             return stocks;
         },
 
-        renderListFn: ({ listEl, stocks, isVisible, selectedTicker, helpers }) => {
-            const weights = getWeights();
-            let visibleCount = 0;
-            listEl.innerHTML = stocks.map((s, i) => {
-                const hidden = isVisible(s) ? '' : ' hidden-by-filter';
-                if (!hidden) visibleCount++;
-                const isActive = s.ticker === selectedTicker ? ' active' : '';
+        listPrefixFn: (s) => blueDot(s),
+        listExtraFn: (s) => {
+            if (mode === 'fast') {
+                const weights = getWeights();
                 const composite = s.composite != null ? s.composite : computeComposite(s, weights);
-                const additive = mode === 'fast'
-                    ? `<span class="score" title="Slider-weighted composite of 2D/5D/10D/20D/60D ranks">${composite.toFixed(1)}</span>`
-                    : rsRatingBadge(s);
-                const ret1d = s.dr_1;
-                const retStr = ret1d != null ? (ret1d >= 0 ? '+' : '') + ret1d.toFixed(1) + '%' : '—';
-                const retClass = ret1d != null ? (ret1d >= 0 ? 'positive' : 'negative') : 'muted';
-                const mcapStr = s.market_cap ? ' (' + helpers.fmtMktCap(s.market_cap) + ')' : '';
-                return `<div class="stock-item two-row${isActive}${hidden}" data-ticker="${s.ticker}">` +
-                    `<div class="stock-main-row">` +
-                        `<span class="si-left">` +
-                        `<span class="sn">${i + 1}.</span>` +
-                        blueDot(s) +
-                        `<span class="ticker">${s.ticker}</span>` +
-                        helpers.badge52w(s) +
-                        `</span>` +
-                        `<span class="ret ${retClass}">${retStr}</span>` +
-                    `</div>` +
-                    `<div class="stock-extra-row">` +
-                        (mcapStr ? `<span class="ticker-mcap">${mcapStr}</span>` : '') +
-                        additive +
-                    `</div>` +
-                    `</div>`;
-            }).join('');
-            return visibleCount;
+                return `<span class="list-extra score" title="Slider-weighted composite of 2D/5D/10D/20D/60D ranks">${composite.toFixed(1)}</span>`;
+            }
+            return rsRatingBadge(s);
         },
 
         updateMetricsFn: (rsStock, container, helpers) => {
