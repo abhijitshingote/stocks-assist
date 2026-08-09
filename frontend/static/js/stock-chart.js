@@ -25,8 +25,6 @@ const CHART_CONFIG = {
     dma50Color: '#00ff00',
     dma200Color: '#ff0000',
     
-    // RSI color
-    rsiColor: '#00bcd4',
     
     // Volume colors
     volumeUpColor: 'rgba(63, 185, 80, 0.7)',
@@ -52,7 +50,6 @@ const CHART_CONFIG = {
     
     // Chart dimensions
     defaultHeight: 300,
-    rsiHeight: 120,
     
     // Height ratio: candlestick:volume = ~72:28 (matches thinkorswim layout
     // measured from reference screenshot).
@@ -273,8 +270,6 @@ class StockChart {
      * @param {string} containerId - ID of the container element
      * @param {Object} options - Configuration options
      * @param {number} options.height - Chart height (default: 300)
-     * @param {boolean} options.showRSI - Show RSI sub-chart (default: false)
-     * @param {string} options.rsiContainerId - ID of RSI container (required if showRSI is true)
      * @param {boolean} options.showVolspikeMarkers - Show spike/gap markers on chart (default: true)
      * @param {boolean} options.compact - Narrow price scale for tight layouts (default: false)
      */
@@ -282,18 +277,14 @@ class StockChart {
         this.containerId = containerId;
         this.options = {
             height: options.height || CHART_CONFIG.defaultHeight,
-            showRSI: options.showRSI || false,
-            rsiContainerId: options.rsiContainerId || null,
             showVolspikeMarkers: options.showVolspikeMarkers !== false,
             compact: options.compact || false,
         };
         
         this.chart = null;
         this.volumeChart = null;
-        this.rsiChart = null;
         this.series = {};
         this.volumeSeries = null;
-        this.rsiSeries = null;
         this.allData = [];
         this.earningsData = [];
         this.spikeDays = [];
@@ -377,10 +368,6 @@ class StockChart {
         if (this.volumeChart) {
             this.volumeChart.timeScale().fitContent();
             this.volumeChart.timeScale().applyOptions(ro);
-        }
-        if (this.rsiChart) {
-            this.rsiChart.timeScale().fitContent();
-            this.rsiChart.timeScale().applyOptions(ro);
         }
         this._schedulePriceScaleSync();
     }
@@ -479,11 +466,6 @@ class StockChart {
             this.volumeChart = null;
         }
         
-        if (this.rsiChart) {
-            this.rsiChart.remove();
-            this.rsiChart = null;
-        }
-        
         // Clean up dynamic containers
         if (this.legendContainer) {
             this.legendContainer.remove();
@@ -493,6 +475,7 @@ class StockChart {
             this.identityOverlay.remove();
             this.identityOverlay = null;
         }
+        this.hoverDateTooltip = null;
         if (this.priceContainer) {
             this.priceContainer.remove();
             this.priceContainer = null;
@@ -504,7 +487,6 @@ class StockChart {
         
         this.series = {};
         this.volumeSeries = null;
-        this.rsiSeries = null;
     }
     
     /**
@@ -687,6 +669,59 @@ class StockChart {
         this.priceContainer.appendChild(overlay);
     }
 
+    /**
+     * Small floating badge that follows the crosshair horizontally and shows
+     * the hovered date right above the cursor, so it stays readable even when
+     * the bottom time-axis label is far away or hidden (compact mode).
+     */
+    _createHoverDateTooltip() {
+        if (!this.priceContainer) return;
+        const tooltip = document.createElement('div');
+        tooltip.className = 'chart-hover-date-tooltip';
+        tooltip.style.cssText = `
+            position: absolute;
+            top: 4px;
+            z-index: 4;
+            pointer-events: none;
+            display: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: ${this.options.compact ? 10 : 11}px;
+            font-weight: 600;
+            color: #e6edf3;
+            background: rgba(22, 27, 34, 0.9);
+            border: 1px solid ${CHART_CONFIG.borderColor};
+            white-space: nowrap;
+            transform: translateX(-50%);
+        `;
+        this.hoverDateTooltip = tooltip;
+        this.priceContainer.appendChild(tooltip);
+    }
+
+    _formatHoverDate(time) {
+        if (!time) return '';
+        const dateStr = typeof time === 'string' ? time : time.year ? `${time.year}-${String(time.month).padStart(2, '0')}-${String(time.day).padStart(2, '0')}` : String(time);
+        const d = new Date(`${dateStr}T00:00:00`);
+        if (isNaN(d.getTime())) return dateStr;
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    _updateHoverDateTooltip(param) {
+        if (!this.hoverDateTooltip) return;
+        if (!param || !param.time || !param.point) {
+            this.hoverDateTooltip.style.display = 'none';
+            return;
+        }
+        const containerWidth = this.priceContainer.clientWidth;
+        let x = param.point.x;
+        const margin = 40;
+        x = Math.max(margin, Math.min(containerWidth - margin, x));
+        this.hoverDateTooltip.style.left = `${x}px`;
+        this.hoverDateTooltip.textContent = this._formatHoverDate(param.time);
+        this.hoverDateTooltip.style.display = 'block';
+    }
+
     _initChart() {
         const container = document.getElementById(this.containerId);
         if (!container) {
@@ -716,6 +751,7 @@ class StockChart {
         container.appendChild(this.volumeContainer);
 
         this._createIdentityOverlay();
+        this._createHoverDateTooltip();
 
         // Create main price chart
         this.chart = LightweightCharts.createChart(this.priceContainer, {
@@ -800,11 +836,6 @@ class StockChart {
         // Create separate volume chart
         this._initVolumeChart(container.clientWidth, volumeHeight);
         
-        // Initialize RSI chart if enabled
-        if (this.options.showRSI && this.options.rsiContainerId) {
-            this._initRSIChart();
-        }
-        
         // Setup resize handler
         this.resizeHandler = () => {
             const width = container.clientWidth;
@@ -813,12 +844,6 @@ class StockChart {
             }
             if (this.volumeChart) {
                 this.volumeChart.applyOptions({ width });
-            }
-            if (this.rsiChart) {
-                const rsiContainer = document.getElementById(this.options.rsiContainerId);
-                if (rsiContainer) {
-                    this.rsiChart.applyOptions({ width: rsiContainer.clientWidth });
-                }
             }
             this._schedulePriceScaleSync();
         };
@@ -1094,104 +1119,22 @@ class StockChart {
         
         // Sync crosshairs between price and volume charts
         this.chart.subscribeCrosshairMove(param => {
+            this._updateHoverDateTooltip(param);
             if (param.time && this.volumeChart) {
                 this.volumeChart.setCrosshairPosition(param.point?.y || 0, param.time, this.volumeSeries);
+            } else if (!param.time && this.volumeChart) {
+                this.volumeChart.clearCrosshairPosition();
             }
         });
         
         this.volumeChart.subscribeCrosshairMove(param => {
+            this._updateHoverDateTooltip(param);
             if (param.time) {
                 if (this.chart) {
                     this.chart.setCrosshairPosition(param.point?.y || 0, param.time, this.series.candlestick);
                 }
-                // Also sync with RSI chart if it exists
-                if (this.rsiChart && this.rsiSeries) {
-                    this.rsiChart.setCrosshairPosition(param.point?.y || 0, param.time, this.rsiSeries);
-                }
-            }
-        });
-    }
-    
-    _initRSIChart() {
-        const rsiContainer = document.getElementById(this.options.rsiContainerId);
-        if (!rsiContainer) {
-            console.warn(`RSI container not found: ${this.options.rsiContainerId}`);
-            return;
-        }
-        
-        this.rsiChart = LightweightCharts.createChart(rsiContainer, {
-            width: rsiContainer.clientWidth,
-            height: CHART_CONFIG.rsiHeight,
-            layout: {
-                background: { type: 'solid', color: 'transparent' },
-                textColor: CHART_CONFIG.textColor,
-                fontFamily: "'JetBrains Mono', monospace",
-            },
-            grid: {
-                vertLines: { visible: false },
-                horzLines: { visible: false },
-            },
-            crosshair: {
-                mode: LightweightCharts.CrosshairMode.Normal,
-                vertLine: {
-                    width: 1,
-                    color: CHART_CONFIG.crosshairColor,
-                    style: LightweightCharts.LineStyle.Dashed,
-                },
-                horzLine: {
-                    width: 1,
-                    color: CHART_CONFIG.crosshairColor,
-                    style: LightweightCharts.LineStyle.Dashed,
-                },
-            },
-            rightPriceScale: {
-                borderColor: CHART_CONFIG.borderColor,
-                scaleMargins: { top: 0.1, bottom: 0.1 },
-                autoScale: true,
-            },
-            timeScale: {
-                borderColor: CHART_CONFIG.borderColor,
-                timeVisible: true,
-                secondsVisible: false,
-                visible: false,
-                rightOffset: CHART_CONFIG.rightBarOffset,
-            },
-            handleScroll: false,
-            handleScale: false,
-        });
-        
-        this.rsiSeries = this.rsiChart.addAreaSeries({
-            lineColor: CHART_CONFIG.rsiColor,
-            topColor: 'rgba(0, 188, 212, 0.4)',
-            bottomColor: 'rgba(0, 188, 212, 0.05)',
-            lineWidth: 2,
-            priceLineVisible: false,
-            lastValueVisible: true,
-            crosshairMarkerVisible: true,
-        });
-        
-        // Sync time scale with price chart
-        this.chart.timeScale().subscribeVisibleLogicalRangeChange(range => {
-            if (range && this.rsiChart) {
-                this.rsiChart.timeScale().setVisibleLogicalRange(range);
-            }
-        });
-        
-        // Sync crosshairs between all charts
-        this.chart.subscribeCrosshairMove(param => {
-            if (param.time && this.rsiChart) {
-                this.rsiChart.setCrosshairPosition(param.point?.y || 0, param.time, this.rsiSeries);
-            }
-        });
-        
-        this.rsiChart.subscribeCrosshairMove(param => {
-            if (param.time) {
-                if (this.chart) {
-                    this.chart.setCrosshairPosition(param.point?.y || 0, param.time, this.series.candlestick);
-                }
-                if (this.volumeChart) {
-                    this.volumeChart.setCrosshairPosition(param.point?.y || 0, param.time, this.volumeSeries);
-                }
+            } else if (this.chart) {
+                this.chart.clearCrosshairPosition();
             }
         });
     }
@@ -1265,14 +1208,6 @@ class StockChart {
                 color: d.close >= d.open ? CHART_CONFIG.volumeUpColor : CHART_CONFIG.volumeDownColor,
             }));
             this.volumeSeries.setData(volumeData);
-        }
-        
-        // RSI data
-        if (this.rsiSeries) {
-            const rsiData = filteredData
-                .filter(d => d.rsi_mktcap != null)
-                .map(d => ({ time: d.time, value: d.rsi_mktcap }));
-            this.rsiSeries.setData(rsiData);
         }
         
         // Build markers

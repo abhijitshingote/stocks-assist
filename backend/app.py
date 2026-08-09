@@ -9,7 +9,7 @@ from sqlalchemy import create_engine, func, desc, asc, text, or_, bindparam
 from sqlalchemy.orm import sessionmaker
 from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
-    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, RsiIndices, HistoricalRSI,
+    RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, TickerMovingAverages,
     StockVolspikeGapper, MainView, SharesFloat, MarketBreadth,
     RsScreener, BenzingaArticle,
 )
@@ -80,12 +80,10 @@ GLOBAL_LIQUIDITY_FILTERS = {
     'price_min': 3,                  # Minimum stock price ($3)
 }
 
-
 def get_latest_price_date(session):
     """Get the most recent price date available."""
     latest = session.query(func.max(OHLC.date)).scalar()
     return latest
-
 
 def get_trading_date_n_days_ago(session, reference_date, n_trading_days):
     """Get the date that is N trading days before the reference date."""
@@ -97,7 +95,6 @@ def get_trading_date_n_days_ago(session, reference_date, n_trading_days):
         return trading_dates[n_trading_days][0]
     return None
 
-
 def apply_global_exclude_filters(query):
     """Apply the GLOBAL_EXCLUDE filters to a SQLAlchemy query."""
     sectors = GLOBAL_EXCLUDE.get('sector', set())
@@ -108,7 +105,6 @@ def apply_global_exclude_filters(query):
     if industries:
         query = query.filter(~Ticker.industry.in_(list(industries)))
     return query
-
 
 def apply_global_liquidity_filters(query, metrics_model=StockMetrics):
     """Apply global liquidity filters (avg_vol_10d, dollar_volume, price) to a SQLAlchemy query.
@@ -133,17 +129,14 @@ def apply_global_liquidity_filters(query, metrics_model=StockMetrics):
     
     return query
 
-
 _ENG_MONTH_ABBR = (
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 )
 
-
 def _fmt_est_edt_abbr(dt_eastern):
     """US Eastern: always label EST or EDT (never generic ET or locale zone names)."""
     return 'EDT' if dt_eastern.dst() else 'EST'
-
 
 def _fmt_time_12h_eng(dt):
     hour12 = dt.hour % 12
@@ -152,14 +145,11 @@ def _fmt_time_12h_eng(dt):
     ampm = 'AM' if dt.hour < 12 else 'PM'
     return f'{hour12}:{dt.minute:02d} {ampm}'
 
-
 def _fmt_month_day_eng(d):
     return f'{_ENG_MONTH_ABBR[d.month - 1]} {d.day}'
 
-
 def _fmt_full_date_eng(d):
     return f'{_ENG_MONTH_ABBR[d.month - 1]} {d.day}, {d.year}'
-
 
 def _nav_data_thru_label(latest_date, et_dt, abbr):
     """OHLC session date + last OHLC sync time in US/Eastern."""
@@ -168,7 +158,6 @@ def _nav_data_thru_label(latest_date, et_dt, abbr):
     if et_dt.date() == latest_date:
         return f'{session}, {time_part}'
     return f'{session}, as of {_fmt_month_day_eng(et_dt.date())}, {time_part}'
-
 
 @app.route('/api/health')
 def health():
@@ -179,7 +168,6 @@ def health():
         return jsonify({'status': 'ok', 'tickers': count})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
-
 
 @app.route('/api/stats')
 def stats():
@@ -196,7 +184,6 @@ def stats():
     }
     s.close()
     return jsonify(result)
-
 
 @app.route('/api/latest_date')
 def get_latest_date():
@@ -238,7 +225,6 @@ def get_latest_date():
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
-
 
 def get_stock_metrics_data(session, ticker):
     """Get all stock_metrics fields for a ticker. Returns dict or None if not found."""
@@ -327,7 +313,6 @@ def get_stock_metrics_data(session, ticker):
         'last_event_return': float(volspike_gapper.last_event_return) if volspike_gapper and volspike_gapper.last_event_return else None,
     }
 
-
 @app.route('/api/stock/<ticker>')
 def get_stock_details(ticker):
     """API endpoint to get stock metrics for a ticker."""
@@ -342,7 +327,6 @@ def get_stock_details(ticker):
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
-
 
 # ============================================================================
 # Return/Momentum Endpoints
@@ -553,7 +537,6 @@ def get_return_120d_mega():
     finally:
         s.close()
 
-
 # Gapper Endpoints
 @app.route('/api/Gapper-MicroCap')
 def get_gapper_micro():
@@ -594,7 +577,6 @@ def get_gapper_mega():
         return jsonify(get_gapper_stocks(s, market_cap_category='mega'))
     finally:
         s.close()
-
 
 # Volume Spike Endpoints
 @app.route('/api/Volume-MicroCap')
@@ -637,137 +619,13 @@ def get_volume_mega():
     finally:
         s.close()
 
-
-# ============================================================================
-# RSI Endpoints (by Market Cap)
-# ============================================================================
-
-def get_rsi_stocks(session, market_cap_category):
-    """Get stocks with RSI data for a given market cap category, sorted by RSI descending."""
-    try:
-        query = session.query(
-            StockMetrics.ticker,
-            StockMetrics.company_name,
-            StockMetrics.sector,
-            StockMetrics.industry,
-            StockMetrics.market_cap,
-            StockMetrics.current_price,
-            StockMetrics.rsi,
-            StockMetrics.dr_1,
-            StockMetrics.dr_5,
-            StockMetrics.dr_20,
-            StockMetrics.pe_t,
-            StockMetrics.pe_t_plus_1,
-            StockMetrics.ps_t,
-            StockMetrics.ps_t_plus_1,
-            StockMetrics.ipo_date,
-            StockMetrics.vol_vs_10d_avg,
-            StockMetrics.atr20,
-            StockMetrics.updated_at
-        ).filter(
-            StockMetrics.rsi.isnot(None),
-            StockMetrics.market_cap.isnot(None)
-        )
-
-        # Apply market cap filter
-        category = MARKET_CAP_CATEGORIES.get(market_cap_category)
-        if category:
-            query = query.filter(StockMetrics.market_cap >= category['min'])
-            if category['max'] is not None:
-                query = query.filter(StockMetrics.market_cap < category['max'])
-
-        # Apply global liquidity filters
-        query = apply_global_liquidity_filters(query)
-
-        # Order by RSI descending (highest RSI first)
-        stocks = query.order_by(desc(StockMetrics.rsi)).limit(100).all()
-
-        results = []
-        for stock in stocks:
-            results.append({
-                'ticker': stock.ticker,
-                'company_name': stock.company_name,
-                'sector': stock.sector,
-                'industry': stock.industry,
-                'market_cap': stock.market_cap,
-                'current_price': round(stock.current_price, 2) if stock.current_price else None,
-                'rsi': stock.rsi,
-                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
-                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
-                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
-                'pe_t': round(stock.pe_t, 2) if stock.pe_t else None,
-                'pe_t_plus_1': round(stock.pe_t_plus_1, 2) if stock.pe_t_plus_1 else None,
-                'ps_t': round(stock.ps_t, 2) if stock.ps_t else None,
-                'ps_t_plus_1': round(stock.ps_t_plus_1, 2) if stock.ps_t_plus_1 else None,
-                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
-                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
-                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
-                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
-            })
-
-        return results
-
-    except Exception as e:
-        logger.error(f"Error getting RSI stocks for {market_cap_category}: {str(e)}")
-        return []
-
-
-@app.route('/api/RSI-All')
-def get_rsi_all():
-    s = Session()
-    try:
-        return jsonify(get_rsi_stocks(s, market_cap_category=None))
-    finally:
-        s.close()
-
-@app.route('/api/RSI-MicroCap')
-def get_rsi_micro():
-    s = Session()
-    try:
-        return jsonify(get_rsi_stocks(s, market_cap_category='micro'))
-    finally:
-        s.close()
-
-@app.route('/api/RSI-SmallCap')
-def get_rsi_small():
-    s = Session()
-    try:
-        return jsonify(get_rsi_stocks(s, market_cap_category='small'))
-    finally:
-        s.close()
-
-@app.route('/api/RSI-MidCap')
-def get_rsi_mid():
-    s = Session()
-    try:
-        return jsonify(get_rsi_stocks(s, market_cap_category='mid'))
-    finally:
-        s.close()
-
-@app.route('/api/RSI-LargeCap')
-def get_rsi_large():
-    s = Session()
-    try:
-        return jsonify(get_rsi_stocks(s, market_cap_category='large'))
-    finally:
-        s.close()
-
-@app.route('/api/RSI-MegaCap')
-def get_rsi_mega():
-    s = Session()
-    try:
-        return jsonify(get_rsi_stocks(s, market_cap_category='mega'))
-    finally:
-        s.close()
-
-
 # ============================================================================
 # OHLC Data Endpoint (for charts)
 # ============================================================================
 
 @app.route('/api/ohlc/<ticker>')
 def get_ohlc_data(ticker):
-    """Get OHLC data for a specific ticker with DMAs and RSI MktCap from historical_rsi."""
+    """Get OHLC data for a specific ticker with SMAs/EMAs from ticker_moving_averages."""
     s = Session()
     try:
         ticker = ticker.upper()
@@ -780,7 +638,6 @@ def get_ohlc_data(ticker):
         # Fetch 400 calendar days (enough for 1Y display with buffer)
         start_date = end_date - timedelta(days=400)
         
-        # Get OHLC data with historical RSI, DMAs, and EMAs
         ohlc_data = s.query(
             OHLC.date,
             OHLC.open,
@@ -788,14 +645,13 @@ def get_ohlc_data(ticker):
             OHLC.low,
             OHLC.close,
             OHLC.volume,
-            HistoricalRSI.rsi_mktcap,
-            HistoricalRSI.dma_50,
-            HistoricalRSI.dma_200,
-            HistoricalRSI.ema_10,
-            HistoricalRSI.ema_20
+            TickerMovingAverages.dma_50,
+            TickerMovingAverages.dma_200,
+            TickerMovingAverages.ema_10,
+            TickerMovingAverages.ema_20
         ).outerjoin(
-            HistoricalRSI,
-            (OHLC.ticker == HistoricalRSI.ticker) & (OHLC.date == HistoricalRSI.date)
+            TickerMovingAverages,
+            (OHLC.ticker == TickerMovingAverages.ticker) & (OHLC.date == TickerMovingAverages.date)
         ).filter(
             OHLC.ticker == ticker,
             OHLC.date >= start_date,
@@ -818,7 +674,6 @@ def get_ohlc_data(ticker):
                 'dma_200': float(row.dma_200) if row.dma_200 else None,
                 'ema_10': float(row.ema_10) if row.ema_10 else None,
                 'ema_20': float(row.ema_20) if row.ema_20 else None,
-                'rsi_mktcap': row.rsi_mktcap
             })
         
         return jsonify(results)
@@ -828,7 +683,6 @@ def get_ohlc_data(ticker):
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
-
 
 # ============================================================================
 # Earnings EPS Endpoint (for chart annotations)
@@ -876,7 +730,6 @@ def get_earnings_eps(ticker):
     finally:
         s.close()
 
-
 # ============================================================================
 # Volume Spike Events Endpoint (for chart annotations)
 # ============================================================================
@@ -915,537 +768,6 @@ def get_volspike_events(ticker):
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
-
-
-# ============================================================================
-# Sector RSI Endpoint
-# ============================================================================
-
-@app.route('/api/sector-rsi')
-def get_sector_rsi():
-    """
-    Calculate market-cap weighted RSI for each sector.
-    Takes top 10 stocks by market cap in each sector, then calculates
-    weighted average RSI using market cap as weights.
-    """
-    s = Session()
-    try:
-        # Get all stocks with RSI and market cap data, grouped by sector
-        stocks = s.query(
-            StockMetrics.ticker,
-            StockMetrics.company_name,
-            StockMetrics.sector,
-            StockMetrics.market_cap,
-            StockMetrics.rsi,
-            StockMetrics.dr_1,
-            StockMetrics.dr_5,
-            StockMetrics.dr_20
-        ).filter(
-            StockMetrics.rsi.isnot(None),
-            StockMetrics.market_cap.isnot(None),
-            StockMetrics.sector.isnot(None),
-            StockMetrics.sector != ''
-        ).order_by(
-            StockMetrics.sector,
-            desc(StockMetrics.market_cap)
-        ).all()
-        
-        # Group stocks by sector and take top 10 by market cap
-        from collections import defaultdict
-        sector_stocks = defaultdict(list)
-        
-        for stock in stocks:
-            if len(sector_stocks[stock.sector]) < 10:
-                sector_stocks[stock.sector].append({
-                    'ticker': stock.ticker,
-                    'company_name': stock.company_name,
-                    'market_cap': stock.market_cap,
-                    'rsi': stock.rsi,
-                    'dr_1': stock.dr_1,
-                    'dr_5': stock.dr_5,
-                    'dr_20': stock.dr_20
-                })
-        
-        # Calculate weighted average RSI for each sector
-        results = []
-        for sector, stocks_list in sector_stocks.items():
-            if not stocks_list:
-                continue
-            
-            total_market_cap = sum(s['market_cap'] for s in stocks_list)
-            if total_market_cap == 0:
-                continue
-            
-            # Weighted average RSI
-            weighted_rsi = sum(
-                s['rsi'] * s['market_cap'] for s in stocks_list
-            ) / total_market_cap
-            
-            # Weighted average returns
-            weighted_dr_1 = sum(
-                (s['dr_1'] or 0) * s['market_cap'] for s in stocks_list
-            ) / total_market_cap
-            
-            weighted_dr_5 = sum(
-                (s['dr_5'] or 0) * s['market_cap'] for s in stocks_list
-            ) / total_market_cap
-            
-            weighted_dr_20 = sum(
-                (s['dr_20'] or 0) * s['market_cap'] for s in stocks_list
-            ) / total_market_cap
-            
-            results.append({
-                'sector': sector,
-                'weighted_rsi': round(weighted_rsi, 1),
-                'total_market_cap': total_market_cap,
-                'stock_count': len(stocks_list),
-                'dr_1': round(weighted_dr_1, 2),
-                'dr_5': round(weighted_dr_5, 2),
-                'dr_20': round(weighted_dr_20, 2),
-                'top_stocks': stocks_list
-            })
-        
-        # Sort by weighted RSI descending
-        results.sort(key=lambda x: x['weighted_rsi'], reverse=True)
-        
-        return jsonify(results)
-    
-    except Exception as e:
-        logger.error(f"Error calculating sector RSI: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        s.close()
-
-
-# ============================================================================
-# RSI Market Cap Endpoints (RSI percentile within market cap bucket)
-# ============================================================================
-
-def get_rsi_mktcap_stocks(session, market_cap_category):
-    """Get stocks with rsi_mktcap data for a given market cap category, sorted by rsi_mktcap descending."""
-    try:
-        query = session.query(
-            StockMetrics.ticker,
-            StockMetrics.company_name,
-            StockMetrics.sector,
-            StockMetrics.industry,
-            StockMetrics.market_cap,
-            StockMetrics.current_price,
-            StockMetrics.rsi,
-            StockMetrics.rsi_mktcap,
-            StockMetrics.dr_1,
-            StockMetrics.dr_5,
-            StockMetrics.dr_20,
-            StockMetrics.pe_t,
-            StockMetrics.pe_t_plus_1,
-            StockMetrics.ps_t,
-            StockMetrics.ps_t_plus_1,
-            StockMetrics.ipo_date,
-            StockMetrics.vol_vs_10d_avg,
-            StockMetrics.atr20,
-            StockMetrics.updated_at
-        ).filter(
-            StockMetrics.rsi_mktcap.isnot(None),
-            StockMetrics.market_cap.isnot(None)
-        )
-
-        # Apply market cap filter
-        category = MARKET_CAP_CATEGORIES.get(market_cap_category)
-        if category:
-            query = query.filter(StockMetrics.market_cap >= category['min'])
-            if category['max'] is not None:
-                query = query.filter(StockMetrics.market_cap < category['max'])
-
-        # Apply global liquidity filters
-        query = apply_global_liquidity_filters(query)
-
-        # Order by rsi_mktcap descending (highest RSI first)
-        stocks = query.order_by(desc(StockMetrics.rsi_mktcap)).limit(100).all()
-
-        results = []
-        for stock in stocks:
-            results.append({
-                'ticker': stock.ticker,
-                'company_name': stock.company_name,
-                'sector': stock.sector,
-                'industry': stock.industry,
-                'market_cap': stock.market_cap,
-                'current_price': round(stock.current_price, 2) if stock.current_price else None,
-                'rsi': stock.rsi,
-                'rsi_mktcap': stock.rsi_mktcap,
-                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
-                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
-                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
-                'pe_t': round(stock.pe_t, 2) if stock.pe_t else None,
-                'pe_t_plus_1': round(stock.pe_t_plus_1, 2) if stock.pe_t_plus_1 else None,
-                'ps_t': round(stock.ps_t, 2) if stock.ps_t else None,
-                'ps_t_plus_1': round(stock.ps_t_plus_1, 2) if stock.ps_t_plus_1 else None,
-                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
-                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
-                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
-                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
-            })
-
-        return results
-
-    except Exception as e:
-        logger.error(f"Error getting RSI MktCap stocks for {market_cap_category}: {str(e)}")
-        return []
-
-
-@app.route('/api/RSIMktCap-All')
-def get_rsi_mktcap_all():
-    s = Session()
-    try:
-        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category=None))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMktCap-MicroCap')
-def get_rsi_mktcap_micro():
-    s = Session()
-    try:
-        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='micro'))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMktCap-SmallCap')
-def get_rsi_mktcap_small():
-    s = Session()
-    try:
-        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='small'))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMktCap-MidCap')
-def get_rsi_mktcap_mid():
-    s = Session()
-    try:
-        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='mid'))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMktCap-LargeCap')
-def get_rsi_mktcap_large():
-    s = Session()
-    try:
-        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='large'))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMktCap-MegaCap')
-def get_rsi_mktcap_mega():
-    s = Session()
-    try:
-        return jsonify(get_rsi_mktcap_stocks(s, market_cap_category='mega'))
-    finally:
-        s.close()
-
-
-# ============================================================================
-# RSI Momentum Endpoints (RSI MktCap change over 5 trading days)
-# ============================================================================
-
-def get_rsi_momentum_stocks(connection, market_cap_category=None):
-    """
-    Get stocks with highest RSI_mktcap change over 5 trading days.
-    Joins with stock_metrics to get enriched data.
-    """
-    try:
-        # Build market cap filter
-        mcap_filter = ""
-        if market_cap_category:
-            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
-            if category:
-                mcap_filter = f"AND sm.market_cap >= {category['min']}"
-                if category['max'] is not None:
-                    mcap_filter += f" AND sm.market_cap < {category['max']}"
-        
-        # Build liquidity filter
-        liquidity_filter = ""
-        avg_vol_min = GLOBAL_LIQUIDITY_FILTERS.get('avg_vol_10d_min')
-        dollar_vol_min = GLOBAL_LIQUIDITY_FILTERS.get('dollar_volume_min')
-        price_min = GLOBAL_LIQUIDITY_FILTERS.get('price_min')
-        if avg_vol_min:
-            liquidity_filter += f" AND sm.avg_vol_10d >= {avg_vol_min}"
-        if dollar_vol_min:
-            liquidity_filter += f" AND sm.dollar_volume >= {dollar_vol_min}"
-        if price_min:
-            liquidity_filter += f" AND sm.current_price >= {price_min}"
-        
-        query = f"""
-        WITH trading_dates AS (
-            SELECT DISTINCT date
-            FROM historical_rsi
-            ORDER BY date DESC
-            LIMIT 6
-        ),
-        latest_date AS (
-            SELECT MAX(date) as max_date FROM trading_dates
-        ),
-        date_5d_ago AS (
-            SELECT MIN(date) as min_date FROM trading_dates
-        ),
-        rsi_change AS (
-            SELECT 
-                h_today.ticker,
-                h_today.rsi_mktcap as rsi_mktcap_today,
-                h_today.rsi_global as rsi_global_today,
-                h_5d.rsi_mktcap as rsi_mktcap_5d_ago,
-                h_5d.rsi_global as rsi_global_5d_ago,
-                (h_today.rsi_mktcap - h_5d.rsi_mktcap) as rsi_mktcap_change,
-                (h_today.rsi_global - h_5d.rsi_global) as rsi_global_change
-            FROM historical_rsi h_today
-            CROSS JOIN latest_date ld
-            CROSS JOIN date_5d_ago d5
-            LEFT JOIN historical_rsi h_5d 
-                ON h_today.ticker = h_5d.ticker 
-                AND h_5d.date = d5.min_date
-            WHERE h_today.date = ld.max_date
-              AND h_5d.rsi_mktcap IS NOT NULL
-        )
-        SELECT
-            rc.ticker,
-            sm.company_name,
-            sm.sector,
-            sm.industry,
-            sm.market_cap,
-            sm.current_price,
-            rc.rsi_mktcap_today,
-            rc.rsi_global_today,
-            rc.rsi_mktcap_5d_ago,
-            rc.rsi_mktcap_change,
-            rc.rsi_global_change,
-            sm.dr_1,
-            sm.dr_5,
-            sm.dr_20,
-            sm.pe_t_plus_1,
-            sm.ps_t_plus_1,
-            sm.ipo_date,
-            sm.vol_vs_10d_avg,
-            sm.atr20,
-            sm.updated_at
-        FROM rsi_change rc
-        JOIN stock_metrics sm ON rc.ticker = sm.ticker
-        WHERE rc.rsi_mktcap_change IS NOT NULL
-        {mcap_filter}
-        {liquidity_filter}
-        ORDER BY rc.rsi_mktcap_change DESC
-        LIMIT 100
-        """
-        
-        result = connection.execute(text(query))
-        rows = result.fetchall()
-        
-        results = []
-        for row in rows:
-            results.append({
-                'ticker': row[0],
-                'company_name': row[1],
-                'sector': row[2],
-                'industry': row[3],
-                'market_cap': row[4],
-                'current_price': round(row[5], 2) if row[5] else None,
-                'rsi_mktcap': row[6],
-                'rsi': row[7],
-                'rsi_mktcap_5d_ago': row[8],
-                'rsi_mktcap_change': row[9],
-                'rsi_global_change': row[10],
-                'dr_1': round(row[11], 2) if row[11] else None,
-                'dr_5': round(row[12], 2) if row[12] else None,
-                'dr_20': round(row[13], 2) if row[13] else None,
-                'pe_t_plus_1': round(row[14], 2) if row[14] else None,
-                'ps_t_plus_1': round(row[15], 2) if row[15] else None,
-                'ipo_date': row[16].strftime('%Y-%m-%d') if row[16] else None,
-                'vol_vs_10d_avg': round(row[17], 2) if row[17] else None,
-                'atr20': round(row[18], 2) if row[18] else None,
-                'updated_at': row[19].strftime('%Y-%m-%d %H:%M:%S') if row[19] else None
-            })
-        
-        return results
-    
-    except Exception as e:
-        logger.error(f"Error getting RSI momentum stocks: {str(e)}")
-        return []
-
-
-@app.route('/api/RSIMomentum-All')
-def get_rsi_momentum_all():
-    s = Session()
-    try:
-        with s.get_bind().connect() as conn:
-            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category=None))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMomentum-MicroCap')
-def get_rsi_momentum_micro():
-    s = Session()
-    try:
-        with s.get_bind().connect() as conn:
-            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='micro'))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMomentum-SmallCap')
-def get_rsi_momentum_small():
-    s = Session()
-    try:
-        with s.get_bind().connect() as conn:
-            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='small'))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMomentum-MidCap')
-def get_rsi_momentum_mid():
-    s = Session()
-    try:
-        with s.get_bind().connect() as conn:
-            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='mid'))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMomentum-LargeCap')
-def get_rsi_momentum_large():
-    s = Session()
-    try:
-        with s.get_bind().connect() as conn:
-            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='large'))
-    finally:
-        s.close()
-
-@app.route('/api/RSIMomentum-MegaCap')
-def get_rsi_momentum_mega():
-    s = Session()
-    try:
-        with s.get_bind().connect() as conn:
-            return jsonify(get_rsi_momentum_stocks(conn, market_cap_category='mega'))
-    finally:
-        s.close()
-
-
-# ============================================================================
-# RSI Index Endpoints (RSI within index universes: SPX, NDX, DJI)
-# ============================================================================
-
-def get_rsi_index_stocks(session, index_type, market_cap_category=None):
-    """
-    Get stocks with RSI data for a given index universe.
-    Joins rsi_indices with stock_metrics for full stock data.
-    Optional market_cap_category filter for view filtering (doesn't affect RSI calculation).
-    """
-    try:
-        # Map index type to column names
-        index_map = {
-            'spx': {'flag': 'is_spx', 'rsi_col': 'rsi_spx', 'name': 'S&P 500'},
-            'ndx': {'flag': 'is_ndx', 'rsi_col': 'rsi_ndx', 'name': 'NASDAQ 100'},
-            'dji': {'flag': 'is_dji', 'rsi_col': 'rsi_dji', 'name': 'Dow Jones'}
-        }
-        
-        if index_type not in index_map:
-            return []
-        
-        idx = index_map[index_type]
-        
-        query = session.query(
-            RsiIndices.ticker,
-            getattr(RsiIndices, idx['rsi_col']).label('rsi_index'),
-            StockMetrics.company_name,
-            StockMetrics.sector,
-            StockMetrics.industry,
-            StockMetrics.market_cap,
-            StockMetrics.current_price,
-            StockMetrics.rsi,
-            StockMetrics.dr_1,
-            StockMetrics.dr_5,
-            StockMetrics.dr_20,
-            StockMetrics.pe_t,
-            StockMetrics.pe_t_plus_1,
-            StockMetrics.ps_t,
-            StockMetrics.ps_t_plus_1,
-            StockMetrics.ipo_date,
-            StockMetrics.vol_vs_10d_avg,
-            StockMetrics.atr20,
-            StockMetrics.updated_at
-        ).join(
-            StockMetrics, RsiIndices.ticker == StockMetrics.ticker
-        ).filter(
-            getattr(RsiIndices, idx['flag']) == True,
-            getattr(RsiIndices, idx['rsi_col']).isnot(None)
-        )
-        
-        # Apply optional market cap filter (view filter only, doesn't affect RSI calculation)
-        if market_cap_category:
-            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
-            if category:
-                query = query.filter(StockMetrics.market_cap >= category['min'])
-                if category['max'] is not None:
-                    query = query.filter(StockMetrics.market_cap < category['max'])
-        
-        # Apply global liquidity filters
-        query = apply_global_liquidity_filters(query)
-        
-        query = query.order_by(desc(getattr(RsiIndices, idx['rsi_col'])))
-        stocks = query.all()
-
-        results = []
-        for stock in stocks:
-            results.append({
-                'ticker': stock.ticker,
-                'company_name': stock.company_name,
-                'sector': stock.sector,
-                'industry': stock.industry,
-                'market_cap': stock.market_cap,
-                'current_price': round(stock.current_price, 2) if stock.current_price else None,
-                'rsi_index': stock.rsi_index,
-                'rsi': stock.rsi,
-                'dr_1': round(stock.dr_1, 2) if stock.dr_1 else None,
-                'dr_5': round(stock.dr_5, 2) if stock.dr_5 else None,
-                'dr_20': round(stock.dr_20, 2) if stock.dr_20 else None,
-                'pe_t': round(stock.pe_t, 2) if stock.pe_t else None,
-                'pe_t_plus_1': round(stock.pe_t_plus_1, 2) if stock.pe_t_plus_1 else None,
-                'ps_t': round(stock.ps_t, 2) if stock.ps_t else None,
-                'ps_t_plus_1': round(stock.ps_t_plus_1, 2) if stock.ps_t_plus_1 else None,
-                'ipo_date': stock.ipo_date.strftime('%Y-%m-%d') if stock.ipo_date else None,
-                'vol_vs_10d_avg': round(stock.vol_vs_10d_avg, 2) if stock.vol_vs_10d_avg else None,
-                'atr20': round(stock.atr20, 2) if stock.atr20 else None,
-                'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
-            })
-
-        return results
-
-    except Exception as e:
-        logger.error(f"Error getting RSI index stocks for {index_type}: {str(e)}")
-        return []
-
-
-@app.route('/api/RSI-SPX')
-@app.route('/api/RSI-SPX/<market_cap>')
-def get_rsi_spx(market_cap=None):
-    s = Session()
-    try:
-        return jsonify(get_rsi_index_stocks(s, index_type='spx', market_cap_category=market_cap))
-    finally:
-        s.close()
-
-@app.route('/api/RSI-NDX')
-@app.route('/api/RSI-NDX/<market_cap>')
-def get_rsi_ndx(market_cap=None):
-    s = Session()
-    try:
-        return jsonify(get_rsi_index_stocks(s, index_type='ndx', market_cap_category=market_cap))
-    finally:
-        s.close()
-
-@app.route('/api/RSI-DJI')
-@app.route('/api/RSI-DJI/<market_cap>')
-def get_rsi_dji(market_cap=None):
-    s = Session()
-    try:
-        return jsonify(get_rsi_index_stocks(s, index_type='dji', market_cap_category=market_cap))
-    finally:
-        s.close()
-
 
 # ============================================================================
 # Top Performance Endpoints (Union of top stocks by 1D, 5D, 20D returns)
@@ -1615,7 +937,6 @@ def get_top_performance_stocks(session, market_cap_category=None):
         logger.error(f"Error getting top performance stocks: {str(e)}")
         return []
 
-
 @app.route('/api/TopPerformance-All')
 def get_top_performance_all():
     s = Session()
@@ -1663,7 +984,6 @@ def get_top_performance_mega():
         return jsonify(get_top_performance_stocks(s, market_cap_category='mega'))
     finally:
         s.close()
-
 
 # ============================================================================
 # Bottom Performance (Top Losers) Endpoints
@@ -1826,7 +1146,6 @@ def get_bottom_performance_stocks(session, market_cap_category=None):
         logger.error(f"Error getting bottom performance stocks: {str(e)}")
         return []
 
-
 @app.route('/api/BottomPerformance-All')
 def get_bottom_performance_all():
     s = Session()
@@ -1874,7 +1193,6 @@ def get_bottom_performance_mega():
         return jsonify(get_bottom_performance_stocks(s, market_cap_category='mega'))
     finally:
         s.close()
-
 
 # ============================================================================
 # Volume Spike & Gapper Endpoints
@@ -2050,7 +1368,6 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
         logger.error(f"Error getting volspike gapper stocks for {market_cap_category}: {str(e)}")
         return []
 
-
 @app.route('/api/VolspikeGapper-All')
 def get_volspike_gapper_all():
     s = Session()
@@ -2098,7 +1415,6 @@ def get_volspike_gapper_mega():
         return jsonify(get_volspike_gapper_stocks(s, market_cap_category='mega'))
     finally:
         s.close()
-
 
 # ============================================================================
 # Main View Endpoints
@@ -2198,7 +1514,6 @@ def get_main_view_stocks(session, market_cap_category=None):
         logger.error(f"Error getting main_view stocks for {market_cap_category}: {str(e)}")
         return []
 
-
 @app.route('/api/MainView-All')
 def get_main_view_all():
     s = Session()
@@ -2246,7 +1561,6 @@ def get_main_view_mega():
         return jsonify(get_main_view_stocks(s, market_cap_category='mega'))
     finally:
         s.close()
-
 
 def _format_all_stocks_row(r):
     spike_dates = [d for d in (r['volume_spike_days'] or '').split(',') if d.strip()]
@@ -2310,7 +1624,6 @@ def _format_all_stocks_row(r):
         'last_event_return': float(r['last_event_return']) if r['last_event_return'] else None,
         'tags': r['tags'] or '',
     }
-
 
 _ALL_STOCKS_SQL = """
     SELECT
@@ -2382,7 +1695,6 @@ _ALL_STOCKS_SQL = """
       ) > 10000000
 """
 
-
 def _fetch_all_stocks(session, tickers=None):
     ticker_filter = ''
     params = {}
@@ -2395,7 +1707,6 @@ def _fetch_all_stocks(session, tickers=None):
         sql = sql.bindparams(bindparam('tickers', expanding=True))
     rows = session.execute(sql, params).mappings().all()
     return [_format_all_stocks_row(r) for r in rows]
-
 
 @app.route('/api/AllStocks')
 def get_all_stocks():
@@ -2413,7 +1724,6 @@ def get_all_stocks():
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
-
 
 @app.route('/api/AllStocks-ByTickers')
 def get_all_stocks_by_tickers():
@@ -2437,7 +1747,6 @@ def get_all_stocks_by_tickers():
         return jsonify([])
     finally:
         s.close()
-
 
 @app.route('/api/MainView-ByTickers')
 def get_main_view_by_tickers():
@@ -2493,7 +1802,6 @@ def get_main_view_by_tickers():
         return jsonify([])
     finally:
         s.close()
-
 
 # ============================================================================
 # High Sales Growth Endpoints (filter MainView by high_sales_growth tag)
@@ -2591,7 +1899,6 @@ def get_high_sales_growth_stocks(session, market_cap_category=None):
         logger.error(f"Error getting high_sales_growth stocks for {market_cap_category}: {str(e)}")
         return []
 
-
 @app.route('/api/HighSalesGrowth-All')
 def get_high_sales_growth_all():
     s = Session()
@@ -2640,7 +1947,6 @@ def get_high_sales_growth_mega():
     finally:
         s.close()
 
-
 # Stock Notes endpoints removed (along with AI Stock Research). This store
 # has been deprecated. Per-ticker notes are now served exclusively by the
 # file-only abi_ticker_notes store (user_data/abi_ticker_notes.json). The
@@ -2657,11 +1963,9 @@ def get_high_sales_growth_mega():
 # AI research back, reintroduce it as a feature that writes into
 # user_data/abi_ticker_notes.json instead of the deprecated DB store.)
 
-
 # Stock Preferences endpoints removed: this store has been deprecated and
 # replaced by the file-only abi_watchlist (favorites) and abi_dislikes
 # stores. Same UX, no DB dependency, lives entirely under user_data/.
-
 
 # ============================================================================
 # Stock Detail Data Endpoints (for stock detail page)
@@ -2714,7 +2018,6 @@ def get_earnings_data(ticker):
     finally:
         s.close()
 
-
 @app.route('/api/analyst-estimates/<ticker>')
 def get_analyst_estimates_data(ticker):
     """Get analyst estimates for a specific ticker (future years)."""
@@ -2751,7 +2054,6 @@ def get_analyst_estimates_data(ticker):
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
-
 
 @app.route('/api/ratios-ttm/<ticker>')
 def get_ratios_ttm_data(ticker):
@@ -2801,7 +2103,6 @@ def get_ratios_ttm_data(ticker):
     finally:
         s.close()
 
-
 @app.route('/api/company-profile/<ticker>')
 def get_company_profile_data(ticker):
     """Get company profile for a specific ticker."""
@@ -2846,7 +2147,6 @@ def get_company_profile_data(ticker):
     finally:
         s.close()
 
-
 # ============================================================
 # Stock News Endpoint (FMP + Yahoo RSS + Seeking Alpha RSS, merged)
 # ============================================================
@@ -2858,7 +2158,6 @@ _NEWS_UA = (
     '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
 )
 
-
 def _strip_html(text):
     """Crude HTML stripper for RSS description fields."""
     if not text:
@@ -2867,7 +2166,6 @@ def _strip_html(text):
     text = re.sub(r'<[^>]+>', ' ', text)
     text = re.sub(r'\s+', ' ', text)
     return text.strip()
-
 
 def _parse_rss_date(s):
     """Parse RFC 822 / ISO 8601 date strings; return ISO string or None."""
@@ -2885,7 +2183,6 @@ def _parse_rss_date(s):
         return _dt.fromisoformat(s.replace('Z', '+00:00')).isoformat()
     except Exception:
         return None
-
 
 def _fetch_fmp_news(ticker, limit, api_key):
     """Fetch news from Financial Modeling Prep."""
@@ -2918,7 +2215,6 @@ def _fetch_fmp_news(ticker, limit, api_key):
     except Exception as e:
         logger.warning(f"FMP news fetch failed for {ticker}: {e}")
         return []
-
 
 def _fetch_rss_items(url, source_name, ticker, limit):
     """Generic RSS fetcher for Yahoo + Seeking Alpha. Returns normalized items."""
@@ -2997,16 +2293,13 @@ def _fetch_rss_items(url, source_name, ticker, limit):
         logger.warning(f"{source_name} RSS fetch failed for {ticker}: {e}")
         return []
 
-
 def _fetch_yahoo_news(ticker, limit):
     url = f'https://feeds.finance.yahoo.com/rss/2.0/headline?s={ticker}&region=US&lang=en-US'
     return _fetch_rss_items(url, 'Yahoo Finance', ticker, limit)
 
-
 def _fetch_seekingalpha_news(ticker, limit):
     url = f'https://seekingalpha.com/api/sa/combined/{ticker}.xml'
     return _fetch_rss_items(url, 'Seeking Alpha', ticker, limit)
-
 
 @app.route('/api/stock-news/<ticker>')
 def get_stock_news(ticker):
@@ -3064,14 +2357,12 @@ def get_stock_news(ticker):
         logger.error(f"Error fetching stock news for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-
 # ============================================================
 # Benzinga News (Polygon/Massive API + Postgres cache)
 # ============================================================
 
 def _ensure_benzinga_table():
     BenzingaArticle.__table__.create(engine, checkfirst=True)
-
 
 @app.route('/api/benzinga-news/<ticker>', methods=['GET'])
 def get_benzinga_news_cached(ticker):
@@ -3096,7 +2387,6 @@ def get_benzinga_news_cached(ticker):
     except Exception as e:
         logger.error(f"Error loading cached Benzinga news for {ticker}: {e}")
         return jsonify({'error': str(e)}), 500
-
 
 @app.route('/api/benzinga-news/<ticker>', methods=['POST'])
 def refresh_benzinga_news(ticker):
@@ -3123,7 +2413,6 @@ def refresh_benzinga_news(ticker):
     except Exception as e:
         logger.error(f"Error refreshing Benzinga news for {ticker}: {e}")
         return jsonify({'error': str(e)}), 500
-
 
 @app.route('/api/benzinga-news/market', methods=['GET'])
 def get_market_benzinga_news():
@@ -3175,7 +2464,6 @@ def get_market_benzinga_news():
         logger.error(f"Error loading market Benzinga news: {e}")
         return jsonify({'error': str(e)}), 500
 
-
 @app.route('/api/benzinga-news/market', methods=['POST'])
 def refresh_market_benzinga_news():
     """Refresh Benzinga cache (3-day lookback) and return articles from DB."""
@@ -3225,7 +2513,6 @@ def refresh_market_benzinga_news():
         logger.error(f"Error refreshing market Benzinga news: {e}")
         return jsonify({'error': str(e)}), 500
 
-
 @app.route('/api/market-news/fmp', methods=['GET'])
 def get_market_fmp_news():
     """Fetch general market news from FMP (not ticker-specific)."""
@@ -3268,7 +2555,6 @@ def get_market_fmp_news():
         logger.error(f"Error fetching FMP market news: {e}")
         return jsonify({'error': str(e)}), 500
 
-
 @app.route('/api/market-news/seeking-alpha', methods=['GET'])
 def get_market_seeking_alpha_news():
     """Fetch general market news from Seeking Alpha RSS."""
@@ -3286,7 +2572,6 @@ def get_market_seeking_alpha_news():
     except Exception as e:
         logger.error(f"Error fetching Seeking Alpha market news: {e}")
         return jsonify({'error': str(e)}), 500
-
 
 # ============================================================
 # Abi General Notes API Endpoints (date-based personal notes)
@@ -3311,7 +2596,6 @@ def _abi_general_notes_now_iso():
     """Eastern time ISO 8601, matches the old DB-default behavior."""
     return datetime.now(pytz.timezone("US/Eastern")).isoformat()
 
-
 def _load_abi_general_notes():
     """Read the notes list from disk. Returns [] if missing or unreadable.
 
@@ -3327,7 +2611,6 @@ def _load_abi_general_notes():
         logger.error(f"Error reading {ABI_GENERAL_NOTES_FILE}: {e}")
         return []
 
-
 def _save_abi_general_notes(notes):
     """Persist notes list to disk. Same ordering convention as the API GET
     (note_date desc, id desc) so the on-disk file is always readable in the
@@ -3341,13 +2624,11 @@ def _save_abi_general_notes(notes):
     with open(ABI_GENERAL_NOTES_FILE, 'w') as f:
         json.dump(notes_sorted, f, indent=2)
 
-
 def _next_abi_general_note_id(notes):
     """Monotonically increasing id. Old DB used autoincrement; we mimic that
     so existing frontend code (which routes on `<int:note_id>`) keeps
     working without changes."""
     return (max((int(n.get('id') or 0) for n in notes), default=0)) + 1
-
 
 @app.route('/api/abi-general-notes', methods=['GET'])
 def get_abi_general_notes():
@@ -3384,7 +2665,6 @@ def get_abi_general_notes():
     )
     return jsonify(results)
 
-
 @app.route('/api/abi-general-notes/<int:note_id>', methods=['GET'])
 def get_abi_general_note(note_id):
     """Get a specific abi general note by ID."""
@@ -3392,7 +2672,6 @@ def get_abi_general_note(note_id):
         if int(n.get('id') or 0) == note_id:
             return jsonify(n)
     return jsonify({'error': 'Note not found'}), 404
-
 
 @app.route('/api/abi-general-notes', methods=['POST'])
 def create_abi_general_note():
@@ -3426,7 +2705,6 @@ def create_abi_general_note():
 
     return jsonify({**new_note, 'message': 'Note created successfully'}), 201
 
-
 @app.route('/api/abi-general-notes/<int:note_id>', methods=['PUT'])
 def update_abi_general_note(note_id):
     """Update an existing abi general note."""
@@ -3456,7 +2734,6 @@ def update_abi_general_note(note_id):
 
     return jsonify({'error': 'Note not found'}), 404
 
-
 @app.route('/api/abi-general-notes/<int:note_id>', methods=['DELETE'])
 def delete_abi_general_note(note_id):
     """Delete an abi general note."""
@@ -3466,7 +2743,6 @@ def delete_abi_general_note(note_id):
         return jsonify({'error': 'Note not found'}), 404
     _save_abi_general_notes(remaining)
     return jsonify({'message': 'Note deleted successfully', 'id': note_id})
-
 
 @app.route('/api/abi-general-notes/tags', methods=['GET'])
 def get_abi_general_notes_tags():
@@ -3481,7 +2757,6 @@ def get_abi_general_notes_tags():
             if t:
                 all_tags.add(t)
     return jsonify({'tags': sorted(all_tags)})
-
 
 # ============================================================================
 # Sector/Index Performance Endpoint
@@ -3549,7 +2824,6 @@ ETF_METADATA = {
     # Construction
     'ITB': {'name': 'Home Construction', 'category': 'construction'},
 }
-
 
 def get_sector_performance_data(connection):
     """
@@ -3663,7 +2937,6 @@ def get_sector_performance_data(connection):
         logger.error(f"Error getting sector performance data: {str(e)}")
         return {'main_indices': [], 'sectors': [], 'latest_date': None}
 
-
 @app.route('/api/sector-performance')
 def get_sector_performance():
     """Get performance data for all indices/ETFs."""
@@ -3676,7 +2949,6 @@ def get_sector_performance():
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
-
 
 def get_etf_returns_data(connection, symbols):
     """
@@ -3757,7 +3029,6 @@ def get_etf_returns_data(connection, symbols):
         logger.error(f"Error getting ETF returns data: {str(e)}")
         return {'latest_date': None, 'etfs': []}
 
-
 @app.route('/api/etf-performance')
 def get_etf_performance():
     """Get 1D/5D/20D/60D/120D performance for a comma-separated list of ETF symbols."""
@@ -3772,7 +3043,6 @@ def get_etf_performance():
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
-
 
 def get_homepage_data(connection):
     """
@@ -3932,7 +3202,6 @@ def get_homepage_data(connection):
         logger.error(f"Error getting homepage data: {str(e)}")
         return {'main_indices': [], 'commodities': [], 'risk_on_sectors': [], 'risk_off_sectors': [], 'latest_date': None}
 
-
 @app.route('/api/homepage')
 def get_homepage():
     """Get homepage data: main indices, commodities, and sector ETFs with DMA calculations."""
@@ -3945,7 +3214,6 @@ def get_homepage():
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
-
 
 @app.route('/api/market-breadth')
 def get_market_breadth():
@@ -4010,7 +3278,6 @@ def get_market_breadth():
     finally:
         s.close()
 
-
 @app.route('/api/index-ohlc/<symbol>')
 def get_index_ohlc_data(symbol):
     """Get OHLC data for a specific index/ETF from index_prices table (for charts)."""
@@ -4065,7 +3332,6 @@ def get_index_ohlc_data(symbol):
     finally:
         s.close()
 
-
 # ============================================================================
 # RS Screener Endpoints (multi-timeframe relative strength)
 # ============================================================================
@@ -4081,13 +3347,11 @@ def _parse_52w_high(range_52_week):
     except (ValueError, TypeError):
         return None
 
-
 def _pct_from_52w_high(current_price, range_52_week):
     high = _parse_52w_high(range_52_week)
     if high is None or not current_price or high <= 0:
         return None
     return round((current_price / high - 1) * 100, 2)
-
 
 @app.route('/api/rs-screener')
 @app.route('/api/rs-screener/<market_cap>')
@@ -4164,7 +3428,6 @@ def get_rs_screener(market_cap=None):
     finally:
         s.close()
 
-
 # ============================================================================
 # Market Indicators (VIX, Treasury Yield)
 # ============================================================================
@@ -4207,7 +3470,6 @@ def get_vix_latest():
     finally:
         s.close()
 
-
 @app.route('/api/treasury-10y')
 def get_treasury_10y():
     """Scrape current 10-Year Treasury yield from CNBC."""
@@ -4235,14 +3497,12 @@ def get_treasury_10y():
         logger.error(f"Error scraping 10Y yield: {str(e)}")
         return jsonify({'error': str(e)}), 502
 
-
 # ============================================================================
 # Abi Ticker Notes Endpoints (JSON file-based per-ticker notes)
 # ============================================================================
 # Abi ticker notes are decoupled from watchlist / dislike membership. The daily
 # screener still only consumes notes whose ticker is on the watchlist (see
 # daily_screener stages s3/s4/s5).
-
 
 def _load_abi_ticker_notes():
     """Load Abi ticker notes from JSON. Returns {TICKER: {notes, created_at, updated_at}}."""
@@ -4254,19 +3514,16 @@ def _load_abi_ticker_notes():
             return {}
     return {}
 
-
 def _save_abi_ticker_notes(data):
     """Save Abi ticker notes to JSON file."""
     os.makedirs(os.path.dirname(ABI_TICKER_NOTES_FILE), exist_ok=True)
     with open(ABI_TICKER_NOTES_FILE, 'w') as f:
         json.dump(data, f, indent=2)
 
-
 @app.route('/api/abi-ticker-notes', methods=['GET'])
 def get_abi_ticker_notes_all():
     """Get all Abi ticker notes: {TICKER: {notes, created_at, updated_at}, ...}."""
     return jsonify(_load_abi_ticker_notes())
-
 
 @app.route('/api/abi-ticker-notes/<ticker>', methods=['GET'])
 def get_abi_ticker_note(ticker):
@@ -4282,7 +3539,6 @@ def get_abi_ticker_note(ticker):
         'updated_at': comments[ticker].get('updated_at'),
         'has_ticker_note': True,
     })
-
 
 @app.route('/api/abi-ticker-notes/<ticker>', methods=['PUT'])
 def upsert_abi_ticker_note(ticker):
@@ -4327,7 +3583,6 @@ def upsert_abi_ticker_note(ticker):
         'status': status,
     })
 
-
 @app.route('/api/abi-ticker-notes/<ticker>', methods=['DELETE'])
 def delete_abi_ticker_note(ticker):
     """Delete Abi ticker notes for a ticker."""
@@ -4337,7 +3592,6 @@ def delete_abi_ticker_note(ticker):
         del comments[ticker]
         _save_abi_ticker_notes(comments)
     return jsonify({'ticker': ticker, 'status': 'removed'})
-
 
 @app.route('/api/abi-ticker-notes/batch-check', methods=['POST'])
 def batch_check_abi_ticker_notes():
@@ -4353,7 +3607,6 @@ def batch_check_abi_ticker_notes():
         if t_upper in comments:
             result[t_upper] = comments[t_upper]
     return jsonify(result)
-
 
 # ============================================================================
 # Abi Watchlist Endpoints (JSON file-based personal watchlist)
@@ -4382,13 +3635,11 @@ def _load_watchlist():
         return data
     return {}
 
-
 def _save_watchlist(data):
     """Save watchlist to JSON file."""
     os.makedirs(os.path.dirname(ABI_WATCHLIST_FILE), exist_ok=True)
     with open(ABI_WATCHLIST_FILE, 'w') as f:
         json.dump(data, f, indent=2)
-
 
 def _watchlist_with_comments():
     """Return watchlist data merged with Abi ticker notes: each entry has
@@ -4405,13 +3656,11 @@ def _watchlist_with_comments():
         out[tk] = merged
     return out
 
-
 @app.route('/api/abi-watchlist', methods=['GET'])
 def get_abi_watchlist():
     """Get all watchlist items: {TICKER: {notes, stars, added_at}, ...}.
     Notes are sourced from abi_ticker_notes.json (decoupled from membership)."""
     return jsonify(_watchlist_with_comments())
-
 
 def _coerce_stars(value):
     """Validate and clamp a stars value to an int in [0, 3]. Returns None if invalid."""
@@ -4422,7 +3671,6 @@ def _coerce_stars(value):
     if n < 0 or n > 3:
         return None
     return n
-
 
 @app.route('/api/abi-watchlist', methods=['POST'])
 def add_to_abi_watchlist():
@@ -4443,7 +3691,6 @@ def add_to_abi_watchlist():
 
     final_notes = (_load_abi_ticker_notes().get(ticker) or {}).get('notes', '')
     return jsonify({'ticker': ticker, 'notes': final_notes, 'stars': stars, 'status': 'added'})
-
 
 @app.route('/api/abi-watchlist/<ticker>', methods=['PUT'])
 def update_abi_watchlist(ticker):
@@ -4473,7 +3720,6 @@ def update_abi_watchlist(ticker):
         'status': 'updated',
     })
 
-
 @app.route('/api/abi-watchlist/<ticker>', methods=['DELETE'])
 def remove_from_abi_watchlist(ticker):
     """Remove a ticker from the watchlist. Abi ticker notes for that ticker are unchanged."""
@@ -4483,7 +3729,6 @@ def remove_from_abi_watchlist(ticker):
         del wl[ticker]
         _save_watchlist(wl)
     return jsonify({'ticker': ticker, 'status': 'removed'})
-
 
 @app.route('/api/abi-watchlist/batch-check', methods=['POST'])
 def batch_check_abi_watchlist():
@@ -4501,7 +3746,6 @@ def batch_check_abi_watchlist():
         if t_upper in wl:
             result[t_upper] = wl[t_upper]
     return jsonify(result)
-
 
 @app.route('/api/abi-watchlist/data', methods=['GET'])
 def get_abi_watchlist_data():
@@ -4594,7 +3838,6 @@ def get_abi_watchlist_data():
     finally:
         s.close()
 
-
 # ============================================================================
 # Abi Dislikes Endpoints (JSON file-based thumbs-down list)
 # ============================================================================
@@ -4625,12 +3868,10 @@ def _load_dislikes():
         return data
     return {}
 
-
 def _save_dislikes(data):
     os.makedirs(os.path.dirname(ABI_DISLIKES_FILE), exist_ok=True)
     with open(ABI_DISLIKES_FILE, 'w') as f:
         json.dump(data, f, indent=2)
-
 
 def _dislikes_with_comments():
     """Return dislikes data joined with Abi ticker notes: each entry will
@@ -4647,13 +3888,11 @@ def _dislikes_with_comments():
         out[tk] = merged
     return out
 
-
 @app.route('/api/abi-dislikes', methods=['GET'])
 def get_abi_dislikes():
     """Get all dislikes: {TICKER: {notes, added_at}, ...}.
     Notes are sourced from abi_ticker_notes.json (decoupled from membership)."""
     return jsonify(_dislikes_with_comments())
-
 
 @app.route('/api/abi-dislikes', methods=['POST'])
 def add_to_abi_dislikes():
@@ -4673,7 +3912,6 @@ def add_to_abi_dislikes():
     final_notes = (_load_abi_ticker_notes().get(ticker) or {}).get('notes', '')
     return jsonify({'ticker': ticker, 'notes': final_notes, 'status': 'added'})
 
-
 @app.route('/api/abi-dislikes/<ticker>', methods=['DELETE'])
 def remove_from_abi_dislikes(ticker):
     """Remove a ticker from the dislikes list. Abi ticker notes for that ticker are unchanged."""
@@ -4683,7 +3921,6 @@ def remove_from_abi_dislikes(ticker):
         del dl[ticker]
         _save_dislikes(dl)
     return jsonify({'ticker': ticker, 'status': 'removed'})
-
 
 @app.route('/api/abi-dislikes/batch-check', methods=['POST'])
 def batch_check_abi_dislikes():
@@ -4701,7 +3938,6 @@ def batch_check_abi_dislikes():
             result[t_upper] = dl[t_upper]
     return jsonify(result)
 
-
 # ============================================================================
 # Technical Screener Endpoints
 # ============================================================================
@@ -4714,7 +3950,6 @@ def batch_check_abi_dislikes():
 #   - reversal: Biggest reversal from low-of-day to close (in % terms),
 #               i.e. how far price recovered off the intraday low.
 # ============================================================================
-
 
 def _get_index_reversal_context(session, latest_date, symbols=('SPY', 'QQQ')):
     """Compute low-to-close reversal % on ``latest_date`` for the given index/ETF symbols.
@@ -4763,7 +3998,6 @@ def _get_index_reversal_context(session, latest_date, symbols=('SPY', 'QQQ')):
         })
 
     return context
-
 
 def get_technical_reversal_stocks(session, market_cap_category=None, limit=100):
     """Return stocks ranked by largest low-of-day to close reversal % on the
@@ -4938,7 +4172,6 @@ def get_technical_reversal_stocks(session, market_cap_category=None, limit=100):
         logger.error(f"Error getting technical reversal stocks: {str(e)}")
         return {'latest_date': None, 'context': [], 'stocks': []}
 
-
 @app.route('/api/TechnicalScreener-Reversal-All')
 def get_technical_reversal_all():
     s = Session()
@@ -4987,7 +4220,6 @@ def get_technical_reversal_mega():
     finally:
         s.close()
 
-
 # ============================================================================
 # Daily Shortlist (Screening Agent) Endpoints
 # ============================================================================
@@ -4998,7 +4230,6 @@ def get_technical_reversal_mega():
 DAILY_SCREENER_OUTPUTS_DIR = os.path.join(
     os.path.dirname(__file__), '..', 'user_data', 'daily_screener'
 )
-
 
 def _compute_daily_shortlist_funnel(date: str):
     """Read per-stage artifacts under user_data/daily_screener/<date>/ and
@@ -5079,7 +4310,6 @@ def _compute_daily_shortlist_funnel(date: str):
         'timings': timings,
     }
 
-
 def _list_daily_shortlist_dates():
     """List YYYY-MM-DD folders under user_data/daily_screener/ that contain a 05_audit.json."""
     if not os.path.isdir(DAILY_SCREENER_OUTPUTS_DIR):
@@ -5110,12 +4340,10 @@ def _list_daily_shortlist_dates():
     entries.sort(key=lambda e: e['date'], reverse=True)
     return entries
 
-
 @app.route('/api/daily-shortlist/dates', methods=['GET'])
 def daily_shortlist_dates():
     """List available daily shortlist dates."""
     return jsonify({'dates': _list_daily_shortlist_dates()})
-
 
 @app.route('/api/daily-shortlist/<date>', methods=['GET'])
 def daily_shortlist_for_date(date):
@@ -5206,7 +4434,6 @@ def daily_shortlist_for_date(date):
         'rows': enriched,
     })
 
-
 @app.route('/api/daily-shortlist/run', methods=['POST'])
 def daily_shortlist_run():
     """Trigger a pipeline run as a background subprocess. Returns immediately
@@ -5251,7 +4478,6 @@ def daily_shortlist_run():
         'cwd': cwd,
     })
 
-
 # ============================================================================
 # Daily Shortlist Feedback (per-date, per-ticker corrections)
 # ============================================================================
@@ -5265,7 +4491,6 @@ def daily_shortlist_run():
 
 _VALID_VERDICTS = {'PICK', 'WATCH', 'SKIP'}
 
-
 def _load_feedback():
     """Load the feedback file. Returns {date: {ticker: record}}."""
     if not os.path.exists(DAILY_SCREENER_FEEDBACK_FILE):
@@ -5278,12 +4503,10 @@ def _load_feedback():
         logger.error(f"failed to read feedback file: {e}")
         return {}
 
-
 def _save_feedback(data):
     os.makedirs(os.path.dirname(DAILY_SCREENER_FEEDBACK_FILE), exist_ok=True)
     with open(DAILY_SCREENER_FEEDBACK_FILE, 'w') as f:
         json.dump(data, f, indent=2)
-
 
 @app.route('/api/daily-shortlist/feedback/<date>', methods=['GET'])
 def daily_shortlist_feedback_for_date(date):
@@ -5294,7 +4517,6 @@ def daily_shortlist_feedback_for_date(date):
         return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
     data = _load_feedback()
     return jsonify(data.get(date, {}))
-
 
 @app.route('/api/daily-shortlist/feedback', methods=['GET'])
 def daily_shortlist_feedback_all():
@@ -5316,7 +4538,6 @@ def daily_shortlist_feedback_all():
     if limit:
         flat = flat[:limit]
     return jsonify({'count': len(flat), 'feedback': flat})
-
 
 @app.route('/api/daily-shortlist/feedback/<date>/<ticker>', methods=['PUT'])
 def upsert_daily_shortlist_feedback(date, ticker):
@@ -5385,7 +4606,6 @@ def upsert_daily_shortlist_feedback(date, ticker):
     _save_feedback(data)
     return jsonify({'date': date, 'ticker': ticker_u, 'status': 'saved', **record})
 
-
 @app.route('/api/daily-shortlist/feedback/<date>/<ticker>', methods=['DELETE'])
 def delete_daily_shortlist_feedback(date, ticker):
     """Remove a feedback record for (date, ticker)."""
@@ -5403,7 +4623,6 @@ def delete_daily_shortlist_feedback(date, ticker):
         _save_feedback(data)
         return jsonify({'date': date, 'ticker': ticker_u, 'status': 'removed'})
     return jsonify({'date': date, 'ticker': ticker_u, 'status': 'not_found'}), 404
-
 
 # ============================================================================
 # Daily Shortlist Themes (read the 02_theme_vector.json artifact)
@@ -5452,7 +4671,6 @@ def daily_shortlist_themes_for_date(date):
         'user': user or {},
     })
 
-
 @app.route('/api/daily-shortlist/themes/dates', methods=['GET'])
 def daily_shortlist_theme_dates():
     """List dates that have a 02_theme_vector.json artifact."""
@@ -5477,7 +4695,6 @@ def daily_shortlist_theme_dates():
     entries.sort(key=lambda e: e['date'], reverse=True)
     return jsonify({'dates': entries})
 
-
 # ============================================================
 # Market Brief Endpoints
 # ============================================================
@@ -5493,16 +4710,13 @@ MARKET_BRIEF_LOSERS_OUTPUTS_DIR = os.path.join(
 )
 MARKET_BRIEF_TZ = ZoneInfo('America/New_York')
 
-
 def _market_brief_today() -> str:
     """Calendar date for the market brief (US Eastern, pre-market context)."""
     return datetime.now(MARKET_BRIEF_TZ).strftime('%Y-%m-%d')
 
-
 def _market_brief_has_source(brief_dir: str) -> bool:
     source_dir = os.path.join(brief_dir, 'source')
     return os.path.isdir(source_dir) and bool(os.listdir(source_dir))
-
 
 def _load_losers_brief_fields(date_str: str) -> dict:
     """Optional R1D losers brief from market_brief_losers output dir."""
@@ -5532,11 +4746,9 @@ def _load_losers_brief_fields(date_str: str) -> dict:
             result['losers_markdown'] = f.read()
     return result
 
-
 def _losers_brief_has_source(brief_dir: str) -> bool:
     source_dir = os.path.join(brief_dir, 'source', 'losers_universe')
     return os.path.isdir(source_dir) and bool(os.listdir(source_dir))
-
 
 def _market_brief_run_stale(brief_dir: str, status_payload: dict) -> bool:
     """True if status says running but nothing has updated recently (crashed run)."""
@@ -5568,7 +4780,6 @@ def _market_brief_run_stale(brief_dir: str, status_payload: dict) -> bool:
             return True
     return (now - latest_mtime) > stale_after_s
 
-
 def _mark_market_brief_stale_failed(brief_dir: str, status_payload: dict) -> None:
     """Persist failed status when a run stopped updating (crashed subprocess)."""
     status_path = os.path.join(brief_dir, 'status.json')
@@ -5585,7 +4796,6 @@ def _mark_market_brief_stale_failed(brief_dir: str, status_payload: dict) -> Non
     except OSError:
         pass
 
-
 def _read_market_brief_status_file(brief_dir: str) -> dict | None:
     status_path = os.path.join(brief_dir, 'status.json')
     if not os.path.exists(status_path):
@@ -5595,7 +4805,6 @@ def _read_market_brief_status_file(brief_dir: str) -> dict | None:
             return json.load(f)
     except (json.JSONDecodeError, OSError):
         return None
-
 
 def _market_brief_run_status(brief_dir: str) -> str:
     """Return complete | running | ready | error | failed for a dated output folder."""
@@ -5647,7 +4856,6 @@ def _market_brief_run_status(brief_dir: str) -> str:
         return 'ready'
 
     return 'failed'
-
 
 @app.route('/api/market-brief/dates', methods=['GET'])
 def market_brief_dates():
@@ -5710,7 +4918,6 @@ def market_brief_dates():
 
     return jsonify({'dates': entries, 'today': today})
 
-
 @app.route('/api/market-brief/<date_str>', methods=['GET'])
 def market_brief_for_date(date_str):
     """Get market brief content for a specific date."""
@@ -5769,7 +4976,6 @@ def market_brief_for_date(date_str):
 
     return jsonify(result)
 
-
 @app.route('/api/market-brief/<date_str>/pdf', methods=['GET'])
 def market_brief_pdf(date_str):
     """Download 02_brief.md as a PDF."""
@@ -5806,7 +5012,6 @@ def market_brief_pdf(date_str):
         download_name=f'market-brief-{date_str}.pdf',
     )
 
-
 @app.route('/api/market-brief/<date_str>/costs', methods=['GET'])
 def market_brief_costs(date_str):
     """Return run status + optional run_costs.json for live progress polling."""
@@ -5833,7 +5038,6 @@ def market_brief_costs(date_str):
             result['run_costs'] = json.load(f)
 
     return jsonify(result)
-
 
 def _start_market_brief_subprocess(cmd: list, outdir: str, asof: str):
     """Launch a detached market-brief subprocess; return error message or None."""
@@ -5863,7 +5067,6 @@ def _start_market_brief_subprocess(cmd: list, outdir: str, asof: str):
         logger.error(f"Failed to start market brief subprocess: {e}")
         return str(e)
     return None
-
 
 @app.route('/api/market-brief/generate', methods=['POST'])
 def market_brief_generate():
@@ -5915,7 +5118,6 @@ def market_brief_generate():
         'asof': asof,
     })
 
-
 @app.route('/api/market-brief/run', methods=['POST'])
 def market_brief_run():
     """Trigger full market brief run (ingest + legacy pipeline, or pipeline-only)."""
@@ -5925,7 +5127,6 @@ def market_brief_run():
         data['asof'] = _market_brief_today()
 
     return market_brief_generate()
-
 
 @app.route('/api/market-brief-losers/<date_str>/costs', methods=['GET'])
 def market_brief_losers_costs(date_str):
@@ -5953,7 +5154,6 @@ def market_brief_losers_costs(date_str):
             result['run_costs'] = json.load(f)
 
     return jsonify(result)
-
 
 @app.route('/api/market-brief-losers/generate', methods=['POST'])
 def market_brief_losers_generate():
@@ -6003,7 +5203,6 @@ def market_brief_losers_generate():
         'asof': asof,
     })
 
-
 @app.route('/api/auto-commit', methods=['POST'])
 def auto_commit():
     """Trigger auto_commit.sh script to commit and push user_data changes."""
@@ -6041,7 +5240,6 @@ def auto_commit():
             'message': 'Error running auto-commit',
             'error': str(e)
         }), 500
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

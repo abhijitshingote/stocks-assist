@@ -21,7 +21,8 @@
 |---|---|
 | **File** | `templates/base.html` |
 | **CSS** | Inline `<style>` in `base.html` (`.nav-*` selectors) |
-| **Responsive** | `static/css/responsive.css` (hamburger at ≤640px, hide toggle) |
+| **Layout** | Single ~42px row; all page links in a Menu overlay panel (no scroll strip / no wrap into the bar); short `thru Aug 7` next to logo |
+| **Responsive** | `static/css/responsive.css` (minor indicator tweaks); Menu panel owned by `base.html` |
 | **Used by** | All desktop pages via `{% extends "base.html" %}` |
 
 ### Ticker Search Box
@@ -121,7 +122,7 @@ One layout system for all 9 desktop screener pages: shared shell + `screener.css
 | **CSS** | `static/css/screener.css` |
 | **JS engine** | `static/js/desktop/screener-app.js` — `DesktopScreener.init(config)` |
 | **Jinja slots** | `screener_label`, `screener_stats_label`, `show_cap_tabs`, `show_sector_bar`, `topbar_extra_controls`, `below_topbar_extra`, `detail_header_extras`, `subchart_top`, `subchart_bottom`, `left_header_extra` |
-| **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `wideStorageKey`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch` |
+| **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch` |
 | **Used by** | All 9 desktop screener templates above (thin wrappers) |
 
 ### Cap Tab Strip
@@ -219,18 +220,6 @@ One layout system for all 9 desktop screener pages: shared shell + `screener.css
 | **File** | `templates/etfs.html` |
 | **CSS** | `static/css/card-grid.css` + `.etf-card-*` overrides inline |
 | **Accent** | `--card-grid-accent: var(--accent-blue)` set in `etfs.html` |
-
----
-
-## RSI Index Table
-
-### RSI Index Table  *(SPX / NDX / DJI)*
-| | |
-|---|---|
-| **Template** | `templates/rsi_index.html` — single template for all 3 indices |
-| **Routes** | `/rsi-spx`, `/rsi-ndx`, `/rsi-dji` in `app.py` |
-| **Config vars** | `rsi_page_title`, `rsi_slug`, `rsi_label`, `rsi_gradient`, `rsi_color`, `rsi_description`, `rsi_subtitle`, `rsi_info_text` |
-| **Accent** | `--rsi-color` CSS var injected from `rsi_color` route param |
 
 ---
 

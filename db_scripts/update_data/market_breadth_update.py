@@ -78,7 +78,7 @@ def compute_and_load_breadth(connection, start_date=None):
             h.dma_200,
             LAG(o.close) OVER (PARTITION BY o.ticker ORDER BY o.date) AS prev_close
         FROM ohlc o
-        JOIN historical_rsi h ON o.ticker = h.ticker AND o.date = h.date
+        JOIN ticker_moving_averages h ON o.ticker = h.ticker AND o.date = h.date
         JOIN tickers t ON o.ticker = t.ticker
         WHERE t.is_actively_trading = TRUE
           AND t.is_etf = FALSE

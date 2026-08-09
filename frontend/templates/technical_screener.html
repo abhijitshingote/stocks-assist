@@ -178,7 +178,6 @@
         endpointFn: (cap) => `/api/frontend/technical-screener/${currentCriterion}/${cap}`,
         accentCss: 'var(--accent-green)',
         label: 'Top Reversal',
-        wideStorageKey: 'wideLayoutOverride',
 
         transformData: (json) => (json && !json.error ? (json.stocks || []) : []),
         onDataLoaded: (json) => {

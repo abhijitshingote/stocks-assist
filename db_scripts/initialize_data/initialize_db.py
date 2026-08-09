@@ -30,9 +30,8 @@ def initialize_database(reset=False, schema='public'):
     9. earnings - Earnings data
     10. sync_metadata - ETL tracking
     11. stock_metrics - Pre-computed screener metrics
-    12. historical_rsi - Daily RSI time series
-    13. rsi_indices - RSI rankings within index universes (SPX, NDX, DJI)
-    14. stock_volspike_gapper - Volume spike and gapper detection
+    12. ticker_moving_averages - Daily SMA/EMA time series
+    13. stock_volspike_gapper - Volume spike and gapper detection
     15. main_view - Combined screener view with metrics, volspike/gapper, and tags
     16. (was stock_notes; removed. Per-ticker notes now live in file-only
         user_data/abi_ticker_notes.json. AI research integration removed.)
@@ -87,7 +86,7 @@ def initialize_database(reset=False, schema='public'):
             connection.execute(text("DROP TABLE IF EXISTS shares_float CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_volspike_gapper CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS rsi_indices CASCADE;"))
-            connection.execute(text("DROP TABLE IF EXISTS historical_rsi CASCADE;"))
+            connection.execute(text("DROP TABLE IF EXISTS ticker_moving_averages CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS stock_metrics CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS sync_metadata CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS earnings CASCADE;"))
@@ -100,6 +99,12 @@ def initialize_database(reset=False, schema='public'):
             connection.execute(text("DROP TABLE IF EXISTS company_profiles CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS tickers CASCADE;"))
             logger.info("Old tables dropped.")
+
+        # historical_rsi was renamed to ticker_moving_averages (dma/ema only).
+        # rsi_indices lost its only consumers when the /rsi-* pages were removed.
+        # Drop leftovers so non-reset environments reclaim the space too.
+        connection.execute(text("DROP TABLE IF EXISTS historical_rsi CASCADE;"))
+        connection.execute(text("DROP TABLE IF EXISTS rsi_indices CASCADE;"))
         
         table_clause = "CREATE TABLE" if reset else "CREATE TABLE IF NOT EXISTS"
         
@@ -343,37 +348,21 @@ def initialize_database(reset=False, schema='public'):
             )
         """))
         
-        # 11. historical_rsi - Daily RSI time series for all stocks
+        # 11. ticker_moving_averages - Daily SMA/EMA time series for all stocks
         connection.execute(text(f"""
-            {table_clause} historical_rsi (
+            {table_clause} ticker_moving_averages (
                 id SERIAL PRIMARY KEY,
                 ticker VARCHAR(20),
                 date DATE,
-                rsi_global INTEGER,
-                rsi_mktcap INTEGER,
                 dma_50 FLOAT,
                 dma_200 FLOAT,
                 ema_10 FLOAT,
                 ema_20 FLOAT,
-                CONSTRAINT uq_historical_rsi UNIQUE (ticker, date),
+                CONSTRAINT uq_ticker_moving_averages UNIQUE (ticker, date),
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
         """))
         
-        # 12. rsi_indices - RSI rankings within index universes (SPX, NDX, DJI)
-        connection.execute(text(f"""
-            {table_clause} rsi_indices (
-                ticker VARCHAR(20) PRIMARY KEY,
-                is_spx BOOLEAN DEFAULT FALSE,
-                is_ndx BOOLEAN DEFAULT FALSE,
-                is_dji BOOLEAN DEFAULT FALSE,
-                rsi_spx INTEGER,
-                rsi_ndx INTEGER,
-                rsi_dji INTEGER,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
-            )
-        """))
         
         # 13. stock_volspike_gapper - Volume spike and gapper detection
         connection.execute(text(f"""
@@ -530,12 +519,9 @@ def initialize_database(reset=False, schema='public'):
             {idx_clause} idx_stock_metrics_market_cap ON stock_metrics(market_cap);
             {idx_clause} idx_stock_metrics_dr_20 ON stock_metrics(dr_20);
             {idx_clause} idx_stock_metrics_rsi ON stock_metrics(rsi);
-            {idx_clause} idx_historical_rsi_ticker ON historical_rsi(ticker);
-            {idx_clause} idx_historical_rsi_date ON historical_rsi(date);
-            {idx_clause} idx_historical_rsi_ticker_date ON historical_rsi(ticker, date);
-            {idx_clause} idx_rsi_indices_is_spx ON rsi_indices(is_spx);
-            {idx_clause} idx_rsi_indices_is_ndx ON rsi_indices(is_ndx);
-            {idx_clause} idx_rsi_indices_is_dji ON rsi_indices(is_dji);
+            {idx_clause} idx_ticker_ma_ticker ON ticker_moving_averages(ticker);
+            {idx_clause} idx_ticker_ma_date ON ticker_moving_averages(date);
+            {idx_clause} idx_ticker_ma_ticker_date ON ticker_moving_averages(ticker, date);
             {idx_clause} idx_volspike_gapper_spike_count ON stock_volspike_gapper(spike_day_count);
             {idx_clause} idx_volspike_gapper_gapper_count ON stock_volspike_gapper(gapper_day_count);
             {idx_clause} idx_volspike_gapper_last_event_date ON stock_volspike_gapper(last_event_date DESC);
@@ -571,8 +557,7 @@ def initialize_database(reset=False, schema='public'):
         logger.info("  - earnings (from Earnings endpoint)")
         logger.info("  - sync_metadata (ETL tracking)")
         logger.info("  - stock_metrics (pre-computed screener metrics)")
-        logger.info("  - historical_rsi (daily RSI time series)")
-        logger.info("  - rsi_indices (RSI within index universes: SPX, NDX, DJI)")
+        logger.info("  - ticker_moving_averages (daily SMA/EMA time series)")
         logger.info("  - stock_volspike_gapper (volume spike and gapper detection)")
         logger.info("  - main_view (combined screener view with tags)")
         logger.info("  - shares_float (company share float and liquidity data)")

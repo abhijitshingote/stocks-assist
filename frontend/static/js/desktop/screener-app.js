@@ -15,7 +15,6 @@
      defaultSort:    { col: string, dir: 'asc'|'desc' }
      label:          string   Human label shown in list header and stats bar
      accentCss:      string   CSS value for --screener-accent, e.g. 'var(--accent-red)'
-     wideStorageKey: string   localStorage key for wide-layout override
      listValueFn:    function (stock) → { text, cls }
                               What to show in the list right-hand column.
                               cls: '' | 'positive' | 'negative' | 'muted'
@@ -114,37 +113,6 @@ window.DesktopScreener = (function () {
         let abiTickerNotesStatus = {};
         let newsPanel = null;
         let lastResponse = null;
-
-        const WIDE_STORAGE = config.wideStorageKey || 'wideLayoutOverride';
-        const WIDE_MQ = window.matchMedia('(min-width: 1600px)');
-
-        // ── Wide layout ────────────────────────────────────────────
-        function wideEffective() {
-            const o = localStorage.getItem(WIDE_STORAGE);
-            if (o === '1') return true;
-            if (o === '0') return false;
-            return WIDE_MQ.matches;
-        }
-
-        function applyWideLayout() {
-            document.body.classList.toggle('wide-layout', wideEffective());
-            const btn = document.getElementById('wideToggle');
-            if (btn) {
-                const wide = document.body.classList.contains('wide-layout');
-                btn.classList.toggle('active', wide);
-                btn.textContent = wide ? 'Standard layout' : 'Wide layout';
-            }
-            requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
-        }
-
-        function toggleWideLayout() {
-            localStorage.setItem(WIDE_STORAGE, wideEffective() ? '0' : '1');
-            applyWideLayout();
-        }
-
-        applyWideLayout();
-        WIDE_MQ.addEventListener('change', applyWideLayout);
-        document.getElementById('wideToggle')?.addEventListener('click', toggleWideLayout);
 
         // ── Helpers ────────────────────────────────────────────────
         function escAttr(s) {
@@ -929,8 +897,22 @@ window.DesktopScreener = (function () {
         }
 
         function scrollToStock(ticker) {
-            const el = document.querySelector(`.stock-item[data-ticker="${ticker}"]`);
-            if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            const el = document.querySelector(`.stock-item[data-ticker="${CSS.escape(ticker)}"]`);
+            if (!el) return;
+            // j/k walks the full filtered list, including rows inside collapsed
+            // day/week groups (display:none). Expand the parent group first or
+            // scrollIntoView is a no-op and the list looks "stuck" at the last
+            // expanded group (e.g. week count 204 while selection is item 209).
+            const groupItems = el.closest('.day-group-items');
+            const header = groupItems && groupItems.previousElementSibling;
+            if (header && header.classList.contains('day-group-header') && header.classList.contains('collapsed')) {
+                const collapsed = getCollapsedGroups();
+                delete collapsed[header.dataset.date];
+                setCollapsedGroups(collapsed);
+                header.classList.remove('collapsed');
+                updateCollapseAllBtn();
+            }
+            el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }
 
         // ── News panel setup ───────────────────────────────────────

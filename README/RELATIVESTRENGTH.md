@@ -34,11 +34,11 @@ rs_20d = stock_ret_20d - spy_ret_20d
 rs_60d = stock_ret_60d - spy_ret_60d
 ```
 
-Returns are computed from `ohlc` (stocks) and `index_prices` where `symbol = 'SPY'`, same source tables as `historical_rsi_update.py`.
+Returns are computed from `ohlc` (stocks) and `index_prices` where `symbol = 'SPY'`, same source tables as `ticker_moving_averages_update.py`.
 
 Store these in a new table (or extend `stock_metrics`) so the backend can serve the raw per-timeframe RS values. The backend will need the raw values (not a single composite score) because the weighting happens client-side via sliders.
 
-Also store the **percentile rank** of each RS value within the stock's market cap bucket (same NTILE(100) approach used in `historical_rsi_update.py`) so the frontend can display ranks alongside raw values.
+Also store the **percentile rank** of each RS value within the stock's market cap bucket (same NTILE(100) approach used in `ticker_moving_averages_update.py`) so the frontend can display ranks alongside raw values.
 
 Market cap buckets are the same as everywhere else:
 
@@ -132,7 +132,7 @@ ohlc + index_prices (SPY)
 
 ## Existing RS vs This Feature
 
-The existing RSI system (`historical_rsi_update.py`) uses a single fixed-weight composite:
+The old RSI percentile system used a single fixed-weight composite:
 ```
 0.4 * (ret_4 - spy_ret_4) + 0.4 * (ret_13 - spy_ret_13) + 0.2 * (ret_20 - spy_ret_20)
 ```

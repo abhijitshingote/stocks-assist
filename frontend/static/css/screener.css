@@ -163,37 +163,6 @@
 
 .stock-item.hidden-by-filter { display: none; }
 
-/* ── Wide layout toggle ──────────────────────────────────────────── */
-.wide-toggle-wrap {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-}
-
-.wide-toggle {
-    padding: 0.2rem 0.45rem;
-    border-radius: 4px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.65rem;
-    transition: all 0.2s;
-    font-family: var(--font-mono);
-}
-
-.wide-toggle:hover {
-    border-color: var(--screener-accent);
-    color: var(--text-primary);
-}
-
-.wide-toggle.active {
-    background: color-mix(in srgb, var(--screener-accent) 20%, transparent);
-    border-color: var(--screener-accent);
-    color: var(--text-primary);
-}
-
 /* ── Main layout (3 columns) ─────────────────────────────────────── */
 .tp-layout {
     display: flex;
@@ -256,6 +225,7 @@
 
 .stock-list {
     flex: 1;
+    min-height: 0; /* flex child must shrink or overflow-y never scrolls */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--border-color) transparent;
@@ -426,14 +396,22 @@
 .stock-item .stock-extra-row {
     display: flex;
     align-items: center;
+    flex-wrap: wrap; /* narrow panels wrap trailing chips instead of crushing the mcap */
     gap: 0.35rem;
+    row-gap: 0.15rem;
     width: 100%;
     margin-top: 0.1rem;
     padding-left: 1.95rem; /* align under ticker, past the serial number */
 }
 
-/* In the second row the market cap sits flush-left (no ticker offset). */
-.stock-item .stock-extra-row .ticker-mcap { margin-left: 0; }
+/* In the second row the market cap sits flush-left (no ticker offset) and keeps
+   its full text — ellipsizing it leaves an unreadable "(…". */
+.stock-item .stock-extra-row .ticker-mcap {
+    margin-left: 0;
+    flex-shrink: 0;
+    overflow: visible;
+    text-overflow: clip;
+}
 
 .stock-item .right-cell {
     display: flex;
@@ -470,21 +448,20 @@
     font-weight: 600;
 }
 
-/* Collapsible day-group headers (groupByFn) */
+/* Collapsible day-group headers (groupByFn).
+   Not sticky: sticky top overlays the first row of the stock under it
+   (ticker + return) while scrolling — bad on daily/weekly volspike. */
 .day-group-header {
     display: flex;
     align-items: center;
     gap: 0.3rem;
     padding: 0.35rem 0.5rem;
-    background: rgba(88, 166, 255, 0.08);
+    background: color-mix(in srgb, var(--accent-blue) 8%, var(--bg-card));
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
     user-select: none;
-    position: sticky;
-    top: 0;
-    z-index: 1;
 }
-.day-group-header:hover { background: rgba(88, 166, 255, 0.12); }
+.day-group-header:hover { background: color-mix(in srgb, var(--accent-blue) 14%, var(--bg-card)); }
 .day-group-chevron {
     font-size: 0.55rem;
     color: var(--text-muted);
@@ -1208,33 +1185,9 @@
 
 @keyframes screener-spin { to { transform: rotate(360deg); } }
 
-/* ── Wide layout mode ────────────────────────────────────────────── */
-body.wide-layout nav .container {
-    max-width: none;
-    width: 100%;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-}
-
-body.wide-layout .tp-left {
-    width: 240px;
-    min-width: 200px;
-}
-
-body.wide-layout .tp-right-column {
-    width: 320px;
-    min-width: 280px;
-}
-
-body.wide-layout .tp-metrics-company { max-width: 240px; }
-
 /* ── Tablet breakpoint (≤1024px) ─────────────────────────────────── */
 @media (max-width: 1024px) {
     .tp-layout { flex-direction: column; height: auto; }
     .tp-left { width: 100%; height: 200px; }
     .tp-right-column { width: 100%; min-width: auto; max-height: 520px; }
-    .wide-toggle-wrap { display: none; }
-    body.wide-layout .tp-left,
-    body.wide-layout .tp-right-column { width: 100%; min-width: auto; }
-    body.wide-layout nav .container { max-width: 1400px; }
 }

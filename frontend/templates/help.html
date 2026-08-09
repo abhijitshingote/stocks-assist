@@ -103,6 +103,11 @@
         </div>
 
         <div class="help-card">
+            <div class="help-name"><a href="/volspike-gapper-weekly">Vol Spike &amp; Gaps (W)</a><span class="help-route">/volspike-gapper-weekly</span></div>
+            <div class="help-desc">Same dataset and endpoint as <code>/volspike-gapper</code>; groups by ISO week (Monday start) of <code>last_event_date</code> instead of by day. Within a week, rows are ranked by an additive log-scale score (shown right-aligned, hover for the breakdown) rather than by date: <code>1.0·log2(1+ret/0.05)</code> + <code>0.8·log10(mcap/1e9)</code> capped at <code>3</code> + <code>0.4·log2(volRatio/3.5)</code> capped at <code>1.5</code> (volume spikes only) + <code>0.4·(1−log2(events365)/3)</code>. Net effect: a size tilt (top-50 median cap ≈ <code>$11B</code> vs <code>$1.5B</code> for the full week) that still floats <code>&gt;40%</code> moves on <code>$1–3B</code> names to the top, while names with many events in the trailing 365d are demoted.</div>
+        </div>
+
+        <div class="help-card">
             <div class="help-name"><a href="/top-performance">Top Returns</a><span class="help-route">/top-performance</span></div>
             <div class="help-desc">Union of the top <code>30</code> names by each of <code>dr_1</code>, <code>dr_5</code>, and <code>dr_20</code> (deduplicated).</div>
         </div>
@@ -125,11 +130,6 @@
 
     <div class="help-section">
         <h2>Relative Strength</h2>
-
-        <div class="help-card">
-            <div class="help-name"><a href="/rsi">Relative Strength</a><span class="help-route">/rsi</span></div>
-            <div class="help-desc">Classic 14-period RSI grouped by market-cap bucket. Related views: <code>/rsi-mktcap</code> (RSI percentile within bucket), <code>/rsi-momentum</code> (5-day change in RSI-MktCap), <code>/rsi-spx · /rsi-ndx · /rsi-dji</code> (index constituents), <code>/sector-rsi</code>.</div>
-        </div>
 
         <div class="help-card">
             <div class="help-name"><a href="/rs-screener">Slow/Fast RS</a><span class="help-route">/rs-screener</span></div>

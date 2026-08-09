@@ -13,14 +13,7 @@ BASE_TEMPLATE = TEMPLATES_DIR / "base.html"
 FRONTEND_APP = REPO_ROOT / "frontend" / "app.py"
 
 # Templates that intentionally use wide tables with horizontal scroll (no page @media required).
-_WIDE_TABLE_ALLOWLIST = {
-    "rsi.html",
-    "rsi_mktcap.html",
-    "rsi_momentum.html",
-    "rsi_spx.html",
-    "rsi_ndx.html",
-    "rsi_dji.html",
-}
+_WIDE_TABLE_ALLOWLIST: set[str] = set()
 
 _MEDIA_QUERY_RE = re.compile(r"@media\s*\(")
 _MIN_WIDTH_RE = re.compile(r"min-width:\s*(\d+)px")
@@ -98,11 +91,10 @@ class TestFrontendResponsive(unittest.TestCase):
         client = app.test_client()
         routes = [
             "/",
-            "/rsi",
-            "/sector-rsi",
             "/daily-shortlist",
             "/daily-themes",
             "/main-view",
+            "/rs-screener",
             "/market-brief",
             "/abi-dislikes",
             "/themes",

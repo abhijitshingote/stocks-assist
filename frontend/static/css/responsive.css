@@ -140,16 +140,6 @@ body {
         gap: 0.35rem 0.75rem;
     }
 
-    /* RSI tables */
-    .rsi-table-container {
-        -webkit-overflow-scrolling: touch;
-        border-radius: 10px;
-    }
-
-    .rsi-table {
-        min-width: 520px;
-    }
-
     .cap-tabs {
         gap: 0.35rem;
     }
@@ -200,13 +190,8 @@ body {
         display: none;
     }
 
-    .nav-indicator-card {
-        min-width: 58px;
-        padding: 0.2rem 0.35rem;
-    }
-
     .nav-indicator-value {
-        font-size: 0.72rem;
+        font-size: 0.68rem;
     }
 
 }
