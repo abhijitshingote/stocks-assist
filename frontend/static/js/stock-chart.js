@@ -206,6 +206,11 @@ async function fetchStockMetrics(ticker) {
         const data = await response.json();
         if (!data || data.error) return null;
         return {
+            current_price: data.current_price,
+            dr_1: data.dr_1,
+            company_name: data.company_name,
+            sector: data.sector,
+            industry: data.industry,
             market_cap: data.market_cap,
             pe_t: data.pe_t,
             pe_t_plus_1: data.pe_t_plus_1,
@@ -229,6 +234,14 @@ function formatMarketCapCompact(num) {
     if (num >= 1e6) return '$' + (num / 1e6).toFixed(1) + 'M';
     if (num >= 1e3) return '$' + (num / 1e3).toFixed(1) + 'K';
     return '$' + num.toLocaleString();
+}
+
+/**
+ * Color for market-cap values — bright yellow regardless of magnitude.
+ */
+function marketCapColor(num) {
+    if (num == null) return 'var(--text-muted, #6e7681)';
+    return '#ffd60a';
 }
 
 /**
@@ -294,6 +307,7 @@ class StockChart {
         this.priceContainer = null;
         this.volumeContainer = null;
         this.legendContainer = null;
+        this.identityOverlay = null;
         
         // Track series visibility (restored from localStorage)
         this.seriesVisibility = getStoredMAVisibility();
@@ -475,6 +489,10 @@ class StockChart {
             this.legendContainer.remove();
             this.legendContainer = null;
         }
+        if (this.identityOverlay) {
+            this.identityOverlay.remove();
+            this.identityOverlay = null;
+        }
         if (this.priceContainer) {
             this.priceContainer.remove();
             this.priceContainer = null;
@@ -594,6 +612,81 @@ class StockChart {
         }
     }
     
+    /**
+     * Floating identity watermark drawn over the top-left of the price pane.
+     *
+     * Absolutely positioned so it consumes no layout height — the top-left of a
+     * price pane is nearly always empty, and pointer-events are disabled so it
+     * never intercepts crosshair or pan/zoom interaction.
+     */
+    _createIdentityOverlay() {
+        if (!this.priceContainer) return;
+
+        // The panel header title would now duplicate the overlay, so drop it
+        // and reclaim its row for the chart.
+        const panelTitle = document.getElementById('stockChartTitle');
+        if (panelTitle) panelTitle.style.display = 'none';
+
+        const m = this.metricsData || {};
+        const overlay = document.createElement('div');
+        overlay.className = 'chart-identity-overlay';
+        overlay.style.cssText = `
+            position: absolute;
+            top: ${this.options.compact ? 4 : 6}px;
+            left: ${this.options.compact ? 8 : 10}px;
+            z-index: 3;
+            pointer-events: none;
+            line-height: 1.15;
+            font-family: 'Outfit', sans-serif;
+        `;
+
+        const tickerEl = document.createElement('div');
+        tickerEl.textContent = this.ticker || '';
+        tickerEl.style.cssText = `
+            font-size: ${this.options.compact ? 30 : 42}px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.04em;
+            color: rgba(230, 237, 243, 0.5);
+        `;
+        overlay.appendChild(tickerEl);
+
+        if (m.company_name) {
+            const coEl = document.createElement('div');
+            coEl.textContent = m.company_name;
+            coEl.style.cssText = `
+                font-size: ${this.options.compact ? 13 : 15}px;
+                font-weight: 600;
+                color: rgba(139, 148, 158, 0.75);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: ${this.options.compact ? 320 : 460}px;
+                margin-top: 2px;
+            `;
+            overlay.appendChild(coEl);
+        }
+
+        const sectorIndustry = [m.sector, m.industry].filter(Boolean).join(' · ');
+        if (sectorIndustry) {
+            const siEl = document.createElement('div');
+            siEl.textContent = sectorIndustry;
+            siEl.style.cssText = `
+                font-size: ${this.options.compact ? 12 : 13}px;
+                font-weight: 500;
+                color: rgba(139, 148, 158, 0.55);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: ${this.options.compact ? 320 : 460}px;
+            `;
+            overlay.appendChild(siEl);
+        }
+
+        this.identityOverlay = overlay;
+        this.priceContainer.appendChild(overlay);
+    }
+
     _initChart() {
         const container = document.getElementById(this.containerId);
         if (!container) {
@@ -613,6 +706,7 @@ class StockChart {
         this.priceContainer.style.width = '100%';
         this.priceContainer.style.height = `${priceHeight}px`;
         this.priceContainer.style.flexShrink = '0';
+        this.priceContainer.style.position = 'relative';
         container.appendChild(this.priceContainer);
         
         this.volumeContainer = document.createElement('div');
@@ -620,7 +714,9 @@ class StockChart {
         this.volumeContainer.style.height = `${volumeHeight}px`;
         this.volumeContainer.style.flexShrink = '0';
         container.appendChild(this.volumeContainer);
-        
+
+        this._createIdentityOverlay();
+
         // Create main price chart
         this.chart = LightweightCharts.createChart(this.priceContainer, {
             width: container.clientWidth,
@@ -821,11 +917,58 @@ class StockChart {
             font-family: 'Outfit', sans-serif;
         `;
 
+        // ── Price cell (price + day-change in parentheses, two-color) ──
+        const priceCell = document.createElement('div');
+        priceCell.style.cssText = `display: flex; flex-direction: column; line-height: 1.1;`;
+        const priceLabelEl = document.createElement('span');
+        priceLabelEl.textContent = 'Price';
+        priceLabelEl.style.cssText = `
+            font-size: ${this.options.compact ? 9 : 10}px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: ${CHART_CONFIG.textColor};
+            margin-bottom: 2px;
+        `;
+        const priceValueRow = document.createElement('span');
+        priceValueRow.style.cssText = `
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            font-size: ${this.options.compact ? 15 : 18}px;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.01em;
+        `;
+        const priceNumEl = document.createElement('span');
+        priceNumEl.textContent = metrics.current_price != null
+            ? '$' + metrics.current_price.toFixed(2)
+            : '--';
+        priceNumEl.style.color = 'var(--text-primary, #e6edf3)';
+        const changeEl = document.createElement('span');
+        const dr1 = metrics.dr_1;
+        if (dr1 != null) {
+            const sign = dr1 >= 0 ? '+' : '';
+            changeEl.textContent = `(${sign}${dr1.toFixed(2)}%)`;
+            changeEl.style.color = dr1 >= 0
+                ? 'var(--accent-green, #3fb950)'
+                : 'var(--accent-red, #f85149)';
+        } else {
+            changeEl.textContent = '(--)';
+            changeEl.style.color = 'var(--text-muted, #6e7681)';
+        }
+        priceValueRow.appendChild(priceNumEl);
+        priceValueRow.appendChild(changeEl);
+        priceCell.appendChild(priceLabelEl);
+        priceCell.appendChild(priceValueRow);
+        metricsRow.appendChild(priceCell);
+
         const metricItems = [
             {
                 label: 'Mkt Cap',
                 value: formatMarketCapCompact(metrics.market_cap),
-                color: 'var(--text-primary, #e6edf3)',
+                color: marketCapColor(metrics.market_cap),
+                highlightSuffix: true,
             },
             {
                 label: 'PE (T / T+1)',
@@ -866,7 +1009,6 @@ class StockChart {
                 margin-bottom: 2px;
             `;
             const valueEl = document.createElement('span');
-            valueEl.textContent = m.value;
             valueEl.style.cssText = `
                 font-size: ${this.options.compact ? 15 : 18}px;
                 font-weight: 600;
@@ -874,6 +1016,21 @@ class StockChart {
                 color: ${m.color};
                 letter-spacing: 0.01em;
             `;
+            // Add a touch of breathing room between the digits and the
+            // magnitude letter (T/B/M/K) so it doesn't read as part of the
+            // number, without changing size/weight/color.
+            const suffixMatch = m.highlightSuffix ? m.value.match(/^(.*\d)([TBMK])$/) : null;
+            if (suffixMatch) {
+                const numSpan = document.createElement('span');
+                numSpan.textContent = suffixMatch[1];
+                const suffixSpan = document.createElement('span');
+                suffixSpan.textContent = suffixMatch[2];
+                suffixSpan.style.marginLeft = '2px';
+                valueEl.appendChild(numSpan);
+                valueEl.appendChild(suffixSpan);
+            } else {
+                valueEl.textContent = m.value;
+            }
             cell.appendChild(labelEl);
             cell.appendChild(valueEl);
             metricsRow.appendChild(cell);
