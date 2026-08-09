@@ -5,3 +5,5 @@
 3. Main View (W) — combo of Vol Spike (W) + Top Returns (W) so the same stock isn’t reviewed twice
 4. Sweep frontend logic; push what can to backend
 5. Mobile layout needs to use a central place to inherit from kind of like we did for the desktop view in frontend/COMPONENTS.md
+6. Add next earnings date on chart
+7. ~~Stock detail page shouldnt have to scroll to see chart. replicate layout like screener pages~~
