@@ -9,8 +9,8 @@
 {% set topbar_extra_controls %}
 <div class="rs-mode-bar">
     <div class="mode-toggle">
-        <button type="button" class="mode-btn active" data-mode="slow">Slow RS</button>
-        <button type="button" class="mode-btn" data-mode="fast">Fast RS</button>
+        <button type="button" class="mode-btn" data-mode="slow">Slow RS</button>
+        <button type="button" class="mode-btn active" data-mode="fast">Fast RS</button>
     </div>
     <span class="mode-hint" id="modeHint"></span>
 </div>
@@ -198,7 +198,7 @@
 <script src="/static/js/desktop/screener-app.js"></script>
 <script>
 (function () {
-    let mode = 'slow';
+    let mode = 'fast';
     let screenerApi = null;
     const TIMEFRAMES = ['2d', '5d', '10d', '20d', '60d'];
     const SLIDER_DEFAULTS = { '2d': 10, '5d': 25, '10d': 50, '20d': 50, '60d': 50 };
