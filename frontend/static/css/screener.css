@@ -225,6 +225,7 @@
 
 .stock-list {
     flex: 1;
+    min-height: 0; /* flex child must shrink or overflow-y never scrolls */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--border-color) transparent;
@@ -447,21 +448,20 @@
     font-weight: 600;
 }
 
-/* Collapsible day-group headers (groupByFn) */
+/* Collapsible day-group headers (groupByFn).
+   Not sticky: sticky top overlays the first row of the stock under it
+   (ticker + return) while scrolling — bad on daily/weekly volspike. */
 .day-group-header {
     display: flex;
     align-items: center;
     gap: 0.3rem;
     padding: 0.35rem 0.5rem;
-    background: rgba(88, 166, 255, 0.08);
+    background: color-mix(in srgb, var(--accent-blue) 8%, var(--bg-card));
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
     user-select: none;
-    position: sticky;
-    top: 0;
-    z-index: 1;
 }
-.day-group-header:hover { background: rgba(88, 166, 255, 0.12); }
+.day-group-header:hover { background: color-mix(in srgb, var(--accent-blue) 14%, var(--bg-card)); }
 .day-group-chevron {
     font-size: 0.55rem;
     color: var(--text-muted);

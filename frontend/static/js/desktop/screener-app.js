@@ -897,8 +897,22 @@ window.DesktopScreener = (function () {
         }
 
         function scrollToStock(ticker) {
-            const el = document.querySelector(`.stock-item[data-ticker="${ticker}"]`);
-            if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            const el = document.querySelector(`.stock-item[data-ticker="${CSS.escape(ticker)}"]`);
+            if (!el) return;
+            // j/k walks the full filtered list, including rows inside collapsed
+            // day/week groups (display:none). Expand the parent group first or
+            // scrollIntoView is a no-op and the list looks "stuck" at the last
+            // expanded group (e.g. week count 204 while selection is item 209).
+            const groupItems = el.closest('.day-group-items');
+            const header = groupItems && groupItems.previousElementSibling;
+            if (header && header.classList.contains('day-group-header') && header.classList.contains('collapsed')) {
+                const collapsed = getCollapsedGroups();
+                delete collapsed[header.dataset.date];
+                setCollapsedGroups(collapsed);
+                header.classList.remove('collapsed');
+                updateCollapseAllBtn();
+            }
+            el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }
 
         // ── News panel setup ───────────────────────────────────────
