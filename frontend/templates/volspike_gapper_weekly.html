@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block body_class %}screener-page page-vsg{% endblock %}
+{% block title %}Volume Spike & Gappers - Weekly - Stocks Assist{% endblock %}
+
+{% set screener_label = "Vol Spike & Gapper - Weekly" %}
+{% set screener_stats_label = "Stocks" %}
+
+{% set topbar_extra_controls %}
+<div class="stats-compact vsg-extra-stats">
+    <div>Spikes: <span class="stat-spike" id="withSpikes">—</span></div>
+    <div>Gaps: <span class="stat-gap" id="withGaps">—</span></div>
+</div>
+<div class="recency-filter">
+    <button class="recency-btn active" data-filter="all">All Time</button>
+    <button class="recency-btn" data-filter="1">Last 1D <span class="count" id="count1D">0</span></button>
+    <button class="recency-btn" data-filter="5">Last 5D <span class="count" id="count5D">0</span></button>
+    <button class="recency-btn" data-filter="20">Last 20D <span class="count" id="count20D">0</span></button>
+</div>
+{% endset %}
+
+{% set left_header_extra %}
+<button type="button" class="collapse-all-btn" id="collapseAllBtn" title="Collapse or expand all week groups">▼ All</button>
+{% endset %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
+{% endblock %}
+
+{% block extra_styles %}
+    /* ── Page-specific: recency filter ── */
+    .recency-filter {
+        display: flex;
+        gap: 0.25rem;
+        margin-left: auto;
+        align-items: center;
+    }
+    .recency-btn {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.7rem;
+        transition: all 0.2s;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    .recency-btn:hover { border-color: var(--accent-yellow); color: var(--text-primary); }
+    .recency-btn.active {
+        background: linear-gradient(135deg, rgba(210, 153, 34, 0.2) 0%, rgba(248, 81, 73, 0.2) 100%);
+        border-color: var(--accent-yellow);
+        color: var(--text-primary);
+    }
+    .recency-btn .count {
+        font-size: 0.6rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.05rem 0.2rem;
+        border-radius: 3px;
+    }
+
+    /* ── Page-specific: collapse-all week groups button ── */
+    .collapse-all-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.05rem 0.3rem;
+        border-radius: 3px;
+        margin-left: 0.25rem;
+        transition: all 0.15s;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+    .collapse-all-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+
+    .vsg-extra-stats .stat-spike { color: var(--accent-yellow); font-weight: 600; }
+    .vsg-extra-stats .stat-gap { color: var(--accent-red); font-weight: 600; }
+{% endblock %}
+
+{% block content %}
+{% include "desktop/_screener_shell.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/static/js/stock-chart.js"></script>
+<script src="/static/js/desktop/screener-app.js"></script>
+<script>
+(function () {
+    let currentRecency = 'all';
+    let recencyCutoff = null;
+    let screenerApi = null;
+
+    function recencyDays(filter) {
+        if (filter === 'all') return null;
+        const n = parseInt(filter, 10);
+        return Number.isFinite(n) ? n : null;
+    }
+
+    // Cutoff date (inclusive) for the last N trading days, anchored to the
+    // trading days that actually appear in the dataset (handles holidays/late data).
+    function cutoffStrForTradingDays(days, stocks) {
+        const uniq = Array.from(new Set(
+            stocks.map(d => d.last_event_date).filter(Boolean)
+        )).sort().reverse();
+        if (!uniq.length) return null;
+        return uniq[Math.min(days, uniq.length) - 1];
+    }
+
+    function recomputeCutoff() {
+        const days = recencyDays(currentRecency);
+        if (days == null || !screenerApi) { recencyCutoff = null; return; }
+        const stocks = screenerApi.getState().filteredStocks;
+        recencyCutoff = cutoffStrForTradingDays(days, stocks);
+    }
+
+    // Monday (ISO week start) of the event date, as YYYY-MM-DD.
+    function weekKey(dateStr) {
+        if (!dateStr) return null;
+        try {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            const offset = (date.getDay() + 6) % 7;
+            date.setDate(date.getDate() - offset);
+            const pad = (n) => String(n).padStart(2, '0');
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+        } catch { return null; }
+    }
+
+    function formatWeekLabel(key) {
+        try {
+            const [y, m, d] = key.split('-').map(Number);
+            const start = new Date(y, m - 1, d);
+            const end = new Date(y, m - 1, d + 4);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const endStr = start.getMonth() === end.getMonth()
+                ? `${end.getDate()}`
+                : `${months[end.getMonth()]} ${end.getDate()}`;
+            return `Week of ${months[start.getMonth()]} ${start.getDate()}–${endStr}`;
+        } catch { return key; }
+    }
+
+    function eventExtraHtml(s) {
+        const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
+        const evtClass = s.last_event_type === 'volume_spike' ? 'spike' : s.last_event_type === 'gapper' ? 'gap' : '';
+        let magStr = '';
+        if (s.last_event_magnitude != null) {
+            if (s.last_event_type === 'volume_spike') {
+                magStr = s.last_event_magnitude.toFixed(1) + 'x vol';
+            } else if (s.last_event_type === 'gapper') {
+                magStr = (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(1) + '% gap';
+            }
+        }
+        return (evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : '') +
+            (magStr ? `<span class="list-extra event-mag">${magStr}</span>` : '');
+    }
+
+    DesktopScreener.init({
+        endpoint: 'volspike-gapper',
+        accentCss: 'var(--accent-yellow)',
+        label: 'Vol Spike & Gapper - Weekly',
+        wideStorageKey: 'wideLayoutOverride',
+
+        sortFn: (stocks) => stocks.sort((a, b) => {
+            const aDate = a.last_event_date || '', bDate = b.last_event_date || '';
+            if (aDate !== bDate) return bDate.localeCompare(aDate);
+            const aRet = a.last_event_return, bRet = b.last_event_return;
+            if (aRet == null) return 1;
+            if (bRet == null) return -1;
+            return bRet - aRet;
+        }),
+
+        // Recency filter (AND-ed with sector/industry by the engine).
+        filterFn: (s) => {
+            if (recencyDays(currentRecency) == null) return true;
+            if (!recencyCutoff) return false;
+            return s.last_event_date && s.last_event_date >= recencyCutoff;
+        },
+
+        groupByFn: (s) => weekKey(s.last_event_date) || 'Unknown',
+        groupLabelFn: (key) => key === 'Unknown' ? 'Unknown Week' : formatWeekLabel(key),
+        groupCollapseStorageKey: 'vsg_weekly_collapsed_weeks',
+
+        listExtraFn: eventExtraHtml,
+
+        onDataLoaded: () => { recomputeCutoff(); },
+
+        onListRendered: ({ visible, stocks }) => {
+            document.getElementById('totalStocks').textContent = visible.length;
+            document.getElementById('withSpikes').textContent = visible.filter(d => d.spike_day_count > 0).length;
+            document.getElementById('withGaps').textContent = visible.filter(d => d.gapper_day_count > 0).length;
+            const countForDays = (days) => {
+                const c = cutoffStrForTradingDays(days, stocks);
+                if (!c) return 0;
+                return stocks.filter(d => d.last_event_date && d.last_event_date >= c).length;
+            };
+            document.getElementById('count1D').textContent = countForDays(1);
+            document.getElementById('count5D').textContent = countForDays(5);
+            document.getElementById('count20D').textContent = countForDays(20);
+        },
+
+        onReady: (api) => {
+            screenerApi = api;
+
+            document.querySelectorAll('.recency-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (!btn.dataset.filter) return; // skip wide-toggle sharing the class
+                    document.querySelectorAll('.recency-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentRecency = btn.dataset.filter;
+                    recomputeCutoff();
+                    api.rerenderFn();
+                });
+            });
+        },
+    });
+})();
+</script>
+{% endblock %}

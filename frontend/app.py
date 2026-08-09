@@ -172,6 +172,12 @@ def volspike_gapper_page():
     return render_template('volspike_gapper.html')
 
 
+@app.route('/volspike-gapper-weekly')
+def volspike_gapper_weekly_page():
+    """Same dataset as /volspike-gapper, grouped by week of event instead of day"""
+    return render_template('volspike_gapper_weekly.html')
+
+
 @app.route('/main-view')
 def main_view_page():
     """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
