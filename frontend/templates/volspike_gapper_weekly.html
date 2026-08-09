@@ -80,16 +80,26 @@
     .vsg-extra-stats .stat-spike { color: var(--accent-yellow); font-weight: 600; }
     .vsg-extra-stats .stat-gap { color: var(--accent-red); font-weight: 600; }
 
-    /* ── Page-specific: intra-week conviction score chip ── */
-    .stock-item .vsg-score {
+    /* ── Page-specific: date + intra-week conviction score, flush right ──
+       Keeps the wide second row balanced instead of left-packed. */
+    .stock-item .vsg-right {
         margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-shrink: 0;
+    }
+
+    .stock-item .vsg-right .last-date { font-size: 0.72rem; }
+
+    .stock-item .vsg-score {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.6rem;
+        font-size: 0.68rem;
         font-weight: 600;
         color: var(--text-secondary);
         border: 1px solid var(--border-color);
         border-radius: 3px;
-        padding: 0.02rem 0.22rem;
+        padding: 0.02rem 0.28rem;
         cursor: help;
     }
 {% endblock %}
@@ -202,12 +212,14 @@
         return p;
     }
 
-    function dayAbbrev(dateStr) {
+    const MONTH_ABBREV = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    function compactDate(dateStr) {
         if (!dateStr) return '';
-        try {
-            const [y, m, d] = dateStr.split('-').map(Number);
-            return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][new Date(y, m - 1, d).getDay()];
-        } catch { return ''; }
+        const parts = String(dateStr).split('-');
+        if (parts.length !== 3) return '';
+        const month = MONTH_ABBREV[parseInt(parts[1], 10) - 1];
+        if (!month) return '';
+        return month + ' ' + parseInt(parts[2], 10);
     }
 
     function eventExtraHtml(s) {
@@ -225,12 +237,14 @@
         const tip = `score ${p.total.toFixed(2)} = move ${(W_MOVE * p.move).toFixed(2)} ` +
             `+ size ${(W_SIZE * p.size).toFixed(2)} + vol ${(W_VOL * p.vol).toFixed(2)} ` +
             `+ novelty ${(W_NOVEL * p.novelty).toFixed(2)}`;
-        // Day chip matters here: rows within a week are no longer date-ordered.
-        const day = dayAbbrev(s.last_event_date);
+        // Date chip matters here: rows within a week are no longer date-ordered.
+        const eventDate = compactDate(s.last_event_date);
         return (evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : '') +
             (magStr ? `<span class="list-extra event-mag">${magStr}</span>` : '') +
-            (day ? `<span class="last-date">${day}</span>` : '') +
-            `<span class="vsg-score" title="${tip}">${p.total.toFixed(1)}</span>`;
+            `<span class="vsg-right">` +
+                (eventDate ? `<span class="last-date">${eventDate}</span>` : '') +
+                `<span class="vsg-score" title="${tip}">${p.total.toFixed(1)}</span>` +
+            `</span>`;
     }
 
     DesktopScreener.init({

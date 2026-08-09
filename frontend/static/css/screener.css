@@ -426,14 +426,22 @@
 .stock-item .stock-extra-row {
     display: flex;
     align-items: center;
+    flex-wrap: wrap; /* narrow panels wrap trailing chips instead of crushing the mcap */
     gap: 0.35rem;
+    row-gap: 0.15rem;
     width: 100%;
     margin-top: 0.1rem;
     padding-left: 1.95rem; /* align under ticker, past the serial number */
 }
 
-/* In the second row the market cap sits flush-left (no ticker offset). */
-.stock-item .stock-extra-row .ticker-mcap { margin-left: 0; }
+/* In the second row the market cap sits flush-left (no ticker offset) and keeps
+   its full text — ellipsizing it leaves an unreadable "(…". */
+.stock-item .stock-extra-row .ticker-mcap {
+    margin-left: 0;
+    flex-shrink: 0;
+    overflow: visible;
+    text-overflow: clip;
+}
 
 .stock-item .right-cell {
     display: flex;
