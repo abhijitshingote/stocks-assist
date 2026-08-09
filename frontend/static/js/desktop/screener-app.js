@@ -861,7 +861,8 @@ window.DesktopScreener = (function () {
         async function loadChart(ticker) {
             if (stockChart) { stockChart.destroy(); stockChart = null; }
             document.getElementById('stockChartContainer').innerHTML = '';
-            document.getElementById('stockChartTitle').textContent = ticker + ' Chart';
+            const titleEl = document.getElementById('stockChartTitle');
+            if (titleEl) { titleEl.textContent = ticker + ' Chart'; titleEl.style.display = ''; }
 
             const panel = document.getElementById('stockChartPanel');
             const header = panel.querySelector('.chart-panel-header');
