@@ -346,60 +346,30 @@ class StockMetrics(Base):
 
 
 # ------------------------------------------------------------
-# 11. HistoricalRSI (daily RSI time series for all stocks)
+# 11. TickerMovingAverages (daily SMA/EMA time series for all stocks)
 # ------------------------------------------------------------
-class HistoricalRSI(Base):
-    __tablename__ = "historical_rsi"
+class TickerMovingAverages(Base):
+    __tablename__ = "ticker_moving_averages"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     ticker = Column(String(20), ForeignKey("tickers.ticker"))
     date = Column(Date)
-    
-    # RSI percentile rank (1-100) across all stocks for this date
-    rsi_global = Column(Integer)
-    
-    # RSI percentile rank (1-100) within market cap bucket for this date
-    rsi_mktcap = Column(Integer)
-    
+
     # Daily Moving Averages (SMA)
     dma_50 = Column(Float)   # 50-day simple moving average
     dma_200 = Column(Float)  # 200-day simple moving average
-    
+
     # Exponential Moving Averages
     ema_10 = Column(Float)   # 10-day exponential moving average
     ema_20 = Column(Float)   # 20-day exponential moving average
 
-    __table_args__ = (UniqueConstraint("ticker", "date", name="uq_historical_rsi"),)
+    __table_args__ = (UniqueConstraint("ticker", "date", name="uq_ticker_moving_averages"),)
 
     ticker_rel = relationship("Ticker")
 
 
 # ------------------------------------------------------------
-# 12. RsiIndices (RSI rankings within index universes: SPX, NDX, DJI)
-# ------------------------------------------------------------
-class RsiIndices(Base):
-    __tablename__ = "rsi_indices"
-
-    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
-    
-    # Index membership flags
-    is_spx = Column(Boolean, default=False)  # S&P 500
-    is_ndx = Column(Boolean, default=False)  # NASDAQ 100
-    is_dji = Column(Boolean, default=False)  # Dow Jones Industrial Average
-    
-    # RSI percentile rank (1-100) within each index universe
-    rsi_spx = Column(Integer)   # RSI percentile within S&P 500
-    rsi_ndx = Column(Integer)   # RSI percentile within NASDAQ 100
-    rsi_dji = Column(Integer)   # RSI percentile within Dow Jones
-    
-    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
-
-    ticker_rel = relationship("Ticker")
-
-
-# ------------------------------------------------------------
-# 13. StockVolspikeGapper (volume spike and gapper detection)
+# 12. StockVolspikeGapper (volume spike and gapper detection)
 # ------------------------------------------------------------
 class StockVolspikeGapper(Base):
     __tablename__ = "stock_volspike_gapper"

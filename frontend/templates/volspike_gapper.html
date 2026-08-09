@@ -151,7 +151,6 @@
         endpoint: 'volspike-gapper',
         accentCss: 'var(--accent-yellow)',
         label: 'Vol Spike & Gapper',
-        wideStorageKey: 'wideLayoutOverride',
 
         sortFn: (stocks) => stocks.sort((a, b) => {
             const aDate = a.last_event_date || '', bDate = b.last_event_date || '';
@@ -196,7 +195,7 @@
 
             document.querySelectorAll('.recency-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    if (!btn.dataset.filter) return; // skip wide-toggle sharing the class
+                    if (!btn.dataset.filter) return;
                     document.querySelectorAll('.recency-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentRecency = btn.dataset.filter;

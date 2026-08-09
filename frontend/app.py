@@ -25,7 +25,6 @@ def inject_global_vars():
     """Inject global variables into all templates"""
     return {'is_dev': IS_DEV}
 
-
 def make_backend_request(endpoint, method='GET', json_data=None):
     """Helper function to make requests to the backend API."""
     try:
@@ -54,12 +53,10 @@ def make_backend_request(endpoint, method='GET', json_data=None):
         logger.error(f"Unexpected error in backend request: {str(e)}")
         return None, 500
 
-
 @app.route('/')
 def index():
     """Home page"""
     return render_template('index.html')
-
 
 @app.route('/help')
 def help_page():
@@ -67,79 +64,10 @@ def help_page():
     return render_template('help.html')
 
 
-@app.route('/rsi')
-def rsi_page():
-    """RSI by Market Cap page"""
-    return render_template('rsi.html')
-
-
-@app.route('/sector-rsi')
-def sector_rsi_page():
-    """Sector RSI page"""
-    return render_template('sector_rsi.html')
-
-
 @app.route('/sector-performance')
 def sector_performance_page():
     """Sector Performance page - Index/ETF performance across timeframes"""
     return render_template('sector_performance.html')
-
-
-@app.route('/rsi-mktcap')
-def rsi_mktcap_page():
-    """RSI Market Cap page - RSI percentile within market cap bucket"""
-    return render_template('rsi_mktcap.html')
-
-
-@app.route('/rsi-momentum')
-def rsi_momentum_page():
-    """RSI Momentum page - RSI MktCap change over 5 trading days"""
-    return render_template('rsi_momentum.html')
-
-
-@app.route('/rsi-spx')
-def rsi_spx_page():
-    """RSI S&P 500 — shared rsi_index.html template"""
-    return render_template('rsi_index.html',
-        rsi_page_title='RSI S&P 500',
-        rsi_slug='spx',
-        rsi_label='SPX',
-        rsi_gradient='linear-gradient(135deg, #e63946 0%, #f4a261 100%)',
-        rsi_color='#e63946',
-        rsi_description='Relative Strength percentile within the S&P 500 universe',
-        rsi_subtitle='Compare stocks against other S&P 500 constituents for peer-relative momentum',
-        rsi_info_text='RSI SPX ranks each stock\'s relative strength only against other S&P 500 constituents. This provides an apples-to-apples comparison within the large-cap universe. Use the market cap filter below to focus on specific size categories.',
-    )
-
-
-@app.route('/rsi-ndx')
-def rsi_ndx_page():
-    """RSI NASDAQ 100 — shared rsi_index.html template"""
-    return render_template('rsi_index.html',
-        rsi_page_title='RSI NASDAQ 100',
-        rsi_slug='ndx',
-        rsi_label='NDX',
-        rsi_gradient='linear-gradient(135deg, #00b4d8 0%, #0077b6 100%)',
-        rsi_color='#00b4d8',
-        rsi_description='Relative Strength percentile within the NASDAQ 100 universe',
-        rsi_subtitle='Compare stocks against other NASDAQ 100 constituents for peer-relative momentum',
-        rsi_info_text='RSI NDX ranks each stock\'s relative strength only against other NASDAQ 100 constituents. This provides a focused comparison within the tech-heavy NASDAQ universe. Use the market cap filter below to focus on specific size categories.',
-    )
-
-
-@app.route('/rsi-dji')
-def rsi_dji_page():
-    """RSI Dow Jones — shared rsi_index.html template"""
-    return render_template('rsi_index.html',
-        rsi_page_title='RSI Dow Jones',
-        rsi_slug='dji',
-        rsi_label='DJI',
-        rsi_gradient='linear-gradient(135deg, #ffd60a 0%, #ffc300 100%)',
-        rsi_color='#ffd60a',
-        rsi_description='Relative Strength percentile within the Dow Jones Industrial Average',
-        rsi_subtitle='Compare stocks against the 30 blue-chip Dow Jones constituents',
-        rsi_info_text='RSI DJI ranks each stock\'s relative strength only against other Dow Jones Industrial Average constituents. This provides a focused comparison among the 30 blue-chip industrial leaders. Use the market cap filter below to focus on specific size categories.',
-    )
 
 
 @app.route('/rs-screener')
@@ -153,42 +81,35 @@ def top_performance_page():
     """Top Performance page - Union of top stocks by 1D, 5D, 20D returns"""
     return render_template('top_performance.html')
 
-
 @app.route('/all-stocks')
 def all_stocks_page():
     """All Stocks page - main_view universe filtered only by sector/industry"""
     return render_template('all_stocks.html')
-
 
 @app.route('/top-losers')
 def top_losers_page():
     """Top Losers page - Union of bottom stocks by 1D, 5D, 20D returns"""
     return render_template('top_losers.html')
 
-
 @app.route('/volspike-gapper')
 def volspike_gapper_page():
     """Volume Spike & Gapper page - Stocks with unusual volume and gap activity"""
     return render_template('volspike_gapper.html')
-
 
 @app.route('/volspike-gapper-weekly')
 def volspike_gapper_weekly_page():
     """Same dataset as /volspike-gapper, grouped by week of event instead of day"""
     return render_template('volspike_gapper_weekly.html')
 
-
 @app.route('/main-view')
 def main_view_page():
     """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
     return render_template('main_view.html')
 
-
 @app.route('/main-view-hybrid')
 def main_view_hybrid_page():
     """Standalone hybrid mobile layout preview — live data via existing frontend proxies"""
     return render_template('main_view_hybrid.html')
-
 
 # Mobile-optimized page routes (separate templates; desktop routes unchanged)
 @app.route('/m')
@@ -196,96 +117,78 @@ def main_view_hybrid_page():
 def m_index():
     return render_template('mobile/index.html')
 
-
 @app.route('/m/main-view')
 def m_main_view():
     return render_template('main_view_hybrid.html')
-
 
 @app.route('/m/high-sales-growth')
 def m_high_sales_growth():
     return render_template('mobile/high_sales_growth.html')
 
-
 @app.route('/m/volspike-gapper')
 def m_volspike_gapper():
     return render_template('mobile/volspike_gapper.html')
-
 
 @app.route('/m/top-performance')
 def m_top_performance():
     return render_template('mobile/top_performance.html')
 
-
 @app.route('/m/top-losers')
 def m_top_losers():
     return render_template('mobile/top_losers.html')
-
 
 @app.route('/m/abi-watchlist')
 def m_abi_watchlist():
     return render_template('mobile/abi_watchlist.html')
 
-
 @app.route('/m/abi-general-notes')
 def m_abi_general_notes():
     return render_template('mobile/abi_general_notes.html')
-
 
 @app.route('/m/context')
 def m_context():
     return render_template('mobile/context.html')
 
-
 @app.route('/m/context-2')
 def m_context2():
     return render_template('mobile/context2.html')
-
 
 @app.route('/m/market-brief')
 def m_market_brief():
     return render_template('mobile/market_brief.html')
 
-
 @app.route('/m/market-news')
 def m_market_news():
     return render_template('mobile/market_news.html')
 
-
 @app.route('/m/logs')
 def m_logs():
     return render_template('mobile/logs.html')
-
 
 @app.route('/m/stock/<ticker>')
 def m_stock_detail(ticker):
     """Mobile stock detail page"""
     return render_template('mobile/stock.html', ticker=ticker.upper())
 
-
 @app.route('/technical-screener')
 def technical_screener_page():
     """Technical Screener page - intraday/technical setups (reversal, etc.)"""
     return render_template('technical_screener.html')
-
 
 @app.route('/themes')
 def themes_page():
     """Themes page - curated thematic watchlists shown side-by-side"""
     return render_template('themes.html')
 
-
 @app.route('/etfs')
 def etfs_page():
     """ETFs page - thematic / sub-sector ETF performance across timeframes"""
     return render_template('etfs.html')
 
-
 # User data directory for themes
 USER_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'user_data')
 THEMES_FILE = os.path.join(USER_DATA_DIR, 'themes.json')
 ETFS_FILE = os.path.join(USER_DATA_DIR, 'etfs.json')
-
 
 @app.route('/api/frontend/etfs', methods=['GET'])
 def api_get_etfs():
@@ -299,7 +202,6 @@ def api_get_etfs():
         logger.error(f"Error reading etfs file: {e}")
         return jsonify({'error': 'Failed to read etfs'}), 500
 
-
 @app.route('/api/frontend/etf-performance')
 def api_etf_performance():
     """Proxy: ETF performance (1D/5D/20D/60D/120D) for a list of symbols"""
@@ -308,7 +210,6 @@ def api_etf_performance():
     if data is None:
         return jsonify({'error': 'Failed to fetch ETF performance'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/themes', methods=['GET'])
 def api_get_themes():
@@ -324,7 +225,6 @@ def api_get_themes():
         logger.error(f"Error reading themes file: {e}")
         return jsonify({'error': 'Failed to read themes'}), 500
 
-
 @app.route('/api/frontend/themes', methods=['PUT'])
 def api_save_themes():
     """Save themes to user_data/themes.json"""
@@ -338,7 +238,6 @@ def api_save_themes():
         logger.error(f"Error saving themes file: {e}")
         return jsonify({'error': 'Failed to save themes'}), 500
 
-
 @app.route('/api/frontend/theme-proposals', methods=['GET'])
 def api_get_theme_proposals():
     """Proxy: theme discovery proposals from backend."""
@@ -346,7 +245,6 @@ def api_get_theme_proposals():
     if data is None:
         return jsonify({'error': 'Failed to fetch theme proposals'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/theme-proposals/apply', methods=['POST'])
 def api_apply_theme_proposals():
@@ -360,7 +258,6 @@ def api_apply_theme_proposals():
         return jsonify({'error': 'Failed to apply theme proposals'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/all-stocks/by-tickers')
 def api_all_stocks_by_tickers():
     """Proxy: AllStocks data filtered to a specific ticker list"""
@@ -369,7 +266,6 @@ def api_all_stocks_by_tickers():
     if data is None:
         return jsonify({'error': 'Failed to fetch themes data'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/main-view/by-tickers')
 def api_main_view_by_tickers():
@@ -380,12 +276,10 @@ def api_main_view_by_tickers():
         return jsonify({'error': 'Failed to fetch themes data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/stock/<ticker>')
 def stock_detail(ticker):
     """Stock detail page"""
     return render_template('stock.html', ticker=ticker.upper())
-
 
 @app.route('/api/frontend/stock/<ticker>')
 def api_stock_detail(ticker):
@@ -395,29 +289,6 @@ def api_stock_detail(ticker):
         return jsonify({'error': 'Failed to fetch stock details'}), status_code
     return jsonify(data), status_code
 
-
-@app.route('/api/frontend/rsi/<market_cap>')
-def api_rsi_by_market_cap(market_cap):
-    """Proxy endpoint for RSI by market cap from backend"""
-    # Map the frontend parameter to backend endpoint
-    cap_map = {
-        'all': 'All',
-        'micro': 'MicroCap',
-        'small': 'SmallCap',
-        'mid': 'MidCap',
-        'large': 'LargeCap',
-        'mega': 'MegaCap'
-    }
-    endpoint_cap = cap_map.get(market_cap.lower())
-    if not endpoint_cap:
-        return jsonify({'error': 'Invalid market cap category'}), 400
-    
-    data, status_code = make_backend_request(f'/api/RSI-{endpoint_cap}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch RSI data'}), status_code
-    return jsonify(data), status_code
-
-
 @app.route('/api/frontend/ohlc/<ticker>')
 def api_ohlc(ticker):
     """Proxy endpoint for OHLC data from backend"""
@@ -425,7 +296,6 @@ def api_ohlc(ticker):
     if data is None:
         return jsonify({'error': 'Failed to fetch OHLC data'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/earnings-eps/<ticker>')
 def api_earnings_eps(ticker):
@@ -435,7 +305,6 @@ def api_earnings_eps(ticker):
         return jsonify({'error': 'Failed to fetch earnings EPS data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/volspike-events/<ticker>')
 def api_volspike_events(ticker):
     """Proxy endpoint for volume spike and gap events from backend (for chart markers)"""
@@ -444,93 +313,6 @@ def api_volspike_events(ticker):
         return jsonify({'error': 'Failed to fetch volspike events'}), status_code
     return jsonify(data), status_code
 
-
-@app.route('/api/frontend/sector-rsi')
-def api_sector_rsi():
-    """Proxy endpoint for sector RSI from backend"""
-    data, status_code = make_backend_request('/api/sector-rsi')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch sector RSI data'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/rsi-mktcap/<market_cap>')
-def api_rsi_mktcap(market_cap):
-    """Proxy endpoint for RSI Market Cap from backend"""
-    cap_map = {
-        'all': 'All',
-        'micro': 'MicroCap',
-        'small': 'SmallCap',
-        'mid': 'MidCap',
-        'large': 'LargeCap',
-        'mega': 'MegaCap'
-    }
-    endpoint_cap = cap_map.get(market_cap.lower())
-    if not endpoint_cap:
-        return jsonify({'error': 'Invalid market cap category'}), 400
-    
-    data, status_code = make_backend_request(f'/api/RSIMktCap-{endpoint_cap}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch RSI MktCap data'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/rsi-momentum/<market_cap>')
-def api_rsi_momentum(market_cap):
-    """Proxy endpoint for RSI Momentum (5-day RSI MktCap change) from backend"""
-    cap_map = {
-        'all': 'All',
-        'micro': 'MicroCap',
-        'small': 'SmallCap',
-        'mid': 'MidCap',
-        'large': 'LargeCap',
-        'mega': 'MegaCap'
-    }
-    endpoint_cap = cap_map.get(market_cap.lower())
-    if not endpoint_cap:
-        return jsonify({'error': 'Invalid market cap category'}), 400
-    
-    data, status_code = make_backend_request(f'/api/RSIMomentum-{endpoint_cap}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch RSI Momentum data'}), status_code
-    return jsonify(data), status_code
-
-
-@app.route('/api/frontend/rsi-index/<index_type>')
-@app.route('/api/frontend/rsi-index/<index_type>/<market_cap>')
-def api_rsi_index(index_type, market_cap=None):
-    """Proxy endpoint for RSI Index (SPX, NDX, DJI) from backend with optional market cap filter"""
-    index_map = {
-        'spx': 'SPX',
-        'ndx': 'NDX',
-        'dji': 'DJI'
-    }
-    endpoint_index = index_map.get(index_type.lower())
-    if not endpoint_index:
-        return jsonify({'error': 'Invalid index type'}), 400
-    
-    # Build endpoint with optional market cap filter
-    if market_cap:
-        cap_map = {
-            'micro': 'micro',
-            'small': 'small',
-            'mid': 'mid',
-            'large': 'large',
-            'mega': 'mega'
-        }
-        endpoint_cap = cap_map.get(market_cap.lower())
-        if not endpoint_cap:
-            return jsonify({'error': 'Invalid market cap category'}), 400
-        endpoint = f'/api/RSI-{endpoint_index}/{endpoint_cap}'
-    else:
-        endpoint = f'/api/RSI-{endpoint_index}'
-    
-    data, status_code = make_backend_request(endpoint)
-    if data is None:
-        return jsonify({'error': 'Failed to fetch RSI Index data'}), status_code
-    return jsonify(data), status_code
-
-
 @app.route('/api/frontend/all-stocks')
 def api_all_stocks():
     """Proxy: AllStocks — full liquid universe (stock_metrics LEFT JOIN volspike/gapper)"""
@@ -538,7 +320,6 @@ def api_all_stocks():
     if data is None:
         return jsonify({'error': 'Failed to fetch All Stocks data'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/top-performance/<market_cap>')
 def api_top_performance(market_cap):
@@ -560,7 +341,6 @@ def api_top_performance(market_cap):
         return jsonify({'error': 'Failed to fetch Top Performance data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/top-losers/<market_cap>')
 def api_top_losers(market_cap):
     """Proxy endpoint for Top Losers (union of bottom stocks by 1D, 5D, 20D returns) from backend"""
@@ -580,7 +360,6 @@ def api_top_losers(market_cap):
     if data is None:
         return jsonify({'error': 'Failed to fetch Top Losers data'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/volspike-gapper/<market_cap>')
 def api_volspike_gapper(market_cap):
@@ -602,7 +381,6 @@ def api_volspike_gapper(market_cap):
         return jsonify({'error': 'Failed to fetch Volume Spike & Gapper data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/main-view/<market_cap>')
 def api_main_view(market_cap):
     """Proxy endpoint for Main View data from backend"""
@@ -622,7 +400,6 @@ def api_main_view(market_cap):
     if data is None:
         return jsonify({'error': 'Failed to fetch Main View data'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/technical-screener/<criterion>/<market_cap>')
 def api_technical_screener(criterion, market_cap):
@@ -654,24 +431,20 @@ def api_technical_screener(criterion, market_cap):
         return jsonify({'error': 'Failed to fetch Technical Screener data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/context')
 def context_page():
     """Context page - Market context with QQQ/SPY charts and DMA analysis"""
     return render_template('context.html')
-
 
 @app.route('/context-2')
 def context2_page():
     """Context 2 page - Research links, commentary, and calendar events"""
     return render_template('context2.html')
 
-
 @app.route('/high-sales-growth')
 def high_sales_growth_page():
     """High Sales Growth page - Stocks with high revenue growth"""
     return render_template('high_sales_growth.html')
-
 
 @app.route('/api/frontend/high-sales-growth/<market_cap>')
 def api_high_sales_growth(market_cap):
@@ -693,19 +466,16 @@ def api_high_sales_growth(market_cap):
         return jsonify({'error': 'Failed to fetch High Sales Growth data'}), status_code
     return jsonify(data), status_code
 
-
 # Stock Notes + AI Research proxy endpoints removed: the underlying
 # DB-backed store has been deprecated. Per-ticker notes are now served by
 # the file-only abi_ticker_notes endpoints. The AI research integration
 # (Perplexity / Claude) was removed along with stock_notes; if you want it
 # back, reintroduce it as a feature that writes into abi_ticker_notes.json.
 
-
 # Stock Preferences endpoints removed: superseded by file-only
 # abi_watchlist (favorites) and abi_dislikes (dislikes) endpoints elsewhere
 # in this file. The UI in stock.html / main_view.html no longer renders the
 # favorite/dislike controls that called these.
-
 
 # ============================================================
 # Abi General Notes Endpoints
@@ -716,12 +486,10 @@ def abi_notes_legacy_redirect():
     """Old URL; permanent redirect to Abi General Notes."""
     return redirect('/abi-general-notes', code=301)
 
-
 @app.route('/abi-general-notes')
 def abi_general_notes_page():
     """Abi General Notes page - personal date-based notes"""
     return render_template('abi_general_notes.html')
-
 
 @app.route('/api/frontend/abi-general-notes', methods=['GET'])
 def api_get_abi_general_notes():
@@ -735,7 +503,6 @@ def api_get_abi_general_notes():
         return jsonify({'error': 'Failed to fetch abi general notes'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-general-notes', methods=['POST'])
 def api_create_abi_general_note():
     """Proxy endpoint to create a new abi general note"""
@@ -745,7 +512,6 @@ def api_create_abi_general_note():
         return jsonify({'error': 'Failed to create abi general note'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-general-notes/<int:note_id>', methods=['GET'])
 def api_get_abi_general_note(note_id):
     """Proxy endpoint to get a specific abi general note"""
@@ -753,7 +519,6 @@ def api_get_abi_general_note(note_id):
     if data is None:
         return jsonify({'error': 'Failed to fetch abi general note'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/abi-general-notes/<int:note_id>', methods=['PUT'])
 def api_update_abi_general_note(note_id):
@@ -764,7 +529,6 @@ def api_update_abi_general_note(note_id):
         return jsonify({'error': 'Failed to update abi general note'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-general-notes/<int:note_id>', methods=['DELETE'])
 def api_delete_abi_general_note(note_id):
     """Proxy endpoint to delete an abi general note"""
@@ -773,7 +537,6 @@ def api_delete_abi_general_note(note_id):
         return jsonify({'error': 'Failed to delete abi general note'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-general-notes/tags', methods=['GET'])
 def api_get_abi_general_notes_tags():
     """Proxy endpoint to get all unique tags"""
@@ -781,7 +544,6 @@ def api_get_abi_general_notes_tags():
     if data is None:
         return jsonify({'error': 'Failed to fetch abi general notes tags'}), status_code
     return jsonify(data), status_code
-
 
 # ============================================================
 # Stock Detail Data Endpoints
@@ -795,7 +557,6 @@ def api_earnings(ticker):
         return jsonify({'error': 'Failed to fetch earnings data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/analyst-estimates/<ticker>')
 def api_analyst_estimates(ticker):
     """Proxy endpoint for analyst estimates from backend"""
@@ -803,7 +564,6 @@ def api_analyst_estimates(ticker):
     if data is None:
         return jsonify({'error': 'Failed to fetch analyst estimates'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/ratios-ttm/<ticker>')
 def api_ratios_ttm(ticker):
@@ -813,7 +573,6 @@ def api_ratios_ttm(ticker):
         return jsonify({'error': 'Failed to fetch ratios data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/company-profile/<ticker>')
 def api_company_profile(ticker):
     """Proxy endpoint for company profile from backend"""
@@ -821,7 +580,6 @@ def api_company_profile(ticker):
     if data is None:
         return jsonify({'error': 'Failed to fetch company profile'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/stock-news/<ticker>')
 def api_stock_news(ticker):
@@ -832,7 +590,6 @@ def api_stock_news(ticker):
         return jsonify({'error': 'Failed to fetch stock news'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/benzinga-news/<ticker>', methods=['GET'])
 def api_benzinga_news_get(ticker):
     """Proxy: cached Benzinga news from database."""
@@ -841,7 +598,6 @@ def api_benzinga_news_get(ticker):
     if data is None:
         return jsonify({'error': 'Failed to load Benzinga news'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/benzinga-news/<ticker>', methods=['POST'])
 def api_benzinga_news_refresh(ticker):
@@ -854,7 +610,6 @@ def api_benzinga_news_refresh(ticker):
     if data is None:
         return jsonify({'error': 'Failed to refresh Benzinga news'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/benzinga-news/market', methods=['GET'])
 def api_benzinga_market_news():
@@ -869,7 +624,6 @@ def api_benzinga_market_news():
         return jsonify({'error': 'Failed to load market Benzinga news'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/benzinga-news/market', methods=['POST'])
 def api_benzinga_market_news_refresh():
     """Proxy: fetch fresh market Benzinga news from API and upsert to DB."""
@@ -883,7 +637,6 @@ def api_benzinga_market_news_refresh():
         return jsonify({'error': 'Failed to refresh Benzinga news from API'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/market-news/fmp', methods=['GET'])
 def api_market_fmp_news():
     """Proxy: general market news from FMP."""
@@ -892,7 +645,6 @@ def api_market_fmp_news():
     if data is None:
         return jsonify({'error': 'Failed to load FMP market news'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/market-news/seeking-alpha', methods=['GET'])
 def api_market_seeking_alpha_news():
@@ -903,7 +655,6 @@ def api_market_seeking_alpha_news():
         return jsonify({'error': 'Failed to load Seeking Alpha market news'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/latest-date')
 def api_latest_date():
     """Proxy endpoint for latest OHLC date from backend"""
@@ -911,7 +662,6 @@ def api_latest_date():
     if data is None:
         return jsonify({'error': 'Failed to fetch latest date'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/sector-performance')
 def api_sector_performance():
@@ -921,7 +671,6 @@ def api_sector_performance():
         return jsonify({'error': 'Failed to fetch sector performance data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/homepage')
 def api_homepage():
     """Proxy endpoint for homepage data (indices, commodities, sectors with DMA)"""
@@ -929,7 +678,6 @@ def api_homepage():
     if data is None:
         return jsonify({'error': 'Failed to fetch homepage data'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/market-breadth')
 def api_market_breadth():
@@ -939,7 +687,6 @@ def api_market_breadth():
         return jsonify({'error': 'Failed to fetch market breadth data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/index-ohlc/<symbol>')
 def api_index_ohlc(symbol):
     """Proxy endpoint for index/ETF OHLC data from backend"""
@@ -947,7 +694,6 @@ def api_index_ohlc(symbol):
     if data is None:
         return jsonify({'error': 'Failed to fetch index OHLC data'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/vix-latest')
 def api_vix_latest():
@@ -957,7 +703,6 @@ def api_vix_latest():
         return jsonify({'error': 'Failed to fetch VIX data'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/treasury-10y')
 def api_treasury_10y():
     """Proxy endpoint for 10-Year Treasury yield from backend"""
@@ -965,7 +710,6 @@ def api_treasury_10y():
     if data is None:
         return jsonify({'error': 'Failed to fetch Treasury yield'}), status_code
     return jsonify(data), status_code
-
 
 # ============================================================
 # Abi Watchlist Endpoints
@@ -976,7 +720,6 @@ def abi_watchlist_page():
     """Abi Watchlist page - personal watchlist with Main View layout"""
     return render_template('abi_watchlist.html')
 
-
 @app.route('/api/frontend/abi-watchlist', methods=['GET'])
 def api_get_abi_watchlist():
     """Proxy endpoint to get all watchlist items"""
@@ -984,7 +727,6 @@ def api_get_abi_watchlist():
     if data is None:
         return jsonify({'error': 'Failed to fetch watchlist'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/abi-watchlist', methods=['POST'])
 def api_add_to_abi_watchlist():
@@ -995,7 +737,6 @@ def api_add_to_abi_watchlist():
         return jsonify({'error': 'Failed to add to watchlist'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-watchlist/<ticker>', methods=['PUT'])
 def api_update_abi_watchlist(ticker):
     """Proxy endpoint to update watchlist notes"""
@@ -1005,7 +746,6 @@ def api_update_abi_watchlist(ticker):
         return jsonify({'error': 'Failed to update watchlist'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-watchlist/<ticker>', methods=['DELETE'])
 def api_delete_from_abi_watchlist(ticker):
     """Proxy endpoint to remove a ticker from the watchlist"""
@@ -1013,7 +753,6 @@ def api_delete_from_abi_watchlist(ticker):
     if data is None:
         return jsonify({'error': 'Failed to remove from watchlist'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/abi-watchlist/batch-check', methods=['POST'])
 def api_batch_check_abi_watchlist():
@@ -1024,7 +763,6 @@ def api_batch_check_abi_watchlist():
         return jsonify({'error': 'Failed to check watchlist'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-watchlist/data')
 def api_abi_watchlist_data():
     """Proxy endpoint for watchlist data with MainView metrics"""
@@ -1032,7 +770,6 @@ def api_abi_watchlist_data():
     if data is None:
         return jsonify({'error': 'Failed to fetch watchlist data'}), status_code
     return jsonify(data), status_code
-
 
 # ============================================================
 # Abi Dislikes Endpoints (parallel to watchlist, thumbs-down list with notes)
@@ -1046,14 +783,12 @@ def abi_dislikes_page():
     """Abi Dislikes page - thumbs-down list with notes."""
     return render_template('abi_dislikes.html')
 
-
 @app.route('/api/frontend/abi-dislikes', methods=['GET'])
 def api_get_abi_dislikes():
     data, status_code = make_backend_request('/api/abi-dislikes')
     if data is None:
         return jsonify({'error': 'Failed to fetch dislikes'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/abi-dislikes', methods=['POST'])
 def api_add_to_abi_dislikes():
@@ -1063,14 +798,12 @@ def api_add_to_abi_dislikes():
         return jsonify({'error': 'Failed to add to dislikes'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-dislikes/<ticker>', methods=['DELETE'])
 def api_delete_from_abi_dislikes(ticker):
     data, status_code = make_backend_request(f'/api/abi-dislikes/{ticker}', method='DELETE', json_data={})
     if data is None:
         return jsonify({'error': 'Failed to remove from dislikes'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/abi-dislikes/batch-check', methods=['POST'])
 def api_batch_check_abi_dislikes():
@@ -1079,7 +812,6 @@ def api_batch_check_abi_dislikes():
     if data is None:
         return jsonify({'error': 'Failed to check dislikes'}), status_code
     return jsonify(data), status_code
-
 
 # ============================================================
 # Abi Ticker Notes Endpoints (per-ticker notes, decoupled from
@@ -1096,7 +828,6 @@ def api_get_abi_ticker_notes_all():
         return jsonify({'error': 'Failed to fetch Abi ticker notes'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-ticker-notes/<ticker>', methods=['GET'])
 def api_get_abi_ticker_note(ticker):
     """Proxy endpoint to get Abi ticker notes for a single ticker."""
@@ -1104,7 +835,6 @@ def api_get_abi_ticker_note(ticker):
     if data is None:
         return jsonify({'error': 'Failed to fetch Abi ticker notes'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/abi-ticker-notes/<ticker>', methods=['PUT'])
 def api_upsert_abi_ticker_note(ticker):
@@ -1117,7 +847,6 @@ def api_upsert_abi_ticker_note(ticker):
         return jsonify({'error': 'Failed to save Abi ticker notes'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/abi-ticker-notes/<ticker>', methods=['DELETE'])
 def api_delete_abi_ticker_note(ticker):
     """Proxy endpoint to delete Abi ticker notes for a ticker."""
@@ -1127,7 +856,6 @@ def api_delete_abi_ticker_note(ticker):
     if data is None:
         return jsonify({'error': 'Failed to delete Abi ticker notes'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/abi-ticker-notes/batch-check', methods=['POST'])
 def api_batch_check_abi_ticker_notes():
@@ -1140,7 +868,6 @@ def api_batch_check_abi_ticker_notes():
         return jsonify({'error': 'Failed to fetch Abi ticker notes'}), status_code
     return jsonify(data), status_code
 
-
 # ============================================================
 # Daily Shortlist Endpoints
 # ============================================================
@@ -1150,7 +877,6 @@ def daily_shortlist_page():
     """Daily Shortlist page - screened candidates with Picks/Watch/Rejected tabs"""
     return render_template('daily_shortlist.html')
 
-
 @app.route('/api/frontend/daily-shortlist/dates')
 def api_daily_shortlist_dates():
     """Proxy: list of dates with daily shortlist artifacts"""
@@ -1159,7 +885,6 @@ def api_daily_shortlist_dates():
         return jsonify({'error': 'Failed to fetch dates'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/daily-shortlist/<date>')
 def api_daily_shortlist_for_date(date):
     """Proxy: full audit artifact for a specific date"""
@@ -1167,7 +892,6 @@ def api_daily_shortlist_for_date(date):
     if data is None:
         return jsonify({'error': 'Failed to fetch daily shortlist'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/daily-shortlist/run', methods=['POST'])
 def api_daily_shortlist_run():
@@ -1180,7 +904,6 @@ def api_daily_shortlist_run():
         return jsonify({'error': 'Failed to start run'}), status_code
     return jsonify(data), status_code
 
-
 # ----- Daily Shortlist Feedback proxies -----
 
 @app.route('/api/frontend/daily-shortlist/feedback/<date>', methods=['GET'])
@@ -1190,7 +913,6 @@ def api_daily_shortlist_feedback_for_date(date):
     if data is None:
         return jsonify({'error': 'Failed to fetch feedback'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/daily-shortlist/feedback/<date>/<ticker>', methods=['PUT'])
 def api_daily_shortlist_feedback_upsert(date, ticker):
@@ -1204,7 +926,6 @@ def api_daily_shortlist_feedback_upsert(date, ticker):
         return jsonify({'error': 'Failed to save feedback'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/daily-shortlist/feedback/<date>/<ticker>', methods=['DELETE'])
 def api_daily_shortlist_feedback_delete(date, ticker):
     """Proxy: delete a feedback entry for (date, ticker)"""
@@ -1216,7 +937,6 @@ def api_daily_shortlist_feedback_delete(date, ticker):
         return jsonify({'error': 'Failed to delete feedback'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/daily-shortlist/feedback-all', methods=['GET'])
 def api_daily_shortlist_feedback_all():
     """Proxy: all feedback entries, flattened. Optional ?limit=N."""
@@ -1227,14 +947,12 @@ def api_daily_shortlist_feedback_all():
         return jsonify({'error': 'Failed to fetch all feedback'}), status_code
     return jsonify(data), status_code
 
-
 # ----- Daily Themes (visualization) -----
 
 @app.route('/daily-themes')
 def daily_themes_page():
     """Daily Themes page - visualize the theme vector for any pipeline run"""
     return render_template('daily_themes.html')
-
 
 @app.route('/api/frontend/daily-shortlist/themes/dates', methods=['GET'])
 def api_daily_themes_dates():
@@ -1244,7 +962,6 @@ def api_daily_themes_dates():
         return jsonify({'error': 'Failed to fetch theme dates'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/daily-shortlist/themes/<date>', methods=['GET'])
 def api_daily_themes_for_date(date):
     """Proxy: theme vector + per-source raw lists for a given date"""
@@ -1252,7 +969,6 @@ def api_daily_themes_for_date(date):
     if data is None:
         return jsonify({'error': 'Failed to fetch themes'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/rs-screener/<market_cap>')
 def api_rs_screener(market_cap):
@@ -1262,7 +978,6 @@ def api_rs_screener(market_cap):
         return jsonify({'error': 'Failed to fetch RS screener data'}), status_code
     return jsonify(data), status_code
 
-
 # ============================================================
 # Logs Endpoints
 # ============================================================
@@ -1271,7 +986,6 @@ def api_rs_screener(market_cap):
 def logs_page():
     """Logs viewer page"""
     return render_template('logs.html')
-
 
 @app.route('/api/frontend/logs')
 def api_list_logs():
@@ -1308,7 +1022,6 @@ def api_list_logs():
             })
     
     return jsonify({'logs': log_files})
-
 
 @app.route('/api/frontend/logs/<filename>')
 def api_get_log(filename):
@@ -1351,7 +1064,6 @@ def api_get_log(filename):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
 # ============================================================
 # Market News Page
 # ============================================================
@@ -1360,7 +1072,6 @@ def api_get_log(filename):
 def market_news_page():
     """Market News page - aggregated news from multiple sources"""
     return render_template('market_news.html')
-
 
 # ============================================================
 # Market Brief Endpoints
@@ -1371,12 +1082,10 @@ def market_brief_history_page():
     """Market Brief History — browse past AI-generated market briefs."""
     return render_template('market_brief_history.html')
 
-
 @app.route('/market-brief')
 def market_brief_page():
     """Market Brief page - daily AI-generated market summary"""
     return render_template('market_brief.html')
-
 
 @app.route('/api/frontend/market-brief/dates', methods=['GET'])
 def api_market_brief_dates():
@@ -1386,7 +1095,6 @@ def api_market_brief_dates():
         return jsonify({'error': 'Failed to fetch market brief dates'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/market-brief/<date_str>', methods=['GET'])
 def api_market_brief_for_date(date_str):
     """Proxy endpoint to get market brief for a specific date"""
@@ -1395,7 +1103,6 @@ def api_market_brief_for_date(date_str):
         return jsonify({'error': 'Failed to fetch market brief'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/market-brief/<date_str>/costs', methods=['GET'])
 def api_market_brief_costs(date_str):
     """Proxy endpoint for live run cost polling."""
@@ -1403,7 +1110,6 @@ def api_market_brief_costs(date_str):
     if data is None:
         return jsonify({'error': 'Failed to fetch run costs'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/market-brief/<date_str>/pdf', methods=['GET'])
 def api_market_brief_pdf(date_str):
@@ -1427,7 +1133,6 @@ def api_market_brief_pdf(date_str):
         logger.error('PDF proxy error: %s', e)
         return jsonify({'error': 'Failed to export PDF'}), 500
 
-
 @app.route('/api/frontend/market-brief/generate', methods=['POST'])
 def api_market_brief_generate():
     """Proxy endpoint to run Steps 3–4 pipeline on existing source data."""
@@ -1439,7 +1144,6 @@ def api_market_brief_generate():
         return jsonify({'error': 'Failed to start market brief pipeline'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/market-brief/run', methods=['POST'])
 def api_market_brief_run():
     """Proxy endpoint to trigger market brief generation"""
@@ -1448,7 +1152,6 @@ def api_market_brief_run():
     if data is None:
         return jsonify({'error': 'Failed to start market brief run'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/market-brief-losers/generate', methods=['POST'])
 def api_market_brief_losers_generate():
@@ -1461,7 +1164,6 @@ def api_market_brief_losers_generate():
         return jsonify({'error': 'Failed to start losers brief pipeline'}), status_code
     return jsonify(data), status_code
 
-
 @app.route('/api/frontend/market-brief-losers/<date_str>/costs', methods=['GET'])
 def api_market_brief_losers_costs(date_str):
     """Proxy endpoint for losers brief run progress."""
@@ -1469,7 +1171,6 @@ def api_market_brief_losers_costs(date_str):
     if data is None:
         return jsonify({'error': 'Failed to fetch losers brief run status'}), status_code
     return jsonify(data), status_code
-
 
 @app.route('/api/frontend/auto-commit', methods=['POST'])
 def api_auto_commit():
@@ -1493,7 +1194,6 @@ def api_auto_commit():
     except requests.RequestException as e:
         logger.error('Auto-commit proxy: %s', e)
         return jsonify({'status': 'error', 'message': str(e)}), 502
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

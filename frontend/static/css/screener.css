@@ -163,37 +163,6 @@
 
 .stock-item.hidden-by-filter { display: none; }
 
-/* ── Wide layout toggle ──────────────────────────────────────────── */
-.wide-toggle-wrap {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-}
-
-.wide-toggle {
-    padding: 0.2rem 0.45rem;
-    border-radius: 4px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.65rem;
-    transition: all 0.2s;
-    font-family: var(--font-mono);
-}
-
-.wide-toggle:hover {
-    border-color: var(--screener-accent);
-    color: var(--text-primary);
-}
-
-.wide-toggle.active {
-    background: color-mix(in srgb, var(--screener-accent) 20%, transparent);
-    border-color: var(--screener-accent);
-    color: var(--text-primary);
-}
-
 /* ── Main layout (3 columns) ─────────────────────────────────────── */
 .tp-layout {
     display: flex;
@@ -1216,33 +1185,9 @@
 
 @keyframes screener-spin { to { transform: rotate(360deg); } }
 
-/* ── Wide layout mode ────────────────────────────────────────────── */
-body.wide-layout nav .container {
-    max-width: none;
-    width: 100%;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-}
-
-body.wide-layout .tp-left {
-    width: 240px;
-    min-width: 200px;
-}
-
-body.wide-layout .tp-right-column {
-    width: 320px;
-    min-width: 280px;
-}
-
-body.wide-layout .tp-metrics-company { max-width: 240px; }
-
 /* ── Tablet breakpoint (≤1024px) ─────────────────────────────────── */
 @media (max-width: 1024px) {
     .tp-layout { flex-direction: column; height: auto; }
     .tp-left { width: 100%; height: 200px; }
     .tp-right-column { width: 100%; min-width: auto; max-height: 520px; }
-    .wide-toggle-wrap { display: none; }
-    body.wide-layout .tp-left,
-    body.wide-layout .tp-right-column { width: 100%; min-width: auto; }
-    body.wide-layout nav .container { max-width: 1400px; }
 }

@@ -14,7 +14,6 @@
    - Shared CSS: `tokens.css`, `components.css`, `screener.css`, `card-grid.css`
    - Shared shell: `templates/desktop/_screener_shell.html`
    - Shared engine: `static/js/desktop/screener-app.js`
-   - RSI pages merged: `templates/rsi_index.html` (replaces 3 near-identical files)
    - 3 breakpoint tiers: Phone ≤640px, Tablet 641–1024px, Desktop ≥1025px
 3. Sweep for logic in frontend and see if it can be delegated to backend
 4. Potential deprecate  

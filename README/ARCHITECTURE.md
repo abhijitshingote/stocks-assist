@@ -76,11 +76,10 @@ Typical daily chain (order matters):
 1. `daily_price_update.py` — OHLC
 2. `daily_indices_update.py` — index prices
 3. `stock_metrics_update.py` — `stock_metrics` (dr_1/5/20/60/120, atr20, rsi, ti65, PE/PS, rev/eps growth, …)
-4. `historical_rsi_update.py` — `historical_rsi`
-5. `rsi_indices_update.py` — `rsi_indices` (SPX/NDX/DJI buckets)
-6. `volspike_gapper_update.py` — `stock_volspike_gapper`
-7. `main_view_update.py` — `main_view` (metrics + volspike/gapper + tags)
-8. Optional: `market_breadth_update.py`, `rs_screener_update.py`
+4. `ticker_moving_averages_update.py` — `ticker_moving_averages` (dma/ema)
+5. `volspike_gapper_update.py` — `stock_volspike_gapper`
+6. `main_view_update.py` — `main_view` (metrics + volspike/gapper + tags)
+7. Optional: `market_breadth_update.py`, `rs_screener_update.py`
 
 Benzinga cache: `create_benzinga_articles_table.py`, refreshed from backend/`benzinga_news.py` (Polygon).
 
@@ -91,7 +90,7 @@ Benzinga cache: `create_benzinga_articles_table.py`, refreshed from backend/`ben
 | `stock_metrics` | `stock_metrics_update` | Scanner endpoints, `daily_screener` s1 |
 | `stock_volspike_gapper` | `volspike_gapper_update` | Vol/gap screens, `daily_screener` s1 |
 | `main_view` | `main_view_update` | Main view / technical screener UI |
-| `historical_rsi`, `rsi_indices` | RSI update scripts | RSI pages |
+| `ticker_moving_averages` | `ticker_moving_averages_update` | Charts (dma/ema), market breadth |
 | `rs_screener`, `market_breadth` | respective updates | RS / breadth views |
 | `benzinga_articles` | Polygon ingest | Stock news, `market_brief` |
 
@@ -102,7 +101,7 @@ Schema + ORM: `backend/models.py`. Shared DB access pattern in `db_scripts/*` (S
 Flask app on port 5000 inside container. Responsibilities:
 
 - **Read** pre-computed rows with global filters (`apply_global_exclude_filters`, `apply_global_liquidity_filters`: avg_vol_10d, dollar_volume, price, industry exclusions).
-- **Screener routes** — returns, gapper, volume, RSI, main view, technical criteria × market-cap bucket (Micro/Small/Mid/Large/Mega).
+- **Screener routes** — returns, gapper, volume, main view, technical criteria × market-cap bucket (Micro/Small/Mid/Large/Mega).
 - **Stock detail** — profile, OHLC, earnings, Benzinga news refresh/cache.
 - **User state** — `abi_watchlist`, `abi_dislikes`, general notes, comments (some persisted in DB, some in `user_data/` JSON).
 - **Pipeline control** — spawn subprocesses for `daily_screener.run`, `market_brief.run_pipeline`; serve artifact JSON from `user_data/`.
@@ -117,7 +116,7 @@ Flask + Jinja templates under `frontend/templates/`, static under `frontend/stat
 - `/api/frontend/*` routes are BFF-style proxies (themes, watchlist, daily shortlist, market brief, screeners).
 - **No business logic** for screening metrics; renders tables/charts from backend JSON.
 
-Notable pages: `/main-view`, `/top-performance`, `/volspike-gapper`, `/rsi*`, `/rs-screener`, `/stock/<ticker>`, `/abi-watchlist`, `/daily-shortlist`, `/daily-themes`, `/market-brief`, `/themes`.
+Notable pages: `/main-view`, `/top-performance`, `/volspike-gapper`, `/rs-screener`, `/stock/<ticker>`, `/abi-watchlist`, `/daily-shortlist`, `/daily-themes`, `/market-brief`, `/themes`.
 
 ## LLM pipelines
 

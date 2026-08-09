@@ -15,7 +15,6 @@
      defaultSort:    { col: string, dir: 'asc'|'desc' }
      label:          string   Human label shown in list header and stats bar
      accentCss:      string   CSS value for --screener-accent, e.g. 'var(--accent-red)'
-     wideStorageKey: string   localStorage key for wide-layout override
      listValueFn:    function (stock) → { text, cls }
                               What to show in the list right-hand column.
                               cls: '' | 'positive' | 'negative' | 'muted'
@@ -114,37 +113,6 @@ window.DesktopScreener = (function () {
         let abiTickerNotesStatus = {};
         let newsPanel = null;
         let lastResponse = null;
-
-        const WIDE_STORAGE = config.wideStorageKey || 'wideLayoutOverride';
-        const WIDE_MQ = window.matchMedia('(min-width: 1600px)');
-
-        // ── Wide layout ────────────────────────────────────────────
-        function wideEffective() {
-            const o = localStorage.getItem(WIDE_STORAGE);
-            if (o === '1') return true;
-            if (o === '0') return false;
-            return WIDE_MQ.matches;
-        }
-
-        function applyWideLayout() {
-            document.body.classList.toggle('wide-layout', wideEffective());
-            const btn = document.getElementById('wideToggle');
-            if (btn) {
-                const wide = document.body.classList.contains('wide-layout');
-                btn.classList.toggle('active', wide);
-                btn.textContent = wide ? 'Standard layout' : 'Wide layout';
-            }
-            requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
-        }
-
-        function toggleWideLayout() {
-            localStorage.setItem(WIDE_STORAGE, wideEffective() ? '0' : '1');
-            applyWideLayout();
-        }
-
-        applyWideLayout();
-        WIDE_MQ.addEventListener('change', applyWideLayout);
-        document.getElementById('wideToggle')?.addEventListener('click', toggleWideLayout);
 
         // ── Helpers ────────────────────────────────────────────────
         function escAttr(s) {

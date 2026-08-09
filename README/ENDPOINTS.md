@@ -60,7 +60,7 @@ From `backend/app.py`:
 | Method | Path | Source |
 |--------|------|--------|
 | GET | `/api/stock/<ticker>` | `stock_metrics` + volspike/gapper + float |
-| GET | `/api/ohlc/<ticker>` | `ohlc` ⋈ `historical_rsi` (~400d); includes dma_50/200, ema_10/20, rsi_mktcap |
+| GET | `/api/ohlc/<ticker>` | `ohlc` ⋈ `ticker_moving_averages` (~400d); includes dma_50/200, ema_10/20 |
 | GET | `/api/earnings-eps/<ticker>` | `earnings` actual vs estimate (chart annotations) |
 | GET | `/api/volspike-events/<ticker>` | Spike/gap event dates from `stock_volspike_gapper` |
 | GET | `/api/earnings/<ticker>` | Full earnings history |
@@ -79,7 +79,6 @@ From `backend/app.py`:
 | GET | `/api/index-ohlc/<symbol>` | `index_prices` OHLC (~800d) for charts |
 | GET | `/api/vix-latest` | `^VIX` latest close + change |
 | GET | `/api/treasury-10y` | Scraped US10Y yield (CNBC) |
-| GET | `/api/sector-rsi` | Per-sector mcap-weighted RSI (top 10 names/sector) |
 
 ### RS screener
 
@@ -97,10 +96,6 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | **Return** `Return{1\|5\|20\|60\|120}D-*` | Intended: `dr_N >= RETURN_THRESHOLDS[N]`; calls `get_momentum_stocks` (**handler missing in `app.py` — will 500**). Not proxied by frontend. |
 | **Gapper** `Gapper-*` | Calls `get_gapper_stocks` (**missing**). Not proxied. |
 | **Volume** `Volume-*` | Calls `get_volume_spike_stocks` (**missing**). Not proxied. |
-| **RSI** `RSI-*` | `rsi IS NOT NULL`; order `rsi DESC`; limit 100 |
-| **RSIMktCap** `RSIMktCap-*` | Sort by `rsi_mktcap` |
-| **RSIMomentum** `RSIMomentum-*` | `historical_rsi`: `rsi_mktcap` change over 5 sessions; order change DESC |
-| **RSI index** `RSI-SPX`, `RSI-NDX`, `RSI-DJI` | Optional `/<market_cap>` slug on same handler |
 | **TopPerformance** `TopPerformance-*` | Union: top 30 by `dr_1`, `dr_5`, `dr_20` each (deduped) |
 | **BottomPerformance** `BottomPerformance-*` | Same windows; ascending sort |
 | **VolspikeGapper** `VolspikeGapper-*` | `spike_day_count > 0 OR gapper_day_count > 0`; order `last_event_date DESC` |
@@ -181,9 +176,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | `/volspike-gapper` | Vol spike + gapper |
 | `/technical-screener` | Reversal criterion |
 | `/high-sales-growth` | Tagged main_view rows |
-| `/rsi`, `/rsi-mktcap`, `/rsi-momentum` | RSI variants |
-| `/rsi-spx`, `/rsi-ndx`, `/rsi-dji` | Index constituents RSI |
-| `/sector-rsi`, `/sector-performance` | |
+| `/sector-performance` | Sector/index ETF returns |
 | `/rs-screener` | Relative strength |
 | `/stock/<ticker>` | Detail + charts |
 | `/themes` | `user_data/themes.json` editor |
@@ -213,17 +206,12 @@ Proxies to backend unless noted. Market-cap path segments use `all|micro|small|m
 | `GET /api/frontend/market-news/fmp` | `/api/market-news/fmp` |
 | `GET /api/frontend/market-news/seeking-alpha` | `/api/market-news/seeking-alpha` |
 | `GET /api/frontend/latest-date` | `/api/latest_date` |
-| `GET /api/frontend/sector-rsi` | `/api/sector-rsi` |
 | `GET /api/frontend/sector-performance` | `/api/sector-performance` |
 | `GET /api/frontend/homepage` | `/api/homepage` |
 | `GET /api/frontend/market-breadth` | `/api/market-breadth` |
 | `GET /api/frontend/index-ohlc/<symbol>` | `/api/index-ohlc/<symbol>` |
 | `GET /api/frontend/vix-latest` | `/api/vix-latest` |
 | `GET /api/frontend/treasury-10y` | `/api/treasury-10y` |
-| `GET /api/frontend/rsi/<market_cap>` | `/api/RSI-{Bucket}` |
-| `GET /api/frontend/rsi-mktcap/<market_cap>` | `/api/RSIMktCap-{Bucket}` |
-| `GET /api/frontend/rsi-momentum/<market_cap>` | `/api/RSIMomentum-{Bucket}` |
-| `GET /api/frontend/rsi-index/<index>[/<market_cap>]` | `/api/RSI-{SPX\|NDX\|DJI}[/<slug>]` |
 | `GET /api/frontend/top-performance/<market_cap>` | `/api/TopPerformance-{Bucket}` |
 | `GET /api/frontend/top-losers/<market_cap>` | `/api/BottomPerformance-{Bucket}` |
 | `GET /api/frontend/volspike-gapper/<market_cap>` | `/api/VolspikeGapper-{Bucket}` |

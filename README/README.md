@@ -44,8 +44,7 @@ docker-compose exec backend bash -c "
   python db_scripts/initialize_data/seed_ratios_from_fmp.py && \
   python db_scripts/initialize_data/seed_shares_float_from_fmp.py && \
   python db_scripts/update_data/stock_metrics_update.py && \
-  python db_scripts/update_data/historical_rsi_update.py && \
-  python db_scripts/update_data/rsi_indices_update.py && \
+  python db_scripts/update_data/ticker_moving_averages_update.py && \
   python db_scripts/update_data/volspike_gapper_update.py && \
   python db_scripts/update_data/main_view_update.py
 " && \
@@ -57,8 +56,7 @@ docker-compose exec backend bash -c "
   python db_scripts/update_data/daily_price_update.py  && \
  python db_scripts/update_data/daily_indices_update.py  && \
  python db_scripts/update_data/stock_metrics_update.py && \
-  python db_scripts/update_data/historical_rsi_update.py && \
-   python db_scripts/update_data/rsi_indices_update.py && \
+  python db_scripts/update_data/ticker_moving_averages_update.py && \
     python db_scripts/update_data/volspike_gapper_update.py && \
   python db_scripts/update_data/main_view_update.py
 "
@@ -75,8 +73,7 @@ python db_scripts/initialize_data/seed_analyst_estimates_from_fmp.py --limit 10 
   python db_scripts/initialize_data/seed_profiles_from_fmp.py --limit 10 && \
  python db_scripts/initialize_data/seed_ratios_from_fmp.py --limit 10 && \
  python db_scripts/update_data/stock_metrics_update.py && \
-  python db_scripts/update_data/historical_rsi_update.py && \
-   python db_scripts/update_data/rsi_indices_update.py && \
+  python db_scripts/update_data/ticker_moving_averages_update.py && \
    python db_scripts/update_data/volspike_gapper_update.py
 "
 ```
@@ -85,8 +82,7 @@ docker-compose exec backend bash -c "
   python db_scripts/update_data/daily_price_update.py --progress 10 && \
   python db_scripts/update_data/daily_indices_update.py --days 1 && \
   python db_scripts/update_data/stock_metrics_update.py && \
-  python db_scripts/update_data/historical_rsi_update.py && \
-  python db_scripts/update_data/rsi_indices_update.py && \
+  python db_scripts/update_data/ticker_moving_averages_update.py && \
   python db_scripts/update_data/volspike_gapper_update.py
 "
 ```

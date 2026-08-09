@@ -251,7 +251,6 @@
         endpoint: 'volspike-gapper',
         accentCss: 'var(--accent-yellow)',
         label: 'Vol Spike & Gapper - Weekly',
-        wideStorageKey: 'wideLayoutOverride',
 
         // Weeks stay newest-first (renderGroupedList keeps first-seen order);
         // within a week, rank by conviction score instead of event date.
@@ -297,7 +296,7 @@
 
             document.querySelectorAll('.recency-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    if (!btn.dataset.filter) return; // skip wide-toggle sharing the class
+                    if (!btn.dataset.filter) return;
                     document.querySelectorAll('.recency-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentRecency = btn.dataset.filter;
