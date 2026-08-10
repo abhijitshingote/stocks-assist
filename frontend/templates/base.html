@@ -450,14 +450,14 @@
                 <div class="nav-row">
                     <a href="/main-view">Main View</a>
                     <a href="/volspike-gapper">Vol Spike & Gaps</a>
-                    <a href="/volspike-gapper-weekly">Vol Spike & Gaps (W)</a>
+                    <a href="/volspike-gapper-weekly" title="Vol Spike & Gaps (W) (press V)">Vol Spike & Gaps (W)</a>
                     <a href="/top-performance">Top Returns</a>
                     <a href="/high-sales-growth">High Growth</a>
                     <a href="/rs-screener">Slow/Fast RS</a>
                     <a href="/top-losers">Top Losers</a>
                     <a href="/all-stocks">All Stocks</a>
                     <a href="/technical-screener">Technical</a>
-                    <a href="/abi-watchlist">Abi Watchlist</a>
+                    <a href="/abi-watchlist" title="Abi Watchlist (press W)">Abi Watchlist</a>
                 </div>
                 <div class="nav-row">
                     <a href="/market-brief">Market Brief</a>
@@ -672,6 +672,23 @@
             let saved = '0';
             try { saved = localStorage.getItem(NAV_HIDDEN_KEY) || '0'; } catch (e) {}
             apply(saved === '1');
+        })();
+
+        // Global page shortcuts (ignored while typing in inputs).
+        (function() {
+            document.addEventListener('keydown', function(e) {
+                const tag = (e.target && e.target.tagName) || '';
+                if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+                if (e.metaKey || e.ctrlKey || e.altKey) return;
+                const path = window.location.pathname.replace(/\/$/, '');
+                if (e.key === 'w' || e.key === 'W') {
+                    e.preventDefault();
+                    if (path !== '/abi-watchlist') window.location.href = '/abi-watchlist';
+                } else if (e.key === 'v' || e.key === 'V') {
+                    e.preventDefault();
+                    if (path !== '/volspike-gapper-weekly') window.location.href = '/volspike-gapper-weekly';
+                }
+            });
         })();
 
         // Navbar ticker search

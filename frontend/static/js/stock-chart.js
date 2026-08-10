@@ -195,7 +195,7 @@ async function fetchVolspikeEvents(ticker) {
 
 /**
  * Fetch headline fundamentals (market cap, current + forward PE/PS, rev
- * growth) for the prominent metrics strip rendered in the chart legend.
+ * growth, ATR%) for the prominent metrics strip rendered in the chart legend.
  */
 async function fetchStockMetrics(ticker) {
     try {
@@ -214,6 +214,7 @@ async function fetchStockMetrics(ticker) {
             ps_t: data.ps_t,
             ps_t_plus_1: data.ps_t_plus_1,
             rev_growth_t_plus_1: data.rev_growth_t_plus_1,
+            atr20: data.atr20,
             next_earnings_date: data.next_earnings_date,
         };
     } catch (e) {
@@ -952,6 +953,38 @@ class StockChart {
             border-left: 1px solid ${CHART_CONFIG.borderColor};
             font-family: 'Outfit', sans-serif;
         `;
+
+        // ── ATR% cell (before price) ──────────────────────────────────
+        const atrCell = document.createElement('div');
+        atrCell.style.cssText = `display: flex; flex-direction: column; line-height: 1.1;`;
+        const atrLabelEl = document.createElement('span');
+        atrLabelEl.textContent = '20 ATR%';
+        atrLabelEl.style.cssText = `
+            font-size: ${this.options.compact ? 9 : 10}px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: ${CHART_CONFIG.textColor};
+            margin-bottom: 2px;
+        `;
+        const atrValueEl = document.createElement('span');
+        atrValueEl.textContent = metrics.atr20 != null
+            ? Number(metrics.atr20).toFixed(1) + '%'
+            : '--';
+        atrValueEl.style.cssText = `
+            font-size: ${this.options.compact ? 15 : 18}px;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            color: ${metrics.atr20 == null
+                ? 'var(--text-muted, #6e7681)'
+                : (metrics.atr20 > 5
+                    ? 'var(--accent-orange, #d29922)'
+                    : 'var(--text-primary, #e6edf3)')};
+            letter-spacing: 0.01em;
+        `;
+        atrCell.appendChild(atrLabelEl);
+        atrCell.appendChild(atrValueEl);
+        metricsRow.appendChild(atrCell);
 
         // ── Price cell (price + day-change in parentheses, two-color) ──
         const priceCell = document.createElement('div');
