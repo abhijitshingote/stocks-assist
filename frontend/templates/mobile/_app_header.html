@@ -1,0 +1,24 @@
+{#
+  Unified mobile app header.
+  Variables (set by caller):
+    header_stats (bool) — show VIX/10Y/count row2 (screener pages)
+    page_title   (str)  — show subtitle row + utility-header class (utility pages)
+    Neither              — bare header-row1 only (stock page)
+#}
+<header class="app-header{% if page_title %} utility-header{% endif %}">
+  <div class="header-row1">
+    <a class="logo logo-link" href="/m">stocks_assist</a>
+    {% include "mobile/_ticker_search.html" %}
+    {% include "mobile/_nav_button.html" %}
+  </div>
+  {% if header_stats %}
+  <div class="header-row2">
+    <span>VIX <b id="vixVal">—</b></span>
+    <span>10Y <b id="us10yVal">—</b></span>
+    <span>Stocks <b id="totalStocks">—</b></span>
+    <span>Showing <b id="showingCount">—</b></span>
+  </div>
+  {% elif page_title %}
+  <div class="utility-title">{{ page_title }}</div>
+  {% endif %}
+</header>

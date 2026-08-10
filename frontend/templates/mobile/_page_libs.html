@@ -1,0 +1,42 @@
+{#
+  Central script loader for all mobile pages.
+  Set `page_libs` in the page (or its parent partial) before this include:
+
+    {% set page_libs = ['charts', 'markdown', 'stock-chart', 'news', 'util', 'screener'] %}
+
+  Available tokens:
+    charts        → lightweight-charts CDN
+    markdown      → marked CDN
+    stock-chart   → js/stock-chart.js
+    news          → js/stock-news-shared.js
+    master-detail → js/mobile/master-detail.js
+    util          → js/mobile/util.js
+    screener      → js/mobile/screener-app.js
+
+  nav.js + search.js are NOT included here.
+  - _shell.html adds them after page_scripts (utility pages).
+  - _screener_libs.html adds them after this include (screener pages).
+  - Stock page overrides the scripts block and adds them explicitly.
+#}
+{% set _libs = page_libs if page_libs is defined else [] %}
+{% if 'charts' in _libs %}
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+{% endif %}
+{% if 'markdown' in _libs %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+{% endif %}
+{% if 'stock-chart' in _libs %}
+<script src="{{ url_for('static', filename='js/stock-chart.js') }}"></script>
+{% endif %}
+{% if 'news' in _libs %}
+<script src="{{ url_for('static', filename='js/stock-news-shared.js') }}"></script>
+{% endif %}
+{% if 'master-detail' in _libs %}
+<script src="{{ url_for('static', filename='js/mobile/master-detail.js') }}"></script>
+{% endif %}
+{% if 'util' in _libs %}
+<script src="{{ url_for('static', filename='js/mobile/util.js') }}"></script>
+{% endif %}
+{% if 'screener' in _libs %}
+<script src="{{ url_for('static', filename='js/mobile/screener-app.js') }}"></script>
+{% endif %}

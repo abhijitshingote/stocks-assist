@@ -1,10 +1,7 @@
-{% extends "mobile/_base.html" %}
+{% extends "mobile/_shell.html" %}
 {% set page_title = 'Context 2' %}
 {% block title %}Context 2 — Mobile{% endblock %}
-{% block styles %}{% include "mobile/_utility_styles.html" %}{% endblock %}
-{% block body %}
-<div class="phone" id="phone">
-  {% include "mobile/_utility_header.html" %}
+{% block content %}
   <div class="utility-body utility-scroll">
     <div class="ctx2-section-title">Research & Commentary</div>
     <div class="ctx2-panel">
@@ -53,7 +50,4 @@
       </a>
     </div>
   </div>
-  {% include "mobile/_nav_drawer.html" %}
-</div>
 {% endblock %}
-{% block scripts %}{% include "mobile/_nav_libs.html" %}{% endblock %}

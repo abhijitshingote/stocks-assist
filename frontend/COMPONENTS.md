@@ -241,13 +241,133 @@ One layout system for all 9 desktop screener pages: shared shell + `screener.css
 
 ## Mobile Components  *(separate /m/* site)*
 
+> Rule: mobile consumes `static/css/tokens.css` read-only via `@import` in `static/css/mobile/tokens.css`. Mobile-only custom properties go in `static/css/mobile/tokens.css`. Never add mobile-only variables to the shared `static/css/tokens.css`.
+
+### CSS Layer Stack
+
+Every mobile page loads these layers in order:
+
+| File | Contents |
+|------|----------|
+| `static/css/mobile/tokens.css` | `@import '../tokens.css'`; aliases `--bg-dark → --bg`, `--text-primary → --fg`, `--accent-green → --success`, etc.; mobile-only vars (radius, motion, safe-area, Inter font override) |
+| `static/css/mobile/base.css` | Reset, `html/body`, `.phone`, `.app-header`, logo, search box, menu button, `header-row2` |
+| `static/css/mobile/screener.css` | Filter chip/drawer, list zone, detail zone, tabs, charts panel, sector sheet, mode toggle |
+| `static/css/mobile/panels.css` | Loading overlay, spinner, news tab, metrics rows, notes modal, tag pills, star rating |
+| `static/css/mobile/nav.css` | Nav drawer backdrop, sheet, links, footer, drawer filter strips |
+| `static/css/mobile/benzinga-overrides.css` | Dark-mode overrides for `benzinga-news.css` (must load after it) |
+| `static/css/mobile/pages.css` | Utility-page layouts: master-detail, context charts, logs viewer, market brief, market news, home dashboard |
+
+Screener pages also prepend `static/css/benzinga-news.css` before the layer stack. Utility pages append `pages.css` after the layer stack. Both handled by `templates/mobile/_mobile_styles.html`.
+
+### Central Style Partial
+| | |
+|---|---|
+| **File** | `templates/mobile/_mobile_styles.html` |
+| **Loads** | `tokens.css` → `base.css` → `screener.css` → `panels.css` → `nav.css` → `benzinga-overrides.css` |
+| **Used by** | `_shell.html` (utility pages) and `_screener_styles.html` (screener pages) |
+
+### Central Script Partial
+| | |
+|---|---|
+| **File** | `templates/mobile/_page_libs.html` |
+| **Usage** | Set `page_libs` list in the page; always appends `nav.js` + `search.js` |
+| **Tokens** | `charts`, `markdown`, `stock-chart`, `news`, `master-detail`, `util`, `screener` |
+| **Used by** | `_shell.html` (utility pages) and `_screener_libs.html` (screener pages) |
+
+---
+
+### Mobile Page Shell  *(utility pages)*
+| | |
+|---|---|
+| **File** | `templates/mobile/_shell.html` |
+| **Extends** | `templates/mobile/_base.html` |
+| **CSS** | `_mobile_styles.html` + `pages.css` (default; overrideable via `styles` block) |
+| **Blocks** | `title`, `page_styles`, `body_class`, `before_header`, `content` (required), `outside_phone`, `page_scripts` |
+| **Used by** | All 8 utility mobile pages |
+
+### Mobile App Header
+| | |
+|---|---|
+| **File** | `templates/mobile/_app_header.html` |
+| **Variants** | `header_stats=true` → VIX/10Y/count row2 (screener); `page_title` set → subtitle + `utility-header` class; neither → bare header-row1 (stock page) |
+| **Used by** | `_shell.html`, `_screener_shell.html` |
+
+### Mobile Nav Drawer
+| | |
+|---|---|
+| **File** | `templates/mobile/_nav_drawer.html` |
+| **CSS** | `static/css/mobile/nav.css` |
+| **JS** | `static/js/mobile/nav.js` |
+| **Used by** | `_shell.html`, `_screener_shell.html` |
+
+### Shared Detail Panel
+| | |
+|---|---|
+| **File** | `templates/mobile/_detail_panel.html` |
+| **Variables** | `detail_ticker` (default `—`), `detail_link_href` (default `#`), `detail_link_label` (default `Detail →`) |
+| **Used by** | `_screener_shell.html`, `stock.html` |
+
+### Shared Notes Modal
+| | |
+|---|---|
+| **File** | `templates/mobile/_notes_modal.html` |
+| **CSS** | `.wl-modal-overlay` in `panels.css` |
+| **Used by** | `_screener_shell.html` (inside `.phone`), `stock.html` (via `outside_phone` block) |
+
+---
+
 ### Mobile Screener Shell
 | | |
 |---|---|
 | **File** | `templates/mobile/_screener_shell.html` |
-| **CSS** | `static/css/mobile/shell.css` |
+| **CSS** | `_screener_styles.html` → benzinga-news.css + `_mobile_styles.html` |
 | **JS engine** | `static/js/mobile/screener-app.js` |
-| **Used by** | All mobile screener pages (thin config wrappers in `templates/mobile/`) |
+| **Script partial** | `templates/mobile/_screener_libs.html` (sets `page_libs` and calls `_page_libs.html`) |
+| **Used by** | All 5 mobile screener pages (thin config wrappers) |
+
+### Mobile Screener Pages
+
+| Page | Template | Route |
+|------|----------|-------|
+| Main View | `mobile/main_view.html` | `/m/main-view` |
+| Vol Spike & Gaps | `mobile/volspike_gapper.html` | `/m/volspike-gapper` |
+| Vol Spike & Gaps (W) | `mobile/volspike_gapper_weekly.html` | `/m/volspike-gapper-weekly` |
+| Top Returns | `mobile/top_performance.html` | `/m/top-performance` |
+| Top Losers | `mobile/top_losers.html` | `/m/top-losers` |
+| High Growth | `mobile/high_sales_growth.html` | `/m/high-sales-growth` |
+| Slow/Fast RS | `mobile/rs_screener.html` | `/m/rs-screener` |
+| All Stocks | `mobile/all_stocks.html` | `/m/all-stocks` |
+| Technical | `mobile/technical_screener.html` | `/m/technical-screener` |
+| Abi Watchlist | `mobile/abi_watchlist.html` | `/m/abi-watchlist` |
+
+### Mobile Utility Pages
+
+| Page | Template | Route | `page_libs` |
+|------|----------|-------|-------------|
+| Dashboard | `mobile/index.html` | `/m` | `['charts']` |
+| Context | `mobile/context.html` | `/m/context` | `['charts']` |
+| Context 2 | `mobile/context2.html` | `/m/context-2` | `[]` |
+| Market Brief | `mobile/market_brief.html` | `/m/market-brief` | `[]` |
+| Market News | `mobile/market_news.html` | `/m/market-news` | `['news']` |
+| Logs | `mobile/logs.html` | `/m/logs` | `['master-detail']` |
+| Abi Notes | `mobile/abi_general_notes.html` | `/m/abi-general-notes` | `['master-detail']` |
+| Stock Detail | `mobile/stock.html` | `/m/stock/<ticker>` | `['charts','markdown','stock-chart','news','util']` |
+
+---
+
+### Adding a New Mobile Page
+
+**Utility page:**
+1. Create `templates/mobile/my_page.html` extending `_shell.html`; set `page_title`, `page_libs`, fill `content` and `page_scripts` blocks
+2. Add CSS to `pages.css`; add JS to `static/js/mobile/pages/my-page.js`
+3. Add route in `frontend/app.py` under `/m/...`
+4. Add link in `templates/mobile/_nav_drawer.html`
+5. Update this catalog
+
+**Screener page (stock list + detail panel):**
+1. Create a 5-line wrapper (see `volspike_gapper.html` as a template)
+2. Create `static/js/mobile/pages/my-screener.js` calling `MobileScreener.init({...})`
+3. Add route and nav link as above; update this catalog
 
 ---
 

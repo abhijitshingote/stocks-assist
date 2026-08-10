@@ -119,7 +119,23 @@ def m_index():
 
 @app.route('/m/main-view')
 def m_main_view():
-    return render_template('main_view_hybrid.html')
+    return render_template('mobile/main_view.html')
+
+@app.route('/m/volspike-gapper-weekly')
+def m_volspike_gapper_weekly():
+    return render_template('mobile/volspike_gapper_weekly.html')
+
+@app.route('/m/all-stocks')
+def m_all_stocks():
+    return render_template('mobile/all_stocks.html')
+
+@app.route('/m/rs-screener')
+def m_rs_screener():
+    return render_template('mobile/rs_screener.html')
+
+@app.route('/m/technical-screener')
+def m_technical_screener():
+    return render_template('mobile/technical_screener.html')
 
 @app.route('/m/high-sales-growth')
 def m_high_sales_growth():
