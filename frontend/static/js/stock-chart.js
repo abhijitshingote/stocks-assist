@@ -214,6 +214,7 @@ async function fetchStockMetrics(ticker) {
             ps_t: data.ps_t,
             ps_t_plus_1: data.ps_t_plus_1,
             rev_growth_t_plus_1: data.rev_growth_t_plus_1,
+            next_earnings_date: data.next_earnings_date,
         };
     } catch (e) {
         console.warn(`Could not fetch metrics for ${ticker}:`, e);
@@ -257,6 +258,16 @@ function formatGrowthPct(value) {
     if (value == null) return '--';
     const sign = value >= 0 ? '+' : '';
     return sign + Number(value).toFixed(1) + '%';
+}
+
+/**
+ * Format next earnings date for the metrics strip (e.g. "Aug 26").
+ */
+function formatEarningsDate(isoDate) {
+    if (!isoDate) return '--';
+    const d = new Date(isoDate + 'T00:00:00');
+    if (Number.isNaN(d.getTime())) return '--';
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
 // ============================================================================
@@ -1013,6 +1024,13 @@ class StockChart {
                     : (metrics.rev_growth_t_plus_1 >= 0
                         ? 'var(--accent-green, #3fb950)'
                         : 'var(--accent-red, #f85149)'),
+            },
+            {
+                label: 'Earnings',
+                value: formatEarningsDate(metrics.next_earnings_date),
+                color: metrics.next_earnings_date
+                    ? 'var(--text-primary, #e6edf3)'
+                    : 'var(--text-muted, #6e7681)',
             },
         ];
 

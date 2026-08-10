@@ -1,44 +1,93 @@
 {% extends "base.html" %}
 
+{% block body_class %}screener-page page-stock-detail{% endblock %}
 {% block title %}{{ ticker }} - Stock Metrics{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
+{% endblock %}
+
 {% block extra_styles %}
-.stock-header {
+:root { --screener-accent: var(--accent-green); }
+
+/* Stock detail uses screener tp-layout but without the left stock list. */
+.page-stock-detail .tp-layout {
+    height: calc(100vh - 55px);
+}
+body.nav-hidden.page-stock-detail .tp-layout {
+    height: calc(100vh - 12px);
+}
+.page-stock-detail .tp-center {
+    min-width: 280px; /* prevent metrics content from crushing chart to 0 width */
+}
+.page-stock-detail #stockChartPanel {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
+    flex-direction: column;
 }
-
-.ticker-info h1 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--accent-green);
-    margin-bottom: 0.25rem;
+.page-stock-detail #chartLoading {
+    position: absolute;
+    inset: 1.5rem 0 0 0;
+    z-index: 2;
+    background: var(--bg-card);
 }
-
-.company-name {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-}
-
-.company-market-cap {
-    color: var(--accent-yellow);
-    font-weight: 700;
-    font-size: 1.3rem;
-    margin-left: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
-}
-
-.header-tags {
+.page-stock-detail .tp-right-column {
     display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
+    width: 300px;
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 300px; /* fixed: data-sections min-content must not steal chart width */
+}
+.page-stock-detail .tp-right-column.col-collapsed {
+    flex-basis: 26px;
+    max-width: 26px;
+}
+.page-stock-detail .tp-metrics-body {
+    overflow-x: hidden;
+}
+.page-stock-detail .tp-metrics-body .data-sections {
+    margin: 0;
+    gap: 0.1rem;
+    min-width: 0;
+}
+.page-stock-detail .tp-metrics-body .section-group {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0.15rem;
+    min-width: 0;
+}
+.page-stock-detail .tp-metrics-body .data-section {
+    min-width: 0;
+    width: 100%;
+    flex: none;
+    padding: 0.3rem 0.4rem;
+}
+.page-stock-detail .tp-metrics-body .section-row,
+.page-stock-detail .tp-metrics-body .returns-inline,
+.page-stock-detail .tp-metrics-body .growth-timeline {
     flex-wrap: wrap;
+    min-width: 0;
 }
+.page-stock-detail .detail-below {
+    margin-top: 0.75rem;
+}
+.page-stock-detail .header-price {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-left: 0.35rem;
+}
+.page-stock-detail .header-price.price-positive { color: var(--accent-green); }
+.page-stock-detail .header-price.price-negative { color: var(--accent-red); }
+.page-stock-detail .header-pct {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.page-stock-detail .header-pct.price-positive { color: var(--accent-green); }
+.page-stock-detail .header-pct.price-negative { color: var(--accent-red); }
+
+.price-positive { color: var(--accent-green); }
+.price-negative { color: var(--accent-red); }
 
 .tag {
     display: inline-block;
@@ -48,31 +97,6 @@
     border-radius: 4px;
     font-size: 0.75rem;
     color: var(--text-secondary);
-}
-
-.price-display {
-    text-align: right;
-}
-
-.current-price {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 2rem;
-    font-weight: 700;
-}
-
-.price-positive { color: var(--accent-green); }
-.price-negative { color: var(--accent-red); }
-
-.pct-change {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: 600;
-    text-align: right;
-}
-
-.price-subtext {
-    font-size: 0.85rem;
-    color: var(--text-muted);
 }
 
 /* Data Sections Container (main_view style) */
@@ -455,143 +479,11 @@
     }
 }
 
-/* Tuned for a MacBook Air 13" (content area ~1400px wide). Cap the page
-   so the chart is a well-proportioned landscape rectangle, not a wide
-   thin strip. */
-main {
-    max-width: 1150px;
-    padding: 1rem 1rem;
-}
-
-.back-link {
-    margin-bottom: 0.5rem;
-}
-
-.stock-header {
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-}
-
-.data-sections {
-    margin-bottom: 0.75rem;
-}
-
-/* Chart Section: fixed landscape rectangle tuned for a MacBook Air 13".
-   ~1118px wide (1150px main - padding) x 620px tall = 1.80:1, matching
-   the thinkorswim reference chart's landscape shape. Fixed pixel height
-   (no vh / aspect-ratio) so it renders consistently on this device. */
-.chart-section {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 0.5rem 0.75rem;
-    margin: 0 auto 1rem;
+#stockChartContainer {
+    flex: 1;
+    min-height: 0;
     width: 100%;
-    height: 856px;
-    display: flex;
-    flex-direction: column;
 }
-
-.chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-#chartContainer {
-    flex: 1 1 auto;
-    width: 100%;
-    height: auto;
-    min-height: 320px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-#chartLoading {
-    flex: 1 1 auto;
-    height: auto;
-    min-height: 320px;
-}
-
-.chart-legend {
-    flex-shrink: 0;
-    margin-top: 0.35rem;
-    padding-top: 0.35rem;
-    border-top: 1px solid var(--border-color);
-    font-size: 0.7rem;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-}
-
-.chart-stats {
-    flex-shrink: 0;
-    margin-top: 0.25rem;
-    font-size: 0.7rem;
-}
-
-@media (max-width: 768px) {
-    main {
-        padding: 0.75rem 0.5rem;
-    }
-
-    .chart-section {
-        /* On small screens fall back to a tall fixed height since other
-           sections stack vertically and consume the viewport. */
-        height: auto;
-        min-height: 520px;
-    }
-
-    #chartContainer,
-    #chartLoading {
-        flex: 1 1 auto;
-        min-height: 360px;
-    }
-}
-
-.chart-header h2 {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin: 0;
-}
-
-.chart-timeframe {
-    display: flex;
-    gap: 0.4rem;
-}
-
-.timeframe-btn {
-    padding: 0.35rem 0.6rem;
-    border-radius: 6px;
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
-    transition: all 0.2s;
-}
-
-.timeframe-btn:hover {
-    border-color: var(--accent-blue);
-    color: var(--text-primary);
-}
-
-.timeframe-btn.active {
-    background: var(--accent-blue);
-    border-color: var(--accent-blue);
-    color: var(--bg-dark);
-}
-
-/* Chart container heights are driven by the flex layout in .chart-section
-   (see above). The fixed pixel heights below are kept only as fallbacks. */
-#chartContainer-fallback { display: none; }
 
 .chart-loading {
     display: flex;
@@ -599,51 +491,8 @@ main {
     align-items: center;
     justify-content: center;
     flex: 1 1 auto;
-    min-height: 320px;
+    min-height: 200px;
     color: var(--text-muted);
-}
-
-.chart-legend {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.75rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--border-color);
-    font-size: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    color: var(--text-secondary);
-}
-
-.legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-}
-
-.legend-dot.bullish { background: var(--accent-green); }
-.legend-dot.bearish { background: var(--accent-red); }
-
-.chart-stats {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-}
-
-.chart-stat {
-    color: var(--text-secondary);
-}
-
-.chart-stat span {
-    color: var(--text-primary);
-    margin-left: 0.25rem;
 }
 
 /* Loading States */
@@ -1154,8 +1003,6 @@ main {
 {% endblock %}
 
 {% block content %}
-<a href="/" class="back-link">← Back to Home</a>
-
 <div id="loading" class="loading">
     <div class="loading-spinner"></div>
     <p>Loading stock data...</p>
@@ -1167,30 +1014,82 @@ main {
 </div>
 
 <div id="stock-content" style="display: none;">
-    <!-- Header -->
-    <div class="stock-header">
-        <div class="ticker-info">
-            <h1 id="ticker">{{ ticker }}</h1>
-            <div class="company-name" id="companyName">Loading...</div>
-            <div class="header-tags">
-                <span class="tag" id="sector">--</span>
-                <span class="tag" id="industry">--</span>
+    <div class="tp-layout" id="mainLayout">
+        <div class="tp-center" id="tpCenter">
+            <div id="detailHeader">
+                <div class="chart-panel" style="padding: 0.2rem 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+                        <span class="chart-ticker-info">
+                            <span class="ticker-name" id="ticker">{{ ticker }}</span>
+                            <span class="company-name" id="companyName"></span>
+                            <span class="mktcap-badge" id="detailMktCap"></span>
+                            <span class="header-price" id="currentPrice">--</span>
+                            <span class="header-pct" id="pctChange"></span>
+                            <span class="sector-industry" id="detailSectorIndustry"></span>
+                            <span class="sector-industry" id="range52Week"></span>
+                        </span>
+                        <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership"
+                            onclick="toggleWatchlist()">+ Watchlist</button>
+                        <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes"
+                            onclick="openNotesModalForStock()">📝 Abi ticker notes</button>
+                        <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners"
+                            onclick="window._dlOpenForTicker(ticker)">👎</button>
+                        <div class="chart-timeframes" id="chartTimeframes">
+                            <button data-days="30">1M</button>
+                            <button data-days="90">3M</button>
+                            <button data-days="180">6M</button>
+                            <button data-days="365" class="active">1Y</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="preference-controls">
-                <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership" onclick="toggleWatchlist()" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">+ Watchlist</button>
-                <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes for this ticker" onclick="openNotesModalForStock()" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">📝 Abi ticker notes</button>
-                <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners" onclick="window._dlOpenForTicker(ticker)" style="font-size: 0.8rem; padding: 0.35rem 0.7rem;">👎</button>
-            </div>
-        </div>
-        <div class="price-display">
-            <div class="current-price" id="currentPrice">--</div>
-            <div class="pct-change" id="pctChange"></div>
-            <div class="price-subtext" id="range52Week">52W: --</div>
-        </div>
-    </div>
 
-    <!-- Main View Style Metrics -->
-    <div class="data-sections" id="dataSections">
+            <div class="charts-container" id="chartsContainer">
+                <div class="chart-panel" id="stockChartPanel" style="flex: 1; min-height: 200px;">
+                    <div class="chart-panel-header">
+                        <span class="chart-panel-title" id="stockChartTitle">Price Chart</span>
+                    </div>
+                    <div id="chartLoading" class="chart-loading">
+                        <div class="loading-spinner"></div>
+                        <span>Loading chart...</span>
+                    </div>
+                    <div id="stockChartContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tp-right-column visible" id="tpRightColumn">
+            <button type="button" class="tp-col-toggle" id="tpColToggle" aria-expanded="true" title="Collapse panel to widen chart">›</button>
+            <div class="tp-stack-panel" id="tpNewsStack">
+                <div class="tp-stack-head" id="tpNewsHeadRow">
+                    <button type="button" class="tp-collapse-icon" id="tpNewsCollapseBtn"
+                        aria-expanded="true" aria-controls="tpNewsStackBody" title="Collapse/expand news">
+                        <span class="tp-chevron" aria-hidden="true">▼</span>
+                    </button>
+                    <span class="tp-stack-title"><span>📰</span> News</span>
+                    <div class="news-actions-row">
+                        <button type="button" class="news-load-btn" id="tpLoadNewsBtn">Load News</button>
+                        <button type="button" class="news-benzinga-btn" id="tpBenzingaNewsBtn">Get Benzinga</button>
+                    </div>
+                </div>
+                <div class="tp-stack-body" id="tpNewsStackBody">
+                    <div class="tp-news-inner" id="tpNewsInner">
+                        <div id="tpNewsContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tp-stack-panel tp-metrics-stack" id="tpMetricsStack">
+                <div class="tp-metrics-header" id="tpMetricsHead"
+                    role="button" tabindex="0" aria-expanded="true" aria-controls="tpMetricsBody">
+                    <span class="tp-chevron" aria-hidden="true">▼</span>
+                    <div class="tp-metrics-header-main">
+                        <span class="tp-metrics-ticker" id="metricsTicker">{{ ticker }}</span>
+                        <span class="tp-metrics-company" id="metricsCompany"></span>
+                    </div>
+                </div>
+                <div class="tp-metrics-body" id="tpMetricsBody">
+<div class="data-sections" id="dataSections">
         <!-- Row 1: Price, Technical, Returns -->
         <div class="section-group full-row">
             <!-- Price & Market Section -->
@@ -1370,57 +1269,13 @@ main {
                 </div>
             </div>
         </div>
-    </div>
+    </div><!-- /dataSections -->
+                </div><!-- /tpMetricsBody -->
+            </div><!-- /tpMetricsStack -->
+        </div><!-- /tpRightColumn -->
+    </div><!-- /tp-layout -->
 
-    <!-- Candlestick Chart -->
-    <div class="chart-section">
-        <div class="chart-header">
-            <h2>Price Chart</h2>
-            <div class="chart-timeframe">
-                <button class="timeframe-btn" data-days="30">1M</button>
-                <button class="timeframe-btn" data-days="90">3M</button>
-                <button class="timeframe-btn" data-days="180">6M</button>
-                <button class="timeframe-btn" data-days="365">1Y</button>
-            </div>
-        </div>
-        <div id="chartLoading" class="chart-loading">
-            <div class="loading-spinner"></div>
-            <span>Loading chart...</span>
-        </div>
-        <div id="chartContainer"></div>
-        <div class="chart-legend">
-            <div class="legend-item">
-                <div class="legend-dot bullish"></div>
-                <span>Bullish</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot bearish"></div>
-                <span>Bearish</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: #ffffff;"></div>
-                <span>10 EMA</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: #ffa500;"></div>
-                <span>20 EMA</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: #00ff00;"></div>
-                <span>50 DMA</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: #ff0000;"></div>
-                <span>200 DMA</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-dot" style="background: #f5f5dc;"></div>
-                <span>EPS (A=Actual, E=Est)</span>
-            </div>
-        </div>
-        <div class="chart-stats" id="chartStats"></div>
-    </div>
-
+    <div class="detail-below">
     <!-- Fundamentals Sections -->
     <div class="detail-sections">
         <!-- Earnings Table -->
@@ -1464,25 +1319,9 @@ main {
         </div>
     </div>
 
-    <!-- News Section -->
-    <div class="news-section">
-        <div class="news-header">
-            <h2><span class="card-icon">📰</span> News</h2>
-            <div class="news-header-actions">
-                <button type="button" class="news-load-btn" id="loadNewsBtn">Load News</button>
-                <button type="button" class="news-benzinga-btn" id="benzingaNewsBtn">Get Benzinga News</button>
-            </div>
-        </div>
-        <div id="newsContent"></div>
+
+        <div class="updated-at" id="updatedAt"></div>
     </div>
-
-    <!-- Notes Section / AI Stock Research modal removed: the stock_notes
-         store has been deprecated. Per-ticker notes are now handled by the
-         "Abi ticker notes" button at the top of this page (file-only
-         abi_ticker_notes.json). The Perplexity / Claude AI research feature
-         was removed with it. -->
-
-    <div class="updated-at" id="updatedAt"></div>
 </div>
 {% endblock %}
 
@@ -1619,23 +1458,25 @@ async function loadStockData() {
             return;
         }
         
-        // Header
+        // Header (screener-style compact bar)
         document.getElementById('ticker').textContent = data.ticker;
-        const companyNameEl = document.getElementById('companyName');
+        document.getElementById('metricsTicker').textContent = data.ticker;
         const companyName = data.company_name || 'Unknown Company';
-        const marketCapDisplay = data.market_cap ? ' <span class="company-market-cap">( $' + formatLargeNumber(data.market_cap).replace('$', '') + ' )</span>' : '';
-        companyNameEl.innerHTML = companyName + marketCapDisplay;
-        document.getElementById('sector').textContent = data.sector || '--';
-        document.getElementById('industry').textContent = data.industry || '--';
-        
-        // Price in header
+        document.getElementById('companyName').textContent = companyName;
+        document.getElementById('metricsCompany').textContent = companyName;
+        document.getElementById('detailMktCap').textContent = data.market_cap
+            ? formatLargeNumber(data.market_cap) : '';
+        const sector = data.sector || '';
+        const industry = data.industry || '';
+        document.getElementById('detailSectorIndustry').textContent =
+            [sector, industry].filter(Boolean).join(' · ') || '--';
+
         if (data.current_price != null) {
             const priceEl = document.getElementById('currentPrice');
             priceEl.textContent = '$' + formatNumber(data.current_price, 2);
             const isPositive = data.dr_1 == null || data.dr_1 >= 0;
             priceEl.classList.add(isPositive ? 'price-positive' : 'price-negative');
         }
-        // Pct change
         const pctEl = document.getElementById('pctChange');
         if (data.dr_1 != null) {
             const sign = data.dr_1 >= 0 ? '+' : '';
@@ -1822,24 +1663,31 @@ async function loadStockData() {
 // Chart Functions (using shared module)
 // ============================================
 
+function chartPanelHeight() {
+    const panel = document.getElementById('stockChartPanel');
+    if (!panel) return 400;
+    const header = panel.querySelector('.chart-panel-header');
+    const usedH = (header ? header.offsetHeight : 20) + 10;
+    return Math.max(panel.clientHeight - usedH, 200);
+}
+
 async function loadChartData() {
+    const container = document.getElementById('stockChartContainer');
+    const loading = document.getElementById('chartLoading');
     try {
-        document.getElementById('chartLoading').style.display = 'flex';
-        
-        // Use shared chart module (price + volume only; RSI sub-chart
-        // removed so the main chart occupies the full section). The actual
-        // rendered height is driven by the flex layout of .chart-section
-        // and kept in sync via a ResizeObserver below.
-        stockChart = new StockChart('chartContainer', {
-            height: 600,
+        loading.style.display = 'flex';
+        const tickerH = chartPanelHeight();
+        container.style.height = tickerH + 'px';
+
+        stockChart = new StockChart('stockChartContainer', {
+            height: tickerH,
             showRSI: false,
         });
-        
+
         await stockChart.load(ticker);
-        
-        document.getElementById('chartLoading').style.display = 'none';
-        
-        // Update price display
+        loading.style.display = 'none';
+        stockChart.setTimeframe(currentTimeframe);
+
         if (stockChart.allData.length > 0) {
             const latestData = stockChart.allData[stockChart.allData.length - 1];
             if (latestData.close != null) {
@@ -1848,74 +1696,44 @@ async function loadChartData() {
         }
 
         setupTimeframeButtons();
-        updateChartStats();
 
-        // Dynamically resize the price + volume panes to fill the
-        // .chart-section container (which itself fills the viewport).
-        // The shared chart module only resizes width on window resize; we
-        // add a ResizeObserver so the chart grows / shrinks with the
-        // available vertical space, like a trading platform.
-        const chartHost = document.getElementById('chartContainer');
         const fitChart = () => {
-            if (!stockChart || !chartHost) return;
-            const hostH = chartHost.clientHeight;
-            const hostW = chartHost.clientWidth;
-            if (hostH > 0 && hostW > 0) {
-                stockChart.resizeToHeight(hostH, hostW);
-            }
+            if (!stockChart || !container) return;
+            const h = chartPanelHeight();
+            container.style.height = h + 'px';
+            stockChart.resizeToHeight(h, container.clientWidth);
         };
-        // Initial fit after layout settles.
         requestAnimationFrame(fitChart);
         requestAnimationFrame(() => requestAnimationFrame(fitChart));
 
-        if (window.ResizeObserver) {
+        const panel = document.getElementById('stockChartPanel');
+        if (window.ResizeObserver && panel) {
             const ro = new ResizeObserver(() => requestAnimationFrame(fitChart));
-            ro.observe(chartHost);
+            ro.observe(panel);
             window.addEventListener('beforeunload', () => ro.disconnect());
         }
         window.addEventListener('resize', () => requestAnimationFrame(fitChart));
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) requestAnimationFrame(fitChart);
         });
-        
+
     } catch (error) {
         console.error('Error loading chart data:', error);
-        document.getElementById('chartLoading').innerHTML = '<span style="color: var(--text-muted);">Failed to load chart</span>';
+        loading.innerHTML = '<span style="color: var(--text-muted);">Failed to load chart</span>';
     }
 }
 
 function setupTimeframeButtons() {
-    document.querySelectorAll('.timeframe-btn').forEach(btn => {
-        // Set initial active state based on stored timeframe
-        if (parseInt(btn.dataset.days) === currentTimeframe) {
-            btn.classList.add('active');
-        }
-        
+    const btns = document.querySelectorAll('#chartTimeframes button');
+    btns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.days, 10) === currentTimeframe);
         btn.addEventListener('click', function() {
-            document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
+            btns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            currentTimeframe = parseInt(this.dataset.days);
-            if (stockChart) {
-                stockChart.setTimeframe(currentTimeframe);
-                updateChartStats();
-            }
+            currentTimeframe = parseInt(this.dataset.days, 10);
+            if (stockChart) stockChart.setTimeframe(currentTimeframe);
         });
     });
-}
-
-function updateChartStats() {
-    if (!stockChart) return;
-    
-    const stats = stockChart.getStats();
-    if (!stats.change) return;
-    
-    const statsHtml = `
-        <div class="chart-stat">Change: <span class="${stats.change >= 0 ? 'text-green' : 'text-red'}">${stats.change >= 0 ? '+' : ''}${stats.change}%</span></div>
-        <div class="chart-stat">High: <span>$${stats.high}</span></div>
-        <div class="chart-stat">Low: <span>$${stats.low}</span></div>
-        <div class="chart-stat">Range: <span>$${(stats.high - stats.low).toFixed(2)}</span></div>
-    `;
-    document.getElementById('chartStats').innerHTML = statsHtml;
 }
 
 // Notes Functions removed: the stock_notes store is deprecated. Per-ticker
@@ -2269,15 +2087,63 @@ function formatCompactNumber(num) {
 
 let _stockNewsPanel = null;
 
+function setupStackToggles() {
+    const newsStack = document.getElementById('tpNewsStack');
+    const newsCollapseBtn = document.getElementById('tpNewsCollapseBtn');
+    if (newsStack && newsCollapseBtn) {
+        const toggle = () => {
+            newsStack.classList.toggle('collapsed');
+            newsCollapseBtn.setAttribute('aria-expanded', String(!newsStack.classList.contains('collapsed')));
+            requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+        };
+        newsCollapseBtn.addEventListener('click', toggle);
+    }
+
+    const metricsStack = document.getElementById('tpMetricsStack');
+    const metricsHead = document.getElementById('tpMetricsHead');
+    if (metricsStack && metricsHead) {
+        const toggle = () => {
+            metricsStack.classList.toggle('collapsed');
+            metricsHead.setAttribute('aria-expanded', String(!metricsStack.classList.contains('collapsed')));
+            requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+        };
+        metricsHead.addEventListener('click', toggle);
+        metricsHead.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+        });
+    }
+
+    const rightCol = document.getElementById('tpRightColumn');
+    const colToggle = document.getElementById('tpColToggle');
+    if (rightCol && colToggle) {
+        const KEY = 'tpColCollapsed';
+        const apply = (collapsed) => {
+            rightCol.classList.toggle('col-collapsed', collapsed);
+            colToggle.setAttribute('aria-expanded', String(!collapsed));
+            colToggle.textContent = collapsed ? '‹' : '›';
+            colToggle.title = collapsed ? 'Expand panel' : 'Collapse panel to widen chart';
+            requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+        };
+        apply(localStorage.getItem(KEY) === '1');
+        colToggle.addEventListener('click', () => {
+            const collapsed = !rightCol.classList.contains('col-collapsed');
+            localStorage.setItem(KEY, collapsed ? '1' : '0');
+            apply(collapsed);
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     _stockNewsPanel = window.StockNewsShared.createNewsPanel({
-        contentId: 'newsContent',
-        loadBtnId: 'loadNewsBtn',
-        benzingaBtnId: 'benzingaNewsBtn',
+        contentId: 'tpNewsContent',
+        loadBtnId: 'tpLoadNewsBtn',
+        benzingaBtnId: 'tpBenzingaNewsBtn',
         getTicker: () => ticker,
+        showSnippet: false,
     });
     _stockNewsPanel.setup();
     _stockNewsPanel.onTickerChange();
+    setupStackToggles();
 
     loadStockData();
     loadWatchlistStatus();

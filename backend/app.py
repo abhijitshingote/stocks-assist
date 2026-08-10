@@ -243,6 +243,12 @@ def get_stock_metrics_data(session, ticker):
     shares_float = session.query(SharesFloat).filter(
         SharesFloat.ticker == ticker
     ).first()
+
+    # Next scheduled earnings date (FMP stores upcoming prints with null actuals)
+    next_earnings = session.query(Earnings.date).filter(
+        Earnings.ticker == ticker,
+        Earnings.date >= date.today(),
+    ).order_by(Earnings.date.asc()).first()
     
     # Parse volspike/gapper date strings back to arrays
     spike_dates = [d for d in (volspike_gapper.volume_spike_days or '').split(',') if d.strip()] if volspike_gapper else []
@@ -300,6 +306,7 @@ def get_stock_metrics_data(session, ticker):
         'outstanding_shares': shares_float.outstanding_shares if shares_float else None,
         'free_float': round(shares_float.free_float, 2) if shares_float and shares_float.free_float else None,
         'updated_at': metrics.updated_at.strftime('%Y-%m-%d %H:%M:%S') if metrics.updated_at else None,
+        'next_earnings_date': next_earnings[0].strftime('%Y-%m-%d') if next_earnings and next_earnings[0] else None,
         # Volspike/Gapper data
         'spike_day_count': volspike_gapper.spike_day_count if volspike_gapper else 0,
         'avg_volume_spike': volspike_gapper.avg_volume_spike if volspike_gapper else None,
