@@ -429,7 +429,7 @@
     </style>
 </head>
 <body class="{% block body_class %}{% endblock %}">
-    <button type="button" class="nav-hide-toggle" id="navHideToggle" title="Hide/show nav bar (press \ )">
+    <button type="button" class="nav-hide-toggle" id="navHideToggle" title="Hide/show nav bar (press N)">
         <span id="navHideIcon">▲</span>
         <span id="navHideLabel">Hide nav</span>
     </button>
@@ -494,7 +494,7 @@
                     <span class="nav-indicator-label">US 10Y</span>
                     <span class="nav-indicator-value" id="us10y-value">--</span>
                 </div>
-                <button type="button" class="nav-collapse-btn" id="navCollapseBtn" title="Hide nav bar (press \ )">▲</button>
+                <button type="button" class="nav-collapse-btn" id="navCollapseBtn" title="Hide nav bar (press N)">▲</button>
             </div>
         </div>
     </nav>
@@ -630,7 +630,7 @@
 
         // Hide/show nav bar for more screen real estate. State persists
         // across pages via localStorage. Toggle with the floating button
-        // or by pressing the "\" key.
+        // or by pressing "N".
         (function() {
             const NAV_HIDDEN_KEY = 'stocks-assist-nav-hidden';
             const toggle = document.getElementById('navHideToggle');
@@ -662,7 +662,7 @@
                 // Ignore when typing in an input/textarea.
                 const tag = (e.target && e.target.tagName) || '';
                 if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
-                if (e.key === '\\') {
+                if (e.key === 'n' || e.key === 'N') {
                     e.preventDefault();
                     apply(!isHidden());
                 }
