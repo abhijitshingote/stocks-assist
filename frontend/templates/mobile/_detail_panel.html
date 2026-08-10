@@ -1,0 +1,86 @@
+{#
+  Shared stock detail panel — analyze zone.
+  Used by _screener_shell.html and stock.html.
+
+  Variables:
+    detail_ticker     (str)  — initial ticker label; defaults to "—"
+    detail_link_href  (str)  — href for the detail link; defaults to "#"
+    detail_link_label (str)  — label for the detail link; defaults to "Detail →"
+#}
+{% set _dtk   = detail_ticker     if detail_ticker     is defined else '—' %}
+{% set _dhref = detail_link_href  if detail_link_href  is defined else '#' %}
+{% set _dlbl  = detail_link_label if detail_link_label is defined else 'Detail →' %}
+
+<div class="analyze-zone" id="analyzeZone">
+  <div class="detail-compact">
+    <div class="detail-row-a">
+      <div class="left">
+        <div class="tk" id="detailTk">{{ _dtk }}</div>
+        <div class="co-line" id="detailCoLine">
+          <span class="co" id="detailCo"></span><span class="si" id="detailSectorIndustry"></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="price" id="detailPx">—</div>
+        <div class="chg" id="detailChg">—</div>
+      </div>
+    </div>
+    <div class="detail-row-b">
+      <span class="tag mcap" id="detailMcap"></span>
+      <span class="tag ti" id="detailTi65" style="display:none"></span>
+      <span class="tag float" id="detailLowFloat" style="display:none">Low Float</span>
+      <a class="detail-link" id="detailLink" href="{{ _dhref }}">{{ _dlbl }}</a>
+    </div>
+    <div class="detail-row-c">
+      <button class="icon-btn" type="button" title="Abi ticker notes" id="notesBtn">📝</button>
+      <button class="icon-btn" type="button" id="wlBtn">+ WL</button>
+      <div class="tf-group" id="tfBar">
+        <button type="button" data-days="30">1M</button>
+        <button type="button" data-days="90">3M</button>
+        <button type="button" data-days="180">6M</button>
+        <button type="button" class="active" data-days="365">1Y</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-tabs">
+    <div class="main-seg" role="tablist" aria-label="Detail panel">
+      <button type="button" data-panel="metrics">Metrics</button>
+      <button type="button" data-panel="news">News</button>
+      <button type="button" class="active" data-panel="chart">Chart</button>
+    </div>
+  </div>
+
+  <div class="main-panel">
+    <div class="main-panel-view panel-scroll" id="mainPanelMetrics">
+      <div class="notes-box" id="abiNotesBox">
+        <div class="h">Abi ticker notes</div>
+        <div class="notes-body empty" id="abiNotesBody">No Abi ticker notes yet.</div>
+      </div>
+      <div class="ms-tags" id="tagsStrip"></div>
+      <div id="metricsContent"></div>
+    </div>
+
+    <div class="main-panel-view panel-scroll" id="mainPanelNews">
+      <div class="news-header-bar">
+        <div class="news-actions">
+          <button type="button" id="loadNewsBtn">Load</button>
+          <button type="button" id="benzingaNewsBtn">Benzinga</button>
+        </div>
+        <div class="news-source-filters" id="newsFilters" hidden></div>
+      </div>
+      <div id="newsContent"></div>
+    </div>
+
+    <div class="main-panel-view active" id="mainPanelChart">
+      <div class="charts">
+        <div class="chart-main-wrap">
+          <div class="chart-canvas" id="stockChartWrap">
+            <span class="ohlc" id="ohlc" style="display:none"></span>
+            <div id="stockChartContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

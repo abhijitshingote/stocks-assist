@@ -1,10 +1,8 @@
-{% extends "mobile/_base.html" %}
+{% extends "mobile/_shell.html" %}
 {% set page_title = 'Context' %}
+{% set page_libs = ['charts'] %}
 {% block title %}Context — Mobile{% endblock %}
-{% block styles %}{% include "mobile/_utility_styles.html" %}{% endblock %}
-{% block body %}
-<div class="phone" id="phone">
-  {% include "mobile/_utility_header.html" %}
+{% block content %}
   <div class="utility-body utility-scroll">
     <div class="ctx-chart-block" data-symbol="QQQ">
       <div class="ctx-chart-head">
@@ -51,11 +49,7 @@
       </div>
     </div>
   </div>
-  {% include "mobile/_nav_drawer.html" %}
-</div>
 {% endblock %}
-{% block scripts %}
-<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+{% block page_scripts %}
 <script src="{{ url_for('static', filename='js/mobile/pages/context.js') }}"></script>
-{% include "mobile/_nav_libs.html" %}
 {% endblock %}

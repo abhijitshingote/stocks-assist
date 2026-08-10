@@ -1,14 +1,12 @@
-{% extends "mobile/_base.html" %}
+{% extends "mobile/_shell.html" %}
 {% set page_title = 'Market News' %}
+{% set page_libs = ['news'] %}
 {% block title %}Market News — Mobile{% endblock %}
-{% block styles %}
-{% include "mobile/_utility_styles.html" %}
+{% block page_styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/benzinga-news.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/market-news.css') }}">
 {% endblock %}
-{% block body %}
-<div class="phone" id="phone">
-  {% include "mobile/_utility_header.html" %}
+{% block content %}
   <div class="utility-body market-news-page">
     <div class="market-news-header">
       <h1>Market News</h1>
@@ -60,11 +58,7 @@
       </div>
     </div>
   </div>
-  {% include "mobile/_nav_drawer.html" %}
-</div>
 {% endblock %}
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/stock-news-shared.js') }}"></script>
+{% block page_scripts %}
 <script src="{{ url_for('static', filename='js/market-news.js') }}"></script>
-{% include "mobile/_nav_libs.html" %}
 {% endblock %}

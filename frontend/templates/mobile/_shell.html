@@ -1,0 +1,42 @@
+{#
+  Central parent template for all mobile utility pages.
+  Screener pages use _screener_shell.html instead.
+
+  Page sets:
+    page_title  (str)   — subtitle shown below the header logo row
+    page_libs   (list)  — lib tokens consumed by _page_libs.html
+                          e.g. ['charts', 'master-detail']
+
+  Blocks available for override:
+    title        — <title> tag content
+    page_styles  — additional <link> tags after the base mobile CSS
+    body_class   — extra CSS class(es) on .phone div
+    content      — page body inside .phone (required)
+    outside_phone — HTML rendered after </div>.phone (e.g. modals)
+    page_scripts — page-specific <script> tags after shared libs
+#}
+{% extends "mobile/_base.html" %}
+
+{% block styles %}
+{% include "mobile/_mobile_styles.html" %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile/pages.css') }}">
+{% block page_styles %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<div class="phone{% block body_class %}{% endblock %}" id="phone">
+  {% block before_header %}{% endblock %}
+  {% include "mobile/_app_header.html" %}
+  {% block content %}{% endblock %}
+  {% include "mobile/_nav_drawer.html" %}
+</div>
+{% block outside_phone %}{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+{% block pre_scripts %}{% endblock %}
+{% include "mobile/_page_libs.html" %}
+{% block page_scripts %}{% endblock %}
+<script src="{{ url_for('static', filename='js/mobile/nav.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mobile/search.js') }}"></script>
+{% endblock %}

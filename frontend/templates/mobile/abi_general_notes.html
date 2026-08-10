@@ -1,10 +1,8 @@
-{% extends "mobile/_base.html" %}
+{% extends "mobile/_shell.html" %}
 {% set page_title = 'Abi Notes' %}
+{% set page_libs = ['master-detail'] %}
 {% block title %}Abi General Notes — Mobile{% endblock %}
-{% block styles %}{% include "mobile/_utility_styles.html" %}{% endblock %}
-{% block body %}
-<div class="phone" id="phone">
-  {% include "mobile/_utility_header.html" %}
+{% block content %}
   <div class="utility-body md-layout" id="notesLayout">
     <div class="md-list-pane">
       <div class="md-toolbar">
@@ -39,11 +37,7 @@
     </div>
   </div>
   <div class="md-toast" id="toast"></div>
-  {% include "mobile/_nav_drawer.html" %}
-</div>
 {% endblock %}
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/mobile/master-detail.js') }}"></script>
+{% block page_scripts %}
 <script src="{{ url_for('static', filename='js/mobile/pages/abi-general-notes.js') }}"></script>
-{% include "mobile/_nav_libs.html" %}
 {% endblock %}
