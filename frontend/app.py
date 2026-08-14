@@ -91,6 +91,11 @@ def top_losers_page():
     """Top Losers page - Union of bottom stocks by 1D, 5D, 20D returns"""
     return render_template('top_losers.html')
 
+@app.route('/daily-review')
+def daily_review_page():
+    """Daily Review — latest-day VSG union top dr_1 by cap bucket"""
+    return render_template('daily_review.html')
+
 @app.route('/volspike-gapper')
 def volspike_gapper_page():
     """Volume Spike & Gapper page - Stocks with unusual volume and gap activity"""
@@ -145,6 +150,10 @@ def m_technical_screener():
 @app.route('/m/high-sales-growth')
 def m_high_sales_growth():
     return render_template('mobile/high_sales_growth.html')
+
+@app.route('/m/daily-review')
+def m_daily_review():
+    return render_template('mobile/daily_review.html')
 
 @app.route('/m/volspike-gapper')
 def m_volspike_gapper():
@@ -380,6 +389,26 @@ def api_top_losers(market_cap):
     data, status_code = make_backend_request(f'/api/BottomPerformance-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch Top Losers data'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/daily-review/<market_cap>')
+def api_daily_review(market_cap):
+    """Proxy: Daily Review (latest-day VSG ∪ top dr_1 by cap bucket)"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+
+    data, status_code = make_backend_request(f'/api/DailyReview-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Daily Review data'}), status_code
     return jsonify(data), status_code
 
 @app.route('/api/frontend/volspike-gapper/<market_cap>')

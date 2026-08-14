@@ -101,10 +101,11 @@
 
 ## Desktop Screener Components
 
-One layout system for all 9 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
+One layout system for all 10 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
 
 | Page | Template | Route |
 |------|----------|-------|
+| Daily Review | `daily_review.html` | `/daily-review` |
 | Main View | `main_view.html` | `/main-view` |
 | Vol Spike & Gaps | `volspike_gapper.html` | `/volspike-gapper` |
 | Top Returns | `top_performance.html` | `/top-performance` |
@@ -123,7 +124,7 @@ One layout system for all 9 desktop screener pages: shared shell + `screener.css
 | **JS engine** | `static/js/desktop/screener-app.js` — `DesktopScreener.init(config)` |
 | **Jinja slots** | `screener_label`, `screener_stats_label`, `show_cap_tabs`, `show_sector_bar`, `topbar_extra_controls`, `below_topbar_extra`, `detail_header_extras`, `subchart_top`, `subchart_bottom`, `left_header_extra` |
 | **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch` |
-| **Used by** | All 9 desktop screener templates above (thin wrappers) |
+| **Used by** | All 10 desktop screener templates above (thin wrappers) |
 
 ### Cap Tab Strip
 | | |

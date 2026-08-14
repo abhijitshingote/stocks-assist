@@ -1423,6 +1423,263 @@ def get_volspike_gapper_mega():
     finally:
         s.close()
 
+# ============================================================================
+# Daily Review — latest-day VSG ∪ notable dr_1
+# ============================================================================
+# p90(positive 1d) vs mcap, 60d median in a ±0.25 log10 window:
+#   p90 ≈ 3.53 * (clip(mcap,$200M,$100B)/$100B)^-0.134
+# Flattened above $100B (p90 at $200B/$400B is 3.9/3.8, not quieter).
+#
+# Membership: dr_1 >= k * p90(mcap), k=1.5. Count floats with the tape.
+#   $100B+ +5.3%  |  $4B +8.0%  |  $0.5B +10.7%  |  $200M +12.1%
+# Sort: adjusted_dr_1 = dr_1 / (clip/100B)^-0.134  (mega-equivalent %)
+DAILY_REVIEW_SCALE_REF_MCAP = 100_000_000_000
+DAILY_REVIEW_SCALE_EXP = -0.134
+DAILY_REVIEW_SCALE_MCAP_LO = 200_000_000
+DAILY_REVIEW_SCALE_MCAP_HI = 100_000_000_000
+DAILY_REVIEW_P90_AT_100B = 3.53
+DAILY_REVIEW_DR1_K = 1.5
+
+
+def _dr1_scale(market_cap):
+    if not market_cap or market_cap <= 0:
+        return 1.0
+    m = min(max(market_cap, DAILY_REVIEW_SCALE_MCAP_LO), DAILY_REVIEW_SCALE_MCAP_HI)
+    return (m / DAILY_REVIEW_SCALE_REF_MCAP) ** DAILY_REVIEW_SCALE_EXP
+
+
+def _p90_dr1(market_cap):
+    return DAILY_REVIEW_P90_AT_100B * _dr1_scale(market_cap)
+
+
+def _dr1_passes_threshold(dr_1, market_cap):
+    if dr_1 is None or not market_cap or market_cap < DAILY_REVIEW_SCALE_MCAP_LO:
+        return False
+    return dr_1 >= DAILY_REVIEW_DR1_K * _p90_dr1(market_cap)
+
+
+def _market_cap_bucket(market_cap):
+    if market_cap is None:
+        return None
+    if market_cap >= 100_000_000_000:
+        return 'mega'
+    if market_cap >= 20_000_000_000:
+        return 'large'
+    if market_cap >= 2_000_000_000:
+        return 'mid'
+    if market_cap >= 200_000_000:
+        return 'small'
+    return 'micro'
+
+
+def _apply_mcap_filter(query, market_cap_category):
+    if not market_cap_category:
+        return query
+    category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+    if not category:
+        return query
+    query = query.filter(StockMetrics.market_cap >= category['min'])
+    if category['max'] is not None:
+        query = query.filter(StockMetrics.market_cap < category['max'])
+    return query
+
+
+def _daily_review_joined_query(session):
+    return session.query(StockMetrics, StockVolspikeGapper, MainView.tags).outerjoin(
+        StockVolspikeGapper, StockVolspikeGapper.ticker == StockMetrics.ticker
+    ).outerjoin(
+        MainView, MainView.ticker == StockMetrics.ticker
+    ).filter(
+        StockMetrics.market_cap.isnot(None)
+    )
+
+
+def _format_daily_review_row(metrics, svg, tags, as_of_str, in_vsg, in_dr1_top):
+    spike_dates = [d for d in ((svg.volume_spike_days if svg else None) or '').split(',') if d.strip()]
+    gap_dates = [d for d in ((svg.gap_days if svg else None) or '').split(',') if d.strip()]
+    last_event_date = (
+        svg.last_event_date.strftime('%Y-%m-%d') if svg and svg.last_event_date else None
+    )
+    event_today = bool(last_event_date and last_event_date == as_of_str)
+    bucket = _market_cap_bucket(metrics.market_cap)
+    scale = _dr1_scale(metrics.market_cap)
+    dr1 = float(metrics.dr_1) if metrics.dr_1 is not None else None
+    return {
+        'ticker': metrics.ticker,
+        'company_name': metrics.company_name,
+        'country': metrics.country,
+        'sector': metrics.sector,
+        'industry': metrics.industry,
+        'ipo_date': metrics.ipo_date.strftime('%Y-%m-%d') if metrics.ipo_date else None,
+        'market_cap': metrics.market_cap,
+        'current_price': round(metrics.current_price, 2) if metrics.current_price else None,
+        'range_52_week': metrics.range_52_week,
+        'at_52w_high': bool(metrics.at_52w_high) if metrics.at_52w_high is not None else False,
+        'volume': int(metrics.volume) if metrics.volume else None,
+        'dollar_volume': round(metrics.dollar_volume, 2) if metrics.dollar_volume else None,
+        'avg_vol_10d': float(metrics.avg_vol_10d) if metrics.avg_vol_10d else None,
+        'vol_vs_10d_avg': float(metrics.vol_vs_10d_avg) if metrics.vol_vs_10d_avg else None,
+        'ti65': round(metrics.ti65, 2) if metrics.ti65 else None,
+        'rsi': metrics.rsi,
+        'rsi_mktcap': metrics.rsi_mktcap,
+        'dr_1': round(dr1, 2) if dr1 is not None else None,
+        'dr_5': round(metrics.dr_5, 2) if metrics.dr_5 is not None else None,
+        'dr_20': round(metrics.dr_20, 2) if metrics.dr_20 is not None else None,
+        'dr_60': round(metrics.dr_60, 2) if metrics.dr_60 is not None else None,
+        'dr_120': round(metrics.dr_120, 2) if metrics.dr_120 is not None else None,
+        'atr20': round(metrics.atr20, 2) if metrics.atr20 else None,
+        'pe_t_minus_1': round(metrics.pe_t_minus_1, 2) if metrics.pe_t_minus_1 else None,
+        'pe_t': round(metrics.pe_t, 2) if metrics.pe_t else None,
+        'pe_t_plus_1': round(metrics.pe_t_plus_1, 2) if metrics.pe_t_plus_1 else None,
+        'pe_t_plus_2': round(metrics.pe_t_plus_2, 2) if metrics.pe_t_plus_2 else None,
+        'ps_t_minus_1': round(metrics.ps_t_minus_1, 2) if metrics.ps_t_minus_1 else None,
+        'ps_t': round(metrics.ps_t, 2) if metrics.ps_t else None,
+        'ps_t_plus_1': round(metrics.ps_t_plus_1, 2) if metrics.ps_t_plus_1 else None,
+        'ps_t_plus_2': round(metrics.ps_t_plus_2, 2) if metrics.ps_t_plus_2 else None,
+        'rev_growth_t_minus_1': round(metrics.rev_growth_t_minus_1, 2) if metrics.rev_growth_t_minus_1 else None,
+        'rev_growth_t': round(metrics.rev_growth_t, 2) if metrics.rev_growth_t else None,
+        'rev_growth_t_plus_1': round(metrics.rev_growth_t_plus_1, 2) if metrics.rev_growth_t_plus_1 else None,
+        'rev_growth_t_plus_2': round(metrics.rev_growth_t_plus_2, 2) if metrics.rev_growth_t_plus_2 else None,
+        'eps_growth_t_minus_1': round(metrics.eps_growth_t_minus_1, 2) if metrics.eps_growth_t_minus_1 else None,
+        'eps_growth_t': round(metrics.eps_growth_t, 2) if metrics.eps_growth_t else None,
+        'eps_growth_t_plus_1': round(metrics.eps_growth_t_plus_1, 2) if metrics.eps_growth_t_plus_1 else None,
+        'eps_growth_t_plus_2': round(metrics.eps_growth_t_plus_2, 2) if metrics.eps_growth_t_plus_2 else None,
+        'short_float': round(metrics.short_float, 2) if metrics.short_float else None,
+        'short_ratio': round(metrics.short_ratio, 2) if metrics.short_ratio else None,
+        'short_interest': round(metrics.short_interest, 2) if metrics.short_interest else None,
+        'low_float': metrics.low_float,
+        'float_shares': metrics.float_shares,
+        'outstanding_shares': metrics.outstanding_shares,
+        'free_float': round(metrics.free_float, 2) if metrics.free_float else None,
+        'spike_day_count': (svg.spike_day_count if svg else None) or 0,
+        'avg_volume_spike': float(svg.avg_volume_spike) if svg and svg.avg_volume_spike else None,
+        'volume_spike_days': spike_dates,
+        'gapper_day_count': (svg.gapper_day_count if svg else None) or 0,
+        'avg_return_gapper': float(svg.avg_return_gapper) if svg and svg.avg_return_gapper else None,
+        'gap_days': gap_dates,
+        'last_event_date': last_event_date,
+        'last_event_type': svg.last_event_type if svg else None,
+        'last_event_magnitude': float(svg.last_event_magnitude) if svg and svg.last_event_magnitude else None,
+        'last_event_return': float(svg.last_event_return) if svg and svg.last_event_return else None,
+        'tags': tags,
+        'updated_at': metrics.updated_at.strftime('%Y-%m-%d %H:%M:%S') if metrics.updated_at else None,
+        'as_of': as_of_str,
+        'cap_bucket': bucket,
+        'adjusted_dr_1': round(dr1 / scale, 4) if dr1 is not None else None,
+        'event_today': event_today,
+        'in_vsg': bool(in_vsg),
+        'in_dr1_top': bool(in_dr1_top),
+    }
+
+
+def get_daily_review_stocks(session, market_cap_category=None):
+    """Union of (1) VSG rows with last_event_date = latest OHLC date and
+    (2) $200M+ names with dr_1 >= 1.5 * p90(mcap). Deduped by ticker.
+    Sort key adjusted_dr_1 = dr_1 / _dr1_scale(mcap).
+    """
+    try:
+        as_of = get_latest_price_date(session)
+        if not as_of:
+            return []
+        as_of_str = as_of.strftime('%Y-%m-%d')
+
+        by_ticker = {}
+        vsg_tickers = set()
+        dr1_top = set()
+
+        base = _apply_mcap_filter(
+            apply_global_liquidity_filters(_daily_review_joined_query(session)),
+            market_cap_category,
+        )
+
+        vsg_q = base.filter(
+            StockVolspikeGapper.last_event_date == as_of,
+            or_(
+                func.coalesce(StockVolspikeGapper.spike_day_count, 0) > 0,
+                func.coalesce(StockVolspikeGapper.gapper_day_count, 0) > 0,
+            ),
+        )
+        for metrics, svg, tags in vsg_q.all():
+            by_ticker[metrics.ticker] = (metrics, svg, tags)
+            vsg_tickers.add(metrics.ticker)
+
+        dev_q = base.filter(
+            StockMetrics.dr_1.isnot(None),
+            StockMetrics.market_cap >= DAILY_REVIEW_SCALE_MCAP_LO,
+        )
+        for metrics, svg, tags in dev_q.all():
+            if not _dr1_passes_threshold(metrics.dr_1, metrics.market_cap):
+                continue
+            dr1_top.add(metrics.ticker)
+            if metrics.ticker not in by_ticker:
+                by_ticker[metrics.ticker] = (metrics, svg, tags)
+
+        results = []
+        for ticker, (metrics, svg, tags) in by_ticker.items():
+            results.append(_format_daily_review_row(
+                metrics, svg, tags, as_of_str,
+                in_vsg=ticker in vsg_tickers,
+                in_dr1_top=ticker in dr1_top,
+            ))
+        return results
+    except Exception as e:
+        logger.error(f"Error getting daily review stocks for {market_cap_category}: {str(e)}")
+        return []
+
+
+@app.route('/api/DailyReview-All')
+def get_daily_review_all():
+    s = Session()
+    try:
+        return jsonify(get_daily_review_stocks(s, market_cap_category=None))
+    finally:
+        s.close()
+
+
+@app.route('/api/DailyReview-MicroCap')
+def get_daily_review_micro():
+    s = Session()
+    try:
+        return jsonify(get_daily_review_stocks(s, market_cap_category='micro'))
+    finally:
+        s.close()
+
+
+@app.route('/api/DailyReview-SmallCap')
+def get_daily_review_small():
+    s = Session()
+    try:
+        return jsonify(get_daily_review_stocks(s, market_cap_category='small'))
+    finally:
+        s.close()
+
+
+@app.route('/api/DailyReview-MidCap')
+def get_daily_review_mid():
+    s = Session()
+    try:
+        return jsonify(get_daily_review_stocks(s, market_cap_category='mid'))
+    finally:
+        s.close()
+
+
+@app.route('/api/DailyReview-LargeCap')
+def get_daily_review_large():
+    s = Session()
+    try:
+        return jsonify(get_daily_review_stocks(s, market_cap_category='large'))
+    finally:
+        s.close()
+
+
+@app.route('/api/DailyReview-MegaCap')
+def get_daily_review_mega():
+    s = Session()
+    try:
+        return jsonify(get_daily_review_stocks(s, market_cap_category='mega'))
+    finally:
+        s.close()
+
 # Base/consolidation metrics for the tickers in stock_volspike_gapper, measured on
 # the last 10 trading bars against the 4 MAs in ticker_moving_averages
 # (ema_10, ema_20, dma_50, dma_200). Consumed by /volspike-gapper-monthly.

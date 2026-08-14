@@ -98,6 +98,11 @@
         </div>
 
         <div class="help-card">
+            <div class="help-name"><a href="/daily-review">Daily Review</a><span class="help-route">/daily-review</span></div>
+            <div class="help-desc">Union of (1) <code>stock_volspike_gapper</code> rows with <code>last_event_date</code> = max OHLC date and (2) $200M+ names with <code>dr_1 &gt;= 1.5 × p90(mcap)</code> where <code>p90 ≈ 3.53 × (clip(mcap,$200M,$100B)/$100B)^-0.134</code> (60d median of p90(positive 1d) in a ±0.25 log10 window; flattens above $100B). Real bars: $100B+ <code>+5.3%</code>, $4B <code>+8.0%</code>, $0.5B <code>+10.7%</code>. Count floats with the tape. Default sort is mega-equivalent <code>adjusted_dr_1 = dr_1 / (clip/100B)^-0.134</code>; toggle switches to flat <code>dr_1</code>. List value is always raw <code>dr_1</code>; S/G chips only when <code>event_today</code>.</div>
+        </div>
+
+        <div class="help-card">
             <div class="help-name"><a href="/volspike-gapper">Vol Spike &amp; Gaps</a><span class="help-route">/volspike-gapper</span></div>
             <div class="help-desc">Stocks with volume-spike and/or gap events in the last <code>365</code> days (<code>stock_volspike_gapper</code>), grouped by event date (most recent first). Two-row items with event badges (type + magnitude).</div>
         </div>

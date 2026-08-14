@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block body_class %}screener-page page-daily-review{% endblock %}
+{% block title %}Daily Review - Stocks Assist{% endblock %}
+
+{% set screener_label = "Daily Review" %}
+{% set screener_stats_label = "Stocks" %}
+
+{% set topbar_extra_controls %}
+<div class="stats-compact vsg-extra-stats">
+    <div>Spikes: <span class="stat-spike" id="withSpikes">—</span></div>
+    <div>Gaps: <span class="stat-gap" id="withGaps">—</span></div>
+</div>
+<div class="recency-filter" role="tablist" aria-label="Sort mode">
+    <button class="recency-btn active" data-sort="adj">Adj 1D</button>
+    <button class="recency-btn" data-sort="flat">Flat 1D</button>
+</div>
+{% endset %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
+{% endblock %}
+
+{% block extra_styles %}
+    .recency-filter {
+        display: flex;
+        gap: 0.25rem;
+        margin-left: auto;
+        align-items: center;
+    }
+    .recency-btn {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.7rem;
+        transition: all 0.2s;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    .recency-btn:hover { border-color: var(--accent-yellow); color: var(--text-primary); }
+    .recency-btn.active {
+        background: linear-gradient(135deg, rgba(210, 153, 34, 0.2) 0%, rgba(248, 81, 73, 0.2) 100%);
+        border-color: var(--accent-yellow);
+        color: var(--text-primary);
+    }
+    .vsg-extra-stats .stat-spike { color: var(--accent-yellow); font-weight: 600; }
+    .vsg-extra-stats .stat-gap { color: var(--accent-red); font-weight: 600; }
+{% endblock %}
+
+{% block content %}
+{% include "desktop/_screener_shell.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/static/js/stock-chart.js"></script>
+<script src="/static/js/desktop/screener-app.js"></script>
+<script>
+(function () {
+    const SORT_KEY = 'dailyReviewSort';
+    let sortMode = 'adj';
+    try {
+        const saved = localStorage.getItem(SORT_KEY);
+        if (saved === 'flat' || saved === 'adj') sortMode = saved;
+    } catch (e) {}
+
+    function formatDisplayDate(dateStr) {
+        if (!dateStr) return dateStr;
+        try {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${days[date.getDay()]}, ${months[date.getMonth()]} ${d}`;
+        } catch { return dateStr; }
+    }
+
+    function eventToday(s) {
+        return !!(s.event_today || (s.as_of && s.last_event_date === s.as_of));
+    }
+
+    function eventExtraHtml(s) {
+        if (!eventToday(s)) return '';
+        const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
+        const evtClass = s.last_event_type === 'volume_spike' ? 'spike' : s.last_event_type === 'gapper' ? 'gap' : '';
+        let magStr = '';
+        if (s.last_event_magnitude != null) {
+            if (s.last_event_type === 'volume_spike') {
+                magStr = s.last_event_magnitude.toFixed(1) + 'x vol';
+            } else if (s.last_event_type === 'gapper') {
+                magStr = (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(1) + '% gap';
+            }
+        }
+        return (evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : '') +
+            (magStr ? `<span class="list-extra event-mag">${magStr}</span>` : '');
+    }
+
+    function sortKey(s) {
+        const v = sortMode === 'adj' ? s.adjusted_dr_1 : s.dr_1;
+        return v == null ? -Infinity : v;
+    }
+
+    document.querySelectorAll('.recency-btn[data-sort]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.sort === sortMode);
+    });
+
+    DesktopScreener.init({
+        endpoint: 'daily-review',
+        accentCss: 'var(--accent-yellow)',
+        label: 'Daily Review',
+
+        sortFn: (stocks) => stocks.sort((a, b) => sortKey(b) - sortKey(a)),
+
+        groupByFn: (s) => s.as_of || s.last_event_date || 'Unknown',
+        groupLabelFn: (key) => key === 'Unknown' ? 'Unknown Date' : formatDisplayDate(key),
+
+        listExtraFn: eventExtraHtml,
+
+        onListRendered: ({ visible }) => {
+            document.getElementById('totalStocks').textContent = visible.length;
+            const today = visible.filter(eventToday);
+            document.getElementById('withSpikes').textContent = today.filter(d =>
+                d.last_event_type === 'volume_spike' ||
+                (d.as_of && (d.volume_spike_days || []).indexOf(d.as_of) !== -1)
+            ).length;
+            document.getElementById('withGaps').textContent = today.filter(d =>
+                d.last_event_type === 'gapper' ||
+                (d.as_of && (d.gap_days || []).indexOf(d.as_of) !== -1)
+            ).length;
+        },
+
+        onReady: (api) => {
+            document.querySelectorAll('.recency-btn[data-sort]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sortMode = btn.dataset.sort;
+                    try { localStorage.setItem(SORT_KEY, sortMode); } catch (e) {}
+                    document.querySelectorAll('.recency-btn[data-sort]').forEach(b => {
+                        b.classList.toggle('active', b === btn);
+                    });
+                    api.resortWithFn();
+                });
+            });
+        },
+    });
+})();
+</script>
+{% endblock %}

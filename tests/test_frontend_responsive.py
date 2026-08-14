@@ -91,6 +91,7 @@ class TestFrontendResponsive(unittest.TestCase):
         client = app.test_client()
         routes = [
             "/",
+            "/daily-review",
             "/daily-shortlist",
             "/daily-themes",
             "/main-view",
