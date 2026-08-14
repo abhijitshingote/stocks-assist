@@ -99,6 +99,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | **TopPerformance** `TopPerformance-*` | Union: top 30 by `dr_1`, `dr_5`, `dr_20` each (deduped) |
 | **BottomPerformance** `BottomPerformance-*` | Same windows; ascending sort |
 | **VolspikeGapper** `VolspikeGapper-*` | `spike_day_count > 0 OR gapper_day_count > 0`; order `last_event_date DESC` |
+| **VolspikeGapper-Setup** | Dict keyed by ticker: nearest of `ema_10/ema_20/dma_50/dma_200`, distance (% and ATRs), 10-bar range in ATRs, close position in range, above-MA flags. Used by `/volspike-gapper-monthly` ranking |
 | **MainView** `MainView-*` | Full `main_view` row |
 | **HighSalesGrowth** `HighSalesGrowth-*` | `main_view.tags LIKE '%high_sales_growth%'`; order `rev_growth_t_plus_1 DESC` |
 | **TechnicalScreener-Reversal** `TechnicalScreener-Reversal-*` | Latest day `(close-low)/low*100` reversal %; liquidity filters |
@@ -215,6 +216,7 @@ Proxies to backend unless noted. Market-cap path segments use `all|micro|small|m
 | `GET /api/frontend/top-performance/<market_cap>` | `/api/TopPerformance-{Bucket}` |
 | `GET /api/frontend/top-losers/<market_cap>` | `/api/BottomPerformance-{Bucket}` |
 | `GET /api/frontend/volspike-gapper/<market_cap>` | `/api/VolspikeGapper-{Bucket}` |
+| `GET /api/frontend/volspike-gapper-setup` | `/api/VolspikeGapper-Setup` |
 | `GET /api/frontend/main-view/<market_cap>` | `/api/MainView-{Bucket}` |
 | `GET /api/frontend/main-view/by-tickers?tickers=` | `/api/MainView-ByTickers` |
 | `GET /api/frontend/high-sales-growth/<market_cap>` | `/api/HighSalesGrowth-{Bucket}` |

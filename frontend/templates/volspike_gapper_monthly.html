@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block body_class %}screener-page page-vsg{% endblock %}
-{% block title %}Volume Spike & Gappers - Weekly - Stocks Assist{% endblock %}
+{% block title %}Volume Spike & Gappers - Monthly - Stocks Assist{% endblock %}
 
-{% set screener_label = "Vol Spike & Gapper - Weekly" %}
+{% set screener_label = "Vol Spike & Gapper - Monthly" %}
 {% set screener_stats_label = "Stocks" %}
 
 {% set topbar_extra_controls %}
@@ -20,7 +20,7 @@
 {% endset %}
 
 {% set left_header_extra %}
-<button type="button" class="collapse-all-btn" id="collapseAllBtn" title="Collapse or expand all week groups">▼ All</button>
+<button type="button" class="collapse-all-btn" id="collapseAllBtn" title="Collapse or expand all month groups">▼ All</button>
 {% endset %}
 
 {% block extra_head %}
@@ -45,9 +45,9 @@
 <script src="/static/js/desktop/vsg-grouped.js"></script>
 <script>
 VsgGrouped.init({
-    bucket: 'week',
-    label: 'Vol Spike & Gapper - Weekly',
-    collapseStorageKey: 'vsg_weekly_collapsed_weeks',
+    bucket: 'month',
+    label: 'Vol Spike & Gapper - Monthly',
+    collapseStorageKey: 'vsg_monthly_collapsed_months',
 });
 </script>
 {% endblock %}

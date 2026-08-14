@@ -108,6 +108,11 @@
         </div>
 
         <div class="help-card">
+            <div class="help-name"><a href="/volspike-gapper-monthly">Vol Spike &amp; Gaps (M)</a><span class="help-route">/volspike-gapper-monthly</span></div>
+            <div class="help-desc">Group bucket is the calendar month of <code>last_event_date</code> (<code>YYYY-MM</code>). Ranking inside a month is re-weighted toward the current base instead of the event: <code>3.5·setup</code> + <code>1.0·log10(mcap/1e9)</code> capped at <code>2.5</code> + <code>0.3·move</code> + <code>0.15·vol</code> + <code>0.15·novelty</code>. <code>setup</code> (<code>0–1</code>, from <code>/api/VolspikeGapper-Setup</code>, measured on the last 10 bars vs <code>ema_10/ema_20/dma_50/dma_200</code>) = <code>0.35·prox</code> (distance to nearest MA in ATRs, <code>0</code>→1, <code>≥1.5 ATR</code>→0) + <code>0.25·tight</code> (10-bar high-low range, <code>≤1.5 ATR</code>→1, <code>≥3.5 ATR</code>→0) + <code>0.20·hold</code> (close position in that range, <code>≥0.9</code>→1, <code>≤0.4</code>→0) + <code>0.20·trend</code> (above all 4 MAs→1, above <code>ema_20</code> only→0.6). The chip on each row shows the nearest MA and the signed distance. Shares <code>static/js/desktop/vsg-grouped.js</code> with the weekly page, whose weights are unchanged.</div>
+        </div>
+
+        <div class="help-card">
             <div class="help-name"><a href="/top-performance">Top Returns</a><span class="help-route">/top-performance</span></div>
             <div class="help-desc">Union of the top <code>30</code> names by each of <code>dr_1</code>, <code>dr_5</code>, and <code>dr_20</code> (deduplicated).</div>
         </div>

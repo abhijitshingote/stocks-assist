@@ -1423,6 +1423,91 @@ def get_volspike_gapper_mega():
     finally:
         s.close()
 
+# Base/consolidation metrics for the tickers in stock_volspike_gapper, measured on
+# the last 10 trading bars against the 4 MAs in ticker_moving_averages
+# (ema_10, ema_20, dma_50, dma_200). Consumed by /volspike-gapper-monthly.
+VOLSPIKE_GAPPER_SETUP_SQL = """
+WITH recent AS (
+    SELECT o.ticker, o.date, o.high, o.low, o.close,
+           ROW_NUMBER() OVER (PARTITION BY o.ticker ORDER BY o.date DESC) AS rn
+    FROM ohlc o
+    WHERE o.date >= (SELECT MAX(date) FROM ohlc) - INTERVAL '40 days'
+      AND o.ticker IN (SELECT ticker FROM stock_volspike_gapper)
+),
+win AS (
+    SELECT ticker, MAX(high) AS hi10, MIN(low) AS lo10, COUNT(*) AS bars
+    FROM recent WHERE rn <= 10 GROUP BY ticker
+),
+last_bar AS (
+    SELECT ticker, date, close FROM recent WHERE rn = 1
+),
+joined AS (
+    SELECT lb.ticker, lb.date, lb.close, w.hi10, w.lo10, sm.atr20,
+           ma.ema_10, ma.ema_20, ma.dma_50, ma.dma_200
+    FROM last_bar lb
+    JOIN win w ON w.ticker = lb.ticker AND w.bars >= 8
+    JOIN stock_metrics sm ON sm.ticker = lb.ticker
+    LEFT JOIN LATERAL (
+        SELECT m.ema_10, m.ema_20, m.dma_50, m.dma_200
+        FROM ticker_moving_averages m
+        WHERE m.ticker = lb.ticker AND m.date <= lb.date
+        ORDER BY m.date DESC LIMIT 1
+    ) ma ON TRUE
+    WHERE lb.close > 0 AND sm.atr20 > 0
+),
+near AS (
+    SELECT j.*, n.name AS nearest_ma, n.val AS nearest_val
+    FROM joined j
+    LEFT JOIN LATERAL (
+        SELECT x.name, x.val FROM (VALUES
+            ('ema_10', j.ema_10), ('ema_20', j.ema_20),
+            ('dma_50', j.dma_50), ('dma_200', j.dma_200)
+        ) AS x(name, val)
+        WHERE x.val > 0
+        ORDER BY ABS(j.close - x.val) / x.val
+        LIMIT 1
+    ) n ON TRUE
+)
+SELECT ticker,
+       date AS as_of,
+       nearest_ma,
+       100 * (close - nearest_val) / nearest_val AS ma_dist_pct,
+       (100 * ABS(close - nearest_val) / nearest_val) / atr20 AS ma_dist_atr,
+       (100 * (hi10 - lo10) / close) / atr20     AS range10_atr,
+       CASE WHEN hi10 > lo10 THEN (close - lo10) / (hi10 - lo10) END AS pos_in_range10,
+       (close >= ema_20)                         AS above_ema20,
+       (close >= ema_10 AND close >= ema_20
+        AND close >= dma_50 AND close >= dma_200) AS above_all_ma
+FROM near
+WHERE nearest_ma IS NOT NULL
+"""
+
+@app.route('/api/VolspikeGapper-Setup')
+def get_volspike_gapper_setup():
+    """Per-ticker MA-consolidation metrics, keyed by ticker."""
+    s = Session()
+    try:
+        with s.get_bind().connect() as conn:
+            rows = conn.execute(text(VOLSPIKE_GAPPER_SETUP_SQL)).fetchall()
+        out = {}
+        for r in rows:
+            out[r.ticker] = {
+                'as_of': r.as_of.strftime('%Y-%m-%d') if r.as_of else None,
+                'nearest_ma': r.nearest_ma,
+                'ma_dist_pct': round(float(r.ma_dist_pct), 2),
+                'ma_dist_atr': round(float(r.ma_dist_atr), 2),
+                'range10_atr': round(float(r.range10_atr), 2),
+                'pos_in_range10': round(float(r.pos_in_range10), 3) if r.pos_in_range10 is not None else None,
+                'above_ema20': bool(r.above_ema20),
+                'above_all_ma': bool(r.above_all_ma),
+            }
+        return jsonify(out)
+    except Exception as e:
+        logger.error(f"Error getting volspike gapper setup metrics: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
 # ============================================================================
 # Main View Endpoints
 # ============================================================================

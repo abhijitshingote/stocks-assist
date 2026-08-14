@@ -1,0 +1,90 @@
+    /* ── Page-specific: recency filter ── */
+    .recency-filter {
+        display: flex;
+        gap: 0.25rem;
+        margin-left: auto;
+        align-items: center;
+    }
+    .recency-btn {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.7rem;
+        transition: all 0.2s;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    .recency-btn:hover { border-color: var(--accent-yellow); color: var(--text-primary); }
+    .recency-btn.active {
+        background: linear-gradient(135deg, rgba(210, 153, 34, 0.2) 0%, rgba(248, 81, 73, 0.2) 100%);
+        border-color: var(--accent-yellow);
+        color: var(--text-primary);
+    }
+    .recency-btn .count {
+        font-size: 0.6rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.05rem 0.2rem;
+        border-radius: 3px;
+    }
+
+    /* ── Page-specific: collapse-all group button ── */
+    .collapse-all-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.05rem 0.3rem;
+        border-radius: 3px;
+        margin-left: 0.25rem;
+        transition: all 0.15s;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+    .collapse-all-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+
+    .vsg-extra-stats .stat-spike { color: var(--accent-yellow); font-weight: 600; }
+    .vsg-extra-stats .stat-gap { color: var(--accent-red); font-weight: 600; }
+
+    /* ── Page-specific: date + intra-bucket conviction score, flush right ──
+       Keeps the wide second row balanced instead of left-packed. */
+    .stock-item .vsg-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-shrink: 0;
+    }
+
+    .stock-item .vsg-right .last-date { font-size: 0.72rem; }
+
+    /* Nearest-MA / consolidation chip (monthly view only) */
+    .stock-item .vsg-setup {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.62rem;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 3px;
+        padding: 0.02rem 0.24rem;
+        white-space: nowrap;
+        cursor: help;
+    }
+    .stock-item .vsg-setup.tight {
+        color: var(--accent-blue);
+        border-color: var(--accent-blue);
+    }
+
+    .stock-item .vsg-score {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 3px;
+        padding: 0.02rem 0.28rem;
+        cursor: help;
+    }

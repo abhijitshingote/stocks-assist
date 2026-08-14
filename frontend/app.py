@@ -101,6 +101,11 @@ def volspike_gapper_weekly_page():
     """Same dataset as /volspike-gapper, grouped by week of event instead of day"""
     return render_template('volspike_gapper_weekly.html')
 
+@app.route('/volspike-gapper-monthly')
+def volspike_gapper_monthly_page():
+    """Same dataset as /volspike-gapper, grouped by calendar month of event"""
+    return render_template('volspike_gapper_monthly.html')
+
 @app.route('/main-view')
 def main_view_page():
     """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
@@ -395,6 +400,14 @@ def api_volspike_gapper(market_cap):
     data, status_code = make_backend_request(f'/api/VolspikeGapper-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch Volume Spike & Gapper data'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/volspike-gapper-setup')
+def api_volspike_gapper_setup():
+    """Proxy endpoint for MA-consolidation metrics keyed by ticker"""
+    data, status_code = make_backend_request('/api/VolspikeGapper-Setup')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Volume Spike & Gapper setup data'}), status_code
     return jsonify(data), status_code
 
 @app.route('/api/frontend/main-view/<market_cap>')
