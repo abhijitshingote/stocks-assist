@@ -45,6 +45,10 @@
             background: #ddf4e4;
         }
 
+        body.light-theme .nav-row-label {
+            color: #57606a;
+        }
+
         /* One readable row (~42px). Page links always live in a Menu panel —
            never a horizontal scroll strip, never wrapped into the bar. */
         nav {
@@ -190,7 +194,7 @@
             background: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
-            max-height: min(70vh, 520px);
+            max-height: min(80vh, 640px);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -201,13 +205,28 @@
 
         .nav-row {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem 0.35rem;
+            flex-direction: column;
+            gap: 0.3rem;
         }
 
         .nav-row + .nav-row {
             padding-top: 0.65rem;
             border-top: 1px solid var(--border-color);
+        }
+
+        .nav-row-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .nav-row-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
         }
 
         .nav-links a {
@@ -448,38 +467,62 @@
             </button>
             <div class="nav-links" id="navLinksPanel">
                 <div class="nav-row">
-                    <a href="/daily-review">Daily Review</a>
-                    <a href="/main-view">Main View</a>
-                    <a href="/volspike-gapper">Vol Spike & Gaps</a>
-                    <a href="/volspike-gapper-weekly" title="Vol Spike & Gaps (W) (press V)">Vol Spike & Gaps (W)</a>
-                    <a href="/volspike-gapper-monthly">Vol Spike & Gaps (M)</a>
-                    <a href="/volspike-gapper-90d">Vol Spike & Gaps (90d)</a>
-                    <a href="/strong-stocks">Strong Stocks</a>
-                    <a href="/top-performance">Top Returns</a>
-                    <a href="/top-returns-5-20">Top 5D/20D</a>
-                    <a href="/high-sales-growth">High Growth</a>
-                    <a href="/rs-screener">Slow/Fast RS</a>
-                    <a href="/fast-rs">Fast RS</a>
-                    <a href="/top-losers">Top Losers</a>
-                    <a href="/all-stocks">All Stocks</a>
-                    <a href="/technical-screener">Technical</a>
-                    <a href="/abi-watchlist" title="Abi Watchlist (press W)">Abi Watchlist</a>
+                    <div class="nav-row-label">Daily</div>
+                    <div class="nav-row-links">
+                        <a href="/daily-review">Daily Review</a>
+                    </div>
                 </div>
                 <div class="nav-row">
-                    <a href="/market-brief">Market Brief</a>
-                    <a href="/abi-general-notes">Abi General Notes</a>
-                    <a href="/context">Context</a>
-                    <a href="/context-2">Context-2</a>
-                    <a href="/market-news">Market News</a>
-                    <a href="/etfs">ETFs</a>
+                    <div class="nav-row-label">Weekly</div>
+                    <div class="nav-row-links">
+                        <a href="/volspike-gapper-90d">Vol Spike & Gaps (90d)</a>
+                        <a href="/strong-stocks">Strong Stocks</a>
+                        <a href="/top-returns-5-20">Top 5D/20D</a>
+                        <a href="/fast-rs">Fast RS</a>
+                    </div>
                 </div>
                 <div class="nav-row">
-                    <a href="/logs">Logs</a>
-                    <a href="/help">Reference</a>
-                    <a href="/daily-shortlist">Daily Shortlist</a>
-                    <a href="/daily-themes">Daily Themes</a>
-                    <a href="/abi-dislikes">Dislikes</a>
-                    <a href="/themes">Themes</a>
+                    <div class="nav-row-label">Screeners</div>
+                    <div class="nav-row-links">
+                        <a href="/main-view">Main View</a>
+                        <a href="/volspike-gapper">Vol Spike & Gaps</a>
+                        <a href="/volspike-gapper-weekly" title="Vol Spike & Gaps (W) (press V)">Vol Spike & Gaps (W)</a>
+                        <a href="/volspike-gapper-monthly">Vol Spike & Gaps (M)</a>
+                        <a href="/top-performance">Top Returns</a>
+                        <a href="/high-sales-growth">High Growth</a>
+                        <a href="/rs-screener">Slow/Fast RS</a>
+                        <a href="/top-losers">Top Losers</a>
+                        <a href="/all-stocks">All Stocks</a>
+                        <a href="/technical-screener">Technical</a>
+                    </div>
+                </div>
+                <div class="nav-row">
+                    <div class="nav-row-label">Abi</div>
+                    <div class="nav-row-links">
+                        <a href="/abi-watchlist" title="Abi Watchlist (press W)">Abi Watchlist</a>
+                        <a href="/abi-general-notes">Abi General Notes</a>
+                        <a href="/abi-dislikes">Dislikes</a>
+                    </div>
+                </div>
+                <div class="nav-row">
+                    <div class="nav-row-label">Research</div>
+                    <div class="nav-row-links">
+                        <a href="/market-brief">Market Brief</a>
+                        <a href="/context">Context</a>
+                        <a href="/context-2">Context-2</a>
+                        <a href="/market-news">Market News</a>
+                        <a href="/etfs">ETFs</a>
+                        <a href="/daily-shortlist">Daily Shortlist</a>
+                        <a href="/daily-themes">Daily Themes</a>
+                        <a href="/themes">Themes</a>
+                    </div>
+                </div>
+                <div class="nav-row">
+                    <div class="nav-row-label">Ops</div>
+                    <div class="nav-row-links">
+                        <a href="/logs">Logs</a>
+                        <a href="/help">Reference</a>
+                    </div>
                 </div>
             </div>
             <div class="nav-indicators">

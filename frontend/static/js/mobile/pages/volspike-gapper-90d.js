@@ -9,7 +9,7 @@
   let sortMode = 'adj';
   try {
     const saved = localStorage.getItem(SORT_KEY);
-    if (saved === 'ready' || saved === 'adj') sortMode = saved;
+    if (saved === 'ready' || saved === 'adj' || saved === 'date') sortMode = saved;
   } catch (e) {}
 
   let setupMap = null;
@@ -60,6 +60,7 @@
     if (sortMode === 'ready') {
       return setupParts(setupMap ? setupMap[s.ticker] : null).total;
     }
+    if (sortMode === 'date') return s.last_event_date ? Date.parse(s.last_event_date) : -Infinity;
     const v = s.adjusted_event_return;
     return v == null ? -Infinity : v;
   }
@@ -81,6 +82,7 @@
       '<span class="strip-label">Sort</span>' +
       '<button type="button" class="pill recency-pill' + (sortMode === 'adj' ? ' active' : '') + '" data-sort="adj">Adj</button>' +
       '<button type="button" class="pill recency-pill' + (sortMode === 'ready' ? ' active' : '') + '" data-sort="ready">Ready</button>' +
+      '<button type="button" class="pill recency-pill' + (sortMode === 'date' ? ' active' : '') + '" data-sort="date">Date</button>' +
       '</div>',
     onSetup: app => {
       screenerApp = app;

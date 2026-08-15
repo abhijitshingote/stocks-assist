@@ -21,7 +21,7 @@
 |---|---|
 | **File** | `templates/base.html` |
 | **CSS** | Inline `<style>` in `base.html` (`.nav-*` selectors) |
-| **Layout** | Single ~42px row; all page links in a Menu overlay panel (no scroll strip / no wrap into the bar); short `thru Aug 7` next to logo |
+| **Layout** | Single ~42px row; all page links in a Menu overlay panel (no scroll strip / no wrap into the bar); short `thru Aug 7` next to logo. Panel rows: Daily / Weekly / Screeners / Abi / Research / Ops |
 | **Responsive** | `static/css/responsive.css` (minor indicator tweaks); Menu panel owned by `base.html` |
 | **Used by** | All desktop pages via `{% extends "base.html" %}` |
 
@@ -303,6 +303,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **File** | `templates/mobile/_nav_drawer.html` |
 | **CSS** | `static/css/mobile/nav.css` |
 | **JS** | `static/js/mobile/nav.js` |
+| **Sections** | Home, Daily, Weekly, Screeners, Abi, Research |
 | **Used by** | `_shell.html`, `_screener_shell.html` |
 
 ### Shared Detail Panel

@@ -1,7 +1,8 @@
 /* Vol Spike & Gapper — 90d.
    Universe: stock_volspike_gapper with last_event_date in the last 90 calendar days.
    Sort toggle: mcap-adjusted event-day return (Daily Review -0.134 scale) vs
-   monthly setup/readiness (setupParts from vsg-grouped.js, as-is).
+   monthly setup/readiness (setupParts from vsg-grouped.js, as-is) vs
+   last_event_date descending.
    Flat list — no date grouping; event date is a chip on the row.
 */
 (function () {
@@ -39,7 +40,7 @@
     let sortMode = 'adj';
     try {
         const saved = localStorage.getItem(SORT_KEY);
-        if (saved === 'ready' || saved === 'adj') sortMode = saved;
+        if (saved === 'ready' || saved === 'adj' || saved === 'date') sortMode = saved;
     } catch (e) {}
 
     let screenerApi = null;
@@ -62,6 +63,7 @@
 
     function sortKey(s) {
         if (sortMode === 'ready') return readiness(s).total;
+        if (sortMode === 'date') return s.last_event_date ? Date.parse(s.last_event_date) : -Infinity;
         const v = s.adjusted_event_return;
         return v == null ? -Infinity : v;
     }
