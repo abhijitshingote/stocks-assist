@@ -103,6 +103,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | **VolspikeGapper-Setup** | Dict keyed by ticker: nearest of `ema_10/ema_20/dma_50/dma_200`, distance (% and ATRs), 10-bar range in ATRs, close position in range, above-MA flags. Used by `/volspike-gapper-monthly` ranking |
 | **StrongStocks** `StrongStocks-*` | Liquid + `ti65 IS NOT NULL` (biotech included). `adjusted_ti65 = (ti65−1) / (0.120 × (clip(mcap,$500M,$100B)/$100B)^-0.151)`. Order `adjusted_ti65 DESC` |
 | **TopReturns520** `TopReturns520-*` | Liquid. Union of top 30 by `adjusted_dr_5` and top 30 by `adjusted_dr_20`, **always computed on All**. Cap routes filter that union (`cap_bucket`); they do not recompute top-N inside the bucket. `adjusted_dr_5 = dr_5 / (clip(mcap,$500M,$100B)/$100B)^-0.192`; `adjusted_dr_20 = dr_20 / (clip/$100B)^-0.177`. Order `adjusted_dr_5 DESC`. Flags `in_5d` / `in_20d` |
+| **FastRs** `FastRs-*` | Liquid + all `rs_*` present (biotech included). Frozen Fast RS weights `10/25/50/50/50`. `rs_score = (10·rs_2d + 25·rs_5d + 50·rs_10d + 50·rs_20d + 50·rs_60d) / 185`. `adjusted_rs_score = rs_score / (13.66 × (clip(mcap,$500M,$100B)/$100B)^-0.192)`. Order `adjusted_rs_score DESC` |
 | **StrongStocks-Setup** | Same setupParts fields as VolspikeGapper-Setup, ticker universe = liquid + `ti65` |
 | **MainView** `MainView-*` | Full `main_view` row |
 | **HighSalesGrowth** `HighSalesGrowth-*` | `main_view.tags LIKE '%high_sales_growth%'`; order `rev_growth_t_plus_1 DESC` |
@@ -186,6 +187,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | `/high-sales-growth` | Tagged main_view rows |
 | `/sector-performance` | Sector/index ETF returns |
 | `/rs-screener` | Relative strength |
+| `/fast-rs` | Frozen-weight Fast RS, mcap-adjusted |
 | `/stock/<ticker>` | Detail + charts |
 | `/themes` | `user_data/themes.json` editor |
 | `/context`, `/context-2` | Macro context |
@@ -233,6 +235,7 @@ Proxies to backend unless noted. Market-cap path segments use `all|micro|small|m
 | `GET /api/frontend/high-sales-growth/<market_cap>` | `/api/HighSalesGrowth-{Bucket}` |
 | `GET /api/frontend/technical-screener/<criterion>/<market_cap>` | `/api/TechnicalScreener-{Criterion}-{Bucket}` (`criterion`: `reversal`) |
 | `GET /api/frontend/rs-screener/<market_cap>` | `/api/rs-screener/<market_cap>` |
+| `GET /api/frontend/fast-rs/<market_cap>` | `/api/FastRs-{Bucket}` |
 | `GET/PUT /api/frontend/themes` | **`user_data/themes.json`** (frontend only) |
 | `GET /api/frontend/theme-proposals` | `/api/theme-proposals` (**no backend route registered**) |
 | `POST /api/frontend/theme-proposals/apply` | `/api/theme-proposals/apply` (**no backend route**) |

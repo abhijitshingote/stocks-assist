@@ -1894,6 +1894,160 @@ def get_top_returns_5_20_large():
 def get_top_returns_5_20_mega():
     return _json_top_returns_5_20('mega')
 
+# ============================================================================
+# Fast RS — frozen-weight Fast RS score, mcap-adjusted (TI65-style)
+# ============================================================================
+# Frozen slider defaults 10/25/50/50/50 (2d/5d/10d/20d/60d). Score is the
+# weighted RAW excess vs SPY (%), not bucket NTILE ranks (those already
+# equalize inside a cap bucket; All-view still fills with small/mid names).
+#   rs_score = (10·rs_2d + 25·rs_5d + 50·rs_10d + 50·rs_20d + 50·rs_60d) / 185
+# p90(positive rs_score) vs mcap, ±0.25 log10 window, liquid EX biotech:
+#   p90 ≈ 13.66 * (clip(mcap,$500M,$100B)/$100B)^-0.192  MAPE 8.2%
+# Fit on $500M–$100B. Clip lo $500M (no liquid micro; $200M n=11).
+# Clip hi $100B: mega p90 rises 14.4/15.3/19.3 at $100B/$200B/$400B.
+# Do not reuse Daily Review -0.134 or TI65 -0.151.
+# TI65-style (1.0 = p90-typical). Baseline is 0 (in line with SPY), no subtract:
+#   adjusted_rs_score = rs_score / (13.66 × (clip/100B)^-0.192)
+FAST_RS_WEIGHTS = (10, 25, 50, 50, 50)  # 2d, 5d, 10d, 20d, 60d
+FAST_RS_WEIGHT_SUM = sum(FAST_RS_WEIGHTS)
+FAST_RS_SCALE_REF_MCAP = 100_000_000_000
+FAST_RS_SCALE_EXP = -0.192
+FAST_RS_SCALE_MCAP_LO = 500_000_000
+FAST_RS_SCALE_MCAP_HI = 100_000_000_000
+FAST_RS_P90_AT_100B = 13.66
+
+
+def _fast_rs_score(rs_2d, rs_5d, rs_10d, rs_20d, rs_60d):
+    vals = (rs_2d, rs_5d, rs_10d, rs_20d, rs_60d)
+    if any(v is None for v in vals):
+        return None
+    w2, w5, w10, w20, w60 = FAST_RS_WEIGHTS
+    return (
+        w2 * float(rs_2d) + w5 * float(rs_5d) + w10 * float(rs_10d)
+        + w20 * float(rs_20d) + w60 * float(rs_60d)
+    ) / FAST_RS_WEIGHT_SUM
+
+
+def _fast_rs_scale(market_cap):
+    if not market_cap or market_cap <= 0:
+        return FAST_RS_P90_AT_100B
+    m = min(max(market_cap, FAST_RS_SCALE_MCAP_LO), FAST_RS_SCALE_MCAP_HI)
+    return FAST_RS_P90_AT_100B * (m / FAST_RS_SCALE_REF_MCAP) ** FAST_RS_SCALE_EXP
+
+
+def get_fast_rs_stocks(session, market_cap_category=None):
+    """Liquid rs_screener names ranked by mcap-adjusted Fast RS score."""
+    try:
+        query = session.query(
+            RsScreener,
+            StockMetrics.range_52_week_ohlc,
+            StockMetrics.at_52w_high,
+            StockMetrics.dr_1,
+            StockMetrics.ti65,
+            StockMetrics.float_shares,
+        ).outerjoin(
+            StockMetrics, RsScreener.ticker == StockMetrics.ticker
+        ).filter(
+            RsScreener.market_cap.isnot(None),
+            RsScreener.rs_2d.isnot(None),
+            RsScreener.rs_5d.isnot(None),
+            RsScreener.rs_10d.isnot(None),
+            RsScreener.rs_20d.isnot(None),
+            RsScreener.rs_60d.isnot(None),
+        )
+        query = apply_global_liquidity_filters(query)
+        if market_cap_category:
+            category = MARKET_CAP_CATEGORIES.get(market_cap_category)
+            if category:
+                query = query.filter(RsScreener.market_cap >= category['min'])
+                if category['max'] is not None:
+                    query = query.filter(RsScreener.market_cap < category['max'])
+
+        results = []
+        for stock, range_52_week_ohlc, at_52w_high, dr_1, ti65, float_shares in query.all():
+            rs_score = _fast_rs_score(
+                stock.rs_2d, stock.rs_5d, stock.rs_10d, stock.rs_20d, stock.rs_60d,
+            )
+            scale = _fast_rs_scale(stock.market_cap)
+            adj = (rs_score / scale) if rs_score is not None else None
+            results.append({
+                'ticker': stock.ticker,
+                'company_name': stock.company_name,
+                'sector': stock.sector,
+                'industry': stock.industry,
+                'market_cap': stock.market_cap,
+                'cap_bucket': _market_cap_bucket(stock.market_cap),
+                'current_price': round(stock.current_price, 2) if stock.current_price else None,
+                'pct_from_52w_high': _pct_from_52w_high(stock.current_price, range_52_week_ohlc),
+                'at_52w_high': bool(at_52w_high) if at_52w_high is not None else False,
+                'dr_1': round(dr_1, 2) if dr_1 is not None else None,
+                'ti65': round(ti65, 2) if ti65 else None,
+                'float_shares': float_shares,
+                'rs_2d': float(stock.rs_2d) if stock.rs_2d is not None else None,
+                'rs_5d': float(stock.rs_5d) if stock.rs_5d is not None else None,
+                'rs_10d': float(stock.rs_10d) if stock.rs_10d is not None else None,
+                'rs_20d': float(stock.rs_20d) if stock.rs_20d is not None else None,
+                'rs_60d': float(stock.rs_60d) if stock.rs_60d is not None else None,
+                'rs_2d_rank': stock.rs_2d_rank,
+                'rs_5d_rank': stock.rs_5d_rank,
+                'rs_10d_rank': stock.rs_10d_rank,
+                'rs_20d_rank': stock.rs_20d_rank,
+                'rs_60d_rank': stock.rs_60d_rank,
+                'rs_rating': stock.rs_rating,
+                'rs_vs_spy': float(stock.rs_vs_spy) if stock.rs_vs_spy is not None else None,
+                'rs_line_new_high': bool(stock.rs_line_new_high) if stock.rs_line_new_high is not None else False,
+                'rs_score': round(rs_score, 2) if rs_score is not None else None,
+                'adjusted_rs_score': round(adj, 4) if adj is not None else None,
+            })
+        results.sort(key=lambda r: (
+            r['adjusted_rs_score'] is None,
+            -(r['adjusted_rs_score'] or 0),
+            -(r['market_cap'] or 0),
+            r['ticker'] or '',
+        ))
+        return results
+    except Exception as e:
+        logger.error(f"Error getting Fast RS stocks for {market_cap_category}: {str(e)}")
+        return []
+
+
+def _json_fast_rs(market_cap_category=None):
+    s = Session()
+    try:
+        return jsonify(get_fast_rs_stocks(s, market_cap_category=market_cap_category))
+    finally:
+        s.close()
+
+
+@app.route('/api/FastRs-All')
+def get_fast_rs_all():
+    return _json_fast_rs(None)
+
+
+@app.route('/api/FastRs-MicroCap')
+def get_fast_rs_micro():
+    return _json_fast_rs('micro')
+
+
+@app.route('/api/FastRs-SmallCap')
+def get_fast_rs_small():
+    return _json_fast_rs('small')
+
+
+@app.route('/api/FastRs-MidCap')
+def get_fast_rs_mid():
+    return _json_fast_rs('mid')
+
+
+@app.route('/api/FastRs-LargeCap')
+def get_fast_rs_large():
+    return _json_fast_rs('large')
+
+
+@app.route('/api/FastRs-MegaCap')
+def get_fast_rs_mega():
+    return _json_fast_rs('mega')
+
 # Base/consolidation metrics for the tickers in stock_volspike_gapper, measured on
 # the last 10 trading bars against the 4 MAs in ticker_moving_averages
 # (ema_10, ema_20, dma_50, dma_200). Consumed by /volspike-gapper-monthly.

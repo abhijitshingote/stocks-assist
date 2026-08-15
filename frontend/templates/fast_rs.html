@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block body_class %}screener-page page-fast-rs{% endblock %}
+{% block title %}Fast RS - Stocks Assist{% endblock %}
+
+{% set screener_label = "RS Score" %}
+{% set screener_stats_label = "Stocks" %}
+
+{% set topbar_extra_controls %}
+<div class="recency-filter" role="tablist" aria-label="Sort mode">
+    <button class="recency-btn active" data-sort="adj">Adj RS</button>
+    <button class="recency-btn" data-sort="ready">Readiness</button>
+</div>
+{% endset %}
+
+{% set subchart_bottom %}
+<div class="chart-panel collapsed" id="rsiPanel">
+    <div class="chart-panel-header">
+        <span class="chart-panel-title">RSI MktCap</span>
+        <button class="chart-collapse-btn" id="rsiCollapseBtn" title="Toggle RSI chart">
+            <span id="rsiCollapseIcon">▶</span>
+        </button>
+    </div>
+    <div class="chart-panel-body" id="rsiSubChart" style="height: 70px;"></div>
+</div>
+{% endset %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
+{% endblock %}
+
+{% block extra_styles %}
+{% include "desktop/_vsg_grouped_styles.html" %}
+    .chart-collapse-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.15rem 0.35rem;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+    .chart-collapse-btn:hover { border-color: var(--accent-green); color: var(--text-primary); }
+    .chart-panel.collapsed .chart-panel-body { display: none; }
+    .chart-panel.collapsed { padding-bottom: 0.1rem; }
+    .chart-panel.collapsed .chart-panel-header { padding-bottom: 0; }
+{% endblock %}
+
+{% block content %}
+{% include "desktop/_screener_shell.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/static/js/stock-chart.js"></script>
+<script src="/static/js/desktop/screener-app.js"></script>
+<script src="/static/js/desktop/fast-rs.js"></script>
+{% endblock %}

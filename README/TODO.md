@@ -60,3 +60,9 @@ Biotech exclude toggle like Vol Spike 90d.~~
 a new page with top 30 5d return and top 30 20d return
 adjust for market cap like in TODO.md for other newer screeners.
 Sort toggle - adj 5d return or 5d return~~
+
+
+~~fast rs - weekly review
+we want a new fast RS page similar to the fast RS section of the current slow/fast RS page. However, on the new page the RS should be calculated adjusted for market cap like we do on the above screeners
+
+please give me a sort toggle - by adjusted RS or readiness like the above screeners~~

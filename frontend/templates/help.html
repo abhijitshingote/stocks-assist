@@ -163,6 +163,11 @@
         </div>
 
         <div class="help-card">
+            <div class="help-name"><a href="/fast-rs">Fast RS</a><span class="help-route">/fast-rs</span></div>
+            <div class="help-desc">Clone of Slow/Fast RS <strong>Fast</strong> mode. Frozen weights <code>10/25/50/50/50</code> on raw <code>rs_2d/5d/10d/20d/60d</code> (excess % vs SPY), not bucket NTILE ranks. <code>rs_score = (10·rs_2d + 25·rs_5d + 50·rs_10d + 50·rs_20d + 50·rs_60d) / 185</code>. Default sort is TI65-style <code>adjusted_rs_score = rs_score / (13.66 × (clip(mcap,$500M,$100B)/$100B)^-0.192)</code> — one-shot p90(positive rs_score) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B (MAPE 8.2%). Window p90: $0.5B <code>32.7</code>, $2B <code>32.3</code>, $10B <code>19.9</code>, $100B <code>14.4</code>; mega rises (15.3/19.3 at $200B/$400B) so clip at $100B. Do not reuse Daily Review <code>-0.134</code> or TI65 <code>-0.151</code>. Toggle: Adj RS vs monthly <code>setup</code> readiness (same <code>setupParts</code> as Strong Stocks; <code>/api/StrongStocks-Setup</code>). List value is raw <code>rs_score</code>. No sliders, no Slow RS, no SPY subchart. Shared <code>− Biotech</code> chip.</div>
+        </div>
+
+        <div class="help-card">
             <div class="help-name"><a href="/sector-performance">Sector Performance</a><span class="help-route">/sector-performance</span></div>
             <div class="help-desc">Index/sector-ETF performance across 1D/5D/20D/60D/120D timeframes.</div>
         </div>

@@ -126,6 +126,11 @@ def top_returns_5_20_page():
     """Union of top 30 adj dr_5 and top 30 adj dr_20"""
     return render_template('top_returns_5_20.html')
 
+@app.route('/fast-rs')
+def fast_rs_page():
+    """Fast RS — frozen-weight RS score, mcap-adjusted"""
+    return render_template('fast_rs.html')
+
 @app.route('/main-view')
 def main_view_page():
     """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
@@ -185,6 +190,10 @@ def m_strong_stocks():
 @app.route('/m/top-returns-5-20')
 def m_top_returns_5_20():
     return render_template('mobile/top_returns_5_20.html')
+
+@app.route('/m/fast-rs')
+def m_fast_rs():
+    return render_template('mobile/fast_rs.html')
 
 @app.route('/m/top-performance')
 def m_top_performance():
@@ -526,6 +535,26 @@ def api_top_returns_5_20(market_cap):
     data, status_code = make_backend_request(f'/api/TopReturns520-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch Top 5D/20D data'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/fast-rs/<market_cap>')
+def api_fast_rs(market_cap):
+    """Proxy: liquid Fast RS universe with mcap-adjusted RS score"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+
+    data, status_code = make_backend_request(f'/api/FastRs-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Fast RS data'}), status_code
     return jsonify(data), status_code
 
 @app.route('/api/frontend/volspike-gapper-setup')

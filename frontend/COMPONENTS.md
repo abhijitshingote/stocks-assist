@@ -101,7 +101,7 @@
 
 ## Desktop Screener Components
 
-One layout system for all 12 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
+One layout system for all 14 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
 
 | Page | Template | Route |
 |------|----------|-------|
@@ -114,6 +114,7 @@ One layout system for all 12 desktop screener pages: shared shell + `screener.cs
 | Top 5D/20D | `top_returns_5_20.html` | `/top-returns-5-20` |
 | High Growth | `high_sales_growth.html` | `/high-sales-growth` |
 | Slow/Fast RS | `rs_screener.html` | `/rs-screener` |
+| Fast RS | `fast_rs.html` | `/fast-rs` |
 | Top Losers | `top_losers.html` | `/top-losers` |
 | All Stocks | `all_stocks.html` | `/all-stocks` |
 | Technical | `technical_screener.html` | `/technical-screener` |
@@ -344,6 +345,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Top Losers | `mobile/top_losers.html` | `/m/top-losers` |
 | High Growth | `mobile/high_sales_growth.html` | `/m/high-sales-growth` |
 | Slow/Fast RS | `mobile/rs_screener.html` | `/m/rs-screener` |
+| Fast RS | `mobile/fast_rs.html` | `/m/fast-rs` |
 | All Stocks | `mobile/all_stocks.html` | `/m/all-stocks` |
 | Technical | `mobile/technical_screener.html` | `/m/technical-screener` |
 | Abi Watchlist | `mobile/abi_watchlist.html` | `/m/abi-watchlist` |
