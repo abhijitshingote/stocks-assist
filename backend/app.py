@@ -19,7 +19,7 @@ import json
 import logging
 import time
 import pytz
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 
@@ -1205,11 +1205,12 @@ def get_bottom_performance_mega():
 # Volume Spike & Gapper Endpoints
 # ============================================================================
 
-def get_volspike_gapper_stocks(session, market_cap_category=None):
+def get_volspike_gapper_stocks(session, market_cap_category=None, lookback_days=None):
     """
     Get stocks with volume spike and/or gapper activity in the last 365 days.
     Joins with stock_metrics for enriched data.
     Sorted by last_event_date descending (most recent events first).
+    lookback_days: if set, keep rows with last_event_date >= max(OHLC.date) - N calendar days.
     """
     try:
         query = session.query(
@@ -1295,6 +1296,12 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
         # Apply global liquidity filters
         query = apply_global_liquidity_filters(query)
 
+        if lookback_days:
+            as_of = get_latest_price_date(session)
+            if as_of:
+                cutoff = as_of - timedelta(days=lookback_days)
+                query = query.filter(StockVolspikeGapper.last_event_date >= cutoff)
+
         # Order by last_event_date descending (most recent events first)
         query = query.order_by(
             desc(StockVolspikeGapper.last_event_date)
@@ -1365,6 +1372,10 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
                 'last_event_type': stock.last_event_type,
                 'last_event_magnitude': float(stock.last_event_magnitude) if stock.last_event_magnitude else None,
                 'last_event_return': float(stock.last_event_return) if stock.last_event_return else None,
+                'adjusted_event_return': (
+                    round(float(stock.last_event_return) * 100.0 / _dr1_scale(stock.market_cap), 4)
+                    if stock.last_event_return is not None else None
+                ),
                 'tags': stock.tags,
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None
             })
@@ -1375,53 +1386,44 @@ def get_volspike_gapper_stocks(session, market_cap_category=None):
         logger.error(f"Error getting volspike gapper stocks for {market_cap_category}: {str(e)}")
         return []
 
-@app.route('/api/VolspikeGapper-All')
-def get_volspike_gapper_all():
+def _vsg_lookback_days():
+    n = request.args.get('lookback_days', type=int)
+    return n if n and n > 0 else None
+
+
+def _json_volspike_gapper(market_cap_category=None):
     s = Session()
     try:
-        return jsonify(get_volspike_gapper_stocks(s, market_cap_category=None))
+        return jsonify(get_volspike_gapper_stocks(
+            s, market_cap_category=market_cap_category, lookback_days=_vsg_lookback_days(),
+        ))
     finally:
         s.close()
+
+
+@app.route('/api/VolspikeGapper-All')
+def get_volspike_gapper_all():
+    return _json_volspike_gapper(None)
 
 @app.route('/api/VolspikeGapper-MicroCap')
 def get_volspike_gapper_micro():
-    s = Session()
-    try:
-        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='micro'))
-    finally:
-        s.close()
+    return _json_volspike_gapper('micro')
 
 @app.route('/api/VolspikeGapper-SmallCap')
 def get_volspike_gapper_small():
-    s = Session()
-    try:
-        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='small'))
-    finally:
-        s.close()
+    return _json_volspike_gapper('small')
 
 @app.route('/api/VolspikeGapper-MidCap')
 def get_volspike_gapper_mid():
-    s = Session()
-    try:
-        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='mid'))
-    finally:
-        s.close()
+    return _json_volspike_gapper('mid')
 
 @app.route('/api/VolspikeGapper-LargeCap')
 def get_volspike_gapper_large():
-    s = Session()
-    try:
-        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='large'))
-    finally:
-        s.close()
+    return _json_volspike_gapper('large')
 
 @app.route('/api/VolspikeGapper-MegaCap')
 def get_volspike_gapper_mega():
-    s = Session()
-    try:
-        return jsonify(get_volspike_gapper_stocks(s, market_cap_category='mega'))
-    finally:
-        s.close()
+    return _json_volspike_gapper('mega')
 
 # ============================================================================
 # Daily Review — latest-day VSG ∪ notable dr_1

@@ -92,6 +92,7 @@ class TestFrontendResponsive(unittest.TestCase):
         routes = [
             "/",
             "/daily-review",
+            "/volspike-gapper-90d",
             "/daily-shortlist",
             "/daily-themes",
             "/main-view",

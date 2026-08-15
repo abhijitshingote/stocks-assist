@@ -118,6 +118,11 @@
         </div>
 
         <div class="help-card">
+            <div class="help-name"><a href="/volspike-gapper-90d">Vol Spike &amp; Gaps (90d)</a><span class="help-route">/volspike-gapper-90d</span></div>
+            <div class="help-desc"><code>stock_volspike_gapper</code> rows with <code>last_event_date &gt;= max(OHLC.date) − 90 calendar days</code>. Flat list (no date grouping). Default sort is mega-equivalent <code>adjusted_event_return = last_event_return×100 / (clip(mcap,$200M,$100B)/$100B)^-0.134</code> (same exponent as Daily Review; <code>last_event_return</code> is the event-day fraction). Toggle switches to monthly <code>setup</code> readiness (<code>0–1</code> from <code>/api/VolspikeGapper-Setup</code>: <code>0.35·prox + 0.25·tight + 0.20·hold + 0.20·trend</code>). Default-on exclude chip drops <code>industry === Biotechnology</code> (add rows to <code>EXCLUDE_RULES</code> in <code>vsg-90d.js</code> for more). List value is raw event-day return; S/G + magnitude + event-date chip on the row. Volume ratio is not a sort key.</div>
+        </div>
+
+        <div class="help-card">
             <div class="help-name"><a href="/top-performance">Top Returns</a><span class="help-route">/top-performance</span></div>
             <div class="help-desc">Union of the top <code>30</code> names by each of <code>dr_1</code>, <code>dr_5</code>, and <code>dr_20</code> (deduplicated).</div>
         </div>

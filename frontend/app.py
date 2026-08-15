@@ -111,6 +111,11 @@ def volspike_gapper_monthly_page():
     """Same dataset as /volspike-gapper, grouped by calendar month of event"""
     return render_template('volspike_gapper_monthly.html')
 
+@app.route('/volspike-gapper-90d')
+def volspike_gapper_90d_page():
+    """VSG events with last_event_date in the last 90 calendar days"""
+    return render_template('volspike_gapper_90d.html')
+
 @app.route('/main-view')
 def main_view_page():
     """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
@@ -158,6 +163,10 @@ def m_daily_review():
 @app.route('/m/volspike-gapper')
 def m_volspike_gapper():
     return render_template('mobile/volspike_gapper.html')
+
+@app.route('/m/volspike-gapper-90d')
+def m_volspike_gapper_90d():
+    return render_template('mobile/volspike_gapper_90d.html')
 
 @app.route('/m/top-performance')
 def m_top_performance():
@@ -429,6 +438,28 @@ def api_volspike_gapper(market_cap):
     data, status_code = make_backend_request(f'/api/VolspikeGapper-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch Volume Spike & Gapper data'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/volspike-gapper-90d/<market_cap>')
+def api_volspike_gapper_90d(market_cap):
+    """Proxy: VSG rows with last_event_date in the last 90 calendar days"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+
+    data, status_code = make_backend_request(
+        f'/api/VolspikeGapper-{endpoint_cap}?lookback_days=90'
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Volume Spike & Gapper 90d data'}), status_code
     return jsonify(data), status_code
 
 @app.route('/api/frontend/volspike-gapper-setup')
