@@ -33,7 +33,7 @@ No date/recency in the sort. Volume ratio is not the sort key — only how large
 
 Sort toggle: Adj (above) vs readiness (monthly setupParts, as-is).~~
 
-New page: Strong Stocks.
+~~New page: Strong Stocks.
 
 Universe: liquid names with a current TI65 (avg_close_7d / avg_close_65d).
 
@@ -51,5 +51,8 @@ Scale the excess, not the raw ratio. TI65 = 1.0 is flat at every mcap.
 Rank by adjusted_ti65 only. No date/recency. A mega-cap TI65 of 1.2 should outrank a small-cap 1.4 of equivalent rarity.
 
 Before implementing: show the fit (p90 vs mcap table + proposed scale(mcap)) and agree on constants.
+Sort toggle: Adj ti65 vs raw ti65 vs readiness (monthly setupParts, as-is).
+Biotech exclude toggle like Vol Spike 90d.~~
+
 
 top returns - weekly (to do)

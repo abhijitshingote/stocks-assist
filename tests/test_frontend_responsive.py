@@ -93,6 +93,7 @@ class TestFrontendResponsive(unittest.TestCase):
             "/",
             "/daily-review",
             "/volspike-gapper-90d",
+            "/strong-stocks",
             "/daily-shortlist",
             "/daily-themes",
             "/main-view",

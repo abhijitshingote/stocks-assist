@@ -123,6 +123,11 @@
         </div>
 
         <div class="help-card">
+            <div class="help-name"><a href="/strong-stocks">Strong Stocks</a><span class="help-route">/strong-stocks</span></div>
+            <div class="help-desc">Liquid universe (<code>price ≥ $3</code>, <code>avg_vol_10d ≥ 50k</code>, <code>dollar_volume ≥ $10M</code>) with a current <code>TI65 = avg_close_7d / avg_close_65d</code>. Biotech is in the payload; default-on exclude chip drops <code>industry === Biotechnology</code>. Default sort is <code>adjusted_ti65 = (ti65 − 1) / (0.120 × (clip(mcap,$500M,$100B)/$100B)^-0.151)</code> — one-shot p90(TI65−1) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B (MAPE 2.8%). Window p90 excess: $0.5B <code>0.25</code>, $2B <code>0.23</code>, $10B <code>0.17</code>, $100B <code>0.12</code>; mega rises (0.16/0.17 at $200B/$400B) so clip at $100B. Toggle: Adj / raw TI65 / monthly <code>setup</code> readiness (same <code>setupParts</code> as 90d; <code>/api/StrongStocks-Setup</code> covers the liquid TI65 universe). List value is raw TI65. No date/recency in the sort.</div>
+        </div>
+
+        <div class="help-card">
             <div class="help-name"><a href="/top-performance">Top Returns</a><span class="help-route">/top-performance</span></div>
             <div class="help-desc">Union of the top <code>30</code> names by each of <code>dr_1</code>, <code>dr_5</code>, and <code>dr_20</code> (deduplicated).</div>
         </div>

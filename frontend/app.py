@@ -116,6 +116,11 @@ def volspike_gapper_90d_page():
     """VSG events with last_event_date in the last 90 calendar days"""
     return render_template('volspike_gapper_90d.html')
 
+@app.route('/strong-stocks')
+def strong_stocks_page():
+    """Liquid universe ranked by mcap-adjusted TI65"""
+    return render_template('strong_stocks.html')
+
 @app.route('/main-view')
 def main_view_page():
     """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
@@ -167,6 +172,10 @@ def m_volspike_gapper():
 @app.route('/m/volspike-gapper-90d')
 def m_volspike_gapper_90d():
     return render_template('mobile/volspike_gapper_90d.html')
+
+@app.route('/m/strong-stocks')
+def m_strong_stocks():
+    return render_template('mobile/strong_stocks.html')
 
 @app.route('/m/top-performance')
 def m_top_performance():
@@ -460,6 +469,34 @@ def api_volspike_gapper_90d(market_cap):
     )
     if data is None:
         return jsonify({'error': 'Failed to fetch Volume Spike & Gapper 90d data'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/strong-stocks/<market_cap>')
+def api_strong_stocks(market_cap):
+    """Proxy: liquid TI65 universe with mcap-adjusted TI65"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+
+    data, status_code = make_backend_request(f'/api/StrongStocks-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Strong Stocks data'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/strong-stocks-setup')
+def api_strong_stocks_setup():
+    """Proxy: MA-consolidation metrics for liquid TI65 names"""
+    data, status_code = make_backend_request('/api/StrongStocks-Setup')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Strong Stocks setup data'}), status_code
     return jsonify(data), status_code
 
 @app.route('/api/frontend/volspike-gapper-setup')

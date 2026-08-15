@@ -100,6 +100,8 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | **BottomPerformance** `BottomPerformance-*` | Same windows; ascending sort |
 | **VolspikeGapper** `VolspikeGapper-*` | `spike_day_count > 0 OR gapper_day_count > 0`; order `last_event_date DESC`. Optional `?lookback_days=N` keeps `last_event_date >= max(OHLC.date) − N` calendar days. Adds `adjusted_event_return = last_event_return×100 / (clip(mcap,$200M,$100B)/$100B)^-0.134` |
 | **VolspikeGapper-Setup** | Dict keyed by ticker: nearest of `ema_10/ema_20/dma_50/dma_200`, distance (% and ATRs), 10-bar range in ATRs, close position in range, above-MA flags. Used by `/volspike-gapper-monthly` ranking |
+| **StrongStocks** `StrongStocks-*` | Liquid + `ti65 IS NOT NULL` (biotech included). `adjusted_ti65 = (ti65−1) / (0.120 × (clip(mcap,$500M,$100B)/$100B)^-0.151)`. Order `adjusted_ti65 DESC` |
+| **StrongStocks-Setup** | Same setupParts fields as VolspikeGapper-Setup, ticker universe = liquid + `ti65` |
 | **MainView** `MainView-*` | Full `main_view` row |
 | **HighSalesGrowth** `HighSalesGrowth-*` | `main_view.tags LIKE '%high_sales_growth%'`; order `rev_growth_t_plus_1 DESC` |
 | **TechnicalScreener-Reversal** `TechnicalScreener-Reversal-*` | Latest day `(close-low)/low*100` reversal %; liquidity filters |
@@ -176,6 +178,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | `/top-performance`, `/top-losers` | Top / bottom return unions |
 | `/volspike-gapper` | Vol spike + gapper |
 | `/volspike-gapper-90d` | VSG events, last 90 calendar days |
+| `/strong-stocks` | Liquid universe ranked by mcap-adjusted TI65 |
 | `/technical-screener` | Reversal criterion |
 | `/high-sales-growth` | Tagged main_view rows |
 | `/sector-performance` | Sector/index ETF returns |
@@ -219,6 +222,8 @@ Proxies to backend unless noted. Market-cap path segments use `all|micro|small|m
 | `GET /api/frontend/volspike-gapper/<market_cap>` | `/api/VolspikeGapper-{Bucket}` |
 | `GET /api/frontend/volspike-gapper-90d/<market_cap>` | `/api/VolspikeGapper-{Bucket}?lookback_days=90` |
 | `GET /api/frontend/volspike-gapper-setup` | `/api/VolspikeGapper-Setup` |
+| `GET /api/frontend/strong-stocks/<market_cap>` | `/api/StrongStocks-{Bucket}` |
+| `GET /api/frontend/strong-stocks-setup` | `/api/StrongStocks-Setup` |
 | `GET /api/frontend/main-view/<market_cap>` | `/api/MainView-{Bucket}` |
 | `GET /api/frontend/main-view/by-tickers?tickers=` | `/api/MainView-ByTickers` |
 | `GET /api/frontend/high-sales-growth/<market_cap>` | `/api/HighSalesGrowth-{Bucket}` |

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block body_class %}screener-page page-strong-stocks{% endblock %}
+{% block title %}Strong Stocks - Stocks Assist{% endblock %}
+
+{% set screener_label = "Strong Stocks" %}
+{% set screener_stats_label = "Stocks" %}
+
+{% set topbar_extra_controls %}
+<div class="recency-filter" id="ssExcludes" role="group" aria-label="Exclude industries"></div>
+<div class="recency-filter" role="tablist" aria-label="Sort mode">
+    <button class="recency-btn active" data-sort="adj">Adj TI65</button>
+    <button class="recency-btn" data-sort="raw">Raw TI65</button>
+    <button class="recency-btn" data-sort="ready">Readiness</button>
+</div>
+{% endset %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
+{% endblock %}
+
+{% block extra_styles %}
+{% include "desktop/_vsg_grouped_styles.html" %}
+{% endblock %}
+
+{% block content %}
+{% include "desktop/_screener_shell.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/static/js/stock-chart.js"></script>
+<script src="/static/js/desktop/screener-app.js"></script>
+<script src="/static/js/desktop/strong-stocks.js"></script>
+{% endblock %}

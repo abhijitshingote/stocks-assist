@@ -101,7 +101,7 @@
 
 ## Desktop Screener Components
 
-One layout system for all 10 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
+One layout system for all 11 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
 
 | Page | Template | Route |
 |------|----------|-------|
@@ -109,6 +109,7 @@ One layout system for all 10 desktop screener pages: shared shell + `screener.cs
 | Main View | `main_view.html` | `/main-view` |
 | Vol Spike & Gaps | `volspike_gapper.html` | `/volspike-gapper` |
 | Vol Spike & Gaps (90d) | `volspike_gapper_90d.html` | `/volspike-gapper-90d` |
+| Strong Stocks | `strong_stocks.html` | `/strong-stocks` |
 | Top Returns | `top_performance.html` | `/top-performance` |
 | High Growth | `high_sales_growth.html` | `/high-sales-growth` |
 | Slow/Fast RS | `rs_screener.html` | `/rs-screener` |
@@ -335,6 +336,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Vol Spike & Gaps | `mobile/volspike_gapper.html` | `/m/volspike-gapper` |
 | Vol Spike & Gaps (W) | `mobile/volspike_gapper_weekly.html` | `/m/volspike-gapper-weekly` |
 | Vol Spike & Gaps (90d) | `mobile/volspike_gapper_90d.html` | `/m/volspike-gapper-90d` |
+| Strong Stocks | `mobile/strong_stocks.html` | `/m/strong-stocks` |
 | Top Returns | `mobile/top_performance.html` | `/m/top-performance` |
 | Top Losers | `mobile/top_losers.html` | `/m/top-losers` |
 | High Growth | `mobile/high_sales_growth.html` | `/m/high-sales-growth` |

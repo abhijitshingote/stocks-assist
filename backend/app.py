@@ -1682,6 +1682,96 @@ def get_daily_review_mega():
     finally:
         s.close()
 
+# ============================================================================
+# Strong Stocks — liquid universe ranked by mcap-adjusted TI65
+# ============================================================================
+# p90(TI65−1) vs mcap, ±0.25 log10 window, liquid EX biotech, one-shot:
+#   p90 ≈ 0.120 * (clip(mcap,$500M,$100B)/$100B)^-0.151
+# Fit on $500M–$100B anchors (MAPE 2.8%). Clip lo $500M (no liquid <$200M;
+# $200M window n<20). Clip hi $100B: mega p90 rises 0.12/0.16/0.17 at
+# $100B/$200B/$400B (not quieter). Do not reuse Daily Review -0.134.
+# Sort: adjusted_ti65 = (ti65 − 1) / scale(mcap)
+STRONG_STOCKS_SCALE_REF_MCAP = 100_000_000_000
+STRONG_STOCKS_SCALE_EXP = -0.151
+STRONG_STOCKS_SCALE_MCAP_LO = 500_000_000
+STRONG_STOCKS_SCALE_MCAP_HI = 100_000_000_000
+STRONG_STOCKS_P90_AT_100B = 0.120
+
+
+def _ti65_scale(market_cap):
+    if not market_cap or market_cap <= 0:
+        return STRONG_STOCKS_P90_AT_100B
+    m = min(max(market_cap, STRONG_STOCKS_SCALE_MCAP_LO), STRONG_STOCKS_SCALE_MCAP_HI)
+    return STRONG_STOCKS_P90_AT_100B * (m / STRONG_STOCKS_SCALE_REF_MCAP) ** STRONG_STOCKS_SCALE_EXP
+
+
+def get_strong_stocks(session, market_cap_category=None):
+    """Liquid names with a current TI65. Biotech included (frontend exclude toggle).
+    Sort key adjusted_ti65 = (ti65 − 1) / _ti65_scale(mcap).
+    """
+    try:
+        as_of = get_latest_price_date(session)
+        as_of_str = as_of.strftime('%Y-%m-%d') if as_of else None
+        q = _apply_mcap_filter(
+            apply_global_liquidity_filters(_daily_review_joined_query(session)),
+            market_cap_category,
+        ).filter(StockMetrics.ti65.isnot(None))
+        results = []
+        for metrics, svg, tags in q.all():
+            row = _format_daily_review_row(metrics, svg, tags, as_of_str, False, False)
+            ti = row['ti65']
+            scale = _ti65_scale(metrics.market_cap)
+            row['adjusted_ti65'] = round((ti - 1.0) / scale, 4) if ti is not None else None
+            results.append(row)
+        results.sort(key=lambda r: (
+            r['adjusted_ti65'] is None,
+            -(r['adjusted_ti65'] or 0),
+            -(r['market_cap'] or 0),
+            r['ticker'] or '',
+        ))
+        return results
+    except Exception as e:
+        logger.error(f"Error getting strong stocks for {market_cap_category}: {str(e)}")
+        return []
+
+
+def _json_strong_stocks(market_cap_category=None):
+    s = Session()
+    try:
+        return jsonify(get_strong_stocks(s, market_cap_category=market_cap_category))
+    finally:
+        s.close()
+
+
+@app.route('/api/StrongStocks-All')
+def get_strong_stocks_all():
+    return _json_strong_stocks(None)
+
+
+@app.route('/api/StrongStocks-MicroCap')
+def get_strong_stocks_micro():
+    return _json_strong_stocks('micro')
+
+
+@app.route('/api/StrongStocks-SmallCap')
+def get_strong_stocks_small():
+    return _json_strong_stocks('small')
+
+
+@app.route('/api/StrongStocks-MidCap')
+def get_strong_stocks_mid():
+    return _json_strong_stocks('mid')
+
+
+@app.route('/api/StrongStocks-LargeCap')
+def get_strong_stocks_large():
+    return _json_strong_stocks('large')
+
+
+@app.route('/api/StrongStocks-MegaCap')
+def get_strong_stocks_mega():
+    return _json_strong_stocks('mega')
+
 # Base/consolidation metrics for the tickers in stock_volspike_gapper, measured on
 # the last 10 trading bars against the 4 MAs in ticker_moving_averages
 # (ema_10, ema_20, dma_50, dma_200). Consumed by /volspike-gapper-monthly.
@@ -1741,28 +1831,59 @@ FROM near
 WHERE nearest_ma IS NOT NULL
 """
 
+def _setup_map_from_sql(session, sql):
+    with session.get_bind().connect() as conn:
+        rows = conn.execute(text(sql)).fetchall()
+    out = {}
+    for r in rows:
+        out[r.ticker] = {
+            'as_of': r.as_of.strftime('%Y-%m-%d') if r.as_of else None,
+            'nearest_ma': r.nearest_ma,
+            'ma_dist_pct': round(float(r.ma_dist_pct), 2),
+            'ma_dist_atr': round(float(r.ma_dist_atr), 2),
+            'range10_atr': round(float(r.range10_atr), 2),
+            'pos_in_range10': round(float(r.pos_in_range10), 3) if r.pos_in_range10 is not None else None,
+            'above_ema20': bool(r.above_ema20),
+            'above_all_ma': bool(r.above_all_ma),
+        }
+    return out
+
+
 @app.route('/api/VolspikeGapper-Setup')
 def get_volspike_gapper_setup():
     """Per-ticker MA-consolidation metrics, keyed by ticker."""
     s = Session()
     try:
-        with s.get_bind().connect() as conn:
-            rows = conn.execute(text(VOLSPIKE_GAPPER_SETUP_SQL)).fetchall()
-        out = {}
-        for r in rows:
-            out[r.ticker] = {
-                'as_of': r.as_of.strftime('%Y-%m-%d') if r.as_of else None,
-                'nearest_ma': r.nearest_ma,
-                'ma_dist_pct': round(float(r.ma_dist_pct), 2),
-                'ma_dist_atr': round(float(r.ma_dist_atr), 2),
-                'range10_atr': round(float(r.range10_atr), 2),
-                'pos_in_range10': round(float(r.pos_in_range10), 3) if r.pos_in_range10 is not None else None,
-                'above_ema20': bool(r.above_ema20),
-                'above_all_ma': bool(r.above_all_ma),
-            }
-        return jsonify(out)
+        return jsonify(_setup_map_from_sql(s, VOLSPIKE_GAPPER_SETUP_SQL))
     except Exception as e:
         logger.error(f"Error getting volspike gapper setup metrics: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+# Same setupParts inputs as VolspikeGapper-Setup, but for the liquid TI65 universe
+# (VSG setup SQL is restricted to stock_volspike_gapper tickers).
+STRONG_STOCKS_SETUP_SQL = VOLSPIKE_GAPPER_SETUP_SQL.replace(
+    "AND o.ticker IN (SELECT ticker FROM stock_volspike_gapper)",
+    """AND o.ticker IN (
+        SELECT ticker FROM stock_metrics
+        WHERE ti65 IS NOT NULL
+          AND current_price >= 3
+          AND avg_vol_10d >= 50000
+          AND dollar_volume >= 10000000
+    )""",
+)
+
+
+@app.route('/api/StrongStocks-Setup')
+def get_strong_stocks_setup():
+    """MA-consolidation metrics for liquid TI65 names, keyed by ticker."""
+    s = Session()
+    try:
+        return jsonify(_setup_map_from_sql(s, STRONG_STOCKS_SETUP_SQL))
+    except Exception as e:
+        logger.error(f"Error getting strong stocks setup metrics: {str(e)}")
         return jsonify({'error': str(e)}), 500
     finally:
         s.close()
