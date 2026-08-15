@@ -101,7 +101,7 @@
 
 ## Desktop Screener Components
 
-One layout system for all 11 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
+One layout system for all 12 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
 
 | Page | Template | Route |
 |------|----------|-------|
@@ -111,6 +111,7 @@ One layout system for all 11 desktop screener pages: shared shell + `screener.cs
 | Vol Spike & Gaps (90d) | `volspike_gapper_90d.html` | `/volspike-gapper-90d` |
 | Strong Stocks | `strong_stocks.html` | `/strong-stocks` |
 | Top Returns | `top_performance.html` | `/top-performance` |
+| Top 5D/20D | `top_returns_5_20.html` | `/top-returns-5-20` |
 | High Growth | `high_sales_growth.html` | `/high-sales-growth` |
 | Slow/Fast RS | `rs_screener.html` | `/rs-screener` |
 | Top Losers | `top_losers.html` | `/top-losers` |
@@ -126,7 +127,7 @@ One layout system for all 11 desktop screener pages: shared shell + `screener.cs
 | **JS engine** | `static/js/desktop/screener-app.js` — `DesktopScreener.init(config)` |
 | **Jinja slots** | `screener_label`, `screener_stats_label`, `show_cap_tabs`, `show_sector_bar`, `topbar_extra_controls`, `below_topbar_extra`, `detail_header_extras`, `subchart_top`, `subchart_bottom`, `left_header_extra` |
 | **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch` |
-| **Used by** | All 10 desktop screener templates above (thin wrappers) |
+| **Used by** | All desktop screener templates above (thin wrappers) |
 
 ### Cap Tab Strip
 | | |
@@ -164,7 +165,7 @@ One layout system for all 11 desktop screener pages: shared shell + `screener.cs
 |---|---|
 | **CSS class** | `.chart-ticker-info`, `.chart-timeframes` |
 | **CSS file** | `static/css/screener.css` |
-| **HTML** | `templates/desktop/_screener_shell.html` — `#detailHeader` |
+| **HTML** | `templates/desktop/_screener_shell.html` — `#detailHeader` (`#detailTi65` / `#detailLowFloat` populated by `screener-app.js`) |
 
 ### Price Chart
 | | |
@@ -338,6 +339,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Vol Spike & Gaps (90d) | `mobile/volspike_gapper_90d.html` | `/m/volspike-gapper-90d` |
 | Strong Stocks | `mobile/strong_stocks.html` | `/m/strong-stocks` |
 | Top Returns | `mobile/top_performance.html` | `/m/top-performance` |
+| Top 5D/20D | `mobile/top_returns_5_20.html` | `/m/top-returns-5-20` |
 | Top Losers | `mobile/top_losers.html` | `/m/top-losers` |
 | High Growth | `mobile/high_sales_growth.html` | `/m/high-sales-growth` |
 | Slow/Fast RS | `mobile/rs_screener.html` | `/m/rs-screener` |

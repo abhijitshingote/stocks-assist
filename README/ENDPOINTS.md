@@ -101,6 +101,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | **VolspikeGapper** `VolspikeGapper-*` | `spike_day_count > 0 OR gapper_day_count > 0`; order `last_event_date DESC`. Optional `?lookback_days=N` keeps `last_event_date >= max(OHLC.date) − N` calendar days. Adds `adjusted_event_return = last_event_return×100 / (clip(mcap,$200M,$100B)/$100B)^-0.134` |
 | **VolspikeGapper-Setup** | Dict keyed by ticker: nearest of `ema_10/ema_20/dma_50/dma_200`, distance (% and ATRs), 10-bar range in ATRs, close position in range, above-MA flags. Used by `/volspike-gapper-monthly` ranking |
 | **StrongStocks** `StrongStocks-*` | Liquid + `ti65 IS NOT NULL` (biotech included). `adjusted_ti65 = (ti65−1) / (0.120 × (clip(mcap,$500M,$100B)/$100B)^-0.151)`. Order `adjusted_ti65 DESC` |
+| **TopReturns520** `TopReturns520-*` | Liquid. Union of top 30 by `adjusted_dr_5` and top 30 by `adjusted_dr_20`, **always computed on All**. Cap routes filter that union (`cap_bucket`); they do not recompute top-N inside the bucket. `adjusted_dr_5 = dr_5 / (clip(mcap,$500M,$100B)/$100B)^-0.192`; `adjusted_dr_20 = dr_20 / (clip/$100B)^-0.177`. Order `adjusted_dr_5 DESC`. Flags `in_5d` / `in_20d` |
 | **StrongStocks-Setup** | Same setupParts fields as VolspikeGapper-Setup, ticker universe = liquid + `ti65` |
 | **MainView** `MainView-*` | Full `main_view` row |
 | **HighSalesGrowth** `HighSalesGrowth-*` | `main_view.tags LIKE '%high_sales_growth%'`; order `rev_growth_t_plus_1 DESC` |
@@ -179,6 +180,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | `/volspike-gapper` | Vol spike + gapper |
 | `/volspike-gapper-90d` | VSG events, last 90 calendar days |
 | `/strong-stocks` | Liquid universe ranked by mcap-adjusted TI65 |
+| `/top-returns-5-20` | Union of top 30 adj `dr_5` and top 30 adj `dr_20` |
 | `/technical-screener` | Reversal criterion |
 | `/high-sales-growth` | Tagged main_view rows |
 | `/sector-performance` | Sector/index ETF returns |
@@ -224,6 +226,7 @@ Proxies to backend unless noted. Market-cap path segments use `all|micro|small|m
 | `GET /api/frontend/volspike-gapper-setup` | `/api/VolspikeGapper-Setup` |
 | `GET /api/frontend/strong-stocks/<market_cap>` | `/api/StrongStocks-{Bucket}` |
 | `GET /api/frontend/strong-stocks-setup` | `/api/StrongStocks-Setup` |
+| `GET /api/frontend/top-returns-5-20/<market_cap>` | `/api/TopReturns520-{Bucket}` |
 | `GET /api/frontend/main-view/<market_cap>` | `/api/MainView-{Bucket}` |
 | `GET /api/frontend/main-view/by-tickers?tickers=` | `/api/MainView-ByTickers` |
 | `GET /api/frontend/high-sales-growth/<market_cap>` | `/api/HighSalesGrowth-{Bucket}` |

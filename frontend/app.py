@@ -121,6 +121,11 @@ def strong_stocks_page():
     """Liquid universe ranked by mcap-adjusted TI65"""
     return render_template('strong_stocks.html')
 
+@app.route('/top-returns-5-20')
+def top_returns_5_20_page():
+    """Union of top 30 adj dr_5 and top 30 adj dr_20"""
+    return render_template('top_returns_5_20.html')
+
 @app.route('/main-view')
 def main_view_page():
     """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
@@ -176,6 +181,10 @@ def m_volspike_gapper_90d():
 @app.route('/m/strong-stocks')
 def m_strong_stocks():
     return render_template('mobile/strong_stocks.html')
+
+@app.route('/m/top-returns-5-20')
+def m_top_returns_5_20():
+    return render_template('mobile/top_returns_5_20.html')
 
 @app.route('/m/top-performance')
 def m_top_performance():
@@ -497,6 +506,26 @@ def api_strong_stocks_setup():
     data, status_code = make_backend_request('/api/StrongStocks-Setup')
     if data is None:
         return jsonify({'error': 'Failed to fetch Strong Stocks setup data'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/top-returns-5-20/<market_cap>')
+def api_top_returns_5_20(market_cap):
+    """Proxy: union of top 30 adj dr_5 and top 30 adj dr_20"""
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+
+    data, status_code = make_backend_request(f'/api/TopReturns520-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Top 5D/20D data'}), status_code
     return jsonify(data), status_code
 
 @app.route('/api/frontend/volspike-gapper-setup')

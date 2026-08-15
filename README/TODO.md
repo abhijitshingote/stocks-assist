@@ -55,4 +55,8 @@ Sort toggle: Adj ti65 vs raw ti65 vs readiness (monthly setupParts, as-is).
 Biotech exclude toggle like Vol Spike 90d.~~
 
 
-top returns - weekly (to do)
+
+~~top returns - r5d+r20d
+a new page with top 30 5d return and top 30 20d return
+adjust for market cap like in TODO.md for other newer screeners.
+Sort toggle - adj 5d return or 5d return~~

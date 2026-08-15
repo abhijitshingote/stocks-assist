@@ -325,6 +325,7 @@
     }
     .tag.mcap { color: var(--warn); border-color: color-mix(in oklab, var(--warn) 35%, var(--border)); background: color-mix(in oklab, var(--warn) 8%, var(--surface)); }
     .tag.ti { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 30%, var(--border)); background: var(--surface-warm); }
+    .tag.ti.hot { color: var(--warn); border-color: color-mix(in oklab, var(--warn) 35%, var(--border)); background: color-mix(in oklab, var(--warn) 12%, var(--surface)); }
     .tag.float { color: var(--warn); border-color: color-mix(in oklab, var(--warn) 35%, var(--border)); }
     .detail-link {
       margin-left: auto;

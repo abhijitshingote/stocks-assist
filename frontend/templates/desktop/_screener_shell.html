@@ -11,7 +11,7 @@
      topbar_extra_controls — safe HTML, default ''. Injected before #screenerExtraControls
                              (page-specific filters like recency/criterion tabs).
      detail_header_extras — safe HTML, default ''. Injected into the detail header,
-                             right after the ticker-info span (e.g. TI65 / reversal badges).
+                             right after TI65 / low-float badges (e.g. reversal badge).
      subchart_top         — safe HTML, default ''. Chart panel above the main price chart.
      subchart_bottom      — safe HTML, default ''. Chart panel below the main price chart.
      below_topbar_extra   — safe HTML, default ''. Injected below the top bar (e.g. Fast RS sliders).
@@ -80,6 +80,8 @@
                         <span class="sector-industry" id="detailSectorIndustry"></span>
                         <a class="stock-link" id="detailLink" href="#" target="_blank">Detail →</a>
                     </span>
+                    <span id="detailTi65"></span>
+                    <span id="detailLowFloat"></span>
                     {{ detail_header_extras | default('') | safe }}
                     <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership"
                         onclick="window._screener_toggleWatchlist()">+ Watchlist</button>

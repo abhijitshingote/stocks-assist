@@ -7,8 +7,6 @@
 {% set screener_stats_label = "Stocks" %}
 
 {% set detail_header_extras %}
-<span id="detailTi65"></span>
-<span id="detailLowFloat"></span>
 <div class="notes-indicator" id="detailNotesIndicator">
     <span class="notes-icon-btn" id="detailNotesIcon" title="Notes">📝</span>
     <div class="notes-tooltip">
@@ -69,35 +67,6 @@
     .chart-panel.collapsed .chart-panel-body { display: none; }
     .chart-panel.collapsed { padding-bottom: 0.1rem; }
     .chart-panel.collapsed .chart-panel-header { padding-bottom: 0; }
-
-    /* ── Page-specific: TI65 + low-float detail badges ── */
-    .ti65-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.15rem;
-        padding: 0.05rem 0.3rem;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        font-family: 'JetBrains Mono', monospace;
-        background: rgba(0, 212, 255, 0.15);
-        color: #00d4ff;
-        white-space: nowrap;
-    }
-    .ti65-badge.hot { background: rgba(255, 167, 38, 0.2); color: var(--accent-yellow); }
-    .low-float-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.15rem;
-        padding: 0.1rem 0.35rem;
-        border-radius: 4px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        font-family: 'JetBrains Mono', monospace;
-        background: linear-gradient(135deg, rgba(248, 81, 73, 0.3) 0%, rgba(255, 121, 198, 0.3) 100%);
-        border: 1px solid rgba(248, 81, 73, 0.6);
-        color: #ff6b6b;
-    }
 
     /* ── Page-specific: notes hover tooltip in detail header ── */
     .notes-indicator { position: relative; display: inline-flex; align-items: center; cursor: pointer; }
@@ -168,9 +137,6 @@
     let rsiChart = null, rsiSeries = null;
     let tfDays = 365;
     let extraResizeHandler = null;
-
-    function fmtVol(v) { if (!v) return '—'; if (v>=1e9) return (v/1e9).toFixed(1)+'B'; if (v>=1e6) return (v/1e6).toFixed(1)+'M'; if (v>=1e3) return (v/1e3).toFixed(0)+'K'; return v.toLocaleString(); }
-    function isLowFloat(floatShares) { return floatShares != null && floatShares < 20000000; }
 
     function miniChartOpts(container, height, showTimeAxis) {
         return {
@@ -292,17 +258,6 @@
 
         onStockSelected: (stock, api) => {
             const ticker = api.ticker;
-            // TI65 badge
-            const ti65El = document.getElementById('detailTi65');
-            ti65El.innerHTML = stock.ti65
-                ? `<span class="ti65-badge ${stock.ti65 > 1.1 ? 'hot' : ''}">TI65 ${stock.ti65.toFixed(2)}</span>`
-                : '';
-            // Low-float badge
-            const lfEl = document.getElementById('detailLowFloat');
-            lfEl.innerHTML = isLowFloat(stock.float_shares)
-                ? `<span class="low-float-badge">❄️ LOW FLOAT ${fmtVol(stock.float_shares)}</span>`
-                : '';
-            // Notes hover tooltip
             document.getElementById('notesTooltipTitle').textContent = 'Abi ticker notes for ' + ticker;
             document.getElementById('notesEditLink').href = '/stock/' + ticker;
             const icon = document.getElementById('detailNotesIcon');

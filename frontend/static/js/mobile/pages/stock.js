@@ -92,6 +92,7 @@
     if (ti65El) {
       if (stock.ti65) {
         ti65El.textContent = 'TI65 ' + stock.ti65.toFixed(2);
+        ti65El.classList.toggle('hot', stock.ti65 > 1.1);
         ti65El.style.display = '';
       } else {
         ti65El.style.display = 'none';

@@ -154,6 +154,25 @@ window.DesktopScreener = (function () {
             return '$' + v.toLocaleString();
         }
 
+        function isLowFloat(floatShares) {
+            return floatShares != null && floatShares < 20000000;
+        }
+
+        function updateDetailBadges(stock) {
+            const ti65El = document.getElementById('detailTi65');
+            if (ti65El) {
+                ti65El.innerHTML = stock.ti65
+                    ? `<span class="ti65-badge ${stock.ti65 > 1.1 ? 'hot' : ''}">TI65 ${stock.ti65.toFixed(2)}</span>`
+                    : '';
+            }
+            const lfEl = document.getElementById('detailLowFloat');
+            if (lfEl) {
+                lfEl.innerHTML = isLowFloat(stock.float_shares)
+                    ? `<span class="low-float-badge">❄️ LOW FLOAT ${fmtVol(stock.float_shares)}</span>`
+                    : '';
+            }
+        }
+
         function msItem(label, val, cls, sub) {
             return `<span class="ms-item">` +
                 `<span class="ms-label">${label}</span>` +
@@ -685,6 +704,7 @@ window.DesktopScreener = (function () {
             document.getElementById('metricsTicker').textContent = ticker;
             document.getElementById('metricsCompany').textContent = stock.company_name || '';
 
+            updateDetailBadges(stock);
             updateTagsStrip(stock);
             updateMetrics(stock);
             updateWatchlistBtn(ticker);

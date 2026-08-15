@@ -133,6 +133,11 @@
         </div>
 
         <div class="help-card">
+            <div class="help-name"><a href="/top-returns-5-20">Top 5D/20D</a><span class="help-route">/top-returns-5-20</span></div>
+            <div class="help-desc">Liquid universe (<code>price ≥ $3</code>, <code>avg_vol_10d ≥ 50k</code>, <code>dollar_volume ≥ $10M</code>). Membership is top <code>30</code> by <code>adjusted_dr_5</code> ∪ top <code>30</code> by <code>adjusted_dr_20</code> on <strong>All</strong> (not recomputed per cap). Cap tabs filter that union. Biotech is in the payload; default-on exclude chip drops <code>industry === Biotechnology</code>. Scales are one-shot p90(positive) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B: <code>adjusted_dr_5 = dr_5 / (clip(mcap,$500M,$100B)/$100B)^-0.192</code> (MAPE 12.6%; window p90: $0.5B <code>28.6</code>, $2B <code>16.2</code>, $10B <code>13.0</code>, $100B <code>10.0</code>); <code>adjusted_dr_20 = dr_20 / (clip/$100B)^-0.177</code> (MAPE 8.4%; p90: $0.5B <code>58.8</code>, $2B <code>38.0</code>, $10B <code>25.8</code>, $100B <code>21.5</code>). Clip lo $500M (no liquid micro); clip hi $100B (mega p90 does not keep falling). Do not reuse Daily Review <code>-0.134</code>. Default sort is mega-equivalent <code>adjusted_dr_5</code>; toggle: Adj 5D / flat <code>dr_5</code> / monthly <code>setup</code> readiness (same <code>setupParts</code> as 90d / Strong Stocks; <code>/api/StrongStocks-Setup</code>). List value is always raw <code>dr_5</code>; <code>5</code>/<code>20</code> chips mark which set a name came from. Distinct from <code>/top-performance</code> (raw 1d∪5d∪20d, no mcap scale).</div>
+        </div>
+
+        <div class="help-card">
             <div class="help-name"><a href="/top-losers">Top Losers</a><span class="help-route">/top-losers</span></div>
             <div class="help-desc">Union of the bottom <code>30</code> names by each of <code>dr_1</code>, <code>dr_5</code>, and <code>dr_20</code> (deduplicated).</div>
         </div>

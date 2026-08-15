@@ -1140,6 +1140,34 @@
 
 .chart-ticker-info .stock-link:hover { text-decoration: underline; }
 
+.ti65-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.05rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+    white-space: nowrap;
+}
+.ti65-badge.hot { background: rgba(255, 167, 38, 0.2); color: var(--accent-yellow); }
+.low-float-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    background: linear-gradient(135deg, rgba(248, 81, 73, 0.3) 0%, rgba(255, 121, 198, 0.3) 100%);
+    border: 1px solid rgba(248, 81, 73, 0.6);
+    color: #ff6b6b;
+}
+
 .chart-timeframes {
     display: flex;
     gap: 0.2rem;

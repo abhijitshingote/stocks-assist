@@ -1772,6 +1772,128 @@ def get_strong_stocks_large():
 def get_strong_stocks_mega():
     return _json_strong_stocks('mega')
 
+# ============================================================================
+# Top 5D/20D — union of top 30 adj dr_5 and top 30 adj dr_20
+# ============================================================================
+# p90(positive) vs mcap, ±0.25 log10 window, liquid EX biotech, one-shot:
+#   dr_5  p90 ≈ 8.86  * (clip(mcap,$500M,$100B)/$100B)^-0.192  MAPE 12.6%
+#   dr_20 p90 ≈ 19.91 * (clip(mcap,$500M,$100B)/$100B)^-0.177  MAPE 8.4%
+# Fit on $500M–$100B. Clip lo $500M (no liquid micro; $200M window n=10).
+# Clip hi $100B: mega p90 does not keep falling. Do not reuse Daily Review -0.134.
+# Sort: adjusted_dr_5 = dr_5 / (clip/100B)^-0.192  (mega-equivalent %)
+TOP_RET_SCALE_REF_MCAP = 100_000_000_000
+TOP_RET_SCALE_MCAP_LO = 500_000_000
+TOP_RET_SCALE_MCAP_HI = 100_000_000_000
+TOP_RET_DR5_EXP = -0.192
+TOP_RET_DR20_EXP = -0.177
+TOP_RET_LIMIT = 30
+
+
+def _top_ret_scale(market_cap, exp):
+    if not market_cap or market_cap <= 0:
+        return 1.0
+    m = min(max(market_cap, TOP_RET_SCALE_MCAP_LO), TOP_RET_SCALE_MCAP_HI)
+    return (m / TOP_RET_SCALE_REF_MCAP) ** exp
+
+
+def _top_ret_adj(metrics, field, exp):
+    v = getattr(metrics, field)
+    if v is None:
+        return None
+    return float(v) / _top_ret_scale(metrics.market_cap, exp)
+
+
+def get_top_returns_5_20_stocks(session, market_cap_category=None):
+    """Liquid universe: top 30 by adjusted_dr_5 ∪ top 30 by adjusted_dr_20.
+    Membership is always computed on All. market_cap_category filters that
+    union; it does not recompute top-N inside the bucket.
+    Sort key adjusted_dr_5 = dr_5 / _top_ret_scale(mcap, -0.192).
+    """
+    try:
+        as_of = get_latest_price_date(session)
+        as_of_str = as_of.strftime('%Y-%m-%d') if as_of else None
+        rows = apply_global_liquidity_filters(_daily_review_joined_query(session)).all()
+
+        with_5 = [t for t in rows if t[0].dr_5 is not None]
+        with_20 = [t for t in rows if t[0].dr_20 is not None]
+        top5 = sorted(
+            with_5,
+            key=lambda t: _top_ret_adj(t[0], 'dr_5', TOP_RET_DR5_EXP) or float('-inf'),
+            reverse=True,
+        )[:TOP_RET_LIMIT]
+        top20 = sorted(
+            with_20,
+            key=lambda t: _top_ret_adj(t[0], 'dr_20', TOP_RET_DR20_EXP) or float('-inf'),
+            reverse=True,
+        )[:TOP_RET_LIMIT]
+        in_5d = {t[0].ticker for t in top5}
+        in_20d = {t[0].ticker for t in top20}
+
+        by_ticker = {}
+        for triple in top5 + top20:
+            by_ticker[triple[0].ticker] = triple
+
+        results = []
+        for ticker, (metrics, svg, tags) in by_ticker.items():
+            row = _format_daily_review_row(metrics, svg, tags, as_of_str, False, False)
+            a5 = _top_ret_adj(metrics, 'dr_5', TOP_RET_DR5_EXP)
+            a20 = _top_ret_adj(metrics, 'dr_20', TOP_RET_DR20_EXP)
+            row['adjusted_dr_5'] = round(a5, 4) if a5 is not None else None
+            row['adjusted_dr_20'] = round(a20, 4) if a20 is not None else None
+            row['in_5d'] = ticker in in_5d
+            row['in_20d'] = ticker in in_20d
+            results.append(row)
+        results.sort(key=lambda r: (
+            r['adjusted_dr_5'] is None,
+            -(r['adjusted_dr_5'] or 0),
+            -(r['market_cap'] or 0),
+            r['ticker'] or '',
+        ))
+        if market_cap_category:
+            results = [r for r in results if r.get('cap_bucket') == market_cap_category]
+        return results
+    except Exception as e:
+        logger.error(f"Error getting top returns 5/20 for {market_cap_category}: {str(e)}")
+        return []
+
+
+def _json_top_returns_5_20(market_cap_category=None):
+    s = Session()
+    try:
+        return jsonify(get_top_returns_5_20_stocks(s, market_cap_category=market_cap_category))
+    finally:
+        s.close()
+
+
+@app.route('/api/TopReturns520-All')
+def get_top_returns_5_20_all():
+    return _json_top_returns_5_20(None)
+
+
+@app.route('/api/TopReturns520-MicroCap')
+def get_top_returns_5_20_micro():
+    return _json_top_returns_5_20('micro')
+
+
+@app.route('/api/TopReturns520-SmallCap')
+def get_top_returns_5_20_small():
+    return _json_top_returns_5_20('small')
+
+
+@app.route('/api/TopReturns520-MidCap')
+def get_top_returns_5_20_mid():
+    return _json_top_returns_5_20('mid')
+
+
+@app.route('/api/TopReturns520-LargeCap')
+def get_top_returns_5_20_large():
+    return _json_top_returns_5_20('large')
+
+
+@app.route('/api/TopReturns520-MegaCap')
+def get_top_returns_5_20_mega():
+    return _json_top_returns_5_20('mega')
+
 # Base/consolidation metrics for the tickers in stock_volspike_gapper, measured on
 # the last 10 trading bars against the 4 MAs in ticker_moving_averages
 # (ema_10, ema_20, dma_50, dma_200). Consumed by /volspike-gapper-monthly.
@@ -3836,6 +3958,8 @@ def get_rs_screener(market_cap=None):
             StockMetrics.range_52_week_ohlc,
             StockMetrics.at_52w_high,
             StockMetrics.dr_1,
+            StockMetrics.ti65,
+            StockMetrics.float_shares,
         ).outerjoin(
             StockMetrics, RsScreener.ticker == StockMetrics.ticker
         ).filter(
@@ -3866,7 +3990,7 @@ def get_rs_screener(market_cap=None):
         rows = query.all()
 
         results = []
-        for stock, range_52_week_ohlc, at_52w_high, dr_1 in rows:
+        for stock, range_52_week_ohlc, at_52w_high, dr_1, ti65, float_shares in rows:
             results.append({
                 'ticker': stock.ticker,
                 'company_name': stock.company_name,
@@ -3877,6 +4001,8 @@ def get_rs_screener(market_cap=None):
                 'pct_from_52w_high': _pct_from_52w_high(stock.current_price, range_52_week_ohlc),
                 'at_52w_high': bool(at_52w_high) if at_52w_high is not None else False,
                 'dr_1': round(dr_1, 2) if dr_1 is not None else None,
+                'ti65': round(ti65, 2) if ti65 else None,
+                'float_shares': float_shares,
                 'rs_2d': float(stock.rs_2d) if stock.rs_2d is not None else None,
                 'rs_5d': float(stock.rs_5d) if stock.rs_5d is not None else None,
                 'rs_10d': float(stock.rs_10d) if stock.rs_10d is not None else None,
