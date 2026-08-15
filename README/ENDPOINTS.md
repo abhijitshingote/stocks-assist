@@ -34,10 +34,11 @@ Frontend proxies use lowercase slugs: `all`, `micro`, `small`, `mid`, `large`, `
 
 From `backend/app.py`:
 
-- `industry NOT IN {'Biotechnology'}`
 - `avg_vol_10d >= 50_000`
 - `dollar_volume >= 10_000_000`
 - `current_price >= 3`
+
+Biotech is not dropped in the API. Every screener has a default-on `− Biotech` chip (`industry === Biotechnology`) in the shared desktop/mobile engines — applied on every page load (chip-off is not restored). `main_view` / `stock_volspike_gapper` tables still omit biotech at ETL, so those pages show count 0 until the tables include them.
 
 ### Return threshold constants (Return\* routes)
 

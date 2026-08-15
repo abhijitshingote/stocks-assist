@@ -2,15 +2,10 @@
    Universe: liquid, top 30 by adjusted_dr_5 ∪ top 30 by adjusted_dr_20 (All, then cap-filter).
    Sort toggle: mcap-adjusted 5d return vs raw dr_5 vs monthly setup/readiness
    (setupParts from vsg-90d / Strong Stocks, as-is).
-   Biotech exclude chip like Strong Stocks / 90d.
    Flat list — no date grouping.
 */
 (function () {
     const SORT_KEY = 'topReturns520Sort';
-    const EXCLUDE_KEY = 'topReturns520Exclude';
-    const EXCLUDE_RULES = [
-        { id: 'biotech', field: 'industry', value: 'Biotechnology', label: 'Biotech' },
-    ];
     const MA_LABELS = { ema_10: 'E10', ema_20: 'E20', dma_50: 'D50', dma_200: 'D200' };
     const SETUP_W = { prox: 0.35, tight: 0.25, hold: 0.20, trend: 0.20 };
     const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -35,21 +30,6 @@
         const saved = localStorage.getItem(SORT_KEY);
         if (saved === 'flat' || saved === 'adj' || saved === 'ready') sortMode = saved;
     } catch (e) {}
-
-    const defaultExcluded = EXCLUDE_RULES.map(r => r.id);
-    let excluded = new Set(defaultExcluded);
-    try {
-        const savedEx = JSON.parse(localStorage.getItem(EXCLUDE_KEY));
-        if (Array.isArray(savedEx)) excluded = new Set(savedEx.filter(id => EXCLUDE_RULES.some(r => r.id === id)));
-    } catch (e) {}
-
-    function persistExcluded() {
-        try { localStorage.setItem(EXCLUDE_KEY, JSON.stringify([...excluded])); } catch (e) {}
-    }
-
-    function isExcluded(s) {
-        return EXCLUDE_RULES.some(r => excluded.has(r.id) && s[r.field] === r.value);
-    }
 
     let screenerApi = null;
     let setupMap = null;
@@ -131,14 +111,6 @@
         btn.classList.toggle('active', btn.dataset.sort === sortMode);
     });
 
-    const excludeHost = document.getElementById('tr520Excludes');
-    if (excludeHost) {
-        excludeHost.innerHTML = EXCLUDE_RULES.map(r =>
-            `<button type="button" class="recency-btn${excluded.has(r.id) ? ' active' : ''}" data-exclude="${r.id}" title="Exclude ${r.value}">` +
-            `− ${r.label} <span class="count" id="exclCount-${r.id}">0</span></button>`
-        ).join('');
-    }
-
     DesktopScreener.init({
         endpoint: 'top-returns-5-20',
         capFilter: 'client',
@@ -152,39 +124,20 @@
             return (b.market_cap || 0) - (a.market_cap || 0) || a.ticker.localeCompare(b.ticker);
         }),
 
-        filterFn: (s) => !isExcluded(s),
-
         listValueFn: listValueFn,
         listExtraFn: extraHtml,
 
-        onListRendered: ({ visible, stocks }) => {
+        onListRendered: ({ visible }) => {
             document.getElementById('totalStocks').textContent = visible.length;
             const in5 = document.getElementById('in5d');
             const in20 = document.getElementById('in20d');
             if (in5) in5.textContent = visible.filter(s => s.in_5d).length;
             if (in20) in20.textContent = visible.filter(s => s.in_20d).length;
-            EXCLUDE_RULES.forEach(r => {
-                const el = document.getElementById('exclCount-' + r.id);
-                if (el) el.textContent = stocks.filter(s => s[r.field] === r.value).length;
-            });
         },
 
         onReady: (api) => {
             screenerApi = api;
             if (setupResortPending) { setupResortPending = false; api.resortWithFn(); }
-
-            if (excludeHost) {
-                excludeHost.querySelectorAll('[data-exclude]').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const id = btn.dataset.exclude;
-                        if (excluded.has(id)) excluded.delete(id);
-                        else excluded.add(id);
-                        persistExcluded();
-                        btn.classList.toggle('active', excluded.has(id));
-                        api.rerenderFn();
-                    });
-                });
-            }
 
             document.querySelectorAll('.recency-btn[data-sort]').forEach(btn => {
                 btn.addEventListener('click', () => {

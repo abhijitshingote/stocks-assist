@@ -2278,8 +2278,7 @@ _ALL_STOCKS_SQL = """
         ) AS tags
     FROM stock_metrics sm
     LEFT JOIN stock_volspike_gapper svg ON sm.ticker = svg.ticker
-    WHERE sm.industry <> 'Biotechnology'
-      AND sm.current_price > 3
+    WHERE sm.current_price > 3
       AND sm.avg_vol_10d * (
             SELECT AVG(close) FROM (
                 SELECT o.close FROM ohlc o
@@ -2305,7 +2304,8 @@ def _fetch_all_stocks(session, tickers=None):
 @app.route('/api/AllStocks')
 def get_all_stocks():
     """
-    Full liquid universe (price > $3, avg 10d $-volume > $10M, non-Biotech).
+    Full liquid universe (price > $3, avg 10d $-volume > $10M).
+    Biotech included (frontend exclude chip).
     Pulled live from stock_metrics LEFT JOIN stock_volspike_gapper so tickers
     without volspike/gapper rows are still included (those columns return NULL
     and `tags` is computed inline, mirroring main_view_update.py).

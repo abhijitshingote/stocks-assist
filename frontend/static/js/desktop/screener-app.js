@@ -58,7 +58,8 @@
                               Full sort override (used instead of defaultSort).
      filterFn:       null | function (stock) → boolean
                               Extra per-stock visibility filter, AND-ed with sector/industry
-                              (e.g. recency filter). Call rerenderFn() after changing its inputs.
+                              and the shared industry-exclude chip (e.g. recency filter).
+                              Call rerenderFn() after changing its inputs.
      renderListFn:   null | function ({ listEl, stocks, isVisible, selectedTicker, helpers })
                               Escape hatch — full stock-list render override. Prefer
                               groupByFn / listExtraFn / listPrefixFn instead.
@@ -113,6 +114,22 @@ window.DesktopScreener = (function () {
         let abiTickerNotesStatus = {};
         let newsPanel = null;
         let lastResponse = null;
+
+        const EXCLUDE_KEY = 'screenerExclude';
+        const EXCLUDE_RULES = [
+            { id: 'biotech', field: 'industry', value: 'Biotechnology', label: 'Biotech' },
+        ];
+        const defaultExcluded = EXCLUDE_RULES.map(r => r.id);
+        // Always start with defaults (biotech). Saved [] from a prior chip-off
+        // must not override; extra saved ids still merge in.
+        let excluded = new Set(defaultExcluded);
+        try {
+            const savedEx = JSON.parse(localStorage.getItem(EXCLUDE_KEY));
+            if (Array.isArray(savedEx)) {
+                savedEx.filter(id => EXCLUDE_RULES.some(r => r.id === id))
+                    .forEach(id => excluded.add(id));
+            }
+        } catch (e) {}
 
         // ── Helpers ────────────────────────────────────────────────
         function escAttr(s) {
@@ -277,12 +294,13 @@ window.DesktopScreener = (function () {
             const tickers = filteredStocks.map(s => s.ticker);
             if (tickers.length > 0) loadWatchlistForStocks(tickers);
 
-            if (filteredStocks.length > 0 && !selectedTicker) {
-                selectStock(filteredStocks[0].ticker);
+            const visible = filteredStocks.filter(passesSectorIndustry);
+            if (visible.length > 0 && !selectedTicker) {
+                selectStock(visible[0].ticker);
             } else if (selectedTicker) {
-                const stillExists = filteredStocks.find(s => s.ticker === selectedTicker);
+                const stillExists = visible.find(s => s.ticker === selectedTicker);
                 if (stillExists) selectStock(selectedTicker);
-                else if (filteredStocks.length > 0) selectStock(filteredStocks[0].ticker);
+                else if (visible.length > 0) selectStock(visible[0].ticker);
             }
         }
 
@@ -411,16 +429,20 @@ window.DesktopScreener = (function () {
         };
 
         // ── Sector / Industry filter ───────────────────────────────
+        function isIndustryExcluded(s) {
+            return EXCLUDE_RULES.some(r => excluded.has(r.id) && s[r.field] === r.value);
+        }
+
         function passesSectorIndustry(s) {
             if (selectedSector && (s.sector || 'Unknown') !== selectedSector) return false;
             if (selectedIndustry && (s.industry || 'Unknown') !== selectedIndustry) return false;
-            if (config.filterFn && !config.filterFn(s)) return false;
-            return true;
+            return passesExtraFilter(s);
         }
 
-        // True when the stock passes the page's extra filter (e.g. recency).
-        // Used for sector/industry counts so they reflect the active filter.
+        // True when the stock passes industry-exclude + the page's extra filter
+        // (e.g. recency). Used for sector/industry counts so they reflect both.
         function passesExtraFilter(s) {
+            if (isIndustryExcluded(s)) return false;
             return !config.filterFn || config.filterFn(s);
         }
 
@@ -625,6 +647,35 @@ window.DesktopScreener = (function () {
             bindGroupHeaders(listEl);
         }
 
+        function updateExcludeCounts() {
+            EXCLUDE_RULES.forEach(r => {
+                const el = document.getElementById('exclCount-' + r.id);
+                if (el) el.textContent = filteredStocks.filter(s => s[r.field] === r.value).length;
+            });
+        }
+
+        function setupExcludeControls() {
+            const host = document.getElementById('screenerExcludes');
+            if (!host) return;
+            host.innerHTML = EXCLUDE_RULES.map(r =>
+                `<button type="button" class="recency-btn${excluded.has(r.id) ? ' active' : ''}" data-exclude="${r.id}" title="Exclude ${r.value}">` +
+                `− ${r.label} <span class="count" id="exclCount-${r.id}">0</span></button>`
+            ).join('');
+            host.querySelectorAll('[data-exclude]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.exclude;
+                    if (excluded.has(id)) excluded.delete(id);
+                    else excluded.add(id);
+                    try { localStorage.setItem(EXCLUDE_KEY, JSON.stringify([...excluded])); } catch (e) {}
+                    btn.classList.toggle('active', excluded.has(id));
+                    renderSectorTabs();
+                    renderIndustryTabs();
+                    renderList();
+                    ensureSelectedVisible();
+                });
+            });
+        }
+
         function renderList() {
             const listEl = document.getElementById('stockList');
 
@@ -639,6 +690,7 @@ window.DesktopScreener = (function () {
                 const countElC = document.getElementById('stockCount');
                 if (countElC && typeof visibleCount === 'number') countElC.textContent = visibleCount;
                 bindListRows(listEl);
+                updateExcludeCounts();
                 if (config.onListRendered) {
                     config.onListRendered({
                         visible: filteredStocks.filter(passesSectorIndustry),
@@ -666,6 +718,7 @@ window.DesktopScreener = (function () {
             if (countEl) countEl.textContent = visibleCount;
 
             bindListRows(listEl);
+            updateExcludeCounts();
 
             if (config.onListRendered) {
                 config.onListRendered({
@@ -1069,6 +1122,7 @@ window.DesktopScreener = (function () {
 
         // ── Init ───────────────────────────────────────────────────
         setupNewsAndPanels();
+        setupExcludeControls();
         loadData('all');
 
         // Expose helpers for pages that need to trigger resort/reload from custom controls

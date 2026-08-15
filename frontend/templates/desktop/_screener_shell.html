@@ -8,8 +8,9 @@
    Optional Jinja variables (defaults preserve the standard screener layout):
      show_cap_tabs        — bool, default true. Show the market-cap tab strip.
      show_sector_bar      — bool, default true. Show the sector/industry filter bars.
-     topbar_extra_controls — safe HTML, default ''. Injected before #screenerExtraControls
+     topbar_extra_controls — safe HTML, default ''. Injected after #screenerExcludes
                              (page-specific filters like recency/criterion tabs).
+     #screenerExcludes     — filled by screener-app.js (default-on − Biotech chip).
      detail_header_extras — safe HTML, default ''. Injected into the detail header,
                              right after TI65 / low-float badges (e.g. reversal badge).
      subchart_top         — safe HTML, default ''. Chart panel above the main price chart.
@@ -31,6 +32,7 @@
     <div class="stats-compact">
         <div>{{ screener_stats_label }}: <span class="accent-val" id="totalStocks">—</span></div>
     </div>
+    <div class="screener-excludes" id="screenerExcludes" role="group" aria-label="Exclude industries"></div>
     {{ topbar_extra_controls | default('') | safe }}
     <!-- Placeholder for page-specific extra controls (populated by screener-app.js config.extraControlsHtml) -->
     <div id="screenerExtraControls" class="screener-extra-controls"></div>

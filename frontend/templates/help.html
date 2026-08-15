@@ -85,7 +85,8 @@
             <strong>Market-cap buckets:</strong> Mega &gt;$100B · Large $20–100B · Mid $2–20B · Small $200M–$2B · Micro &lt;$200M.<br>
             <strong>Return fields:</strong> <code>dr_1 / dr_5 / dr_20 / dr_60 / dr_120</code> = trailing 1/5/20/60/120-trading-day % return.<br>
             <strong>52W badge:</strong> shown when the latest day's high ≥ <code>99.5%</code> of the trailing 252-day max high (server flag <code>at_52w_high</code>).<br>
-            <strong>Stock-list row (all screeners):</strong> <code>[★][#][TICKER][52W](mcap) … [1D%]</code>, with page-specific additive metrics on a second line.
+            <strong>Stock-list row (all screeners):</strong> <code>[★][#][TICKER][52W](mcap) … [1D%]</code>, with page-specific additive metrics on a second line.<br>
+            <strong>Biotech exclude:</strong> default-on chip on every screener load (<code>industry === Biotechnology</code>, shared engine). Chip-off is session-only; reload re-applies the default.
         </div>
     </div>
 
@@ -119,12 +120,12 @@
 
         <div class="help-card">
             <div class="help-name"><a href="/volspike-gapper-90d">Vol Spike &amp; Gaps (90d)</a><span class="help-route">/volspike-gapper-90d</span></div>
-            <div class="help-desc"><code>stock_volspike_gapper</code> rows with <code>last_event_date &gt;= max(OHLC.date) − 90 calendar days</code>. Flat list (no date grouping). Default sort is mega-equivalent <code>adjusted_event_return = last_event_return×100 / (clip(mcap,$200M,$100B)/$100B)^-0.134</code> (same exponent as Daily Review; <code>last_event_return</code> is the event-day fraction). Toggle switches to monthly <code>setup</code> readiness (<code>0–1</code> from <code>/api/VolspikeGapper-Setup</code>: <code>0.35·prox + 0.25·tight + 0.20·hold + 0.20·trend</code>). Default-on exclude chip drops <code>industry === Biotechnology</code> (add rows to <code>EXCLUDE_RULES</code> in <code>vsg-90d.js</code> for more). List value is raw event-day return; S/G + magnitude + event-date chip on the row. Volume ratio is not a sort key.</div>
+            <div class="help-desc"><code>stock_volspike_gapper</code> rows with <code>last_event_date &gt;= max(OHLC.date) − 90 calendar days</code>. Flat list (no date grouping). Default sort is mega-equivalent <code>adjusted_event_return = last_event_return×100 / (clip(mcap,$200M,$100B)/$100B)^-0.134</code> (same exponent as Daily Review; <code>last_event_return</code> is the event-day fraction). Toggle switches to monthly <code>setup</code> readiness (<code>0–1</code> from <code>/api/VolspikeGapper-Setup</code>: <code>0.35·prox + 0.25·tight + 0.20·hold + 0.20·trend</code>). List value is raw event-day return; S/G + magnitude + event-date chip on the row. Volume ratio is not a sort key.</div>
         </div>
 
         <div class="help-card">
             <div class="help-name"><a href="/strong-stocks">Strong Stocks</a><span class="help-route">/strong-stocks</span></div>
-            <div class="help-desc">Liquid universe (<code>price ≥ $3</code>, <code>avg_vol_10d ≥ 50k</code>, <code>dollar_volume ≥ $10M</code>) with a current <code>TI65 = avg_close_7d / avg_close_65d</code>. Biotech is in the payload; default-on exclude chip drops <code>industry === Biotechnology</code>. Default sort is <code>adjusted_ti65 = (ti65 − 1) / (0.120 × (clip(mcap,$500M,$100B)/$100B)^-0.151)</code> — one-shot p90(TI65−1) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B (MAPE 2.8%). Window p90 excess: $0.5B <code>0.25</code>, $2B <code>0.23</code>, $10B <code>0.17</code>, $100B <code>0.12</code>; mega rises (0.16/0.17 at $200B/$400B) so clip at $100B. Toggle: Adj / raw TI65 / monthly <code>setup</code> readiness (same <code>setupParts</code> as 90d; <code>/api/StrongStocks-Setup</code> covers the liquid TI65 universe). List value is raw TI65. No date/recency in the sort.</div>
+            <div class="help-desc">Liquid universe (<code>price ≥ $3</code>, <code>avg_vol_10d ≥ 50k</code>, <code>dollar_volume ≥ $10M</code>) with a current <code>TI65 = avg_close_7d / avg_close_65d</code>. Default sort is <code>adjusted_ti65 = (ti65 − 1) / (0.120 × (clip(mcap,$500M,$100B)/$100B)^-0.151)</code> — one-shot p90(TI65−1) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B (MAPE 2.8%). Window p90 excess: $0.5B <code>0.25</code>, $2B <code>0.23</code>, $10B <code>0.17</code>, $100B <code>0.12</code>; mega rises (0.16/0.17 at $200B/$400B) so clip at $100B. Toggle: Adj / raw TI65 / monthly <code>setup</code> readiness (same <code>setupParts</code> as 90d; <code>/api/StrongStocks-Setup</code> covers the liquid TI65 universe). List value is raw TI65. No date/recency in the sort.</div>
         </div>
 
         <div class="help-card">
@@ -134,7 +135,7 @@
 
         <div class="help-card">
             <div class="help-name"><a href="/top-returns-5-20">Top 5D/20D</a><span class="help-route">/top-returns-5-20</span></div>
-            <div class="help-desc">Liquid universe (<code>price ≥ $3</code>, <code>avg_vol_10d ≥ 50k</code>, <code>dollar_volume ≥ $10M</code>). Membership is top <code>30</code> by <code>adjusted_dr_5</code> ∪ top <code>30</code> by <code>adjusted_dr_20</code> on <strong>All</strong> (not recomputed per cap). Cap tabs filter that union. Biotech is in the payload; default-on exclude chip drops <code>industry === Biotechnology</code>. Scales are one-shot p90(positive) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B: <code>adjusted_dr_5 = dr_5 / (clip(mcap,$500M,$100B)/$100B)^-0.192</code> (MAPE 12.6%; window p90: $0.5B <code>28.6</code>, $2B <code>16.2</code>, $10B <code>13.0</code>, $100B <code>10.0</code>); <code>adjusted_dr_20 = dr_20 / (clip/$100B)^-0.177</code> (MAPE 8.4%; p90: $0.5B <code>58.8</code>, $2B <code>38.0</code>, $10B <code>25.8</code>, $100B <code>21.5</code>). Clip lo $500M (no liquid micro); clip hi $100B (mega p90 does not keep falling). Do not reuse Daily Review <code>-0.134</code>. Default sort is mega-equivalent <code>adjusted_dr_5</code>; toggle: Adj 5D / flat <code>dr_5</code> / monthly <code>setup</code> readiness (same <code>setupParts</code> as 90d / Strong Stocks; <code>/api/StrongStocks-Setup</code>). List value is always raw <code>dr_5</code>; <code>5</code>/<code>20</code> chips mark which set a name came from. Distinct from <code>/top-performance</code> (raw 1d∪5d∪20d, no mcap scale).</div>
+            <div class="help-desc">Liquid universe (<code>price ≥ $3</code>, <code>avg_vol_10d ≥ 50k</code>, <code>dollar_volume ≥ $10M</code>). Membership is top <code>30</code> by <code>adjusted_dr_5</code> ∪ top <code>30</code> by <code>adjusted_dr_20</code> on <strong>All</strong> (not recomputed per cap). Cap tabs filter that union. Scales are one-shot p90(positive) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B: <code>adjusted_dr_5 = dr_5 / (clip(mcap,$500M,$100B)/$100B)^-0.192</code> (MAPE 12.6%; window p90: $0.5B <code>28.6</code>, $2B <code>16.2</code>, $10B <code>13.0</code>, $100B <code>10.0</code>); <code>adjusted_dr_20 = dr_20 / (clip/$100B)^-0.177</code> (MAPE 8.4%; p90: $0.5B <code>58.8</code>, $2B <code>38.0</code>, $10B <code>25.8</code>, $100B <code>21.5</code>). Clip lo $500M (no liquid micro); clip hi $100B (mega p90 does not keep falling). Do not reuse Daily Review <code>-0.134</code>. Default sort is mega-equivalent <code>adjusted_dr_5</code>; toggle: Adj 5D / flat <code>dr_5</code> / monthly <code>setup</code> readiness (same <code>setupParts</code> as 90d / Strong Stocks; <code>/api/StrongStocks-Setup</code>). List value is always raw <code>dr_5</code>; <code>5</code>/<code>20</code> chips mark which set a name came from. Distinct from <code>/top-performance</code> (raw 1d∪5d∪20d, no mcap scale).</div>
         </div>
 
         <div class="help-card">
@@ -144,7 +145,7 @@
 
         <div class="help-card">
             <div class="help-name"><a href="/all-stocks">All Stocks</a><span class="help-route">/all-stocks</span></div>
-            <div class="help-desc">The full liquid universe with no ranking filter — only sector/industry filtering. Baseline dataset behind the other screeners.</div>
+            <div class="help-desc">The full liquid universe with no ranking filter — only sector/industry filtering (plus the shared Biotech exclude chip). Baseline dataset behind the other screeners.</div>
         </div>
 
         <div class="help-card">

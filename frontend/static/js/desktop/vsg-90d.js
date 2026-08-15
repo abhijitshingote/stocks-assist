@@ -6,11 +6,6 @@
 */
 (function () {
     const SORT_KEY = 'vsg90dSort';
-    const EXCLUDE_KEY = 'vsg90dExclude';
-    // Add { id, field, value, label } to exclude more industries/sectors later.
-    const EXCLUDE_RULES = [
-        { id: 'biotech', field: 'industry', value: 'Biotechnology', label: 'Biotech' },
-    ];
     const MONTH_ABBREV = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const MA_LABELS = { ema_10: 'E10', ema_20: 'E20', dma_50: 'D50', dma_200: 'D200' };
     const SETUP_W = { prox: 0.35, tight: 0.25, hold: 0.20, trend: 0.20 };
@@ -46,21 +41,6 @@
         const saved = localStorage.getItem(SORT_KEY);
         if (saved === 'ready' || saved === 'adj') sortMode = saved;
     } catch (e) {}
-
-    const defaultExcluded = EXCLUDE_RULES.map(r => r.id);
-    let excluded = new Set(defaultExcluded);
-    try {
-        const savedEx = JSON.parse(localStorage.getItem(EXCLUDE_KEY));
-        if (Array.isArray(savedEx)) excluded = new Set(savedEx.filter(id => EXCLUDE_RULES.some(r => r.id === id)));
-    } catch (e) {}
-
-    function persistExcluded() {
-        try { localStorage.setItem(EXCLUDE_KEY, JSON.stringify([...excluded])); } catch (e) {}
-    }
-
-    function isExcluded(s) {
-        return EXCLUDE_RULES.some(r => excluded.has(r.id) && s[r.field] === r.value);
-    }
 
     let screenerApi = null;
     let setupMap = null;
@@ -148,14 +128,6 @@
         btn.classList.toggle('active', btn.dataset.sort === sortMode);
     });
 
-    const excludeHost = document.getElementById('vsg90dExcludes');
-    if (excludeHost) {
-        excludeHost.innerHTML = EXCLUDE_RULES.map(r =>
-            `<button type="button" class="recency-btn${excluded.has(r.id) ? ' active' : ''}" data-exclude="${r.id}" title="Exclude ${r.value}">` +
-            `− ${r.label} <span class="count" id="exclCount-${r.id}">0</span></button>`
-        ).join('');
-    }
-
     DesktopScreener.init({
         endpoint: 'volspike-gapper-90d',
         accentCss: 'var(--accent-yellow)',
@@ -167,37 +139,18 @@
             return (b.market_cap || 0) - (a.market_cap || 0) || a.ticker.localeCompare(b.ticker);
         }),
 
-        filterFn: (s) => !isExcluded(s),
-
         listValueFn: listValueFn,
         listExtraFn: eventExtraHtml,
 
-        onListRendered: ({ visible, stocks }) => {
+        onListRendered: ({ visible }) => {
             document.getElementById('totalStocks').textContent = visible.length;
             document.getElementById('withSpikes').textContent = visible.filter(d => d.spike_day_count > 0).length;
             document.getElementById('withGaps').textContent = visible.filter(d => d.gapper_day_count > 0).length;
-            EXCLUDE_RULES.forEach(r => {
-                const el = document.getElementById('exclCount-' + r.id);
-                if (el) el.textContent = stocks.filter(s => s[r.field] === r.value).length;
-            });
         },
 
         onReady: (api) => {
             screenerApi = api;
             if (setupResortPending) { setupResortPending = false; api.resortWithFn(); }
-
-            if (excludeHost) {
-                excludeHost.querySelectorAll('[data-exclude]').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const id = btn.dataset.exclude;
-                        if (excluded.has(id)) excluded.delete(id);
-                        else excluded.add(id);
-                        persistExcluded();
-                        btn.classList.toggle('active', excluded.has(id));
-                        api.rerenderFn();
-                    });
-                });
-            }
 
             document.querySelectorAll('.recency-btn[data-sort]').forEach(btn => {
                 btn.addEventListener('click', () => {

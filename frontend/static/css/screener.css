@@ -81,6 +81,44 @@
     font-weight: 600;
 }
 
+/* ── Industry exclude chip (shared; default-on Biotech) ──────────── */
+.recency-filter {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    margin-left: auto;
+}
+.screener-excludes {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    margin-left: 0.15rem;
+}
+.recency-btn {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.7rem;
+    transition: all 0.2s;
+    font-family: var(--font-mono);
+}
+.recency-btn:hover { border-color: var(--screener-accent); color: var(--text-primary); }
+.recency-btn.active {
+    background: color-mix(in srgb, var(--screener-accent) 20%, transparent);
+    border-color: var(--screener-accent);
+    color: var(--text-primary);
+}
+.recency-btn .count {
+    font-size: 0.6rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.05rem 0.2rem;
+    border-radius: 3px;
+}
+
 /* ── Sector / Industry Filter ────────────────────────────────────── */
 .si-bar {
     display: flex;

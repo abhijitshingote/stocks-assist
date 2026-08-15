@@ -43,6 +43,22 @@
     let stockChart = null;
     let newsPanel = null;
 
+    const EXCLUDE_KEY = 'screenerExclude';
+    const EXCLUDE_RULES = [
+      { id: 'biotech', field: 'industry', value: 'Biotechnology', label: 'Biotech' },
+    ];
+    const defaultExcluded = EXCLUDE_RULES.map(r => r.id);
+    // Always start with defaults (biotech). Saved [] from a prior chip-off
+    // must not override; extra saved ids still merge in.
+    let excluded = new Set(defaultExcluded);
+    try {
+      const savedEx = JSON.parse(localStorage.getItem(EXCLUDE_KEY));
+      if (Array.isArray(savedEx)) {
+        savedEx.filter(id => EXCLUDE_RULES.some(r => r.id === id))
+          .forEach(id => excluded.add(id));
+      }
+    } catch (e) {}
+
     if (config.pageTitle) {
       document.title = config.pageTitle;
     }
@@ -79,11 +95,16 @@
       return true;
     }
 
+    function isIndustryExcluded(s) {
+      return EXCLUDE_RULES.some(r => excluded.has(r.id) && s[r.field] === r.value);
+    }
+
     function filteredStocks() {
+      const base = allStocks.filter(s => !isIndustryExcluded(s));
       if (config.filterStocks) {
-        return config.filterStocks(allStocks, app);
+        return config.filterStocks(base, app);
       }
-      return allStocks;
+      return base;
     }
 
     function visibleStocks() {
@@ -123,6 +144,44 @@
         if (el) el.textContent = showing;
       });
       updateFilterChip();
+      updateExcludeCounts();
+    }
+
+    function setupExcludeControls() {
+      const host = document.getElementById('screenerExcludes');
+      if (!host) return;
+      host.innerHTML =
+        '<div class="strip recency-strip" role="group" aria-label="Exclude">' +
+        '<span class="strip-label">Excl</span>' +
+        EXCLUDE_RULES.map(r =>
+          '<button type="button" class="pill recency-pill' + (excluded.has(r.id) ? ' active' : '') +
+          '" data-exclude="' + r.id + '">− ' + r.label +
+          ' <span class="n" id="exclCount-' + r.id + '">0</span></button>'
+        ).join('') +
+        '</div>';
+      host.querySelectorAll('[data-exclude]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.exclude;
+          if (excluded.has(id)) excluded.delete(id);
+          else excluded.add(id);
+          try { localStorage.setItem(EXCLUDE_KEY, JSON.stringify([...excluded])); } catch (e) {}
+          btn.classList.toggle('active', excluded.has(id));
+          renderSectorTabs();
+          renderList();
+          updateCounts();
+          const vis = visibleStocks();
+          if (vis.length && (!selectedTicker || !vis.find(s => s.ticker === selectedTicker))) {
+            selectStock(vis[0].ticker);
+          }
+        });
+      });
+    }
+
+    function updateExcludeCounts() {
+      EXCLUDE_RULES.forEach(r => {
+        const el = document.getElementById('exclCount-' + r.id);
+        if (el) el.textContent = allStocks.filter(s => s[r.field] === r.value).length;
+      });
     }
 
     function renderCapPills() {
@@ -479,12 +538,13 @@
       const tickers = allStocks.map(s => s.ticker);
       if (tickers.length) await loadWatchlistForStocks(tickers);
 
-      if (allStocks.length && !selectedTicker) {
-        await selectStock(allStocks[0].ticker);
+      const visible = visibleStocks();
+      if (visible.length && !selectedTicker) {
+        await selectStock(visible[0].ticker);
       } else if (selectedTicker) {
-        const still = allStocks.find(s => s.ticker === selectedTicker);
+        const still = visible.find(s => s.ticker === selectedTicker);
         if (still) await selectStock(selectedTicker);
-        else if (allStocks.length) await selectStock(allStocks[0].ticker);
+        else if (visible.length) await selectStock(visible[0].ticker);
       }
 
       showLoading(false);
@@ -795,6 +855,7 @@
     setupChartResizeObserver();
     loadHeaderIndicators();
 
+    setupExcludeControls();
     if (config.onSetup) config.onSetup(app);
 
     loadData(config.usesCapFilter ? 'all' : undefined);

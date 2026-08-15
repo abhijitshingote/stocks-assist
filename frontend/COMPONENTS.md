@@ -125,8 +125,8 @@ One layout system for all 12 desktop screener pages: shared shell + `screener.cs
 | **HTML** | `templates/desktop/_screener_shell.html` |
 | **CSS** | `static/css/screener.css` |
 | **JS engine** | `static/js/desktop/screener-app.js` — `DesktopScreener.init(config)` |
-| **Jinja slots** | `screener_label`, `screener_stats_label`, `show_cap_tabs`, `show_sector_bar`, `topbar_extra_controls`, `below_topbar_extra`, `detail_header_extras`, `subchart_top`, `subchart_bottom`, `left_header_extra` |
-| **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch` |
+| **Jinja slots** | `screener_label`, `screener_stats_label`, `show_cap_tabs`, `show_sector_bar`, `topbar_extra_controls`, `below_topbar_extra`, `detail_header_extras`, `subchart_top`, `subchart_bottom`, `left_header_extra`. Shell always includes `#screenerExcludes` (Biotech exclude chip). |
+| **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch`. Shared `− Biotech` chip is AND-ed with `filterFn`. |
 | **Used by** | All desktop screener templates above (thin wrappers) |
 
 ### Cap Tab Strip
@@ -327,6 +327,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **CSS** | `_screener_styles.html` → benzinga-news.css + `_mobile_styles.html` |
 | **JS engine** | `static/js/mobile/screener-app.js` |
 | **Script partial** | `templates/mobile/_screener_libs.html` (sets `page_libs` and calls `_page_libs.html`) |
+| **Exclude** | `#screenerExcludes` filled by the engine (Biotech excluded on every page load; chip-off is session-only). AND-ed with `filterStocks`. |
 | **Used by** | All 5 mobile screener pages (thin config wrappers) |
 
 ### Mobile Screener Pages
