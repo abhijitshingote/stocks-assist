@@ -1,5 +1,5 @@
 # TODO
-1. imp readiness should have a higher weight for strength
+1. imp readiness should have a higher weight for strength & especially revgrowth(t+1 or t+2)
 2. Combined weekly view - /volspike-gapper-90d, /strong-stocks, /top-returns-5-20, /fast-rs with identifier for where it originated from the 4 , just so we dont review the same stock multiple times. But in order to do this , these existing lists are too long and need some pruning - maybe ask AI.
 a. vol spike is all events in 90d - no pruning makes sense, its a weekend review so its fine
 b. Strong Stocks, adj ti65 already normalizes for market cap, so maybe a flat ti65 > x only. get AI to do some analysis for different cutoffs before deciding
