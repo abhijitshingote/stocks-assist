@@ -4,13 +4,16 @@
 */
 (function () {
     const SRC_LABEL = { vsg90: 'VSG', strong: 'STR', top520: '5/20', fastrs: 'RS' };
+    const SRC_ORDER = ['vsg90', 'strong', 'top520', 'fastrs'];
+    const MONTH_ABBREV = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const SORT_KEY = 'weeklyReviewSort';
     let lastMeta = null;
     let screenerApi = null;
-    let sortMode = 'best';
+    let sortMode = 'ati65';
     try {
         const saved = localStorage.getItem(SORT_KEY);
-        if (saved === 'best' || saved === 'sources' || saved === 'dr1') sortMode = saved;
+        if (saved === 'best' || saved === 'ati65' || saved === 'sources' || saved === 'dr1') sortMode = saved;
     } catch (e) {}
 
     function fmtCutoff(id, spec) {
@@ -49,10 +52,58 @@
         }
     }
 
-    function sourceChips(s) {
-        return (s.sources || []).map(id =>
-            '<span class="wr-src ' + id + '">' + (SRC_LABEL[id] || id) + '</span>'
-        ).join('');
+    function compactDate(dateStr) {
+        if (!dateStr) return '';
+        const parts = String(dateStr).split('-');
+        if (parts.length !== 3) return '';
+        const month = MONTH_ABBREV[parseInt(parts[1], 10) - 1];
+        if (!month) return '';
+        return month + ' ' + parseInt(parts[2], 10);
+    }
+
+    function signedPct(v, digits) {
+        if (v == null || !Number.isFinite(v)) return null;
+        return (v >= 0 ? '+' : '') + v.toFixed(digits) + '%';
+    }
+
+    function pill(id, num, unit, when) {
+        if (!num) return '';
+        return '<span class="wr-pill ' + id + '" title="' + (SRC_LABEL[id] || id) + '">' +
+            '<span class="wr-num">' + num + '</span>' +
+            (unit ? '<span class="wr-unit">' + unit + '</span>' : '') +
+            (when ? '<span class="wr-when">' + when + '</span>' : '') +
+            '</span>';
+    }
+
+    function sourcePills(s, id) {
+        if (id === 'vsg90') {
+            let num = '', unit = '';
+            if (s.last_event_magnitude != null) {
+                if (s.last_event_type === 'volume_spike') {
+                    num = s.last_event_magnitude.toFixed(1) + 'x';
+                    unit = 'vol';
+                } else if (s.last_event_type === 'gapper') {
+                    num = signedPct(s.last_event_magnitude * 100, 1);
+                    unit = 'gap';
+                }
+            }
+            return pill('vsg90', num, unit, compactDate(s.last_event_date));
+        }
+        if (id === 'strong') {
+            return s.adjusted_ti65 != null ? pill('strong', s.adjusted_ti65.toFixed(2), 'ati65') : '';
+        }
+        if (id === 'top520') {
+            const out = [];
+            if (s.in_5d && s.dr_5 != null) out.push(pill('top520', signedPct(s.dr_5, 1), '5d'));
+            if (s.in_20d && s.dr_20 != null) out.push(pill('top520', signedPct(s.dr_20, 1), '20d'));
+            if (!out.length && s.dr_5 != null) out.push(pill('top520', signedPct(s.dr_5, 1), '5d'));
+            return out.join('');
+        }
+        if (id === 'fastrs') {
+            const v = signedPct(s.rs_score, 1);
+            return v ? pill('fastrs', v, 'rs') : '';
+        }
+        return '';
     }
 
     async function dispose(kind) {
@@ -99,6 +150,12 @@
                 if (sortMode === 'sources') {
                     const d = (b.sources || []).length - (a.sources || []).length;
                     if (d) return d;
+                } else if (sortMode === 'ati65') {
+                    const av = a.adjusted_ti65, bv = b.adjusted_ti65;
+                    if (av == null && bv == null) return 0;
+                    if (av == null) return 1;
+                    if (bv == null) return -1;
+                    if (bv !== av) return bv - av;
                 } else if (sortMode === 'dr1') {
                     const av = a.dr_1, bv = b.dr_1;
                     if (av == null && bv == null) return 0;
@@ -118,20 +175,12 @@
             });
             return stocks;
         },
-        listPrefixFn: (s) => sourceChips(s),
         listExtraFn: (s) => {
-            const bits = [];
-            if (s.best_rank != null) {
-                bits.push(
-                    (SRC_LABEL[s.best_source] || s.best_source || '?') +
-                    ' #' + s.best_rank + '/' + s.best_rank_n
-                );
-            }
-            if (s.adjusted_ti65 != null) bits.push('ati65 ' + s.adjusted_ti65.toFixed(2));
-            if (s.adjusted_rs_score != null) bits.push('ars ' + s.adjusted_rs_score.toFixed(2));
-            return bits.length
-                ? '<span class="list-extra">' + bits.join(' · ') + '</span>'
-                : '';
+            const have = new Set(s.sources || []);
+            return SRC_ORDER.filter(id => have.has(id))
+                .map(id => sourcePills(s, id))
+                .filter(Boolean)
+                .join('');
         },
         onReady: (api) => {
             screenerApi = api;

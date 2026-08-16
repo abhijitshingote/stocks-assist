@@ -2275,6 +2275,9 @@ def build_weekly_review(session):
         row['sources'] = sorted(row.get('sources') or [])
         if not row.get('cap_bucket') and row.get('market_cap') is not None:
             row['cap_bucket'] = _market_cap_bucket(row['market_cap'])
+        if row.get('adjusted_ti65') is None and row.get('ti65') is not None:
+            scale = _ti65_scale(row.get('market_cap'))
+            row['adjusted_ti65'] = round((row['ti65'] - 1.0) / scale, 4)
         ranks = {}
         for src_id in row['sources']:
             info = source_ranks.get(src_id, {}).get(t)
@@ -2295,8 +2298,8 @@ def build_weekly_review(session):
         queue.append(row)
 
     queue.sort(key=lambda r: (
-        r.get('best_rank') is None,
-        r.get('best_rank') or 10**9,
+        r.get('adjusted_ti65') is None,
+        -(r.get('adjusted_ti65') or 0),
         -len(r.get('sources') or []),
         r.get('ticker') or '',
     ))

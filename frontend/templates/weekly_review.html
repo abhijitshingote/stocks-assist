@@ -8,7 +8,8 @@
 
 {% set topbar_extra_controls %}
 <div class="recency-filter" role="tablist" aria-label="Sort mode">
-    <button class="recency-btn active" data-sort="best">Best rank</button>
+    <button class="recency-btn" data-sort="best">Best rank</button>
+    <button class="recency-btn active" data-sort="ati65">Adj TI65</button>
     <button class="recency-btn" data-sort="sources"># sources</button>
     <button class="recency-btn" data-sort="dr1">1D</button>
 </div>
@@ -46,20 +47,55 @@
         color: var(--text-secondary);
     }
     .wr-funnel { color: var(--text-secondary); }
-    .wr-src {
-        display: inline-block;
-        font-size: 0.6rem;
-        font-family: 'JetBrains Mono', monospace;
-        padding: 0.05rem 0.28rem;
-        border-radius: 3px;
-        border: 1px solid var(--border-color);
-        color: var(--text-muted);
-        margin-right: 0.15rem;
+    .page-weekly-review .stock-extra-row {
+        align-items: center;
+        gap: 0.3rem;
+        padding-left: 1.95rem;
     }
-    .wr-src.vsg90 { color: var(--accent-orange, #f0883e); border-color: var(--accent-orange, #f0883e); }
-    .wr-src.strong { color: var(--accent-green); border-color: var(--accent-green); }
-    .wr-src.top520 { color: var(--accent-blue); border-color: var(--accent-blue); }
-    .wr-src.fastrs { color: var(--accent-purple); border-color: var(--accent-purple); }
+    .wr-pill {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.28rem;
+        padding: 0.18rem 0.42rem;
+        border-radius: 4px;
+        font-family: 'JetBrains Mono', monospace;
+        line-height: 1.15;
+        flex-shrink: 0;
+    }
+    .wr-pill .wr-num {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        letter-spacing: -0.02em;
+    }
+    .wr-pill .wr-unit {
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-secondary);
+    }
+    .wr-pill .wr-when {
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: var(--accent-blue);
+    }
+    .wr-pill.vsg90 {
+        background: rgba(240, 136, 62, 0.22);
+        box-shadow: inset 0 0 0 1px rgba(240, 136, 62, 0.5);
+    }
+    .wr-pill.strong {
+        background: rgba(63, 185, 80, 0.18);
+        box-shadow: inset 0 0 0 1px rgba(63, 185, 80, 0.45);
+    }
+    .wr-pill.top520 {
+        background: rgba(88, 166, 255, 0.18);
+        box-shadow: inset 0 0 0 1px rgba(88, 166, 255, 0.45);
+    }
+    .wr-pill.fastrs {
+        background: rgba(163, 113, 247, 0.2);
+        box-shadow: inset 0 0 0 1px rgba(163, 113, 247, 0.5);
+    }
     .wr-disp { display: inline-flex; gap: 0.35rem; }
 {% endblock %}
 
