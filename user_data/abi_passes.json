@@ -1,1 +1,70 @@
-{}
+{
+  "P": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T02:03:59.155812-04:00",
+    "sources": [
+      "fastrs",
+      "strong",
+      "top520"
+    ]
+  },
+  "SMCI": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T02:04:05.975128-04:00",
+    "sources": [
+      "fastrs",
+      "top520",
+      "vsg90"
+    ]
+  },
+  "HPE": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T02:04:36.807657-04:00",
+    "sources": [
+      "fastrs",
+      "strong",
+      "vsg90"
+    ]
+  },
+  "DELL": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T02:11:40.191939-04:00",
+    "sources": [
+      "fastrs",
+      "strong",
+      "vsg90"
+    ]
+  },
+  "SKHY": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T02:13:32.488676-04:00",
+    "sources": [
+      "top520",
+      "vsg90"
+    ]
+  },
+  "VLO": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T03:49:44.431475-04:00",
+    "sources": [
+      "strong",
+      "top520"
+    ]
+  },
+  "STX": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T04:11:14.147297-04:00",
+    "sources": [
+      "fastrs",
+      "top520",
+      "vsg90"
+    ]
+  }
+}
