@@ -13,7 +13,7 @@
     let sortMode = 'ati65';
     try {
         const saved = localStorage.getItem(SORT_KEY);
-        if (saved === 'best' || saved === 'ati65' || saved === 'sources' || saved === 'dr1') sortMode = saved;
+        if (saved === 'best' || saved === 'ati65' || saved === 'sources' || saved === 'dr1' || saved === 'dr5') sortMode = saved;
     } catch (e) {}
 
     function fmtCutoff(id, spec) {
@@ -158,6 +158,12 @@
                     if (bv !== av) return bv - av;
                 } else if (sortMode === 'dr1') {
                     const av = a.dr_1, bv = b.dr_1;
+                    if (av == null && bv == null) return 0;
+                    if (av == null) return 1;
+                    if (bv == null) return -1;
+                    if (bv !== av) return bv - av;
+                } else if (sortMode === 'dr5') {
+                    const av = a.dr_5, bv = b.dr_5;
                     if (av == null && bv == null) return 0;
                     if (av == null) return 1;
                     if (bv == null) return -1;
