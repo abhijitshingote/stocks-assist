@@ -22,11 +22,7 @@
 {% endset %}
 
 {% set detail_header_extras %}
-<span class="wr-disp" id="wrDisp">
-    <button type="button" class="abi-wl-btn" data-disp="pass" title="Pass — hide until next Saturday">Pass</button>
-    <button type="button" class="abi-wl-btn disp-buy" data-disp="buy" title="Add as buy candidate">Buy</button>
-    <button type="button" class="abi-wl-btn disp-short" data-disp="short" title="Add as short candidate">Short</button>
-</span>
+{% include "desktop/_weekly_disp_btns.html" %}
 {% endset %}
 
 {% block extra_head %}
@@ -97,7 +93,6 @@
         background: rgba(163, 113, 247, 0.2);
         box-shadow: inset 0 0 0 1px rgba(163, 113, 247, 0.5);
     }
-    .wr-disp { display: inline-flex; gap: 0.35rem; }
 {% endblock %}
 
 {% block content %}

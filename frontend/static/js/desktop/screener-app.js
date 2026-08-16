@@ -83,6 +83,11 @@
      removeOnWatch:  false | true
                               When a ticker is added to the watchlist, drop it from the
                               in-memory list (weekly review queue).
+     weeklyDisposition: false | true | 'vsg90'|'strong'|'top520'|'fastrs'
+                              Pass / Buy / Short in #wrDisp. true = weekly review
+                              (sources from the row). A source id also hides
+                              current-cycle passes + watchlist + trades on load
+                              and implies removeOnWatch.
    }
 */
 
@@ -116,6 +121,9 @@ window.DesktopScreener = (function () {
         let newsPanel = null;
         let lastResponse = null;
         let tickerExcludes = new Set();
+        const weeklyDisp = config.weeklyDisposition;
+        if (weeklyDisp) config.removeOnWatch = true;
+        const hideWeeklyDisposed = typeof weeklyDisp === 'string';
 
         const EXCLUDE_KEY = 'screenerExclude';
         const EXCLUDE_RULES = [
@@ -244,14 +252,74 @@ window.DesktopScreener = (function () {
         async function loadTickerExcludes() {
             try {
                 const resp = await fetch('/api/frontend/abi-dislikes');
-                if (!resp.ok) return;
-                const data = await resp.json();
-                tickerExcludes = new Set(
-                    Object.entries(data)
-                        .filter(([, e]) => e && e.is_active !== false)
-                        .map(([t]) => t)
-                );
+                if (resp.ok) {
+                    const data = await resp.json();
+                    tickerExcludes = new Set(
+                        Object.entries(data)
+                            .filter(([, e]) => e && e.is_active !== false)
+                            .map(([t]) => t)
+                    );
+                }
             } catch (e) { /* exclude list is best-effort */ }
+            if (hideWeeklyDisposed) await loadWeeklyDisposed();
+        }
+
+        async function loadWeeklyDisposed() {
+            try {
+                const [wlResp, trResp, psResp] = await Promise.all([
+                    fetch('/api/frontend/abi-watchlist'),
+                    fetch('/api/frontend/abi-trades'),
+                    fetch('/api/frontend/abi-passes'),
+                ]);
+                if (wlResp.ok) {
+                    const wl = await wlResp.json();
+                    Object.keys(wl || {}).forEach(t => tickerExcludes.add(String(t).toUpperCase()));
+                }
+                if (trResp.ok) {
+                    const tr = await trResp.json();
+                    Object.keys(tr || {}).forEach(t => tickerExcludes.add(String(t).toUpperCase()));
+                }
+                if (psResp.ok) {
+                    const ps = await psResp.json();
+                    Object.entries((ps && ps.passes) || {}).forEach(([t, e]) => {
+                        if (e && e.is_active) tickerExcludes.add(String(t).toUpperCase());
+                    });
+                }
+            } catch (e) { /* weekly hide is best-effort */ }
+        }
+
+        function weeklySources(ticker) {
+            if (!weeklyDisp) return [];
+            if (weeklyDisp === true) {
+                const stock = allStocks.find(s => s.ticker === ticker);
+                return (stock && stock.sources) || [];
+            }
+            return [weeklyDisp];
+        }
+
+        async function disposeWeekly(kind) {
+            const ticker = selectedTicker;
+            if (!ticker) return;
+            try {
+                if (kind === 'pass') {
+                    await fetch('/api/frontend/abi-passes', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ticker, sources: weeklySources(ticker) }),
+                    });
+                } else if (kind === 'buy' || kind === 'short') {
+                    await fetch('/api/frontend/abi-trades', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ticker, side: kind }),
+                    });
+                }
+            } catch (e) {
+                console.error('disposition failed', e);
+            }
+            window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
+                detail: { action: 'saved', ticker },
+            }));
         }
 
         async function loadData(cap) {
@@ -269,7 +337,10 @@ window.DesktopScreener = (function () {
                     allStocks = config.transformData ? config.transformData(json) : json;
                     if (!Array.isArray(allStocks) || allStocks.error) allStocks = [];
                     if (tickerExcludes.size) {
-                        allStocks = allStocks.filter(s => !tickerExcludes.has(s.ticker));
+                        allStocks = allStocks.filter(s => {
+                            const t = s.ticker || '';
+                            return !tickerExcludes.has(t) && !tickerExcludes.has(t.toUpperCase());
+                        });
                     }
                     if (config.seedWatchlistFromData) {
                         const seed = {};
@@ -1107,6 +1178,13 @@ window.DesktopScreener = (function () {
         // ── Init ───────────────────────────────────────────────────
         setupNewsAndPanels();
         setupExcludeControls();
+        if (weeklyDisp) {
+            document.getElementById('wrDisp')?.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-disp]');
+                if (!btn) return;
+                disposeWeekly(btn.dataset.disp);
+            });
+        }
         loadTickerExcludes().then(() => loadData('all'));
 
         // Expose helpers for pages that need to trigger resort/reload from custom controls

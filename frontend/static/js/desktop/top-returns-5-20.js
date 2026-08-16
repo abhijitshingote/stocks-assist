@@ -117,6 +117,7 @@
         capFilterFn: (s, cap) => s.cap_bucket === cap,
         accentCss: 'var(--accent-green)',
         label: 'Top 5D/20D',
+        weeklyDisposition: 'top520',
 
         sortFn: (stocks) => stocks.sort((a, b) => {
             const d = sortKey(b) - sortKey(a);

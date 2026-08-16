@@ -957,6 +957,13 @@ def api_abi_trades_data():
         return jsonify({'error': 'Failed to fetch trades data'}), status_code
     return jsonify(data), status_code
 
+@app.route('/api/frontend/abi-passes', methods=['GET'])
+def api_get_abi_passes():
+    data, status_code = make_backend_request('/api/abi-passes')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch passes'}), status_code
+    return jsonify(data), status_code
+
 @app.route('/api/frontend/abi-passes', methods=['POST'])
 def api_add_abi_pass():
     json_data = request.get_json()

@@ -113,6 +113,7 @@
         endpoint: 'strong-stocks',
         accentCss: 'var(--accent-green)',
         label: 'Strong Stocks',
+        weeklyDisposition: 'strong',
 
         sortFn: (stocks) => stocks.sort((a, b) => {
             const d = sortKey(b) - sortKey(a);

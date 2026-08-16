@@ -301,6 +301,7 @@
         endpoint: 'fast-rs',
         accentCss: 'var(--accent-green)',
         label: 'RS Score',
+        weeklyDisposition: 'fastrs',
 
         sortFn: (stocks) => stocks.sort((a, b) => {
             const d = sortKey(b) - sortKey(a);

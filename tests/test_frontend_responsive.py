@@ -121,6 +121,34 @@ class TestFrontendResponsive(unittest.TestCase):
                 f"GET {route} HTML should link responsive.css",
             )
 
+    def test_weekly_source_pages_render_disposition_buttons(self) -> None:
+        import sys
+
+        try:
+            import flask  # noqa: F401
+        except ImportError:
+            self.skipTest("flask not installed in this environment")
+
+        sys.path.insert(0, str(REPO_ROOT))
+        from frontend.app import app  # noqa: WPS433
+
+        client = app.test_client()
+        routes = [
+            "/weekly-review",
+            "/volspike-gapper-90d",
+            "/strong-stocks",
+            "/top-returns-5-20",
+            "/fast-rs",
+        ]
+        for route in routes:
+            resp = client.get(route)
+            self.assertEqual(resp.status_code, 200, f"GET {route} should return 200")
+            body = resp.get_data(as_text=True)
+            self.assertIn('id="wrDisp"', body, f"{route} should include #wrDisp")
+            self.assertIn('data-disp="pass"', body, f"{route} should include Pass")
+            self.assertIn('data-disp="buy"', body, f"{route} should include Buy")
+            self.assertIn('data-disp="short"', body, f"{route} should include Short")
+
 
 if __name__ == "__main__":
     unittest.main()

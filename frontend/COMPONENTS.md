@@ -73,6 +73,15 @@
 | **Screener hook** | `window._screener_toggleWatchlist()` in `static/js/desktop/screener-app.js` |
 | **Used by** | All desktop screener pages via the shared shell |
 
+### Weekly Disposition  *(Pass / Buy / Short)*
+| | |
+|---|---|
+| **HTML** | `templates/desktop/_weekly_disp_btns.html` via `detail_header_extras` |
+| **CSS class** | `.wr-disp` / `.disp-buy` / `.disp-short` |
+| **JS** | `DesktopScreener.init({ weeklyDisposition })` in `screener-app.js` |
+| **Used by** | `/weekly-review` (`true`) and the 4 source pages (`vsg90` / `strong` / `top520` / `fastrs`) |
+| **Behavior** | Pass → `abi_passes.json` (cycle-scoped). Buy/Short → `abi_trades.json`. Row drops. Source pages also hide current-cycle pass + watchlist + trades on load. |
+
 ### Dislike Button
 | | |
 |---|---|
@@ -129,7 +138,7 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | **CSS** | `static/css/screener.css` |
 | **JS engine** | `static/js/desktop/screener-app.js` — `DesktopScreener.init(config)` |
 | **Jinja slots** | `screener_label`, `screener_stats_label`, `show_cap_tabs`, `show_sector_bar`, `topbar_extra_controls`, `below_topbar_extra`, `detail_header_extras`, `subchart_top`, `subchart_bottom`, `left_header_extra`. Shell always includes `#screenerExcludes` (Biotech exclude chip). |
-| **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch`. Shared `− Biotech` chip is AND-ed with `filterFn`. |
+| **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch`, `weeklyDisposition`. Shared `− Biotech` chip is AND-ed with `filterFn`. |
 | **Used by** | All desktop screener templates above (thin wrappers) |
 
 ### Cap Tab Strip

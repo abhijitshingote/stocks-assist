@@ -134,6 +134,7 @@
         endpoint: 'volspike-gapper-90d',
         accentCss: 'var(--accent-yellow)',
         label: 'Vol Spike & Gapper - 90d',
+        weeklyDisposition: 'vsg90',
 
         sortFn: (stocks) => stocks.sort((a, b) => {
             const d = sortKey(b) - sortKey(a);

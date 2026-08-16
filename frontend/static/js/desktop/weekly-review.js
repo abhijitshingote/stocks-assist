@@ -9,7 +9,6 @@
                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const SORT_KEY = 'weeklyReviewSort';
     let lastMeta = null;
-    let screenerApi = null;
     let sortMode = 'ati65';
     try {
         const saved = localStorage.getItem(SORT_KEY);
@@ -106,40 +105,12 @@
         return '';
     }
 
-    async function dispose(kind) {
-        const ticker = document.getElementById('detailTicker')?.textContent?.trim();
-        if (!ticker || ticker === '—') return;
-        const stock = (screenerApi && screenerApi.getState().allStocks || [])
-            .find(s => s.ticker === ticker);
-        const sources = (stock && stock.sources) || [];
-        try {
-            if (kind === 'pass') {
-                await fetch('/api/frontend/abi-passes', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ticker, sources }),
-                });
-            } else if (kind === 'buy' || kind === 'short') {
-                await fetch('/api/frontend/abi-trades', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ticker, side: kind }),
-                });
-            }
-        } catch (e) {
-            console.error('disposition failed', e);
-        }
-        window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
-            detail: { action: 'saved', ticker },
-        }));
-    }
-
     DesktopScreener.init({
         endpointFn: () => '/api/frontend/weekly-review',
         capFilter: 'client',
         capField: 'cap_bucket',
         accentCss: 'var(--accent-green)',
-        removeOnWatch: true,
+        weeklyDisposition: true,
         transformData: (json) => {
             renderMeta(json);
             return Array.isArray(json.stocks) ? json.stocks : [];
@@ -189,7 +160,6 @@
                 .join('');
         },
         onReady: (api) => {
-            screenerApi = api;
             document.querySelectorAll('[data-sort]').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.sort === sortMode);
                 btn.addEventListener('click', () => {
@@ -200,11 +170,6 @@
                     );
                     api.resortWithFn();
                 });
-            });
-            document.getElementById('wrDisp')?.addEventListener('click', (e) => {
-                const btn = e.target.closest('[data-disp]');
-                if (!btn) return;
-                dispose(btn.dataset.disp);
             });
         },
     });

@@ -146,6 +146,8 @@ body.light-theme .btn-secondary:hover {
     color: var(--accent-red);
 }
 
+.wr-disp { display: inline-flex; gap: 0.35rem; }
+
 .abi-wl-btn.disp-buy:hover {
     border-color: var(--accent-green);
     color: var(--accent-green);

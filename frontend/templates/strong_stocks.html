@@ -14,6 +14,10 @@
 </div>
 {% endset %}
 
+{% set detail_header_extras %}
+{% include "desktop/_weekly_disp_btns.html" %}
+{% endset %}
+
 {% block extra_head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
 {% endblock %}
