@@ -32,7 +32,7 @@ def load_abi_ticker_notes() -> dict[str, dict[str, Any]]:
 
 
 def load_watchlist_raw() -> dict[str, Any]:
-    """Return the raw watchlist file (membership + stars + added_at).
+    """Return the raw watchlist file (membership + added_at). Legacy ``stars`` keys are ignored.
 
     Drops any embedded ``notes`` keys; Abi ticker notes are only in
     abi_ticker_notes.json.
@@ -56,7 +56,7 @@ def load_watchlist_raw() -> dict[str, Any]:
 def load_watchlist_with_notes() -> dict[str, dict[str, Any]]:
     """Return watchlist entries with their (optional) Abi ticker note merged in.
 
-    Result shape: ``{TICKER: {notes, stars, added_at}}``. ``notes`` is filled
+    Result shape: ``{TICKER: {notes, added_at}}``. ``notes`` is filled
     from Abi ticker notes when present; tickers without a note get
     ``notes = ""``. Tickers NOT on the watchlist are excluded.
     """

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block body_class %}screener-page page-weekly-review{% endblock %}
+{% block title %}Weekly Review - Stocks Assist{% endblock %}
+
+{% set screener_label = "Weekly Review" %}
+{% set screener_stats_label = "Queue" %}
+
+{% set topbar_extra_controls %}
+<div class="recency-filter" role="tablist" aria-label="Sort mode">
+    <button class="recency-btn active" data-sort="best">Best rank</button>
+    <button class="recency-btn" data-sort="sources"># sources</button>
+    <button class="recency-btn" data-sort="dr1">1D</button>
+</div>
+<div class="wr-meta" id="wrMeta">
+    <span id="wrCycle">cycle —</span>
+    <span id="wrCutoffs" class="wr-cutoffs"></span>
+    <span id="wrFunnel" class="wr-funnel"></span>
+</div>
+{% endset %}
+
+{% set detail_header_extras %}
+<span class="wr-disp" id="wrDisp">
+    <button type="button" class="abi-wl-btn" data-disp="pass" title="Pass — hide until next Saturday">Pass</button>
+    <button type="button" class="abi-wl-btn disp-buy" data-disp="buy" title="Add as buy candidate">Buy</button>
+    <button type="button" class="abi-wl-btn disp-short" data-disp="short" title="Add as short candidate">Short</button>
+</span>
+{% endset %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
+{% endblock %}
+
+{% block extra_styles %}
+    .wr-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+        align-items: center;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        color: var(--text-muted);
+        margin-left: 0.5rem;
+    }
+    .wr-cutoffs code {
+        color: var(--text-secondary);
+    }
+    .wr-funnel { color: var(--text-secondary); }
+    .wr-src {
+        display: inline-block;
+        font-size: 0.6rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.05rem 0.28rem;
+        border-radius: 3px;
+        border: 1px solid var(--border-color);
+        color: var(--text-muted);
+        margin-right: 0.15rem;
+    }
+    .wr-src.vsg90 { color: var(--accent-orange, #f0883e); border-color: var(--accent-orange, #f0883e); }
+    .wr-src.strong { color: var(--accent-green); border-color: var(--accent-green); }
+    .wr-src.top520 { color: var(--accent-blue); border-color: var(--accent-blue); }
+    .wr-src.fastrs { color: var(--accent-purple); border-color: var(--accent-purple); }
+    .wr-disp { display: inline-flex; gap: 0.35rem; }
+{% endblock %}
+
+{% block content %}
+{% include "desktop/_screener_shell.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/static/js/stock-chart.js"></script>
+<script src="/static/js/desktop/screener-app.js"></script>
+<script src="/static/js/desktop/weekly-review.js"></script>
+{% endblock %}

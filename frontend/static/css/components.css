@@ -146,6 +146,16 @@ body.light-theme .btn-secondary:hover {
     color: var(--accent-red);
 }
 
+.abi-wl-btn.disp-buy:hover {
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+}
+
+.abi-wl-btn.disp-short:hover {
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+}
+
 /* ── Ticker Notes Modal ──────────────────────────────────────────── */
 .wl-modal-overlay {
     display: none;
@@ -275,4 +285,24 @@ body.light-theme .wl-modal textarea {
 
 .wl-modal-actions .dl-save:hover {
     background: #ff6b62;
+}
+
+.dl-kind-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.dl-kind-opt {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font-body);
+}
+
+.dl-kind-opt input {
+    accent-color: var(--accent-red);
 }

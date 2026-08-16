@@ -142,18 +142,55 @@
     .dl-actions .dl-remove-btn:hover {
         background: rgba(248, 81, 73, 0.15);
     }
+    .dl-section {
+        margin-bottom: 1.5rem;
+    }
+    .dl-section h2 {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0 0 0.5rem;
+    }
+    .dl-section h2 .n {
+        color: var(--accent-red);
+        margin-left: 0.35rem;
+    }
+    .dl-badge {
+        display: inline-block;
+        font-size: 0.65rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.1rem 0.35rem;
+        border-radius: 3px;
+        margin-left: 0.35rem;
+        vertical-align: middle;
+    }
+    .dl-badge.temp {
+        color: var(--accent-orange, #f0883e);
+        border: 1px solid var(--accent-orange, #f0883e);
+    }
+    .dl-badge.perm {
+        color: var(--accent-red);
+        border: 1px solid var(--accent-red);
+    }
+    .dl-badge.expired {
+        color: var(--text-muted);
+        border: 1px solid var(--border-color);
+    }
 {% endblock %}
 
 {% block content %}
 <div class="dl-page">
     <div class="dl-header">
-        <h1>Disliked Tickers <span class="count" id="dlCount">0</span></h1>
-        <div class="subtitle">These are filtered out of every screener (Daily Shortlist, Top Returns, Vol Spike, etc.) with an audit trail.</div>
+        <h1>Excluded Tickers <span class="count" id="dlCount">0</span></h1>
+        <div class="subtitle">Hidden from all screeners. Temporary = 30 days from add; permanent until removed. Expired temps stay listed until you delete them.</div>
     </div>
 
     <div class="dl-add-bar">
         <input type="text" id="dlAddTicker" placeholder="TICKER" maxlength="10" onkeydown="if(event.key==='Enter')addDislike()" />
-        <button onclick="addDislike()">Add to Dislikes</button>
+        <button onclick="addDislike()">Add exclude</button>
     </div>
 
     <div id="dlContent">
@@ -192,25 +229,21 @@ function escapeHtml(s) {
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-function render() {
-    const tickers = Object.keys(_dislikes).sort();
-    document.getElementById('dlCount').textContent = tickers.length;
-
-    const root = document.getElementById('dlContent');
-    if (tickers.length === 0) {
-        root.innerHTML = '<div class="dl-empty">No dislikes yet. Add tickers you want filtered out of every screener.</div>';
-        return;
-    }
-
-    let html = '<div class="dl-list">';
-    for (const t of tickers) {
-        const entry = _dislikes[t] || {};
-        const notes = (entry.notes || '').trim();
-        html += `
+function rowHtml(t, entry) {
+    const notes = (entry.notes || '').trim();
+    const kind = entry.kind === 'temporary' ? 'temporary' : 'permanent';
+    const active = entry.is_active !== false;
+    let badge = kind === 'temporary'
+        ? `<span class="dl-badge temp">${active ? ((entry.days_left != null ? entry.days_left + 'd left' : '30d')) : 'expired'}</span>`
+        : '<span class="dl-badge perm">perm</span>';
+    if (!active) badge = '<span class="dl-badge expired">expired</span>';
+    const exp = kind === 'temporary' && entry.expires_at
+        ? ` · expires ${fmtDate(entry.expires_at)}` : '';
+    return `
             <div class="dl-row" data-ticker="${t}">
                 <div>
-                    <div class="dl-ticker"><a href="/stock/${t}">${t}</a></div>
-                    <div class="dl-meta">Added ${fmtDate(entry.added_at)}</div>
+                    <div class="dl-ticker"><a href="/stock/${t}">${t}</a>${badge}</div>
+                    <div class="dl-meta">Added ${fmtDate(entry.added_at)}${exp}</div>
                 </div>
                 <div class="dl-notes ${notes ? '' : 'empty'}">${notes ? escapeHtml(notes) : 'No Abi ticker notes'}</div>
                 <div class="dl-actions">
@@ -218,9 +251,35 @@ function render() {
                     <button class="dl-remove-btn" onclick="removeDislike('${t}')">Remove</button>
                 </div>
             </div>`;
+}
+
+function sectionHtml(title, tickers) {
+    if (!tickers.length) return '';
+    let html = `<div class="dl-section"><h2>${title}<span class="n">${tickers.length}</span></h2><div class="dl-list">`;
+    for (const t of tickers) html += rowHtml(t, _dislikes[t] || {});
+    html += '</div></div>';
+    return html;
+}
+
+function render() {
+    const tickers = Object.keys(_dislikes).sort();
+    const active = tickers.filter(t => _dislikes[t].is_active !== false);
+    document.getElementById('dlCount').textContent = active.length;
+
+    const root = document.getElementById('dlContent');
+    if (tickers.length === 0) {
+        root.innerHTML = '<div class="dl-empty">No excludes yet. Add tickers you want filtered out of every screener.</div>';
+        return;
     }
-    html += '</div>';
-    root.innerHTML = html;
+
+    const temps = tickers.filter(t => _dislikes[t].kind === 'temporary' && _dislikes[t].is_active !== false);
+    const perms = tickers.filter(t => _dislikes[t].kind !== 'temporary' && _dislikes[t].is_active !== false);
+    const expired = tickers.filter(t => _dislikes[t].is_active === false);
+
+    root.innerHTML = sectionHtml('Temporary (30d)', temps)
+        + sectionHtml('Permanent', perms)
+        + sectionHtml('Expired', expired)
+        || '<div class="dl-empty">No excludes yet.</div>';
 }
 
 async function addDislike() {
@@ -242,7 +301,7 @@ function editDislike(ticker) {
     const entry = _dislikes[ticker] || {};
     window._dlOpen(ticker, entry.notes || '', true, async function(action) {
         if (action === 'saved' || action === 'removed') await loadDislikes();
-    });
+    }, entry.kind || 'permanent');
 }
 
 async function removeDislike(ticker) {

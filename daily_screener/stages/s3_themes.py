@@ -90,7 +90,11 @@ def _load_watchlist() -> dict[str, Any]:
     for tickers on the watchlist (so notes on non-watchlist tickers never reach
     the user-theme extractor).
     """
-    return load_watchlist_with_notes()
+    wl = load_watchlist_with_notes()
+    for entry in wl.values():
+        if isinstance(entry, dict):
+            entry.pop("stars", None)
+    return wl
 
 
 def _extract_user_themes(date_str: str, force: bool = False) -> dict[str, Any]:

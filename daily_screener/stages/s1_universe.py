@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -186,12 +187,29 @@ def _query_volspike_gapper(session, source: str, date_str: str):
     return [_row_to_dict(r, source) for r in q.all()]
 
 
-def _load_dislikes() -> dict[str, str]:
-    """Return {TICKER: notes} for explicit thumbs-down entries.
+def _is_dislike_active(entry: dict) -> bool:
+    """Permanent (or missing kind) always active. Temporary active until expires_at."""
+    kind = str(entry.get("kind") or "permanent").lower()
+    if kind != "temporary":
+        return True
+    raw = entry.get("expires_at") or ""
+    if not raw:
+        return False
+    try:
+        exp = datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return False
+    if exp.tzinfo is None:
+        exp = exp.replace(tzinfo=timezone.utc)
+    return exp > datetime.now(timezone.utc)
 
-    The dislikes file is the ONLY source of vetoes. Watchlist `stars: 0` is
-    treated as "not yet rated" (neutral) - the user can have a ticker on their
-    watchlist with no rating and that should not eliminate them from screens.
+
+def _load_dislikes() -> dict[str, str]:
+    """Return {TICKER: notes} for active thumbs-down entries.
+
+    The dislikes file is the ONLY source of vetoes. Watchlist membership is
+    not a veto.
+    kind=temporary is skipped after expires_at.
     """
     if not config.EXCLUDE_DISLIKED_TICKERS:
         return {}
@@ -207,6 +225,8 @@ def _load_dislikes() -> dict[str, str]:
     out: dict[str, str] = {}
     for ticker, entry in (data or {}).items():
         if isinstance(entry, dict):
+            if not _is_dislike_active(entry):
+                continue
             out[ticker.upper()] = entry.get("notes", "") or ""
         else:
             out[ticker.upper()] = ""

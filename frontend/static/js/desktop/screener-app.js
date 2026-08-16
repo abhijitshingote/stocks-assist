@@ -74,14 +74,15 @@
                               After the main price chart finishes loading (build subcharts here).
      onTimeframeChange: null | function (days, stockChart)
                               Timeframe button handler override (default: stockChart.setTimeframe).
-     resortOnStarChange: false | true
-                              Re-sort the list after a star rating change (watchlist page).
      seedWatchlistFromData: false | true
-                              Seed watchlistStatus from each stock's watchlist_stars field
-                              before the batch-check round-trip (watchlist page).
+                              Seed watchlistStatus from returned rows before the
+                              batch-check round-trip (watchlist page).
      removeOnUnwatch: false | true
                               When a ticker is removed from the watchlist, drop it from the
                               in-memory list (watchlist page).
+     removeOnWatch:  false | true
+                              When a ticker is added to the watchlist, drop it from the
+                              in-memory list (weekly review queue).
    }
 */
 
@@ -114,6 +115,7 @@ window.DesktopScreener = (function () {
         let abiTickerNotesStatus = {};
         let newsPanel = null;
         let lastResponse = null;
+        let tickerExcludes = new Set();
 
         const EXCLUDE_KEY = 'screenerExclude';
         const EXCLUDE_RULES = [
@@ -239,6 +241,19 @@ window.DesktopScreener = (function () {
             });
         }
 
+        async function loadTickerExcludes() {
+            try {
+                const resp = await fetch('/api/frontend/abi-dislikes');
+                if (!resp.ok) return;
+                const data = await resp.json();
+                tickerExcludes = new Set(
+                    Object.entries(data)
+                        .filter(([, e]) => e && e.is_active !== false)
+                        .map(([t]) => t)
+                );
+            } catch (e) { /* exclude list is best-effort */ }
+        }
+
         async function loadData(cap) {
             showLoading();
             const isClientCap = config.capFilter === 'client';
@@ -253,12 +268,13 @@ window.DesktopScreener = (function () {
                     lastResponse = json;
                     allStocks = config.transformData ? config.transformData(json) : json;
                     if (!Array.isArray(allStocks) || allStocks.error) allStocks = [];
+                    if (tickerExcludes.size) {
+                        allStocks = allStocks.filter(s => !tickerExcludes.has(s.ticker));
+                    }
                     if (config.seedWatchlistFromData) {
                         const seed = {};
                         allStocks.forEach(s => {
-                            seed[s.ticker] = {
-                                stars: Number.isFinite(s.watchlist_stars) ? s.watchlist_stars : 0,
-                            };
+                            seed[s.ticker] = {};
                         });
                         watchlistStatus = seed;
                     }
@@ -305,41 +321,6 @@ window.DesktopScreener = (function () {
         }
 
         // ── Watchlist + Abi ticker notes ───────────────────────────
-        function getStars(ticker) {
-            const wl = watchlistStatus[ticker];
-            return (wl && Number.isFinite(wl.stars)) ? wl.stars : 0;
-        }
-
-        function starsHtml(ticker) {
-            if (!watchlistStatus[ticker]) return '';
-            const stars = getStars(ticker);
-            let html = `<span class="star-rating" data-stars="${stars}">`;
-            for (let i = 1; i <= 3; i++) {
-                html += `<span class="star${i <= stars ? ' filled' : ''}" data-level="${i}" title="${i} star${i > 1 ? 's' : ''}">★</span>`;
-            }
-            return html + '</span>';
-        }
-
-        async function setStarsForTicker(ticker, stars) {
-            if (!watchlistStatus[ticker]) return;
-            const prev = watchlistStatus[ticker].stars || 0;
-            watchlistStatus[ticker].stars = stars;
-            if (config.resortOnStarChange) filteredStocks = sortData(filteredStocks);
-            renderList();
-            try {
-                const resp = await fetch('/api/frontend/abi-watchlist/' + ticker, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ stars }),
-                });
-                if (!resp.ok) throw new Error('PUT failed: ' + resp.status);
-            } catch (e) {
-                console.error('Failed to save stars for ' + ticker, e);
-                watchlistStatus[ticker].stars = prev;
-                renderList();
-            }
-        }
-
         async function loadWatchlistForStocks(tickers) {
             if (!tickers || tickers.length === 0) return;
             try {
@@ -368,7 +349,7 @@ window.DesktopScreener = (function () {
             if (!btn) return;
             const inWl = !!watchlistStatus[ticker];
             btn.classList.toggle('in-watchlist', inWl);
-            btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
+            btn.textContent = inWl ? 'Watching' : 'Watch';
         }
 
         function updateWatchlistNotes(ticker) {
@@ -386,30 +367,50 @@ window.DesktopScreener = (function () {
             }
         }
 
+        function dropTickerFromList(ticker) {
+            allStocks = allStocks.filter(s => s.ticker !== ticker);
+            filteredStocks = filteredStocks.filter(s => s.ticker !== ticker);
+            const totalEl = document.getElementById('totalStocks');
+            if (totalEl) totalEl.textContent = filteredStocks.length;
+            if (selectedTicker === ticker) {
+                if (filteredStocks.length > 0) {
+                    selectStock(filteredStocks[0].ticker);
+                } else {
+                    selectedTicker = null;
+                    document.getElementById('rightPlaceholder').style.display = 'flex';
+                    document.getElementById('detailHeader').style.display = 'none';
+                    document.getElementById('chartsContainer').style.display = 'none';
+                    document.getElementById('tpRightColumn')?.classList.remove('visible');
+                }
+            }
+            renderSectorTabs();
+            renderIndustryTabs();
+            renderList();
+        }
+
+        window.addEventListener('abi-exclude-changed', function (ev) {
+            const d = ev.detail || {};
+            if (d.action === 'saved' && d.ticker) {
+                tickerExcludes.add(d.ticker);
+                dropTickerFromList(d.ticker);
+            } else if (d.action === 'removed' && d.ticker) {
+                tickerExcludes.delete(d.ticker);
+            }
+        });
+
         window._screener_toggleWatchlist = function () {
             if (!selectedTicker) return;
             const inWl = !!watchlistStatus[selectedTicker];
             window._wlToggle(selectedTicker, inWl, function (nowIn, ticker) {
                 if (nowIn) {
                     watchlistStatus[ticker] = watchlistStatus[ticker] || { stars: 0 };
+                    if (config.removeOnWatch) {
+                        dropTickerFromList(ticker);
+                    }
                 } else {
                     delete watchlistStatus[ticker];
                     if (config.removeOnUnwatch) {
-                        allStocks = allStocks.filter(s => s.ticker !== ticker);
-                        filteredStocks = filteredStocks.filter(s => s.ticker !== ticker);
-                        const totalEl = document.getElementById('totalStocks');
-                        if (totalEl) totalEl.textContent = filteredStocks.length;
-                        if (selectedTicker === ticker) {
-                            if (filteredStocks.length > 0) {
-                                selectStock(filteredStocks[0].ticker);
-                            } else {
-                                selectedTicker = null;
-                                document.getElementById('rightPlaceholder').style.display = 'flex';
-                                document.getElementById('detailHeader').style.display = 'none';
-                                document.getElementById('chartsContainer').style.display = 'none';
-                                document.getElementById('tpRightColumn')?.classList.remove('visible');
-                            }
-                        }
+                        dropTickerFromList(ticker);
                     }
                 }
                 updateWatchlistBtn(ticker);
@@ -560,21 +561,7 @@ window.DesktopScreener = (function () {
         // default renderer and available to renderListFn overrides via helpers.
         function bindListRows(listEl) {
             listEl.querySelectorAll('.stock-item').forEach(el => {
-                el.addEventListener('click', (e) => {
-                    if (e.target.closest('.star-rating')) return;
-                    selectStock(el.dataset.ticker);
-                });
-            });
-            listEl.querySelectorAll('.star-rating .star').forEach(starEl => {
-                starEl.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const itemEl = starEl.closest('.stock-item');
-                    if (!itemEl) return;
-                    const ticker = itemEl.dataset.ticker;
-                    const level = parseInt(starEl.dataset.level, 10);
-                    const current = getStars(ticker);
-                    setStarsForTicker(ticker, level === current ? level - 1 : level);
-                });
+                el.addEventListener('click', () => selectStock(el.dataset.ticker));
             });
         }
 
@@ -595,14 +582,11 @@ window.DesktopScreener = (function () {
             const isActive = s.ticker === selectedTicker ? ' active' : '';
             const listVal = config.listValueFn ? config.listValueFn(s) : defaultListValue(s);
             const mcapStr = s.market_cap ? ' (' + fmtMktCap(s.market_cap) + ')' : '';
-            const stars = getStars(s.ticker);
-            const hasStarsCls = stars > 0 ? ' has-stars' : '';
             const extra = config.listExtraFn ? config.listExtraFn(s) : '';
             const prefix = config.listPrefixFn ? config.listPrefixFn(s) : '';
-            return `<div class="stock-item two-row${isActive}${hasStarsCls}${hiddenCls || ''}" data-ticker="${s.ticker}">` +
+            return `<div class="stock-item two-row${isActive}${hiddenCls || ''}" data-ticker="${s.ticker}">` +
                 `<div class="stock-main-row">` +
                     `<span class="si-left">` +
-                    starsHtml(s.ticker) +
                     `<span class="sn">${idx}.</span>` +
                     prefix +
                     `<span class="ticker">${s.ticker}</span>` +
@@ -1098,7 +1082,7 @@ window.DesktopScreener = (function () {
         // updateMetricsFn, updateTagsFn, onStockSelected).
         const helpers = {
             escAttr, fmtRet, retCls, fmtVal, fmtVol, fmtMktCap, msItem,
-            getStars, starsHtml, setStarsForTicker, badge52w,
+            badge52w,
             passesSectorIndustry,
             selectStock: (t) => selectStock(t),
             getSelectedTicker: () => selectedTicker,
@@ -1123,7 +1107,7 @@ window.DesktopScreener = (function () {
         // ── Init ───────────────────────────────────────────────────
         setupNewsAndPanels();
         setupExcludeControls();
-        loadData('all');
+        loadTickerExcludes().then(() => loadData('all'));
 
         // Expose helpers for pages that need to trigger resort/reload from custom controls
         if (config.onReady) {

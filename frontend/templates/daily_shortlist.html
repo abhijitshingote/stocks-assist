@@ -972,7 +972,7 @@ function renderRow(r) {
     const wl = r.watchlist || {};
     const wlBtn = document.createElement('button');
     wlBtn.className = 'abi-wl-btn' + (wl.in_watchlist ? ' in-watchlist' : '');
-    wlBtn.textContent = wl.in_watchlist ? '★ Watchlist' : '+ Watchlist';
+    wlBtn.textContent = wl.in_watchlist ? 'Watching' : 'Watch';
     wlBtn.title = wl.in_watchlist ? 'Remove from watchlist' : 'Add to watchlist';
     wlBtn.onclick = () => toggleWatchlist(r, wlBtn);
     actions.appendChild(wlBtn);
@@ -992,13 +992,13 @@ function renderRow(r) {
     const dlBtn = document.createElement('button');
     dlBtn.className = 'abi-dl-btn' + (dl.is_disliked ? ' is-disliked' : '');
     dlBtn.setAttribute('data-ticker', r.ticker);
-    dlBtn.textContent = dl.is_disliked ? '👎 Blocked' : '👎';
+    dlBtn.textContent = dl.is_disliked ? 'Excluded' : 'Exclude';
     dlBtn.title = dl.is_disliked
         ? 'Edit dislike rationale for ' + r.ticker
         : 'Block ' + r.ticker + ' from screeners';
     dlBtn.onclick = () => window._dlOpenForTicker(r.ticker, function(action, t) {
-        if (action === 'saved') { dlBtn.textContent = '👎 Blocked'; dlBtn.classList.add('is-disliked'); }
-        else if (action === 'removed') { dlBtn.textContent = '👎'; dlBtn.classList.remove('is-disliked'); }
+        if (action === 'saved') { dlBtn.textContent = 'Excluded'; dlBtn.classList.add('is-disliked'); }
+        else if (action === 'removed') { dlBtn.textContent = 'Exclude'; dlBtn.classList.remove('is-disliked'); }
     });
     actions.appendChild(dlBtn);
 
@@ -1081,11 +1081,10 @@ function toggleWatchlist(r, btn) {
         r.watchlist = {
             in_watchlist: nowIn,
             notes: wl.notes || '',
-            stars: wl.stars || 0,
         };
         if (btn) {
             btn.classList.toggle('in-watchlist', nowIn);
-            btn.textContent = nowIn ? '★ Watchlist' : '+ Watchlist';
+            btn.textContent = nowIn ? 'Watching' : 'Watch';
             btn.title = nowIn ? 'Remove from watchlist' : 'Add to watchlist';
         }
         toast(nowIn ? 'Added to watchlist' : 'Removed from watchlist');
@@ -1104,7 +1103,7 @@ function openNotesForRow(r, btn) {
             has_ticker_note: isSet,
         };
         // Mirror into watchlist.notes for any old code still reading there.
-        r.watchlist = r.watchlist || { in_watchlist: false, stars: 0 };
+        r.watchlist = r.watchlist || { in_watchlist: false };
         r.watchlist.notes = isSet ? newNotes : '';
         if (btn) {
             btn.classList.toggle('in-watchlist', isSet);

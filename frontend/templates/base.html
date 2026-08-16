@@ -475,6 +475,7 @@
                 <div class="nav-row">
                     <div class="nav-row-label">Weekly</div>
                     <div class="nav-row-links">
+                        <a href="/weekly-review">Weekly Review</a>
                         <a href="/volspike-gapper-90d">Vol Spike & Gaps (90d)</a>
                         <a href="/strong-stocks">Strong Stocks</a>
                         <a href="/top-returns-5-20">Top 5D/20D</a>
@@ -500,8 +501,9 @@
                     <div class="nav-row-label">Abi</div>
                     <div class="nav-row-links">
                         <a href="/abi-watchlist" title="Abi Watchlist (press W)">Abi Watchlist</a>
+                        <a href="/abi-trades">Trades</a>
                         <a href="/abi-general-notes">Abi General Notes</a>
-                        <a href="/abi-dislikes">Dislikes</a>
+                        <a href="/abi-dislikes">Excludes</a>
                     </div>
                 </div>
                 <div class="nav-row">
@@ -941,13 +943,16 @@
     </script>
 
     <!-- Abi Dislike Modal (shared across pages) -->
-    <!-- Membership in `abi_dislikes.json` is the veto signal for the daily
-         screener. The textarea here is the optional rationale; it is saved to
-         `abi_ticker_notes.json` via the Abi ticker notes endpoint, not to the
-         dislikes file (notes are decoupled from membership). -->
+    <!-- Membership in `abi_dislikes.json` hides the ticker from all screeners.
+         kind=temporary expires in 30d; kind=permanent does not. The textarea
+         is optional rationale saved to `abi_ticker_notes.json`. -->
     <div class="wl-modal-overlay" id="dlModalOverlay">
         <div class="wl-modal dl-theme">
             <div class="wl-modal-title" id="dlModalTitleEl">Block <span class="ticker-hl" id="dlModalTicker"></span> from screeners</div>
+            <div class="dl-kind-row" id="dlKindRow">
+                <label class="dl-kind-opt"><input type="radio" name="dlKind" value="temporary" checked> 30 days</label>
+                <label class="dl-kind-opt"><input type="radio" name="dlKind" value="permanent"> Permanent</label>
+            </div>
             <textarea id="dlModalNotes" placeholder="Why are you blocking this? (optional - e.g. 'AVOID - thesis broken', 'SHORT bias', 'too speculative')..."></textarea>
             <div class="wl-modal-actions">
                 <button class="wl-remove" id="dlModalRemoveBtn" style="display:none;" onclick="window._dlRemove()">Remove</button>
@@ -968,15 +973,28 @@
         let _isDisliked = false;
         let _onDone = null;
 
-        window._dlOpen = function(ticker, currentNotes, isDisliked, onDone) {
+        function selectedKind() {
+            const el = overlay.querySelector('input[name="dlKind"]:checked');
+            return (el && el.value) || 'temporary';
+        }
+
+        function setKind(kind) {
+            const want = kind === 'permanent' ? 'permanent' : 'temporary';
+            overlay.querySelectorAll('input[name="dlKind"]').forEach(r => {
+                r.checked = r.value === want;
+            });
+        }
+
+        window._dlOpen = function(ticker, currentNotes, isDisliked, onDone, currentKind) {
             _ticker = ticker;
             _isDisliked = !!isDisliked;
             _onDone = onDone || null;
             tickerEl.textContent = ticker;
             notesEl.value = currentNotes || '';
+            setKind(currentKind || 'temporary');
             removeBtn.style.display = _isDisliked ? 'inline-block' : 'none';
             saveBtn.textContent = _isDisliked ? 'Update' : 'Block';
-            titleEl.innerHTML = (_isDisliked ? 'Edit dislike notes for ' : 'Block ') + '<span class="ticker-hl">' + ticker + '</span>' + (_isDisliked ? '' : ' from screeners');
+            titleEl.innerHTML = (_isDisliked ? 'Edit exclude for ' : 'Block ') + '<span class="ticker-hl">' + ticker + '</span>' + (_isDisliked ? '' : ' from screeners');
             overlay.classList.add('visible');
             notesEl.focus();
         };
@@ -989,30 +1007,23 @@
         window._dlSave = async function() {
             if (!_ticker) return;
             const notes = notesEl.value.trim();
+            const kind = selectedKind();
             try {
-                if (_isDisliked) {
+                await fetch('/api/frontend/abi-dislikes', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ticker: _ticker, kind})
+                });
+                if (notes) {
                     await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {
                         method: 'PUT',
                         headers: {'Content-Type':'application/json'},
                         body: JSON.stringify({notes})
                     });
-                } else {
-                    await fetch('/api/frontend/abi-dislikes', {
-                        method: 'POST',
-                        headers: {'Content-Type':'application/json'},
-                        body: JSON.stringify({ticker: _ticker})
-                    });
-                    if (notes) {
-                        await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {
-                            method: 'PUT',
-                            headers: {'Content-Type':'application/json'},
-                            body: JSON.stringify({notes})
-                        });
-                    }
                 }
             } catch(e) { console.error('Dislike save error', e); }
             overlay.classList.remove('visible');
-            if (_onDone) _onDone('saved', _ticker, notes);
+            if (_onDone) _onDone('saved', _ticker, notes, kind);
             _ticker = null;
         };
 
@@ -1041,6 +1052,7 @@
         if (!ticker) return;
         let isDisliked = false;
         let notes = '';
+        let kind = 'temporary';
         try {
             const resp = await fetch('/api/frontend/abi-dislikes/batch-check', {
                 method: 'POST',
@@ -1050,17 +1062,26 @@
             if (resp.ok) {
                 const data = await resp.json();
                 const entry = data[ticker.toUpperCase()];
-                if (entry) { isDisliked = true; notes = entry.notes || ''; }
+                if (entry) {
+                    isDisliked = true;
+                    notes = entry.notes || '';
+                    kind = entry.kind || 'permanent';
+                }
             }
         } catch (e) { console.error('Dislike lookup failed', e); }
-        window._dlOpen(ticker, notes, isDisliked, function(action, t, newNotes) {
-            // Re-style any dislike buttons on the page for this ticker.
+        window._dlOpen(ticker, notes, isDisliked, function(action, t, newNotes, newKind) {
             const isNowDisliked = action === 'saved';
-            document.querySelectorAll('.abi-dl-btn[data-ticker="' + (t || ticker) + '"]').forEach(btn => {
+            document.querySelectorAll('.abi-dl-btn').forEach(btn => {
+                const bt = btn.getAttribute('data-ticker');
+                if (bt && bt !== (t || ticker)) return;
                 btn.classList.toggle('is-disliked', isNowDisliked);
+                btn.textContent = isNowDisliked ? 'Excluded' : 'Exclude';
             });
-            if (onDone) onDone(action, t, newNotes);
-        });
+            window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
+                detail: { action, ticker: t || ticker, kind: newKind }
+            }));
+            if (onDone) onDone(action, t, newNotes, newKind);
+        }, kind);
     };
     </script>
 

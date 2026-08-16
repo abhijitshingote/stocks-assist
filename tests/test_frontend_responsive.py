@@ -99,6 +99,8 @@ class TestFrontendResponsive(unittest.TestCase):
             "/main-view",
             "/rs-screener",
             "/fast-rs",
+            "/weekly-review",
+            "/abi-trades",
             "/market-brief",
             "/abi-dislikes",
             "/themes",

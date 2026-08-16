@@ -131,6 +131,11 @@ def fast_rs_page():
     """Fast RS — frozen-weight RS score, mcap-adjusted"""
     return render_template('fast_rs.html')
 
+@app.route('/weekly-review')
+def weekly_review_page():
+    """Combined weekly review queue (union of the 4 weekly screeners)."""
+    return render_template('weekly_review.html')
+
 @app.route('/main-view')
 def main_view_page():
     """Main View page - Combined screener view with metrics, volspike/gapper, and tags"""
@@ -537,6 +542,20 @@ def api_top_returns_5_20(market_cap):
         return jsonify({'error': 'Failed to fetch Top 5D/20D data'}), status_code
     return jsonify(data), status_code
 
+@app.route('/api/frontend/weekly-review')
+def api_weekly_review():
+    data, status_code = make_backend_request('/api/WeeklyReview')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch weekly review'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/weekly-review-config')
+def api_weekly_review_config():
+    data, status_code = make_backend_request('/api/WeeklyReview-Config')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch weekly review config'}), status_code
+    return jsonify(data), status_code
+
 @app.route('/api/frontend/fast-rs/<market_cap>')
 def api_fast_rs(market_cap):
     """Proxy: liquid Fast RS universe with mcap-adjusted RS score"""
@@ -903,6 +922,48 @@ def api_treasury_10y():
 def abi_watchlist_page():
     """Abi Watchlist page - personal watchlist with Main View layout"""
     return render_template('abi_watchlist.html')
+
+@app.route('/abi-trades')
+def abi_trades_page():
+    """Buy/short trade candidates."""
+    return render_template('abi_trades.html')
+
+@app.route('/api/frontend/abi-trades', methods=['GET'])
+def api_get_abi_trades():
+    data, status_code = make_backend_request('/api/abi-trades')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch trades'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/abi-trades', methods=['POST'])
+def api_add_abi_trade():
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/abi-trades', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to add trade'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/abi-trades/<ticker>', methods=['DELETE'])
+def api_delete_abi_trade(ticker):
+    data, status_code = make_backend_request(f'/api/abi-trades/{ticker}', method='DELETE', json_data={})
+    if data is None:
+        return jsonify({'error': 'Failed to remove trade'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/abi-trades/data')
+def api_abi_trades_data():
+    data, status_code = make_backend_request('/api/abi-trades/data')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch trades data'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/abi-passes', methods=['POST'])
+def api_add_abi_pass():
+    json_data = request.get_json()
+    data, status_code = make_backend_request('/api/abi-passes', method='POST', json_data=json_data)
+    if data is None:
+        return jsonify({'error': 'Failed to pass ticker'}), status_code
+    return jsonify(data), status_code
 
 @app.route('/api/frontend/abi-watchlist', methods=['GET'])
 def api_get_abi_watchlist():

@@ -51,6 +51,7 @@
     // Always start with defaults (biotech). Saved [] from a prior chip-off
     // must not override; extra saved ids still merge in.
     let excluded = new Set(defaultExcluded);
+    let tickerExcludes = new Set();
     try {
       const savedEx = JSON.parse(localStorage.getItem(EXCLUDE_KEY));
       if (Array.isArray(savedEx)) {
@@ -100,7 +101,7 @@
     }
 
     function filteredStocks() {
-      const base = allStocks.filter(s => !isIndustryExcluded(s));
+      const base = allStocks.filter(s => !isIndustryExcluded(s) && !tickerExcludes.has(s.ticker));
       if (config.filterStocks) {
         return config.filterStocks(base, app);
       }
@@ -111,15 +112,8 @@
       return filteredStocks().filter(passesSectorIndustry);
     }
 
-    function getStars(ticker) {
-      const wl = watchlistStatus[ticker];
-      return wl && Number.isFinite(wl.stars) ? wl.stars : 0;
-    }
-
-    function starsCell(ticker) {
-      const stars = getStars(ticker);
-      if (!watchlistStatus[ticker] || stars <= 0) return '';
-      return '★'.repeat(stars);
+    function starsCell() {
+      return '';
     }
 
     function updateFilterChip() {
@@ -498,6 +492,19 @@
       document.getElementById('loadingOverlay').classList.toggle('hidden', !on);
     }
 
+    async function loadTickerExcludes() {
+      try {
+        const resp = await fetch('/api/frontend/abi-dislikes');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        tickerExcludes = new Set(
+          Object.entries(data)
+            .filter(([, e]) => e && e.is_active !== false)
+            .map(([t]) => t)
+        );
+      } catch (e) { /* exclude list is best-effort */ }
+    }
+
     async function loadData(cap) {
       showLoading(true);
       if (config.usesCapFilter && cap != null) {
@@ -858,7 +865,7 @@
     setupExcludeControls();
     if (config.onSetup) config.onSetup(app);
 
-    loadData(config.usesCapFilter ? 'all' : undefined);
+    loadTickerExcludes().then(() => loadData(config.usesCapFilter ? 'all' : undefined));
 
     return app;
   }

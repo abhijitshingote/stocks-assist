@@ -28,18 +28,15 @@ real story is a longer-running adoption or partnership narrative.
 ### Nearest watchlist examples (other tickers for taste calibration)
 
 Concrete examples from the trader's watchlist (most thematically similar to
-this candidate). Note **stars** (1-3 = explicit liking, 3 = strong conviction;
-missing or 0 = on the watchlist but not yet rated -- still a positive example
-of their taste, just unrated) and what they chose to highlight in their own
-notes:
+this candidate). These are positive examples of their taste. Use the notes
+as the calibration signal:
 
 {nearest_examples_block}
 
 Use these as a calibration anchor for what "game-changing" looks like to this
-trader. If a candidate's news shape is similar to a 3-star watchlist entry,
+trader. If a candidate's news shape is similar to a watchlist entry's notes,
 that's a strong signal. Explicit dislikes are filtered out earlier in the
-pipeline and never reach this stage; do not invent negative calibration from
-the absence of a star rating.
+pipeline and never reach this stage.
 
 ### Recent verdict corrections (CRITICAL calibration signal)
 

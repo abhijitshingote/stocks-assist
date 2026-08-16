@@ -1029,11 +1029,11 @@ body.nav-hidden.page-stock-detail .tp-layout {
                             <span class="sector-industry" id="range52Week"></span>
                         </span>
                         <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership"
-                            onclick="toggleWatchlist()">+ Watchlist</button>
+                            onclick="toggleWatchlist()">Watch</button>
                         <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes"
                             onclick="openNotesModalForStock()">📝 Abi ticker notes</button>
                         <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners"
-                            onclick="window._dlOpenForTicker(ticker)">👎</button>
+                            onclick="window._dlOpenForTicker(ticker)">Exclude</button>
                         <div class="chart-timeframes" id="chartTimeframes">
                             <button data-days="30">1M</button>
                             <button data-days="90">3M</button>
@@ -1765,7 +1765,7 @@ function updateWatchlistBtn() {
     if (!btn) return;
     const inWl = !!watchlistStatus[ticker];
     btn.classList.toggle('in-watchlist', inWl);
-    btn.textContent = inWl ? '★ Watchlist' : '+ Watchlist';
+    btn.textContent = inWl ? 'Watching' : 'Watch';
 }
 
 // Instant watchlist toggle (no modal). Watchlist membership and per-ticker

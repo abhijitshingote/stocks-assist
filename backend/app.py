@@ -20,6 +20,7 @@ import logging
 import time
 import pytz
 from datetime import date, datetime, timezone, timedelta
+from math import ceil
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 
@@ -31,7 +32,6 @@ ABI_GENERAL_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_dat
 # Path to persist abi watchlist (survives database resets)
 ABI_WATCHLIST_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_watchlist.json')
 # Path to persist explicit thumbs-down list (separate from watchlist).
-# Watchlist `stars: 0` means "unrated"; dislikes are tracked here instead.
 ABI_DISLIKES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_dislikes.json')
 # Path to persist per-ticker Abi ticker notes (free-form). Decoupled from
 # watchlist / dislikes membership. (Daily screener still consumes only notes
@@ -39,6 +39,10 @@ ABI_DISLIKES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', '
 ABI_TICKER_NOTES_FILE = os.path.join(
     os.path.dirname(__file__), '..', 'user_data', 'abi_ticker_notes.json'
 )
+# Cycle-scoped weekly-review passes (hidden until next Saturday).
+ABI_PASSES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_passes.json')
+# Trade candidates (buy/short). Persistent destination list.
+ABI_TRADES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_trades.json')
 # Daily screener feedback (per-date, per-ticker corrections from the user).
 # Used by Stage 5 of the daily_screener pipeline to calibrate the judge.
 DAILY_SCREENER_FEEDBACK_FILE = os.path.join(
@@ -78,6 +82,40 @@ GLOBAL_LIQUIDITY_FILTERS = {
     'avg_vol_10d_min': 50000,        # Minimum 10-day average volume
     'dollar_volume_min': 10000000,   # Minimum dollar volume ($10M)
     'price_min': 3,                  # Minimum stock price ($3)
+}
+
+# Temporary global ticker exclude duration (abi_dislikes.json kind=temporary).
+TEMP_EXCLUDE_DAYS = 30
+
+# Weekly review queue (/weekly-review). Live union of the 4 weekly screeners,
+# then hide pass/watch/trade. Pass is cycle-scoped: Saturday 00:00 ET → Friday.
+# Cutoffs are the only knobs — 1.0 = p90-typical on the mcap-adjusted scale.
+# Tweak here; values are exposed on /api/WeeklyReview-Config and the help page.
+WEEKLY_REVIEW_CUTOFFS = {
+    'vsg90': {
+        'enabled': False,
+        'field': None,
+        'min': None,
+        'note': 'no prune — all last_event_date in 90d',
+    },
+    'strong': {
+        'enabled': True,
+        'field': 'adjusted_ti65',
+        'min': 1.0,
+        'note': '1.0 = p90-typical TI65 excess vs mcap',
+    },
+    'top520': {
+        'enabled': False,
+        'field': None,
+        'min': None,
+        'note': 'no prune — top 30 adj dr_5 ∪ top 30 adj dr_20',
+    },
+    'fastrs': {
+        'enabled': True,
+        'field': 'adjusted_rs_score',
+        'min': 1.0,
+        'note': '1.0 = p90-typical Fast RS vs mcap',
+    },
 }
 
 def get_latest_price_date(session):
@@ -126,7 +164,76 @@ def apply_global_liquidity_filters(query, metrics_model=StockMetrics):
         query = query.filter(metrics_model.dollar_volume >= dollar_vol_min)
     if price_min:
         query = query.filter(metrics_model.current_price >= price_min)
-    
+
+    query = apply_global_ticker_excludes(query, metrics_model.ticker)
+    return query
+
+
+def _parse_exclude_dt(value):
+    if not value:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(value).replace('Z', '+00:00'))
+    except (TypeError, ValueError):
+        return None
+    if dt.tzinfo is None:
+        dt = pytz.timezone('US/Eastern').localize(dt)
+    return dt
+
+
+def _dislike_kind(entry):
+    if not isinstance(entry, dict):
+        return 'permanent'
+    kind = str(entry.get('kind') or 'permanent').lower()
+    return 'temporary' if kind == 'temporary' else 'permanent'
+
+
+def _dislike_expires_at(entry):
+    if _dislike_kind(entry) != 'temporary':
+        return None
+    exp = _parse_exclude_dt(entry.get('expires_at'))
+    if exp:
+        return exp
+    added = _parse_exclude_dt(entry.get('added_at'))
+    if added:
+        return added + timedelta(days=TEMP_EXCLUDE_DAYS)
+    return None
+
+
+def _is_dislike_active(entry, now=None):
+    """Permanent always active. Temporary active while expires_at > now."""
+    if _dislike_kind(entry) != 'temporary':
+        return True
+    exp = _dislike_expires_at(entry)
+    if exp is None:
+        return False
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    return exp.astimezone(timezone.utc) > now.astimezone(timezone.utc)
+
+
+def _dislike_days_left(entry):
+    exp = _dislike_expires_at(entry)
+    if exp is None:
+        return None
+    now = datetime.now(timezone.utc)
+    secs = (exp.astimezone(timezone.utc) - now).total_seconds()
+    if secs <= 0:
+        return 0
+    return int(ceil(secs / 86400))
+
+
+def _active_excluded_tickers():
+    """Tickers currently hidden from all screeners (permanent + unexpired temp)."""
+    return {t.upper() for t, e in _load_dislikes().items() if _is_dislike_active(e)}
+
+
+def apply_global_ticker_excludes(query, ticker_col):
+    """Drop active abi_dislikes tickers from a SQLAlchemy query."""
+    excluded = _active_excluded_tickers()
+    if excluded:
+        query = query.filter(~ticker_col.in_(list(excluded)))
     return query
 
 _ENG_MONTH_ABBR = (
@@ -2048,6 +2155,185 @@ def get_fast_rs_large():
 def get_fast_rs_mega():
     return _json_fast_rs('mega')
 
+
+# ============================================================================
+# Weekly review queue — live union of the 4 weekly screeners
+# ============================================================================
+
+def current_weekly_cycle(now=None):
+    """Saturday 00:00 ET start. Returns (cycle_sat_iso, friday_iso)."""
+    et = (now or datetime.now(timezone.utc)).astimezone(ZoneInfo('America/New_York'))
+    days_since_sat = (et.weekday() + 2) % 7
+    sat = (et - timedelta(days=days_since_sat)).date()
+    fri = sat + timedelta(days=6)
+    return sat.isoformat(), fri.isoformat()
+
+
+def _weekly_review_config_payload():
+    cycle, friday = current_weekly_cycle()
+    return {
+        'cycle': cycle,
+        'cycle_ends': friday,
+        'cutoffs': WEEKLY_REVIEW_CUTOFFS,
+    }
+
+
+def _apply_weekly_cutoff(rows, spec):
+    if not spec.get('enabled') or spec.get('field') is None or spec.get('min') is None:
+        return list(rows)
+    field, mn = spec['field'], spec['min']
+    return [r for r in rows if r.get(field) is not None and r[field] >= mn]
+
+
+def _merge_weekly_row(dst, src_row, source_id):
+    if dst is None:
+        out = dict(src_row)
+        out['sources'] = [source_id]
+        return out
+    for k, v in src_row.items():
+        if k == 'sources':
+            continue
+        if dst.get(k) is None and v is not None:
+            dst[k] = v
+    if source_id not in dst['sources']:
+        dst['sources'].append(source_id)
+    return dst
+
+
+# Native sort field per source (same as that page's default Adj sort).
+WEEKLY_REVIEW_RANK_FIELDS = {
+    'vsg90': 'adjusted_event_return',
+    'strong': 'adjusted_ti65',
+    'top520': 'adjusted_dr_5',
+    'fastrs': 'adjusted_rs_score',
+}
+
+
+def _rank_source_rows(rows, field):
+    """1-based rank by field desc. Returns {TICKER: {rank, n, pct}}."""
+    ranked = sorted(
+        rows,
+        key=lambda r: (r.get(field) is None, -(r.get(field) or 0), r.get('ticker') or ''),
+    )
+    n = len(ranked)
+    out = {}
+    for i, r in enumerate(ranked, 1):
+        t = r.get('ticker')
+        if not t:
+            continue
+        pct = (1.0 - (i - 1) / n) if n else 0.0
+        out[t] = {'rank': i, 'n': n, 'pct': round(pct, 4)}
+    return out
+
+
+def build_weekly_review(session):
+    """Live union of vsg90 / strong / top520 / fastrs, minus pass/watch/trade."""
+    cycle, friday = current_weekly_cycle()
+    cutoffs = WEEKLY_REVIEW_CUTOFFS
+    funnel = {}
+
+    sources = [
+        ('vsg90', lambda: get_volspike_gapper_stocks(session, None, lookback_days=90)),
+        ('strong', lambda: get_strong_stocks(session, None)),
+        ('top520', lambda: get_top_returns_5_20_stocks(session, None)),
+        ('fastrs', lambda: get_fast_rs_stocks(session, None)),
+    ]
+    merged = {}
+    source_ranks = {}
+    for src_id, loader in sources:
+        raw = loader() or []
+        kept = _apply_weekly_cutoff(raw, cutoffs[src_id])
+        funnel[src_id] = {'raw': len(raw), 'after_cutoff': len(kept)}
+        source_ranks[src_id] = _rank_source_rows(kept, WEEKLY_REVIEW_RANK_FIELDS[src_id])
+        for row in kept:
+            t = row.get('ticker')
+            if not t:
+                continue
+            merged[t] = _merge_weekly_row(merged.get(t), row, src_id)
+
+    watch = {t.upper() for t in _load_watchlist()}
+    trades = {t.upper() for t in _load_trades()}
+    passes = {
+        t.upper()
+        for t, e in _load_passes().items()
+        if isinstance(e, dict) and e.get('cycle') == cycle
+    }
+
+    hidden_watch = hidden_trade = hidden_pass = 0
+    queue = []
+    for t, row in merged.items():
+        tu = t.upper()
+        if tu in watch:
+            hidden_watch += 1
+            continue
+        if tu in trades:
+            hidden_trade += 1
+            continue
+        if tu in passes:
+            hidden_pass += 1
+            continue
+        row['sources'] = sorted(row.get('sources') or [])
+        if not row.get('cap_bucket') and row.get('market_cap') is not None:
+            row['cap_bucket'] = _market_cap_bucket(row['market_cap'])
+        ranks = {}
+        for src_id in row['sources']:
+            info = source_ranks.get(src_id, {}).get(t)
+            if info:
+                ranks[src_id] = info
+        row['source_ranks'] = ranks
+        if ranks:
+            best_src = min(ranks, key=lambda k: ranks[k]['rank'])
+            row['best_rank'] = ranks[best_src]['rank']
+            row['best_rank_n'] = ranks[best_src]['n']
+            row['best_pct'] = ranks[best_src]['pct']
+            row['best_source'] = best_src
+        else:
+            row['best_rank'] = None
+            row['best_rank_n'] = None
+            row['best_pct'] = None
+            row['best_source'] = None
+        queue.append(row)
+
+    queue.sort(key=lambda r: (
+        r.get('best_rank') is None,
+        r.get('best_rank') or 10**9,
+        -len(r.get('sources') or []),
+        r.get('ticker') or '',
+    ))
+
+    funnel.update({
+        'union': len(merged),
+        'hidden_watch': hidden_watch,
+        'hidden_trade': hidden_trade,
+        'hidden_pass': hidden_pass,
+        'queue': len(queue),
+    })
+    return {
+        'cycle': cycle,
+        'cycle_ends': friday,
+        'cutoffs': cutoffs,
+        'funnel': funnel,
+        'stocks': queue,
+    }
+
+
+@app.route('/api/WeeklyReview-Config')
+def weekly_review_config():
+    return jsonify(_weekly_review_config_payload())
+
+
+@app.route('/api/WeeklyReview')
+def weekly_review():
+    s = Session()
+    try:
+        return jsonify(build_weekly_review(s))
+    except Exception as e:
+        logger.error(f"Error building weekly review: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
 # Base/consolidation metrics for the tickers in stock_volspike_gapper, measured on
 # the last 10 trading bars against the 4 MAs in ticker_moving_averages
 # (ema_10, ema_20, dma_50, dma_200). Consumed by /volspike-gapper-monthly.
@@ -2184,6 +2470,7 @@ def get_main_view_stocks(session, market_cap_category=None):
                 if category['max'] is not None:
                     query = query.filter(MainView.market_cap < category['max'])
 
+        query = apply_global_ticker_excludes(query, MainView.ticker)
         stocks = query.all()
 
         results = []
@@ -2445,13 +2732,21 @@ _ALL_STOCKS_SQL = """
 def _fetch_all_stocks(session, tickers=None):
     ticker_filter = ''
     params = {}
+    bind_params = []
     if tickers:
         ticker_filter = ' AND sm.ticker IN :tickers'
         params = {'tickers': tickers}
+        bind_params.append(bindparam('tickers', expanding=True))
+    else:
+        excluded = list(_active_excluded_tickers())
+        if excluded:
+            ticker_filter = ' AND sm.ticker NOT IN :excluded'
+            params = {'excluded': excluded}
+            bind_params.append(bindparam('excluded', expanding=True))
 
     sql = text(_ALL_STOCKS_SQL + ticker_filter + '\n    ORDER BY sm.TI65 DESC NULLS LAST')
-    if tickers:
-        sql = sql.bindparams(bindparam('tickers', expanding=True))
+    if bind_params:
+        sql = sql.bindparams(*bind_params)
     rows = session.execute(sql, params).mappings().all()
     return [_format_all_stocks_row(r) for r in rows]
 
@@ -2570,6 +2865,7 @@ def get_high_sales_growth_stocks(session, market_cap_category=None):
                 if category['max'] is not None:
                     query = query.filter(MainView.market_cap < category['max'])
 
+        query = apply_global_ticker_excludes(query, MainView.ticker)
         # Order by revenue growth (average of t and t+1)
         query = query.order_by(desc(MainView.rev_growth_t_plus_1))
 
@@ -4141,6 +4437,7 @@ def get_rs_screener(market_cap=None):
             if price_min:
                 query = query.filter(StockMetrics.current_price >= price_min)
 
+        query = apply_global_ticker_excludes(query, RsScreener.ticker)
         rows = query.all()
 
         results = []
@@ -4363,15 +4660,16 @@ def batch_check_abi_ticker_notes():
 # ============================================================================
 # Abi Watchlist Endpoints (JSON file-based personal watchlist)
 # ============================================================================
-# The watchlist tracks list membership + star ratings. Per-ticker Abi ticker
-# notes were moved to abi_ticker_notes.json (decoupled from membership). The
-# response shape still includes a `notes` field, populated from that file, so
-# existing UI code that reads `wl[ticker].notes` keeps working.
+# The watchlist tracks list membership. Per-ticker Abi ticker notes live in
+# abi_ticker_notes.json (decoupled from membership). The response shape still
+# includes a `notes` field, populated from that file, so existing UI code that
+# reads `wl[ticker].notes` keeps working. Legacy `stars` keys in the JSON are
+# ignored.
 
 def _load_watchlist():
-    """Load watchlist from JSON (membership, stars, timestamps). Ignores any
+    """Load watchlist from JSON (membership + timestamps). Ignores any
     embedded ``notes`` keys in the file — Abi ticker notes live only in
-    abi_ticker_notes.json.
+    abi_ticker_notes.json. Legacy ``stars`` keys are ignored.
     """
     if os.path.exists(ABI_WATCHLIST_FILE):
         try:
@@ -4410,67 +4708,40 @@ def _watchlist_with_comments():
 
 @app.route('/api/abi-watchlist', methods=['GET'])
 def get_abi_watchlist():
-    """Get all watchlist items: {TICKER: {notes, stars, added_at}, ...}.
+    """Get all watchlist items: {TICKER: {notes, added_at}, ...}.
     Notes are sourced from abi_ticker_notes.json (decoupled from membership)."""
     return jsonify(_watchlist_with_comments())
 
-def _coerce_stars(value):
-    """Validate and clamp a stars value to an int in [0, 3]. Returns None if invalid."""
-    try:
-        n = int(value)
-    except (TypeError, ValueError):
-        return None
-    if n < 0 or n > 3:
-        return None
-    return n
-
 @app.route('/api/abi-watchlist', methods=['POST'])
 def add_to_abi_watchlist():
-    """Add a ticker to the watchlist with optional stars (0-3)."""
+    """Add a ticker to the watchlist."""
     data = request.get_json()
     if not data or 'ticker' not in data:
         return jsonify({'error': 'ticker field is required'}), 400
 
     ticker = data['ticker'].upper()
-    stars = _coerce_stars(data.get('stars', 0)) or 0
 
     wl = _load_watchlist()
-    wl[ticker] = {
-        'stars': stars,
-        'added_at': datetime.now(pytz.timezone("US/Eastern")).isoformat(),
+    existing = wl.get(ticker) if isinstance(wl.get(ticker), dict) else {}
+    entry = {
+        'added_at': existing.get('added_at') or datetime.now(pytz.timezone("US/Eastern")).isoformat(),
     }
+    wl[ticker] = entry
     _save_watchlist(wl)
+    _remove_from_trades(ticker)
 
     final_notes = (_load_abi_ticker_notes().get(ticker) or {}).get('notes', '')
-    return jsonify({'ticker': ticker, 'notes': final_notes, 'stars': stars, 'status': 'added'})
+    return jsonify({'ticker': ticker, 'notes': final_notes, 'status': 'added'})
 
 @app.route('/api/abi-watchlist/<ticker>', methods=['PUT'])
 def update_abi_watchlist(ticker):
-    """Update stars (0-3) for a watchlist ticker."""
+    """Deprecated no-op. 1-3 star ratings are unused."""
     ticker = ticker.upper()
-    data = request.get_json() or {}
-
-    if 'stars' not in data:
-        return jsonify({'error': 'stars field is required'}), 400
-
-    stars = _coerce_stars(data.get('stars'))
-    if stars is None:
-        return jsonify({'error': 'stars must be an integer between 0 and 3'}), 400
-
     wl = _load_watchlist()
     if ticker not in wl:
         return jsonify({'error': 'ticker not in watchlist'}), 404
-
-    wl[ticker]['stars'] = stars
-    _save_watchlist(wl)
-
     final_notes = (_load_abi_ticker_notes().get(ticker) or {}).get('notes', '')
-    return jsonify({
-        'ticker': ticker,
-        'notes': final_notes,
-        'stars': wl[ticker].get('stars', 0),
-        'status': 'updated',
-    })
+    return jsonify({'ticker': ticker, 'notes': final_notes, 'status': 'updated'})
 
 @app.route('/api/abi-watchlist/<ticker>', methods=['DELETE'])
 def remove_from_abi_watchlist(ticker):
@@ -4579,7 +4850,6 @@ def get_abi_watchlist_data():
                 'updated_at': stock.updated_at.strftime('%Y-%m-%d %H:%M:%S') if stock.updated_at else None,
                 'watchlist_notes': (comments.get(stock.ticker) or {}).get('notes', ''),
                 'watchlist_added_at': wl.get(stock.ticker, {}).get('added_at', ''),
-                'watchlist_stars': int(wl.get(stock.ticker, {}).get('stars', 0) or 0),
             }
             results.append(item)
 
@@ -4591,12 +4861,14 @@ def get_abi_watchlist_data():
         s.close()
 
 # ============================================================================
-# Abi Dislikes Endpoints (JSON file-based thumbs-down list)
+# Abi Dislikes Endpoints (JSON file-based global exclude list)
 # ============================================================================
 # This list is separate from the watchlist on purpose:
-#   - Watchlist `stars: 0` means "on the watchlist but not yet rated" (neutral).
+#   - Watchlist membership is not a veto.
 #   - Anything in this dislikes file is an explicit "do not surface this".
-# The daily screener pipeline (Stage 1) reads this file as its veto source.
+# Applied to all screener queries (apply_global_ticker_excludes) and daily
+# screener Stage 1. kind=temporary expires after TEMP_EXCLUDE_DAYS (30).
+# Missing kind is treated as permanent (legacy entries).
 #
 # Per-ticker notes (the "why is this blocked" rationale) live in
 # abi_ticker_notes.json now; the dislikes file only tracks membership. The API
@@ -4628,7 +4900,7 @@ def _save_dislikes(data):
 def _dislikes_with_comments():
     """Return dislikes data joined with Abi ticker notes: each entry will
     have a `notes` field populated from abi_ticker_notes.json (or '' if no
-    Abi ticker note exists)."""
+    Abi ticker note exists). Adds kind / expires_at / is_active / days_left."""
     dl = _load_dislikes()
     comments = _load_abi_ticker_notes()
     out = {}
@@ -4636,33 +4908,64 @@ def _dislikes_with_comments():
         if not isinstance(entry, dict):
             continue
         merged = {k: v for k, v in entry.items() if k != 'notes'}
+        kind = _dislike_kind(entry)
+        exp = _dislike_expires_at(entry)
+        merged['kind'] = kind
+        merged['expires_at'] = exp.isoformat() if exp else None
+        merged['is_active'] = _is_dislike_active(entry)
+        merged['days_left'] = _dislike_days_left(entry) if kind == 'temporary' else None
         merged['notes'] = (comments.get(tk) or {}).get('notes', '')
         out[tk] = merged
     return out
 
 @app.route('/api/abi-dislikes', methods=['GET'])
 def get_abi_dislikes():
-    """Get all dislikes: {TICKER: {notes, added_at}, ...}.
+    """Get all dislikes: {TICKER: {notes, added_at, kind, expires_at, is_active}, ...}.
     Notes are sourced from abi_ticker_notes.json (decoupled from membership)."""
     return jsonify(_dislikes_with_comments())
 
 @app.route('/api/abi-dislikes', methods=['POST'])
 def add_to_abi_dislikes():
-    """Add a ticker to the dislikes list (membership only)."""
+    """Add/update a ticker on the exclude list. Body: {ticker, kind?}
+    kind=temporary|permanent (default temporary). Temporary sets expires_at = now+30d."""
     data = request.get_json()
     if not data or 'ticker' not in data:
         return jsonify({'error': 'ticker field is required'}), 400
 
     ticker = data['ticker'].upper()
+    kind = str(data.get('kind') or 'temporary').lower()
+    if kind not in ('permanent', 'temporary'):
+        kind = 'temporary'
 
+    now = datetime.now(pytz.timezone("US/Eastern"))
     dl = _load_dislikes()
-    dl[ticker] = {
-        'added_at': datetime.now(pytz.timezone("US/Eastern")).isoformat(),
+    existing = dl.get(ticker) if isinstance(dl.get(ticker), dict) else {}
+    entry = {
+        'added_at': existing.get('added_at') or now.isoformat(),
+        'kind': kind,
     }
+    if kind == 'temporary':
+        if (
+            existing.get('kind') == 'temporary'
+            and existing.get('expires_at')
+            and _is_dislike_active(existing)
+        ):
+            entry['expires_at'] = existing['expires_at']
+        else:
+            entry['expires_at'] = (now + timedelta(days=TEMP_EXCLUDE_DAYS)).isoformat()
+    dl[ticker] = entry
     _save_dislikes(dl)
 
     final_notes = (_load_abi_ticker_notes().get(ticker) or {}).get('notes', '')
-    return jsonify({'ticker': ticker, 'notes': final_notes, 'status': 'added'})
+    return jsonify({
+        'ticker': ticker,
+        'notes': final_notes,
+        'kind': kind,
+        'expires_at': entry.get('expires_at'),
+        'is_active': True,
+        'days_left': _dislike_days_left(entry) if kind == 'temporary' else None,
+        'status': 'added',
+    })
 
 @app.route('/api/abi-dislikes/<ticker>', methods=['DELETE'])
 def remove_from_abi_dislikes(ticker):
@@ -4689,6 +4992,172 @@ def batch_check_abi_dislikes():
         if t_upper in dl:
             result[t_upper] = dl[t_upper]
     return jsonify(result)
+
+
+def _load_json_store(path):
+    if os.path.exists(path):
+        try:
+            with open(path, 'r') as f:
+                data = json.load(f)
+        except Exception:
+            return {}
+        if isinstance(data, dict):
+            return data
+    return {}
+
+
+def _save_json_store(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w') as f:
+        json.dump(data, f, indent=2)
+
+
+def _load_passes():
+    return _load_json_store(ABI_PASSES_FILE)
+
+
+def _save_passes(data):
+    _save_json_store(ABI_PASSES_FILE, data)
+
+
+def _load_trades():
+    return _load_json_store(ABI_TRADES_FILE)
+
+
+def _save_trades(data):
+    _save_json_store(ABI_TRADES_FILE, data)
+
+
+def _remove_from_watchlist(ticker):
+    ticker = ticker.upper()
+    wl = _load_watchlist()
+    if ticker in wl:
+        del wl[ticker]
+        _save_watchlist(wl)
+
+
+def _remove_from_trades(ticker):
+    ticker = ticker.upper()
+    trades = _load_trades()
+    if ticker in trades:
+        del trades[ticker]
+        _save_trades(trades)
+
+
+@app.route('/api/abi-passes', methods=['GET'])
+def get_abi_passes():
+    cycle, friday = current_weekly_cycle()
+    data = _load_passes()
+    out = {}
+    for t, e in data.items():
+        if not isinstance(e, dict):
+            continue
+        entry = dict(e)
+        entry['is_active'] = entry.get('cycle') == cycle
+        out[t] = entry
+    return jsonify({'cycle': cycle, 'cycle_ends': friday, 'passes': out})
+
+
+@app.route('/api/abi-passes', methods=['POST'])
+def add_abi_pass():
+    data = request.get_json() or {}
+    ticker = (data.get('ticker') or '').upper()
+    if not ticker:
+        return jsonify({'error': 'ticker field is required'}), 400
+    cycle, friday = current_weekly_cycle()
+    now = datetime.now(pytz.timezone('US/Eastern'))
+    passes = _load_passes()
+    sources = data.get('sources') if isinstance(data.get('sources'), list) else []
+    passes[ticker] = {
+        'disposition': 'pass',
+        'cycle': cycle,
+        'at': now.isoformat(),
+        'sources': [str(s) for s in sources],
+    }
+    _save_passes(passes)
+    return jsonify({
+        'ticker': ticker,
+        'cycle': cycle,
+        'cycle_ends': friday,
+        'status': 'passed',
+    })
+
+
+@app.route('/api/abi-passes/<ticker>', methods=['DELETE'])
+def remove_abi_pass(ticker):
+    ticker = ticker.upper()
+    passes = _load_passes()
+    if ticker in passes:
+        del passes[ticker]
+        _save_passes(passes)
+    return jsonify({'ticker': ticker, 'status': 'removed'})
+
+
+@app.route('/api/abi-trades', methods=['GET'])
+def get_abi_trades():
+    return jsonify(_load_trades())
+
+
+@app.route('/api/abi-trades', methods=['POST'])
+def add_abi_trade():
+    data = request.get_json() or {}
+    ticker = (data.get('ticker') or '').upper()
+    if not ticker:
+        return jsonify({'error': 'ticker field is required'}), 400
+    side = str(data.get('side') or 'buy').lower()
+    if side not in ('buy', 'short'):
+        return jsonify({'error': 'side must be buy or short'}), 400
+    now = datetime.now(pytz.timezone('US/Eastern'))
+    cycle, _ = current_weekly_cycle()
+    trades = _load_trades()
+    existing = trades.get(ticker) if isinstance(trades.get(ticker), dict) else {}
+    trades[ticker] = {
+        'side': side,
+        'added_at': existing.get('added_at') or now.isoformat(),
+        'updated_at': now.isoformat(),
+        'cycle': existing.get('cycle') or cycle,
+    }
+    _save_trades(trades)
+    _remove_from_watchlist(ticker)
+    return jsonify({'ticker': ticker, 'side': side, 'status': 'added'})
+
+
+@app.route('/api/abi-trades/<ticker>', methods=['DELETE'])
+def remove_abi_trade(ticker):
+    ticker = ticker.upper()
+    trades = _load_trades()
+    if ticker in trades:
+        del trades[ticker]
+        _save_trades(trades)
+    return jsonify({'ticker': ticker, 'status': 'removed'})
+
+
+@app.route('/api/abi-trades/data')
+def get_abi_trades_data():
+    trades = _load_trades()
+    tickers = list(trades.keys())
+    if not tickers:
+        return jsonify([])
+    s = Session()
+    try:
+        rows = _fetch_all_stocks(s, tickers=tickers)
+        for row in rows:
+            t = row.get('ticker')
+            entry = trades.get(t) or {}
+            row['trade_side'] = entry.get('side')
+            row['trade_added_at'] = entry.get('added_at')
+        side_rank = {'short': 0, 'buy': 1}
+        rows.sort(key=lambda r: (
+            side_rank.get(r.get('trade_side'), 9),
+            r.get('ticker') or '',
+        ))
+        return jsonify(rows)
+    except Exception as e:
+        logger.error(f"Error getting abi trades data: {str(e)}")
+        return jsonify([])
+    finally:
+        s.close()
+
 
 # ============================================================================
 # Technical Screener Endpoints
@@ -5147,10 +5616,9 @@ def daily_shortlist_for_date(date):
                     'in_watchlist': True,
                     # Abi ticker note text joined under `watchlist.notes` for the UI.
                     'notes': comment_notes,
-                    'stars': int(wl_entry.get('stars', 0) or 0) if isinstance(wl_entry, dict) else 0,
                 }
                 if wl_entry is not None
-                else {'in_watchlist': False, 'notes': comment_notes, 'stars': 0}
+                else {'in_watchlist': False, 'notes': comment_notes}
             )
             enriched_row['dislike'] = (
                 {

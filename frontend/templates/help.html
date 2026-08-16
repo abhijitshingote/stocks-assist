@@ -86,7 +86,9 @@
             <strong>Return fields:</strong> <code>dr_1 / dr_5 / dr_20 / dr_60 / dr_120</code> = trailing 1/5/20/60/120-trading-day % return.<br>
             <strong>52W badge:</strong> shown when the latest day's high ≥ <code>99.5%</code> of the trailing 252-day max high (server flag <code>at_52w_high</code>).<br>
             <strong>Stock-list row (all screeners):</strong> <code>[★][#][TICKER][52W](mcap) … [1D%]</code>, with page-specific additive metrics on a second line.<br>
-            <strong>Biotech exclude:</strong> default-on chip on every screener load (<code>industry === Biotechnology</code>, shared engine). Chip-off is session-only; reload re-applies the default.
+            <strong>Biotech exclude:</strong> default-on chip on every screener load (<code>industry === Biotechnology</code>, shared engine). Chip-off is session-only; reload re-applies the default.<br>
+            <strong>Ticker exclude:</strong> <code>abi_dislikes.json</code> membership. <code>kind=permanent</code> or <code>kind=temporary</code> (<code>expires_at</code> = add + 30d). Applied in backend screener queries + daily_screener s1. Expired temps are not applied.<br>
+            <strong>Weekly review cutoffs</strong> (<code>WEEKLY_REVIEW_CUTOFFS</code> in <code>backend/app.py</code>): <span id="helpWrCutoffs">loading…</span>
         </div>
     </div>
 
@@ -116,6 +118,11 @@
         <div class="help-card">
             <div class="help-name"><a href="/volspike-gapper-monthly">Vol Spike &amp; Gaps (M)</a><span class="help-route">/volspike-gapper-monthly</span></div>
             <div class="help-desc">Group bucket is the calendar month of <code>last_event_date</code> (<code>YYYY-MM</code>). Ranking inside a month is re-weighted toward the current base instead of the event: <code>3.5·setup</code> + <code>1.0·log10(mcap/1e9)</code> capped at <code>2.5</code> + <code>0.3·move</code> + <code>0.15·vol</code> + <code>0.15·novelty</code>. <code>setup</code> (<code>0–1</code>, from <code>/api/VolspikeGapper-Setup</code>, measured on the last 10 bars vs <code>ema_10/ema_20/dma_50/dma_200</code>) = <code>0.35·prox</code> (distance to nearest MA in ATRs, <code>0</code>→1, <code>≥1.5 ATR</code>→0) + <code>0.25·tight</code> (10-bar high-low range, <code>≤1.5 ATR</code>→1, <code>≥3.5 ATR</code>→0) + <code>0.20·hold</code> (close position in that range, <code>≥0.9</code>→1, <code>≤0.4</code>→0) + <code>0.20·trend</code> (above all 4 MAs→1, above <code>ema_20</code> only→0.6). The chip on each row shows the nearest MA and the signed distance. Shares <code>static/js/desktop/vsg-grouped.js</code> with the weekly page, whose weights are unchanged.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/weekly-review">Weekly Review</a><span class="help-route">/weekly-review</span></div>
+            <div class="help-desc">Live union of VSG 90d + Strong Stocks + Top 5D/20D + Fast RS (source chips <code>VSG/STR/5/20/RS</code>). The 4 source pages stay live. Queue hides watchlist, <code>abi_trades.json</code>, and <code>abi_passes.json</code> where <code>cycle</code> = current Saturday (ET) through Friday. Disposition: Pass / Watch / Buy / Short / Exclude. Default sort = <code>best_rank</code> (min 1-based rank on the source lists it made; native keys <code>adjusted_event_return</code> / <code>adjusted_ti65</code> / <code>adjusted_dr_5</code> / <code>adjusted_rs_score</code>). Toggle: Best rank / # sources / 1D. Cutoffs: <code>WEEKLY_REVIEW_CUTOFFS</code> — see Conventions above (fetched live).</div>
         </div>
 
         <div class="help-card">
@@ -178,7 +185,12 @@
 
         <div class="help-card">
             <div class="help-name"><a href="/abi-watchlist">Abi Watchlist</a><span class="help-route">/abi-watchlist</span></div>
-            <div class="help-desc">Personal watchlist (<code>user_data/abi_watchlist.json</code>) rendered with the Main View layout and metrics.</div>
+            <div class="help-desc">Personal watchlist (<code>user_data/abi_watchlist.json</code>) rendered with the Main View layout and metrics. Membership hides the ticker from <code>/weekly-review</code> until removed.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/abi-trades">Trades</a><span class="help-route">/abi-trades</span></div>
+            <div class="help-desc">Buy/short candidates (<code>abi_trades.json</code>, <code>side=buy|short</code>). Persistent. Hidden from <code>/weekly-review</code> while listed.</div>
         </div>
 
         <div class="help-card">
@@ -188,7 +200,7 @@
 
         <div class="help-card">
             <div class="help-name"><a href="/abi-dislikes">Dislikes</a><span class="help-route">/abi-dislikes</span></div>
-            <div class="help-desc">Thumbs-down veto list (<code>abi_dislikes.json</code>). Membership excludes a ticker from the Daily Shortlist pipeline; optional rationale stored as a ticker note.</div>
+            <div class="help-desc">Global exclude list (<code>abi_dislikes.json</code>). <code>kind=permanent</code> or <code>kind=temporary</code> (30d via <code>expires_at</code>). Applied to all screener queries + daily_screener s1. Optional rationale in ticker notes.</div>
         </div>
 
         <div class="help-card">
@@ -255,4 +267,22 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+fetch('/api/frontend/weekly-review-config').then(r => r.json()).then(d => {
+    const el = document.getElementById('helpWrCutoffs');
+    if (!el || !d.cutoffs) return;
+    const parts = Object.keys(d.cutoffs).map(k => {
+        const s = d.cutoffs[k];
+        const val = s.enabled ? (s.field + ' ≥ ' + s.min) : 'off';
+        return '<code>' + k + '</code> ' + val + (s.note ? ' <span class="help-route">(' + s.note + ')</span>' : '');
+    });
+    el.innerHTML = 'cycle Sat ' + d.cycle + ' → Fri ' + d.cycle_ends + '. ' + parts.join(' · ');
+}).catch(() => {
+    const el = document.getElementById('helpWrCutoffs');
+    if (el) el.textContent = 'failed to load WEEKLY_REVIEW_CUTOFFS';
+});
+</script>
 {% endblock %}

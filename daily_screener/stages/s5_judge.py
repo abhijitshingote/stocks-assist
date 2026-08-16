@@ -147,10 +147,9 @@ def _nearest_examples(
     k: int,
 ) -> list[dict[str, Any]]:
     """Pick K watchlist entries whose inferred themes overlap most with the
-    candidate's tags. Prefers high-star entries on ties."""
+    candidate's tags. Ties broken by presence of notes, then added_at."""
     if not candidate_tags or not watchlist:
-        # Fall back to top-stars examples so the judge always has *some* anchor.
-        return _top_stars_examples(watchlist, k)
+        return _watchlist_examples(watchlist, k)
 
     # Build a map: ticker -> set of inferred tags. We approximate inference by
     # checking which user-taste themes list this ticker as an example.
@@ -165,46 +164,32 @@ def _nearest_examples(
     for tk, entry in watchlist.items():
         if not isinstance(entry, dict):
             continue
-        stars = int(entry.get("stars") or 0)
         overlap = len(candidate_set & ticker_tags.get(tk.upper(), set()))
-        # `stars: 0` (or missing) now means "unrated", not "vetoed" - all
-        # watchlist entries are positive examples; we just rank by overlap
-        # first and stars second.
-        score = overlap * 10 + stars
-        if overlap == 0 and stars == 0:
-            # Zero overlap AND no explicit rating - skip; we have stronger
-            # signals to fill the k slots. (Explicit dislikes never reach
-            # this code path; they are filtered in Stage 1.)
+        if overlap == 0:
             continue
-        scored.append((score, tk, entry))
+        has_notes = 1 if (entry.get("notes") or "").strip() else 0
+        scored.append((overlap, has_notes, tk, entry))
 
-    scored.sort(key=lambda x: -x[0])
+    scored.sort(key=lambda x: (-x[0], -x[1], x[2]))
     out: list[dict[str, Any]] = []
-    for _, tk, entry in scored[:k]:
-        out.append(
-            {
-                "ticker": tk,
-                "stars": int(entry.get("stars") or 0),
-                "notes": entry.get("notes") or "",
-            }
-        )
+    for _, _, tk, entry in scored[:k]:
+        out.append({"ticker": tk, "notes": entry.get("notes") or ""})
     if not out:
-        return _top_stars_examples(watchlist, k)
+        return _watchlist_examples(watchlist, k)
     return out
 
 
-def _top_stars_examples(watchlist: dict, k: int) -> list[dict[str, Any]]:
+def _watchlist_examples(watchlist: dict, k: int) -> list[dict[str, Any]]:
+    """Fallback anchors: prefer entries with notes, then newest added_at."""
     rows = []
     for tk, entry in watchlist.items():
         if not isinstance(entry, dict):
             continue
-        stars = int(entry.get("stars") or 0)
-        rows.append((stars, tk, entry))
-    rows.sort(key=lambda x: -x[0])
-    return [
-        {"ticker": tk, "stars": int(e.get("stars") or 0), "notes": e.get("notes") or ""}
-        for _, tk, e in rows[:k]
-    ]
+        has_notes = 1 if (entry.get("notes") or "").strip() else 0
+        added = entry.get("added_at") or ""
+        rows.append((has_notes, added, tk, entry))
+    rows.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [{"ticker": tk, "notes": e.get("notes") or ""} for _, _, tk, e in rows[:k]]
 
 
 # ---------------------------------------------------------------------------
@@ -234,9 +219,7 @@ def _format_examples(examples: list[dict]) -> str:
         notes = (ex.get("notes") or "").strip()
         if not notes:
             notes = "(no notes)"
-        blocks.append(
-            f"- **{ex['ticker']}** (stars={ex['stars']}):\n  {notes[:1200]}"
-        )
+        blocks.append(f"- **{ex['ticker']}**:\n  {notes[:1200]}")
     return "\n".join(blocks)
 
 
@@ -321,7 +304,7 @@ def _final_verdict(composite: float, claude_verdict: str | None) -> str:
 
 def _format_own_thesis(ticker: str, watchlist: dict) -> str:
     """If the candidate ticker itself is on the watchlist, return the user's
-    own thesis note + star rating as the strongest possible calibration anchor.
+    own thesis note as the strongest possible calibration anchor.
 
     This is separate from `_nearest_examples` (which uses *other* tickers as
     analogies) and intentionally stronger: when the trader has already written
@@ -331,13 +314,10 @@ def _format_own_thesis(ticker: str, watchlist: dict) -> str:
     if not isinstance(entry, dict):
         return ""
     note = (entry.get("notes") or "").strip()
-    stars = int(entry.get("stars") or 0)
     if not note:
-        if stars > 0:
-            return f"The trader has this ticker on their watchlist with stars={stars} but no note."
         return ""
     return (
-        f"The trader ALREADY has this ticker on their watchlist (stars={stars}) "
+        f"The trader ALREADY has this ticker on their watchlist "
         f"with the following thesis note. Honor it: if the news from Stage 4 "
         f"confirms or extends this thesis, that is a very strong PICK signal "
         f"even if the headline doesn't read like a fresh press release.\n\n"

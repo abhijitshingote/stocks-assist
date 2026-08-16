@@ -23,7 +23,7 @@ PROMPTS_DIR = PACKAGE_DIR / "prompts"
 
 ABI_WATCHLIST_FILE = USER_DATA_DIR / "abi_watchlist.json"
 # Explicit thumbs-down list. Separate from the watchlist on purpose:
-# watchlist.stars == 0 means "not yet rated" (neutral), NOT a veto.
+# watchlist membership is not a veto.
 ABI_DISLIKES_FILE = USER_DATA_DIR / "abi_dislikes.json"
 # Per-ticker Abi ticker notes (free-form). Decoupled from watchlist / dislike
 # membership. The screener pipeline only consumes notes whose ticker is also
@@ -57,7 +57,8 @@ LIQUIDITY_MIN_PRICE = 3.0
 
 # Exclude tickers that appear in the dedicated dislikes file
 # (`user_data/abi_dislikes.json`). This is the ONLY source of vetoes.
-# Watchlist `stars: 0` is treated as "unrated" / neutral and is NOT a veto.
+# Watchlist membership is not a veto.
+# kind=temporary is skipped after expires_at (30d from add).
 EXCLUDE_DISLIKED_TICKERS = True
 
 # Industries to exclude (mirrors backend GLOBAL_EXCLUDE).

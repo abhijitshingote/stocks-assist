@@ -139,7 +139,14 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | PUT/DELETE | `/api/abi-watchlist/<ticker>` | |
 | POST | `/api/abi-watchlist/batch-check` | |
 | GET | `/api/abi-watchlist/data` | watchlist + `stock_metrics` join |
-| GET/POST | `/api/abi-dislikes` | `abi_dislikes.json` |
+| GET/POST | `/api/abi-dislikes` | `abi_dislikes.json`. POST body: `{ticker, kind?}` (`temporary` default, `permanent`). Temporary sets `expires_at` = now+30d. GET includes `kind`, `expires_at`, `is_active`, `days_left`. |
+| GET | `/api/WeeklyReview` | Live union of vsg90/strong/top520/fastrs minus pass/watch/trade. |
+| GET | `/api/WeeklyReview-Config` | `cycle`, `cycle_ends`, `WEEKLY_REVIEW_CUTOFFS` (no DB scan). |
+| GET/POST | `/api/abi-passes` | `abi_passes.json`. POST `{ticker, sources?}`. Cycle = Sat ET. |
+| DELETE | `/api/abi-passes/<ticker>` | |
+| GET/POST | `/api/abi-trades` | `abi_trades.json`. POST `{ticker, side: buy\|short}`. |
+| DELETE | `/api/abi-trades/<ticker>` | |
+| GET | `/api/abi-trades/data` | trades + `stock_metrics` join |
 | DELETE | `/api/abi-dislikes/<ticker>` | |
 | POST | `/api/abi-dislikes/batch-check` | |
 
@@ -188,11 +195,12 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | `/sector-performance` | Sector/index ETF returns |
 | `/rs-screener` | Relative strength |
 | `/fast-rs` | Frozen-weight Fast RS, mcap-adjusted |
+| `/weekly-review` | Live union of the 4 weekly screeners minus pass/watch/trade |
 | `/stock/<ticker>` | Detail + charts |
 | `/themes` | `user_data/themes.json` editor |
 | `/context`, `/context-2` | Macro context |
 | `/abi-general-notes` | (`/abi-notes` → 301) |
-| `/abi-watchlist`, `/abi-dislikes` | |
+| `/abi-watchlist`, `/abi-trades`, `/abi-dislikes` | |
 | `/daily-shortlist`, `/daily-themes` | Pipeline output |
 | `/market-news`, `/market-brief` | |
 | `/logs` | Log viewer |

@@ -8,11 +8,11 @@
 {% set show_cap_tabs = false %}
 {% set show_sector_bar = false %}
 
-{% set topbar_extra_controls %}
-<div class="sort-toggle-wrap">
-    <button type="button" class="sort-toggle active" id="sortStarsBtn" data-sort="stars" title="Sort by highest stars first (1D% as tiebreaker)">★ Stars</button>
-    <button type="button" class="sort-toggle" id="sortReturnBtn" data-sort="return" title="Sort by 1D return only">1D %</button>
-</div>
+{% set detail_header_extras %}
+<span class="wr-disp" id="wlPromote">
+    <button type="button" class="abi-wl-btn disp-buy" data-side="buy" title="Promote to buy candidate — moves off watchlist">Buy</button>
+    <button type="button" class="abi-wl-btn disp-short" data-side="short" title="Promote to short candidate — moves off watchlist">Short</button>
+</span>
 {% endset %}
 
 {% set subchart_top %}
@@ -44,31 +44,7 @@
 {% endblock %}
 
 {% block extra_styles %}
-    /* ── Page-specific: sort toggle ── */
-    .sort-toggle-wrap {
-        display: flex;
-        gap: 0.25rem;
-        align-items: center;
-        margin-left: auto;
-    }
-    .sort-toggle {
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        color: var(--text-secondary);
-        cursor: pointer;
-        font-weight: 500;
-        font-size: 0.7rem;
-        transition: all 0.2s;
-        font-family: 'JetBrains Mono', monospace;
-    }
-    .sort-toggle:hover { border-color: var(--accent-purple); color: var(--text-primary); }
-    .sort-toggle.active {
-        background: linear-gradient(135deg, rgba(163, 113, 247, 0.2) 0%, rgba(88, 166, 255, 0.2) 100%);
-        border-color: var(--accent-purple);
-        color: var(--text-primary);
-    }
+    .wr-disp { display: inline-flex; gap: 0.35rem; }
 
     /* ── Page-specific: subchart collapse buttons ── */
     .chart-collapse-btn {
@@ -104,7 +80,6 @@
 <script src="/static/js/desktop/screener-app.js"></script>
 <script>
 (function () {
-    let currentSort = (localStorage.getItem('abiWlSort') === 'return') ? 'return' : 'stars';
     let screenerApi = null;
 
     // ── SPY / RSI subchart state ──
@@ -227,37 +202,12 @@
         window.addEventListener('resize', extraResizeHandler);
     }
 
-    function syncSortButtons() {
-        document.getElementById('sortStarsBtn')?.classList.toggle('active', currentSort === 'stars');
-        document.getElementById('sortReturnBtn')?.classList.toggle('active', currentSort === 'return');
-    }
-
     DesktopScreener.init({
         endpointFn: () => '/api/frontend/abi-watchlist/data',
         accentCss: 'var(--accent-purple)',
         seedWatchlistFromData: true,
         removeOnUnwatch: true,
-        resortOnStarChange: true,
-
-        sortFn: (stocks, helpers) => {
-            const compareReturnDesc = (a, b) => {
-                const aVal = a.dr_1, bVal = b.dr_1;
-                if (aVal == null && bVal == null) return 0;
-                if (aVal == null) return 1;
-                if (bVal == null) return -1;
-                return bVal - aVal;
-            };
-            if (currentSort === 'stars') {
-                stocks.sort((a, b) => {
-                    const s = helpers.getStars(b.ticker) - helpers.getStars(a.ticker);
-                    if (s !== 0) return s;
-                    return compareReturnDesc(a, b);
-                });
-            } else {
-                stocks.sort(compareReturnDesc);
-            }
-            return stocks;
-        },
+        defaultSort: { col: 'dr_1', dir: 'desc' },
 
         onChartLoaded: async (ticker, stockChart) => {
             destroySpyChart();
@@ -297,19 +247,27 @@
 
         onReady: (api) => {
             screenerApi = api;
-            syncSortButtons();
 
-            document.getElementById('sortStarsBtn')?.addEventListener('click', () => {
-                currentSort = 'stars';
-                localStorage.setItem('abiWlSort', 'stars');
-                syncSortButtons();
-                api.resortWithFn();
-            });
-            document.getElementById('sortReturnBtn')?.addEventListener('click', () => {
-                currentSort = 'return';
-                localStorage.setItem('abiWlSort', 'return');
-                syncSortButtons();
-                api.resortWithFn();
+            document.getElementById('wlPromote')?.addEventListener('click', async (e) => {
+                const btn = e.target.closest('[data-side]');
+                if (!btn) return;
+                const ticker = document.getElementById('detailTicker')?.textContent?.trim();
+                if (!ticker || ticker === '—') return;
+                try {
+                    await fetch('/api/frontend/abi-trades', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ticker, side: btn.dataset.side }),
+                    });
+                } catch (err) {
+                    console.error('promote to trade failed', err);
+                    return;
+                }
+                window._wlToggle(ticker, true, function () {
+                    window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
+                        detail: { action: 'saved', ticker },
+                    }));
+                });
             });
 
             document.getElementById('spyCollapseBtn')?.addEventListener('click', () => {

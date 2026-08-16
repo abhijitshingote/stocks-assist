@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block body_class %}screener-page page-abi-trades{% endblock %}
+{% block title %}Trade List - Stocks Assist{% endblock %}
+
+{% set screener_label = "Trades" %}
+{% set screener_stats_label = "Trades" %}
+{% set show_cap_tabs = false %}
+{% set show_sector_bar = false %}
+
+{% set detail_header_extras %}
+<button type="button" class="abi-wl-btn" id="tradeRemoveBtn" title="Remove from trade list">Remove</button>
+{% endset %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
+{% endblock %}
+
+{% block extra_styles %}
+    .trade-side {
+        font-size: 0.65rem;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 0.05rem 0.3rem;
+        border-radius: 3px;
+        margin-right: 0.25rem;
+    }
+    .trade-side.buy { color: var(--accent-green); border: 1px solid var(--accent-green); }
+    .trade-side.short { color: var(--accent-red); border: 1px solid var(--accent-red); }
+    #tradeRemoveBtn:hover { border-color: var(--accent-red); color: var(--accent-red); }
+{% endblock %}
+
+{% block content %}
+{% include "desktop/_screener_shell.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/static/js/stock-chart.js"></script>
+<script src="/static/js/desktop/screener-app.js"></script>
+<script>
+DesktopScreener.init({
+    endpointFn: () => '/api/frontend/abi-trades/data',
+    accentCss: 'var(--accent-green)',
+    listPrefixFn: (s) => s.trade_side
+        ? '<span class="trade-side ' + s.trade_side + '">' + s.trade_side + '</span>'
+        : '',
+    onReady: () => {
+        document.getElementById('tradeRemoveBtn')?.addEventListener('click', async () => {
+            const t = document.getElementById('detailTicker')?.textContent?.trim();
+            if (!t || t === '—') return;
+            await fetch('/api/frontend/abi-trades/' + t, { method: 'DELETE' });
+            window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
+                detail: { action: 'saved', ticker: t },
+            }));
+        });
+    },
+});
+</script>
+{% endblock %}

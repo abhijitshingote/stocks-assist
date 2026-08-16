@@ -95,7 +95,7 @@
 |---|---|
 | **CSS class** | `.wl-modal.dl-theme` |
 | **CSS file** | `static/css/components.css` |
-| **JS logic** | `window._dlOpen()` in `templates/base.html` |
+| **JS logic** | `window._dlOpen()` in `templates/base.html`. Modal radios: `kind=temporary` (30d) / `kind=permanent`. `abi-exclude-changed` event drops the ticker from the current screener list. |
 
 ---
 
@@ -106,6 +106,8 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | Page | Template | Route |
 |------|----------|-------|
 | Daily Review | `daily_review.html` | `/daily-review` |
+| Weekly Review | `weekly_review.html` | `/weekly-review` |
+| Abi Trades | `abi_trades.html` | `/abi-trades` |
 | Main View | `main_view.html` | `/main-view` |
 | Vol Spike & Gaps | `volspike_gapper.html` | `/volspike-gapper` |
 | Vol Spike & Gaps (90d) | `volspike_gapper_90d.html` | `/volspike-gapper-90d` |
@@ -153,13 +155,6 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | **CSS class** | `.tp-left` / `.stock-list` / `.stock-item.two-row` / `.list-extra` / `.day-group-*` |
 | **CSS file** | `static/css/screener.css` |
 | **JS** | Canonical `stockRowHtml()` + `renderList()` in `screener-app.js`. Page hooks: `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`. Prefer those over `renderListFn`. |
-
-### Star Rating Widget
-| | |
-|---|---|
-| **CSS class** | `.star-rating` / `.star` / `.star.filled` |
-| **CSS file** | `static/css/screener.css` |
-| **JS** | `starsHtml()` + `setStarsForTicker()` in `screener-app.js` |
 
 ### Stock Detail Panel Header
 | | |
@@ -257,7 +252,7 @@ Every mobile page loads these layers in order:
 | `static/css/mobile/tokens.css` | `@import '../tokens.css'`; aliases `--bg-dark → --bg`, `--text-primary → --fg`, `--accent-green → --success`, etc.; mobile-only vars (radius, motion, safe-area, Inter font override) |
 | `static/css/mobile/base.css` | Reset, `html/body`, `.phone`, `.app-header`, logo, search box, menu button, `header-row2` |
 | `static/css/mobile/screener.css` | Filter chip/drawer, list zone, detail zone, tabs, charts panel, sector sheet, mode toggle |
-| `static/css/mobile/panels.css` | Loading overlay, spinner, news tab, metrics rows, notes modal, tag pills, star rating |
+| `static/css/mobile/panels.css` | Loading overlay, spinner, news tab, metrics rows, notes modal, tag pills |
 | `static/css/mobile/nav.css` | Nav drawer backdrop, sheet, links, footer, drawer filter strips |
 | `static/css/mobile/benzinga-overrides.css` | Dark-mode overrides for `benzinga-news.css` (must load after it) |
 | `static/css/mobile/pages.css` | Utility-page layouts: master-detail, context charts, logs viewer, market brief, market news, home dashboard |

@@ -124,7 +124,7 @@ Notable pages: `/main-view`, `/top-performance`, `/volspike-gapper`, `/rs-screen
 
 Stages (JSON in/out under `user_data/daily_screener/<YYYY-MM-DD>/`):
 
-1. **Universe** — DB: top dr_1/5/20 + volspike_gapper; veto `abi_dislikes.json`
+1. **Universe** — DB: top dr_1/5/20 + volspike_gapper; veto active `abi_dislikes.json` (skip expired temps)
 2. **Momentum** — rule score (multi_screen, dr5_atr_norm, trend_alignment, …); threshold in `config.py`
 3. **Themes** — merge `themes.json`, watchlist-derived themes (Claude), hot-market (Perplexity)
 4. **News** — Perplexity per ticker
@@ -147,7 +147,9 @@ Ticker universe from DB screens (`screener_universe.py`: r1d, vol_spike_5d, main
 |------|----------|
 | `themes.json` | Curated theme tags |
 | `abi_watchlist.json` | Stars, notes |
-| `abi_dislikes.json` | Stage-1 veto list for daily screener |
+| `abi_dislikes.json` | Global ticker exclude: `kind=permanent` or `kind=temporary` (`expires_at` = +30d). Applied to all screener queries + daily_screener s1. |
+| `abi_passes.json` | Weekly-review pass: `{cycle: Sat-ET-iso}`. Hidden on `/weekly-review` until next Saturday. |
+| `abi_trades.json` | Buy/short candidates. Hidden on `/weekly-review` while listed. |
 | `daily_screener/<date>/` | Pipeline stage JSON |
 | `daily_screener_feedback.json` | Judge calibration |
 | `market_brief/<date>/` | Brief artifacts, `run_costs.json` |

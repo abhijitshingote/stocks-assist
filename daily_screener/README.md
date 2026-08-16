@@ -113,9 +113,9 @@ Queries the DB directly (no HTTP) and pulls:
 Applies the existing global liquidity filters (`avg_vol_10d`, `dollar_volume`,
 `current_price`) and drops:
 
-- Tickers in `user_data/abi_dislikes.json` (explicit thumbs-down list, drop
-  reason: `user_dislike`). Watchlist `stars: 0` is NOT a veto — it just means
-  "on the watchlist but not yet rated".
+- Tickers in `user_data/abi_dislikes.json` with an active exclude (`kind=permanent`
+  or unexpired `kind=temporary`, drop reason: `user_dislike`). Watchlist
+  membership is not a veto.
 - Tickers in the excluded-industry list (default: Biotechnology)
 
 Tags every ticker with the set of screens it appeared in (`top_1d`, `top_5d`,
@@ -172,8 +172,8 @@ Anthropic) receives:
 - Momentum stats + per-factor breakdown
 - News bullets + summary from stage 4
 - The day's theme vector
-- **The 2-3 most thematically-similar watchlist entries** — your stars and
-  notes are the in-context calibration anchor
+- **The 2-3 most thematically-similar watchlist entries** — notes are the
+  in-context calibration anchor
 
 Returns JSON with:
 

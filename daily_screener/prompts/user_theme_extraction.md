@@ -2,13 +2,7 @@ You are analyzing a trader's personal watchlist notes to extract their "taste
 signature" - the kinds of stories and themes they get excited about.
 
 Below is a JSON object: keys are tickers, values include a free-form `notes`
-field and an optional `stars` rating.
-
-Stars semantics:
-- `stars` missing or `0` = the trader hasn't rated this one yet (NEUTRAL).
-  Treat the notes at face value; do not infer negativity from the absence of a
-  rating.
-- `stars` 1-3 = explicit liking, with 3 being strong conviction.
+field. Treat the notes at face value.
 
 These tickers are all on the watchlist by choice, so treat them all as
 positive examples of the trader's taste. Explicit dislikes live in a
