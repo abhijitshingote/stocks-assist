@@ -162,7 +162,7 @@ def _format_price_action(survivor: dict[str, Any]) -> str:
     if last_evt:
         parts.append(
             f"- last event: {last_evt} ({survivor.get('last_event_type')}, "
-            f"magnitude={survivor.get('last_event_magnitude')})"
+            f"vol={survivor.get('last_event_magnitude')}, ret={survivor.get('last_event_return')})"
         )
     sources = survivor.get("sources") or []
     if sources:

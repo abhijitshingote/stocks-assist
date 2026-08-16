@@ -137,6 +137,7 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | **HTML** | `templates/desktop/_screener_shell.html` |
 | **CSS** | `static/css/screener.css` |
 | **JS engine** | `static/js/desktop/screener-app.js` — `DesktopScreener.init(config)` |
+| **VSG event label** | `static/js/vsg-event.js` — `VsgEvent.extraHtml` / `magStr` / `badge`. Loaded from `base.html` (desktop) and `mobile/_page_libs.html` (with `util`). |
 | **Jinja slots** | `screener_label`, `screener_stats_label`, `show_cap_tabs`, `show_sector_bar`, `topbar_extra_controls`, `below_topbar_extra`, `detail_header_extras`, `subchart_top`, `subchart_bottom`, `left_header_extra`. Shell always includes `#screenerExcludes` (Biotech exclude chip). |
 | **Config params** | `endpoint`, `endpointFn`, `capFilter`, `defaultSort`, `accentCss`, `listValueFn`, `listExtraFn`, `listPrefixFn`, `groupByFn`, `groupLabelFn`, `groupCollapseStorageKey`, `onListRendered`, `extraControlsHtml`, `sortFn`, `filterFn`, `renderListFn` (escape hatch), `updateMetricsFn`, `prependMetricsFn`, `onChartLoaded`, `onTimeframeChange`, `onReady`, `onStockSelected`, `resortOnStarChange`, `seedWatchlistFromData`, `removeOnUnwatch`, `weeklyDisposition`. Shared `− Biotech` chip is AND-ed with `filterFn`. |
 | **Used by** | All desktop screener templates above (thin wrappers) |

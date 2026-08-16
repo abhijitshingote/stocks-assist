@@ -419,6 +419,11 @@ body.nav-hidden.page-stock-detail .tp-layout {
     color: var(--accent-red);
 }
 
+.event-badge.both {
+    background: linear-gradient(135deg, rgba(210, 153, 34, 0.25) 0%, rgba(248, 81, 73, 0.25) 100%);
+    color: var(--accent-yellow);
+}
+
 .date-pills {
     display: flex;
     flex-wrap: wrap;
@@ -1586,12 +1591,13 @@ async function loadStockData() {
             
             // Last Event
             if (data.last_event_date) {
-                const eventType = data.last_event_type === 'volume_spike' ? 'spike' : 'gap';
-                const eventLabel = data.last_event_type === 'volume_spike' ? 'Spike' : 'Gap';
+                const eventType = VsgEvent.badgeClass(data) || 'gap';
+                const eventLabel = VsgEvent.badge(data) || 'Event';
+                const mag = VsgEvent.magStr(data);
                 eventsHtml += `
                     <div class="data-cell">
                         <span class="data-label">Last Event</span>
-                        <span class="event-badge ${eventType}">${eventLabel} ${data.last_event_date.slice(5)}</span>
+                        <span class="event-badge ${eventType}">${eventLabel} ${data.last_event_date.slice(5)}${mag ? ' · ' + mag : ''}</span>
                     </div>
                 `;
             }

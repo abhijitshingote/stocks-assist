@@ -375,9 +375,9 @@ def initialize_database(reset=False, schema='public'):
                 avg_return_gapper FLOAT,
                 gap_days TEXT,
                 last_event_date DATE,
-                last_event_type VARCHAR(20),
-                last_event_magnitude FLOAT,
-                last_event_return FLOAT,
+                last_event_type VARCHAR(20),     -- volume_spike | gapper | both
+                last_event_magnitude FLOAT,      -- event-day vol / 20d avg (always)
+                last_event_return FLOAT,         -- event-day close/prev - 1 (always)
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE
             )
@@ -439,9 +439,9 @@ def initialize_database(reset=False, schema='public'):
                 avg_return_gapper FLOAT,
                 gap_days TEXT,
                 last_event_date DATE,
-                last_event_type VARCHAR(20),
-                last_event_magnitude FLOAT,
-                last_event_return FLOAT,
+                last_event_type VARCHAR(20),     -- volume_spike | gapper | both
+                last_event_magnitude FLOAT,      -- event-day vol / 20d avg (always)
+                last_event_return FLOAT,         -- event-day close/prev - 1 (always)
                 tags TEXT,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (ticker) REFERENCES tickers(ticker) ON DELETE CASCADE

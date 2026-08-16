@@ -1160,6 +1160,11 @@
   color: var(--danger);
   border-color: color-mix(in oklab, var(--danger) 35%, var(--border));
 }
+.tag-pill.both {
+  background: color-mix(in oklab, var(--warn) 10%, var(--surface));
+  color: var(--warn);
+  border-color: color-mix(in oklab, var(--danger) 30%, var(--border));
+}
 .star-rating { color: var(--warn); font-size: 0.55rem; margin-right: 2px; }
 .star-rating .star { cursor: pointer; opacity: 0.35; }
 .star-rating .star.filled { opacity: 1; }

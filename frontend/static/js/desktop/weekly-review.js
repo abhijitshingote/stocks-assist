@@ -76,17 +76,8 @@
 
     function sourcePills(s, id) {
         if (id === 'vsg90') {
-            let num = '', unit = '';
-            if (s.last_event_magnitude != null) {
-                if (s.last_event_type === 'volume_spike') {
-                    num = s.last_event_magnitude.toFixed(1) + 'x';
-                    unit = 'vol';
-                } else if (s.last_event_type === 'gapper') {
-                    num = signedPct(s.last_event_magnitude * 100, 1);
-                    unit = 'gap';
-                }
-            }
-            return pill('vsg90', num, unit, compactDate(s.last_event_date));
+            const mag = VsgEvent.magStr(s, {compact: true});
+            return pill('vsg90', mag, '', compactDate(s.last_event_date));
         }
         if (id === 'strong') {
             return s.adjusted_ti65 != null ? pill('strong', s.adjusted_ti65.toFixed(2), 'ati65') : '';

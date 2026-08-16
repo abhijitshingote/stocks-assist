@@ -241,7 +241,7 @@ def _format_candidate(
         f"atr20: {survivor.get('atr20')}% rsi_mktcap: {survivor.get('rsi_mktcap')}",
         f"vol_vs_10d_avg: {survivor.get('vol_vs_10d_avg')}",
         f"sources: {survivor.get('sources')}",
-        f"last_event: {survivor.get('last_event_date')} ({survivor.get('last_event_type')}, mag={survivor.get('last_event_magnitude')})",
+        f"last_event: {survivor.get('last_event_date')} ({survivor.get('last_event_type')}, vol={survivor.get('last_event_magnitude')}, ret={survivor.get('last_event_return')})",
         f"momentum_score: {survivor.get('momentum_score')}",
         "momentum factor breakdown:",
         *factor_lines,

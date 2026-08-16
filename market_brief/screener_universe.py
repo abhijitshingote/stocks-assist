@@ -446,7 +446,9 @@ def render_overview_markdown(
         for display_rank, row in enumerate(sl.selection, start=1):
             ev = "—"
             if row.get("last_event_date"):
-                typ = (row.get("last_event_type") or "?")[:4]
+                typ = {"volume_spike": "S", "gapper": "G", "both": "SG"}.get(
+                    row.get("last_event_type"), "?"
+                )
                 ev = f"{typ} {row['last_event_date']}"
             lines.append(
                 "| {rank} | **{ticker}** | {d1} | {d5} | {ti} | {vol} | {ev} | {mcap} | {px} |".format(

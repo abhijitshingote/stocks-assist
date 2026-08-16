@@ -98,19 +98,8 @@
     }
 
     function eventExtraHtml(s) {
-        const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
-        const evtClass = s.last_event_type === 'volume_spike' ? 'spike' : s.last_event_type === 'gapper' ? 'gap' : '';
-        let magStr = '';
-        if (s.last_event_magnitude != null) {
-            if (s.last_event_type === 'volume_spike') {
-                magStr = s.last_event_magnitude.toFixed(1) + 'x vol';
-            } else if (s.last_event_type === 'gapper') {
-                magStr = (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(1) + '% gap';
-            }
-        }
         const eventDate = compactDate(s.last_event_date);
-        return (evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : '') +
-            (magStr ? `<span class="list-extra event-mag">${magStr}</span>` : '') +
+        return VsgEvent.extraHtml(s) +
             `<span class="vsg-right">` +
                 setupChipHtml(s) +
                 (eventDate ? `<span class="last-date">${eventDate}</span>` : '') +

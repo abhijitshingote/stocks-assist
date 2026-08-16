@@ -147,16 +147,9 @@
     }
 
     if (stock.last_event_type && stock.last_event_date) {
-      const isSpike = stock.last_event_type === 'volume_spike';
-      const label = isSpike ? 'spike' : 'gap';
-      const cls = isSpike ? 'spike' : 'gapper';
-      let mag = '';
-      if (stock.last_event_magnitude != null) {
-        mag = isSpike
-          ? stock.last_event_magnitude.toFixed(1) + 'x'
-          : (stock.last_event_magnitude * 100).toFixed(1) + '%';
-      }
-      pills += '<span class="tag-pill ' + cls + '">last ' + label + ': ' + mag + ' (' + stock.last_event_date + ')</span>';
+      const mag = VsgEvent.magStr(stock, {compact: true});
+      pills += '<span class="tag-pill ' + VsgEvent.tagClass(stock) + '">last ' +
+        VsgEvent.badge(stock) + ': ' + mag + ' (' + stock.last_event_date + ')</span>';
     }
 
     if (!pills) {

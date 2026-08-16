@@ -478,6 +478,7 @@
 
 .stock-item .mini-badge.spike { background: rgba(210, 153, 34, 0.2); color: var(--accent-yellow); }
 .stock-item .mini-badge.gap   { background: rgba(248, 81, 73, 0.2);  color: var(--accent-red); }
+.stock-item .mini-badge.both  { background: linear-gradient(135deg, rgba(210, 153, 34, 0.25) 0%, rgba(248, 81, 73, 0.25) 100%); color: var(--accent-yellow); }
 
 .stock-item .last-date {
     font-family: var(--font-mono);
@@ -1094,6 +1095,7 @@
 .tag-pill.return      { background: rgba(88, 166, 255, 0.2); color: var(--accent-blue); }
 .tag-pill.spike       { background: rgba(210, 153, 34, 0.2); color: var(--accent-yellow); }
 .tag-pill.gapper      { background: rgba(248, 81, 73, 0.2);  color: var(--accent-red); }
+.tag-pill.both        { background: linear-gradient(135deg, rgba(210, 153, 34, 0.2) 0%, rgba(248, 81, 73, 0.2) 100%); color: var(--accent-yellow); }
 .tag-pill.event       { background: rgba(163, 113, 247, 0.2);color: var(--accent-purple); }
 
 .tag-pill.ti65-tag {

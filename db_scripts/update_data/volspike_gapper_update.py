@@ -3,11 +3,17 @@
 Volume Spike & Gapper Update Script
 Truncates and reloads the stock_volspike_gapper table with pre-computed metrics.
 
-This script computes:
-- Volume Spike: Stock's daily volume ≥ 3.5× its prior 20-trading-day average 
-  (which must be > 0) and the close is ≥ 3% above previous day close within the last 365 days.
-- Gapper: Stock's low > previous day close × 1.05 or close > previous day close × 1.15 
-  within the last 365 days.
+One event-day per ticker/date. A day qualifies if either (or both) fire:
+
+- Volume: daily volume ≥ 3.5× prior 20-trading-day average (avg > 0)
+  and close ≥ 3% above previous close.
+- Gap: low > previous close × 1.05, or close / previous close > 1.15.
+
+Both metrics are stored on every trigger: volume_ratio and close/prev−1 return.
+last_event_type is 'volume_spike' | 'gapper' | 'both' (which criteria fired).
+last_event_magnitude is always the volume ratio; last_event_return is always
+the event-day return. volume_spike_days / gap_days remain the qualification
+subsets (days that met each criterion).
 """
 
 import os
@@ -49,31 +55,22 @@ def truncate_stock_volspike_gapper(connection):
 
 def compute_and_load_volspike_gapper(connection):
     """
-    Compute volume spike and gapper metrics using the comprehensive SQL query 
-    and insert into stock_volspike_gapper table.
-    
-    Filters:
-    - market_cap > 1B
-    - industry <> 'Biotechnology'
-    - Must have at least one spike or gap event
-    
+    Compute unified event-day metrics and insert into stock_volspike_gapper.
+
+    Filters at insert: all stock_metrics rows (API keeps those with ≥1 event).
     Sorted by last_event_date DESC.
     """
     logger.info("Computing volume spike and gapper metrics...")
     
-    # The comprehensive SQL query to compute volume spike and gapper metrics
     metrics_query = """
 WITH params AS (
     SELECT
-        365  AS vol_spike_lookback_days,
-        20   AS avg_days,
+        365  AS lookback_days,
         3.5  AS spike_mult,
         0.03 AS min_daily_gain,
-        0.05 AS min_gap_pct,
-        365  AS gap_lookback_days
+        0.05 AS min_gap_pct
 ),
 
--- Materialized ranked OHLC with prior close and 20-day avg volume
 ranked_ohlc AS (
     SELECT
         o.ticker,
@@ -81,9 +78,11 @@ ranked_ohlc AS (
         o.close,
         o.low,
         o.volume,
-        ROW_NUMBER() OVER (PARTITION BY o.ticker ORDER BY o.date) AS rn,
         LAG(o.close, 1) OVER (PARTITION BY o.ticker ORDER BY o.date) AS prev_close,
-        AVG(o.volume) OVER (PARTITION BY o.ticker ORDER BY o.date ROWS BETWEEN 20 PRECEDING AND 1 PRECEDING) AS avg_volume_20d
+        AVG(o.volume) OVER (
+            PARTITION BY o.ticker ORDER BY o.date
+            ROWS BETWEEN 20 PRECEDING AND 1 PRECEDING
+        ) AS avg_volume_20d
     FROM ohlc o
 ),
 
@@ -91,76 +90,71 @@ latest_date AS (
     SELECT MAX(date) AS max_date FROM ohlc
 ),
 
--- Candidate volume spike days
-volume_spikes AS (
+event_days AS (
     SELECT
         r.ticker,
-        r.date AS spike_date,
-        ROUND(r.volume / NULLIF(r.avg_volume_20d,0),2) AS volume_ratio,
-        ROUND((r.close / NULLIF(r.prev_close,0) - 1)::numeric, 4) AS daily_return
+        r.date AS event_date,
+        ROUND(r.volume / NULLIF(r.avg_volume_20d, 0), 2) AS volume_ratio,
+        ROUND((r.close / NULLIF(r.prev_close, 0) - 1)::numeric, 4) AS daily_return,
+        (
+            r.avg_volume_20d IS NOT NULL
+            AND r.avg_volume_20d > 0
+            AND r.prev_close > 0
+            AND r.volume >= p.spike_mult * r.avg_volume_20d
+            AND r.close >= r.prev_close * (1 + p.min_daily_gain)
+        ) AS is_spike,
+        (
+            r.prev_close > 0
+            AND (
+                r.low > r.prev_close * (1 + p.min_gap_pct)
+                OR r.close / r.prev_close > 1.15
+            )
+        ) AS is_gap
     FROM ranked_ohlc r
     CROSS JOIN params p
     CROSS JOIN latest_date ld
-    WHERE r.date >= ld.max_date - (p.vol_spike_lookback_days || ' days')::INTERVAL
-      AND r.avg_volume_20d IS NOT NULL
-      AND r.volume >= p.spike_mult * r.avg_volume_20d
-      AND r.close >= r.prev_close * (1 + p.min_daily_gain)
+    WHERE r.date >= ld.max_date - (p.lookback_days || ' days')::INTERVAL
+),
+
+events AS (
+    SELECT * FROM event_days WHERE is_spike OR is_gap
 ),
 
 volume_spikes_agg AS (
     SELECT
         ticker,
         COUNT(*) AS spike_day_count,
-        ROUND(AVG(volume_ratio)::numeric,2) AS avg_volume_spike,
-        STRING_AGG(spike_date::text, ',' ORDER BY spike_date) AS volume_spike_days,
-        MAX(spike_date) AS last_spike_date
-    FROM volume_spikes
+        ROUND(AVG(volume_ratio)::numeric, 2) AS avg_volume_spike,
+        STRING_AGG(event_date::text, ',' ORDER BY event_date) AS volume_spike_days
+    FROM events
+    WHERE is_spike
     GROUP BY ticker
-),
-
-last_spike AS (
-    SELECT DISTINCT ON (ticker)
-        ticker,
-        volume_ratio AS last_spike_magnitude,
-        daily_return AS last_spike_return
-    FROM volume_spikes
-    ORDER BY ticker, spike_date DESC
-),
-
--- Candidate gap days
-gap_days AS (
-    SELECT
-        r.ticker,
-        r.date AS gap_date,
-        r.close,
-        r.prev_close
-    FROM ranked_ohlc r
-    CROSS JOIN params p
-    CROSS JOIN latest_date ld
-    WHERE r.date >= ld.max_date - (p.gap_lookback_days || ' days')::INTERVAL
-      AND r.prev_close > 0
-      AND (r.low > r.prev_close * (1 + p.min_gap_pct)
-           OR r.close / r.prev_close > 1.15)
 ),
 
 gap_returns_agg AS (
     SELECT
         ticker,
         COUNT(*) AS gapper_day_count,
-        ROUND(AVG((close / prev_close - 1)::numeric),4) AS avg_return_gapper,
-        STRING_AGG(gap_date::text, ',' ORDER BY gap_date) AS gap_days,
-        MAX(gap_date) AS last_gap_date
-    FROM gap_days
+        ROUND(AVG(daily_return)::numeric, 4) AS avg_return_gapper,
+        STRING_AGG(event_date::text, ',' ORDER BY event_date) AS gap_days
+    FROM events
+    WHERE is_gap
     GROUP BY ticker
 ),
 
-last_gap AS (
+last_event AS (
     SELECT DISTINCT ON (ticker)
         ticker,
-        ROUND((close / prev_close - 1)::numeric, 4) AS last_gap_magnitude,
-        ROUND((close / prev_close - 1)::numeric, 4) AS last_gap_return
-    FROM gap_days
-    ORDER BY ticker, gap_date DESC
+        event_date AS last_event_date,
+        volume_ratio AS last_event_magnitude,
+        daily_return AS last_event_return,
+        CASE
+            WHEN is_spike AND is_gap THEN 'both'
+            WHEN is_spike THEN 'volume_spike'
+            ELSE 'gapper'
+        END AS last_event_type
+    FROM events
+    ORDER BY ticker, event_date DESC
 )
 
 INSERT INTO stock_volspike_gapper (
@@ -186,27 +180,14 @@ SELECT
     gra.avg_return_gapper,
     gra.gap_days,
     CURRENT_TIMESTAMP AS updated_at,
-    GREATEST(vsa.last_spike_date, gra.last_gap_date) AS last_event_date,
-    CASE
-        WHEN vsa.last_spike_date IS NULL AND gra.last_gap_date IS NULL THEN NULL
-        WHEN vsa.last_spike_date >= gra.last_gap_date THEN 'volume_spike'
-        ELSE 'gapper'
-    END AS last_event_type,
-    CASE
-        WHEN vsa.last_spike_date IS NULL AND gra.last_gap_date IS NULL THEN NULL
-        WHEN vsa.last_spike_date >= gra.last_gap_date THEN ls.last_spike_magnitude
-        ELSE lg.last_gap_magnitude
-    END AS last_event_magnitude,
-    CASE
-        WHEN vsa.last_spike_date IS NULL AND gra.last_gap_date IS NULL THEN NULL
-        WHEN vsa.last_spike_date >= gra.last_gap_date THEN ls.last_spike_return
-        ELSE lg.last_gap_return
-    END AS last_event_return
+    le.last_event_date,
+    le.last_event_type,
+    le.last_event_magnitude,
+    le.last_event_return
 FROM stock_metrics sm
 LEFT JOIN volume_spikes_agg vsa ON vsa.ticker = sm.ticker
-LEFT JOIN last_spike ls ON ls.ticker = sm.ticker
-LEFT JOIN gap_returns_agg gra  ON gra.ticker = sm.ticker
-LEFT JOIN last_gap lg ON lg.ticker = sm.ticker
+LEFT JOIN gap_returns_agg gra ON gra.ticker = sm.ticker
+LEFT JOIN last_event le ON le.ticker = sm.ticker
 ORDER BY last_event_date DESC NULLS LAST;
     """
     
@@ -258,4 +239,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

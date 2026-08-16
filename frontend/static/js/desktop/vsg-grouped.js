@@ -101,12 +101,13 @@ window.VsgGrouped = (function () {
         // (the source table has at least one 9909999 return).
         const r = clamp(s.last_event_return || 0, 0, 3);
         const mcapB = (s.market_cap || 0) / 1e9;
-        const isSpike = s.last_event_type === 'volume_spike';
-        const events = (s.spike_day_count || 0) + (s.gapper_day_count || 0);
+        const spikeDates = s.volume_spike_days || [];
+        const gapDates = s.gap_days || [];
+        const events = new Set(spikeDates.concat(gapDates)).size;
 
         const move = log2(1 + r / 0.05);
         const size = mcapB > 0 ? clamp(Math.log10(mcapB), -1, W.sizeCap) : -1;
-        const vol = isSpike && s.last_event_magnitude
+        const vol = s.last_event_magnitude
             ? clamp(log2(s.last_event_magnitude / 3.5), 0, 1.5)
             : 0;
         const novelty = Math.max(0, 1 - log2(Math.max(events, 1)) / 3);
@@ -214,16 +215,6 @@ window.VsgGrouped = (function () {
         }
 
         function eventExtraHtml(s) {
-            const evtLabel = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
-            const evtClass = s.last_event_type === 'volume_spike' ? 'spike' : s.last_event_type === 'gapper' ? 'gap' : '';
-            let magStr = '';
-            if (s.last_event_magnitude != null) {
-                if (s.last_event_type === 'volume_spike') {
-                    magStr = s.last_event_magnitude.toFixed(1) + 'x vol';
-                } else if (s.last_event_type === 'gapper') {
-                    magStr = (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(1) + '% gap';
-                }
-            }
             const p = convictionScore(s);
             let tip = `score ${p.total.toFixed(2)} = move ${(W.move * p.move).toFixed(2)} ` +
                 `+ size ${(W.size * p.size).toFixed(2)} + vol ${(W.vol * p.vol).toFixed(2)} ` +
@@ -235,8 +226,7 @@ window.VsgGrouped = (function () {
             }
             // Date chip matters here: rows within a bucket are no longer date-ordered.
             const eventDate = compactDate(s.last_event_date);
-            return (evtLabel ? `<span class="mini-badge ${evtClass}">${evtLabel}</span>` : '') +
-                (magStr ? `<span class="list-extra event-mag">${magStr}</span>` : '') +
+            return VsgEvent.extraHtml(s) +
                 `<span class="vsg-right">` +
                     setupChipHtml(s) +
                     (eventDate ? `<span class="last-date">${eventDate}</span>` : '') +

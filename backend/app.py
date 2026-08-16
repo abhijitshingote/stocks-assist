@@ -1320,9 +1320,10 @@ def get_bottom_performance_mega():
 
 def get_volspike_gapper_stocks(session, market_cap_category=None, lookback_days=None):
     """
-    Get stocks with volume spike and/or gapper activity in the last 365 days.
-    Joins with stock_metrics for enriched data.
-    Sorted by last_event_date descending (most recent events first).
+    Get stocks with volume-spike and/or gap event days in the last 365 days.
+    last_event_type is 'volume_spike' | 'gapper' | 'both'.
+    last_event_magnitude is always the event-day volume ratio;
+    last_event_return is always close/prev−1.
     lookback_days: if set, keep rows with last_event_date >= max(OHLC.date) - N calendar days.
     """
     try:

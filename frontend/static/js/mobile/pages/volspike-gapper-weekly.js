@@ -2,13 +2,7 @@
   'use strict';
 
   function eventMag(s) {
-    if (s.last_event_magnitude == null) return '—';
-    if (s.last_event_type === 'volume_spike') return s.last_event_magnitude.toFixed(1) + 'x';
-    if (s.last_event_type === 'gapper') {
-      return (s.last_event_magnitude >= 0 ? '+' : '') +
-        (s.last_event_magnitude * 100).toFixed(0) + '%';
-    }
-    return '—';
+    return VsgEvent.magStr(s, {compact: true}) || '—';
   }
 
   window.MobileScreener.init({

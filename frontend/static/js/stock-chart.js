@@ -38,6 +38,7 @@ const CHART_CONFIG = {
     // Spike/Gap marker colors
     spikeMarkerColor: '#bf40bf',
     gapMarkerColor: '#9932cc',
+    bothMarkerColor: '#e040a0',
     
     // Grid and text colors
     gridColor: 'rgba(48, 54, 61, 0.3)',
@@ -1469,37 +1470,34 @@ class StockChart {
             });
         });
         
-        // Volume spike and gap markers (fetched from API)
+        // Volume spike and gap markers (fetched from API). One marker per bar:
+        // same-day spike+gap is a single SG marker (lightweight-charts last-write-wins).
         if (this.options.showVolspikeMarkers) {
-            if (this.spikeDays && this.spikeDays.length > 0) {
-                this.spikeDays.forEach(date => {
-                    if (dataTimeSet.has(date)) {
-                        allMarkers.push({
-                            time: date,
-                            position: 'aboveBar',
-                            color: CHART_CONFIG.spikeMarkerColor,
-                            shape: 'circle',
-                            text: 'Spike',
-                            size: 1,
-                        });
-                    }
+            const spikeSet = new Set(this.spikeDays || []);
+            const gapSet = new Set(this.gapDays || []);
+            const allDates = new Set([...spikeSet, ...gapSet]);
+            allDates.forEach(date => {
+                if (!dataTimeSet.has(date)) return;
+                const sp = spikeSet.has(date);
+                const gp = gapSet.has(date);
+                let text = 'Spike';
+                let color = CHART_CONFIG.spikeMarkerColor;
+                if (sp && gp) {
+                    text = 'SG';
+                    color = CHART_CONFIG.bothMarkerColor;
+                } else if (gp) {
+                    text = 'Gap';
+                    color = CHART_CONFIG.gapMarkerColor;
+                }
+                allMarkers.push({
+                    time: date,
+                    position: 'aboveBar',
+                    color: color,
+                    shape: 'circle',
+                    text: text,
+                    size: 1,
                 });
-            }
-            
-            if (this.gapDays && this.gapDays.length > 0) {
-                this.gapDays.forEach(date => {
-                    if (dataTimeSet.has(date)) {
-                        allMarkers.push({
-                            time: date,
-                            position: 'aboveBar',
-                            color: CHART_CONFIG.gapMarkerColor,
-                            shape: 'circle',
-                            text: 'Gap',
-                            size: 1,
-                        });
-                    }
-                });
-            }
+            });
         }
         
         // Sort markers by time (required by lightweight-charts)

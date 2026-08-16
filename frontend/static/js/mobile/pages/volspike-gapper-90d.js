@@ -43,12 +43,7 @@
   }
 
   function eventMag(s) {
-    if (s.last_event_magnitude == null) return '—';
-    if (s.last_event_type === 'volume_spike') return s.last_event_magnitude.toFixed(1) + 'x';
-    if (s.last_event_type === 'gapper') {
-      return (s.last_event_magnitude >= 0 ? '+' : '') + (s.last_event_magnitude * 100).toFixed(0) + '%';
-    }
-    return '—';
+    return VsgEvent.magStr(s, {compact: true}) || '—';
   }
 
   function listValue(s) {
@@ -101,7 +96,7 @@
 
       chipStrip.innerHTML = visible.slice(0, 24).map(s => {
         const active = s.ticker === app.selectedTicker ? ' active' : '';
-        const badge = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
+        const badge = VsgEvent.badge(s);
         return '<div class="tchip' + active + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
           '<span class="tk">' + U.escAttr(s.ticker) + (badge ? '<span class="evt-badge">' + badge + '</span>' : '') +
           '</span><span class="ret">' + listValue(s) + '</span></div>';
@@ -109,7 +104,7 @@
 
       tbody.innerHTML = visible.map((s, i) => {
         const active = s.ticker === app.selectedTicker ? ' active' : '';
-        const badge = s.last_event_type === 'volume_spike' ? 'S' : s.last_event_type === 'gapper' ? 'G' : '';
+        const badge = VsgEvent.badge(s);
         const date = s.last_event_date || '';
         return '<tr class="' + active.trim() + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
           '<td>' + (i + 1) + '</td>' +
