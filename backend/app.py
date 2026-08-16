@@ -39,6 +39,12 @@ ABI_DISLIKES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', '
 ABI_TICKER_NOTES_FILE = os.path.join(
     os.path.dirname(__file__), '..', 'user_data', 'abi_ticker_notes.json'
 )
+# Short on-chart labels (visible in the price-pane overlay, no click to read).
+ABI_CHART_NOTES_FILE = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'abi_chart_notes.json'
+)
+CHART_NOTE_MAX_LEN = 80
+CHART_NOTE_MAX_COUNT = 5
 # Cycle-scoped weekly-review passes (hidden until next Saturday).
 ABI_PASSES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_passes.json')
 # Trade candidates (buy/short). Persistent destination list.
@@ -4659,6 +4665,87 @@ def batch_check_abi_ticker_notes():
         if t_upper in comments:
             result[t_upper] = comments[t_upper]
     return jsonify(result)
+
+
+# ============================================================================
+# Chart notes (short labels drawn in the price-pane identity overlay)
+# ============================================================================
+# Separate from abi_ticker_notes: those are markdown / AI-pipeline notes behind
+# a modal. Chart notes are ≤5 lines, ≤80 chars, meant to be glanceable.
+
+def _normalize_chart_notes(raw):
+    if isinstance(raw, str):
+        raw = raw.split('\n')
+    if not isinstance(raw, list):
+        return []
+    out = []
+    for item in raw:
+        if not isinstance(item, str):
+            continue
+        text = ' '.join(item.split())
+        if not text:
+            continue
+        out.append(text[:CHART_NOTE_MAX_LEN])
+        if len(out) >= CHART_NOTE_MAX_COUNT:
+            break
+    return out
+
+
+def _load_abi_chart_notes():
+    return _load_json_store(ABI_CHART_NOTES_FILE)
+
+
+def _save_abi_chart_notes(data):
+    _save_json_store(ABI_CHART_NOTES_FILE, data)
+
+
+@app.route('/api/abi-chart-notes/<ticker>', methods=['GET'])
+def get_abi_chart_notes(ticker):
+    ticker = ticker.upper()
+    store = _load_abi_chart_notes()
+    entry = store.get(ticker) or {}
+    notes = _normalize_chart_notes(entry.get('notes') if isinstance(entry, dict) else [])
+    return jsonify({'ticker': ticker, 'notes': notes})
+
+
+@app.route('/api/abi-chart-notes/<ticker>', methods=['PUT'])
+def upsert_abi_chart_notes(ticker):
+    ticker = ticker.upper()
+    data = request.get_json() or {}
+    if 'notes' not in data:
+        return jsonify({'error': 'notes field is required'}), 400
+    notes = _normalize_chart_notes(data.get('notes'))
+    store = _load_abi_chart_notes()
+    now_iso = datetime.now(pytz.timezone('US/Eastern')).isoformat()
+    if not notes:
+        if ticker in store:
+            del store[ticker]
+            _save_abi_chart_notes(store)
+        return jsonify({'ticker': ticker, 'notes': [], 'status': 'cleared'})
+    prev = store.get(ticker) if isinstance(store.get(ticker), dict) else {}
+    store[ticker] = {
+        'notes': notes,
+        'created_at': prev.get('created_at') or now_iso,
+        'updated_at': now_iso,
+    }
+    _save_abi_chart_notes(store)
+    return jsonify({
+        'ticker': ticker,
+        'notes': notes,
+        'created_at': store[ticker]['created_at'],
+        'updated_at': store[ticker]['updated_at'],
+        'status': 'updated' if prev else 'created',
+    })
+
+
+@app.route('/api/abi-chart-notes/<ticker>', methods=['DELETE'])
+def delete_abi_chart_notes(ticker):
+    ticker = ticker.upper()
+    store = _load_abi_chart_notes()
+    if ticker in store:
+        del store[ticker]
+        _save_abi_chart_notes(store)
+    return jsonify({'ticker': ticker, 'notes': [], 'status': 'removed'})
 
 # ============================================================================
 # Abi Watchlist Endpoints (JSON file-based personal watchlist)

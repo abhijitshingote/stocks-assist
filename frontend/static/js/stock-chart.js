@@ -194,6 +194,20 @@ async function fetchVolspikeEvents(ticker) {
 }
 
 /**
+ * Fetch short on-chart notes (glanceable labels, not Abi ticker notes).
+ */
+async function fetchChartNotes(ticker) {
+    try {
+        const response = await fetch(`/api/frontend/abi-chart-notes/${ticker}`);
+        const data = await response.json();
+        return Array.isArray(data.notes) ? data.notes : [];
+    } catch (e) {
+        console.warn(`Could not fetch chart notes for ${ticker}:`, e);
+        return [];
+    }
+}
+
+/**
  * Fetch headline fundamentals (market cap, current + forward PE/PS, rev
  * growth, ATR%) for the prominent metrics strip rendered in the chart legend.
  */
@@ -311,6 +325,8 @@ class StockChart {
         this.volumeContainer = null;
         this.legendContainer = null;
         this.identityOverlay = null;
+        this.chartNotes = [];
+        this._chartNotesEditing = false;
         
         // Track series visibility (restored from localStorage)
         this.seriesVisibility = getStoredMAVisibility();
@@ -331,6 +347,7 @@ class StockChart {
             fetchOHLCData(this.ticker),
             fetchEarningsData(this.ticker),
             fetchStockMetrics(this.ticker),
+            fetchChartNotes(this.ticker),
         ];
         if (this.options.showVolspikeMarkers) {
             fetches.push(fetchVolspikeEvents(this.ticker));
@@ -339,8 +356,9 @@ class StockChart {
         const ohlcData = results[0];
         const earningsData = results[1];
         this.metricsData = results[2];
+        this.chartNotes = results[3] || [];
         const volspikeEvents = this.options.showVolspikeMarkers
-            ? results[3]
+            ? results[4]
             : { spikeDays: [], gapDays: [] };
         
         if (!ohlcData || ohlcData.length === 0) {
@@ -609,9 +627,9 @@ class StockChart {
     /**
      * Floating identity watermark drawn over the top-left of the price pane.
      *
-     * Absolutely positioned so it consumes no layout height — the top-left of a
-     * price pane is nearly always empty, and pointer-events are disabled so it
-     * never intercepts crosshair or pan/zoom interaction.
+     * Shrink-wraps to ticker / name / sector / chart notes. Pointer events stay
+     * on so click/hover can edit notes; the rest of the pane still gets the
+     * crosshair.
      */
     _createIdentityOverlay() {
         if (!this.priceContainer) return;
@@ -629,10 +647,12 @@ class StockChart {
             top: ${this.options.compact ? 4 : 6}px;
             left: ${this.options.compact ? 8 : 10}px;
             z-index: 3;
-            pointer-events: none;
+            pointer-events: auto;
+            cursor: text;
             line-height: 1.15;
             font-family: 'Outfit', sans-serif;
         `;
+        overlay.title = 'click to edit chart notes';
 
         const tickerEl = document.createElement('div');
         tickerEl.textContent = this.ticker || '';
@@ -642,6 +662,7 @@ class StockChart {
             font-family: 'JetBrains Mono', monospace;
             letter-spacing: 0.04em;
             color: rgba(230, 237, 243, 0.5);
+            pointer-events: none;
         `;
         overlay.appendChild(tickerEl);
 
@@ -657,6 +678,7 @@ class StockChart {
                 text-overflow: ellipsis;
                 max-width: ${this.options.compact ? 320 : 460}px;
                 margin-top: 2px;
+                pointer-events: none;
             `;
             overlay.appendChild(coEl);
         }
@@ -673,12 +695,162 @@ class StockChart {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 max-width: ${this.options.compact ? 320 : 460}px;
+                pointer-events: none;
             `;
             overlay.appendChild(siEl);
         }
 
+        overlay.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this._chartNotesEditing) return;
+            this._beginChartNotesEdit();
+        });
+        overlay.addEventListener('mousedown', (e) => e.stopPropagation());
+        overlay.addEventListener('mouseenter', () => {
+            const hint = overlay.querySelector('.chart-notes-hint');
+            if (hint && !this._chartNotesEditing) {
+                hint.style.color = 'rgba(227, 179, 65, 0.7)';
+            }
+        });
+        overlay.addEventListener('mouseleave', () => {
+            const hint = overlay.querySelector('.chart-notes-hint');
+            if (hint) hint.style.color = 'rgba(227, 179, 65, 0)';
+        });
+
         this.identityOverlay = overlay;
         this.priceContainer.appendChild(overlay);
+        this._renderChartNotes();
+    }
+
+    _renderChartNotes() {
+        const overlay = this.identityOverlay;
+        if (!overlay) return;
+        const existing = overlay.querySelector('.chart-notes-block');
+        if (existing) existing.remove();
+        this._chartNotesEditing = false;
+
+        const compact = this.options.compact;
+        const notes = this.chartNotes || [];
+        const block = document.createElement('div');
+        block.className = 'chart-notes-block';
+        block.style.cssText = `
+            margin-top: 5px;
+            max-width: ${compact ? 320 : 460}px;
+        `;
+
+        if (notes.length === 0) {
+            const hint = document.createElement('div');
+            hint.className = 'chart-notes-hint';
+            hint.textContent = '+ note';
+            hint.style.cssText = `
+                position: absolute;
+                left: 0;
+                font-size: ${compact ? 11 : 12}px;
+                font-weight: 500;
+                color: rgba(227, 179, 65, 0);
+                transition: color 0.12s ease;
+                pointer-events: none;
+            `;
+            block.style.position = 'relative';
+            block.appendChild(hint);
+        } else {
+            for (const note of notes) {
+                const line = document.createElement('div');
+                line.textContent = note;
+                line.title = note;
+                line.style.cssText = `
+                    font-size: ${compact ? 12 : 14}px;
+                    font-weight: 600;
+                    color: rgba(227, 179, 65, 0.92);
+                    white-space: normal;
+                    line-height: 1.35;
+                `;
+                block.appendChild(line);
+            }
+        }
+
+        overlay.appendChild(block);
+    }
+
+    _beginChartNotesEdit() {
+        const overlay = this.identityOverlay;
+        if (!overlay || this._chartNotesEditing) return;
+        this._chartNotesEditing = true;
+
+        const existing = overlay.querySelector('.chart-notes-block');
+        if (existing) existing.remove();
+
+        const compact = this.options.compact;
+        const block = document.createElement('div');
+        block.className = 'chart-notes-block';
+        block.style.cssText = `margin-top: 5px; max-width: ${compact ? 320 : 460}px;`;
+
+        const ta = document.createElement('textarea');
+        ta.value = (this.chartNotes || []).join('\n');
+        ta.placeholder = 'beat and raise Aug 30';
+        ta.rows = Math.min(5, Math.max(2, (this.chartNotes || []).length + 1));
+        ta.style.cssText = `
+            width: ${compact ? 240 : 320}px;
+            max-width: 100%;
+            resize: none;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(227, 179, 65, 0.45);
+            background: rgba(22, 27, 34, 0.92);
+            color: rgba(227, 179, 65, 0.95);
+            font-family: 'Outfit', sans-serif;
+            font-size: ${compact ? 12 : 13}px;
+            font-weight: 600;
+            line-height: 1.35;
+            outline: none;
+        `;
+        block.appendChild(ta);
+        overlay.appendChild(block);
+        ta.focus();
+        ta.setSelectionRange(ta.value.length, ta.value.length);
+
+        let cancelled = false;
+        const finish = async (save) => {
+            if (cancelled) return;
+            cancelled = true;
+            if (save) {
+                const notes = ta.value.split('\n')
+                    .map((s) => s.trim())
+                    .filter(Boolean)
+                    .slice(0, 5)
+                    .map((s) => s.slice(0, 80));
+                this.chartNotes = notes;
+                await this._saveChartNotes(notes);
+            }
+            this._renderChartNotes();
+        };
+
+        ta.addEventListener('keydown', (e) => {
+            e.stopPropagation();
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                finish(false);
+            } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                finish(true);
+            }
+        });
+        ta.addEventListener('mousedown', (e) => e.stopPropagation());
+        ta.addEventListener('click', (e) => e.stopPropagation());
+        ta.addEventListener('blur', () => finish(true));
+    }
+
+    async _saveChartNotes(notes) {
+        if (!this.ticker) return;
+        try {
+            await fetch(`/api/frontend/abi-chart-notes/${this.ticker}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ notes }),
+            });
+        } catch (e) {
+            console.warn(`Could not save chart notes for ${this.ticker}:`, e);
+        }
     }
 
     /**

@@ -169,6 +169,7 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | **File** | `static/js/stock-chart.js` — `StockChart` class |
 | **CSS** | `.chart-panel`, `.charts-container` in `screener.css` |
 | **Config** | `CHART_CONFIG` constant in `stock-chart.js` |
+| **Chart notes** | Click identity overlay (ticker/name/sector). Gold lines under sector/industry; no click to read. Store: `user_data/abi_chart_notes.json`, ≤5 lines × 80 chars. Separate from Abi ticker notes modal. |
 | **Used by** | All screener pages, `stock.html` detail page |
 
 ### News Panel

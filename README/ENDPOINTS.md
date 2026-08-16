@@ -135,6 +135,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | GET | `/api/abi-ticker-notes` | `abi_ticker_notes.json` |
 | GET/PUT/DELETE | `/api/abi-ticker-notes/<ticker>` | |
 | POST | `/api/abi-ticker-notes/batch-check` | body: `{ "tickers": [...] }` |
+| GET/PUT/DELETE | `/api/abi-chart-notes/<ticker>` | `abi_chart_notes.json`. Body: `{ "notes": ["…"] }`. ≤5 lines × 80 chars. Empty list clears. |
 | GET/POST | `/api/abi-watchlist` | `abi_watchlist.json` |
 | PUT/DELETE | `/api/abi-watchlist/<ticker>` | |
 | POST | `/api/abi-watchlist/batch-check` | |
