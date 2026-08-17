@@ -91,6 +91,9 @@
                         onclick="window._screener_openNotes()">Notes</button>
                     <button class="abi-dl-btn" id="detailDlBtn" title="Exclude from screeners"
                         onclick="window._dlOpenForTicker(document.getElementById('detailTicker').textContent)">Exclude</button>
+                    <button type="button" class="abi-wl-btn" id="detailWhyBtn"
+                        title="Copy: What does TICKER company do? Why did it move up…"
+                        onclick="window._copyWhyPrompt(document.getElementById('detailTicker').textContent, document.getElementById('detailCompany').textContent, this)">Why?</button>
                     {{ detail_header_extras | default('') | safe }}
                     <div class="chart-timeframes" id="chartTimeframes">
                         <button data-days="30">1M</button>

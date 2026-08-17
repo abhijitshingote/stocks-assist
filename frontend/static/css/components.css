@@ -121,6 +121,11 @@ body.light-theme .btn-secondary:hover {
     color: var(--accent-purple);
 }
 
+.abi-wl-btn.copied {
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+}
+
 /* ── Dislike Button ──────────────────────────────────────────────── */
 .abi-dl-btn {
     background: transparent;

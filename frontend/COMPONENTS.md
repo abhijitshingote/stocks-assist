@@ -82,6 +82,14 @@
 | **Used by** | `/weekly-review` (`true`) and the 4 source pages (`vsg90` / `strong` / `top520` / `fastrs`) |
 | **Behavior** | Pass → `abi_passes.json` (cycle-scoped). Buy/Short → `abi_trades.json`. Row drops. Source pages also hide current-cycle pass + watchlist + trades on load. |
 
+### Why? (copy research prompt)
+| | |
+|---|---|
+| **CSS class** | `.abi-wl-btn` / `.abi-wl-btn.copied` |
+| **JS logic** | `window._copyWhyPrompt(ticker, company, btn)` in `templates/base.html` |
+| **Copies** | `What does {TICKER} {company} do? Why did it move up and what is the market so excited about ?` |
+| **Used by** | Stock detail + all desktop screener pages (header, after Exclude) |
+
 ### Dislike Button
 | | |
 |---|---|

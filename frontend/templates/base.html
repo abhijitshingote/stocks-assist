@@ -941,6 +941,38 @@
         } catch (e) { console.error('Abi ticker note lookup failed', e); }
         window._notesOpen(ticker, currentNotes, hasNote, onDone || null);
     };
+
+    // Copy a research prompt for the current ticker + company name.
+    window._copyWhyPrompt = async function(ticker, company, btn) {
+        const name = [ticker, company].map(s => (s || '').trim()).filter(Boolean).join(' ');
+        if (!name) return;
+        const text = 'What does ' + name + ' do? Why did it move up and what is the market so excited about ?';
+        const original = btn ? btn.textContent : '';
+        const flash = (msg, ok) => {
+            if (!btn) return;
+            btn.classList.toggle('copied', !!ok);
+            btn.textContent = msg;
+            setTimeout(() => { btn.classList.remove('copied'); btn.textContent = original; }, 1500);
+        };
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            }
+            flash('Copied', true);
+        } catch (e) {
+            console.error('Copy why-prompt failed', e);
+            flash('Failed', false);
+        }
+    };
     </script>
 
     <!-- Abi Dislike Modal (shared across pages) -->

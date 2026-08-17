@@ -1039,6 +1039,9 @@ body.nav-hidden.page-stock-detail .tp-layout {
                             onclick="openNotesModalForStock()">📝 Abi ticker notes</button>
                         <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners"
                             onclick="window._dlOpenForTicker(ticker)">Exclude</button>
+                        <button type="button" class="abi-wl-btn" id="detailWhyBtn"
+                            title="Copy: What does TICKER company do? Why did it move up…"
+                            onclick="window._copyWhyPrompt(ticker, document.getElementById('companyName').textContent, this)">Why?</button>
                         <div class="chart-timeframes" id="chartTimeframes">
                             <button data-days="30">1M</button>
                             <button data-days="90">3M</button>
