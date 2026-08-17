@@ -74,5 +74,61 @@
     "sources": [
       "vsg90"
     ]
+  },
+  "WDC": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T21:23:26.142406-04:00",
+    "sources": [
+      "top520"
+    ]
+  },
+  "FSLY": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T21:27:21.794340-04:00",
+    "sources": [
+      "top520"
+    ]
+  },
+  "PSX": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T21:46:02.648468-04:00",
+    "sources": [
+      "top520"
+    ]
+  },
+  "UMAC": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T21:47:55.525691-04:00",
+    "sources": [
+      "top520"
+    ]
+  },
+  "NOK": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T21:48:09.799164-04:00",
+    "sources": [
+      "top520"
+    ]
+  },
+  "WIX": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T21:49:06.032314-04:00",
+    "sources": [
+      "top520"
+    ]
+  },
+  "BRUN": {
+    "disposition": "pass",
+    "cycle": "2026-08-15",
+    "at": "2026-08-16T21:51:16.588097-04:00",
+    "sources": [
+      "top520"
+    ]
   }
 }
