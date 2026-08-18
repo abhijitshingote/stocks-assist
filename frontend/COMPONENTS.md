@@ -80,7 +80,7 @@
 | **CSS class** | `.wr-disp` / `.disp-buy` / `.disp-short` |
 | **JS** | `DesktopScreener.init({ weeklyDisposition })` in `screener-app.js` |
 | **Used by** | `/weekly-review` (`true`), the 4 source pages (`vsg90` / `strong` / `top520` / `fastrs`), and Daily Review (`daily`) |
-| **Behavior** | Pass → `abi_passes.json` (cycle-scoped). Buy/Short → `abi_trades.json`. Row drops. Source pages also hide current-cycle pass + watchlist + trades on load. |
+| **Behavior** | Pass → `abi_passes.json`. Weekly: cycle Sat ET → Friday. Daily (`scope=daily`): current NYSE session → next open 9:30 ET. Buy/Short → `abi_trades.json`. Row drops. Source pages also hide current-cycle pass + watchlist + trades on load. Daily also hides current weekly-cycle passes. |
 
 ### Why? (copy research prompt)
 | | |
@@ -347,7 +347,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **JS engine** | `static/js/mobile/screener-app.js` |
 | **Config** | `pageLabel`, `listBadgeFn`, `listMetaFn`, `listRowClassFn`, `listValueClsFn`, `subtitleFn`, plus existing `listValueFn` / `weeklyDisposition` / `extraFilterHtml` |
 | **Script partial** | `templates/mobile/_screener_libs.html` (sets `page_libs` and calls `_page_libs.html`) |
-| **Exclude** | `#screenerExcludes` filled by the engine (Biotech excluded on every page load; chip-off is session-only). AND-ed with `filterStocks`. `weeklyDisposition: 'vsg90'|'strong'|'top520'|'fastrs'|'daily'` hides watchlist ∪ trades ∪ current-cycle passes (same as desktop). |
+| **Exclude** | `#screenerExcludes` filled by the engine (Biotech excluded on every page load; chip-off is session-only). AND-ed with `filterStocks`. `weeklyDisposition: 'vsg90'|'strong'|'top520'|'fastrs'` hides watchlist ∪ trades ∪ current weekly-cycle passes. `'daily'` hides those plus session-scoped daily passes (until next open 9:30 ET). |
 | **Used by** | All mobile screener pages (thin config wrappers) |
 
 ### Mobile Screener Pages

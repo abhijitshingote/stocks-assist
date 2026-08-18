@@ -148,7 +148,7 @@ Ticker universe from DB screens (`screener_universe.py`: r1d, vol_spike_5d, main
 | `themes.json` | Curated theme tags |
 | `abi_watchlist.json` | Stars, notes |
 | `abi_dislikes.json` | Global ticker exclude: `kind=permanent` or `kind=temporary` (`expires_at` = +30d). Applied to all screener queries + daily_screener s1. |
-| `abi_passes.json` | Weekly-review pass: `{cycle: Sat-ET-iso}`. Hidden on `/weekly-review` and the 4 weekly source pages until next Saturday. |
+| `abi_passes.json` | Pass: `{scope: weekly\|daily, cycle}`. Weekly = Sat-ET-iso, hidden on weekly pages until next Saturday. Daily = session-iso, hidden on `/daily-review` until next open 9:30 ET. Daily GET also hides current weekly-cycle passes. |
 | `abi_trades.json` | Buy/short candidates. Hidden on `/weekly-review` and the 4 weekly source pages while listed. |
 | `daily_screener/<date>/` | Pipeline stage JSON |
 | `daily_screener_feedback.json` | Judge calibration |

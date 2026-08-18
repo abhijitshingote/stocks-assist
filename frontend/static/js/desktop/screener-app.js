@@ -90,7 +90,8 @@
                               Pass / Buy / Short in #wrDisp. true = weekly review
                               (sources from the row). A source id also hides
                               current-cycle passes + watchlist + trades on load
-                              and implies removeOnWatch.
+                              and implies removeOnWatch. 'daily' uses session
+                              pass window (until next open 9:30 ET), not Sat→Fri.
    }
 */
 
@@ -269,10 +270,13 @@ window.DesktopScreener = (function () {
 
         async function loadWeeklyDisposed() {
             try {
+                const passUrl = weeklyDisp === 'daily'
+                    ? '/api/frontend/abi-passes?scope=daily'
+                    : '/api/frontend/abi-passes';
                 const [wlResp, trResp, psResp] = await Promise.all([
                     fetch('/api/frontend/abi-watchlist'),
                     fetch('/api/frontend/abi-trades'),
-                    fetch('/api/frontend/abi-passes'),
+                    fetch(passUrl),
                 ]);
                 if (wlResp.ok) {
                     const wl = await wlResp.json();
@@ -308,7 +312,11 @@ window.DesktopScreener = (function () {
                     await fetch('/api/frontend/abi-passes', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ ticker, sources: weeklySources(ticker) }),
+                        body: JSON.stringify({
+                            ticker,
+                            sources: weeklySources(ticker),
+                            scope: weeklyDisp === 'daily' ? 'daily' : 'weekly',
+                        }),
                     });
                 } else if (kind === 'buy' || kind === 'short') {
                     await fetch('/api/frontend/abi-trades', {

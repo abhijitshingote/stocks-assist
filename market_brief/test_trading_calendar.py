@@ -11,7 +11,9 @@ from market_brief.trading_calendar import (
     ANCHOR_TIME,
     anchor_session_date,
     compute_news_window,
+    current_trading_day,
     is_trading_day,
+    next_trading_day,
     previous_trading_day,
     resolve_run_instant_et,
 )
@@ -55,6 +57,20 @@ class TradingCalendarTests(unittest.TestCase):
 
     def test_previous_trading_day_skips_weekend(self) -> None:
         self.assertEqual(previous_trading_day(date(2026, 5, 27)), date(2026, 5, 26))
+
+    def test_next_trading_day_skips_weekend(self) -> None:
+        self.assertEqual(next_trading_day(date(2026, 5, 15)), date(2026, 5, 18))
+
+    def test_next_trading_day_skips_memorial_day(self) -> None:
+        # Fri 2026-05-22 → Mon 5/25 Memorial closed → Tue 5/26
+        self.assertEqual(next_trading_day(date(2026, 5, 22)), date(2026, 5, 26))
+
+    def test_current_trading_day_weekend_rolls_to_friday(self) -> None:
+        self.assertEqual(current_trading_day(date(2026, 5, 23)), date(2026, 5, 22))
+        self.assertEqual(current_trading_day(date(2026, 5, 24)), date(2026, 5, 22))
+
+    def test_current_trading_day_holiday_rolls_back(self) -> None:
+        self.assertEqual(current_trading_day(date(2026, 5, 25)), date(2026, 5, 22))
 
     def test_tuesday_before_open_skips_memorial_day(self) -> None:
         run = datetime(2026, 5, 26, 8, 0, tzinfo=ET)

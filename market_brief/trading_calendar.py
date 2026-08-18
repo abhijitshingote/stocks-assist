@@ -85,6 +85,23 @@ def previous_trading_day(d: date) -> date:
     raise ValueError(f"no trading day found before {d}")
 
 
+def next_trading_day(d: date) -> date:
+    """First NYSE session strictly after calendar day ``d``."""
+    cur = d + timedelta(days=1)
+    for _ in range(366):
+        if is_trading_day(cur):
+            return cur
+        cur += timedelta(days=1)
+    raise ValueError(f"no trading day found after {d}")
+
+
+def current_trading_day(d: date) -> date:
+    """``d`` if it's a session, else previous_trading_day(d)."""
+    if is_trading_day(d):
+        return d
+    return previous_trading_day(d)
+
+
 def anchor_session_date(run_at_et: datetime) -> date:
     """Trading day whose 5:00 AM ET anchor starts the news window.
 

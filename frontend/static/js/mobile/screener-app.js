@@ -562,10 +562,13 @@
 
     async function loadWeeklyDisposed() {
       try {
+        const passUrl = weeklyDisp === 'daily'
+          ? '/api/frontend/abi-passes?scope=daily'
+          : '/api/frontend/abi-passes';
         const [wlResp, trResp, psResp] = await Promise.all([
           fetch('/api/frontend/abi-watchlist'),
           fetch('/api/frontend/abi-trades'),
-          fetch('/api/frontend/abi-passes'),
+          fetch(passUrl),
         ]);
         if (wlResp.ok) {
           const wl = await wlResp.json();
@@ -631,7 +634,11 @@
           await fetch('/api/frontend/abi-passes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ticker, sources: weeklySources(ticker) }),
+            body: JSON.stringify({
+              ticker,
+              sources: weeklySources(ticker),
+              scope: weeklyDisp === 'daily' ? 'daily' : 'weekly',
+            }),
           });
         } else if (kind === 'buy' || kind === 'short') {
           await fetch('/api/frontend/abi-trades', {

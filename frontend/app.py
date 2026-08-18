@@ -995,7 +995,9 @@ def api_abi_trades_data():
 
 @app.route('/api/frontend/abi-passes', methods=['GET'])
 def api_get_abi_passes():
-    data, status_code = make_backend_request('/api/abi-passes')
+    qs = request.query_string.decode() if request.query_string else ''
+    endpoint = f'/api/abi-passes?{qs}' if qs else '/api/abi-passes'
+    data, status_code = make_backend_request(endpoint)
     if data is None:
         return jsonify({'error': 'Failed to fetch passes'}), status_code
     return jsonify(data), status_code

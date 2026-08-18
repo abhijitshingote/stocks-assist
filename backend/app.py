@@ -45,7 +45,7 @@ ABI_CHART_NOTES_FILE = os.path.join(
 )
 CHART_NOTE_MAX_LEN = 80
 CHART_NOTE_MAX_COUNT = 5
-# Cycle-scoped weekly-review passes (hidden until next Saturday).
+# Cycle-scoped passes. Weekly: Sat 00:00 ET → Friday. Daily: session → next open 9:30 ET.
 ABI_PASSES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_passes.json')
 # Trade candidates (buy/short). Persistent destination list.
 ABI_TRADES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_trades.json')
@@ -2176,6 +2176,44 @@ def current_weekly_cycle(now=None):
     return sat.isoformat(), fri.isoformat()
 
 
+def current_daily_cycle(now=None):
+    """Current NYSE session until next open (9:30 ET). Returns (cycle_iso, next_iso).
+
+    Same 9:30 cutoff as ``anchor_session_date``: weekday 9:29 still previous session.
+    """
+    from market_brief.trading_calendar import anchor_session_date, next_trading_day
+    et = (now or datetime.now(timezone.utc)).astimezone(ZoneInfo('America/New_York'))
+    cycle = anchor_session_date(et)
+    nxt = next_trading_day(cycle)
+    return cycle.isoformat(), nxt.isoformat()
+
+
+def _is_daily_pass(entry):
+    if not isinstance(entry, dict):
+        return False
+    if entry.get('scope') == 'daily':
+        return True
+    return 'daily' in (entry.get('sources') or [])
+
+
+def _pass_is_active(entry, scope='weekly', weekly_cycle=None, daily_cycle=None):
+    """Weekly pages ignore daily-scoped rows. Daily pages hide daily-cycle + weekly-cycle."""
+    if not isinstance(entry, dict):
+        return False
+    if weekly_cycle is None:
+        weekly_cycle, _ = current_weekly_cycle()
+    daily = _is_daily_pass(entry)
+    if scope == 'daily':
+        if daily_cycle is None:
+            daily_cycle, _ = current_daily_cycle()
+        if daily:
+            return entry.get('cycle') == daily_cycle
+        return entry.get('cycle') == weekly_cycle
+    if daily:
+        return False
+    return entry.get('cycle') == weekly_cycle
+
+
 def _weekly_review_config_payload():
     cycle, friday = current_weekly_cycle()
     return {
@@ -2263,7 +2301,7 @@ def build_weekly_review(session):
     passes = {
         t.upper()
         for t, e in _load_passes().items()
-        if isinstance(e, dict) and e.get('cycle') == cycle
+        if _pass_is_active(e, 'weekly', cycle)
     }
 
     hidden_watch = hidden_trade = hidden_pass = 0
@@ -5080,16 +5118,26 @@ def _remove_from_trades(ticker):
 
 @app.route('/api/abi-passes', methods=['GET'])
 def get_abi_passes():
-    cycle, friday = current_weekly_cycle()
+    scope = (request.args.get('scope') or 'weekly').lower()
+    if scope not in ('weekly', 'daily'):
+        scope = 'weekly'
+    w_cycle, w_end = current_weekly_cycle()
+    d_cycle, d_end = current_daily_cycle()
     data = _load_passes()
     out = {}
     for t, e in data.items():
         if not isinstance(e, dict):
             continue
         entry = dict(e)
-        entry['is_active'] = entry.get('cycle') == cycle
+        entry['is_active'] = _pass_is_active(entry, scope, w_cycle, d_cycle)
         out[t] = entry
-    return jsonify({'cycle': cycle, 'cycle_ends': friday, 'passes': out})
+    payload = {
+        'scope': scope,
+        'cycle': d_cycle if scope == 'daily' else w_cycle,
+        'cycle_ends': d_end if scope == 'daily' else w_end,
+        'passes': out,
+    }
+    return jsonify(payload)
 
 
 @app.route('/api/abi-passes', methods=['POST'])
@@ -5098,21 +5146,30 @@ def add_abi_pass():
     ticker = (data.get('ticker') or '').upper()
     if not ticker:
         return jsonify({'error': 'ticker field is required'}), 400
-    cycle, friday = current_weekly_cycle()
+    sources = data.get('sources') if isinstance(data.get('sources'), list) else []
+    sources = [str(s) for s in sources]
+    scope = (data.get('scope') or '').lower()
+    if scope not in ('daily', 'weekly'):
+        scope = 'daily' if 'daily' in sources else 'weekly'
+    if scope == 'daily':
+        cycle, cycle_ends = current_daily_cycle()
+    else:
+        cycle, cycle_ends = current_weekly_cycle()
     now = datetime.now(pytz.timezone('US/Eastern'))
     passes = _load_passes()
-    sources = data.get('sources') if isinstance(data.get('sources'), list) else []
     passes[ticker] = {
         'disposition': 'pass',
+        'scope': scope,
         'cycle': cycle,
         'at': now.isoformat(),
-        'sources': [str(s) for s in sources],
+        'sources': sources,
     }
     _save_passes(passes)
     return jsonify({
         'ticker': ticker,
+        'scope': scope,
         'cycle': cycle,
-        'cycle_ends': friday,
+        'cycle_ends': cycle_ends,
         'status': 'passed',
     })
 
