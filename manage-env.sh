@@ -153,6 +153,7 @@ case $ACTION in
         "db_scripts/initialize_data/seed_profiles_from_fmp.py:Seed company profiles"
         "db_scripts/initialize_data/seed_ratios_from_fmp.py:Seed financial ratios"
         "db_scripts/initialize_data/seed_shares_float_from_fmp.py:Seed shares float data"
+        "db_scripts/initialize_data/backfill_missing_analyst_estimates.py:Backfill missing analyst estimates"
         "db_scripts/update_data/stock_metrics_update.py:Compute stock metrics"
         "db_scripts/update_data/ticker_moving_averages_update.py:Compute ticker moving averages"
         "db_scripts/update_data/market_breadth_update.py:Compute market breadth"
@@ -188,7 +189,7 @@ case $ACTION in
         # Build command with optimization flags for scripts that support them
         EXTRA_ARGS=""
         case $script in
-            *seed_ohlc*|*seed_analyst*|*seed_earnings*|*seed_profiles*|*seed_ratios*|*seed_shares_float*|*daily_price*)
+            *seed_ohlc*|*seed_analyst*|*backfill_missing_analyst*|*seed_earnings*|*seed_profiles*|*seed_ratios*|*seed_shares_float*|*daily_price*)
                 EXTRA_ARGS="--workers=$WORKERS --batch-size=$BATCH_SIZE"
                 ;;
         esac
@@ -273,6 +274,7 @@ case $ACTION in
         scripts=(
             "db_scripts/update_data/daily_price_update.py:Update daily stock prices"
             "db_scripts/update_data/daily_indices_update.py:Update daily index prices"
+            "db_scripts/initialize_data/backfill_missing_analyst_estimates.py:Backfill missing analyst estimates"
             "db_scripts/update_data/stock_metrics_update.py:Update stock metrics"
             "db_scripts/update_data/ticker_moving_averages_update.py:Update ticker moving averages"
             "db_scripts/update_data/market_breadth_update.py:Update market breadth"
@@ -439,6 +441,7 @@ case $ACTION in
             "db_scripts/initialize_data/seed_profiles_from_fmp.py --missing-only:Seed company profiles (missing only)"
             "db_scripts/initialize_data/seed_ratios_from_fmp.py:Seed financial ratios"
             "db_scripts/initialize_data/seed_shares_float_from_fmp.py:Seed shares float data"
+            "db_scripts/initialize_data/backfill_missing_analyst_estimates.py:Backfill missing analyst estimates"
             "db_scripts/update_data/stock_metrics_update.py:Compute stock metrics"
             "db_scripts/update_data/ticker_moving_averages_update.py:Compute ticker moving averages"
             "db_scripts/update_data/market_breadth_update.py:Compute market breadth"
@@ -473,7 +476,7 @@ case $ACTION in
             # Build command with optimization flags
             EXTRA_ARGS=""
             case $script in
-                *seed_ohlc*|*seed_analyst*|*seed_earnings*|*seed_profiles*|*seed_ratios*|*seed_shares_float*|*daily_price*)
+                *seed_ohlc*|*seed_analyst*|*backfill_missing_analyst*|*seed_earnings*|*seed_profiles*|*seed_ratios*|*seed_shares_float*|*daily_price*)
                     EXTRA_ARGS="--workers=$WORKERS --batch-size=$BATCH_SIZE"
                     ;;
             esac
