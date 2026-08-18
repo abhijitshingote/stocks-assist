@@ -53,6 +53,7 @@
 
   window.MobileScreener.init({
     pageTitle: 'Strong Stocks',
+    pageLabel: 'Strong',
     weeklyDisposition: 'strong',
     fetchStocks: cap => fetch('/api/frontend/strong-stocks/' + cap)
       .then(r => r.json())
@@ -64,6 +65,7 @@
     }),
     listValueLabel: 'TI65',
     listValueFn: listValue,
+    listMetaFn: s => s.adjusted_ti65 != null ? s.adjusted_ti65.toFixed(2) : '',
     extraFilterHtml:
       '<div class="strip recency-strip" role="tablist" aria-label="Sort">' +
       '<span class="strip-label">Sort</span>' +
@@ -80,35 +82,6 @@
           document.querySelectorAll('[data-sort]').forEach(b => b.classList.toggle('active', b === btn));
           app.loadData(app.currentCap);
         });
-      });
-    },
-    renderList: (visible, app) => {
-      const chipStrip = document.getElementById('chipStrip');
-      const tbody = document.getElementById('stockTableBody');
-
-      chipStrip.innerHTML = visible.slice(0, 24).map(s => {
-        const active = s.ticker === app.selectedTicker ? ' active' : '';
-        return '<div class="tchip' + active + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
-          '<span class="tk">' + U.escAttr(s.ticker) +
-          '</span><span class="ret">' + listValue(s) + '</span></div>';
-      }).join('');
-
-      tbody.innerHTML = visible.map((s, i) => {
-        const active = s.ticker === app.selectedTicker ? ' active' : '';
-        const adj = s.adjusted_ti65 != null ? s.adjusted_ti65.toFixed(2) : '—';
-        return '<tr class="' + active.trim() + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
-          '<td>' + (i + 1) + '</td>' +
-          '<td>' + U.escAttr(s.ticker) + '</td>' +
-          '<td>' + U.fmtMktCap(s.market_cap) + '</td>' +
-          '<td>' + listValue(s) + '</td>' +
-          '<td class="stars muted" style="font-size:0.5rem">' + U.escAttr(adj) + '</td></tr>';
-      }).join('');
-
-      chipStrip.querySelectorAll('.tchip').forEach(c => {
-        c.addEventListener('click', () => app.selectStock(c.dataset.ticker));
-      });
-      tbody.querySelectorAll('tr').forEach(r => {
-        r.addEventListener('click', () => app.selectStock(r.dataset.ticker));
       });
     },
   });

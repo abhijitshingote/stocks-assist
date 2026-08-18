@@ -17,8 +17,8 @@
   --meta:           var(--accent-blue);
   --border:         var(--border-color);
   --border-soft:    #21262d;
-  --accent:         var(--accent-blue);
-  --accent-on:      var(--bg-dark);
+  --accent:         var(--accent-yellow);
+  --accent-on:      #0c0e12;
   --accent-hover:   color-mix(in oklab, var(--accent), white 8%);
   --accent-active:  color-mix(in oklab, var(--accent), white 14%);
   --success:        var(--accent-green);
@@ -49,7 +49,7 @@
   /* ── Elevation ── */
   --elev-ring:   0 0 0 1px var(--border);
   --elev-raised: 0 22px 58px rgba(0, 0, 0, 0.45);
-  --focus-ring:  0 0 0 4px rgba(88, 166, 255, 0.24);
+  --focus-ring:  0 0 0 3px rgba(210, 153, 34, 0.28);
 
   /* ── Motion ── */
   --motion-fast:    150ms;

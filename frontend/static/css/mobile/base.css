@@ -7,12 +7,12 @@
       display: flex;
       justify-content: center;
       -webkit-font-smoothing: antialiased;
-      font-size: 13px;
+      font-size: 15px;
       line-height: 1.55;
     }
     .phone {
       width: 100%;
-      max-width: 390px;
+      max-width: none;
       height: 100dvh;
       background: var(--bg);
       display: flex;
@@ -24,22 +24,40 @@
     /* ── App header ── */
     .app-header {
       flex-shrink: 0;
-      padding: calc(10px + var(--safe-top)) 16px 10px;
+      padding: calc(10px + var(--safe-top)) 16px 8px;
       border-bottom: 1px solid var(--border-soft);
-      background: var(--surface);
+      background: var(--bg);
     }
     .header-row1 {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin-bottom: 0;
     }
+    .phone.screener .header-row1 { margin-bottom: 6px; }
     .logo {
-      font: 700 0.8rem var(--font-display);
-      color: var(--accent);
-      letter-spacing: -0.025em;
+      font: 700 13px var(--font-display);
+      letter-spacing: 0.06em;
+      color: var(--muted);
       white-space: nowrap;
     }
+    .dr-ident { flex-shrink: 0; line-height: 1.15; min-width: 0; }
+    .dr-title {
+      font: 650 18px / 1.1 var(--font-display);
+      letter-spacing: -0.03em;
+      color: var(--fg);
+      max-width: 42vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .dr-title:empty { display: none; }
+    .dr-asof {
+      margin-top: 2px;
+      font: 500 11px / 1.2 var(--font-mono);
+      color: var(--fg-2);
+    }
+    .dr-asof:empty { display: none; }
     .search-box {
       flex: 1;
       display: flex;
@@ -47,9 +65,10 @@
       gap: 8px;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-pill);
       padding: 8px 12px;
-      font-size: var(--text-sm);
+      min-height: 40px;
+      font-size: 16px;
       color: var(--fg);
       font-family: var(--font-mono);
       font-variant-numeric: tabular-nums;
@@ -64,7 +83,7 @@
       color: var(--fg);
       font-family: var(--font-mono);
       font-variant-numeric: tabular-nums;
-      font-size: var(--text-sm);
+      font-size: 16px;
       letter-spacing: 0.02em;
       text-transform: uppercase;
       padding: 0;
@@ -78,33 +97,26 @@
       border-color: var(--accent);
       box-shadow: var(--focus-ring);
     }
-    .utility-header .utility-title {
-      font-size: 0.7rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-top: 2px;
-    }
     .menu-btn {
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--fg-2);
-      border-radius: var(--radius-sm);
-      padding: 8px 12px;
-      font: 600 0.75rem var(--font-body);
+      border-radius: var(--radius-pill);
+      padding: 0 14px;
+      min-height: 40px;
+      font: 600 13px var(--font-body);
       cursor: pointer;
       transition: background var(--motion-fast) var(--ease-standard);
     }
     .menu-btn:hover { background: var(--bg); }
     .header-row2 {
       display: flex;
-      gap: 14px;
-      font-size: 0.7rem;
-      color: var(--muted);
+      gap: 16px;
+      font-size: 12px;
+      color: var(--fg-2);
       font-family: var(--font-mono);
       font-variant-numeric: tabular-nums;
     }
-    .header-row2 b { color: var(--fg); font-weight: 600; }
+    .header-row2 b { color: var(--fg); font-weight: 600; font-size: 12px; }
     .header-row2 .up { color: var(--success); }
     .header-row2 .down { color: var(--danger); }
-

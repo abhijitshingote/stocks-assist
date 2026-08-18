@@ -1,32 +1,35 @@
-{# Shared mobile screener shell — used by all stock list mobile pages #}
-<div class="phone" id="phone">
+{# Shared mobile screener shell — list-first, push-detail.
+   Optional: set phone_class before include #}
+{% set header_stats = true %}
+<div class="phone screener{% if phone_class is defined %} {{ phone_class }}{% endif %}" id="phone">
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <span>Loading…</span>
   </div>
 
-  {% set header_stats = true %}
   {% include "mobile/_app_header.html" %}
 
-  <div class="filter-summary" id="filterSummary" role="button" tabindex="0" aria-expanded="false">
-    <span class="chip" id="filterChipText"><b>All</b> · All sectors · <b>0</b> stocks</span>
-    <span class="chev">▼</span>
+  <div class="dr-toolbar">
+    <div class="strip" role="tablist" aria-label="Market cap" id="capStrip">
+      <button class="pill active" type="button" data-cap="all">All</button>
+      <button class="pill" type="button" data-cap="mega">Mega</button>
+      <button class="pill" type="button" data-cap="large">Large</button>
+      <button class="pill" type="button" data-cap="mid">Mid</button>
+      <button class="pill" type="button" data-cap="small">Small</button>
+      <button class="pill" type="button" data-cap="micro">Micro</button>
+    </div>
+    <button class="filter-summary" id="filterSummary" type="button" aria-expanded="false">
+      <span class="chip" id="filterChipText">Filters</span>
+    </button>
+    <button class="copy-sm" type="button" id="copyBtn">Copy</button>
   </div>
 
+  <div class="dr-scrim" id="drScrim"></div>
   <div class="filter-drawer" id="filterDrawer">
     <div class="filter-inner">
       <div class="filter-stats">
         <span>Stocks: <b id="totalStocks2">—</b></span>
         <span>Showing: <b id="showingCount2">—</b></span>
-      </div>
-      <div class="strip" role="tablist" aria-label="Market cap" id="capStrip">
-        <span class="strip-label">Cap</span>
-        <button class="pill active" type="button" data-cap="all">All</button>
-        <button class="pill" type="button" data-cap="mega">Mega</button>
-        <button class="pill" type="button" data-cap="large">Large</button>
-        <button class="pill" type="button" data-cap="mid">Mid</button>
-        <button class="pill" type="button" data-cap="small">Small</button>
-        <button class="pill" type="button" data-cap="micro">Micro</button>
       </div>
       <div id="screenerExcludes" class="extra-filters"></div>
       <div id="extraFilters" class="extra-filters"></div>
@@ -40,11 +43,11 @@
       <div class="chip-row">
         <span class="label">List · <b id="listCount">0</b></span>
         <div class="chips" id="chipStrip"></div>
-        <button class="copy-sm" type="button" id="copyBtn">Copy</button>
       </div>
       <div class="list-handle" id="listHandle" aria-label="Resize list"></div>
       <div class="list-table-wrap">
-        <table class="stock-table">
+        <div class="dr-card-list" id="drCardList"></div>
+        <table class="stock-table" hidden>
           <thead>
             <tr><th>SN</th><th>Ticker</th><th>MCap</th><th id="listValueHeader">Ret</th><th>★</th></tr>
           </thead>
@@ -52,9 +55,10 @@
         </table>
       </div>
     </div>
-
-    {% include "mobile/_detail_panel.html" %}
   </div>
+
+  {% set detail_overlay = true %}
+  {% include "mobile/_detail_panel.html" %}
 
   <div class="sector-sheet" id="sectorSheet">
     <div class="sh">
@@ -65,7 +69,7 @@
     <div class="sector-list" id="sectorList"></div>
   </div>
 
-  <div class="mode-toggle">
+  <div class="mode-toggle" hidden>
     <button type="button" class="active" data-mode="analyze">Analyze</button>
     <button type="button" data-mode="browse">Browse</button>
   </div>

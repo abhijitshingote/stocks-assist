@@ -2,6 +2,7 @@
   'use strict';
   window.MobileScreener.init({
     pageTitle: 'Technical',
+    pageLabel: 'Tech',
     fetchStocks: cap => fetch('/api/frontend/technical-screener/reversal/' + cap)
       .then(r => r.json())
       .then(data => (data && data.error ? [] : data)),

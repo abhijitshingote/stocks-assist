@@ -2,6 +2,7 @@
   'use strict';
   window.MobileScreener.init({
     pageTitle: 'All Stocks',
+    pageLabel: 'All',
     usesCapFilter: false,
     fetchStocks: () => fetch('/api/frontend/all-stocks')
       .then(r => r.json())

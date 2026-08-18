@@ -86,7 +86,7 @@
      removeOnWatch:  false | true
                               When a ticker is added to the watchlist, drop it from the
                               in-memory list (weekly review queue).
-     weeklyDisposition: false | true | 'vsg90'|'strong'|'top520'|'fastrs'
+     weeklyDisposition: false | true | 'vsg90'|'strong'|'top520'|'fastrs'|'daily'
                               Pass / Buy / Short in #wrDisp. true = weekly review
                               (sources from the row). A source id also hides
                               current-cycle passes + watchlist + trades on load

@@ -538,7 +538,7 @@
   padding: 10px 14px;
   background: color-mix(in oklab, var(--accent) 12%, var(--surface));
   border-bottom: 1px solid var(--border-soft);
-  font-size: 0.68rem;
+  font-size: 13px;
 }
 
 .brief-progress strong { color: var(--accent); }
@@ -552,29 +552,29 @@
 }
 
 .brief-content-area .markdown-body {
-  font-size: 0.75rem;
+  font-size: 15px;
   line-height: 1.55;
   color: var(--fg);
 }
 
-.brief-content-area .markdown-body h1 { font-size: 1.1rem; margin: 1rem 0 0.5rem; color: var(--accent); }
-.brief-content-area .markdown-body h2 { font-size: 0.95rem; margin: 0.9rem 0 0.4rem; color: var(--accent); }
-.brief-content-area .markdown-body h3 { font-size: 0.85rem; margin: 0.75rem 0 0.35rem; }
+.brief-content-area .markdown-body h1 { font-size: 18px; margin: 1rem 0 0.5rem; color: var(--accent); }
+.brief-content-area .markdown-body h2 { font-size: 16px; margin: 0.9rem 0 0.4rem; color: var(--accent); }
+.brief-content-area .markdown-body h3 { font-size: 15px; margin: 0.75rem 0 0.35rem; }
 .brief-content-area .markdown-body p { margin-bottom: 0.5rem; }
 .brief-content-area .markdown-body li { margin-left: 1rem; margin-bottom: 0.25rem; }
 .brief-content-area .markdown-body code {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 13px;
   background: var(--surface-warm);
   padding: 1px 4px;
   border-radius: 3px;
 }
 
 .brief-table-wrap { overflow-x: auto; margin: 8px 0; }
-.brief-data-table { width: 100%; border-collapse: collapse; font-size: 0.65rem; }
+.brief-data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .brief-data-table th, .brief-data-table td {
   border: 1px solid var(--border);
-  padding: 4px 6px;
+  padding: 6px 8px;
   text-align: left;
 }
 .brief-data-table th { background: var(--surface); color: var(--fg-2); }
@@ -583,24 +583,25 @@
   background: color-mix(in oklab, var(--accent) 10%, var(--surface));
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 10px;
+  padding: 12px 14px;
   margin-bottom: 12px;
 }
 
 .tldr-title {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 11px;
   font-weight: 700;
   color: var(--accent);
   text-transform: uppercase;
+  letter-spacing: 0.06em;
   margin-bottom: 8px;
 }
 
 .tldr-item {
-  font-size: 0.72rem;
-  line-height: 1.45;
-  margin-bottom: 6px;
-  padding-bottom: 6px;
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border-soft);
 }
 
@@ -610,21 +611,22 @@
   background: var(--surface);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-sm);
-  padding: 10px;
+  padding: 12px 14px;
   margin-bottom: 8px;
 }
 
 .topic-title, .callout-ticker {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: 16px;
+  letter-spacing: -0.02em;
   color: var(--accent);
   margin-bottom: 6px;
 }
 
 .topic-bullet, .callout-summary, .watch-item {
-  font-size: 0.72rem;
-  line-height: 1.45;
+  font-size: 15px;
+  line-height: 1.5;
   margin-bottom: 4px;
   color: var(--fg-2);
 }
@@ -632,8 +634,8 @@
 .ticker-tag {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.58rem;
-  padding: 1px 5px;
+  font-size: 12px;
+  padding: 2px 6px;
   border-radius: 4px;
   background: color-mix(in oklab, var(--accent) 15%, var(--surface));
   color: var(--accent);
@@ -642,28 +644,30 @@
 }
 
 .section-h2 {
-  font-size: 0.78rem;
+  font-size: 13px;
   color: var(--accent);
-  margin: 12px 0 6px;
-  font-weight: 600;
+  margin: 16px 0 8px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
 }
 
 .generate-prompt {
   text-align: center;
   padding: 32px 16px;
   color: var(--fg-2);
-  font-size: 0.75rem;
+  font-size: 15px;
 }
 
 .generate-prompt button {
   margin-top: 12px;
-  padding: 8px 16px;
+  padding: 0 16px;
+  min-height: 36px;
   background: var(--accent);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
   color: var(--accent-on);
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 13px;
   cursor: pointer;
 }
 
@@ -1242,3 +1246,86 @@
   color: var(--fg-2);
   line-height: 1.5;
 }
+
+/* Type scale — match screener (px) */
+.md-back {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font: 600 13px var(--font-body);
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: 0;
+}
+.md-item { min-height: 56px; padding: 12px 16px; }
+.md-item-title { font-size: 16px; }
+.md-item-meta { font-size: 13px; }
+.md-item-preview { font-size: 13px; }
+.md-search,
+.md-form-group input,
+.md-form-group textarea,
+.md-date-row input { font-size: 16px; }
+.md-btn {
+  font-size: 13px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+}
+.md-tag { font-size: 12px; padding: 5px 10px; }
+.md-chip { font-size: 13px; padding: 8px 12px; border-radius: var(--radius-pill); }
+.md-detail-title { font-size: 16px; }
+.md-empty, .md-loading { font-size: 15px; }
+
+.ctx-tf-bar {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 2px;
+  gap: 2px;
+}
+.ctx-tf-bar button {
+  font: 600 12px var(--font-mono);
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  min-height: 28px;
+}
+.ctx-tf-bar button.active {
+  background: var(--accent);
+  color: var(--accent-on);
+  box-shadow: none;
+}
+.ctx-chart-title { font-size: 16px; }
+.ctx-chart-sub { font-size: 12px; }
+.ctx2-section-title { font-size: 11px; }
+.ctx2-link { padding: 12px 0; font-size: 15px; }
+
+.home-page .home-section-label { font-size: 11px; }
+.home-sub-label { font-size: 12px; }
+.home-index-card { padding: 12px 16px; }
+.home-index-card .sym { font-size: 16px; }
+.home-index-card .name { font-size: 13px; }
+.home-index-card .price { font-size: 15px; }
+.home-ret-cell .lbl { font-size: 11px; }
+.home-ret-cell .val { font-size: 14px; }
+.home-sort-btn {
+  font-size: 13px;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+}
+.home-sector-tile { padding: 10px 12px; }
+.home-sector-tile .sym { font-size: 15px; }
+.home-sector-tile .ret { font-size: 15px; }
+.home-sector-tile .name { font-size: 12px; }
+.home-breadth-stat .label { font-size: 11px; }
+.home-breadth-stat .value { font-size: 18px; }
+.home-chart-title { font-size: 16px; }
+
+.help-mobile .help-wrap h1 { font-size: 18px; }
+.help-mobile .help-sub { font-size: 13px; }
+.help-mobile .help-section h2 { font-size: 11px; }
+.help-mobile .help-name a { font-size: 16px; }
+.help-mobile .help-route { font-size: 12px; }
+.help-mobile .help-desc,
+.help-mobile .help-note { font-size: 15px; }

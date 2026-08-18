@@ -59,6 +59,7 @@
 
   window.MobileScreener.init({
     pageTitle: 'Top 5D/20D',
+    pageLabel: '5/20',
     weeklyDisposition: 'top520',
     fetchStocks: cap => fetch('/api/frontend/top-returns-5-20/all')
       .then(r => r.json())
@@ -74,6 +75,17 @@
     }),
     listValueLabel: '5D',
     listValueFn: listValue,
+    listValueClsFn: s => U.retCls(s.dr_5),
+    listBadgeFn: s => {
+      const set = setChip(s);
+      return set ? '<span class="dr-evt">' + set + '</span>' : '';
+    },
+    listMetaFn: s => {
+      if (sortMode === 'ready') {
+        return setupParts(setupMap ? setupMap[s.ticker] : null).total.toFixed(2);
+      }
+      return s.adjusted_dr_5 != null ? s.adjusted_dr_5.toFixed(1) : '';
+    },
     extraFilterHtml:
       '<div class="strip recency-strip" role="tablist" aria-label="Sort">' +
       '<span class="strip-label">Sort</span>' +
@@ -90,38 +102,6 @@
           document.querySelectorAll('[data-sort]').forEach(b => b.classList.toggle('active', b === btn));
           app.loadData(app.currentCap);
         });
-      });
-    },
-    renderList: (visible, app) => {
-      const chipStrip = document.getElementById('chipStrip');
-      const tbody = document.getElementById('stockTableBody');
-
-      chipStrip.innerHTML = visible.slice(0, 24).map(s => {
-        const active = s.ticker === app.selectedTicker ? ' active' : '';
-        return '<div class="tchip' + active + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
-          '<span class="tk">' + U.escAttr(s.ticker) +
-          '</span><span class="ret">' + listValue(s) + '</span></div>';
-      }).join('');
-
-      tbody.innerHTML = visible.map((s, i) => {
-        const active = s.ticker === app.selectedTicker ? ' active' : '';
-        const score = sortMode === 'ready'
-          ? setupParts(setupMap ? setupMap[s.ticker] : null).total.toFixed(2)
-          : (s.adjusted_dr_5 != null ? s.adjusted_dr_5.toFixed(1) : '—');
-        const set = setChip(s);
-        return '<tr class="' + active.trim() + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
-          '<td>' + (i + 1) + '</td>' +
-          '<td>' + U.escAttr(s.ticker) + (set ? ' <span class="evt-badge">' + set + '</span>' : '') + '</td>' +
-          '<td>' + U.fmtMktCap(s.market_cap) + '</td>' +
-          '<td>' + listValue(s) + '</td>' +
-          '<td class="stars muted" style="font-size:0.5rem">' + U.escAttr(score) + '</td></tr>';
-      }).join('');
-
-      chipStrip.querySelectorAll('.tchip').forEach(c => {
-        c.addEventListener('click', () => app.selectStock(c.dataset.ticker));
-      });
-      tbody.querySelectorAll('tr').forEach(r => {
-        r.addEventListener('click', () => app.selectStock(r.dataset.ticker));
       });
     },
   });

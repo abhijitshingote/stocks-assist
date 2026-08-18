@@ -2,6 +2,7 @@
   'use strict';
   window.MobileScreener.init({
     pageTitle: 'Main View',
+    pageLabel: 'Main',
     fetchStocks: cap => fetch('/api/frontend/main-view/' + cap)
       .then(r => r.json())
       .then(data => (data && data.error ? [] : data)),

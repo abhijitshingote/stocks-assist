@@ -13,15 +13,29 @@
     return !!(s.event_today || (s.as_of && s.last_event_date === s.as_of));
   }
 
-  function eventMag(s) {
-    if (!eventToday(s)) return null;
-    return VsgEvent.magStr(s, {compact: true}) || null;
+  function evtBadge(s) {
+    if (!eventToday(s)) return '';
+    const b = VsgEvent.badge(s);
+    if (!b) return '';
+    return '<span class="dr-evt ' + VsgEvent.badgeClass(s) + '">' + b + '</span>';
   }
 
-  function listValue(s) {
-    const mag = eventMag(s);
-    if (mag) return mag;
-    return U.fmtRet(s.dr_1);
+  function fmtDr1(v) {
+    if (v == null) return '—';
+    return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+  }
+
+  function formatDisplayDate(dateStr) {
+    if (!dateStr) return '';
+    try {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const date = new Date(y, m - 1, d);
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return days[date.getDay()] + ' ' + months[date.getMonth()] + ' ' + d;
+    } catch (e) {
+      return dateStr;
+    }
   }
 
   function sortKey(s) {
@@ -29,18 +43,23 @@
     return v == null ? -Infinity : v;
   }
 
-  function sortStocks(stocks) {
-    return [...stocks].sort((a, b) => sortKey(b) - sortKey(a));
-  }
-
   window.MobileScreener.init({
     pageTitle: 'Daily Review',
+    pageLabel: 'Daily',
+    weeklyDisposition: 'daily',
     fetchStocks: cap => fetch('/api/frontend/daily-review/' + cap)
       .then(r => r.json())
       .then(data => (data && data.error ? [] : data)),
-    sortStocks: sortStocks,
+    sortStocks: stocks => [...stocks].sort((a, b) => sortKey(b) - sortKey(a)),
     listValueLabel: '1D',
-    listValueFn: listValue,
+    listValueFn: s => fmtDr1(s.dr_1),
+    listValueClsFn: s => U.retCls(s.dr_1),
+    listBadgeFn: evtBadge,
+    listRowClassFn: s => eventToday(s) ? 'event' : '',
+    subtitleFn: visible => {
+      const asOf = visible[0] && visible[0].as_of;
+      return asOf ? formatDisplayDate(asOf) : '';
+    },
     extraFilterHtml:
       '<div class="strip recency-strip" role="tablist" aria-label="Sort">' +
       '<span class="strip-label">Sort</span>' +
@@ -55,37 +74,6 @@
           document.querySelectorAll('.recency-pill').forEach(b => b.classList.toggle('active', b === btn));
           app.loadData(app.currentCap);
         });
-      });
-    },
-    renderList: (visible, app) => {
-      const chipStrip = document.getElementById('chipStrip');
-      const tbody = document.getElementById('stockTableBody');
-
-      chipStrip.innerHTML = visible.slice(0, 24).map(s => {
-        const active = s.ticker === app.selectedTicker ? ' active' : '';
-        const badge = eventToday(s) ? VsgEvent.badge(s) : '';
-        return '<div class="tchip' + active + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
-          '<span class="tk">' + U.escAttr(s.ticker) + (badge ? '<span class="evt-badge">' + badge + '</span>' : '') +
-          '</span><span class="ret">' + U.fmtRet(s.dr_1) + '</span></div>';
-      }).join('');
-
-      tbody.innerHTML = visible.map((s, i) => {
-        const active = s.ticker === app.selectedTicker ? ' active' : '';
-        const badge = eventToday(s) ? VsgEvent.badge(s) : '';
-        const mag = eventMag(s);
-        return '<tr class="' + active.trim() + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
-          '<td>' + (i + 1) + '</td>' +
-          '<td>' + U.escAttr(s.ticker) + (badge ? ' <span class="evt-badge">' + badge + '</span>' : '') + '</td>' +
-          '<td>' + U.fmtMktCap(s.market_cap) + '</td>' +
-          '<td>' + U.fmtRet(s.dr_1) + (mag ? ' ' + mag : '') + '</td>' +
-          '<td class="stars muted" style="font-size:0.5rem">' + U.escAttr((s.as_of || '').slice(5)) + '</td></tr>';
-      }).join('');
-
-      chipStrip.querySelectorAll('.tchip').forEach(c => {
-        c.addEventListener('click', () => app.selectStock(c.dataset.ticker));
-      });
-      tbody.querySelectorAll('tr').forEach(r => {
-        r.addEventListener('click', () => app.selectStock(r.dataset.ticker));
       });
     },
   });

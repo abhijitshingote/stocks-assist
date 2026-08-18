@@ -306,6 +306,7 @@ class StockChart {
             height: options.height || CHART_CONFIG.defaultHeight,
             showVolspikeMarkers: options.showVolspikeMarkers !== false,
             compact: options.compact || false,
+            volumeRatio: options.volumeRatio,
         };
         
         this.chart = null;
@@ -418,8 +419,9 @@ class StockChart {
         const chartAreaH = height - legendH;
         if (chartAreaH < 80) return;
 
-        const minVolumeH = this.options.compact ? 44 : 40;
-        let volumeH = Math.floor(chartAreaH * CHART_CONFIG.volumeRatio);
+        const volRatio = this.options.volumeRatio != null ? this.options.volumeRatio : CHART_CONFIG.volumeRatio;
+        const minVolumeH = Math.round((this.options.compact ? 44 : 40) * (volRatio / CHART_CONFIG.volumeRatio));
+        let volumeH = Math.floor(chartAreaH * volRatio);
         if (volumeH < minVolumeH && chartAreaH > minVolumeH + 100) {
             volumeH = minVolumeH;
         }
@@ -913,9 +915,10 @@ class StockChart {
             throw new Error(`Container not found: ${this.containerId}`);
         }
         
-        // Calculate heights: 3:1 ratio for price:volume
+        // Calculate heights: candlestick vs volume
         const totalHeight = this.options.height;
-        const priceHeight = Math.floor(totalHeight * CHART_CONFIG.candlestickRatio);
+        const volRatio = this.options.volumeRatio != null ? this.options.volumeRatio : CHART_CONFIG.volumeRatio;
+        const priceHeight = Math.floor(totalHeight * (1 - volRatio));
         const volumeHeight = totalHeight - priceHeight;
         
         // Create legend with MA toggles

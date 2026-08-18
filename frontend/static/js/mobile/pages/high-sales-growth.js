@@ -30,6 +30,7 @@
 
   window.MobileScreener.init({
     pageTitle: 'High Growth',
+    pageLabel: 'Growth',
     fetchStocks: cap => fetch('/api/frontend/high-sales-growth/' + cap)
       .then(r => r.json())
       .then(data => (data && data.error ? [] : data)),

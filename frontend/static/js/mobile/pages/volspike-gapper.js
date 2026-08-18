@@ -35,6 +35,7 @@
 
   window.MobileScreener.init({
     pageTitle: 'Vol Spike & Gaps',
+    pageLabel: 'VSG',
     fetchStocks: cap => fetch('/api/frontend/volspike-gapper/' + cap)
       .then(r => r.json())
       .then(data => (data && data.error ? [] : data)),
@@ -42,6 +43,12 @@
     sortStocks: sortEvents,
     listValueLabel: 'Event',
     listValueFn: eventMag,
+    listValueClsFn: s => s.last_event_return != null ? U.retCls(s.last_event_return) : '',
+    listBadgeFn: s => {
+      const b = VsgEvent.badge(s);
+      return b ? '<span class="dr-evt ' + VsgEvent.badgeClass(s) + '">' + b + '</span>' : '';
+    },
+    listMetaFn: s => (s.last_event_date || '').slice(5),
     extraFilterHtml:
       '<div class="strip recency-strip" role="tablist" aria-label="Recency">' +
       '<span class="strip-label">When</span>' +
@@ -58,37 +65,6 @@
           app.renderList();
           app.updateCounts();
         });
-      });
-    },
-    renderList: (visible, app) => {
-      const chipStrip = document.getElementById('chipStrip');
-      const tbody = document.getElementById('stockTableBody');
-
-      chipStrip.innerHTML = visible.slice(0, 24).map(s => {
-        const active = s.ticker === app.selectedTicker ? ' active' : '';
-        const badge = VsgEvent.badge(s);
-        return '<div class="tchip' + active + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
-          '<span class="tk">' + U.escAttr(s.ticker) + (badge ? '<span class="evt-badge">' + badge + '</span>' : '') +
-          '</span><span class="ret">' + eventMag(s) + '</span></div>';
-      }).join('');
-
-      tbody.innerHTML = visible.map((s, i) => {
-        const active = s.ticker === app.selectedTicker ? ' active' : '';
-        const badge = VsgEvent.badge(s);
-        const date = s.last_event_date || '';
-        return '<tr class="' + active.trim() + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
-          '<td>' + (i + 1) + '</td>' +
-          '<td>' + U.escAttr(s.ticker) + (badge ? ' <span class="evt-badge">' + badge + '</span>' : '') + '</td>' +
-          '<td>' + U.fmtMktCap(s.market_cap) + '</td>' +
-          '<td>' + eventMag(s) + '</td>' +
-          '<td class="stars muted" style="font-size:0.5rem">' + U.escAttr(date.slice(5)) + '</td></tr>';
-      }).join('');
-
-      chipStrip.querySelectorAll('.tchip').forEach(c => {
-        c.addEventListener('click', () => app.selectStock(c.dataset.ticker));
-      });
-      tbody.querySelectorAll('tr').forEach(r => {
-        r.addEventListener('click', () => app.selectStock(r.dataset.ticker));
       });
     },
   });

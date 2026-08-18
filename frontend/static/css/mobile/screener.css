@@ -107,7 +107,7 @@
       background: var(--accent);
       border-color: var(--accent);
       color: var(--accent-on);
-      box-shadow: 0 4px 14px rgba(88, 166, 255, 0.22);
+      box-shadow: 0 4px 14px rgba(210, 153, 34, 0.22);
     }
     .pill.more {
       border-style: dashed;
@@ -194,7 +194,7 @@
     .tchip.active {
       border-color: var(--accent);
       background: var(--surface-warm);
-      box-shadow: 0 4px 16px rgba(88, 166, 255, 0.16);
+      box-shadow: 0 4px 16px rgba(210, 153, 34, 0.16);
     }
     .tchip .tk { font-weight: 700; font-size: 0.8rem; font-family: var(--font-mono); }
     .tchip .ret { font-size: 0.7rem; margin-left: 5px; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
@@ -700,7 +700,7 @@
     .mode-toggle button.active {
       background: var(--accent);
       color: var(--accent-on);
-      box-shadow: 0 4px 12px rgba(88, 166, 255, 0.28);
+      box-shadow: 0 4px 12px rgba(210, 153, 34, 0.28);
     }
 
 /* Live page additions */

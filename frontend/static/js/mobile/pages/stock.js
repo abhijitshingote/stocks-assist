@@ -53,7 +53,7 @@
     if (!btn) return;
     const inWl = !!watchlistStatus[ticker];
     btn.classList.toggle('on', inWl);
-    btn.textContent = 'Watch';
+    btn.textContent = inWl ? 'Watching' : 'Watch';
   }
 
   function updateNotesBtn() {
@@ -210,6 +210,7 @@
         showRSI: false,
         showVolspikeMarkers: false,
         compact: true,
+        volumeRatio: 0.224,
       });
       await stockChart.load(ticker);
       stockChart.setTimeframe(currentTimeframeDays);

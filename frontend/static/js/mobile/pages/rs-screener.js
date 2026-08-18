@@ -2,6 +2,7 @@
   'use strict';
   window.MobileScreener.init({
     pageTitle: 'Slow / Fast RS',
+    pageLabel: 'RS',
     fetchStocks: cap => fetch('/api/frontend/rs-screener/' + cap)
       .then(r => r.json())
       .then(data => (data && data.error ? [] : data)),

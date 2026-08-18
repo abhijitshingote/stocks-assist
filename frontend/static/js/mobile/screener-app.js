@@ -14,8 +14,11 @@
       listValueLabel: 'Ret',
       showTi65: true,
       showRank: true,
-      chartOptions: { compact: true, showVolspikeMarkers: false },
+      chartOptions: { compact: true, showVolspikeMarkers: false, volumeRatio: 0.224 },
       weeklyDisposition: false,
+      removeOnUnwatch: false,
+      tradeRemove: false,
+      watchlistPromote: false,
       newsIds: {
         content: 'newsContent',
         loadBtn: 'loadNewsBtn',
@@ -67,6 +70,10 @@
     if (config.pageTitle) {
       document.title = config.pageTitle;
     }
+    const pageLabel = config.pageLabel || config.pageTitle || '';
+    document.querySelectorAll('.dr-title, #drPage').forEach(el => {
+      if (el) el.textContent = pageLabel;
+    });
 
     const loadingOverlay = document.getElementById('loadingOverlay');
     if (loadingOverlay && config.pageTitle) {
@@ -92,6 +99,12 @@
     function getListValueRaw(stock) {
       if (config.listValueFn) return null;
       return stock[config.listValueField];
+    }
+
+    function getListValueCls(stock) {
+      if (config.listValueClsFn) return config.listValueClsFn(stock) || '';
+      const raw = getListValueRaw(stock);
+      return raw != null ? U.retCls(raw) : '';
     }
 
     function passesSectorIndustry(s) {
@@ -324,46 +337,62 @@
       if (valueTh) valueTh.textContent = config.listValueLabel;
     }
 
+    function updatePos(visible, ticker) {
+      const el = document.getElementById('drPos');
+      if (!el) return;
+      const n = visible.length;
+      const i = visible.findIndex(s => s.ticker === ticker);
+      el.textContent = i >= 0 ? (i + 1) + '/' + n : '—/' + n;
+      const prev = document.getElementById('drPrev');
+      const next = document.getElementById('drNext');
+      if (prev) prev.disabled = i <= 0;
+      if (next) next.disabled = i < 0 || i >= n - 1;
+    }
+
     function defaultRenderList() {
       const visible = visibleStocks();
+      const cardList = document.getElementById('drCardList');
       const chipStrip = document.getElementById('chipStrip');
-      const tbody = document.getElementById('stockTableBody');
+      if (chipStrip) chipStrip.innerHTML = '';
 
-      chipStrip.innerHTML = visible.slice(0, 24).map(s => {
+      if (config.subtitleFn) {
+        const asOf = document.getElementById('drAsOf');
+        if (asOf) asOf.textContent = config.subtitleFn(visible) || '';
+      }
+
+      if (!cardList) return;
+
+      cardList.innerHTML = visible.map(s => {
         const active = s.ticker === selectedTicker ? ' active' : '';
-        const raw = getListValueRaw(s);
-        const cls = raw != null ? U.retCls(raw) : '';
-        return '<div class="tchip' + active + '" data-ticker="' + U.escAttr(s.ticker) + '"><span class="tk">' + U.escAttr(s.ticker) +
-          '</span><span class="ret ' + cls + '">' + getListValue(s) + '</span></div>';
+        const extra = config.listRowClassFn ? (config.listRowClassFn(s) || '') : '';
+        const badge = config.listBadgeFn ? (config.listBadgeFn(s) || '') : '';
+        const meta = config.listMetaFn ? config.listMetaFn(s) : '';
+        const name = s.company_name || '';
+        const sub = [name, U.fmtMktCap(s.market_cap), s.sector ? U.abbrevSector(s.sector) : '', meta]
+          .filter(Boolean).join(' · ');
+        const cls = getListValueCls(s);
+        return '<button type="button" class="dr-row' + active + (extra ? ' ' + extra : '') +
+          '" data-ticker="' + U.escAttr(s.ticker) + '">' +
+          '<span class="dr-id"><span class="dr-tk">' + U.escAttr(s.ticker) + badge +
+          '</span><span class="dr-sub">' + U.escAttr(sub) + '</span></span>' +
+          '<span class="dr-ret ' + cls + '">' + getListValue(s) + '</span></button>';
       }).join('');
 
-      tbody.innerHTML = visible.map((s, i) => {
-        const active = s.ticker === selectedTicker ? ' active' : '';
-        const raw = getListValueRaw(s);
-        const cls = raw != null ? U.retCls(raw) : '';
-        const rankTd = config.showRank ? '<td>' + (i + 1) + '</td>' : '';
-        return '<tr class="' + active.trim() + '" data-ticker="' + U.escAttr(s.ticker) + '">' + rankTd +
-          '<td>' + U.escAttr(s.ticker) + '</td><td>' + U.fmtMktCap(s.market_cap) +
-          '</td><td class="' + cls + '">' + getListValue(s) + '</td><td class="stars">' + starsCell(s.ticker) + '</td></tr>';
-      }).join('');
-
-      chipStrip.querySelectorAll('.tchip').forEach(c => {
-        c.addEventListener('click', () => selectStock(c.dataset.ticker));
+      cardList.querySelectorAll('.dr-row').forEach(r => {
+        r.addEventListener('click', () => {
+          Promise.resolve(selectStock(r.dataset.ticker)).then(() => openDetail());
+        });
       });
-      tbody.querySelectorAll('tr').forEach(r => {
-        r.addEventListener('click', () => selectStock(r.dataset.ticker));
-      });
-
-      updateCounts();
     }
 
     function renderList() {
       if (config.renderList) {
         config.renderList(visibleStocks(), app);
-        updateCounts();
-        return;
+      } else {
+        defaultRenderList();
       }
-      defaultRenderList();
+      updatePos(visibleStocks(), selectedTicker);
+      updateCounts();
     }
 
     function updateAbiNotes(ticker) {
@@ -395,7 +424,7 @@
       if (!btn) return;
       const inWl = !!watchlistStatus[ticker];
       btn.classList.toggle('on', inWl);
-      btn.textContent = 'Watch';
+      btn.textContent = inWl ? 'Watching' : 'Watch';
     }
 
     function updateNotesBtn(ticker) {
@@ -730,6 +759,7 @@
           showRSI: false,
           showVolspikeMarkers: false,
           compact: true,
+          volumeRatio: 0.224,
         }, config.chartOptions || {});
         stockChart = new StockChart('stockChartContainer', chartOpts);
         await stockChart.load(ticker);
@@ -805,6 +835,26 @@
         });
     }
 
+    let detailPushed = false;
+
+    function openDetail() {
+      if (!phone.classList.contains('dr-open')) {
+        phone.classList.add('dr-open');
+        phone.classList.remove('filters-open');
+        if (filterSummary) filterSummary.setAttribute('aria-expanded', 'false');
+        if (!detailPushed) {
+          history.pushState({ drDetail: 1 }, '');
+          detailPushed = true;
+        }
+      }
+      requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+    }
+
+    function closeDetail() {
+      phone.classList.remove('dr-open');
+      detailPushed = false;
+    }
+
     const app = {
       get allStocks() { return allStocks; },
       get selectedTicker() { return selectedTicker; },
@@ -816,9 +866,31 @@
       selectStock,
       loadData,
       updateCounts,
+      openDetail,
+      closeDetail,
     };
 
     // ── Shell wiring ──
+    document.getElementById('drBack')?.addEventListener('click', () => {
+      if (detailPushed) history.back();
+      else closeDetail();
+    });
+    window.addEventListener('popstate', () => {
+      if (phone.classList.contains('dr-open')) closeDetail();
+    });
+    function stepDetail(delta) {
+      const vis = visibleStocks();
+      const i = vis.findIndex(s => s.ticker === selectedTicker);
+      const next = vis[i + delta];
+      if (next) selectStock(next.ticker);
+    }
+    document.getElementById('drPrev')?.addEventListener('click', () => stepDetail(-1));
+    document.getElementById('drNext')?.addEventListener('click', () => stepDetail(1));
+    document.getElementById('drScrim')?.addEventListener('click', () => {
+      phone.classList.remove('filters-open');
+      if (filterSummary) filterSummary.setAttribute('aria-expanded', 'false');
+    });
+
     filterSummary.addEventListener('click', () => {
       const open = phone.classList.toggle('filters-open');
       filterSummary.setAttribute('aria-expanded', open);
@@ -878,12 +950,16 @@
       window._wlToggle(selectedTicker, inWl, (nowIn, ticker) => {
         if (nowIn) {
           watchlistStatus[ticker] = watchlistStatus[ticker] || { stars: 0 };
-          if (weeklyDisp) {
+          if (weeklyDisp || config.removeOnWatch) {
             dropTickerFromList(ticker);
             return;
           }
         } else {
           delete watchlistStatus[ticker];
+          if (config.removeOnUnwatch) {
+            dropTickerFromList(ticker);
+            return;
+          }
         }
         updateWatchlistBtn(ticker);
         renderList();
@@ -909,6 +985,45 @@
         const btn = e.target.closest('[data-disp]');
         if (!btn) return;
         disposeWeekly(btn.dataset.disp);
+      });
+    }
+
+    const tradeRemoveBtn = document.getElementById('tradeRemoveBtn');
+    if (config.tradeRemove && tradeRemoveBtn) {
+      tradeRemoveBtn.hidden = false;
+      tradeRemoveBtn.addEventListener('click', async () => {
+        const t = selectedTicker;
+        if (!t) return;
+        await fetch('/api/frontend/abi-trades/' + encodeURIComponent(t), { method: 'DELETE' });
+        window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
+          detail: { action: 'saved', ticker: t },
+        }));
+      });
+    }
+
+    const wlPromote = document.getElementById('wlPromote');
+    if (config.watchlistPromote && wlPromote) {
+      wlPromote.hidden = false;
+      wlPromote.classList.add('visible');
+      wlPromote.addEventListener('click', async e => {
+        const btn = e.target.closest('[data-side]');
+        if (!btn || !selectedTicker) return;
+        const ticker = selectedTicker;
+        try {
+          await fetch('/api/frontend/abi-trades', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ticker, side: btn.dataset.side }),
+          });
+        } catch (err) {
+          console.error('promote to trade failed', err);
+          return;
+        }
+        window._wlToggle(ticker, true, () => {
+          window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
+            detail: { action: 'saved', ticker },
+          }));
+        });
       });
     }
 
@@ -953,22 +1068,25 @@
       scheduleStockChartResize();
     }
 
+    const listHandle = document.getElementById('listHandle');
     let listDragStartY = 0;
     let listDragStartIdx = 0;
-    document.getElementById('listHandle').addEventListener('pointerdown', e => {
-      listDragStartY = e.clientY;
-      listDragStartIdx = listModeIdx;
-      e.target.setPointerCapture(e.pointerId);
-    });
-    document.getElementById('listHandle').addEventListener('pointerup', e => {
-      const dy = e.clientY - listDragStartY;
-      if (dy < -30) setListMode(listDragStartIdx + 1);
-      else if (dy > 30) setListMode(listDragStartIdx - 1);
-      else setListMode(listDragStartIdx);
-    });
-    document.getElementById('listHandle').addEventListener('click', () => {
-      setListMode((listModeIdx + 1) % 3);
-    });
+    if (listHandle) {
+      listHandle.addEventListener('pointerdown', e => {
+        listDragStartY = e.clientY;
+        listDragStartIdx = listModeIdx;
+        e.target.setPointerCapture(e.pointerId);
+      });
+      listHandle.addEventListener('pointerup', e => {
+        const dy = e.clientY - listDragStartY;
+        if (dy < -30) setListMode(listDragStartIdx + 1);
+        else if (dy > 30) setListMode(listDragStartIdx - 1);
+        else setListMode(listDragStartIdx);
+      });
+      listHandle.addEventListener('click', () => {
+        setListMode((listModeIdx + 1) % 3);
+      });
+    }
 
     function setAnalyzeMode() {
       phone.classList.remove('filters-open');
