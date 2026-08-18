@@ -1,0 +1,20 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'Excludes' %}
+{% block title %}Excludes — Mobile{% endblock %}
+{% block content %}
+  <div class="utility-body utility-scroll">
+    <div class="dl-add-bar">
+      <input type="text" id="dlAddTicker" placeholder="TICKER" maxlength="10" autocomplete="off">
+      <select id="dlKind">
+        <option value="temporary">30d</option>
+        <option value="permanent">perm</option>
+      </select>
+      <button type="button" class="md-btn danger" id="dlAddBtn">Add</button>
+    </div>
+    <div class="dl-count" id="dlCount">—</div>
+    <div id="dlContent"><div class="md-loading">Loading…</div></div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/mobile/pages/abi-dislikes.js') }}"></script>
+{% endblock %}

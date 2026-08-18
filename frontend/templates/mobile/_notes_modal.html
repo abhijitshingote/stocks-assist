@@ -9,3 +9,19 @@
     </div>
   </div>
 </div>
+
+<div class="wl-modal-overlay" id="dlModalOverlay">
+  <div class="wl-modal dl-theme">
+    <div class="wl-modal-title" id="dlModalTitleEl">Block <span class="ticker-hl" id="dlModalTicker"></span> from screeners</div>
+    <div class="dl-kind-row" id="dlKindRow">
+      <label class="dl-kind-opt"><input type="radio" name="dlKind" value="temporary" checked> 30 days</label>
+      <label class="dl-kind-opt"><input type="radio" name="dlKind" value="permanent"> Permanent</label>
+    </div>
+    <textarea id="dlModalNotes" placeholder="Why are you blocking this? (optional)"></textarea>
+    <div class="wl-modal-actions">
+      <button class="wl-remove" id="dlModalRemoveBtn" style="display:none" type="button">Remove</button>
+      <button class="wl-cancel" id="dlModalCancelBtn" type="button">Cancel</button>
+      <button class="wl-save dl-save" id="dlModalSaveBtn" type="button">Block</button>
+    </div>
+  </div>
+</div>

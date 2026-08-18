@@ -53,13 +53,14 @@
 
   window.MobileScreener.init({
     pageTitle: 'Strong Stocks',
+    weeklyDisposition: 'strong',
     fetchStocks: cap => fetch('/api/frontend/strong-stocks/' + cap)
       .then(r => r.json())
       .then(data => (data && data.error ? [] : data)),
     sortStocks: stocks => [...stocks].sort((a, b) => {
       const d = sortKey(b) - sortKey(a);
       if (d) return d;
-      return (b.market_cap || 0) - (a.market_cap || 0);
+      return (b.market_cap || 0) - (a.market_cap || 0) || (a.ticker || '').localeCompare(b.ticker || '');
     }),
     listValueLabel: 'TI65',
     listValueFn: listValue,

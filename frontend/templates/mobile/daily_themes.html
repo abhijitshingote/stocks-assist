@@ -1,0 +1,25 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'Daily Themes' %}
+{% block title %}Daily Themes — Mobile{% endblock %}
+{% block content %}
+  <div class="utility-body">
+    <div class="md-toolbar">
+      <select id="dtDate"></select>
+      <span class="spacer"></span>
+      <span class="md-item-meta" id="dtMeta">—</span>
+    </div>
+    <div class="md-chip-strip" id="dtTabs">
+      <button type="button" class="md-btn active" data-tab="all">All <span id="dtNAll">0</span></button>
+      <button type="button" class="md-btn" data-tab="user_taste">Taste <span id="dtNUser">0</span></button>
+      <button type="button" class="md-btn" data-tab="curated">Curated <span id="dtNCur">0</span></button>
+      <button type="button" class="md-btn" data-tab="hot_market">Market <span id="dtNMkt">0</span></button>
+    </div>
+    <div class="md-filters">
+      <input class="md-search" type="search" id="dtSearch" placeholder="Filter tag / label / ticker…">
+    </div>
+    <div class="utility-scroll" id="dtGrid"><div class="md-loading">Loading…</div></div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/mobile/pages/daily-themes.js') }}"></script>
+{% endblock %}

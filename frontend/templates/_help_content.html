@@ -1,0 +1,194 @@
+<div class="help-wrap">
+    <h1>Reference</h1>
+    <div class="help-sub">Concise, technical description of each page's business logic.</div>
+
+    <div class="help-section">
+        <h2>Conventions</h2>
+        <div class="help-note">
+            <strong>Liquid universe</strong> (most screeners): price &gt; <code>$3</code>, avg 10-day dollar volume &gt; <code>$10M</code>, excludes <code>Biotechnology</code>. Sourced from the nightly <code>stock_metrics</code> table.<br>
+            <strong>Market-cap buckets:</strong> Mega &gt;$100B · Large $20–100B · Mid $2–20B · Small $200M–$2B · Micro &lt;$200M.<br>
+            <strong>Return fields:</strong> <code>dr_1 / dr_5 / dr_20 / dr_60 / dr_120</code> = trailing 1/5/20/60/120-trading-day % return.<br>
+            <strong>52W badge:</strong> shown when the latest day's high ≥ <code>99.5%</code> of the trailing 252-day max high (server flag <code>at_52w_high</code>).<br>
+            <strong>Stock-list row (all screeners):</strong> <code>[★][#][TICKER][52W](mcap) … [1D%]</code>, with page-specific additive metrics on a second line.<br>
+            <strong>Biotech exclude:</strong> default-on chip on every screener load (<code>industry === Biotechnology</code>, shared engine). Chip-off is session-only; reload re-applies the default.<br>
+            <strong>Ticker exclude:</strong> <code>abi_dislikes.json</code> membership. <code>kind=permanent</code> or <code>kind=temporary</code> (<code>expires_at</code> = add + 30d). Applied in backend screener queries + daily_screener s1. Expired temps are not applied.<br>
+            <strong>VSG event:</strong> one event-day if <code>vol ≥ 3.5× 20d avg</code> and <code>close ≥ prev×1.03</code>, or <code>low &gt; prev×1.05</code>, or <code>close/prev &gt; 1.15</code> (or any combination). <code>last_event_type</code> = <code>volume_spike</code> / <code>gapper</code> / <code>both</code>. <code>last_event_magnitude</code> = vol ratio (always). <code>last_event_return</code> = close/prev−1 (always). Label e.g. <code>+15.0% gap on 6.3x vol</code>. Badge <code>S</code> / <code>G</code> / <code>SG</code>.<br>
+            <strong>Weekly review cutoffs</strong> (<code>WEEKLY_REVIEW_CUTOFFS</code> in <code>backend/app.py</code>): <span id="helpWrCutoffs">loading…</span>
+        </div>
+    </div>
+
+    <div class="help-section">
+        <h2>Screeners</h2>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/high-sales-growth">High Growth</a><span class="help-route">/high-sales-growth</span></div>
+            <div class="help-desc"><code>main_view</code> rows carrying the <code>high_sales_growth</code> tag — assigned when the average of the forward-pair TTM revenue-growth estimates exceeds <code>25%</code>. Additive metric: forward revenue growth.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/daily-review">Daily Review</a><span class="help-route">/daily-review</span></div>
+            <div class="help-desc">Union of (1) <code>stock_volspike_gapper</code> rows with <code>last_event_date</code> = max OHLC date and (2) $200M+ names with <code>dr_1 &gt;= 1.5 × p90(mcap)</code> where <code>p90 ≈ 3.53 × (clip(mcap,$200M,$100B)/$100B)^-0.134</code> (60d median of p90(positive 1d) in a ±0.25 log10 window; flattens above $100B). Real bars: $100B+ <code>+5.3%</code>, $4B <code>+8.0%</code>, $0.5B <code>+10.7%</code>. Count floats with the tape. Default sort is mega-equivalent <code>adjusted_dr_1 = dr_1 / (clip/100B)^-0.134</code>; toggle switches to flat <code>dr_1</code>. List value is always raw <code>dr_1</code>; S/G/SG chips only when <code>event_today</code>.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/volspike-gapper">Vol Spike &amp; Gaps</a><span class="help-route">/volspike-gapper</span></div>
+            <div class="help-desc">Stocks with VSG event-days in the last <code>365</code> days (<code>stock_volspike_gapper</code>), grouped by event date (most recent first). Badge <code>S</code>/<code>G</code>/<code>SG</code> plus both metrics, e.g. <code>+15.0% gap on 6.3x vol</code>.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/volspike-gapper-weekly">Vol Spike &amp; Gaps (W)</a><span class="help-route">/volspike-gapper-weekly</span></div>
+            <div class="help-desc">Same dataset and endpoint as <code>/volspike-gapper</code>; groups by ISO week (Monday start) of <code>last_event_date</code> instead of by day. Within a week, rows are ranked by an additive log-scale score (shown right-aligned, hover for the breakdown) rather than by date: <code>1.0·log2(1+ret/0.05)</code> + <code>0.8·log10(mcap/1e9)</code> capped at <code>3</code> + <code>0.4·log2(volRatio/3.5)</code> capped at <code>1.5</code> (vol ratio on last event; 0 if &lt;3.5×) + <code>0.4·(1−log2(uniqueEventDays365)/3)</code>. Net effect: a size tilt (top-50 median cap ≈ <code>$11B</code> vs <code>$1.5B</code> for the full week) that still floats <code>&gt;40%</code> moves on <code>$1–3B</code> names to the top, while names with many events in the trailing 365d are demoted.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/volspike-gapper-monthly">Vol Spike &amp; Gaps (M)</a><span class="help-route">/volspike-gapper-monthly</span></div>
+            <div class="help-desc">Group bucket is the calendar month of <code>last_event_date</code> (<code>YYYY-MM</code>). Ranking inside a month is re-weighted toward the current base instead of the event: <code>3.5·setup</code> + <code>1.0·log10(mcap/1e9)</code> capped at <code>2.5</code> + <code>0.3·move</code> + <code>0.15·vol</code> + <code>0.15·novelty</code>. <code>setup</code> (<code>0–1</code>, from <code>/api/VolspikeGapper-Setup</code>, measured on the last 10 bars vs <code>ema_10/ema_20/dma_50/dma_200</code>) = <code>0.35·prox</code> (distance to nearest MA in ATRs, <code>0</code>→1, <code>≥1.5 ATR</code>→0) + <code>0.25·tight</code> (10-bar high-low range, <code>≤1.5 ATR</code>→1, <code>≥3.5 ATR</code>→0) + <code>0.20·hold</code> (close position in that range, <code>≥0.9</code>→1, <code>≤0.4</code>→0) + <code>0.20·trend</code> (above all 4 MAs→1, above <code>ema_20</code> only→0.6). The chip on each row shows the nearest MA and the signed distance. Shares <code>static/js/desktop/vsg-grouped.js</code> with the weekly page, whose weights are unchanged.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/weekly-review">Weekly Review</a><span class="help-route">/weekly-review</span></div>
+            <div class="help-desc">Live union of VSG 90d + Strong Stocks + Top 5D/20D + Fast RS. Extra row: one tinted pill per source with the native list number (VSG compact event label e.g. <code>+15% 6.3x</code> + date; STR <code>adjusted_ti65</code>; 5/20 <code>dr_5</code>/<code>dr_20</code>; RS <code>rs_score</code>). Color of the pill = source. The 4 source pages share the same Pass / Watch / Buy / Short / Exclude actions and hide the same watchlist / <code>abi_trades.json</code> / current-cycle <code>abi_passes.json</code> set. Default sort = <code>adjusted_ti65</code> desc (nulls last). Toggle: Best rank / Adj TI65 / # sources / 1D / 5D. Cutoffs: <code>WEEKLY_REVIEW_CUTOFFS</code> — see Conventions above (fetched live).</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/volspike-gapper-90d">Vol Spike &amp; Gaps (90d)</a><span class="help-route">/volspike-gapper-90d</span></div>
+            <div class="help-desc"><code>stock_volspike_gapper</code> rows with <code>last_event_date &gt;= max(OHLC.date) − 90 calendar days</code>. Flat list (no date grouping). Default sort is mega-equivalent <code>adjusted_event_return = last_event_return×100 / (clip(mcap,$200M,$100B)/$100B)^-0.134</code> (same exponent as Daily Review; <code>last_event_return</code> is the event-day fraction). Toggle: Adj / monthly <code>setup</code> readiness (<code>0–1</code> from <code>/api/VolspikeGapper-Setup</code>: <code>0.35·prox + 0.25·tight + 0.20·hold + 0.20·trend</code>) / <code>last_event_date</code> descending (mcap then ticker as tiebreak). List value is raw event-day return; S/G/SG + both metrics + event-date chip on the row. Volume ratio is not a sort key. Same weekly disposition as <code>/weekly-review</code> (Pass / Watch / Buy / Short / Exclude); hides current-cycle passes, watchlist, and trades.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/strong-stocks">Strong Stocks</a><span class="help-route">/strong-stocks</span></div>
+            <div class="help-desc">Liquid universe (<code>price ≥ $3</code>, <code>avg_vol_10d ≥ 50k</code>, <code>dollar_volume ≥ $10M</code>) with a current <code>TI65 = avg_close_7d / avg_close_65d</code>. Default sort is <code>adjusted_ti65 = (ti65 − 1) / (0.120 × (clip(mcap,$500M,$100B)/$100B)^-0.151)</code> — one-shot p90(TI65−1) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B (MAPE 2.8%). Window p90 excess: $0.5B <code>0.25</code>, $2B <code>0.23</code>, $10B <code>0.17</code>, $100B <code>0.12</code>; mega rises (0.16/0.17 at $200B/$400B) so clip at $100B. Toggle: Adj / raw TI65 / monthly <code>setup</code> readiness (same <code>setupParts</code> as 90d; <code>/api/StrongStocks-Setup</code> covers the liquid TI65 universe). List value is raw TI65. No date/recency in the sort. Same weekly disposition as <code>/weekly-review</code>; hides current-cycle passes, watchlist, and trades.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/top-performance">Top Returns</a><span class="help-route">/top-performance</span></div>
+            <div class="help-desc">Union of the top <code>30</code> names by each of <code>dr_1</code>, <code>dr_5</code>, and <code>dr_20</code> (deduplicated).</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/top-returns-5-20">Top 5D/20D</a><span class="help-route">/top-returns-5-20</span></div>
+            <div class="help-desc">Liquid universe (<code>price ≥ $3</code>, <code>avg_vol_10d ≥ 50k</code>, <code>dollar_volume ≥ $10M</code>). Membership is top <code>30</code> by <code>adjusted_dr_5</code> ∪ top <code>30</code> by <code>adjusted_dr_20</code> on <strong>All</strong> (not recomputed per cap). Cap tabs filter that union. Scales are one-shot p90(positive) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B: <code>adjusted_dr_5 = dr_5 / (clip(mcap,$500M,$100B)/$100B)^-0.192</code> (MAPE 12.6%; window p90: $0.5B <code>28.6</code>, $2B <code>16.2</code>, $10B <code>13.0</code>, $100B <code>10.0</code>); <code>adjusted_dr_20 = dr_20 / (clip/$100B)^-0.177</code> (MAPE 8.4%; p90: $0.5B <code>58.8</code>, $2B <code>38.0</code>, $10B <code>25.8</code>, $100B <code>21.5</code>). Clip lo $500M (no liquid micro); clip hi $100B (mega p90 does not keep falling). Do not reuse Daily Review <code>-0.134</code>. Default sort is mega-equivalent <code>adjusted_dr_5</code>; toggle: Adj 5D / flat <code>dr_5</code> / monthly <code>setup</code> readiness (same <code>setupParts</code> as 90d / Strong Stocks; <code>/api/StrongStocks-Setup</code>). List value is always raw <code>dr_5</code>; <code>5</code>/<code>20</code> chips mark which set a name came from. Distinct from <code>/top-performance</code> (raw 1d∪5d∪20d, no mcap scale). Same weekly disposition as <code>/weekly-review</code>; hides current-cycle passes, watchlist, and trades.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/top-losers">Top Losers</a><span class="help-route">/top-losers</span></div>
+            <div class="help-desc">Union of the bottom <code>30</code> names by each of <code>dr_1</code>, <code>dr_5</code>, and <code>dr_20</code> (deduplicated).</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/all-stocks">All Stocks</a><span class="help-route">/all-stocks</span></div>
+            <div class="help-desc">The full liquid universe with no ranking filter — only sector/industry filtering (plus the shared Biotech exclude chip). Baseline dataset behind the other screeners.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/technical-screener">Technical</a><span class="help-route">/technical-screener</span></div>
+            <div class="help-desc">Intraday setups computed from the latest OHLC bar. Current criterion — <code>reversal</code>: low-to-close recovery, <code>(close − low) / low × 100</code>, top <code>100</code> descending. Additive metric: criterion value.</div>
+        </div>
+    </div>
+
+    <div class="help-section">
+        <h2>Relative Strength</h2>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/rs-screener">Slow/Fast RS</a><span class="help-route">/rs-screener</span></div>
+            <div class="help-desc">Multi-timeframe relative-strength ranks (2D/5D/10D/20D/60D). <strong>Fast</strong> mode = slider-weighted composite of those ranks; <strong>Slow</strong> mode = IBD-style RS rating. Additive metric: RS rating (slow) or composite score (fast).</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/fast-rs">Fast RS</a><span class="help-route">/fast-rs</span></div>
+            <div class="help-desc">Clone of Slow/Fast RS <strong>Fast</strong> mode. Frozen weights <code>10/25/50/50/50</code> on raw <code>rs_2d/5d/10d/20d/60d</code> (excess % vs SPY), not bucket NTILE ranks. <code>rs_score = (10·rs_2d + 25·rs_5d + 50·rs_10d + 50·rs_20d + 50·rs_60d) / 185</code>. Default sort is TI65-style <code>adjusted_rs_score = rs_score / (13.66 × (clip(mcap,$500M,$100B)/$100B)^-0.192)</code> — one-shot p90(positive rs_score) vs mcap, ±0.25 log10 window, liquid EX biotech, fit on $500M–$100B (MAPE 8.2%). Window p90: $0.5B <code>32.7</code>, $2B <code>32.3</code>, $10B <code>19.9</code>, $100B <code>14.4</code>; mega rises (15.3/19.3 at $200B/$400B) so clip at $100B. Do not reuse Daily Review <code>-0.134</code> or TI65 <code>-0.151</code>. Toggle: Adj RS vs monthly <code>setup</code> readiness (same <code>setupParts</code> as Strong Stocks; <code>/api/StrongStocks-Setup</code>). List value is raw <code>rs_score</code>. No sliders, no Slow RS, no SPY subchart. Shared <code>− Biotech</code> chip. Same weekly disposition as <code>/weekly-review</code>; hides current-cycle passes, watchlist, and trades.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/sector-performance">Sector Performance</a><span class="help-route">/sector-performance</span></div>
+            <div class="help-desc">Index/sector-ETF performance across 1D/5D/20D/60D/120D timeframes.</div>
+        </div>
+    </div>
+
+    <div class="help-section">
+        <h2>Personal (Abi)</h2>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/abi-watchlist">Abi Watchlist</a><span class="help-route">/abi-watchlist</span></div>
+            <div class="help-desc">Personal watchlist (<code>user_data/abi_watchlist.json</code>) rendered with the Main View layout and metrics. Membership hides the ticker from <code>/weekly-review</code> and the 4 weekly source pages until removed.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/abi-trades">Trades</a><span class="help-route">/abi-trades</span></div>
+            <div class="help-desc">Buy/short candidates (<code>abi_trades.json</code>, <code>side=buy|short</code>). Persistent. Hidden from <code>/weekly-review</code> and the 4 weekly source pages while listed.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/abi-general-notes">Abi General Notes</a><span class="help-route">/abi-general-notes</span></div>
+            <div class="help-desc">Free-form, date-based personal notes with tags. Independent of any ticker. Per-ticker markdown lives in the Abi ticker notes modal (<code>abi_ticker_notes.json</code>). Short on-chart labels are separate (<code>abi_chart_notes.json</code>) — click the chart identity overlay, ≤5 lines × 80 chars.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/abi-dislikes">Dislikes</a><span class="help-route">/abi-dislikes</span></div>
+            <div class="help-desc">Global exclude list (<code>abi_dislikes.json</code>). <code>kind=permanent</code> or <code>kind=temporary</code> (30d via <code>expires_at</code>). Applied to all screener queries + daily_screener s1. Optional rationale in ticker notes.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/main-view">Main View</a><span class="help-route">/main-view</span></div>
+            <div class="help-desc">Combined universe view joining metrics, volspike/gapper events, and computed tags (<code>high_sales_growth</code>, <code>TI65</code>, recent volume-spike/gapper).</div>
+        </div>
+    </div>
+
+    <div class="help-section">
+        <h2>Daily Pipeline</h2>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/daily-shortlist">Daily Shortlist</a><span class="help-route">/daily-shortlist</span></div>
+            <div class="help-desc">AI-scored daily candidate set per date, split into Picks / Watch / Rejected tabs, with per-ticker feedback capture. Reads the audit artifact produced by the shortlist pipeline run.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/daily-themes">Daily Themes</a><span class="help-route">/daily-themes</span></div>
+            <div class="help-desc">Visualizes the theme vector for a given pipeline run — the composite theme weights plus the per-source raw lists that fed them.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/themes">Themes</a><span class="help-route">/themes</span></div>
+            <div class="help-desc">Curated thematic watchlists (<code>user_data/themes.json</code>) shown side-by-side; editable, with backend-suggested discovery proposals.</div>
+        </div>
+    </div>
+
+    <div class="help-section">
+        <h2>Market Context &amp; Ops</h2>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/context">Context</a><span class="help-route">/context</span></div>
+            <div class="help-desc">Market context: QQQ/SPY charts with moving-average (DMA) analysis.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/context-2">Context-2</a><span class="help-route">/context-2</span></div>
+            <div class="help-desc">Research links, running commentary, and upcoming calendar/economic events.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/etfs">ETFs</a><span class="help-route">/etfs</span></div>
+            <div class="help-desc">Curated thematic / sub-sector ETF groups with performance across 1D/5D/20D/60D/120D (<code>user_data/etfs.json</code>).</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/market-brief">Market Brief</a><span class="help-route">/market-brief</span></div>
+            <div class="help-desc">Daily AI-generated market summary per date, with run cost tracking and PDF export. Includes an R1D losers brief variant.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/market-news">Market News</a><span class="help-route">/market-news</span></div>
+            <div class="help-desc">Aggregated market-wide news from FMP, Seeking Alpha, and Benzinga.</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><a href="/logs">Logs</a><span class="help-route">/logs</span></div>
+            <div class="help-desc">Viewer for nightly data-pipeline log files (update runs, successes/failures, durations).</div>
+        </div>
+
+        <div class="help-card">
+            <div class="help-name"><span>Stock Detail</span><span class="help-route">/stock/&lt;ticker&gt;</span></div>
+            <div class="help-desc">Per-ticker deep dive: price chart with event markers, earnings/EPS history, analyst estimates, TTM ratios, company profile, and merged news. Reachable via the nav ticker search. Chart notes (short labels under name/sector, <code>abi_chart_notes.json</code>) are edited by clicking the identity overlay; they stay visible with no extra click.</div>
+        </div>
+    </div>
+</div>

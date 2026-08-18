@@ -163,6 +163,7 @@
 
   function setupNotesModal() {
     const overlay = document.getElementById('notesModalOverlay');
+    if (!overlay) return;
     const tickerEl = document.getElementById('notesModalTicker');
     const notesEl = document.getElementById('notesModalNotes');
     const removeBtn = document.getElementById('notesModalRemoveBtn');
@@ -233,6 +234,153 @@
         console.error('Watchlist toggle error', e);
       }
     };
+
+    window._copyWhyPrompt = async function (ticker, company, btn) {
+      const name = [ticker, company].map(s => (s || '').trim()).filter(Boolean).join(' ');
+      if (!name) return;
+      const text = 'What does ' + name + ' do? Why did it move up and what is the market so excited about ?';
+      const original = btn ? btn.textContent : '';
+      const flash = (msg, ok) => {
+        if (!btn) return;
+        btn.classList.toggle('copied', !!ok);
+        btn.textContent = msg;
+        setTimeout(() => { btn.classList.remove('copied'); btn.textContent = original; }, 1500);
+      };
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        flash('Copied', true);
+      } catch (e) {
+        console.error('Copy why-prompt failed', e);
+        flash('Failed', false);
+      }
+    };
+
+    const dlOverlay = document.getElementById('dlModalOverlay');
+    if (dlOverlay) {
+      const dlTickerEl = document.getElementById('dlModalTicker');
+      const dlNotesEl = document.getElementById('dlModalNotes');
+      const dlTitleEl = document.getElementById('dlModalTitleEl');
+      const dlRemoveBtn = document.getElementById('dlModalRemoveBtn');
+      const dlSaveBtn = document.getElementById('dlModalSaveBtn');
+      let dlTicker = null;
+      let dlIsDisliked = false;
+      let dlOnDone = null;
+
+      function selectedKind() {
+        const el = dlOverlay.querySelector('input[name="dlKind"]:checked');
+        return (el && el.value) || 'temporary';
+      }
+      function setKind(kind) {
+        const want = kind === 'permanent' ? 'permanent' : 'temporary';
+        dlOverlay.querySelectorAll('input[name="dlKind"]').forEach(r => {
+          r.checked = r.value === want;
+        });
+      }
+
+      window._dlOpen = function (ticker, currentNotes, isDisliked, onDone, currentKind) {
+        dlTicker = ticker;
+        dlIsDisliked = !!isDisliked;
+        dlOnDone = onDone || null;
+        dlTickerEl.textContent = ticker;
+        dlNotesEl.value = currentNotes || '';
+        setKind(currentKind || 'temporary');
+        dlRemoveBtn.style.display = dlIsDisliked ? 'inline-block' : 'none';
+        dlSaveBtn.textContent = dlIsDisliked ? 'Update' : 'Block';
+        dlTitleEl.innerHTML = (dlIsDisliked ? 'Edit exclude for ' : 'Block ') +
+          '<span class="ticker-hl">' + ticker + '</span>' + (dlIsDisliked ? '' : ' from screeners');
+        dlOverlay.classList.add('visible');
+        dlNotesEl.focus();
+      };
+
+      window._dlClose = function () {
+        dlOverlay.classList.remove('visible');
+        dlTicker = null;
+      };
+
+      window._dlSave = async function () {
+        if (!dlTicker) return;
+        const notes = dlNotesEl.value.trim();
+        const kind = selectedKind();
+        try {
+          await fetch('/api/frontend/abi-dislikes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ticker: dlTicker, kind }),
+          });
+          if (notes) {
+            await fetch('/api/frontend/abi-ticker-notes/' + dlTicker, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ notes }),
+            });
+          }
+        } catch (e) { console.error('Dislike save error', e); }
+        dlOverlay.classList.remove('visible');
+        if (dlOnDone) dlOnDone('saved', dlTicker, notes, kind);
+        dlTicker = null;
+      };
+
+      window._dlRemove = async function () {
+        if (!dlTicker) return;
+        try {
+          await fetch('/api/frontend/abi-dislikes/' + dlTicker, { method: 'DELETE' });
+        } catch (e) { console.error('Dislike remove error', e); }
+        dlOverlay.classList.remove('visible');
+        if (dlOnDone) dlOnDone('removed', dlTicker);
+        dlTicker = null;
+      };
+
+      window._dlOpenForTicker = async function (ticker, onDone) {
+        if (!ticker) return;
+        let isDisliked = false;
+        let notes = '';
+        let kind = 'temporary';
+        try {
+          const resp = await fetch('/api/frontend/abi-dislikes/batch-check', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tickers: [ticker] }),
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            const entry = data[ticker.toUpperCase()];
+            if (entry) {
+              isDisliked = true;
+              notes = entry.notes || '';
+              kind = entry.kind || 'permanent';
+            }
+          }
+        } catch (e) { console.error('Dislike lookup failed', e); }
+        window._dlOpen(ticker, notes, isDisliked, function (action, t, newNotes, newKind) {
+          const isNowDisliked = action === 'saved';
+          const btn = document.getElementById('dlBtn');
+          if (btn) {
+            btn.classList.toggle('is-disliked', isNowDisliked);
+            btn.textContent = isNowDisliked ? 'Excluded' : 'Exclude';
+          }
+          window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
+            detail: { action, ticker: t || ticker, kind: newKind },
+          }));
+          if (onDone) onDone(action, t, newNotes, newKind);
+        }, kind);
+      };
+
+      dlSaveBtn.addEventListener('click', () => window._dlSave());
+      dlRemoveBtn.addEventListener('click', () => window._dlRemove());
+      document.getElementById('dlModalCancelBtn').addEventListener('click', () => window._dlClose());
+      dlOverlay.addEventListener('click', e => { if (e.target === dlOverlay) window._dlClose(); });
+    }
   }
 
   window.MobileUtil = {

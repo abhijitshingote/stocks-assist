@@ -302,7 +302,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **Extends** | `templates/mobile/_base.html` |
 | **CSS** | `_mobile_styles.html` + `pages.css` (default; overrideable via `styles` block) |
 | **Blocks** | `title`, `page_styles`, `body_class`, `before_header`, `content` (required), `outside_phone`, `page_scripts` |
-| **Used by** | All 8 utility mobile pages |
+| **Used by** | All mobile utility pages |
 
 ### Mobile App Header
 | | |
@@ -317,7 +317,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **File** | `templates/mobile/_nav_drawer.html` |
 | **CSS** | `static/css/mobile/nav.css` |
 | **JS** | `static/js/mobile/nav.js` |
-| **Sections** | Home, Daily, Weekly, Screeners, Abi, Research |
+| **Sections** | Home, Daily, Weekly, Screeners, Abi, Research, Ops |
 | **Used by** | `_shell.html`, `_screener_shell.html` |
 
 ### Shared Detail Panel
@@ -325,13 +325,15 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 |---|---|
 | **File** | `templates/mobile/_detail_panel.html` |
 | **Variables** | `detail_ticker` (default `—`), `detail_link_href` (default `#`), `detail_link_label` (default `Detail →`) |
+| **Actions** | Watch, Notes, Exclude, Why? on every screener/stock page. Pass / Buy / Short shown when `weeklyDisposition` is set. |
 | **Used by** | `_screener_shell.html`, `stock.html` |
 
 ### Shared Notes Modal
 | | |
 |---|---|
 | **File** | `templates/mobile/_notes_modal.html` |
-| **CSS** | `.wl-modal-overlay` in `panels.css` |
+| **CSS** | `.wl-modal-overlay` / `.dl-theme` in `panels.css` |
+| **Also** | Exclude modal (`#dlModalOverlay`) — 30d vs permanent |
 | **Used by** | `_screener_shell.html` (inside `.phone`), `stock.html` (via `outside_phone` block) |
 
 ---
@@ -343,16 +345,19 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **CSS** | `_screener_styles.html` → benzinga-news.css + `_mobile_styles.html` |
 | **JS engine** | `static/js/mobile/screener-app.js` |
 | **Script partial** | `templates/mobile/_screener_libs.html` (sets `page_libs` and calls `_page_libs.html`) |
-| **Exclude** | `#screenerExcludes` filled by the engine (Biotech excluded on every page load; chip-off is session-only). AND-ed with `filterStocks`. |
-| **Used by** | All 5 mobile screener pages (thin config wrappers) |
+| **Exclude** | `#screenerExcludes` filled by the engine (Biotech excluded on every page load; chip-off is session-only). AND-ed with `filterStocks`. `weeklyDisposition: 'vsg90'|'strong'|'top520'|'fastrs'` hides watchlist ∪ trades ∪ current-cycle passes (same as desktop). |
+| **Used by** | All mobile screener pages (thin config wrappers) |
 
 ### Mobile Screener Pages
 
 | Page | Template | Route |
 |------|----------|-------|
+| Daily Review | `mobile/daily_review.html` | `/m/daily-review` |
+| Weekly Review | `mobile/weekly_review.html` | `/m/weekly-review` |
 | Main View | `mobile/main_view.html` | `/m/main-view` |
 | Vol Spike & Gaps | `mobile/volspike_gapper.html` | `/m/volspike-gapper` |
 | Vol Spike & Gaps (W) | `mobile/volspike_gapper_weekly.html` | `/m/volspike-gapper-weekly` |
+| Vol Spike & Gaps (M) | `mobile/volspike_gapper_monthly.html` | `/m/volspike-gapper-monthly` |
 | Vol Spike & Gaps (90d) | `mobile/volspike_gapper_90d.html` | `/m/volspike-gapper-90d` |
 | Strong Stocks | `mobile/strong_stocks.html` | `/m/strong-stocks` |
 | Top Returns | `mobile/top_performance.html` | `/m/top-performance` |
@@ -364,6 +369,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | All Stocks | `mobile/all_stocks.html` | `/m/all-stocks` |
 | Technical | `mobile/technical_screener.html` | `/m/technical-screener` |
 | Abi Watchlist | `mobile/abi_watchlist.html` | `/m/abi-watchlist` |
+| Trades | `mobile/abi_trades.html` | `/m/abi-trades` |
 
 ### Mobile Utility Pages
 
@@ -374,7 +380,13 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Context 2 | `mobile/context2.html` | `/m/context-2` | `[]` |
 | Market Brief | `mobile/market_brief.html` | `/m/market-brief` | `[]` |
 | Market News | `mobile/market_news.html` | `/m/market-news` | `['news']` |
+| ETFs | `mobile/etfs.html` | `/m/etfs` | `[]` |
+| Daily Shortlist | `mobile/daily_shortlist.html` | `/m/daily-shortlist` | `[]` |
+| Daily Themes | `mobile/daily_themes.html` | `/m/daily-themes` | `[]` |
+| Themes | `mobile/themes.html` | `/m/themes` | `[]` |
 | Logs | `mobile/logs.html` | `/m/logs` | `['master-detail']` |
+| Reference | `mobile/help.html` | `/m/help` | `[]` |
+| Excludes | `mobile/abi_dislikes.html` | `/m/abi-dislikes` | `[]` |
 | Abi Notes | `mobile/abi_general_notes.html` | `/m/abi-general-notes` | `['master-detail']` |
 | Stock Detail | `mobile/stock.html` | `/m/stock/<ticker>` | `['charts','markdown','stock-chart','news','util']` |
 

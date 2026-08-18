@@ -1,0 +1,22 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'ETFs' %}
+{% block title %}ETFs — Mobile{% endblock %}
+{% block content %}
+  <div class="utility-body utility-scroll">
+    <div class="md-toolbar">
+      <span class="md-item-meta" id="etfMeta">—</span>
+      <span class="spacer"></span>
+      <div class="home-sort-row" id="etfSort">
+        <button type="button" class="home-sort-btn active" data-sort="default">Grp</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_1">1D</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_5">5D</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_20">20D</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_60">60D</button>
+      </div>
+    </div>
+    <div id="etfGrid"><div class="md-loading">Loading…</div></div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/mobile/pages/etfs.js') }}"></script>
+{% endblock %}

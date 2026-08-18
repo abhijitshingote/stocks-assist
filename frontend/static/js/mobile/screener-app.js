@@ -15,6 +15,7 @@
       showTi65: true,
       showRank: true,
       chartOptions: { compact: true, showVolspikeMarkers: false },
+      weeklyDisposition: false,
       newsIds: {
         content: 'newsContent',
         loadBtn: 'loadNewsBtn',
@@ -22,6 +23,9 @@
         filterBar: 'newsFilters',
       },
     }, userConfig);
+
+    const weeklyDisp = config.weeklyDisposition;
+    const hideWeeklyDisposed = typeof weeklyDisp === 'string';
 
     if (!config.fetchStocks) {
       throw new Error('MobileScreener.init: fetchStocks is required');
@@ -100,8 +104,13 @@
       return EXCLUDE_RULES.some(r => excluded.has(r.id) && s[r.field] === r.value);
     }
 
+    function isTickerExcluded(s) {
+      const t = (s.ticker || '').toUpperCase();
+      return tickerExcludes.has(t);
+    }
+
     function filteredStocks() {
-      const base = allStocks.filter(s => !isIndustryExcluded(s) && !tickerExcludes.has(s.ticker));
+      const base = allStocks.filter(s => !isIndustryExcluded(s) && !isTickerExcluded(s));
       if (config.filterStocks) {
         return config.filterStocks(base, app);
       }
@@ -383,9 +392,32 @@
 
     function updateWatchlistBtn(ticker) {
       const btn = document.getElementById('wlBtn');
+      if (!btn) return;
       const inWl = !!watchlistStatus[ticker];
       btn.classList.toggle('on', inWl);
-      btn.textContent = inWl ? '★ WL' : '+ WL';
+      btn.textContent = 'Watch';
+    }
+
+    function updateNotesBtn(ticker) {
+      const btn = document.getElementById('notesBtn');
+      if (!btn) return;
+      let has = false;
+      if (config.notesFromStock) {
+        const stock = allStocks.find(s => s.ticker === ticker);
+        has = !!(stock && stock.watchlist_notes);
+      } else {
+        const entry = abiTickerNotesStatus[ticker];
+        has = !!(entry && entry.notes);
+      }
+      btn.classList.toggle('on', has);
+    }
+
+    function updateDlBtn(ticker) {
+      const btn = document.getElementById('dlBtn');
+      if (!btn) return;
+      const on = tickerExcludes.has(String(ticker || '').toUpperCase()) && !hideWeeklyDisposed && !weeklyDisp;
+      btn.classList.toggle('is-disliked', on);
+      btn.textContent = on ? 'Excluded' : 'Exclude';
     }
 
     async function selectStock(ticker) {
@@ -429,6 +461,8 @@
 
       updateAbiNotes(ticker);
       updateWatchlistBtn(ticker);
+      updateNotesBtn(ticker);
+      updateDlBtn(ticker);
       U.renderTagsStrip(document.getElementById('tagsStrip'), stock);
       U.renderMetrics(document.getElementById('metricsContent'), stock);
       renderList();
@@ -492,17 +526,97 @@
       document.getElementById('loadingOverlay').classList.toggle('hidden', !on);
     }
 
+    function addExcludeTicker(t) {
+      if (!t) return;
+      tickerExcludes.add(String(t).toUpperCase());
+    }
+
+    async function loadWeeklyDisposed() {
+      try {
+        const [wlResp, trResp, psResp] = await Promise.all([
+          fetch('/api/frontend/abi-watchlist'),
+          fetch('/api/frontend/abi-trades'),
+          fetch('/api/frontend/abi-passes'),
+        ]);
+        if (wlResp.ok) {
+          const wl = await wlResp.json();
+          Object.keys(wl || {}).forEach(addExcludeTicker);
+        }
+        if (trResp.ok) {
+          const tr = await trResp.json();
+          Object.keys(tr || {}).forEach(addExcludeTicker);
+        }
+        if (psResp.ok) {
+          const ps = await psResp.json();
+          Object.entries((ps && ps.passes) || {}).forEach(([t, e]) => {
+            if (e && e.is_active) addExcludeTicker(t);
+          });
+        }
+      } catch (e) { /* weekly hide is best-effort */ }
+    }
+
     async function loadTickerExcludes() {
+      tickerExcludes = new Set();
       try {
         const resp = await fetch('/api/frontend/abi-dislikes');
-        if (!resp.ok) return;
-        const data = await resp.json();
-        tickerExcludes = new Set(
+        if (resp.ok) {
+          const data = await resp.json();
           Object.entries(data)
             .filter(([, e]) => e && e.is_active !== false)
-            .map(([t]) => t)
-        );
+            .forEach(([t]) => addExcludeTicker(t));
+        }
       } catch (e) { /* exclude list is best-effort */ }
+      if (hideWeeklyDisposed) await loadWeeklyDisposed();
+    }
+
+    function dropTickerFromList(ticker) {
+      addExcludeTicker(ticker);
+      const up = String(ticker).toUpperCase();
+      allStocks = allStocks.filter(s => (s.ticker || '').toUpperCase() !== up);
+      renderSectorTabs();
+      renderIndustryTabs();
+      renderSectorSheet();
+      renderList();
+      updateCounts();
+      const visible = visibleStocks();
+      if (selectedTicker && selectedTicker.toUpperCase() === up) {
+        if (visible.length) selectStock(visible[0].ticker);
+        else selectedTicker = null;
+      }
+    }
+
+    function weeklySources(ticker) {
+      if (!weeklyDisp) return [];
+      if (weeklyDisp === true) {
+        const stock = allStocks.find(s => s.ticker === ticker);
+        return (stock && stock.sources) || [];
+      }
+      return [weeklyDisp];
+    }
+
+    async function disposeWeekly(kind) {
+      const ticker = selectedTicker;
+      if (!ticker) return;
+      try {
+        if (kind === 'pass') {
+          await fetch('/api/frontend/abi-passes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ticker, sources: weeklySources(ticker) }),
+          });
+        } else if (kind === 'buy' || kind === 'short') {
+          await fetch('/api/frontend/abi-trades', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ticker, side: kind }),
+          });
+        }
+      } catch (e) {
+        console.error('disposition failed', e);
+      }
+      window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
+        detail: { action: 'saved', ticker },
+      }));
     }
 
     async function loadData(cap) {
@@ -762,11 +876,45 @@
       if (!selectedTicker) return;
       const inWl = !!watchlistStatus[selectedTicker];
       window._wlToggle(selectedTicker, inWl, (nowIn, ticker) => {
-        if (nowIn) watchlistStatus[ticker] = watchlistStatus[ticker] || { stars: 0 };
-        else delete watchlistStatus[ticker];
+        if (nowIn) {
+          watchlistStatus[ticker] = watchlistStatus[ticker] || { stars: 0 };
+          if (weeklyDisp) {
+            dropTickerFromList(ticker);
+            return;
+          }
+        } else {
+          delete watchlistStatus[ticker];
+        }
         updateWatchlistBtn(ticker);
         renderList();
       });
+    });
+
+    document.getElementById('dlBtn')?.addEventListener('click', () => {
+      if (!selectedTicker || !window._dlOpenForTicker) return;
+      window._dlOpenForTicker(selectedTicker);
+    });
+
+    document.getElementById('whyBtn')?.addEventListener('click', function () {
+      if (!selectedTicker || !window._copyWhyPrompt) return;
+      const co = document.getElementById('detailCo');
+      window._copyWhyPrompt(selectedTicker, co ? co.textContent : '', this);
+    });
+
+    const wrDisp = document.getElementById('wrDisp');
+    if (weeklyDisp && wrDisp) {
+      wrDisp.hidden = false;
+      wrDisp.classList.add('visible');
+      wrDisp.addEventListener('click', e => {
+        const btn = e.target.closest('[data-disp]');
+        if (!btn) return;
+        disposeWeekly(btn.dataset.disp);
+      });
+    }
+
+    window.addEventListener('abi-exclude-changed', function (ev) {
+      const d = ev.detail || {};
+      if (d.action === 'saved' && d.ticker) dropTickerFromList(d.ticker);
     });
 
     document.getElementById('notesBtn').addEventListener('click', () => {
@@ -791,6 +939,7 @@
           else delete abiTickerNotesStatus[ticker];
         }
         updateAbiNotes(ticker);
+        updateNotesBtn(ticker);
       });
     });
 

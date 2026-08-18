@@ -59,6 +59,7 @@
 
   window.MobileScreener.init({
     pageTitle: 'Top 5D/20D',
+    weeklyDisposition: 'top520',
     fetchStocks: cap => fetch('/api/frontend/top-returns-5-20/all')
       .then(r => r.json())
       .then(data => {
@@ -69,7 +70,7 @@
     sortStocks: stocks => [...stocks].sort((a, b) => {
       const d = sortKey(b) - sortKey(a);
       if (d) return d;
-      return (b.market_cap || 0) - (a.market_cap || 0);
+      return (b.market_cap || 0) - (a.market_cap || 0) || (a.ticker || '').localeCompare(b.ticker || '');
     }),
     listValueLabel: '5D',
     listValueFn: listValue,

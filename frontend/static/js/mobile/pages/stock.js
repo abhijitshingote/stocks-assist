@@ -53,7 +53,21 @@
     if (!btn) return;
     const inWl = !!watchlistStatus[ticker];
     btn.classList.toggle('on', inWl);
-    btn.textContent = inWl ? '★ WL' : '+ WL';
+    btn.textContent = 'Watch';
+  }
+
+  function updateNotesBtn() {
+    const btn = document.getElementById('notesBtn');
+    if (!btn) return;
+    const cmt = abiTickerNotesStatus[ticker];
+    btn.classList.toggle('on', !!(cmt && cmt.notes));
+  }
+
+  function updateDlBtn(isDisliked) {
+    const btn = document.getElementById('dlBtn');
+    if (!btn) return;
+    btn.classList.toggle('is-disliked', !!isDisliked);
+    btn.textContent = isDisliked ? 'Excluded' : 'Exclude';
   }
 
   function renderDetail(stock) {
@@ -115,7 +129,7 @@
 
   async function loadWatchlistAndNotes() {
     try {
-      const [wlResp, cmtResp] = await Promise.all([
+      const [wlResp, cmtResp, dlResp] = await Promise.all([
         fetch('/api/frontend/abi-watchlist/batch-check', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -126,13 +140,23 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ tickers: [ticker] }),
         }),
+        fetch('/api/frontend/abi-dislikes/batch-check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tickers: [ticker] }),
+        }),
       ]);
       if (wlResp.ok) watchlistStatus = await wlResp.json();
       if (cmtResp.ok) abiTickerNotesStatus = await cmtResp.json();
+      if (dlResp.ok) {
+        const dl = await dlResp.json();
+        updateDlBtn(!!dl[ticker]);
+      }
     } catch (e) {
       console.error('Watchlist/notes load failed', e);
     }
     updateWatchlistBtn();
+    updateNotesBtn();
     try {
       updateAbiNotes();
     } catch (e) {
@@ -319,10 +343,21 @@
             abiTickerNotesStatus[t] = { notes: newNotes || '' };
           else delete abiTickerNotesStatus[t];
           updateAbiNotes();
+          updateNotesBtn();
         }
       );
     });
   }
+
+  document.getElementById('dlBtn')?.addEventListener('click', () => {
+    if (window._dlOpenForTicker) window._dlOpenForTicker(ticker);
+  });
+
+  document.getElementById('whyBtn')?.addEventListener('click', function () {
+    if (!window._copyWhyPrompt) return;
+    const co = document.getElementById('detailCo');
+    window._copyWhyPrompt(ticker, co ? co.textContent : '', this);
+  });
 
   const panel = document.getElementById('mainPanelChart');
   if (panel && typeof ResizeObserver !== 'undefined') {

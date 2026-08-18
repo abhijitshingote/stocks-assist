@@ -341,6 +341,9 @@
       gap: 4px;
       flex-wrap: wrap;
     }
+    .detail-row-tf { display: flex; margin-top: 4px; }
+    .wr-disp { display: none; align-items: center; gap: 4px; }
+    .wr-disp.visible { display: flex; }
     .icon-btn {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -357,9 +360,16 @@
       color: var(--accent);
       background: var(--surface-warm);
     }
+    .icon-btn.copied { border-color: var(--success); color: var(--success); }
+    .icon-btn.is-disliked {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: color-mix(in oklab, var(--danger) 12%, var(--surface));
+    }
+    .icon-btn.disp-buy:hover { border-color: var(--success); color: var(--success); }
+    .icon-btn.disp-short:hover { border-color: var(--danger); color: var(--danger); }
     .tf-group {
       display: flex;
-      margin-left: auto;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: var(--radius-pill);

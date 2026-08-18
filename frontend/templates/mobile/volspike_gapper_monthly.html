@@ -1,0 +1,5 @@
+{% extends "mobile/_base.html" %}
+{% block title %}Vol Spike &amp; Gaps (M) — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_screener_styles.html" %}{% endblock %}
+{% block body %}{% include "mobile/_screener_shell.html" %}{% endblock %}
+{% block scripts %}{% include "mobile/_screener_libs.html" %}<script src="{{ url_for('static', filename='js/mobile/pages/volspike-gapper-monthly.js') }}"></script>{% endblock %}

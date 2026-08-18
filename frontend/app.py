@@ -208,13 +208,29 @@ def m_top_performance():
 def m_top_losers():
     return render_template('mobile/top_losers.html')
 
+@app.route('/m/weekly-review')
+def m_weekly_review():
+    return render_template('mobile/weekly_review.html')
+
+@app.route('/m/volspike-gapper-monthly')
+def m_volspike_gapper_monthly():
+    return render_template('mobile/volspike_gapper_monthly.html')
+
 @app.route('/m/abi-watchlist')
 def m_abi_watchlist():
     return render_template('mobile/abi_watchlist.html')
 
+@app.route('/m/abi-trades')
+def m_abi_trades():
+    return render_template('mobile/abi_trades.html')
+
 @app.route('/m/abi-general-notes')
 def m_abi_general_notes():
     return render_template('mobile/abi_general_notes.html')
+
+@app.route('/m/abi-dislikes')
+def m_abi_dislikes():
+    return render_template('mobile/abi_dislikes.html')
 
 @app.route('/m/context')
 def m_context():
@@ -232,9 +248,29 @@ def m_market_brief():
 def m_market_news():
     return render_template('mobile/market_news.html')
 
+@app.route('/m/etfs')
+def m_etfs():
+    return render_template('mobile/etfs.html')
+
+@app.route('/m/daily-shortlist')
+def m_daily_shortlist():
+    return render_template('mobile/daily_shortlist.html')
+
+@app.route('/m/daily-themes')
+def m_daily_themes():
+    return render_template('mobile/daily_themes.html')
+
+@app.route('/m/themes')
+def m_themes():
+    return render_template('mobile/themes.html')
+
 @app.route('/m/logs')
 def m_logs():
     return render_template('mobile/logs.html')
+
+@app.route('/m/help')
+def m_help():
+    return render_template('mobile/help.html')
 
 @app.route('/m/stock/<ticker>')
 def m_stock_detail(ticker):

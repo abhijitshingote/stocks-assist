@@ -1,0 +1,96 @@
+(function () {
+  'use strict';
+
+  const U = window.MobileUtil;
+  let recency = 'all';
+
+  function recencyCutoff(filter) {
+    if (filter === 'all') return null;
+    const days = parseInt(filter, 10);
+    const d = new Date();
+    d.setDate(d.getDate() - days);
+    return d.toISOString().split('T')[0];
+  }
+
+  function eventMag(s) {
+    return VsgEvent.magStr(s, {compact: true}) || '—';
+  }
+
+  function filterRecency(stocks) {
+    const cutoff = recencyCutoff(recency);
+    if (!cutoff) return stocks;
+    return stocks.filter(s => s.last_event_date && s.last_event_date >= cutoff);
+  }
+
+  function sortEvents(stocks) {
+    return [...stocks].sort((a, b) => {
+      const am = (a.last_event_date || '').slice(0, 7);
+      const bm = (b.last_event_date || '').slice(0, 7);
+      if (am !== bm) return bm.localeCompare(am);
+      const ar = a.last_event_return, br = b.last_event_return;
+      if (ar == null) return 1;
+      if (br == null) return -1;
+      return br - ar;
+    });
+  }
+
+  window.MobileScreener.init({
+    pageTitle: 'Vol Spike & Gaps (M)',
+    fetchStocks: cap => fetch('/api/frontend/volspike-gapper/' + cap)
+      .then(r => r.json())
+      .then(data => (data && data.error ? [] : data)),
+    filterStocks: filterRecency,
+    sortStocks: sortEvents,
+    listValueLabel: 'Event',
+    listValueFn: eventMag,
+    extraFilterHtml:
+      '<div class="strip recency-strip" role="tablist" aria-label="Recency">' +
+      '<span class="strip-label">When</span>' +
+      '<button type="button" class="pill recency-pill active" data-recency="all">All</button>' +
+      '<button type="button" class="pill recency-pill" data-recency="1">1D</button>' +
+      '<button type="button" class="pill recency-pill" data-recency="5">5D</button>' +
+      '<button type="button" class="pill recency-pill" data-recency="20">20D</button>' +
+      '</div>',
+    onSetup: app => {
+      document.querySelectorAll('.recency-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          recency = btn.dataset.recency;
+          document.querySelectorAll('.recency-pill').forEach(b => b.classList.toggle('active', b === btn));
+          app.renderList();
+          app.updateCounts();
+        });
+      });
+    },
+    renderList: (visible, app) => {
+      const chipStrip = document.getElementById('chipStrip');
+      const tbody = document.getElementById('stockTableBody');
+
+      chipStrip.innerHTML = visible.slice(0, 24).map(s => {
+        const active = s.ticker === app.selectedTicker ? ' active' : '';
+        const badge = VsgEvent.badge(s);
+        return '<div class="tchip' + active + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
+          '<span class="tk">' + U.escAttr(s.ticker) + (badge ? '<span class="evt-badge">' + badge + '</span>' : '') +
+          '</span><span class="ret">' + eventMag(s) + '</span></div>';
+      }).join('');
+
+      tbody.innerHTML = visible.map((s, i) => {
+        const active = s.ticker === app.selectedTicker ? ' active' : '';
+        const badge = VsgEvent.badge(s);
+        const month = (s.last_event_date || '').slice(0, 7);
+        return '<tr class="' + active.trim() + '" data-ticker="' + U.escAttr(s.ticker) + '">' +
+          '<td>' + (i + 1) + '</td>' +
+          '<td>' + U.escAttr(s.ticker) + (badge ? ' <span class="evt-badge">' + badge + '</span>' : '') + '</td>' +
+          '<td>' + U.fmtMktCap(s.market_cap) + '</td>' +
+          '<td>' + eventMag(s) + '</td>' +
+          '<td class="stars muted" style="font-size:0.5rem">' + U.escAttr(month) + '</td></tr>';
+      }).join('');
+
+      chipStrip.querySelectorAll('.tchip').forEach(c => {
+        c.addEventListener('click', () => app.selectStock(c.dataset.ticker));
+      });
+      tbody.querySelectorAll('tr').forEach(r => {
+        r.addEventListener('click', () => app.selectStock(r.dataset.ticker));
+      });
+    },
+  });
+})();

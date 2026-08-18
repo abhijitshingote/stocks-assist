@@ -1,0 +1,21 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'Themes' %}
+{% block title %}Themes — Mobile{% endblock %}
+{% block content %}
+  <div class="utility-body utility-scroll">
+    <div class="md-toolbar">
+      <span class="md-item-meta" id="thMeta">—</span>
+      <span class="spacer"></span>
+      <div class="home-sort-row" id="thSort">
+        <button type="button" class="home-sort-btn active" data-sort="default">Grp</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_1">1D</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_5">5D</button>
+        <button type="button" class="home-sort-btn" data-sort="dr_20">20D</button>
+      </div>
+    </div>
+    <div id="thGrid"><div class="md-loading">Loading…</div></div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/mobile/pages/themes.js') }}"></script>
+{% endblock %}

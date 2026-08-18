@@ -116,3 +116,22 @@
   vertical-align: middle;
 }
 
+.wr-meta {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  color: var(--muted);
+  line-height: 1.4;
+  padding: 4px 0 8px;
+}
+
+.trade-side {
+  font-size: 0.5rem;
+  font-family: var(--font-mono);
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-right: 4px;
+  text-transform: uppercase;
+}
+.trade-side.buy { color: var(--success); border: 1px solid var(--success); }
+.trade-side.short { color: var(--danger); border: 1px solid var(--danger); }
+

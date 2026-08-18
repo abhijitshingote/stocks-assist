@@ -1,0 +1,24 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'Daily Shortlist' %}
+{% block title %}Daily Shortlist — Mobile{% endblock %}
+{% block content %}
+  <div class="utility-body">
+    <div class="md-toolbar">
+      <select id="dsDate"></select>
+      <span class="spacer"></span>
+      <span class="md-item-meta" id="dsMeta">—</span>
+    </div>
+    <div class="md-chip-strip" id="dsTabs">
+      <button type="button" class="md-btn active" data-tab="PICK">PICK <span id="dsCountPick">0</span></button>
+      <button type="button" class="md-btn" data-tab="WATCH">WATCH <span id="dsCountWatch">0</span></button>
+      <button type="button" class="md-btn" data-tab="SKIP">SKIP <span id="dsCountSkip">0</span></button>
+    </div>
+    <div class="md-filters">
+      <input class="md-search" type="search" id="dsSearch" placeholder="Filter ticker / sector / theme…">
+    </div>
+    <div class="utility-scroll" id="dsList"><div class="md-loading">Loading…</div></div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/mobile/pages/daily-shortlist.js') }}"></script>
+{% endblock %}

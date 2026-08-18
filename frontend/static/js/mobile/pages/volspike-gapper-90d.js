@@ -62,13 +62,14 @@
 
   window.MobileScreener.init({
     pageTitle: 'Vol Spike & Gaps (90d)',
+    weeklyDisposition: 'vsg90',
     fetchStocks: cap => fetch('/api/frontend/volspike-gapper-90d/' + cap)
       .then(r => r.json())
       .then(data => (data && data.error ? [] : data)),
     sortStocks: stocks => [...stocks].sort((a, b) => {
       const d = sortKey(b) - sortKey(a);
       if (d) return d;
-      return (b.market_cap || 0) - (a.market_cap || 0);
+      return (b.market_cap || 0) - (a.market_cap || 0) || (a.ticker || '').localeCompare(b.ticker || '');
     }),
     listValueLabel: 'Evt',
     listValueFn: listValue,

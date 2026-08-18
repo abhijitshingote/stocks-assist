@@ -31,9 +31,18 @@
       <span class="tag float" id="detailLowFloat" style="display:none">Low Float</span>
       <a class="detail-link" id="detailLink" href="{{ _dhref }}">{{ _dlbl }}</a>
     </div>
-    <div class="detail-row-c">
-      <button class="icon-btn" type="button" title="Abi ticker notes" id="notesBtn">📝</button>
-      <button class="icon-btn" type="button" id="wlBtn">+ WL</button>
+    <div class="detail-row-c" id="detailActions">
+      <button class="icon-btn" type="button" id="wlBtn" title="Toggle watchlist">Watch</button>
+      <button class="icon-btn" type="button" id="notesBtn" title="Abi ticker notes">Notes</button>
+      <button class="icon-btn" type="button" id="dlBtn" title="Exclude from screeners">Exclude</button>
+      <button class="icon-btn" type="button" id="whyBtn" title="Copy research prompt">Why?</button>
+      <span class="wr-disp" id="wrDisp" hidden>
+        <button class="icon-btn" type="button" data-disp="pass" title="Pass — hide until next Saturday">Pass</button>
+        <button class="icon-btn disp-buy" type="button" data-disp="buy" title="Add as buy candidate">Buy</button>
+        <button class="icon-btn disp-short" type="button" data-disp="short" title="Add as short candidate">Short</button>
+      </span>
+    </div>
+    <div class="detail-row-tf">
       <div class="tf-group" id="tfBar">
         <button type="button" data-days="30">1M</button>
         <button type="button" data-days="90">3M</button>

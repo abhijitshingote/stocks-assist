@@ -52,13 +52,14 @@
 
   window.MobileScreener.init({
     pageTitle: 'Fast RS',
+    weeklyDisposition: 'fastrs',
     fetchStocks: cap => fetch('/api/frontend/fast-rs/' + cap)
       .then(r => r.json())
       .then(data => (data && data.error ? [] : data)),
     sortStocks: stocks => [...stocks].sort((a, b) => {
       const d = sortKey(b) - sortKey(a);
       if (d) return d;
-      return (b.market_cap || 0) - (a.market_cap || 0);
+      return (b.market_cap || 0) - (a.market_cap || 0) || (a.ticker || '').localeCompare(b.ticker || '');
     }),
     listValueLabel: 'RS',
     listValueFn: listValue,

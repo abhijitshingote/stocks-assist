@@ -1,0 +1,11 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'Reference' %}
+{% block title %}Reference — Mobile{% endblock %}
+{% block content %}
+  <div class="utility-body utility-scroll help-mobile">
+    {% include "_help_content.html" %}
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/help-cutoffs.js') }}"></script>
+{% endblock %}
