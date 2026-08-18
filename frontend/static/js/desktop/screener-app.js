@@ -41,6 +41,9 @@
                               Receives the stock object and the selected cap slug.
      extraControlsHtml: null | string
                               HTML injected into #screenerExtraControls in the top bar.
+     copyTextFn:     null | async function ({ getVisibleTickers }) → string
+                              Override clipboard payload. Default is comma-joined
+                              visible tickers. Return '' / falsy → "No tickers".
      onReady:        null | function({ reloadFn, resortFn, rerenderFn, selectStock, getState })
                               Called after setup; provides helpers for extra controls
                               that need to trigger data re-sort, reload, or re-render.
@@ -986,7 +989,6 @@ window.DesktopScreener = (function () {
 
         async function copyVisibleTickers() {
             const btn = document.getElementById('copyTickersBtn');
-            const tickers = getVisibleTickers();
             const original = '📋 Copy';
             const flash = (msg, ok) => {
                 if (!btn) return;
@@ -994,8 +996,23 @@ window.DesktopScreener = (function () {
                 btn.textContent = msg;
                 setTimeout(() => { btn.classList.remove('copied'); btn.textContent = original; }, 1500);
             };
+            let tickers;
+            let text;
+            if (config.copyTextFn) {
+                try {
+                    text = await config.copyTextFn({ getVisibleTickers });
+                } catch (e) {
+                    console.error('copyTextFn failed', e);
+                    flash('Copy failed', false);
+                    return;
+                }
+                text = (text || '').trim();
+                tickers = text ? text.split('\n').filter(Boolean) : [];
+            } else {
+                tickers = getVisibleTickers();
+                text = tickers.join(', ');
+            }
             if (!tickers.length) { flash('No tickers', false); return; }
-            const text = tickers.join(', ');
             try {
                 if (navigator.clipboard && window.isSecureContext) {
                     await navigator.clipboard.writeText(text);
