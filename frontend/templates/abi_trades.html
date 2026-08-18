@@ -51,16 +51,23 @@ DesktopScreener.init({
     listPrefixFn: (s) => s.trade_side
         ? '<span class="trade-side ' + s.trade_side + '">' + s.trade_side + '</span>'
         : '',
-    copyTextFn: async () => {
-        const [trResp, wlResp] = await Promise.all([
-            fetch('/api/frontend/abi-trades'),
-            fetch('/api/frontend/abi-watchlist'),
+    copyTextFn: async ({ getVisibleTickers }) => {
+        const sortDr1 = (rows) => [...(rows || [])].sort((a, b) => {
+            const av = a.dr_1, bv = b.dr_1;
+            if (av == null) return 1;
+            if (bv == null) return -1;
+            return bv - av;
+        }).map(s => s.ticker).filter(Boolean);
+        const [wlResp, trResp] = await Promise.all([
+            fetch('/api/frontend/abi-watchlist/data'),
+            fetch('/api/frontend/abi-trades/data'),
         ]);
-        const trades = Object.keys((await trResp.json()) || {});
-        const wl = Object.keys((await wlResp.json()) || {});
+        const wl = sortDr1(await wlResp.json());
+        const trades = getVisibleTickers();
+        const tradeExtra = sortDr1(await trResp.json()).filter(t => !trades.includes(t));
         const seen = new Set();
         const out = [];
-        for (const t of TOS_FIXED.concat(wl, trades)) {
+        for (const t of TOS_FIXED.concat(wl, trades, tradeExtra)) {
             if (!t || seen.has(t)) continue;
             seen.add(t);
             out.push(t);
@@ -69,7 +76,7 @@ DesktopScreener.init({
     },
     onReady: () => {
         const copyBtn = document.getElementById('copyTickersBtn');
-        if (copyBtn) copyBtn.title = 'Copy TOS prefix + watchlist + trades, one ticker per line';
+        if (copyBtn) copyBtn.title = 'Copy TOS prefix + /abi-watchlist + /abi-trades, one ticker per line';
         document.getElementById('tradeRemoveBtn')?.addEventListener('click', async () => {
             const t = document.getElementById('detailTicker')?.textContent?.trim();
             if (!t || t === '—') return;
