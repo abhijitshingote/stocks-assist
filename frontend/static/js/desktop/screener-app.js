@@ -1163,7 +1163,8 @@ window.DesktopScreener = (function () {
         document.getElementById('copyTickersBtn')?.addEventListener('click', copyVisibleTickers);
 
         document.addEventListener('keydown', function (e) {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+            if (e.metaKey || e.ctrlKey || e.altKey) return;
             const visible = filteredStocks.filter(passesSectorIndustry);
             if (!visible.length) return;
             const idx = visible.findIndex(s => s.ticker === selectedTicker);
@@ -1177,6 +1178,9 @@ window.DesktopScreener = (function () {
                 const prev = visible[idx > 0 ? idx - 1 : visible.length - 1];
                 selectStock(prev.ticker);
                 scrollToStock(prev.ticker);
+            } else if (weeklyDisp && (e.key === 'p' || e.key === 'P')) {
+                e.preventDefault();
+                disposeWeekly('pass');
             }
         });
 

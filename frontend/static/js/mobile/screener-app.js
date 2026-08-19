@@ -1004,6 +1004,13 @@
         if (!btn) return;
         disposeWeekly(btn.dataset.disp);
       });
+      document.addEventListener('keydown', e => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.key !== 'p' && e.key !== 'P') return;
+        e.preventDefault();
+        disposeWeekly('pass');
+      });
     }
 
     const tradeRemoveBtn = document.getElementById('tradeRemoveBtn');
