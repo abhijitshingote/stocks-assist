@@ -244,6 +244,16 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 
 ## Other Pages
 
+### Mega Pulse
+| | |
+|---|---|
+| **File** | `templates/mega_pulse.html` |
+| **CSS** | `static/css/mega-pulse.css` |
+| **JS** | `static/js/mega-pulse-shared.js` + `static/js/desktop/mega-pulse.js` |
+| **Route** | `/mega-pulse` |
+| **Data** | `/api/frontend/all-stocks`, client filter `market_cap ≥ $100B` |
+| **Layout** | Sector rows × 3 lanes (Down / Nonchalant / Up) on `dr_1`/`dr_5`/`dr_20` vs thresh |
+
 ### Market Brief Viewer
 | | |
 |---|---|
@@ -378,6 +388,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Page | Template | Route | `page_libs` |
 |------|----------|-------|-------------|
 | Dashboard | `mobile/index.html` | `/m` | `['charts']` |
+| Mega Pulse | `mobile/mega_pulse.html` | `/m/mega-pulse` | `[]` |
 | Context | `mobile/context.html` | `/m/context` | `['charts']` |
 | Context 2 | `mobile/context2.html` | `/m/context-2` | `[]` |
 | Market Brief | `mobile/market_brief.html` | `/m/market-brief` | `[]` |

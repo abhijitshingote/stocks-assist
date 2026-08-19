@@ -1,0 +1,37 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'Mega Pulse' %}
+{% block title %}Mega Pulse — Mobile{% endblock %}
+{% block page_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mega-pulse.css') }}">
+{% endblock %}
+{% block content %}
+  <div class="utility-body utility-scroll mp-mobile">
+    <div class="md-toolbar mp-m-toolbar">
+      <span class="md-item-meta" id="mpMeta">—</span>
+    </div>
+    <div class="mp-m-chips">
+      <div class="home-sort-row" id="mpWin">
+        <button type="button" class="home-sort-btn active" data-val="dr_1">1D</button>
+        <button type="button" class="home-sort-btn" data-val="dr_5">5D</button>
+        <button type="button" class="home-sort-btn" data-val="dr_20">20D</button>
+      </div>
+      <div class="home-sort-row" id="mpBand">
+        <button type="button" class="home-sort-btn" data-val="tight">Tight</button>
+        <button type="button" class="home-sort-btn active" data-val="default">Def</button>
+        <button type="button" class="home-sort-btn" data-val="wide">Wide</button>
+      </div>
+      <div class="home-sort-row" id="mpLane">
+        <button type="button" class="home-sort-btn active" data-val="all">All</button>
+        <button type="button" class="home-sort-btn" data-val="down">▼</button>
+        <button type="button" class="home-sort-btn" data-val="flat">—</button>
+        <button type="button" class="home-sort-btn" data-val="up">▲</button>
+      </div>
+    </div>
+    <div class="mp-breadth" id="mpBreadth"></div>
+    <div id="mpBoard"><div class="md-loading">Loading…</div></div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/mega-pulse-shared.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mobile/pages/mega-pulse.js') }}"></script>
+{% endblock %}

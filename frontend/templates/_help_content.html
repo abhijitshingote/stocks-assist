@@ -81,6 +81,11 @@
         </div>
 
         <div class="help-card">
+            <div class="help-name"><a href="/mega-pulse">Mega Pulse</a><span class="help-route">/mega-pulse</span></div>
+            <div class="help-desc">Same liquid universe as All Stocks, client-filtered to <code>market_cap ≥ $100B</code> (no biotech exclude). Grouped by <code>sector</code>. Each name is bucketed on <code>dr_1</code> / <code>dr_5</code> / <code>dr_20</code>: Up if <code>ret &gt; thresh</code>, Down if <code>ret &lt; −thresh</code>, Nonchalant if <code>|ret| ≤ thresh</code>. Default thresh: 1D <code>1.0%</code>, 5D <code>2.5%</code>, 20D <code>6.0%</code>; Tight <code>×0.75</code>, Wide <code>×1.5</code>. Sector/global mean is equal-weight (toggle: mcap-weight). Default sector sort is <code>|mean|</code> desc; also mean, <code>n_up − n_down</code>, A–Z. Within-lane: movers by signed ret, nonchalant by mcap. Gold pip = <code>at_52w_high</code>. <code>≠</code> = Up/Down name whose bucket ≠ the sector modal bucket (ties break to Nonchalant). Tile min-width: ≥$1T / ≥$400B / rest.</div>
+        </div>
+
+        <div class="help-card">
             <div class="help-name"><a href="/technical-screener">Technical</a><span class="help-route">/technical-screener</span></div>
             <div class="help-desc">Intraday setups computed from the latest OHLC bar. Current criterion — <code>reversal</code>: low-to-close recovery, <code>(close − low) / low × 100</code>, top <code>100</code> descending. Additive metric: criterion value.</div>
         </div>

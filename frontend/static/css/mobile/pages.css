@@ -1329,3 +1329,24 @@
 .help-mobile .help-route { font-size: 12px; }
 .help-mobile .help-desc,
 .help-mobile .help-note { font-size: 15px; }
+
+/* Mega Pulse */
+.mp-mobile .mp-m-toolbar { padding-bottom: 6px; }
+.mp-mobile .mp-m-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 14px 4px;
+}
+.mp-mobile .mp-breadth {
+  margin: 4px 14px 10px;
+}
+.mp-mobile .mp-sector {
+  margin: 0 0 10px;
+}
+.mp-mobile .mp-sector-head {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mp-mobile .mp-bar { min-width: 56px; }
+.mp-mobile .mp-tile { min-width: 62px; }

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-mega-pulse{% endblock %}
+{% block title %}Mega Pulse - Stocks Assist{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mega-pulse.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="mp-top">
+    <div class="mp-title">Mega Pulse</div>
+    <div class="mp-stats">
+        <span>mega ≥ $100B · <b id="mpCount">—</b></span>
+        <span class="down">▼ <b id="mpDown">—</b></span>
+        <span class="flat">— <b id="mpFlat">—</b></span>
+        <span class="up">▲ <b id="mpUp">—</b></span>
+        <span>mean <b id="mpMean">—</b></span>
+        <span class="mp-thresh" id="mpThresh"></span>
+    </div>
+    <div class="mp-controls">
+        <div class="mp-chip-row" id="mpWin">
+            <span class="mp-chip-label">ret</span>
+            <button type="button" class="mp-chip active" data-val="dr_1">1D</button>
+            <button type="button" class="mp-chip" data-val="dr_5">5D</button>
+            <button type="button" class="mp-chip" data-val="dr_20">20D</button>
+        </div>
+        <div class="mp-chip-row" id="mpBand">
+            <span class="mp-chip-label">band</span>
+            <button type="button" class="mp-chip" data-val="tight">Tight</button>
+            <button type="button" class="mp-chip active" data-val="default">Default</button>
+            <button type="button" class="mp-chip" data-val="wide">Wide</button>
+        </div>
+        <div class="mp-chip-row" id="mpLane">
+            <span class="mp-chip-label">show</span>
+            <button type="button" class="mp-chip active" data-val="all">All</button>
+            <button type="button" class="mp-chip down" data-val="down">Down</button>
+            <button type="button" class="mp-chip" data-val="flat">Nonchalant</button>
+            <button type="button" class="mp-chip up" data-val="up">Up</button>
+        </div>
+        <div class="mp-chip-row" id="mpSort">
+            <span class="mp-chip-label">sort</span>
+            <button type="button" class="mp-chip active" data-val="abs">|mean|</button>
+            <button type="button" class="mp-chip" data-val="mean">mean</button>
+            <button type="button" class="mp-chip" data-val="lopsided">▲−▼</button>
+            <button type="button" class="mp-chip" data-val="name">A–Z</button>
+        </div>
+        <div class="mp-chip-row" id="mpWeight">
+            <span class="mp-chip-label">mean</span>
+            <button type="button" class="mp-chip active" data-val="eq">eq</button>
+            <button type="button" class="mp-chip" data-val="mcap">$wt</button>
+        </div>
+    </div>
+</div>
+<div class="mp-breadth" id="mpBreadth"></div>
+<div class="mp-board" id="mpBoard"><div class="mp-status">Loading…</div></div>
+<div class="mp-legend">
+    Liquid universe · <code>market_cap ≥ $100B</code>.
+    Up: <code>ret &gt; thresh</code> · Down: <code>ret &lt; −thresh</code> · Nonchalant: <code>|ret| ≤ thresh</code>.
+    Default thresh 1D <code>1.0%</code> / 5D <code>2.5%</code> / 20D <code>6.0%</code>; Tight <code>×0.75</code>, Wide <code>×1.5</code>.
+    Gold pip = <code>at_52w_high</code>. <code>≠</code> = mover whose bucket ≠ sector modal bucket.
+    Tile size: ≥$1T / ≥$400B / rest. Within-lane sort: |ret| (movers), mcap (nonchalant).
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/mega-pulse-shared.js') }}"></script>
+<script src="{{ url_for('static', filename='js/desktop/mega-pulse.js') }}"></script>
+{% endblock %}

@@ -86,6 +86,11 @@ def all_stocks_page():
     """All Stocks page - main_view universe filtered only by sector/industry"""
     return render_template('all_stocks.html')
 
+@app.route('/mega-pulse')
+def mega_pulse_page():
+    """Mega Pulse — mega-cap (≥$100B) up / down / nonchalant board by sector"""
+    return render_template('mega_pulse.html')
+
 @app.route('/top-losers')
 def top_losers_page():
     """Top Losers page - Union of bottom stocks by 1D, 5D, 20D returns"""
@@ -163,6 +168,10 @@ def m_volspike_gapper_weekly():
 @app.route('/m/all-stocks')
 def m_all_stocks():
     return render_template('mobile/all_stocks.html')
+
+@app.route('/m/mega-pulse')
+def m_mega_pulse():
+    return render_template('mobile/mega_pulse.html')
 
 @app.route('/m/rs-screener')
 def m_rs_screener():
