@@ -638,8 +638,9 @@
       const ticker = selectedTicker;
       if (!ticker) return;
       try {
+        let resp;
         if (kind === 'pass') {
-          await fetch('/api/frontend/abi-passes', {
+          resp = await fetch('/api/frontend/abi-passes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -649,14 +650,16 @@
             }),
           });
         } else if (kind === 'buy' || kind === 'short') {
-          await fetch('/api/frontend/abi-trades', {
+          resp = await fetch('/api/frontend/abi-trades', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ticker, side: kind }),
           });
         }
+        if (resp && !resp.ok) throw new Error('disposition HTTP ' + resp.status);
       } catch (e) {
         console.error('disposition failed', e);
+        return;
       }
       window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
         detail: { action: 'saved', ticker },

@@ -2176,11 +2176,20 @@ def current_weekly_cycle(now=None):
     return sat.isoformat(), fri.isoformat()
 
 
+def _ensure_repo_root_on_path():
+    """backend/app.py is started as ``python backend/app.py``; sys.path[0] is backend/."""
+    import sys
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if root not in sys.path:
+        sys.path.insert(0, root)
+
+
 def current_daily_cycle(now=None):
     """Current NYSE session until next open (9:30 ET). Returns (cycle_iso, next_iso).
 
     Same 9:30 cutoff as ``anchor_session_date``: weekday 9:29 still previous session.
     """
+    _ensure_repo_root_on_path()
     from market_brief.trading_calendar import anchor_session_date, next_trading_day
     et = (now or datetime.now(timezone.utc)).astimezone(ZoneInfo('America/New_York'))
     cycle = anchor_session_date(et)
