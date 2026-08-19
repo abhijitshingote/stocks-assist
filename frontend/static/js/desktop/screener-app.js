@@ -450,13 +450,24 @@ window.DesktopScreener = (function () {
         }
 
         function dropTickerFromList(ticker) {
+            // Next pick must come from the painted list (sector/industry + Biotech
+            // exclude), not filteredStocks[0] which still contains hidden names.
+            const visible = filteredStocks.filter(passesSectorIndustry);
+            let nextTicker = null;
+            if (selectedTicker === ticker) {
+                const remaining = visible.filter(s => s.ticker !== ticker);
+                if (remaining.length) {
+                    const idx = visible.findIndex(s => s.ticker === ticker);
+                    nextTicker = (idx >= 0 && remaining[idx] ? remaining[idx] : remaining[0]).ticker;
+                }
+            }
             allStocks = allStocks.filter(s => s.ticker !== ticker);
             filteredStocks = filteredStocks.filter(s => s.ticker !== ticker);
             const totalEl = document.getElementById('totalStocks');
             if (totalEl) totalEl.textContent = filteredStocks.length;
             if (selectedTicker === ticker) {
-                if (filteredStocks.length > 0) {
-                    selectStock(filteredStocks[0].ticker);
+                if (nextTicker) {
+                    selectStock(nextTicker);
                 } else {
                     selectedTicker = null;
                     document.getElementById('rightPlaceholder').style.display = 'flex';
@@ -468,6 +479,7 @@ window.DesktopScreener = (function () {
             renderSectorTabs();
             renderIndustryTabs();
             renderList();
+            if (nextTicker) scrollToStock(nextTicker);
         }
 
         window.addEventListener('abi-exclude-changed', function (ev) {

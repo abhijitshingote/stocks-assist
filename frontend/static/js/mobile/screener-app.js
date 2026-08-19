@@ -604,15 +604,23 @@
     function dropTickerFromList(ticker) {
       addExcludeTicker(ticker);
       const up = String(ticker).toUpperCase();
+      const visible = visibleStocks();
+      let nextTicker = null;
+      if (selectedTicker && selectedTicker.toUpperCase() === up) {
+        const remaining = visible.filter(s => (s.ticker || '').toUpperCase() !== up);
+        if (remaining.length) {
+          const idx = visible.findIndex(s => (s.ticker || '').toUpperCase() === up);
+          nextTicker = (idx >= 0 && remaining[idx] ? remaining[idx] : remaining[0]).ticker;
+        }
+      }
       allStocks = allStocks.filter(s => (s.ticker || '').toUpperCase() !== up);
       renderSectorTabs();
       renderIndustryTabs();
       renderSectorSheet();
       renderList();
       updateCounts();
-      const visible = visibleStocks();
       if (selectedTicker && selectedTicker.toUpperCase() === up) {
-        if (visible.length) selectStock(visible[0].ticker);
+        if (nextTicker) selectStock(nextTicker);
         else selectedTicker = null;
       }
     }
