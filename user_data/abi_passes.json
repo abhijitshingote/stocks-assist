@@ -117,10 +117,11 @@
   },
   "WIX": {
     "disposition": "pass",
-    "cycle": "2026-08-15",
-    "at": "2026-08-16T21:49:06.032314-04:00",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:04:33.587302-04:00",
     "sources": [
-      "top520"
+      "strong"
     ]
   },
   "BRUN": {
@@ -669,6 +670,51 @@
     "at": "2026-08-22T17:16:12.332424-04:00",
     "sources": [
       "top520"
+    ]
+  },
+  "HURN": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:01:57.232096-04:00",
+    "sources": [
+      "vsg90"
+    ]
+  },
+  "W": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:02:26.280415-04:00",
+    "sources": [
+      "vsg90"
+    ]
+  },
+  "IESC": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:02:44.010817-04:00",
+    "sources": [
+      "vsg90"
+    ]
+  },
+  "INTA": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:09:23.531899-04:00",
+    "sources": [
+      "strong"
+    ]
+  },
+  "AMPL": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:17:58.271245-04:00",
+    "sources": [
+      "strong"
     ]
   }
 }
