@@ -206,11 +206,11 @@
   },
   "DRD": {
     "disposition": "pass",
-    "scope": "daily",
-    "cycle": "2026-08-19",
-    "at": "2026-08-19T18:17:40.415033-04:00",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:21:36.351480-04:00",
     "sources": [
-      "daily"
+      "top520"
     ]
   },
   "KGC": {
@@ -278,11 +278,11 @@
   },
   "NEM": {
     "disposition": "pass",
-    "scope": "daily",
-    "cycle": "2026-08-19",
-    "at": "2026-08-19T18:17:45.094524-04:00",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:23:09.680305-04:00",
     "sources": [
-      "daily"
+      "top520"
     ]
   },
   "B": {
@@ -314,11 +314,11 @@
   },
   "AUGO": {
     "disposition": "pass",
-    "scope": "daily",
-    "cycle": "2026-08-19",
-    "at": "2026-08-19T18:17:47.119860-04:00",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:21:46.122076-04:00",
     "sources": [
-      "daily"
+      "top520"
     ]
   },
   "HMY": {
@@ -341,11 +341,11 @@
   },
   "SBSW": {
     "disposition": "pass",
-    "scope": "daily",
-    "cycle": "2026-08-19",
-    "at": "2026-08-19T18:17:48.899253-04:00",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:21:42.810429-04:00",
     "sources": [
-      "daily"
+      "top520"
     ]
   },
   "PAAS": {
@@ -512,11 +512,11 @@
   },
   "AMR": {
     "disposition": "pass",
-    "scope": "daily",
-    "cycle": "2026-08-19",
-    "at": "2026-08-19T18:43:49.709875-04:00",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:21:40.336026-04:00",
     "sources": [
-      "daily"
+      "top520"
     ]
   },
   "CVNA": {
@@ -715,6 +715,33 @@
     "at": "2026-08-22T19:17:58.271245-04:00",
     "sources": [
       "strong"
+    ]
+  },
+  "BLSH": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:21:29.666475-04:00",
+    "sources": [
+      "top520"
+    ]
+  },
+  "SAP": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:23:15.760375-04:00",
+    "sources": [
+      "top520"
+    ]
+  },
+  "RUM": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-08-22",
+    "at": "2026-08-22T19:23:25.990456-04:00",
+    "sources": [
+      "top520"
     ]
   }
 }
