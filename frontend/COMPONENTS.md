@@ -313,6 +313,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **Extends** | `templates/mobile/_base.html` |
 | **CSS** | `_mobile_styles.html` + `pages.css` (default; overrideable via `styles` block) |
 | **Blocks** | `title`, `page_styles`, `body_class`, `before_header`, `content` (required), `outside_phone`, `page_scripts` |
+| **Layout** | `.phone-body` (flex 1, `padding-top: var(--safe-top)`) then docked `.app-header` |
 | **Used by** | All mobile utility pages |
 
 ### Mobile App Header
@@ -320,6 +321,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 |---|---|
 | **File** | `templates/mobile/_app_header.html` |
 | **Variants** | `header_stats=true` → SA + page label + VIX/10Y/count (screener); `page_title` set → SA + title (utility); neither → SA + search + menu (stock) |
+| **Layout** | Docked at bottom of `.phone` (`border-top`, `--safe-bottom` padding). Stats row above search/Nav so tappable controls sit lowest. |
 | **Used by** | `_shell.html`, `_screener_shell.html` |
 
 ### Mobile Nav Drawer
@@ -354,7 +356,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 |---|---|
 | **File** | `templates/mobile/_screener_shell.html` |
 | **CSS** | `_screener_styles.html` → benzinga-news.css + `_mobile_styles.html` + `screener-layout.css` |
-| **Layout** | List-first cards; row tap pushes full-screen detail (`#phone.dr-open`). Caps always visible. Filters in a bottom sheet. No Analyze/Browse. |
+| **Layout** | List-first cards; row tap pushes detail over `.phone-body` (`#phone.dr-open`). Cap/filter toolbar + header docked at bottom (toolbar hidden while detail is open). Filters in a sheet above the dock. No Analyze/Browse. |
 | **JS engine** | `static/js/mobile/screener-app.js` |
 | **Config** | `pageLabel`, `listBadgeFn`, `listMetaFn`, `listRowClassFn`, `listValueClsFn`, `subtitleFn`, plus existing `listValueFn` / `weeklyDisposition` / `extraFilterHtml` |
 | **Script partial** | `templates/mobile/_screener_libs.html` (sets `page_libs` and calls `_page_libs.html`) |

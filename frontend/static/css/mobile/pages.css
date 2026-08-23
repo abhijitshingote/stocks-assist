@@ -24,7 +24,7 @@
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 12px 14px calc(14px + var(--safe-bottom));
+  padding: 12px 14px 12px;
 }
 
 /* Master-detail (notes, logs, brief) */
@@ -230,7 +230,7 @@
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 12px 14px calc(14px + var(--safe-bottom));
+  padding: 12px 14px 12px;
 }
 
 .md-form-group {
@@ -288,7 +288,7 @@
 
 .md-toast {
   position: fixed;
-  bottom: calc(16px + var(--safe-bottom));
+  bottom: calc(88px + var(--safe-bottom));
   left: 50%;
   transform: translateX(-50%) translateY(80px);
   background: var(--surface);
@@ -507,7 +507,7 @@
   font-family: var(--font-mono);
   font-size: 0.58rem;
   line-height: 1.45;
-  padding: 8px 10px calc(10px + var(--safe-bottom));
+  padding: 8px 10px 10px;
 }
 
 .log-viewer pre { margin: 0; white-space: pre-wrap; word-break: break-all; }
@@ -548,7 +548,7 @@
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 12px 14px calc(14px + var(--safe-bottom));
+  padding: 12px 14px 12px;
 }
 
 .brief-content-area .markdown-body {
@@ -737,7 +737,7 @@
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0 14px calc(14px + var(--safe-bottom));
+  padding: 0 14px 14px;
 }
 
 .phone .news-source-filters {

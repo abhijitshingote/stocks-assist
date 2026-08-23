@@ -1,7 +1,7 @@
     /* ── Hint ── */
     .hint {
       position: absolute;
-      top: calc(80px + var(--safe-top));
+      top: calc(12px + var(--safe-top));
       left: 16px; right: 16px;
       z-index: 100;
       background: color-mix(in oklab, var(--surface) 94%, transparent);
