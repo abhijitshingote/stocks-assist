@@ -87,7 +87,7 @@
 |---|---|
 | **CSS class** | `.abi-wl-btn` / `.abi-wl-btn.copied` |
 | **JS logic** | `window._copyWhyPrompt(ticker, company, btn)` in `templates/base.html` |
-| **Copies** | `What does {TICKER} {company} do? Why did it move up and what is the market so excited about ?` |
+| **Copies** | Research prompt: what `{TICKER}` does + why it moved [up/down]; dated summary + 5-6 dated/sourced driver bullets |
 | **Used by** | Stock detail + all desktop screener pages (header, after Exclude) |
 
 ### Dislike Button

@@ -236,9 +236,20 @@
     };
 
     window._copyWhyPrompt = async function (ticker, company, btn) {
-      const name = [ticker, company].map(s => (s || '').trim()).filter(Boolean).join(' ');
-      if (!name) return;
-      const text = 'What does ' + name + ' do? Why did it move up and what is the market so excited about ?';
+      const t = (ticker || '').trim().toUpperCase();
+      if (!t) return;
+      const text = 'What does ' + t + ' do? Why has it moved [up/down] recently? Search for current news.\n'
+          + 'Format:\n'
+          + '\n'
+          + '1. Summary: 3-4 sentences max. What the company does (1 sentence) + why the stock is moving (2-3 sentences). Every claim must include a specific date and specific number (price, %, $ amount) — no vague phrases like "recently" or "a prominent strategist."\n'
+          + '2. Drivers: 5-6 bullets max, one line each, ranked by importance. Each bullet MUST include a date and a named source (person, bank, or event) — no unnamed "analysts" or "strategists." Format: `[Date] — [specific event/number] → [stock impact if known]`\n'
+          + '\n'
+          + 'Below is a FORMAT example only — content is illustrative, not factual, do not apply it to ' + t + ':\n'
+          + '\n'
+          + '* Aug 21 — Fed cut rates 25bps (FOMC) → sector +3%\n'
+          + '* Aug 18 — CEO [Name] announced [specific product] → stock +8% that day\n'
+          + '\n'
+          + 'Be ruthless about cutting: no hedging language, no "not everyone is convinced" filler, no repeating the same catalyst twice across summary and bullets.';
       const original = btn ? btn.textContent : '';
       const flash = (msg, ok) => {
         if (!btn) return;
