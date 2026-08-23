@@ -339,13 +339,15 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **File** | `templates/mobile/_detail_panel.html` |
 | **Variables** | `detail_overlay` (screener push chrome), `detail_ticker` (default `—`), `detail_link_href` (default `#`) |
 | **Actions** | Watch/Watching, Notes, Exclude/Excluded, Why? on every screener/stock page. Trades adds Remove. Watchlist adds Buy/Short (promote). Pass / Buy / Short shown when `weeklyDisposition` is set. |
+| **Layout** | `.main-panel` (chart/metrics/news) on top; `.dr-detail-dock` under it — panel/TF bar, then Watch–Pass–Buy, then Back / ticker / ‹›. Sits above the page header dock. |
 | **Used by** | `_screener_shell.html` (`detail_overlay=true`), `stock.html` (static, company/mcap/TI65 visible) |
 
 ### Shared Notes Modal
 | | |
 |---|---|
-| **File** | `templates/mobile/_notes_modal.html` |
-| **CSS** | `.wl-modal-overlay` / `.dl-theme` in `panels.css` |
+| **File** | `templates/mobile/_notes_modal.html` (`#notesModalOverlay` / `.notes-sheet`) |
+| **CSS** | `.wl-modal.notes-sheet` + `.ticker-notes-view` in `panels.css` |
+| **JS** | `setupNotesModal()` in `static/js/mobile/util.js`. Opens in rendered markdown view (`marked.parse`, `breaks: true`); **Edit** switches to textarea. Save stays in view. Empty shows *No Abi ticker notes*. Sheet fills the viewport. |
 | **Also** | Exclude modal (`#dlModalOverlay`) — 30d vs permanent |
 | **Used by** | `_screener_shell.html` (inside `.phone`), `stock.html` (via `outside_phone` block) |
 

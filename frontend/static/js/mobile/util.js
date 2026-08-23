@@ -164,28 +164,77 @@
   function setupNotesModal() {
     const overlay = document.getElementById('notesModalOverlay');
     if (!overlay) return;
+    const sheet = overlay.querySelector('.wl-modal.notes-sheet');
     const tickerEl = document.getElementById('notesModalTicker');
     const notesEl = document.getElementById('notesModalNotes');
+    const viewEl = document.getElementById('notesModalView');
     const removeBtn = document.getElementById('notesModalRemoveBtn');
     const saveBtn = document.getElementById('notesModalSaveBtn');
+    const editBtn = document.getElementById('notesModalEditBtn');
     let modalTicker = null;
     let hadNote = false;
+    let savedNotes = '';
+
+    function parseNotesMarkdown(text) {
+      if (typeof marked !== 'undefined' && marked.parse) {
+        return marked.parse(text, { breaks: true });
+      }
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>');
+    }
+
+    function renderView(text) {
+      if (!viewEl) return;
+      const raw = (text || '').trim();
+      if (!raw) {
+        viewEl.innerHTML = '<em>No Abi ticker notes</em>';
+        viewEl.classList.add('empty');
+        return;
+      }
+      viewEl.classList.remove('empty');
+      viewEl.innerHTML = parseNotesMarkdown(raw);
+    }
+
+    function setMode(mode) {
+      if (sheet) sheet.classList.toggle('editing', mode === 'edit');
+    }
+
+    function fillEditor(notes) {
+      tickerEl.textContent = modalTicker;
+      notesEl.value = notes || '';
+      removeBtn.style.display = hadNote ? 'inline-block' : 'none';
+      saveBtn.textContent = hadNote ? 'Save' : 'Add';
+    }
 
     function close() {
       overlay.classList.remove('visible');
+      if (sheet) sheet.classList.remove('editing');
       modalTicker = null;
     }
 
-    window._notesOpen = function (ticker, currentNotes, hasExistingNote, onDone) {
+    window._notesOpen = function (ticker, currentNotes, hasExistingNote, onDone, opts) {
+      const wantEdit = !!(opts && opts.edit);
+      if (overlay.classList.contains('visible') && modalTicker === ticker) {
+        if (wantEdit) {
+          setMode('edit');
+          notesEl.focus();
+          return;
+        }
+        close();
+        return;
+      }
       modalTicker = ticker;
       hadNote = !!hasExistingNote;
-      tickerEl.textContent = ticker;
-      notesEl.value = currentNotes || '';
-      removeBtn.style.display = hadNote ? 'inline-block' : 'none';
-      saveBtn.textContent = hadNote ? 'Save' : 'Add';
-      overlay.classList.add('visible');
-      notesEl.focus();
+      savedNotes = currentNotes || '';
       window._notesOnDone = onDone || null;
+      fillEditor(savedNotes);
+      renderView(savedNotes);
+      overlay.classList.add('visible');
+      setMode(wantEdit ? 'edit' : 'view');
+      if (sheet && sheet.classList.contains('editing')) notesEl.focus();
     };
 
     window._notesClose = close;
@@ -193,11 +242,12 @@
     async function persist(action) {
       if (!modalTicker) return;
       const notes = notesEl.value.trim();
+      const t = modalTicker;
       try {
         if (action === 'delete') {
-          await fetch('/api/frontend/abi-ticker-notes/' + modalTicker, { method: 'DELETE' });
+          await fetch('/api/frontend/abi-ticker-notes/' + t, { method: 'DELETE' });
         } else {
-          await fetch('/api/frontend/abi-ticker-notes/' + modalTicker, {
+          await fetch('/api/frontend/abi-ticker-notes/' + t, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ notes }),
@@ -206,15 +256,29 @@
       } catch (e) {
         console.error('Notes save error', e);
       }
-      const t = modalTicker;
       const cb = window._notesOnDone;
-      close();
-      if (cb) cb(action === 'delete' || !notes ? 'removed' : 'saved', t, notes);
+      if (action === 'delete' || !notes) {
+        close();
+        if (cb) cb('removed', t, '');
+        return;
+      }
+      hadNote = true;
+      savedNotes = notes;
+      fillEditor(notes);
+      renderView(notes);
+      setMode('view');
+      if (cb) cb('saved', t, notes);
     }
 
     saveBtn.addEventListener('click', () => persist('save'));
     removeBtn.addEventListener('click', () => persist('delete'));
-    document.getElementById('notesModalCancelBtn').addEventListener('click', close);
+    editBtn?.addEventListener('click', () => { setMode('edit'); notesEl.focus(); });
+    document.getElementById('notesModalCancelBtn').addEventListener('click', () => {
+      notesEl.value = savedNotes;
+      renderView(savedNotes);
+      setMode('view');
+    });
+    document.getElementById('notesModalCloseBtn')?.addEventListener('click', close);
     overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 
     window._wlToggle = async function (ticker, currentlyIn, onDone) {
