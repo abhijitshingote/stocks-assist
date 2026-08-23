@@ -7,7 +7,57 @@
     <span>Loading…</span>
   </div>
 
-  {% include "mobile/_app_header.html" %}
+  <div class="phone-body">
+    <div class="dr-scrim" id="drScrim"></div>
+    <div class="filter-drawer" id="filterDrawer">
+      <div class="filter-inner">
+        <div class="filter-stats">
+          <span>Stocks: <b id="totalStocks2">—</b></span>
+          <span>Showing: <b id="showingCount2">—</b></span>
+        </div>
+        <div id="screenerExcludes" class="extra-filters"></div>
+        <div id="extraFilters" class="extra-filters"></div>
+        <div class="strip sector-strip" role="tablist" aria-label="Sector" id="sectorStrip"></div>
+        <div class="strip industry-strip hidden" role="tablist" aria-label="Industry" id="industryStrip"></div>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div class="list-zone mode-collapsed" id="listZone">
+        <div class="chip-row">
+          <span class="label">List · <b id="listCount">0</b></span>
+          <div class="chips" id="chipStrip"></div>
+        </div>
+        <div class="list-handle" id="listHandle" aria-label="Resize list"></div>
+        <div class="list-table-wrap">
+          <div class="dr-card-list" id="drCardList"></div>
+          <table class="stock-table" hidden>
+            <thead>
+              <tr><th>SN</th><th>Ticker</th><th>MCap</th><th id="listValueHeader">Ret</th><th>★</th></tr>
+            </thead>
+            <tbody id="stockTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {% set detail_overlay = true %}
+    {% include "mobile/_detail_panel.html" %}
+
+    <div class="sector-sheet" id="sectorSheet">
+      <div class="sh">
+        <span>All sectors</span>
+        <button class="close" type="button" id="closeSector">Done</button>
+      </div>
+      <input class="sector-search" type="search" id="sectorSearch" placeholder="Search sectors…">
+      <div class="sector-list" id="sectorList"></div>
+    </div>
+
+    <div class="mode-toggle" hidden>
+      <button type="button" class="active" data-mode="analyze">Analyze</button>
+      <button type="button" data-mode="browse">Browse</button>
+    </div>
+  </div>
 
   <div class="dr-toolbar">
     <div class="strip" role="tablist" aria-label="Market cap" id="capStrip">
@@ -24,56 +74,7 @@
     <button class="copy-sm" type="button" id="copyBtn">Copy</button>
   </div>
 
-  <div class="dr-scrim" id="drScrim"></div>
-  <div class="filter-drawer" id="filterDrawer">
-    <div class="filter-inner">
-      <div class="filter-stats">
-        <span>Stocks: <b id="totalStocks2">—</b></span>
-        <span>Showing: <b id="showingCount2">—</b></span>
-      </div>
-      <div id="screenerExcludes" class="extra-filters"></div>
-      <div id="extraFilters" class="extra-filters"></div>
-      <div class="strip sector-strip" role="tablist" aria-label="Sector" id="sectorStrip"></div>
-      <div class="strip industry-strip hidden" role="tablist" aria-label="Industry" id="industryStrip"></div>
-    </div>
-  </div>
-
-  <div class="workspace">
-    <div class="list-zone mode-collapsed" id="listZone">
-      <div class="chip-row">
-        <span class="label">List · <b id="listCount">0</b></span>
-        <div class="chips" id="chipStrip"></div>
-      </div>
-      <div class="list-handle" id="listHandle" aria-label="Resize list"></div>
-      <div class="list-table-wrap">
-        <div class="dr-card-list" id="drCardList"></div>
-        <table class="stock-table" hidden>
-          <thead>
-            <tr><th>SN</th><th>Ticker</th><th>MCap</th><th id="listValueHeader">Ret</th><th>★</th></tr>
-          </thead>
-          <tbody id="stockTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  {% set detail_overlay = true %}
-  {% include "mobile/_detail_panel.html" %}
-
-  <div class="sector-sheet" id="sectorSheet">
-    <div class="sh">
-      <span>All sectors</span>
-      <button class="close" type="button" id="closeSector">Done</button>
-    </div>
-    <input class="sector-search" type="search" id="sectorSearch" placeholder="Search sectors…">
-    <div class="sector-list" id="sectorList"></div>
-  </div>
-
-  <div class="mode-toggle" hidden>
-    <button type="button" class="active" data-mode="analyze">Analyze</button>
-    <button type="button" data-mode="browse">Browse</button>
-  </div>
-
+  {% include "mobile/_app_header.html" %}
   {% include "mobile/_nav_drawer.html" %}
 </div>
 
