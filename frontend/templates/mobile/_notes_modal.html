@@ -1,11 +1,18 @@
 <div class="wl-modal-overlay" id="notesModalOverlay">
-  <div class="wl-modal">
+  <div class="wl-modal notes-sheet">
     <div class="wl-modal-title">Abi ticker notes for <span class="ticker-hl" id="notesModalTicker"></span></div>
+    <div class="ticker-notes-view" id="notesModalView"></div>
     <textarea id="notesModalNotes" placeholder="Abi ticker notes (markdown supported)…"></textarea>
-    <div class="wl-modal-actions">
-      <button class="wl-remove" id="notesModalRemoveBtn" style="display:none" type="button">Delete</button>
-      <button class="wl-cancel" type="button" id="notesModalCancelBtn">Cancel</button>
-      <button class="wl-save" id="notesModalSaveBtn" type="button">Save</button>
+    <div class="notes-sheet-foot">
+      <div class="wl-modal-actions ticker-notes-actions">
+        <button class="wl-remove" id="notesModalRemoveBtn" style="display:none" type="button">Delete</button>
+        <button class="wl-cancel" type="button" id="notesModalCancelBtn">Cancel</button>
+        <button class="wl-save" id="notesModalSaveBtn" type="button">Save</button>
+      </div>
+      <span class="notes-sheet-head-actions">
+        <button type="button" class="notes-edit-btn" id="notesModalEditBtn">Edit</button>
+        <button type="button" class="notes-sheet-close" id="notesModalCloseBtn" aria-label="Close notes">&times;</button>
+      </span>
     </div>
   </div>
 </div>

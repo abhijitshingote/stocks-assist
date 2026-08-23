@@ -26,8 +26,10 @@
 {% block body %}
 <div class="phone{% block body_class %}{% endblock %}" id="phone">
   {% block before_header %}{% endblock %}
+  <div class="phone-body">
+    {% block content %}{% endblock %}
+  </div>
   {% include "mobile/_app_header.html" %}
-  {% block content %}{% endblock %}
   {% include "mobile/_nav_drawer.html" %}
 </div>
 {% block outside_phone %}{% endblock %}

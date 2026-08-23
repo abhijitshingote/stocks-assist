@@ -14,26 +14,6 @@
 {% set _dhref = detail_link_href  if detail_link_href  is defined else '#' %}
 
 <div class="analyze-zone" id="analyzeZone">
-  <div class="dr-detail-bar">
-    {% if _overlay %}
-    <button type="button" class="dr-back" id="drBack">Back</button>
-    <span class="dr-page" id="drPage"></span>
-    {% endif %}
-    <div class="tk" id="detailTk">{{ _dtk }}</div>
-    <a class="detail-link" id="detailLink" href="{{ _dhref }}">↗</a>
-    <div class="dr-px">
-      <span class="price" id="detailPx">—</span>
-      <span class="chg" id="detailChg">—</span>
-    </div>
-    {% if _overlay %}
-    <span class="dr-step">
-      <button type="button" id="drPrev" aria-label="Previous">‹</button>
-      <span class="dr-pos" id="drPos">—</span>
-      <button type="button" id="drNext" aria-label="Next">›</button>
-    </span>
-    {% endif %}
-  </div>
-
   <div class="dr-engine-meta" {% if _overlay %}aria-hidden="true"{% endif %}>
     <div class="co-line" id="detailCoLine">
       <span class="co" id="detailCo"></span><span class="si" id="detailSectorIndustry"></span>
@@ -41,39 +21,6 @@
     <span class="tag mcap" id="detailMcap"></span>
     <span class="tag ti" id="detailTi65" style="display:none"></span>
     <span class="tag float" id="detailLowFloat" style="display:none">Low Float</span>
-  </div>
-
-  <div class="dr-detail-tools">
-    <div class="detail-row-c" id="detailActions">
-      <button class="icon-btn" type="button" id="wlBtn" title="Toggle watchlist membership">Watch</button>
-      <button class="icon-btn" type="button" id="notesBtn" title="Abi ticker notes">Notes</button>
-      <button class="icon-btn" type="button" id="dlBtn" title="Exclude from screeners">Exclude</button>
-      <button class="icon-btn" type="button" id="whyBtn" title="Copy: What does TICKER company do? Why did it move up…">Why?</button>
-      <button class="icon-btn" type="button" id="tradeRemoveBtn" hidden title="Remove from trade list">Remove</button>
-      <span class="wr-disp" id="wlPromote" hidden>
-        <button class="icon-btn disp-buy" type="button" data-side="buy" title="Promote to buy candidate — moves off watchlist">Buy</button>
-        <button class="icon-btn disp-short" type="button" data-side="short" title="Promote to short candidate — moves off watchlist">Short</button>
-      </span>
-      <span class="wr-disp" id="wrDisp" hidden>
-        <button class="icon-btn" type="button" data-disp="pass" title="Pass (p) — hide until next Saturday">Pass</button>
-        <button class="icon-btn disp-buy" type="button" data-disp="buy" title="Add as buy candidate">Buy</button>
-        <button class="icon-btn disp-short" type="button" data-disp="short" title="Add as short candidate">Short</button>
-      </span>
-    </div>
-  </div>
-
-  <div class="dr-panel-bar">
-    <div class="main-seg" role="tablist" aria-label="Detail panel">
-      <button type="button" data-panel="metrics">Metrics</button>
-      <button type="button" data-panel="news">News</button>
-      <button type="button" class="active" data-panel="chart">Chart</button>
-    </div>
-    <div class="tf-group" id="tfBar">
-      <button type="button" data-days="30">1M</button>
-      <button type="button" data-days="90">3M</button>
-      <button type="button" data-days="180">6M</button>
-      <button type="button" class="active" data-days="365">1Y</button>
-    </div>
   </div>
 
   <div class="main-panel">
@@ -104,6 +51,65 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="dr-detail-dock">
+    <div class="dr-panel-bar">
+      <div class="main-seg" role="tablist" aria-label="Detail panel">
+        <button type="button" data-panel="metrics">Metrics</button>
+        <button type="button" data-panel="news">News</button>
+        <button type="button" class="active" data-panel="chart">Chart</button>
+      </div>
+      <div class="tf-group" id="tfBar">
+        <button type="button" data-days="30">1M</button>
+        <button type="button" data-days="90">3M</button>
+        <button type="button" data-days="180">6M</button>
+        <button type="button" class="active" data-days="365">1Y</button>
+      </div>
+    </div>
+
+    <div class="dr-detail-tools">
+      <div class="detail-row-c" id="detailActions">
+        <button class="icon-btn" type="button" id="wlBtn" title="Toggle watchlist membership">Watch</button>
+        <button class="icon-btn" type="button" id="notesBtn" title="Abi ticker notes">Notes</button>
+        <button class="icon-btn" type="button" id="dlBtn" title="Exclude from screeners">Exclude</button>
+        <button class="icon-btn" type="button" id="whyBtn" title="Copy: What does TICKER company do? Why did it move up…">Why?</button>
+        <button class="icon-btn" type="button" id="tradeRemoveBtn" hidden title="Remove from trade list">Remove</button>
+        <span class="wr-disp" id="wlPromote" hidden>
+          <button class="icon-btn disp-buy" type="button" data-side="buy" title="Promote to buy candidate — moves off watchlist">Buy</button>
+          <button class="icon-btn disp-short" type="button" data-side="short" title="Promote to short candidate — moves off watchlist">Short</button>
+        </span>
+        <span class="wr-disp" id="wrDisp" hidden>
+          <button class="icon-btn" type="button" data-disp="pass" title="Pass (p) — hide until next Saturday">Pass</button>
+          <button class="icon-btn disp-buy" type="button" data-disp="buy" title="Add as buy candidate">Buy</button>
+          <button class="icon-btn disp-short" type="button" data-disp="short" title="Add as short candidate">Short</button>
+        </span>
+      </div>
+    </div>
+
+    <div class="dr-detail-bar">
+      <div class="dr-detail-mid">
+        {% if _overlay %}
+        <button type="button" class="dr-back" id="drBack">Back</button>
+        <span class="dr-page" id="drPage"></span>
+        {% endif %}
+        <div class="tk" id="detailTk">{{ _dtk }}</div>
+        <a class="detail-link" id="detailLink" href="{{ _dhref }}">↗</a>
+        <div class="dr-px">
+          <span class="price" id="detailPx">—</span>
+          <span class="chg" id="detailChg">—</span>
+        </div>
+        {% if _overlay %}
+        <span class="dr-pos" id="drPos">—</span>
+        {% endif %}
+      </div>
+      {% if _overlay %}
+      <span class="dr-step">
+        <button type="button" class="dr-step-btn" id="drPrev" aria-label="Previous">‹</button>
+        <button type="button" class="dr-step-btn" id="drNext" aria-label="Next">›</button>
+      </span>
+      {% endif %}
     </div>
   </div>
 </div>

@@ -313,6 +313,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **Extends** | `templates/mobile/_base.html` |
 | **CSS** | `_mobile_styles.html` + `pages.css` (default; overrideable via `styles` block) |
 | **Blocks** | `title`, `page_styles`, `body_class`, `before_header`, `content` (required), `outside_phone`, `page_scripts` |
+| **Layout** | `.phone-body` (flex 1, `padding-top: var(--safe-top)`) then docked `.app-header` |
 | **Used by** | All mobile utility pages |
 
 ### Mobile App Header
@@ -320,6 +321,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 |---|---|
 | **File** | `templates/mobile/_app_header.html` |
 | **Variants** | `header_stats=true` → SA + page label + VIX/10Y/count (screener); `page_title` set → SA + title (utility); neither → SA + search + menu (stock) |
+| **Layout** | Docked at bottom of `.phone` (`border-top`, `--safe-bottom` padding). Stats row above search/Nav so tappable controls sit lowest. |
 | **Used by** | `_shell.html`, `_screener_shell.html` |
 
 ### Mobile Nav Drawer
@@ -337,13 +339,15 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **File** | `templates/mobile/_detail_panel.html` |
 | **Variables** | `detail_overlay` (screener push chrome), `detail_ticker` (default `—`), `detail_link_href` (default `#`) |
 | **Actions** | Watch/Watching, Notes, Exclude/Excluded, Why? on every screener/stock page. Trades adds Remove. Watchlist adds Buy/Short (promote). Pass / Buy / Short shown when `weeklyDisposition` is set. |
+| **Layout** | `.main-panel` (chart/metrics/news) on top; `.dr-detail-dock` under it — panel/TF bar, then Watch–Pass–Buy, then Back / ticker / ‹›. Sits above the page header dock. |
 | **Used by** | `_screener_shell.html` (`detail_overlay=true`), `stock.html` (static, company/mcap/TI65 visible) |
 
 ### Shared Notes Modal
 | | |
 |---|---|
-| **File** | `templates/mobile/_notes_modal.html` |
-| **CSS** | `.wl-modal-overlay` / `.dl-theme` in `panels.css` |
+| **File** | `templates/mobile/_notes_modal.html` (`#notesModalOverlay` / `.notes-sheet`) |
+| **CSS** | `.wl-modal.notes-sheet` + `.ticker-notes-view` in `panels.css` |
+| **JS** | `setupNotesModal()` in `static/js/mobile/util.js`. Opens in rendered markdown view (`marked.parse`, `breaks: true`); **Edit** switches to textarea. Save stays in view. Empty shows *No Abi ticker notes*. Sheet fills the viewport. |
 | **Also** | Exclude modal (`#dlModalOverlay`) — 30d vs permanent |
 | **Used by** | `_screener_shell.html` (inside `.phone`), `stock.html` (via `outside_phone` block) |
 
@@ -354,7 +358,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 |---|---|
 | **File** | `templates/mobile/_screener_shell.html` |
 | **CSS** | `_screener_styles.html` → benzinga-news.css + `_mobile_styles.html` + `screener-layout.css` |
-| **Layout** | List-first cards; row tap pushes full-screen detail (`#phone.dr-open`). Caps always visible. Filters in a bottom sheet. No Analyze/Browse. |
+| **Layout** | List-first cards; row tap pushes detail over `.phone-body` (`#phone.dr-open`). Cap/filter toolbar + header docked at bottom (toolbar hidden while detail is open). Filters in a sheet above the dock. No Analyze/Browse. |
 | **JS engine** | `static/js/mobile/screener-app.js` |
 | **Config** | `pageLabel`, `listBadgeFn`, `listMetaFn`, `listRowClassFn`, `listValueClsFn`, `subtitleFn`, plus existing `listValueFn` / `weeklyDisposition` / `extraFilterHtml` |
 | **Script partial** | `templates/mobile/_screener_libs.html` (sets `page_libs` and calls `_page_libs.html`) |
