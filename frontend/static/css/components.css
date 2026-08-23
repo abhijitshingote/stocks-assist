@@ -115,7 +115,8 @@ body.light-theme .btn-secondary:hover {
     color: var(--text-primary);
 }
 
-.abi-wl-btn.in-watchlist {
+.abi-wl-btn.in-watchlist,
+.abi-wl-btn.is-open {
     background: rgba(163, 113, 247, 0.2);
     border-color: var(--accent-purple);
     color: var(--accent-purple);
@@ -163,7 +164,160 @@ body.light-theme .btn-secondary:hover {
     color: var(--accent-red);
 }
 
-/* ── Ticker Notes Modal ──────────────────────────────────────────── */
+/* ── Ticker Notes collapsible panel (above chart) ────────────────── */
+.ticker-notes-panel {
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.55rem 0.7rem 0.65rem;
+}
+
+.ticker-notes-panel.open { display: flex; }
+
+.ticker-notes-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.ticker-notes-head .ticker-hl { color: var(--accent-purple); }
+
+.ticker-notes-head-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.ticker-notes-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0 0.15rem;
+}
+
+.ticker-notes-close:hover { color: var(--text-primary); }
+
+.ticker-notes-panel textarea {
+    width: 100%;
+    min-height: 360px;
+    height: 360px;
+    max-height: 720px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    padding: 0.65rem 0.75rem;
+    resize: vertical;
+}
+
+body.light-theme .ticker-notes-panel textarea {
+    background: #f8f9fa;
+    border-color: #d0d7de;
+    color: #24292f;
+}
+
+.ticker-notes-panel textarea:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+}
+
+.ticker-notes-actions { margin: 0; }
+
+.ticker-notes-panel:not(.editing) textarea,
+.ticker-notes-panel:not(.editing) .ticker-notes-actions { display: none; }
+
+.ticker-notes-panel.editing .ticker-notes-view,
+.ticker-notes-panel.editing #tickerNotesEditBtn { display: none; }
+
+.ticker-notes-view {
+    min-height: 360px;
+    max-height: 720px;
+    overflow-y: auto;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.65;
+    padding: 0.75rem 0.9rem;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+}
+
+body.light-theme .ticker-notes-view {
+    background: #f8f9fa;
+    border-color: #d0d7de;
+    color: #24292f;
+}
+
+.ticker-notes-view.empty {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.ticker-notes-view h1,
+.ticker-notes-view h2,
+.ticker-notes-view h3,
+.ticker-notes-view h4 {
+    color: var(--text-primary);
+    margin: 0.7rem 0 0.35rem;
+    font-weight: 650;
+    line-height: 1.3;
+}
+.ticker-notes-view h1 { font-size: 1.25rem; }
+.ticker-notes-view h2 { font-size: 1.12rem; color: var(--accent-blue); }
+.ticker-notes-view h3 { font-size: 1.02rem; color: var(--accent-purple); }
+.ticker-notes-view p  { margin: 0.45rem 0; }
+.ticker-notes-view ul,
+.ticker-notes-view ol { margin: 0.45rem 0; padding-left: 1.35rem; }
+.ticker-notes-view li { margin: 0.2rem 0; }
+.ticker-notes-view strong { color: var(--accent-yellow); font-weight: 650; }
+.ticker-notes-view em    { color: var(--text-secondary); }
+.ticker-notes-view a     { color: var(--accent-blue); text-decoration: none; }
+.ticker-notes-view a:hover { text-decoration: underline; }
+.ticker-notes-view code {
+    background: rgba(110, 118, 129, 0.2);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--accent-green);
+}
+.ticker-notes-view pre {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.55rem;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+}
+.ticker-notes-view pre code { background: none; padding: 0; }
+.ticker-notes-view blockquote {
+    border-left: 3px solid var(--accent-purple);
+    margin: 0.5rem 0;
+    padding: 0.35rem 0.7rem;
+    background: rgba(163, 113, 247, 0.1);
+    color: var(--text-secondary);
+}
+.ticker-notes-view hr { border: none; border-top: 1px solid var(--border-color); margin: 0.6rem 0; }
+
+/* ── Ticker Notes Modal (fallback when no inline panel) ──────────── */
 .wl-modal-overlay {
     display: none;
     position: fixed;

@@ -448,7 +448,7 @@
     </style>
 </head>
 <body class="{% block body_class %}{% endblock %}">
-    <button type="button" class="nav-hide-toggle" id="navHideToggle" title="Hide/show nav bar (press N)">
+    <button type="button" class="nav-hide-toggle" id="navHideToggle" title="Hide/show nav bar (Shift+N)">
         <span id="navHideIcon">▲</span>
         <span id="navHideLabel">Hide nav</span>
     </button>
@@ -546,7 +546,7 @@
                     <span class="nav-indicator-label">US 10Y</span>
                     <span class="nav-indicator-value" id="us10y-value">--</span>
                 </div>
-                <button type="button" class="nav-collapse-btn" id="navCollapseBtn" title="Hide nav bar (press N)">▲</button>
+                <button type="button" class="nav-collapse-btn" id="navCollapseBtn" title="Hide nav bar (Shift+N)">▲</button>
             </div>
         </div>
     </nav>
@@ -683,7 +683,7 @@
 
         // Hide/show nav bar for more screen real estate. State persists
         // across pages via localStorage. Toggle with the floating button
-        // or by pressing "N".
+        // or Shift+N (N alone opens ticker notes).
         (function() {
             const NAV_HIDDEN_KEY = 'stocks-assist-nav-hidden';
             const toggle = document.getElementById('navHideToggle');
@@ -712,9 +712,10 @@
             }
 
             document.addEventListener('keydown', function(e) {
-                // Ignore when typing in an input/textarea.
                 const tag = (e.target && e.target.tagName) || '';
                 if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+                if (e.metaKey || e.ctrlKey || e.altKey) return;
+                if (!e.shiftKey) return;
                 if (e.key === 'n' || e.key === 'N') {
                     e.preventDefault();
                     apply(!isHidden());
@@ -740,6 +741,19 @@
                 } else if (e.key === 'v' || e.key === 'V') {
                     e.preventDefault();
                     if (path !== '/volspike-gapper-weekly') window.location.href = '/volspike-gapper-weekly';
+                } else if (e.key === 'n' || e.key === 'N') {
+                    if (e.shiftKey) return;
+                    if (!document.getElementById('tickerNotesPanel')) return;
+                    e.preventDefault();
+                    if (typeof window._screener_openNotes === 'function') {
+                        window._screener_openNotes();
+                    } else if (window._notesIsOpen && window._notesIsOpen()) {
+                        window._notesClose();
+                    } else {
+                        const tickerEl = document.getElementById('ticker') || document.getElementById('detailTicker');
+                        const t = tickerEl && tickerEl.textContent.trim();
+                        if (t && t !== '—') window._notesOpenForTicker(t);
+                    }
                 }
             });
         })();
@@ -808,10 +822,9 @@
         };
     })();
     </script>
-    <!-- Abi ticker notes are decoupled from the watchlist: this modal saves
-         notes for ANY ticker without touching watchlist or dislike
-         membership. Watchlist toggling is handled separately by
-         `window._wlToggle` (no modal). -->
+    <!-- Abi ticker notes are decoupled from the watchlist. Screeners / stock
+         detail use `#tickerNotesPanel` (collapsible, above the chart). Pages
+         without that panel fall back to this modal. -->
     <div class="wl-modal-overlay" id="notesModalOverlay">
         <div class="wl-modal">
             <div class="wl-modal-title">Abi ticker notes for <span class="ticker-hl" id="notesModalTicker"></span></div>
@@ -826,63 +839,216 @@
     <script>
     (function(){
         const overlay = document.getElementById('notesModalOverlay');
-        const tickerEl = document.getElementById('notesModalTicker');
-        const notesEl = document.getElementById('notesModalNotes');
-        const removeBtn = document.getElementById('notesModalRemoveBtn');
-        const saveBtn = document.getElementById('notesModalSaveBtn');
         let _ticker = null;
         let _hadNote = false;
         let _onDone = null;
+        let _savedNotes = '';
 
-        // _notesOpen(ticker, currentNotes, hasExistingNote, onDone)
+        function notesUi() {
+            const panel = document.getElementById('tickerNotesPanel');
+            if (panel) {
+                return {
+                    kind: 'panel',
+                    root: panel,
+                    tickerEl: document.getElementById('tickerNotesTicker'),
+                    notesEl: document.getElementById('tickerNotesTextarea'),
+                    viewEl: document.getElementById('tickerNotesView'),
+                    removeBtn: document.getElementById('tickerNotesRemoveBtn'),
+                    saveBtn: document.getElementById('tickerNotesSaveBtn'),
+                };
+            }
+            return {
+                kind: 'modal',
+                root: overlay,
+                tickerEl: document.getElementById('notesModalTicker'),
+                notesEl: document.getElementById('notesModalNotes'),
+                viewEl: null,
+                removeBtn: document.getElementById('notesModalRemoveBtn'),
+                saveBtn: document.getElementById('notesModalSaveBtn'),
+            };
+        }
+
+        function setNotesBtnOpen(open) {
+            const btn = document.getElementById('detailNotesBtn');
+            if (!btn) return;
+            btn.classList.toggle('is-open', open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        function relayout() {
+            requestAnimationFrame(function () {
+                window.dispatchEvent(new Event('resize'));
+            });
+        }
+
+        function hideUi() {
+            const els = notesUi();
+            if (els.kind === 'panel') {
+                els.root.classList.remove('open', 'editing');
+                setNotesBtnOpen(false);
+                relayout();
+            } else if (overlay) {
+                overlay.classList.remove('visible');
+            }
+        }
+
+        function parseNotesMarkdown(text) {
+            if (typeof marked !== 'undefined' && marked.parse) {
+                return marked.parse(text, { breaks: true });
+            }
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\n/g, '<br>');
+        }
+
+        function renderView(text) {
+            const view = document.getElementById('tickerNotesView');
+            if (!view) return;
+            const raw = (text || '').trim();
+            if (!raw) {
+                view.innerHTML = '<em>No Abi ticker notes</em>';
+                view.classList.add('empty');
+                return;
+            }
+            view.classList.remove('empty');
+            view.innerHTML = parseNotesMarkdown(raw);
+        }
+
+        function setPanelMode(mode) {
+            const panel = document.getElementById('tickerNotesPanel');
+            if (!panel) return;
+            panel.classList.toggle('editing', mode === 'edit');
+            relayout();
+        }
+
+        function fillEditor(els, notes) {
+            els.tickerEl.textContent = _ticker;
+            els.notesEl.value = notes || '';
+            els.removeBtn.style.display = _hadNote ? 'inline-block' : 'none';
+            els.saveBtn.textContent = _hadNote ? 'Save' : 'Add';
+        }
+
+        window._notesIsOpen = function () {
+            const panel = document.getElementById('tickerNotesPanel');
+            return !!(panel && panel.classList.contains('open'));
+        };
+
+        window._notesEnterEdit = function () {
+            const els = notesUi();
+            if (els.kind !== 'panel') return;
+            setPanelMode('edit');
+            els.notesEl.focus();
+        };
+
+        window._notesCancelEdit = function () {
+            const els = notesUi();
+            if (els.kind !== 'panel') {
+                window._notesClose();
+                return;
+            }
+            if (!_hadNote) {
+                window._notesClose();
+                return;
+            }
+            els.notesEl.value = _savedNotes;
+            renderView(_savedNotes);
+            setPanelMode('view');
+        };
+
+        // _notesOpen(ticker, currentNotes, hasExistingNote, onDone, opts)
         //   onDone(action, ticker, newNotes) where action ∈ {'saved','removed'}
-        window._notesOpen = function(ticker, currentNotes, hasExistingNote, onDone) {
+        //   opts.edit — open the panel in edit mode (also used by metrics Edit)
+        // Panel pages: clicking Notes again for the same ticker collapses it.
+        window._notesOpen = function(ticker, currentNotes, hasExistingNote, onDone, opts) {
+            const els = notesUi();
+            const wantEdit = !!(opts && opts.edit);
+            if (els.kind === 'panel' && els.root.classList.contains('open') && _ticker === ticker) {
+                if (wantEdit) {
+                    window._notesEnterEdit();
+                    return;
+                }
+                window._notesClose();
+                return;
+            }
             _ticker = ticker;
             _hadNote = !!hasExistingNote;
             _onDone = onDone || null;
-            tickerEl.textContent = ticker;
-            notesEl.value = currentNotes || '';
-            removeBtn.style.display = _hadNote ? 'inline-block' : 'none';
-            saveBtn.textContent = _hadNote ? 'Save' : 'Add';
-            overlay.classList.add('visible');
-            notesEl.focus();
+            _savedNotes = currentNotes || '';
+            fillEditor(els, _savedNotes);
+            if (els.kind === 'panel') {
+                renderView(_savedNotes);
+                els.root.classList.add('open');
+                setNotesBtnOpen(true);
+                setPanelMode(wantEdit || !_hadNote ? 'edit' : 'view');
+                if (els.root.classList.contains('editing')) els.notesEl.focus();
+            } else if (overlay) {
+                overlay.classList.add('visible');
+                els.notesEl.focus();
+            }
         };
 
         window._notesClose = function() {
-            overlay.classList.remove('visible');
+            hideUi();
             _ticker = null;
         };
 
         window._notesSave = async function() {
             if (!_ticker) return;
-            const notes = notesEl.value.trim();
+            const els = notesUi();
+            const notes = els.notesEl.value.trim();
+            const t = _ticker;
             try {
-                await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {
+                await fetch('/api/frontend/abi-ticker-notes/' + t, {
                     method: 'PUT',
                     headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({notes})
                 });
             } catch(e) { console.error('Abi ticker notes save error', e); }
-            overlay.classList.remove('visible');
-            // If the user cleared the textarea, treat it as a removal so
-            // callers can update their UI accordingly. Otherwise it's a save.
-            if (_onDone) _onDone(notes ? 'saved' : 'removed', _ticker, notes);
+            if (els.kind === 'panel') {
+                if (!notes) {
+                    hideUi();
+                    if (_onDone) _onDone('removed', t, '');
+                    _ticker = null;
+                    return;
+                }
+                _hadNote = true;
+                _savedNotes = notes;
+                fillEditor(els, notes);
+                renderView(notes);
+                setPanelMode('view');
+                if (_onDone) _onDone('saved', t, notes);
+                return;
+            }
+            hideUi();
+            if (_onDone) _onDone(notes ? 'saved' : 'removed', t, notes);
             _ticker = null;
         };
 
         window._notesDelete = async function() {
             if (!_ticker) return;
+            const t = _ticker;
             try {
-                await fetch('/api/frontend/abi-ticker-notes/' + _ticker, {method:'DELETE'});
+                await fetch('/api/frontend/abi-ticker-notes/' + t, {method:'DELETE'});
             } catch(e) { console.error('Abi ticker notes delete error', e); }
-            overlay.classList.remove('visible');
-            if (_onDone) _onDone('removed', _ticker, '');
+            hideUi();
+            if (_onDone) _onDone('removed', t, '');
             _ticker = null;
         };
 
-        overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) window._notesClose();
-        });
+        if (overlay) {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) window._notesClose();
+            });
+        }
+
+        const panel = document.getElementById('tickerNotesPanel');
+        if (panel && window.ResizeObserver) {
+            new ResizeObserver(function () {
+                if (panel.classList.contains('open')) relayout();
+            }).observe(panel);
+        }
     })();
     </script>
 
@@ -924,10 +1090,15 @@
         }
     };
 
-    // Open the Abi ticker notes modal for a ticker, looking up any existing note
-    // first so the textarea is pre-filled. Mirrors `_dlOpenForTicker`.
+    // Open Abi ticker notes for a ticker, looking up any existing note first
+    // so the textarea is pre-filled. Mirrors `_dlOpenForTicker`. If the inline
+    // panel is already open, collapse it instead of refetching.
     window._notesOpenForTicker = async function(ticker, onDone) {
         if (!ticker) return;
+        if (window._notesIsOpen && window._notesIsOpen()) {
+            window._notesClose();
+            return;
+        }
         let currentNotes = '';
         let hasNote = false;
         try {

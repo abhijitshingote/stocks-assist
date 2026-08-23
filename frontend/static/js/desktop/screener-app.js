@@ -515,7 +515,7 @@ window.DesktopScreener = (function () {
             });
         };
 
-        window._screener_openNotes = function () {
+        window._screener_openNotes = function (forceEdit) {
             if (!selectedTicker) return;
             const cmt = abiTickerNotesStatus[selectedTicker];
             const currentNotes = (cmt && cmt.notes) || '';
@@ -523,7 +523,7 @@ window.DesktopScreener = (function () {
                 if (action === 'saved') abiTickerNotesStatus[ticker] = { notes: newNotes || '' };
                 else if (action === 'removed') delete abiTickerNotesStatus[ticker];
                 updateWatchlistNotes(ticker);
-            });
+            }, { edit: !!forceEdit });
         };
 
         // ── Sector / Industry filter ───────────────────────────────
@@ -813,6 +813,9 @@ window.DesktopScreener = (function () {
         // ── Select stock ───────────────────────────────────────────
         async function selectStock(ticker) {
             if (!ticker) return;
+            if (ticker !== selectedTicker && window._notesIsOpen && window._notesIsOpen()) {
+                window._notesClose();
+            }
             selectedTicker = ticker;
 
             document.querySelectorAll('.stock-item').forEach(el => {

@@ -1035,7 +1035,8 @@ body.nav-hidden.page-stock-detail .tp-layout {
                         </span>
                         <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership"
                             onclick="toggleWatchlist()">Watch</button>
-                        <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes"
+                        <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes (N)"
+                            aria-expanded="false" aria-controls="tickerNotesPanel"
                             onclick="openNotesModalForStock()">📝 Abi ticker notes</button>
                         <button class="abi-dl-btn" id="detailDlBtn" title="Block from screeners"
                             onclick="window._dlOpenForTicker(ticker)">Exclude</button>
@@ -1051,6 +1052,8 @@ body.nav-hidden.page-stock-detail .tp-layout {
                     </div>
                 </div>
             </div>
+
+            {% include "desktop/_ticker_notes_panel.html" %}
 
             <div class="charts-container" id="chartsContainer">
                 <div class="chart-panel" id="stockChartPanel" style="flex: 1; min-height: 200px;">
@@ -1788,10 +1791,7 @@ function toggleWatchlist() {
     });
 }
 
-// Open the Abi ticker notes modal for the current ticker. Saves to the (decoupled)
-// Abi ticker notes file - this is a quick header-bar note that shows up on the
-// screener pages, separate from the long-form Notes section below which is
-// backed by the database.
+// Toggle the Abi ticker notes panel (above the chart) for the current ticker.
 function openNotesModalForStock() {
     window._notesOpenForTicker(ticker);
 }

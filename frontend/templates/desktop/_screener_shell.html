@@ -87,7 +87,8 @@
                     <span id="detailLowFloat"></span>
                     <button class="abi-wl-btn" id="detailWlBtn" title="Toggle watchlist membership"
                         onclick="window._screener_toggleWatchlist()">Watch</button>
-                    <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes"
+                    <button class="abi-wl-btn" id="detailNotesBtn" title="Abi ticker notes (N)"
+                        aria-expanded="false" aria-controls="tickerNotesPanel"
                         onclick="window._screener_openNotes()">Notes</button>
                     <button class="abi-dl-btn" id="detailDlBtn" title="Exclude from screeners"
                         onclick="window._dlOpenForTicker(document.getElementById('detailTicker').textContent)">Exclude</button>
@@ -104,6 +105,8 @@
                 </div>
             </div>
         </div>
+
+        {% include "desktop/_ticker_notes_panel.html" %}
 
         <div class="charts-container" id="chartsContainer" style="display: none;">
             {{ subchart_top | default('') | safe }}
@@ -152,7 +155,7 @@
                 <div class="wl-notes-section" id="wlNotesSection" style="display: none;">
                     <span class="ms-section-title">
                         <span>Abi ticker notes</span>
-                        <a class="wl-notes-edit" onclick="window._screener_openNotes()">Edit</a>
+                        <a class="wl-notes-edit" onclick="window._screener_openNotes(true)">Edit</a>
                     </span>
                     <div class="wl-notes-text empty" id="wlNotesText">No Abi ticker notes</div>
                 </div>

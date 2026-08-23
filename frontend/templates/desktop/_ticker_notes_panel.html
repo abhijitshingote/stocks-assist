@@ -1,0 +1,18 @@
+{# Inline collapsible Abi ticker notes. View = rendered markdown; Edit = textarea. #}
+<div class="ticker-notes-panel" id="tickerNotesPanel">
+    <div class="ticker-notes-head">
+        <span>Abi ticker notes for <span class="ticker-hl" id="tickerNotesTicker"></span></span>
+        <span class="ticker-notes-head-actions">
+            <button type="button" class="abi-wl-btn" id="tickerNotesEditBtn"
+                onclick="window._notesEnterEdit()">Edit</button>
+            <button type="button" class="ticker-notes-close" onclick="window._notesClose()" title="Close notes" aria-label="Close notes">&times;</button>
+        </span>
+    </div>
+    <div class="ticker-notes-view" id="tickerNotesView"></div>
+    <textarea id="tickerNotesTextarea" placeholder="Abi ticker notes (markdown supported)..."></textarea>
+    <div class="wl-modal-actions ticker-notes-actions">
+        <button class="wl-remove" id="tickerNotesRemoveBtn" style="display:none;" type="button" onclick="window._notesDelete()">Delete Abi ticker note</button>
+        <button class="wl-cancel" type="button" onclick="window._notesCancelEdit()">Cancel</button>
+        <button class="wl-save" id="tickerNotesSaveBtn" type="button" onclick="window._notesSave()">Save</button>
+    </div>
+</div>

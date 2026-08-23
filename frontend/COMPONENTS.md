@@ -58,7 +58,7 @@
 | | |
 |---|---|
 | **File** | `static/css/components.css` |
-| **Contains** | Global reset, Card, Btn, utility classes, Watchlist Button, Dislike Button, Ticker Notes Modal, Dislike Modal |
+| **Contains** | Global reset, Card, Btn, utility classes, Watchlist Button, Dislike Button, Ticker Notes Panel/Modal, Dislike Modal |
 
 ---
 
@@ -98,14 +98,15 @@
 | **JS logic** | `window._dlOpen()` / `window._dlOpenForTicker()` in `templates/base.html` |
 | **Used by** | All desktop screener pages |
 
-### Ticker Notes Modal
+### Ticker Notes Panel
 | | |
 |---|---|
-| **CSS class** | `.wl-modal-overlay` + `.wl-modal` |
+| **HTML** | `templates/desktop/_ticker_notes_panel.html` (`#tickerNotesPanel`) — inserted above `#chartsContainer` |
+| **CSS class** | `.ticker-notes-panel` / `.ticker-notes-panel.open` |
 | **CSS file** | `static/css/components.css` |
-| **JS logic** | `window._notesOpen()` in `templates/base.html` |
-| **Screener hook** | `window._screener_openNotes()` in `static/js/desktop/screener-app.js` |
-| **Used by** | All desktop screener pages |
+| **JS logic** | `window._notesOpen()` in `templates/base.html` prefers `#tickerNotesPanel`; falls back to `.wl-modal-overlay` on pages without a chart. Panel opens in rendered markdown view (`marked.parse`, `breaks: true`); **Edit** switches to textarea. Save stays in view. Empty notes open in edit. |
+| **Screener hook** | `window._screener_openNotes()` in `static/js/desktop/screener-app.js`. Notes button or **N** toggles the panel. `_screener_openNotes(true)` opens in edit. Switching ticker closes it. Nav hide is **Shift+N**. |
+| **Used by** | All desktop screener pages + `stock.html`. Modal fallback: `daily_shortlist.html` |
 
 ### Dislike Modal
 | | |
@@ -187,7 +188,7 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | **File** | `static/js/stock-chart.js` — `StockChart` class |
 | **CSS** | `.chart-panel`, `.charts-container` in `screener.css` |
 | **Config** | `CHART_CONFIG` constant in `stock-chart.js` |
-| **Chart notes** | Click identity overlay (ticker/name/sector). Gold lines under sector/industry; no click to read. Store: `user_data/abi_chart_notes.json`, ≤5 lines × 80 chars. Separate from Abi ticker notes modal. |
+| **Chart notes** | Click identity overlay (ticker/name/sector). Gold lines under sector/industry; no click to read. Store: `user_data/abi_chart_notes.json`, ≤5 lines × 80 chars. Separate from Abi ticker notes panel. |
 | **Used by** | All screener pages, `stock.html` detail page |
 
 ### News Panel
