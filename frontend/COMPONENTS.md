@@ -104,7 +104,7 @@
 | **HTML** | `templates/desktop/_ticker_notes_panel.html` (`#tickerNotesPanel`) — inserted above `#chartsContainer` |
 | **CSS class** | `.ticker-notes-panel` / `.ticker-notes-panel.open` |
 | **CSS file** | `static/css/components.css` |
-| **JS logic** | `window._notesOpen()` in `templates/base.html` prefers `#tickerNotesPanel`; falls back to `.wl-modal-overlay` on pages without a chart. Panel opens in rendered markdown view (`marked.parse`, `breaks: true`); **Edit** switches to textarea. Save stays in view. Empty notes open in edit. |
+| **JS logic** | `window._notesOpen()` in `templates/base.html` prefers `#tickerNotesPanel`; falls back to `.wl-modal-overlay` on pages without a chart. Panel opens in rendered markdown view (`marked.parse`, `breaks: true`) even when empty; **Edit** switches to textarea. Save stays in view. |
 | **Screener hook** | `window._screener_openNotes()` in `static/js/desktop/screener-app.js`. Notes button or **N** toggles the panel. `_screener_openNotes(true)` opens in edit. Switching ticker closes it. Nav hide is **Shift+N**. |
 | **Used by** | All desktop screener pages + `stock.html`. Modal fallback: `daily_shortlist.html` |
 
