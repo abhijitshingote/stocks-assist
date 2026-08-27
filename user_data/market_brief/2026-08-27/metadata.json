@@ -1,0 +1,1111 @@
+{
+  "asof": "2026-08-27",
+  "windows": {
+    "general_window": "2026-08-27 05:00 UTC → 2026-08-27 09:32 UTC (session 2026-08-27, rule: weekday after 9:30 AM ET → current session 5:00 AM ET)",
+    "ticker_window": "2026-08-26 05:00 UTC → 2026-08-27 09:32 UTC (session 2026-08-27, ticker −24h vs general)",
+    "anchor_session": "2026-08-27",
+    "general_published_gte_utc": "2026-08-27T05:00:00+00:00",
+    "ticker_published_gte_utc": "2026-08-26T05:00:00+00:00",
+    "published_lte_utc": "2026-08-27T09:32:53.180444+00:00"
+  },
+  "counts": {
+    "api_by_fetch": {
+      "general": {
+        "api_rows": 57,
+        "in_window": 57,
+        "error": null
+      },
+      "channels": {
+        "commodities": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "earnings": {
+          "api_rows": 13,
+          "in_window": 13,
+          "error": null
+        },
+        "equities": {
+          "api_rows": 14,
+          "in_window": 14,
+          "error": null
+        },
+        "macro_economic_events": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "markets": {
+          "api_rows": 20,
+          "in_window": 20,
+          "error": null
+        },
+        "movers": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "news": {
+          "api_rows": 48,
+          "in_window": 48,
+          "error": null
+        },
+        "tech": {
+          "api_rows": 16,
+          "in_window": 16,
+          "error": null
+        }
+      },
+      "ticker": {
+        "ABNB": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "AEM": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ANET": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "ANF": {
+          "api_rows": 15,
+          "in_window": 15,
+          "error": null
+        },
+        "ARM": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "AU": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "BZ": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "CIEN": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "CRML": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "DASH": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "DELL": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "EME": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ETON": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "FFIV": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "FIX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "GEV": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "GFI": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "GH": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "GLW": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "GRRR": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "HELP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "HPQ": {
+          "api_rows": 18,
+          "in_window": 18,
+          "error": null
+        },
+        "HTFL": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "LIFE": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "LITE": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "MAIR": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "MPC": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NEM": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NIQ": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NTAP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "NTRA": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "ORCL": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "P": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "PLTR": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "PRE": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "PSX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "QMCO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "REAX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "RMAX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "SAP": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "SEDG": {
+          "api_rows": 4,
+          "in_window": 4,
+          "error": null
+        },
+        "SHOP": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "SIMO": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "SMTC": {
+          "api_rows": 9,
+          "in_window": 9,
+          "error": null
+        },
+        "SNOW": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "STX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "TEAM": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "THC": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "TTMI": {
+          "api_rows": 3,
+          "in_window": 3,
+          "error": null
+        },
+        "TWST": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "TXG": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "URBN": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "VEEV": {
+          "api_rows": 5,
+          "in_window": 5,
+          "error": null
+        },
+        "VLO": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "VRT": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "VYX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "WDAY": {
+          "api_rows": 2,
+          "in_window": 2,
+          "error": null
+        },
+        "WDC": {
+          "api_rows": 1,
+          "in_window": 1,
+          "error": null
+        },
+        "WIX": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "WPM": {
+          "api_rows": 0,
+          "in_window": 0,
+          "error": null
+        },
+        "WSM": {
+          "api_rows": 9,
+          "in_window": 9,
+          "error": null
+        }
+      },
+      "ticker_totals": {
+        "api_rows": 98,
+        "in_window": 98,
+        "error": null
+      }
+    },
+    "api_total_rows": 269,
+    "after_dedupe_unique": 140,
+    "upserted": 140,
+    "deduped_published": {
+      "earliest_utc": "2026-08-26T05:05:36+00:00",
+      "latest_utc": "2026-08-27T09:31:57+00:00",
+      "with_published": 140
+    },
+    "prompt": {
+      "articles_total": 140,
+      "by_section": {
+        "Channel: general": 53,
+        "Ticker Group: r1d_screener": 72,
+        "Ticker Group: ti65_mega_large": 15
+      }
+    }
+  },
+  "fetch_warnings": [
+    "channel:commodities: API returned 0 rows"
+  ],
+  "ingest_pools": {
+    "general": [
+      "61454195",
+      "61454511",
+      "61454499",
+      "61454478",
+      "61454301",
+      "61454256",
+      "61454239",
+      "61454227",
+      "61454086",
+      "61454074",
+      "61454024",
+      "61454013",
+      "61454001",
+      "61453937",
+      "61453923",
+      "61453882",
+      "61453881",
+      "61453810",
+      "61453795",
+      "61453779",
+      "61453749",
+      "61453735",
+      "61453724",
+      "61453713",
+      "61453595",
+      "61453572",
+      "61453544",
+      "61453518",
+      "61453517",
+      "61453499",
+      "61453431",
+      "61453419",
+      "61453408",
+      "61453395",
+      "61453383",
+      "61453368",
+      "61453353",
+      "61453341",
+      "61453329",
+      "61453317",
+      "61453201",
+      "61453188",
+      "61453175",
+      "61453056",
+      "61453043",
+      "61453010",
+      "61452990",
+      "61452979",
+      "61452967",
+      "61452890",
+      "61452879",
+      "61452867",
+      "61452856"
+    ],
+    "channels": {
+      "news": [
+        "61454195",
+        "61454511",
+        "61454499",
+        "61454478",
+        "61454301",
+        "61454239",
+        "61454227",
+        "61454086",
+        "61454074",
+        "61454024",
+        "61454013",
+        "61454001",
+        "61453937",
+        "61453923",
+        "61453882",
+        "61453881",
+        "61453810",
+        "61453779",
+        "61453735",
+        "61453724",
+        "61453713",
+        "61453595",
+        "61453572",
+        "61453544",
+        "61453518",
+        "61453517",
+        "61453499",
+        "61453431",
+        "61453419",
+        "61453408",
+        "61453395",
+        "61453383",
+        "61453368",
+        "61453353",
+        "61453341",
+        "61453329",
+        "61453317",
+        "61453201",
+        "61453188",
+        "61453175",
+        "61453056",
+        "61453010",
+        "61452990",
+        "61452979",
+        "61452967",
+        "61452890",
+        "61452867",
+        "61452856"
+      ],
+      "markets": [
+        "61454195",
+        "61454301",
+        "61454239",
+        "61454227",
+        "61454001",
+        "61453881",
+        "61453810",
+        "61453735",
+        "61453713",
+        "61453595",
+        "61453518",
+        "61453517",
+        "61453431",
+        "61453368",
+        "61453188",
+        "61453056",
+        "61453010",
+        "61452990",
+        "61452979",
+        "61452967"
+      ],
+      "equities": [
+        "61454195",
+        "61454301",
+        "61454239",
+        "61454001",
+        "61453881",
+        "61453735",
+        "61453713",
+        "61453518",
+        "61453431",
+        "61453368",
+        "61453188",
+        "61453043",
+        "61452990",
+        "61452967"
+      ],
+      "tech": [
+        "61454195",
+        "61454301",
+        "61454239",
+        "61454227",
+        "61454024",
+        "61453881",
+        "61453795",
+        "61453735",
+        "61453544",
+        "61453518",
+        "61453368",
+        "61453056",
+        "61453043",
+        "61453010",
+        "61452890",
+        "61452879"
+      ],
+      "commodities": [],
+      "earnings": [
+        "61454511",
+        "61454499",
+        "61454013",
+        "61453923",
+        "61453810",
+        "61453517",
+        "61453431",
+        "61453408",
+        "61453317",
+        "61452979",
+        "61452967",
+        "61452867",
+        "61452856"
+      ],
+      "movers": [
+        "61454478"
+      ],
+      "macro_economic_events": [
+        "61453431",
+        "61453175"
+      ]
+    },
+    "ticker": {
+      "ABNB": [
+        "61442619"
+      ],
+      "AEM": [],
+      "ANET": [
+        "61441583"
+      ],
+      "ANF": [
+        "61452319",
+        "61446185",
+        "61443271",
+        "61443030",
+        "61441301",
+        "61439788",
+        "61435868",
+        "61433831",
+        "61432915",
+        "61431500",
+        "61430756",
+        "61429857",
+        "61429813",
+        "61429787",
+        "61429753"
+      ],
+      "ARM": [
+        "61452585"
+      ],
+      "AU": [
+        "61441583"
+      ],
+      "BZ": [
+        "61435868"
+      ],
+      "CIEN": [
+        "61428796"
+      ],
+      "CRML": [],
+      "DASH": [
+        "61445584",
+        "61443307"
+      ],
+      "DELL": [
+        "61443538",
+        "61432155"
+      ],
+      "EME": [],
+      "ETON": [],
+      "FFIV": [],
+      "FIX": [],
+      "GEV": [
+        "61453431",
+        "61429600"
+      ],
+      "GFI": [],
+      "GH": [],
+      "GLW": [
+        "61432444"
+      ],
+      "GRRR": [],
+      "HELP": [],
+      "HPQ": [
+        "61452967",
+        "61451215",
+        "61450675",
+        "61450553",
+        "61450522",
+        "61450379",
+        "61450356",
+        "61449752",
+        "61449283",
+        "61448203",
+        "61448184",
+        "61448157",
+        "61448097",
+        "61448002",
+        "61443848",
+        "61431802",
+        "61426490",
+        "61425878"
+      ],
+      "HTFL": [],
+      "LIFE": [],
+      "LITE": [
+        "61447955",
+        "61441583"
+      ],
+      "MAIR": [],
+      "MPC": [],
+      "NEM": [],
+      "NIQ": [],
+      "NTAP": [],
+      "NTRA": [],
+      "ORCL": [
+        "61442992",
+        "61442618"
+      ],
+      "P": [
+        "61450887",
+        "61447325",
+        "61447309",
+        "61447244"
+      ],
+      "PLTR": [
+        "61429420"
+      ],
+      "PRE": [
+        "61431710"
+      ],
+      "PSX": [],
+      "QMCO": [],
+      "REAX": [],
+      "RMAX": [],
+      "SAP": [
+        "61439718",
+        "61430596"
+      ],
+      "SEDG": [
+        "61441812",
+        "61438856",
+        "61434501",
+        "61432042"
+      ],
+      "SHOP": [],
+      "SIMO": [],
+      "SMTC": [
+        "61441583",
+        "61440648",
+        "61438597",
+        "61435868",
+        "61433366",
+        "61433306",
+        "61432515",
+        "61428197",
+        "61427410"
+      ],
+      "SNOW": [
+        "61439366"
+      ],
+      "STX": [],
+      "TEAM": [
+        "61432993",
+        "61432005"
+      ],
+      "THC": [
+        "61435020"
+      ],
+      "TTMI": [
+        "61445291",
+        "61441583",
+        "61435868"
+      ],
+      "TWST": [],
+      "TXG": [],
+      "URBN": [
+        "61447343",
+        "61443307"
+      ],
+      "VEEV": [
+        "61449826",
+        "61449755",
+        "61447975",
+        "61447922",
+        "61447410"
+      ],
+      "VLO": [
+        "61441690"
+      ],
+      "VRT": [],
+      "VYX": [],
+      "WDAY": [
+        "61453431",
+        "61445949"
+      ],
+      "WDC": [
+        "61436471"
+      ],
+      "WIX": [],
+      "WPM": [],
+      "WSM": [
+        "61440820",
+        "61437912",
+        "61430972",
+        "61430832",
+        "61430675",
+        "61430653",
+        "61426697",
+        "61426685",
+        "61426047"
+      ]
+    }
+  },
+  "universe_symbols": [
+    "ABNB",
+    "AEM",
+    "ANET",
+    "ANF",
+    "ARM",
+    "AU",
+    "BZ",
+    "CIEN",
+    "CRML",
+    "DASH",
+    "DELL",
+    "EME",
+    "ETON",
+    "FFIV",
+    "FIX",
+    "GEV",
+    "GFI",
+    "GH",
+    "GLW",
+    "GRRR",
+    "HELP",
+    "HPQ",
+    "HTFL",
+    "LIFE",
+    "LITE",
+    "MAIR",
+    "MPC",
+    "NEM",
+    "NIQ",
+    "NTAP",
+    "NTRA",
+    "ORCL",
+    "P",
+    "PLTR",
+    "PRE",
+    "PSX",
+    "QMCO",
+    "REAX",
+    "RMAX",
+    "SAP",
+    "SEDG",
+    "SHOP",
+    "SIMO",
+    "SMTC",
+    "SNOW",
+    "STX",
+    "TEAM",
+    "THC",
+    "TTMI",
+    "TWST",
+    "TXG",
+    "URBN",
+    "VEEV",
+    "VLO",
+    "VRT",
+    "VYX",
+    "WDAY",
+    "WDC",
+    "WIX",
+    "WPM",
+    "WSM"
+  ],
+  "ticker_universe_slices": [
+    {
+      "slice_id": "r1d",
+      "cap_bucket": "mega",
+      "label": "Top 10 · 1D return · Mega cap",
+      "selection_count": 10,
+      "tickers": [
+        "ANET",
+        "WDC",
+        "DELL",
+        "ARM",
+        "GLW",
+        "STX",
+        "ORCL",
+        "GEV",
+        "VRT",
+        "PLTR"
+      ]
+    },
+    {
+      "slice_id": "r1d",
+      "cap_bucket": "large",
+      "label": "Top 10 · 1D return · Large cap",
+      "selection_count": 10,
+      "tickers": [
+        "LITE",
+        "P",
+        "CIEN",
+        "FFIV",
+        "EME",
+        "GH",
+        "NTAP",
+        "HPQ",
+        "FIX",
+        "WSM"
+      ]
+    },
+    {
+      "slice_id": "r1d",
+      "cap_bucket": "mid_small",
+      "label": "Top 10 · 1D return · Mid & small cap",
+      "selection_count": 10,
+      "tickers": [
+        "ANF",
+        "BZ",
+        "GRRR",
+        "PRE",
+        "SMTC",
+        "URBN",
+        "VYX",
+        "SEDG",
+        "SIMO",
+        "TTMI"
+      ]
+    },
+    {
+      "slice_id": "vol_spike_5d",
+      "cap_bucket": "mega",
+      "label": "Vol spike / gapper · last 5D · Mega cap",
+      "selection_count": 0,
+      "tickers": []
+    },
+    {
+      "slice_id": "vol_spike_5d",
+      "cap_bucket": "large",
+      "label": "Vol spike / gapper · last 5D · Large cap",
+      "selection_count": 0,
+      "tickers": []
+    },
+    {
+      "slice_id": "vol_spike_5d",
+      "cap_bucket": "mid_small",
+      "label": "Vol spike / gapper · last 5D · Mid & small cap",
+      "selection_count": 4,
+      "tickers": [
+        "RMAX",
+        "MAIR",
+        "REAX",
+        "CRML"
+      ]
+    },
+    {
+      "slice_id": "main_view_ti65",
+      "cap_bucket": "mega",
+      "label": "Top 10 · Main View TI65 · Mega cap",
+      "selection_count": 9,
+      "tickers": [
+        "AEM",
+        "NEM",
+        "ABNB",
+        "MPC",
+        "SAP",
+        "DASH",
+        "VLO",
+        "SHOP",
+        "SNOW"
+      ]
+    },
+    {
+      "slice_id": "main_view_ti65",
+      "cap_bucket": "large",
+      "label": "Top 10 · Main View TI65 · Large cap",
+      "selection_count": 9,
+      "tickers": [
+        "TEAM",
+        "WDAY",
+        "THC",
+        "AU",
+        "VEEV",
+        "WPM",
+        "GFI",
+        "NTRA",
+        "PSX"
+      ]
+    },
+    {
+      "slice_id": "main_view_ti65",
+      "cap_bucket": "mid_small",
+      "label": "Top 10 · Main View TI65 · Mid & small cap",
+      "selection_count": 9,
+      "tickers": [
+        "HELP",
+        "NIQ",
+        "QMCO",
+        "LIFE",
+        "HTFL",
+        "ETON",
+        "TXG",
+        "TWST",
+        "WIX"
+      ]
+    }
+  ],
+  "ticker_universe_overview": "source/ticker_universe/overview.md",
+  "article_ids": [
+    "61454195",
+    "61454511",
+    "61454499",
+    "61454478",
+    "61454301",
+    "61454256",
+    "61454239",
+    "61454227",
+    "61454086",
+    "61454074",
+    "61454024",
+    "61454013",
+    "61454001",
+    "61453937",
+    "61453923",
+    "61453882",
+    "61453881",
+    "61453810",
+    "61453795",
+    "61453779",
+    "61453749",
+    "61453735",
+    "61453724",
+    "61453713",
+    "61453595",
+    "61453572",
+    "61453544",
+    "61453518",
+    "61453517",
+    "61453499",
+    "61453431",
+    "61453419",
+    "61453408",
+    "61453395",
+    "61453383",
+    "61453368",
+    "61453353",
+    "61453341",
+    "61453329",
+    "61453317",
+    "61453201",
+    "61453188",
+    "61453175",
+    "61453056",
+    "61453043",
+    "61453010",
+    "61452990",
+    "61452979",
+    "61452967",
+    "61452890",
+    "61452879",
+    "61452867",
+    "61452856",
+    "61441583",
+    "61452319",
+    "61446185",
+    "61443271",
+    "61443030",
+    "61441301",
+    "61439788",
+    "61435868",
+    "61433831",
+    "61432915",
+    "61431500",
+    "61430756",
+    "61429857",
+    "61429813",
+    "61429787",
+    "61429753",
+    "61452585",
+    "61428796",
+    "61443538",
+    "61432155",
+    "61429600",
+    "61432444",
+    "61451215",
+    "61450675",
+    "61450553",
+    "61450522",
+    "61450379",
+    "61450356",
+    "61449752",
+    "61449283",
+    "61448203",
+    "61448184",
+    "61448157",
+    "61448097",
+    "61448002",
+    "61443848",
+    "61431802",
+    "61426490",
+    "61425878",
+    "61447955",
+    "61442992",
+    "61442618",
+    "61450887",
+    "61447325",
+    "61447309",
+    "61447244",
+    "61429420",
+    "61431710",
+    "61441812",
+    "61438856",
+    "61434501",
+    "61432042",
+    "61440648",
+    "61438597",
+    "61433366",
+    "61433306",
+    "61432515",
+    "61428197",
+    "61427410",
+    "61445291",
+    "61447343",
+    "61443307",
+    "61436471",
+    "61440820",
+    "61437912",
+    "61430972",
+    "61430832",
+    "61430675",
+    "61430653",
+    "61426697",
+    "61426685",
+    "61426047",
+    "61442619",
+    "61445584",
+    "61439718",
+    "61430596",
+    "61439366",
+    "61432993",
+    "61432005",
+    "61435020",
+    "61449826",
+    "61449755",
+    "61447975",
+    "61447922",
+    "61447410",
+    "61441690",
+    "61445949"
+  ]
+}
