@@ -441,10 +441,10 @@
   "MSTR": {
     "disposition": "pass",
     "scope": "weekly",
-    "cycle": "2026-08-22",
-    "at": "2026-08-22T09:16:52.293731-04:00",
+    "cycle": "2026-09-05",
+    "at": "2026-09-06T13:47:00.056018-04:00",
     "sources": [
-      "top520"
+      "fastrs"
     ]
   },
   "BTDR": {
@@ -576,10 +576,10 @@
   "CRCL": {
     "disposition": "pass",
     "scope": "weekly",
-    "cycle": "2026-08-22",
-    "at": "2026-08-22T09:17:15.903452-04:00",
+    "cycle": "2026-09-05",
+    "at": "2026-09-06T13:46:54.342083-04:00",
     "sources": [
-      "top520"
+      "fastrs"
     ]
   },
   "BMNR": {
@@ -751,6 +751,42 @@
     "at": "2026-08-23T12:40:29.447719-04:00",
     "sources": [
       "daily"
+    ]
+  },
+  "ANF": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-09-05",
+    "at": "2026-09-06T13:46:30.452482-04:00",
+    "sources": [
+      "fastrs"
+    ]
+  },
+  "HELP": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-09-05",
+    "at": "2026-09-06T13:46:35.134869-04:00",
+    "sources": [
+      "fastrs"
+    ]
+  },
+  "CHPT": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-09-05",
+    "at": "2026-09-06T13:48:30.487169-04:00",
+    "sources": [
+      "fastrs"
+    ]
+  },
+  "ZETA": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-09-05",
+    "at": "2026-09-06T14:03:20.885569-04:00",
+    "sources": [
+      "fastrs"
     ]
   }
 }
