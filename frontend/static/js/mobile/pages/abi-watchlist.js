@@ -2,7 +2,7 @@
   'use strict';
 
   const SORT_KEY = 'abiWatchlistSort';
-  let sortMode = 'dr1';
+  let sortMode = 'added';
   try {
     const saved = localStorage.getItem(SORT_KEY);
     if (saved === 'dr1' || saved === 'added') sortMode = saved;

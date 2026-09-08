@@ -10,8 +10,8 @@
 
 {% set topbar_extra_controls %}
 <div class="recency-filter" role="tablist" aria-label="Sort mode">
-    <button class="recency-btn active" data-sort="dr1" title="Sort by 1D return">1D</button>
-    <button class="recency-btn" data-sort="added" title="Sort by last added (newest first)">Added</button>
+    <button class="recency-btn" data-sort="dr1" title="Sort by 1D return">1D</button>
+    <button class="recency-btn active" data-sort="added" title="Sort by last added (newest first)">Added</button>
 </div>
 {% endset %}
 
@@ -86,7 +86,7 @@
 <script>
 (function () {
     const SORT_KEY = 'abiWatchlistSort';
-    let sortMode = 'dr1';
+    let sortMode = 'added';
     try {
         const saved = localStorage.getItem(SORT_KEY);
         if (saved === 'dr1' || saved === 'added') sortMode = saved;
