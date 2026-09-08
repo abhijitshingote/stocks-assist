@@ -8,6 +8,13 @@
 {% set show_cap_tabs = false %}
 {% set show_sector_bar = false %}
 
+{% set topbar_extra_controls %}
+<div class="recency-filter" role="tablist" aria-label="Sort mode">
+    <button class="recency-btn active" data-sort="dr1" title="Sort by 1D return">1D</button>
+    <button class="recency-btn" data-sort="added" title="Sort by last added (newest first)">Added</button>
+</div>
+{% endset %}
+
 {% set detail_header_extras %}
 <button type="button" class="abi-wl-btn" id="tradeRemoveBtn" title="Remove from trade list">Remove</button>
 {% endset %}
@@ -41,6 +48,23 @@
 <script src="/static/js/stock-chart.js"></script>
 <script src="/static/js/desktop/screener-app.js"></script>
 <script>
+(function () {
+const SORT_KEY = 'abiTradesSort';
+let sortMode = 'dr1';
+try {
+    const saved = localStorage.getItem(SORT_KEY);
+    if (saved === 'dr1' || saved === 'added') sortMode = saved;
+} catch (e) {}
+
+function addedTs(s) {
+    const t = Date.parse(s.trade_added_at || '');
+    return Number.isNaN(t) ? -Infinity : t;
+}
+
+document.querySelectorAll('.recency-btn[data-sort]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.sort === sortMode);
+});
+
 const TOS_FIXED = [
     '$SPXA50R', '/ES', '/NQ', '/BTC', '/GCJ26', '/SIH26',
     'QQQ', 'SPX', 'IWM', 'TNX:CGI', 'VIX', 'TQQQ', 'SOXL',
@@ -48,6 +72,17 @@ const TOS_FIXED = [
 DesktopScreener.init({
     endpointFn: () => '/api/frontend/abi-trades/data',
     accentCss: 'var(--accent-green)',
+    sortFn: (stocks) => stocks.sort((a, b) => {
+        if (sortMode === 'added') {
+            const d = addedTs(b) - addedTs(a);
+            if (d) return d;
+            return (a.ticker || '').localeCompare(b.ticker || '');
+        }
+        const av = a.dr_1, bv = b.dr_1;
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        return bv - av;
+    }),
     listPrefixFn: (s) => s.trade_side
         ? '<span class="trade-side ' + s.trade_side + '">' + s.trade_side + '</span>'
         : '',
@@ -74,9 +109,19 @@ DesktopScreener.init({
         }
         return out.join('\n');
     },
-    onReady: () => {
+    onReady: (api) => {
         const copyBtn = document.getElementById('copyTickersBtn');
         if (copyBtn) copyBtn.title = 'Copy TOS prefix + /abi-watchlist + /abi-trades, one ticker per line';
+        document.querySelectorAll('.recency-btn[data-sort]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                sortMode = btn.dataset.sort;
+                try { localStorage.setItem(SORT_KEY, sortMode); } catch (e) {}
+                document.querySelectorAll('.recency-btn[data-sort]').forEach(b => {
+                    b.classList.toggle('active', b === btn);
+                });
+                api.resortWithFn();
+            });
+        });
         document.getElementById('tradeRemoveBtn')?.addEventListener('click', async () => {
             const t = document.getElementById('detailTicker')?.textContent?.trim();
             if (!t || t === '—') return;
@@ -87,5 +132,6 @@ DesktopScreener.init({
         });
     },
 });
+})();
 </script>
 {% endblock %}

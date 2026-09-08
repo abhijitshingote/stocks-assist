@@ -118,6 +118,10 @@
   border-radius: var(--radius-pill);
   font: 600 var(--dr-meta) var(--font-body);
 }
+.phone.screener .dr-toolbar .sort-strip {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
 
 /* ── Filter sheet ── */
 .phone.screener .dr-scrim {
