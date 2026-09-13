@@ -634,3 +634,75 @@ class BenzingaArticle(Base):
         DateTime(timezone=True),
         default=lambda: datetime.now(pytz.timezone("US/Eastern")),
     )
+
+
+# ------------------------------------------------------------
+# 22. NewsDigestRun / NewsDigestItem (weekly news recap)
+# One run = one Sat..Fri week that was fetched, prefiltered, LLM-screened and
+# selected, then written up as a single markdown recap. Items are the sources
+# behind that recap, kept so the UI can link out.
+# ------------------------------------------------------------
+class NewsDigestRun(Base):
+    __tablename__ = "news_digest_runs"
+    __table_args__ = (
+        UniqueConstraint("run_key", name="uq_news_digest_runs_run_key"),
+        sa_Index("ix_news_digest_runs_window_end", "window_end"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    run_key = Column(String(64), nullable=False)
+    window_label = Column(String(32))
+    window_start = Column(DateTime(timezone=True))
+    window_end = Column(DateTime(timezone=True))
+
+    status = Column(String(20), index=True)  # running | complete | failed
+    stage = Column(String(60))
+    error = Column(Text)
+
+    universe_count = Column(Integer)  # after dedupe
+    prefiltered_count = Column(Integer)  # after mechanical rules
+    screened_count = Column(Integer)  # after the Haiku pass
+    selected_count = Column(Integer)  # what went into the recap
+
+    narrative_md = Column(Text)
+    cost_usd = Column(Float)
+    stats = Column(JSONB)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")),
+    )
+
+
+class NewsDigestItem(Base):
+    __tablename__ = "news_digest_items"
+    __table_args__ = (
+        UniqueConstraint("run_id", "benzinga_id", name="uq_news_digest_items_run_article"),
+        sa_Index("ix_news_digest_items_run_rank", "run_id", "rank"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    run_id = Column(Integer, ForeignKey("news_digest_runs.id", ondelete="CASCADE"), index=True)
+    benzinga_id = Column(BigInteger, nullable=False, index=True)
+
+    rank = Column(Integer)  # 1 = most significant
+    score = Column(Integer)
+    why = Column(Text)  # terse select-stage justification
+
+    title = Column(Text)
+    tickers = Column(JSONB)
+    dup_ids = Column(JSONB)  # collapsed restatements of the same headline
+    url = Column(Text)
+    published = Column(DateTime(timezone=True), index=True)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+    )
+
+    run = relationship("NewsDigestRun")

@@ -1402,6 +1402,57 @@ def market_news_page():
     return render_template('market_news.html')
 
 # ============================================================
+# Weekly Recap — one markdown recap per Sat..Fri week
+# ============================================================
+
+@app.route('/weekly-recap')
+def weekly_recap_page():
+    """Weekly market recap, with past weeks browsable."""
+    return render_template('news_digest.html')
+
+@app.route('/news-digest')
+def news_digest_page_redirect():
+    return redirect('/weekly-recap')
+
+@app.route('/api/frontend/weekly-recap/runs', methods=['GET'])
+def api_weekly_recap_runs():
+    data, status_code = make_backend_request('/api/news-digest/runs')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch weekly recap runs'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/weekly-recap/run/<run_key>', methods=['GET'])
+def api_weekly_recap_run(run_key):
+    data, status_code = make_backend_request(f'/api/news-digest/run/{run_key}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch weekly recap'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/weekly-recap/latest', methods=['GET'])
+def api_weekly_recap_latest():
+    data, status_code = make_backend_request('/api/news-digest/latest')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch latest weekly recap'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/weekly-recap/status', methods=['GET'])
+def api_weekly_recap_status():
+    data, status_code = make_backend_request('/api/news-digest/status')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch weekly recap status'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/weekly-recap/generate', methods=['POST'])
+def api_weekly_recap_generate():
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        '/api/news-digest/generate', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to start weekly recap run'}), status_code
+    return jsonify(data), status_code
+
+# ============================================================
 # Market Brief Endpoints
 # ============================================================
 

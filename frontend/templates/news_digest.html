@@ -1,0 +1,666 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-news-digest{% endblock %}
+
+{% block title %}Weekly Recap - Stocks Assist{% endblock %}
+
+{% block extra_styles %}
+<style>
+    body.page-news-digest main {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    .nd-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 0.75rem;
+        min-height: calc(100vh - 160px);
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* ---------- week list ---------- */
+    .nd-container > .date-list {
+        flex: 0 0 168px;
+        width: 168px;
+        max-width: 168px;
+        min-width: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        align-self: flex-start;
+    }
+
+    .date-list-header {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 600;
+        font-size: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .date-list-items {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    .date-item {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .date-item:hover { background: var(--bg-card-hover); }
+    .date-item.active {
+        background: var(--bg-card-hover);
+        border-left: 2px solid var(--accent-green);
+    }
+    .date-item.running { border-left: 2px solid var(--accent-blue); }
+    .date-item.failed { border-left: 2px solid #c45c5c; }
+
+    .date-item-date {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem;
+        color: var(--text-primary);
+        white-space: nowrap;
+    }
+
+    .date-item-meta {
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        margin-top: 0.1rem;
+    }
+
+    /* ---------- viewer ---------- */
+    .nd-container > .nd-viewer {
+        flex: 1 1 0;
+        min-width: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nd-viewer-header {
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .nd-viewer-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .nd-viewer-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nd-viewer-meta {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+    }
+
+    .nd-btn {
+        background: var(--bg-dark);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.72rem;
+        cursor: pointer;
+    }
+    .nd-btn:hover { border-color: var(--accent-green); color: var(--accent-green); }
+    .nd-btn.active { border-color: var(--accent-green); color: var(--accent-green); }
+    .nd-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .nd-btn-run {
+        color: var(--accent-green);
+        border-color: var(--accent-green);
+    }
+
+    input.nd-date,
+    select.nd-week-select {
+        background: var(--bg-dark);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        padding: 0.2rem 0.4rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        color-scheme: dark;
+        max-width: 13rem;
+    }
+    select.nd-week-select option:disabled {
+        color: var(--text-muted);
+    }
+
+    .nd-content {
+        flex: 1;
+        overflow: auto;
+        padding: 1.75rem 2.25rem 2.5rem;
+        max-height: calc(100vh - 200px);
+        min-width: 0;
+    }
+
+    /* Measure is capped and centered inside the card so the card still fills
+       the row (unlike a left-stranded 68ch column). */
+    .nd-content .markdown-body {
+        font-size: 0.98rem;
+        line-height: 1.75;
+        color: var(--text-secondary);
+        overflow-wrap: anywhere;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .nd-content .markdown-body h1 {
+        font-size: 1.35rem;
+        margin: 0 0 1rem;
+        color: var(--text-primary);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.6rem;
+    }
+
+    /* ## The Week / What Moved / Worth Watching — labels, not banners */
+    .nd-content .markdown-body h2 {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        margin: 2rem 0 0.65rem;
+        padding-top: 1.15rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .nd-content .markdown-body h2:first-child {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+    }
+
+    /* Opening paragraph after "The Week" is the lede — one size bump, full ink */
+    .nd-content .markdown-body h2:first-child + p {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: var(--text-primary);
+        margin-bottom: 1.25rem;
+    }
+
+    .nd-content .markdown-body h3 {
+        font-size: 1.02rem;
+        margin: 1.4rem 0 0.4rem;
+        color: var(--text-primary);
+        font-weight: 600;
+        letter-spacing: 0.01em;
+    }
+
+    .nd-content .markdown-body p {
+        margin: 0 0 0.85rem;
+    }
+
+    .nd-content .markdown-body ul {
+        padding-left: 1.15rem;
+        margin: 0 0 1rem;
+    }
+
+    .nd-content .markdown-body li {
+        margin-bottom: 0.45rem;
+        line-height: 1.7;
+    }
+
+    /* Figures stay ink, not accent — prompt bolds every number. */
+    .nd-content .markdown-body strong {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+    .nd-content .markdown-body em { color: var(--text-muted); font-style: italic; }
+
+    .nd-content .markdown-body code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.86em;
+        background: var(--bg-dark);
+        padding: 0.1rem 0.35rem;
+        border-radius: 3px;
+        color: var(--text-primary);
+    }
+
+    .nd-content .markdown-body hr {
+        border: none;
+        border-top: 1px solid var(--border-color);
+        margin: 1.25rem 0;
+    }
+
+    /* ---------- sources ---------- */
+    .nd-sources { margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem; }
+    .nd-sources-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+    .nd-source {
+        display: flex;
+        gap: 0.6rem;
+        align-items: baseline;
+        padding: 0.35rem 0;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 0.8rem;
+    }
+    .nd-source-score {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        color: var(--text-muted);
+        flex: 0 0 1.6rem;
+    }
+    .nd-source-title { flex: 1 1 auto; min-width: 0; }
+    .nd-source-title a { color: var(--text-secondary); text-decoration: none; }
+    .nd-source-title a:hover { color: var(--accent-green); }
+    .nd-source-date {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+    }
+
+    .nd-banner {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-left: 3px solid var(--accent-blue);
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.78rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .nd-placeholder {
+        padding: 3rem 1rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .nd-container { flex-direction: column; }
+        .nd-container > .date-list { flex: none; width: 100%; max-width: 100%; }
+        .nd-content { padding: 1rem; max-height: none; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="nd-banner"></div>
+
+<div class="nd-container">
+    <div class="date-list">
+        <div class="date-list-header">
+            Weeks
+            <button class="nd-btn nd-btn-run" id="nd-gen-rail" onclick="ndGenerate()">Generate</button>
+        </div>
+        <div class="date-list-items" id="nd-week-list">
+            <div class="nd-placeholder">...</div>
+        </div>
+    </div>
+
+    <div class="nd-viewer">
+        <div class="nd-viewer-header">
+            <span class="nd-viewer-title" id="nd-title">Weekly Recap</span>
+            <div class="nd-viewer-actions">
+                <span class="nd-viewer-meta" id="nd-meta"></span>
+                <select class="nd-week-select" id="nd-week-pick" onchange="ndSyncGenerate()" title="Completed Sat–Fri weeks"></select>
+                <button class="nd-btn" id="nd-btn-sources" onclick="ndToggleSources()">Sources</button>
+                <button class="nd-btn nd-btn-run" id="nd-gen" onclick="ndGenerate()">Generate</button>
+            </div>
+        </div>
+        <div class="nd-content" id="nd-content">
+            <div class="nd-placeholder">Loading...</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let ndRuns = [];
+    let ndCurrentKey = null;
+    let ndData = null;
+    let ndShowSources = false;
+    let ndPollTimer = null;
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text == null ? '' : text;
+        return div.innerHTML;
+    }
+
+    function fmtDate(iso) {
+        if (!iso) return '';
+        return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function ndWeekRailLabel(run) {
+        if (!run.window_start || !run.window_end) {
+            return run.window_label || run.run_key || '';
+        }
+        const start = new Date(run.window_start);
+        const end = new Date(run.window_end);
+        end.setUTCDate(end.getUTCDate() - 1); // window_end is exclusive Sat 00:00
+        const sameMonth = start.getUTCMonth() === end.getUTCMonth();
+        const m = (d) => d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' });
+        const day = (d) => d.getUTCDate();
+        return sameMonth
+            ? `${m(start)} ${day(start)}–${day(end)}`
+            : `${m(start)} ${day(start)}–${m(end)} ${day(end)}`;
+    }
+
+    function ndWeekYear(run) {
+        if (!run.window_end) return '';
+        const end = new Date(run.window_end);
+        end.setUTCDate(end.getUTCDate() - 1);
+        return String(end.getUTCFullYear());
+    }
+
+    function inlineMarkdown(text) {
+        let html = escapeHtml(text);
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+        return html;
+    }
+
+    function simpleMarkdown(md) {
+        const out = [];
+        let inList = false;
+        (md || '').split('\n').forEach(line => {
+            const isLi = /^\s*[-*] /.test(line);
+            if (inList && !isLi) { out.push('</ul>'); inList = false; }
+            if (/^### /.test(line)) out.push('<h3>' + inlineMarkdown(line.slice(4)) + '</h3>');
+            else if (/^## /.test(line)) out.push('<h2>' + inlineMarkdown(line.slice(3)) + '</h2>');
+            else if (/^# /.test(line)) out.push('<h1>' + inlineMarkdown(line.slice(2)) + '</h1>');
+            else if (/^---+$/.test(line.trim())) out.push('<hr>');
+            else if (isLi) {
+                if (!inList) { out.push('<ul>'); inList = true; }
+                out.push('<li>' + inlineMarkdown(line.replace(/^\s*[-*] /, '')) + '</li>');
+            }
+            else if (line.trim() === '') out.push('');
+            else out.push('<p>' + inlineMarkdown(line) + '</p>');
+        });
+        if (inList) out.push('</ul>');
+        return out.join('\n');
+    }
+
+    // ---------------- render ----------------
+
+    function ndRenderContent() {
+        const el = document.getElementById('nd-content');
+        const run = (ndData || {}).run || {};
+        if (!run.narrative_md) {
+            el.innerHTML = '<div class="nd-placeholder">No recap for this week.</div>';
+            return;
+        }
+        el.innerHTML = '<div class="markdown-body">' + simpleMarkdown(run.narrative_md) + '</div>'
+            + ndSourcesHtml();
+    }
+
+    function ndSourcesHtml() {
+        const items = (ndData || {}).items || [];
+        if (!ndShowSources || !items.length) return '';
+        return `<div class="nd-sources">
+            <div class="nd-sources-title">Sources (${items.length})</div>
+            ${items.map(i => {
+                const title = i.url
+                    ? `<a href="${escapeHtml(i.url)}" target="_blank" rel="noopener">${escapeHtml(i.title)}</a>`
+                    : escapeHtml(i.title);
+                return `<div class="nd-source">
+                    <span class="nd-source-score">${i.score}</span>
+                    <span class="nd-source-title">${title}</span>
+                    <span class="nd-source-date">${fmtDate(i.published)}</span>
+                </div>`;
+            }).join('')}
+        </div>`;
+    }
+
+    function ndToggleSources() {
+        ndShowSources = !ndShowSources;
+        document.getElementById('nd-btn-sources').classList.toggle('active', ndShowSources);
+        ndRenderContent();
+    }
+
+    function ndRenderHeader() {
+        const r = (ndData || {}).run || {};
+        document.getElementById('nd-title').textContent = r.window_label || 'Weekly Recap';
+        const bits = [];
+        if (r.universe_count) bits.push(r.universe_count.toLocaleString() + ' headlines');
+        if (r.selected_count) bits.push(r.selected_count + ' stories');
+        if (r.cost_usd) bits.push('$' + r.cost_usd.toFixed(2));
+        document.getElementById('nd-meta').textContent = bits.join(' • ');
+    }
+
+    // ---------------- runs ----------------
+
+    async function ndLoadRuns() {
+        try {
+            const res = await fetch('/api/frontend/weekly-recap/runs');
+            const data = await res.json();
+            ndRuns = data.runs || [];
+            ndRenderWeeks();
+            ndFillWeekSelect();
+
+            const running = ndRuns.find(r => r.status === 'running');
+            if (running) { ndRenderBanner(running); ndStartPolling(); }
+            else { document.getElementById('nd-banner').innerHTML = ''; ndStopPolling(); }
+
+            const target = ndCurrentKey
+                || (ndRuns.find(r => r.status === 'complete') || {}).run_key;
+            if (target) ndLoadRun(target);
+            else if (!running) {
+                document.getElementById('nd-content').innerHTML =
+                    '<div class="nd-placeholder">No recap yet — pick a week and click <strong>Generate</strong>.</div>';
+            }
+        } catch (e) {
+            document.getElementById('nd-week-list').innerHTML =
+                '<div class="nd-placeholder">' + escapeHtml(e.message) + '</div>';
+        }
+    }
+
+    function ndRenderWeeks() {
+        const el = document.getElementById('nd-week-list');
+        if (!ndRuns.length) {
+            el.innerHTML = '<div class="nd-placeholder">No weeks yet</div>';
+            return;
+        }
+        el.innerHTML = ndRuns.map(r => {
+            const cls = [
+                'date-item',
+                r.run_key === ndCurrentKey ? 'active' : '',
+                r.status === 'running' ? 'running' : '',
+                r.status === 'failed' ? 'failed' : ''
+            ].filter(Boolean).join(' ');
+            const statusBit = r.status === 'complete'
+                ? (r.selected_count || 0) + ' stories'
+                : escapeHtml(r.status || '');
+            const year = ndWeekYear(r);
+            const meta = [year, statusBit].filter(Boolean).join(' · ');
+            return `<div class="${cls}" onclick="ndLoadRun('${escapeHtml(r.run_key)}')">
+                <div class="date-item-date">${escapeHtml(ndWeekRailLabel(r))}</div>
+                <div class="date-item-meta">${meta}</div>
+            </div>`;
+        }).join('');
+    }
+
+    async function ndLoadRun(runKey) {
+        ndCurrentKey = runKey;
+        ndRenderWeeks();
+        document.getElementById('nd-content').innerHTML =
+            '<div class="nd-placeholder">Loading...</div>';
+        try {
+            const res = await fetch('/api/frontend/weekly-recap/run/' + encodeURIComponent(runKey));
+            ndData = await res.json();
+            if (ndData.error) throw new Error(ndData.error);
+            ndRenderHeader();
+            ndRenderContent();
+        } catch (e) {
+            document.getElementById('nd-content').innerHTML =
+                '<div class="nd-placeholder">' + escapeHtml(e.message) + '</div>';
+        }
+    }
+
+    // ---------------- generate + poll ----------------
+
+    async function ndGenerate() {
+        const sel = document.getElementById('nd-week-pick');
+        const weekEnding = sel && sel.value ? sel.value : null;
+        if (!weekEnding) return;
+        const opt = sel.options[sel.selectedIndex];
+        if (opt && opt.disabled) return;
+
+        const payload = { week_ending: weekEnding };
+
+        ['nd-gen', 'nd-gen-rail'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.disabled = true;
+        });
+        try {
+            const res = await fetch('/api/frontend/weekly-recap/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.error) {
+                document.getElementById('nd-banner').innerHTML =
+                    '<div class="nd-banner">' + escapeHtml(data.error) + '</div>';
+            } else {
+                ndCurrentKey = null;
+                ndStartPolling();
+            }
+        } finally {
+            ['nd-gen', 'nd-gen-rail'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.disabled = false;
+            });
+        }
+    }
+
+    /** Last N completed Sat 00:00 → Sat 00:00 weeks. value = Saturday ISO
+     *  (pipeline --week-ending). run_key = week-{Friday}. */
+    function ndCandidateWeeks(n) {
+        const weeks = [];
+        const sat = new Date();
+        sat.setHours(12, 0, 0, 0);
+        sat.setDate(sat.getDate() + ((6 - sat.getDay() + 7) % 7) - 7);
+        for (let i = 0; i < n; i++) {
+            const endSat = new Date(sat);
+            endSat.setDate(sat.getDate() - i * 7);
+            const fri = new Date(endSat);
+            fri.setDate(endSat.getDate() - 1);
+            const startSat = new Date(endSat);
+            startSat.setDate(endSat.getDate() - 7);
+            weeks.push({
+                weekEnding: ndIso(endSat),
+                runKey: 'week-' + ndIso(fri),
+                label: ndRangeLabel(startSat, fri)
+            });
+        }
+        return weeks;
+    }
+
+    function ndIso(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    function ndRangeLabel(startSat, fri) {
+        const sameMonth = startSat.getMonth() === fri.getMonth();
+        const m = (d) => d.toLocaleDateString('en-US', { month: 'short' });
+        const range = sameMonth
+            ? `${m(startSat)} ${startSat.getDate()}–${fri.getDate()}`
+            : `${m(startSat)} ${startSat.getDate()}–${m(fri)} ${fri.getDate()}`;
+        return `${range}, ${fri.getFullYear()}`;
+    }
+
+    function ndExistingKeys() {
+        const keys = new Set();
+        ndRuns.forEach(r => {
+            if (r.run_key && r.status === 'complete') keys.add(r.run_key);
+        });
+        return keys;
+    }
+
+    function ndFillWeekSelect() {
+        const sel = document.getElementById('nd-week-pick');
+        if (!sel) return;
+        const prev = sel.value;
+        const existing = ndExistingKeys();
+        const weeks = ndCandidateWeeks(12);
+        sel.innerHTML = weeks.map(w => {
+            const exists = existing.has(w.runKey);
+            const label = exists ? w.label + '  (have)' : w.label;
+            return `<option value="${w.weekEnding}" ${exists ? 'disabled' : ''}>${escapeHtml(label)}</option>`;
+        }).join('');
+        const keep = [...sel.options].find(o => o.value === prev && !o.disabled);
+        const firstOpen = [...sel.options].find(o => !o.disabled);
+        sel.value = (keep || firstOpen || sel.options[0] || {}).value || '';
+        ndSyncGenerate();
+    }
+
+    function ndSyncGenerate() {
+        const sel = document.getElementById('nd-week-pick');
+        const opt = sel && sel.options[sel.selectedIndex];
+        const ok = !!(opt && opt.value && !opt.disabled);
+        ['nd-gen', 'nd-gen-rail'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.disabled = !ok;
+        });
+    }
+
+    function ndRenderBanner(run) {
+        document.getElementById('nd-banner').innerHTML = `<div class="nd-banner">
+            <strong>${escapeHtml(run.window_label || 'Run')} in progress</strong> —
+            ${escapeHtml(run.stage || '')}
+        </div>`;
+    }
+
+    function ndStartPolling() {
+        ndStopPolling();
+        ndPollTimer = setInterval(async () => {
+            try {
+                const res = await fetch('/api/frontend/weekly-recap/status');
+                const run = await res.json();
+                if (run.status === 'running') {
+                    ndRenderBanner(run);
+                } else {
+                    ndStopPolling();
+                    ndCurrentKey = run.run_key || null;
+                    ndLoadRuns();
+                }
+            } catch (e) { /* keep polling */ }
+        }, 5000);
+    }
+
+    function ndStopPolling() {
+        if (ndPollTimer) { clearInterval(ndPollTimer); ndPollTimer = null; }
+    }
+
+    document.addEventListener('DOMContentLoaded', ndLoadRuns);
+</script>
+{% endblock %}

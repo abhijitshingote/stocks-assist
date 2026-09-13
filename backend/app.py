@@ -11,7 +11,7 @@ from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, TickerMovingAverages,
     StockVolspikeGapper, MainView, SharesFloat, MarketBreadth,
-    RsScreener, BenzingaArticle,
+    RsScreener, BenzingaArticle, NewsDigestRun, NewsDigestItem,
 )
 import benzinga_news as benzinga_news_service
 import os
@@ -6560,6 +6560,171 @@ def auto_commit():
             'message': 'Error running auto-commit',
             'error': str(e)
         }), 500
+
+# ---------------------------------------------------------------------------
+# News digest — one markdown recap per Sat..Fri week, persisted so past weeks
+# stay browsable
+# ---------------------------------------------------------------------------
+
+def _ensure_news_digest_tables():
+    NewsDigestRun.__table__.create(engine, checkfirst=True)
+    NewsDigestItem.__table__.create(engine, checkfirst=True)
+
+
+def _news_digest_persist():
+    """``news_digest`` lives at the repo root, which is not sys.path[0] here."""
+    _ensure_repo_root_on_path()
+    from news_digest import persist as nd_persist
+
+    return nd_persist
+
+
+@app.route('/api/news-digest/runs', methods=['GET'])
+def news_digest_runs():
+    """All runs, newest week first — powers the week picker."""
+    limit = request.args.get('limit', 50, type=int)
+    try:
+        _ensure_news_digest_tables()
+        nd_persist = _news_digest_persist()
+
+        session = Session()
+        try:
+            runs = nd_persist.list_runs(session, limit=limit)
+            return jsonify({
+                'count': len(runs),
+                'runs': [nd_persist.run_to_json(r) for r in runs],
+            })
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error(f"Error listing news digest runs: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/news-digest/run/<run_key>', methods=['GET'])
+def news_digest_run_detail(run_key):
+    """One week: the markdown recap plus the sources behind it."""
+    limit = request.args.get('limit', 200, type=int)
+    try:
+        _ensure_news_digest_tables()
+        nd_persist = _news_digest_persist()
+
+        session = Session()
+        try:
+            run = nd_persist.get_run(session, run_key)
+            if run is None:
+                return jsonify({'error': 'No such run'}), 404
+
+            items = nd_persist.items_for_run(session, run.id, limit=limit)
+            return jsonify({
+                'run': nd_persist.run_to_json(run, include_narrative=True),
+                'items': [nd_persist.item_to_json(i) for i in items],
+            })
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error(f"Error loading news digest run {run_key}: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/news-digest/latest', methods=['GET'])
+def news_digest_latest():
+    """Most recent complete week."""
+    try:
+        _ensure_news_digest_tables()
+        nd_persist = _news_digest_persist()
+
+        session = Session()
+        try:
+            run = nd_persist.latest_run(session)
+            if run is None:
+                return jsonify({'run': None, 'items': []})
+            return news_digest_run_detail(run.run_key)
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error(f"Error loading latest news digest: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/news-digest/generate', methods=['POST'])
+def news_digest_generate():
+    """Kick off a recap run in a detached subprocess."""
+    data = request.get_json() or {}
+    week_ending = str(data.get('week_ending') or '').strip()
+    if week_ending:
+        try:
+            datetime.strptime(week_ending, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'week_ending must be YYYY-MM-DD'}), 400
+
+    try:
+        _ensure_news_digest_tables()
+
+        session = Session()
+        try:
+            active = (
+                session.query(NewsDigestRun)
+                .filter(NewsDigestRun.status == 'running')
+                .first()
+            )
+            if active is not None:
+                return jsonify({
+                    'error': 'A digest run is already in progress',
+                    'run_key': active.run_key,
+                    'stage': active.stage,
+                }), 409
+        finally:
+            session.close()
+
+        cmd = ['python', '-m', 'news_digest.run_pipeline']
+        if week_ending:
+            cmd += ['--week-ending', week_ending]
+        select_n = data.get('select_n')
+        if select_n:
+            cmd += ['--select-n', str(int(select_n))]
+
+        outdir = os.path.join(
+            os.path.dirname(__file__), '..', 'user_data', 'news_digest', '_launch'
+        )
+        os.makedirs(outdir, exist_ok=True)
+
+        import subprocess
+
+        project_root = os.path.dirname(os.path.dirname(__file__))
+        log_file = open(os.path.join(outdir, 'subprocess.log'), 'a', encoding='utf-8')
+        subprocess.Popen(
+            cmd,
+            cwd=project_root,
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
+        return jsonify({'status': 'started', 'week_ending': week_ending or None})
+    except Exception as e:
+        logger.error(f"Error starting news digest run: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/news-digest/status', methods=['GET'])
+def news_digest_status():
+    """Lightweight poll target while a run is in flight."""
+    try:
+        _ensure_news_digest_tables()
+        nd_persist = _news_digest_persist()
+
+        session = Session()
+        try:
+            runs = nd_persist.list_runs(session, limit=1)
+            if not runs:
+                return jsonify({'status': 'empty'})
+            return jsonify(nd_persist.run_to_json(runs[0]))
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error(f"Error reading news digest status: {e}")
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
