@@ -797,5 +797,41 @@
     "sources": [
       "daily"
     ]
+  },
+  "HDB": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-09-12",
+    "at": "2026-09-12T22:35:21.040744-04:00",
+    "sources": [
+      "vsg90"
+    ]
+  },
+  "NVS": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-09-12",
+    "at": "2026-09-12T22:36:29.346031-04:00",
+    "sources": [
+      "vsg90"
+    ]
+  },
+  "SUNB": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-09-12",
+    "at": "2026-09-12T22:46:16.121291-04:00",
+    "sources": [
+      "vsg90"
+    ]
+  },
+  "IOT": {
+    "disposition": "pass",
+    "scope": "weekly",
+    "cycle": "2026-09-12",
+    "at": "2026-09-12T22:46:25.127682-04:00",
+    "sources": [
+      "vsg90"
+    ]
   }
 }
