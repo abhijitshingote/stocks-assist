@@ -1,0 +1,55 @@
+{
+  "run_key": "week-2026-09-11",
+  "window_label": "Sep 05 - Sep 11, 2026",
+  "window_start": "2026-09-05T00:00:00-04:00",
+  "window_end": "2026-09-12T00:00:00-04:00",
+  "universe_count": 3394,
+  "prefiltered_count": 2160,
+  "screened_count": 287,
+  "selected_count": 70,
+  "cost_usd": 0.4582,
+  "stats": {
+    "brief": {
+      "chars": 12568,
+      "items": 70,
+      "model": "claude-opus-4-6"
+    },
+    "fetch": {
+      "pages": 4,
+      "api_rows": 3494,
+      "truncated": false,
+      "unique_ids": 3420,
+      "window_end": "2026-09-12T00:00:00-04:00",
+      "window_start": "2026-09-05T00:00:00-04:00"
+    },
+    "dedupe": {
+      "kept": 3394,
+      "collapsed": 26
+    },
+    "screen": {
+      "kept": 287,
+      "model": "claude-haiku-4-5",
+      "returned": 287,
+      "requested": 250,
+      "input_titles": 2160,
+      "input_tokens": 106393,
+      "out_of_range": 0
+    },
+    "select": {
+      "kept": 70,
+      "model": "claude-opus-4-6",
+      "returned": 70,
+      "requested": 70,
+      "input_titles": 287,
+      "out_of_range": 0
+    },
+    "prefilter": {
+      "kept": 2160,
+      "dropped": {
+        "title_slop": 39,
+        "slop_author": 305,
+        "analyst_wire": 890
+      }
+    }
+  }
+}
