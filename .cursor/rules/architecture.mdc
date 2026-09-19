@@ -1,0 +1,9 @@
+---
+description: Docker stack, data layer, backend API, LLM pipelines
+globs: backend/**,db_scripts/**,docker/**,daily_screener/**,market_brief/**,frontend/app.py,docker-compose.yml,manage-env.sh
+alwaysApply: false
+---
+
+Follow @README/ARCHITECTURE.md.
+
+New screening fields/filters: compute in `db_scripts`, expose via backend route, render in frontend.

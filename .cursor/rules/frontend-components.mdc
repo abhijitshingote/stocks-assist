@@ -1,0 +1,9 @@
+---
+description: Frontend component catalog — templates, CSS, JS engines
+globs: frontend/**
+alwaysApply: false
+---
+
+Use component names and file paths from @frontend/COMPONENTS.md. Update that catalog when adding or moving a component.
+
+Desktop and `/m/*` mobile are separate templates; change both when the page exists on both.

@@ -1,0 +1,19 @@
+---
+description: Project working conventions and doc index
+alwaysApply: true
+---
+
+# Project
+
+- Test and run adhoc scripts in Docker (`./docker/`). Do not install packages on the host.
+- Be concise. Technical, not product-style: `filter dr_5 > 20` not "picked 5 day momentum stocks". Specificity matters.
+- Page changes: verify desktop and `/m/*` mobile.
+
+## Docs
+
+Do not merge these. Read the one that matches the work (both if the change spans layers).
+
+| Work | Read |
+|------|------|
+| Stack, ingest/update, tables, API vs db_scripts vs frontend, LLM pipelines, `user_data/` | `README/ARCHITECTURE.md` |
+| UI file map (templates, CSS, JS, component names) | `frontend/COMPONENTS.md` |
