@@ -1,0 +1,21 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'Weekly Recap' %}
+{% block title %}Weekly Recap — Mobile{% endblock %}
+{% block content %}
+  <div class="utility-body md-layout" id="wrLayout">
+    <div class="md-chip-strip" id="weekStrip"></div>
+    <div class="md-toolbar">
+      <span class="md-detail-title" id="wrTitle">—</span>
+      <span class="spacer"></span>
+      <button type="button" class="md-btn" id="btnSources">Sources</button>
+      <button type="button" class="md-btn primary" id="btnRun">Generate</button>
+    </div>
+    <div id="runProgressBanner"></div>
+    <div class="brief-content-area" id="wrContent">
+      <div class="md-loading">Loading…</div>
+    </div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/mobile/pages/weekly-recap.js') }}"></script>
+{% endblock %}

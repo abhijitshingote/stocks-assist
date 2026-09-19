@@ -64,6 +64,7 @@
     }
     .date-item.running { border-left: 2px solid var(--accent-blue); }
     .date-item.failed { border-left: 2px solid #c45c5c; }
+    .date-item.empty { opacity: 0.75; }
 
     .date-item-date {
         font-family: 'JetBrains Mono', monospace;
@@ -300,6 +301,10 @@
     @media (max-width: 768px) {
         .nd-container { flex-direction: column; }
         .nd-container > .date-list { flex: none; width: 100%; max-width: 100%; }
+        .date-list-items { max-height: 30vh; }
+        .nd-viewer-header { align-items: flex-start; }
+        .nd-viewer-actions { flex-wrap: wrap; }
+        .nd-week-select { max-width: 100%; }
         .nd-content { padding: 1rem; max-height: none; }
     }
 </style>
@@ -467,7 +472,11 @@
             if (running) { ndRenderBanner(running); ndStartPolling(); }
             else { document.getElementById('nd-banner').innerHTML = ''; ndStopPolling(); }
 
+            const current = ndCandidateWeeks(1)[0];
+            const currentRun = current && ndRuns.find(r => r.run_key === current.runKey);
             const target = ndCurrentKey
+                || (currentRun && currentRun.run_key)
+                || (current && current.runKey)
                 || (ndRuns.find(r => r.status === 'complete') || {}).run_key;
             if (target) ndLoadRun(target);
             else if (!running) {
@@ -480,21 +489,37 @@
         }
     }
 
+    function ndPlaceholderRun(w) {
+        return { run_key: w.runKey, window_label: w.label, status: 'empty' };
+    }
+
+    function ndRailRuns() {
+        const current = ndCandidateWeeks(1)[0];
+        const runs = ndRuns.slice();
+        if (current && !runs.some(r => r.run_key === current.runKey)) {
+            runs.unshift(ndPlaceholderRun(current));
+        }
+        return runs;
+    }
+
     function ndRenderWeeks() {
         const el = document.getElementById('nd-week-list');
-        if (!ndRuns.length) {
+        const runs = ndRailRuns();
+        if (!runs.length) {
             el.innerHTML = '<div class="nd-placeholder">No weeks yet</div>';
             return;
         }
-        el.innerHTML = ndRuns.map(r => {
+        el.innerHTML = runs.map(r => {
             const cls = [
                 'date-item',
                 r.run_key === ndCurrentKey ? 'active' : '',
                 r.status === 'running' ? 'running' : '',
-                r.status === 'failed' ? 'failed' : ''
+                r.status === 'failed' ? 'failed' : '',
+                r.status === 'empty' ? 'empty' : ''
             ].filter(Boolean).join(' ');
             const statusBit = r.status === 'complete'
                 ? (r.selected_count || 0) + ' stories'
+                : r.status === 'empty' ? 'generate'
                 : escapeHtml(r.status || '');
             const year = ndWeekYear(r);
             const meta = [year, statusBit].filter(Boolean).join(' · ');
@@ -505,9 +530,33 @@
         }).join('');
     }
 
+    function ndSelectWeekEndingForRun(runKey) {
+        const sel = document.getElementById('nd-week-pick');
+        if (!sel) return;
+        const w = ndCandidateWeeks(12).find(x => x.runKey === runKey);
+        if (!w) return;
+        const opt = [...sel.options].find(o => o.value === w.weekEnding && !o.disabled);
+        if (opt) {
+            sel.value = opt.value;
+            ndSyncGenerate();
+        }
+    }
+
     async function ndLoadRun(runKey) {
         ndCurrentKey = runKey;
         ndRenderWeeks();
+        ndSelectWeekEndingForRun(runKey);
+        const existing = ndRuns.find(r => r.run_key === runKey);
+        if (!existing || existing.status === 'empty') {
+            ndData = null;
+            const w = ndCandidateWeeks(12).find(x => x.runKey === runKey);
+            document.getElementById('nd-title').textContent =
+                (existing && existing.window_label) || (w && w.label) || runKey;
+            document.getElementById('nd-meta').textContent = '';
+            document.getElementById('nd-content').innerHTML =
+                '<div class="nd-placeholder">No recap for this week — click <strong>Generate</strong>.</div>';
+            return;
+        }
         document.getElementById('nd-content').innerHTML =
             '<div class="nd-placeholder">Loading...</div>';
         try {
@@ -559,13 +608,20 @@
         }
     }
 
-    /** Last N completed Sat 00:00 → Sat 00:00 weeks. value = Saturday ISO
-     *  (pipeline --week-ending). run_key = week-{Friday}. */
+    function ndTodayET() {
+        const s = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+        const [y, m, d] = s.split('-').map(Number);
+        return new Date(y, m - 1, d, 12, 0, 0);
+    }
+
+    /** Last N completed Sat 00:00 ET → Sat 00:00 ET weeks.
+     *  value = Saturday ISO (pipeline --week-ending). run_key = week-{Friday}.
+     *  On Saturday, today is the close of the week that just finished
+     *  (same as fetch.week_bounds). */
     function ndCandidateWeeks(n) {
         const weeks = [];
-        const sat = new Date();
-        sat.setHours(12, 0, 0, 0);
-        sat.setDate(sat.getDate() + ((6 - sat.getDay() + 7) % 7) - 7);
+        const sat = ndTodayET();
+        sat.setDate(sat.getDate() - ((sat.getDay() + 1) % 7));
         for (let i = 0; i < n; i++) {
             const endSat = new Date(sat);
             endSat.setDate(sat.getDate() - i * 7);

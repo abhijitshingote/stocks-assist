@@ -1,6 +1,8 @@
 # Frontend Component Catalog
 
 > Living document — when the agent asks "which component do you want to change?", name the **Component Name** below and it will know exactly which file(s) to edit.
+>
+> Stack / data / API / pipelines: `README/ARCHITECTURE.md`.
 
 ---
 
@@ -255,6 +257,14 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | **Data** | `/api/frontend/all-stocks`, client filter `market_cap ≥ $100B` |
 | **Layout** | Sector rows × 3 lanes (Down / Nonchalant / Up) on `dr_1`/`dr_5`/`dr_20` vs thresh |
 
+### Weekly Recap
+| | |
+|---|---|
+| **File** | `templates/news_digest.html` |
+| **Route** | `/weekly-recap` |
+| **Data** | `/api/frontend/weekly-recap/*` → backend `news_digest` (`news_digest_runs`) |
+| **Week picker** | Last 12 completed Sat→Fri weeks in ET; Saturday is the close of the week that just finished (`fetch.week_bounds`) |
+
 ### Market Brief Viewer
 | | |
 |---|---|
@@ -285,7 +295,7 @@ Every mobile page loads these layers in order:
 | `static/css/mobile/panels.css` | Loading overlay, spinner, news tab, metrics rows, notes modal, tag pills |
 | `static/css/mobile/nav.css` | Nav drawer backdrop, sheet, links, footer, drawer filter strips |
 | `static/css/mobile/benzinga-overrides.css` | Dark-mode overrides for `benzinga-news.css` (must load after it) |
-| `static/css/mobile/pages.css` | Utility-page layouts: master-detail, context charts, logs viewer, market brief, market news, home dashboard |
+| `static/css/mobile/pages.css` | Utility-page layouts: master-detail, context charts, logs viewer, market brief, weekly recap, market news, home dashboard |
 
 Screener pages also prepend `static/css/benzinga-news.css` before the layer stack. Utility pages append `pages.css` after the layer stack. Both handled by `templates/mobile/_mobile_styles.html`.
 
@@ -397,6 +407,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Context | `mobile/context.html` | `/m/context` | `['charts']` |
 | Context 2 | `mobile/context2.html` | `/m/context-2` | `[]` |
 | Market Brief | `mobile/market_brief.html` | `/m/market-brief` | `[]` |
+| Weekly Recap | `mobile/weekly_recap.html` | `/m/weekly-recap` | `[]` |
 | Market News | `mobile/market_news.html` | `/m/market-news` | `['news']` |
 | ETFs | `mobile/etfs.html` | `/m/etfs` | `[]` |
 | Daily Shortlist | `mobile/daily_shortlist.html` | `/m/daily-shortlist` | `[]` |

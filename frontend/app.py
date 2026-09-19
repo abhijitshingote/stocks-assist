@@ -253,6 +253,10 @@ def m_context2():
 def m_market_brief():
     return render_template('mobile/market_brief.html')
 
+@app.route('/m/weekly-recap')
+def m_weekly_recap():
+    return render_template('mobile/weekly_recap.html')
+
 @app.route('/m/market-news')
 def m_market_news():
     return render_template('mobile/market_news.html')

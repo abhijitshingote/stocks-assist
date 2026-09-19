@@ -178,6 +178,7 @@ Frontend and backend both read these paths; keep `OUTPUTS_DIR` constants in sync
 
 ## Related docs
 
+- `frontend/COMPONENTS.md` — desktop/mobile UI file map (templates, CSS, JS)
 - `README/README.md` — init/update command cheatsheets
 - `README/ENDPOINTS.md` — API URL list
 - `daily_screener/README.md`, `market_brief/README.md` — pipeline detail
