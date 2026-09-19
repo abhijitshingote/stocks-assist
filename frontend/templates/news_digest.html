@@ -6,17 +6,33 @@
 
 {% block extra_styles %}
 <style>
+    body.page-news-digest {
+        height: 100vh;
+        overflow: hidden;
+    }
     body.page-news-digest main {
         max-width: 100%;
-        overflow-x: clip;
+        overflow: hidden;
+        height: calc(100vh - 42px);
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
     }
+    body.page-news-digest.nav-hidden main {
+        height: 100vh;
+    }
+    #nd-banner:empty { display: none; }
+    #nd-banner:not(:empty) { flex-shrink: 0; margin-bottom: 0.75rem; }
 
     .nd-container {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
+        align-items: stretch;
         gap: 0.75rem;
-        min-height: calc(100vh - 160px);
+        flex: 1;
+        min-height: 0;
         width: 100%;
         min-width: 0;
     }
@@ -27,14 +43,17 @@
         width: 168px;
         max-width: 168px;
         min-width: 0;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 8px;
         overflow: hidden;
-        align-self: flex-start;
     }
 
     .date-list-header {
+        flex-shrink: 0;
         padding: 0.5rem 0.75rem;
         border-bottom: 1px solid var(--border-color);
         font-weight: 600;
@@ -46,7 +65,8 @@
     }
 
     .date-list-items {
-        max-height: calc(100vh - 200px);
+        flex: 1;
+        min-height: 0;
         overflow-y: auto;
     }
 
@@ -83,6 +103,7 @@
     .nd-container > .nd-viewer {
         flex: 1 1 0;
         min-width: 0;
+        min-height: 0;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 8px;
@@ -92,6 +113,7 @@
     }
 
     .nd-viewer-header {
+        flex-shrink: 0;
         padding: 0.5rem 1rem;
         border-bottom: 1px solid var(--border-color);
         display: flex;
@@ -154,10 +176,10 @@
 
     .nd-content {
         flex: 1;
-        overflow: auto;
-        padding: 1.75rem 2.25rem 2.5rem;
-        max-height: calc(100vh - 200px);
+        min-height: 0;
         min-width: 0;
+        overflow: auto;
+        padding: 1.5rem 2rem;
     }
 
     /* Measure is capped and centered inside the card so the card still fills
@@ -299,13 +321,19 @@
     }
 
     @media (max-width: 768px) {
-        .nd-container { flex-direction: column; }
+        body.page-news-digest { height: auto; overflow: visible; }
+        body.page-news-digest main {
+            height: auto;
+            overflow: visible;
+            padding: 0.75rem;
+        }
+        .nd-container { flex-direction: column; flex: none; }
         .nd-container > .date-list { flex: none; width: 100%; max-width: 100%; }
-        .date-list-items { max-height: 30vh; }
+        .date-list-items { max-height: 30vh; flex: none; }
         .nd-viewer-header { align-items: flex-start; }
         .nd-viewer-actions { flex-wrap: wrap; }
         .nd-week-select { max-width: 100%; }
-        .nd-content { padding: 1rem; max-height: none; }
+        .nd-content { padding: 1rem; }
     }
 </style>
 {% endblock %}
