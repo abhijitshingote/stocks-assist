@@ -6180,11 +6180,18 @@ def _market_brief_run_status(brief_dir: str) -> str:
 @app.route('/api/market-brief/dates', methods=['GET'])
 def market_brief_dates():
     """List dates that have market brief outputs (including in-progress runs)."""
-    if not os.path.isdir(MARKET_BRIEF_OUTPUTS_DIR):
-        return jsonify({'dates': []})
+    return _market_brief_dates_response(MARKET_BRIEF_OUTPUTS_DIR)
+
+def _market_brief_dates_response(base_dir: str):
+    today = _market_brief_today()
+    if not os.path.isdir(base_dir):
+        return jsonify({
+            'dates': [{'date': today, 'mtime': None, 'status': 'empty', 'stage': None, 'is_today': True}],
+            'today': today,
+        })
     entries = []
-    for name in os.listdir(MARKET_BRIEF_OUTPUTS_DIR):
-        full = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, name)
+    for name in os.listdir(base_dir):
+        full = os.path.join(base_dir, name)
         if not os.path.isdir(full):
             continue
         try:
@@ -6222,7 +6229,6 @@ def market_brief_dates():
         })
     entries.sort(key=lambda e: e['date'], reverse=True)
 
-    today = _market_brief_today()
     if not any(e['date'] == today for e in entries):
         entries.insert(0, {
             'date': today,
@@ -6241,12 +6247,15 @@ def market_brief_dates():
 @app.route('/api/market-brief/<date_str>', methods=['GET'])
 def market_brief_for_date(date_str):
     """Get market brief content for a specific date."""
+    return _market_brief_for_date_response(MARKET_BRIEF_OUTPUTS_DIR, date_str, include_losers=True)
+
+def _market_brief_for_date_response(base_dir: str, date_str: str, *, include_losers: bool):
     try:
         datetime.strptime(date_str, '%Y-%m-%d')
     except ValueError:
         return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
 
-    brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+    brief_dir = os.path.join(base_dir, date_str)
     if not os.path.isdir(brief_dir):
         if date_str == _market_brief_today():
             return jsonify({
@@ -6292,19 +6301,23 @@ def market_brief_for_date(date_str):
         with open(costs_path, 'r', encoding='utf-8') as f:
             result['run_costs'] = json.load(f)
 
-    result.update(_load_losers_brief_fields(date_str))
+    if include_losers:
+        result.update(_load_losers_brief_fields(date_str))
 
     return jsonify(result)
 
 @app.route('/api/market-brief/<date_str>/pdf', methods=['GET'])
 def market_brief_pdf(date_str):
     """Download 02_brief.md as a PDF."""
+    return _market_brief_pdf_response(MARKET_BRIEF_OUTPUTS_DIR, date_str, 'Market Brief', 'market-brief')
+
+def _market_brief_pdf_response(base_dir: str, date_str: str, title: str, file_prefix: str):
     try:
         datetime.strptime(date_str, '%Y-%m-%d')
     except ValueError:
         return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
 
-    brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+    brief_dir = os.path.join(base_dir, date_str)
     brief_md_path = os.path.join(brief_dir, '02_brief.md')
     if not os.path.isfile(brief_md_path):
         return jsonify({'error': 'No brief markdown for this date'}), 404
@@ -6320,7 +6333,7 @@ def market_brief_pdf(date_str):
     from market_brief.pdf_export import markdown_to_pdf_bytes
 
     try:
-        pdf_bytes = markdown_to_pdf_bytes(md, title=f'Market Brief — {date_str}')
+        pdf_bytes = markdown_to_pdf_bytes(md, title=f'{title} — {date_str}')
     except Exception as e:  # noqa: BLE001
         logger.exception('PDF export failed for %s: %s', date_str, e)
         return jsonify({'error': f'PDF export failed: {e}'}), 500
@@ -6329,18 +6342,21 @@ def market_brief_pdf(date_str):
         io.BytesIO(pdf_bytes),
         mimetype='application/pdf',
         as_attachment=True,
-        download_name=f'market-brief-{date_str}.pdf',
+        download_name=f'{file_prefix}-{date_str}.pdf',
     )
 
 @app.route('/api/market-brief/<date_str>/costs', methods=['GET'])
 def market_brief_costs(date_str):
     """Return run status + optional run_costs.json for live progress polling."""
+    return _market_brief_costs_response(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+
+def _market_brief_costs_response(base_dir: str, date_str: str):
     try:
         datetime.strptime(date_str, '%Y-%m-%d')
     except ValueError:
         return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
 
-    brief_dir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, date_str)
+    brief_dir = os.path.join(base_dir, date_str)
     if not os.path.isdir(brief_dir):
         return jsonify({'error': 'No brief folder for this date'}), 404
 
@@ -6447,6 +6463,63 @@ def market_brief_run():
         data['asof'] = _market_brief_today()
 
     return market_brief_generate()
+
+# Market Brief - Px: Perplexity web search replaces Benzinga ingest
+# (market_brief/perplexity_brief.py: OUTPUTS_DIR).
+MARKET_BRIEF_PX_OUTPUTS_DIR = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'market_brief_perplexity'
+)
+
+@app.route('/api/market-brief-px/dates', methods=['GET'])
+def market_brief_px_dates():
+    return _market_brief_dates_response(MARKET_BRIEF_PX_OUTPUTS_DIR)
+
+@app.route('/api/market-brief-px/<date_str>', methods=['GET'])
+def market_brief_px_for_date(date_str):
+    return _market_brief_for_date_response(MARKET_BRIEF_PX_OUTPUTS_DIR, date_str, include_losers=False)
+
+@app.route('/api/market-brief-px/<date_str>/costs', methods=['GET'])
+def market_brief_px_costs(date_str):
+    return _market_brief_costs_response(MARKET_BRIEF_PX_OUTPUTS_DIR, date_str)
+
+@app.route('/api/market-brief-px/<date_str>/pdf', methods=['GET'])
+def market_brief_px_pdf(date_str):
+    return _market_brief_pdf_response(
+        MARKET_BRIEF_PX_OUTPUTS_DIR, date_str, 'Market Brief - Px', 'market-brief-px'
+    )
+
+@app.route('/api/market-brief-px/generate', methods=['POST'])
+def market_brief_px_generate():
+    """Run Perplexity brief: DB hydrate + Perplexity search + Sonnet synthesis."""
+    data = request.get_json() or {}
+    asof = data.get('asof') or data.get('date') or _market_brief_today()
+    try:
+        datetime.strptime(asof, '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+
+    outdir = os.path.join(MARKET_BRIEF_PX_OUTPUTS_DIR, asof)
+    if _market_brief_run_status(outdir) == 'running':
+        return jsonify({
+            'status': 'already_running',
+            'message': f'Market Brief - Px for {asof} is already running',
+            'asof': asof,
+        }), 409
+
+    cmd = ['python', '-m', 'market_brief.perplexity_brief', '--date', asof]
+    if data.get('skip_research') in (True, 'true', '1', 1):
+        if not os.path.isdir(os.path.join(outdir, '01_research')):
+            return jsonify({
+                'error': 'No research for this date',
+                'message': 'Cannot skip research without existing 01_research/',
+                'asof': asof,
+            }), 400
+        cmd.append('--skip-research')
+
+    err = _start_market_brief_subprocess(cmd, outdir, asof)
+    if err:
+        return jsonify({'error': err}), 500
+    return jsonify({'status': 'started', 'message': 'Market Brief - Px started', 'asof': asof})
 
 @app.route('/api/market-brief-losers/<date_str>/costs', methods=['GET'])
 def market_brief_losers_costs(date_str):

@@ -9,10 +9,19 @@
   let losersPollTimer = null;
   let briefTodayDate = null;
 
+  const CFG = Object.assign({
+    apiBase: '/api/frontend/market-brief',
+    showLosers: true,
+    pdfPrefix: 'market-brief',
+    runEta: '15–25 minutes',
+    stageLabels: {},
+  }, window.BRIEF_CFG || {});
+
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnRun').addEventListener('click', () => runBrief(currentDate));
     document.getElementById('btnPdf').addEventListener('click', exportBriefPdf);
-    document.getElementById('btnLosers').addEventListener('click', () => runLosersBrief(currentDate));
+    const losersBtn = document.getElementById('btnLosers');
+    if (losersBtn) losersBtn.addEventListener('click', () => runLosersBrief(currentDate));
     loadDateList();
   });
 
@@ -37,8 +46,9 @@
       step4_synthesis: 'Writing brief',
       done: 'Complete',
     };
+    if (CFG.stageLabels[step]) return CFG.stageLabels[step];
     if (labels[step]) return labels[step];
-    return step.replace(/^step3_/, 'Step 3 · ').replace(/^step4_/, 'Step 4 · ').replace(/_/g, ' ');
+    return step.replace(/^tickers_(\d+)$/, 'Search · tickers $1').replace(/^step3_/, 'Step 3 · ').replace(/^step4_/, 'Step 4 · ').replace(/_/g, ' ');
   }
 
   function inlineMarkdown(text) {
@@ -101,12 +111,13 @@
 
   function updateLosersButton() {
     const btn = document.getElementById('btnLosers');
+    if (!btn) return;
     if (currentLosersRunStatus === 'running') {
-      btn.textContent = 'Losers…';
+      btn.textContent = 'Losers running…';
       btn.disabled = true;
     } else {
       btn.disabled = false;
-      btn.textContent = 'Losers';
+      btn.textContent = 'Generate losers';
     }
   }
 
@@ -126,7 +137,7 @@
     strip.innerHTML = '<span class="md-chip">Loading…</span>';
 
     try {
-      const response = await fetch('/api/frontend/market-brief/dates');
+      const response = await fetch(`${CFG.apiBase}/dates`);
       const data = await response.json();
       briefTodayDate = data.today || briefToday();
 
@@ -188,7 +199,7 @@
     contentEl.innerHTML = '<div class="md-loading">Loading…</div>';
 
     try {
-      const response = await fetch(`/api/frontend/market-brief/${dateStr}`);
+      const response = await fetch(`${CFG.apiBase}/${dateStr}`);
       if (!response.ok && response.status !== 404) throw new Error(`HTTP ${response.status}`);
 
       if (response.ok) {
@@ -209,13 +220,16 @@
 
       if (currentRunStatus === 'running' || status === 'running') {
         startRunPolling(dateStr);
-        contentEl.innerHTML = '<div class="md-empty">Pipeline running — usually 15–25 minutes.</div>';
+        contentEl.innerHTML = `<div class="md-empty">Pipeline running — usually ${escapeHtml(CFG.runEta)}.</div>`;
         updatePdfButton();
         return;
       }
 
       if (currentRunStatus === 'failed' || currentRunStatus === 'error') {
-        contentEl.innerHTML = '<div class="md-empty">This run did not finish. Tap Generate to retry.</div>';
+        const runErr = currentData.run_status?.error;
+        contentEl.innerHTML = '<div class="md-empty">This run did not finish.'
+          + (runErr ? ' Error: ' + escapeHtml(runErr) + '.' : '')
+          + ' Tap Generate to retry.</div>';
         updatePdfButton();
         return;
       }
@@ -261,14 +275,15 @@
       return;
     }
     const updated = runStatus?.updated_at ? new Date(runStatus.updated_at).toLocaleTimeString() : '';
+    const detail = runStatus?.detail ? ` · ${escapeHtml(runStatus.detail)}` : '';
     banner.innerHTML = `<div class="brief-progress">
-      <strong>${escapeHtml(formatStepLabel(stage))}</strong>
+      <strong>${escapeHtml(formatStepLabel(stage))}</strong>${detail}
       ${updated ? ` · updated ${updated}` : ''}
     </div>`;
   }
 
   function renderLosersBriefSection() {
-    if (!currentData) return '';
+    if (!currentData || !CFG.showLosers) return '';
     let progress = '';
     if (currentLosersRunStatus === 'running') {
       progress = `<p class="md-item-meta">Losers pipeline running — ${escapeHtml(formatStepLabel(currentData.losers_run_status?.stage))}</p>`;
@@ -355,7 +370,7 @@
 
   async function refreshRunProgress(dateStr) {
     try {
-      const response = await fetch(`/api/frontend/market-brief/${dateStr}/costs`);
+      const response = await fetch(`${CFG.apiBase}/${dateStr}/costs`);
       if (!response.ok) return;
       const data = await response.json();
       currentRunStatus = data.status || currentRunStatus;
@@ -395,6 +410,8 @@
   }
 
   async function runBrief(forDate) {
+    const asofLabel = forDate || briefTodayDate || briefToday();
+    if (!confirm(`Generate ${CFG.pageTitle || 'Market Brief'} for ${asofLabel}? This starts a paid run.`)) return;
     const btn = document.getElementById('btnRun');
     btn.disabled = true;
     btn.textContent = 'Starting…';
@@ -402,7 +419,7 @@
 
     const asof = forDate || briefTodayDate || briefToday();
     try {
-      const response = await fetch('/api/frontend/market-brief/generate', {
+      const response = await fetch(`${CFG.apiBase}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ asof }),
@@ -437,6 +454,7 @@
   async function runLosersBrief(forDate) {
     const dateStr = forDate || currentDate;
     if (!dateStr) return;
+    if (!confirm(`Generate R1D losers brief for ${dateStr}? This starts a paid run.`)) return;
     const btn = document.getElementById('btnLosers');
     btn.disabled = true;
     btn.textContent = 'Starting…';
@@ -477,7 +495,7 @@
     btn.disabled = true;
     btn.textContent = '…';
     try {
-      const response = await fetch(`/api/frontend/market-brief/${currentDate}/pdf`);
+      const response = await fetch(`${CFG.apiBase}/${currentDate}/pdf`);
       if (!response.ok) {
         let msg = `HTTP ${response.status}`;
         try {
@@ -490,7 +508,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `market-brief-${currentDate}.pdf`;
+      a.download = `${CFG.pdfPrefix}-${currentDate}.pdf`;
       document.body.appendChild(a);
       a.click();
       a.remove();

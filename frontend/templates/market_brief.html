@@ -2,7 +2,10 @@
 
 {% block body_class %}page-market-brief{% endblock %}
 
-{% block title %}Market Brief - Stocks Assist{% endblock %}
+{% set brief_page_title = brief_cfg.pageTitle if brief_cfg else 'Market Brief' %}
+{% set brief_show_losers = brief_cfg.showLosers if brief_cfg else true %}
+
+{% block title %}{{ brief_page_title }} - Stocks Assist{% endblock %}
 
 {% block extra_styles %}
 <style>
@@ -970,7 +973,7 @@
 
 {% block content %}
 <h1 style="margin-bottom: 0.75rem; font-weight: 600; font-size: 1.25rem;">
-    <span class="mono text-green">$</span> Market Brief
+    <span class="mono text-green">$</span> {{ brief_page_title }}
 </h1>
 
 <div class="brief-container">
@@ -1003,7 +1006,9 @@
                     <button id="btn-boxes-light" onclick="setBoxTheme('light')" title="Light boxes">Light</button>
                 </div>
                 <button class="export-pdf-btn" id="btn-export-pdf" onclick="exportBriefPdf()" title="Download brief as PDF" disabled>Export PDF</button>
+                {% if brief_show_losers %}
                 <button class="run-btn losers-run-btn" id="btn-run-losers" onclick="runLosersBrief()" title="Generate R1D losers brief for the selected date">Generate losers</button>
+                {% endif %}
                 <button class="run-btn" id="btn-run" onclick="runBrief()" title="Generate brief for today (US Eastern)">Generate today</button>
             </div>
         </div>
@@ -1027,13 +1032,23 @@
     let losersPollTimer = null;
     let costPanelExpanded = false;
 
-    const MODEL_LABELS = {
+    const BRIEF_CFG = Object.assign({
+        apiBase: '/api/frontend/market-brief',
+        showLosers: true,
+        pdfPrefix: 'market-brief',
+        outputDir: 'user_data/market_brief',
+        runEta: '15–25 minutes',
+        stageLabels: {},
+        modelLabels: {},
+    }, {{ (brief_cfg or {}) | tojson }});
+
+    const MODEL_LABELS = Object.assign({
         'claude-sonnet-4-5': 'Sonnet',
         'claude-opus-4-5': 'Opus',
         'claude-opus-4-6': 'Opus',
         'deepseek-v4-pro': 'DeepSeek',
         'deepseek-v4-flash': 'DeepSeek Flash',
-    };
+    }, BRIEF_CFG.modelLabels);
 
     let briefTodayDate = null;
 
@@ -1070,7 +1085,7 @@
         btn.disabled = true;
         btn.textContent = 'Exporting…';
         try {
-            const response = await fetch(`/api/frontend/market-brief/${currentDate}/pdf`);
+            const response = await fetch(`${BRIEF_CFG.apiBase}/${currentDate}/pdf`);
             if (!response.ok) {
                 let msg = `HTTP ${response.status}`;
                 try {
@@ -1083,7 +1098,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `market-brief-${currentDate}.pdf`;
+            a.download = `${BRIEF_CFG.pdfPrefix}-${currentDate}.pdf`;
             document.body.appendChild(a);
             a.click();
             a.remove();
@@ -1101,7 +1116,7 @@
         listEl.innerHTML = '<div class="loading">Loading...</div>';
 
         try {
-            const response = await fetch('/api/frontend/market-brief/dates');
+            const response = await fetch(`${BRIEF_CFG.apiBase}/dates`);
             const data = await response.json();
             briefTodayDate = data.today || briefToday();
 
@@ -1114,6 +1129,7 @@
                     const st = item.status || 'complete';
                     const stageLabel = (s) => {
                         if (!s) return 'Running…';
+                        if (BRIEF_CFG.stageLabels[s]) return BRIEF_CFG.stageLabels[s];
                         if (s === 'ingest' || s === 'step1_fetch') return 'Fetching news';
                         if (s === 'step4_synthesis') return 'Synthesizing brief';
                         return s.replace(/_/g, ' ');
@@ -1176,7 +1192,7 @@
         contentEl.innerHTML = '<div class="loading">Loading...</div>';
 
         try {
-            const response = await fetch(`/api/frontend/market-brief/${dateStr}`);
+            const response = await fetch(`${BRIEF_CFG.apiBase}/${dateStr}`);
             if (!response.ok && response.status !== 404) {
                 throw new Error(`HTTP ${response.status}`);
             }
@@ -1200,13 +1216,16 @@
 
             if (currentRunStatus === 'running' || status === 'running') {
                 startRunPolling(dateStr);
-                contentEl.innerHTML = '<div class="brief-placeholder">Pipeline running — see progress above. This usually takes 15–25 minutes.</div>';
+                contentEl.innerHTML = `<div class="brief-placeholder">Pipeline running — see progress above. This usually takes ${BRIEF_CFG.runEta}.</div>`;
                 updatePdfButton();
                 return;
             }
 
             if (currentRunStatus === 'failed' || currentRunStatus === 'error') {
-                contentEl.innerHTML = '<div class="brief-placeholder">This run did not finish. Check <code>user_data/market_brief/' + dateStr + '/subprocess.log</code> or click Generate to retry.</div>';
+                const runErr = currentData.run_status?.error;
+                contentEl.innerHTML = '<div class="brief-placeholder">This run did not finish.'
+                    + (runErr ? ' Error: <code>' + escapeHtml(runErr) + '</code>.' : '')
+                    + ' Check <code>' + BRIEF_CFG.outputDir + '/' + dateStr + '/subprocess.log</code> or click Generate to retry.</div>';
                 updatePdfButton();
                 return;
             }
@@ -1254,8 +1273,10 @@
             step4_synthesis: 'Writing brief (Opus)',
             done: 'Complete',
         };
+        if (BRIEF_CFG.stageLabels[step]) return BRIEF_CFG.stageLabels[step];
         if (labels[step]) return labels[step];
         return step
+            .replace(/^tickers_(\d+)$/, 'Search · tickers $1')
             .replace(/^step3_/, 'Step 3 · ')
             .replace(/^step4_/, 'Step 4 · ')
             .replace(/_/g, ' ');
@@ -1270,13 +1291,14 @@
         const updated = runStatus?.updated_at
             ? new Date(runStatus.updated_at).toLocaleTimeString()
             : '';
-        const err = runStatus?.error ? ` — ${runStatus.error}` : '';
+        const err = runStatus?.error ? ` — ${escapeHtml(runStatus.error)}` : '';
+        const detail = runStatus?.detail ? ` · ${escapeHtml(runStatus.detail)}` : '';
         banner.innerHTML = `
             <div class="run-progress-banner">
                 <div class="run-progress-spinner"></div>
                 <div>
                     <div class="run-progress-stage">${escapeHtml(formatStepLabel(stage))}</div>
-                    <div class="run-progress-detail">Pipeline in progress${updated ? ` · updated ${updated}` : ''}${err}</div>
+                    <div class="run-progress-detail">Pipeline in progress${detail}${updated ? ` · updated ${updated}` : ''}${err}</div>
                 </div>
             </div>`;
     }
@@ -1390,7 +1412,7 @@
 
     async function refreshRunProgress(dateStr) {
         try {
-            const response = await fetch(`/api/frontend/market-brief/${dateStr}/costs`);
+            const response = await fetch(`${BRIEF_CFG.apiBase}/${dateStr}/costs`);
             if (!response.ok) {
                 return;
             }
@@ -1530,10 +1552,10 @@
             contentEl.innerHTML = `<pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; white-space: pre-wrap;">${JSON.stringify(jsonData, null, 2)}</pre>`;
         } else if (currentView === 'markdown') {
             const md = currentData.markdown || '(No markdown content)';
-            const losersMd = currentData.has_losers_brief && currentData.losers_markdown
+            const losersMd = BRIEF_CFG.showLosers && currentData.has_losers_brief && currentData.losers_markdown
                 ? '\n\n---\n\n' + currentData.losers_markdown
                 : '';
-            const unavailableNote = !currentData.has_losers_brief
+            const unavailableNote = BRIEF_CFG.showLosers && !currentData.has_losers_brief
                 ? '\n\n---\n\n## R1D Losers Brief\n\nNo losers brief available for this date.'
                 : '';
             contentEl.innerHTML = `<pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; white-space: pre-wrap;">${escapeHtml(md + losersMd + unavailableNote)}</pre>`;
@@ -1543,7 +1565,7 @@
     }
 
     function renderLosersBriefSection() {
-        if (!currentData) return '';
+        if (!currentData || !BRIEF_CFG.showLosers) return '';
 
         let progress = '';
         if (currentLosersRunStatus === 'running') {
@@ -1748,7 +1770,7 @@
             await loadDateList();
 
             try {
-                const response = await fetch('/api/frontend/market-brief/dates');
+                const response = await fetch(`${BRIEF_CFG.apiBase}/dates`);
                 const data = await response.json();
                 const entry = (data.dates || []).find(d => d.date === targetDate);
                 if (entry && entry.status === 'complete') {
@@ -1781,6 +1803,8 @@
     }
 
     async function runLosersBrief(forDate) {
+        const losersDate = forDate || currentDate || briefTodayDate || briefToday();
+        if (!confirm(`Generate R1D losers brief for ${losersDate}? This starts a paid run.`)) return;
         const btn = document.getElementById('btn-run-losers');
         const inlineBtn = document.getElementById('btn-generate-losers-inline');
         if (btn) {
@@ -1847,6 +1871,8 @@
     }
 
     async function runBrief(forDate) {
+        const briefDate = forDate || briefTodayDate || briefToday();
+        if (!confirm(`Generate ${BRIEF_CFG.pageTitle || 'Market Brief'} for ${briefDate}? This starts a paid run.`)) return;
         const btn = document.getElementById('btn-run');
         const inlineBtn = document.getElementById('btn-generate-inline');
         btn.disabled = true;
@@ -1859,7 +1885,7 @@
         const body = { asof };
 
         try {
-            const response = await fetch('/api/frontend/market-brief/generate', {
+            const response = await fetch(`${BRIEF_CFG.apiBase}/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)

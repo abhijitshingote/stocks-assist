@@ -1,0 +1,11 @@
+---
+description: Market brief pipelines (Benzinga, Px/Perplexity, losers) and their viewer pages
+globs: market_brief/**,market_brief_losers/**,frontend/templates/market_brief*.html,frontend/templates/mobile/market_brief.html,frontend/static/js/mobile/pages/market-brief.js
+alwaysApply: false
+---
+
+Follow @market_brief/README.md (Benzinga pipeline, config, Market Brief - Px variant).
+
+Step 4 prompt / source-loader internals of the Benzinga pipeline: `README/how-market-brief-works.md` (read only when changing those).
+
+Market Brief and Market Brief - Px share one viewer (`brief_cfg`); keep both working when changing it.

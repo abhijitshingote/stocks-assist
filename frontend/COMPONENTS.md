@@ -269,7 +269,9 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | | |
 |---|---|
 | **File** | `templates/market_brief.html` |
-| **Route** | `/market-brief` |
+| **Route** | `/market-brief`, `/market-brief-px` |
+| **Config** | `brief_cfg` (Jinja → JS `BRIEF_CFG`): `pageTitle`, `apiBase`, `showLosers`, `pdfPrefix`, `outputDir`, `runEta`, `stageLabels`, `modelLabels`. Unset = Benzinga brief defaults. Px config: `MARKET_BRIEF_PX_CFG` in `frontend/app.py`. |
+| **Status** | Date list + progress banner read `status.json` (`status`, `stage`, `detail`, `error`) and `run_costs.json` via `<apiBase>/<date>/costs` (3s poll while running) |
 
 ### Market Brief History
 | | |
@@ -407,6 +409,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Context | `mobile/context.html` | `/m/context` | `['charts']` |
 | Context 2 | `mobile/context2.html` | `/m/context-2` | `[]` |
 | Market Brief | `mobile/market_brief.html` | `/m/market-brief` | `[]` |
+| Market Brief - Px | `mobile/market_brief.html` (`brief_cfg` → `window.BRIEF_CFG`) | `/m/market-brief-px` | `[]` |
 | Weekly Recap | `mobile/weekly_recap.html` | `/m/weekly-recap` | `[]` |
 | Market News | `mobile/market_news.html` | `/m/market-news` | `['news']` |
 | ETFs | `mobile/etfs.html` | `/m/etfs` | `[]` |

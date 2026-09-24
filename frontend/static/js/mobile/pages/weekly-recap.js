@@ -290,6 +290,7 @@
     const w = currentWeek();
     const weekEnding = weekEndingFor(w);
     if (!weekEnding || (w && w.status === 'complete')) return;
+    if (!confirm(`Generate Weekly Recap for week ending ${weekEnding}? This starts a paid run.`)) return;
     const btn = document.getElementById('btnRun');
     btn.disabled = true;
     try {

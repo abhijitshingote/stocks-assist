@@ -1,6 +1,6 @@
 # Market Brief
 
-Daily pre-market brief built from Benzinga news. Run in the backend container:
+Daily pre-market brief built from Benzinga news. Perplexity-sourced A/B variant: [Market Brief - Px](#market-brief---px-perplexity_briefpy). Run in the backend container:
 
 ```bash
 docker compose exec backend python -m market_brief.run_pipeline
@@ -142,3 +142,33 @@ docker compose exec backend python -m market_brief.run --asof 2026-05-31
 | `too_many_prompt_tokens` on synth | Ollama summaries too large; use Perplexity summarize for production |
 
 Channel slug probe: `docker compose exec backend python -m market_brief.discover_channels`
+
+---
+
+## Market Brief - Px (`perplexity_brief.py`)
+
+A/B variant that replaces Benzinga ingest with Perplexity web search. Fully decoupled from the Benzinga run: own DB screener universe (`screener_universe.py`) + verified tape (`tape.py`: OHLC + index closes), own output root.
+
+| Step | Calls | Model |
+|---|---|---|
+| Broad market: `broad_macro_cross_asset`, `broad_corporate_news`, `broad_calendar` | 3 | `sonar-pro` (search) |
+| Ticker batches `tickers_NN`: universe (~62) flattened in slice priority, ~12/call, tape rows injected | ~6 | `sonar-pro` (search) |
+| Synthesis `synthesis_<model>`: `STEP4_SYSTEM_PROMPT`, same output format as `02_brief.md` above | 1 | Sonnet (default) · `--synth haiku\|opus\|perplexity` |
+
+Search filter: `search_after_date_filter` = session − 1d, `search_before_date_filter` = asof + 1d.
+
+```bash
+docker compose exec backend python -m market_brief.perplexity_brief                     # today
+docker compose exec backend python -m market_brief.perplexity_brief --dry-run           # prompts only → 00_prompts/ (no run.log)
+docker compose exec backend python -m market_brief.perplexity_brief --skip-research --synth haiku  # re-synth, no search
+docker compose exec backend python -m market_brief.perplexity_brief --asof 2026-09-17 --universe baseline  # opt-in: copy Benzinga run's lineage.json
+docker compose exec backend python -m market_brief.perplexity_brief --asof 2026-09-17 --compare-only      # rebuild compare.md
+```
+
+**UI:** `/market-brief-px`, `/m/market-brief-px` — same viewer as Market Brief via `brief_cfg` (`MARKET_BRIEF_PX_CFG` in `frontend/app.py`). API: `/api/market-brief-px/{dates,<date>,<date>/costs,<date>/pdf,generate}`.
+
+**Status:** `status.json` stages `hydrate` → `research` (`detail`: `N/M Perplexity searches done`) → `synthesis_<model>` → `done`; `failed` + `error` on exception. All searches failed → run fails; partial failures → `detail` on the complete status.
+
+**Artifacts** (`user_data/market_brief_perplexity/<date>/`): `status.json`, `tape.md`, `source/ticker_universe/`, `01_research/*.md` (facts + source URLs) / `*.json` (prompt + raw response), `02_synth_input.md`, `02_brief.md`, `run_costs.json` (Perplexity + Anthropic rows), `run.log`, `subprocess.log`, `compare.md`.
+
+**Compare** (no LLM): parses Top Movers tables from `user_data/market_brief/<date>/02_brief.md` and the Px brief → ticker overlap, sign mismatches, Narrative Thread titles. Skipped if no Benzinga brief for that date.

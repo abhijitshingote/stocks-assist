@@ -10,6 +10,7 @@ Two LLM pipelines run inside the **backend** container as Python modules (not se
 |--------|---------|-----------|
 | `daily_screener/` | Momentum + news + judge shortlist | `user_data/daily_screener/<date>/` |
 | `market_brief/` | Pre-market Benzinga brief | `user_data/market_brief/<date>/` |
+| `market_brief/perplexity_brief.py` | A/B brief: Perplexity search replaces Benzinga (`/market-brief-px`) | `user_data/market_brief_perplexity/<date>/` |
 
 ```mermaid
 flowchart TB
@@ -141,6 +142,8 @@ See `daily_screener/README.md` for flags and QA loop.
 
 Ticker universe from DB screens (`screener_universe.py`: r1d, vol_spike_5d, main_view_ti65). See `market_brief/README.md`.
 
+**Px variant** (`perplexity_brief.py`, UI `/market-brief-px`, API `/api/market-brief-px/*`): same universe + OHLC tape (`tape.py`) → Perplexity `sonar-pro` (3 broad + ~6 ticker-batch searches → `01_research/`) → Sonnet with `STEP4_SYSTEM_PROMPT` → `02_brief.md`. `status.json` + `run_costs.json` (Perplexity + Anthropic rows) drive the same UI status/cost panel. See `market_brief/README.md`.
+
 ## `user_data/` (git-backed via `auto_commit.sh`)
 
 | Path | Contents |
@@ -153,6 +156,7 @@ Ticker universe from DB screens (`screener_universe.py`: r1d, vol_spike_5d, main
 | `daily_screener/<date>/` | Pipeline stage JSON |
 | `daily_screener_feedback.json` | Judge calibration |
 | `market_brief/<date>/` | Brief artifacts, `run_costs.json` |
+| `market_brief_perplexity/<date>/` | Px brief artifacts: `01_research/` (facts + source URLs), `02_brief.md`, `status.json`, `run_costs.json`, `compare.md` |
 
 Frontend and backend both read these paths; keep `OUTPUTS_DIR` constants in sync (`daily_screener/config.py`, `market_brief/config.py`, `backend/app.py`).
 

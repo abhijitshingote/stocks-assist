@@ -17,3 +17,4 @@ Do not merge these. Read the one that matches the work (both if the change spans
 |------|------|
 | Stack, ingest/update, tables, API vs db_scripts vs frontend, LLM pipelines, `user_data/` | `README/ARCHITECTURE.md` |
 | UI file map (templates, CSS, JS, component names) | `frontend/COMPONENTS.md` |
+| Market brief pipelines (Benzinga, Px, losers) + viewer | `market_brief/README.md` (auto-attached by `market-brief.mdc`) |

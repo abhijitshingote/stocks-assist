@@ -1536,6 +1536,90 @@ def api_market_brief_run():
         return jsonify({'error': 'Failed to start market brief run'}), status_code
     return jsonify(data), status_code
 
+MARKET_BRIEF_PX_CFG = {
+    'pageTitle': 'Market Brief - Px',
+    'apiBase': '/api/frontend/market-brief-px',
+    'showLosers': False,
+    'pdfPrefix': 'market-brief-px',
+    'outputDir': 'user_data/market_brief_perplexity',
+    'runEta': '5–10 minutes',
+    'stageLabels': {
+        'hydrate': 'Loading universe + tape (DB)',
+        'research': 'Perplexity web search',
+        'synthesis_sonnet': 'Writing brief (Sonnet)',
+        'synthesis_haiku': 'Writing brief (Haiku)',
+        'synthesis_opus': 'Writing brief (Opus)',
+        'synthesis_perplexity': 'Writing brief (Perplexity)',
+        'broad_macro_cross_asset': 'Search · macro & cross-asset',
+        'broad_corporate_news': 'Search · corporate news',
+        'broad_calendar': 'Search · calendar',
+    },
+    'modelLabels': {
+        'sonar-pro': 'Perplexity Sonar Pro',
+        'claude-sonnet-4-6': 'Sonnet',
+        'claude-haiku-4-5': 'Haiku',
+    },
+}
+
+@app.route('/market-brief-px')
+def market_brief_px_page():
+    """Market Brief - Px: Perplexity-sourced brief (A/B vs Benzinga brief)."""
+    return render_template('market_brief.html', brief_cfg=MARKET_BRIEF_PX_CFG)
+
+@app.route('/m/market-brief-px')
+def m_market_brief_px():
+    return render_template('mobile/market_brief.html', brief_cfg=MARKET_BRIEF_PX_CFG)
+
+@app.route('/api/frontend/market-brief-px/dates', methods=['GET'])
+def api_market_brief_px_dates():
+    data, status_code = make_backend_request('/api/market-brief-px/dates')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Market Brief - Px dates'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/market-brief-px/<date_str>', methods=['GET'])
+def api_market_brief_px_for_date(date_str):
+    data, status_code = make_backend_request(f'/api/market-brief-px/{date_str}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Market Brief - Px'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/market-brief-px/<date_str>/costs', methods=['GET'])
+def api_market_brief_px_costs(date_str):
+    data, status_code = make_backend_request(f'/api/market-brief-px/{date_str}/costs')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch run costs'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/market-brief-px/<date_str>/pdf', methods=['GET'])
+def api_market_brief_px_pdf(date_str):
+    try:
+        response = requests.get(f"{BACKEND_URL}/api/market-brief-px/{date_str}/pdf", timeout=180)
+        if response.status_code >= 400:
+            try:
+                msg = response.json().get('error', response.text)
+            except ValueError:
+                msg = response.text or 'PDF export failed'
+            return jsonify({'error': msg}), response.status_code
+        headers = {}
+        cd = response.headers.get('Content-Disposition')
+        if cd:
+            headers['Content-Disposition'] = cd
+        return Response(response.content, mimetype='application/pdf', headers=headers)
+    except requests.RequestException as e:
+        logger.error('PDF proxy error: %s', e)
+        return jsonify({'error': 'Failed to export PDF'}), 500
+
+@app.route('/api/frontend/market-brief-px/generate', methods=['POST'])
+def api_market_brief_px_generate():
+    json_data = request.get_json() or {}
+    data, status_code = make_backend_request(
+        '/api/market-brief-px/generate', method='POST', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to start Market Brief - Px'}), status_code
+    return jsonify(data), status_code
+
 @app.route('/api/frontend/market-brief-losers/generate', methods=['POST'])
 def api_market_brief_losers_generate():
     """Proxy endpoint to start R1D losers brief pipeline."""

@@ -607,6 +607,7 @@
         if (!weekEnding) return;
         const opt = sel.options[sel.selectedIndex];
         if (opt && opt.disabled) return;
+        if (!confirm(`Generate Weekly Recap for week ending ${weekEnding}? This starts a paid run.`)) return;
 
         const payload = { week_ending: weekEnding };
 

@@ -1120,6 +1120,7 @@ function dsReload() {
 }
 
 async function dsRunPipeline() {
+    if (!confirm('Run the Daily Shortlist pipeline? This starts a paid run.')) return;
     const btn = document.getElementById('runBtn');
     btn.disabled = true;
     btn.textContent = 'Starting...';
