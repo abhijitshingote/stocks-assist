@@ -20,7 +20,7 @@ import logging
 import time
 import pytz
 from datetime import date, datetime, timezone, timedelta
-from math import ceil
+from math import ceil, isfinite
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 
@@ -45,6 +45,11 @@ ABI_CHART_NOTES_FILE = os.path.join(
 )
 CHART_NOTE_MAX_LEN = 80
 CHART_NOTE_MAX_COUNT = 5
+# Horizontal price levels (support/resistance) drawn on the price pane.
+ABI_CHART_LEVELS_FILE = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'abi_chart_levels.json'
+)
+CHART_LEVEL_MAX_COUNT = 20
 # Cycle-scoped passes. Weekly: Sat 00:00 ET → Friday. Daily: session → next open 9:30 ET.
 ABI_PASSES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_passes.json')
 # Trade candidates (buy/short). Persistent destination list.
@@ -4794,6 +4799,63 @@ def delete_abi_chart_notes(ticker):
         del store[ticker]
         _save_abi_chart_notes(store)
     return jsonify({'ticker': ticker, 'notes': [], 'status': 'removed'})
+
+
+# ============================================================================
+# Chart levels (horizontal support/resistance lines on the price pane)
+# ============================================================================
+
+def _normalize_chart_levels(raw):
+    if not isinstance(raw, list):
+        return []
+    out = []
+    for item in raw:
+        try:
+            price = float(item)
+        except (TypeError, ValueError):
+            continue
+        if not isfinite(price) or price <= 0:
+            continue
+        price = round(price, 4)
+        if price in out:
+            continue
+        out.append(price)
+        if len(out) >= CHART_LEVEL_MAX_COUNT:
+            break
+    return sorted(out)
+
+
+@app.route('/api/abi-chart-levels/<ticker>', methods=['GET'])
+def get_abi_chart_levels(ticker):
+    ticker = ticker.upper()
+    store = _load_json_store(ABI_CHART_LEVELS_FILE)
+    entry = store.get(ticker) or {}
+    levels = _normalize_chart_levels(entry.get('levels') if isinstance(entry, dict) else [])
+    return jsonify({'ticker': ticker, 'levels': levels})
+
+
+@app.route('/api/abi-chart-levels/<ticker>', methods=['PUT'])
+def upsert_abi_chart_levels(ticker):
+    ticker = ticker.upper()
+    data = request.get_json() or {}
+    if 'levels' not in data:
+        return jsonify({'error': 'levels field is required'}), 400
+    levels = _normalize_chart_levels(data.get('levels'))
+    store = _load_json_store(ABI_CHART_LEVELS_FILE)
+    if not levels:
+        if ticker in store:
+            del store[ticker]
+            _save_json_store(ABI_CHART_LEVELS_FILE, store)
+        return jsonify({'ticker': ticker, 'levels': [], 'status': 'cleared'})
+    now_iso = datetime.now(pytz.timezone('US/Eastern')).isoformat()
+    prev = store.get(ticker) if isinstance(store.get(ticker), dict) else {}
+    store[ticker] = {
+        'levels': levels,
+        'created_at': prev.get('created_at') or now_iso,
+        'updated_at': now_iso,
+    }
+    _save_json_store(ABI_CHART_LEVELS_FILE, store)
+    return jsonify({'ticker': ticker, 'levels': levels, 'status': 'updated' if prev else 'created'})
 
 # ============================================================================
 # Abi Watchlist Endpoints (JSON file-based personal watchlist)

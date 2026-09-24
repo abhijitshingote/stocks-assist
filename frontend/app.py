@@ -1200,6 +1200,25 @@ def api_delete_abi_chart_notes(ticker):
         return jsonify({'error': 'Failed to delete chart notes'}), status_code
     return jsonify(data), status_code
 
+
+@app.route('/api/frontend/abi-chart-levels/<ticker>', methods=['GET'])
+def api_get_abi_chart_levels(ticker):
+    data, status_code = make_backend_request(f'/api/abi-chart-levels/{ticker}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch chart levels'}), status_code
+    return jsonify(data), status_code
+
+
+@app.route('/api/frontend/abi-chart-levels/<ticker>', methods=['PUT'])
+def api_upsert_abi_chart_levels(ticker):
+    json_data = request.get_json()
+    data, status_code = make_backend_request(
+        f'/api/abi-chart-levels/{ticker}', method='PUT', json_data=json_data
+    )
+    if data is None:
+        return jsonify({'error': 'Failed to save chart levels'}), status_code
+    return jsonify(data), status_code
+
 # ============================================================
 # Daily Shortlist Endpoints
 # ============================================================

@@ -45,6 +45,11 @@ const CHART_CONFIG = {
     textColor: '#8b949e',
     borderColor: '#30363d',
     crosshairColor: 'rgba(88, 166, 255, 0.5)',
+
+    // Horizontal support/resistance levels
+    levelColor: '#58a6ff',
+    levelMaxCount: 20,
+    levelHitPx: 6,
     
     // Default timeframe in days
     defaultTimeframe: 365,
@@ -209,6 +214,20 @@ async function fetchChartNotes(ticker) {
 }
 
 /**
+ * Fetch saved horizontal price levels (support/resistance lines).
+ */
+async function fetchChartLevels(ticker) {
+    try {
+        const response = await fetch(`/api/frontend/abi-chart-levels/${ticker}`);
+        const data = await response.json();
+        return Array.isArray(data.levels) ? data.levels : [];
+    } catch (e) {
+        console.warn(`Could not fetch chart levels for ${ticker}:`, e);
+        return [];
+    }
+}
+
+/**
  * Fetch headline fundamentals (market cap, current + forward PE/PS, rev
  * growth, ATR%) for the prominent metrics strip rendered in the chart legend.
  */
@@ -329,6 +348,11 @@ class StockChart {
         this.identityOverlay = null;
         this.chartNotes = [];
         this._chartNotesEditing = false;
+        this.levels = [];
+        this._levelLines = [];
+        this._levelDrawMode = false;
+        this._levelBtn = null;
+        this._levelKeyHandler = null;
         
         // Track series visibility (restored from localStorage)
         this.seriesVisibility = getStoredMAVisibility();
@@ -350,6 +374,7 @@ class StockChart {
             fetchEarningsData(this.ticker),
             fetchStockMetrics(this.ticker),
             fetchChartNotes(this.ticker),
+            fetchChartLevels(this.ticker),
         ];
         if (this.options.showVolspikeMarkers) {
             fetches.push(fetchVolspikeEvents(this.ticker));
@@ -359,8 +384,9 @@ class StockChart {
         const earningsData = results[1];
         this.metricsData = results[2];
         this.chartNotes = results[3] || [];
+        this.levels = results[4] || [];
         const volspikeEvents = this.options.showVolspikeMarkers
-            ? results[4]
+            ? results[5]
             : { spikeDays: [], gapDays: [] };
         
         if (!ohlcData || ohlcData.length === 0) {
@@ -374,6 +400,7 @@ class StockChart {
         
         // Initialize chart
         this._initChart();
+        this._renderLevels();
         
         // Render with default timeframe
         this.setTimeframe(this.currentTimeframe);
@@ -488,6 +515,12 @@ class StockChart {
             window.removeEventListener('resize', this.resizeHandler);
             this.resizeHandler = null;
         }
+        if (this._levelKeyHandler) {
+            document.removeEventListener('keydown', this._levelKeyHandler);
+            this._levelKeyHandler = null;
+        }
+        this._levelLines = [];
+        this._levelBtn = null;
         
         if (this.chart) {
             this.chart.remove();
@@ -856,6 +889,92 @@ class StockChart {
         }
     }
 
+    _setLevelDrawMode(on) {
+        this._levelDrawMode = on;
+        if (this._levelBtn) {
+            this._levelBtn.style.background = on ? 'rgba(88, 166, 255, 0.18)' : 'transparent';
+            this._levelBtn.style.borderColor = on ? CHART_CONFIG.levelColor : CHART_CONFIG.borderColor;
+        }
+        if (this.chart) {
+            this.chart.applyOptions({
+                crosshair: {
+                    horzLine: {
+                        color: on ? CHART_CONFIG.levelColor : CHART_CONFIG.crosshairColor,
+                        style: on ? LightweightCharts.LineStyle.Solid : LightweightCharts.LineStyle.Dashed,
+                    },
+                },
+            });
+        }
+        if (on && !this._levelKeyHandler) {
+            this._levelKeyHandler = (e) => {
+                if (e.key === 'Escape') this._setLevelDrawMode(false);
+            };
+            document.addEventListener('keydown', this._levelKeyHandler);
+        } else if (!on && this._levelKeyHandler) {
+            document.removeEventListener('keydown', this._levelKeyHandler);
+            this._levelKeyHandler = null;
+        }
+    }
+
+    _onPriceClick(e) {
+        if (!this._levelDrawMode && !e.shiftKey) return;
+        if (e.target.closest && e.target.closest('.chart-identity-overlay')) return;
+        const series = this.series.candlestick;
+        if (!series || !this.chart) return;
+
+        const rect = this.priceContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const plotW = rect.width - this.chart.priceScale('right').width();
+        const plotH = rect.height - this.chart.timeScale().height();
+        if (x < 0 || x > plotW || y < 0 || y > plotH) return;
+        e.stopPropagation();
+
+        const hit = this.levels.find((p) => {
+            const c = series.priceToCoordinate(p);
+            return c != null && Math.abs(c - y) <= CHART_CONFIG.levelHitPx;
+        });
+        if (hit != null) {
+            this.levels = this.levels.filter((p) => p !== hit);
+        } else {
+            if (this.levels.length >= CHART_CONFIG.levelMaxCount) return;
+            const raw = series.coordinateToPrice(y);
+            if (raw == null || !(raw > 0)) return;
+            const price = Number(raw.toFixed(raw >= 1 ? 2 : 4));
+            if (this.levels.includes(price)) return;
+            this.levels = [...this.levels, price].sort((a, b) => a - b);
+        }
+        this._renderLevels();
+        this._saveLevels();
+    }
+
+    _renderLevels() {
+        const series = this.series.candlestick;
+        if (!series) return;
+        for (const line of this._levelLines) series.removePriceLine(line);
+        this._levelLines = this.levels.map((price) => series.createPriceLine({
+            price,
+            color: CHART_CONFIG.levelColor,
+            lineWidth: 1,
+            lineStyle: LightweightCharts.LineStyle.Dashed,
+            axisLabelVisible: true,
+            title: '',
+        }));
+    }
+
+    async _saveLevels() {
+        if (!this.ticker) return;
+        try {
+            await fetch(`/api/frontend/abi-chart-levels/${this.ticker}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ levels: this.levels }),
+            });
+        } catch (e) {
+            console.warn(`Could not save chart levels for ${this.ticker}:`, e);
+        }
+    }
+
     /**
      * Small floating badge that follows the crosshair horizontally and shows
      * the hovered date right above the cursor, so it stays readable even when
@@ -1021,6 +1140,20 @@ class StockChart {
             visible: this.seriesVisibility.dma200,
         });
         
+        // Pointer events, not click: lightweight-charts cancels touch defaults,
+        // so taps never synthesize a click on mobile.
+        let down = null;
+        this.priceContainer.addEventListener('pointerdown', (e) => {
+            down = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+        });
+        this.priceContainer.addEventListener('pointerup', (e) => {
+            const d = down;
+            down = null;
+            if (!d || e.timeStamp - d.t > 500) return;
+            if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 6) return;
+            this._onPriceClick(e);
+        });
+
         // Create separate volume chart
         this._initVolumeChart(container.clientWidth, volumeHeight);
         
@@ -1111,6 +1244,26 @@ class StockChart {
             item.appendChild(labelText);
             this.legendContainer.appendChild(item);
         });
+
+        const levelBtn = document.createElement('button');
+        levelBtn.type = 'button';
+        levelBtn.textContent = '+ Line';
+        levelBtn.title = 'Draw mode: click chart to add a horizontal line, click a line to remove it. Esc exits. Shift+click works without draw mode.';
+        levelBtn.style.cssText = `
+            font: inherit;
+            padding: 1px 6px;
+            border-radius: 3px;
+            border: 1px solid ${CHART_CONFIG.borderColor};
+            background: transparent;
+            color: ${CHART_CONFIG.levelColor};
+            cursor: pointer;
+        `;
+        levelBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this._setLevelDrawMode(!this._levelDrawMode);
+        });
+        this._levelBtn = levelBtn;
+        this.legendContainer.appendChild(levelBtn);
 
         // ── Prominent fundamentals strip ──────────────────────────────
         // Rendered on the same legend row as the MA toggles, but with a
