@@ -1,0 +1,169 @@
+{
+  "name": "tickers_04",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Wednesday September 23, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Wednesday September 23, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| AMD | Advanced Micro Devices, Inc. | Mega | Vol spike / gapper \u00b7 last 5D \u00b7 Mega cap | -0.90% | +20.9% | 0.7\u00d7 | gapper 2026-09-21 |\n| ALAB | Astera Labs, Inc. Common Stock | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | -0.88% | +34.7% | 0.8\u00d7 | gapper 2026-09-21 |\n| MSTR | Strategy Inc | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | -2.81% | +32.0% | 0.8\u00d7 | gapper 2026-09-21 |\n| WBD | Warner Bros. Discovery, Inc. | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | -0.41% | +9.4% | 2.5\u00d7 | both 2026-09-21 |\n| IONQ | IonQ, Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +5.22% | +16.6% | 4.5\u00d7 | volume_spike 2026-09-23 |\n| QMCO | Quantum Corporation | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +5.08% | +12.6% | 3.8\u00d7 | volume_spike 2026-09-23 |\n| SRAD | Sportradar Group AG | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -4.61% | +0.0% | 1.8\u00d7 | volume_spike 2026-09-22 |\n| ONON | On Holding AG | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +1.48% | +10.7% | 1.6\u00d7 | both 2026-09-22 |\n| DELL | Dell Technologies Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +0.27% | -0.9% | 0.8\u00d7 | both 2026-09-02 |\n| VLO | Valero Energy Corporation | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.31% | -6.9% | 2.3\u00d7 | gapper 2026-01-05 |\n| MPC | Marathon Petroleum Corporation | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.72% | -6.0% | 1.7\u00d7 | \u2014 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Advanced Micro Devices, Inc. (AMD) `[AI Compute]`\n- No company-specific catalyst found in the September 23, 2026 window.\n- AMD was included among chip stocks benefiting from recent expectations for increased AI-chip demand associated with Meta Platforms\u2019 AI initiatives; no lead stock was identified as the sole sympathy driver (CMC Markets).\n\n## Astera Labs, Inc. (ALAB) `[Memory & Interconnect]`\n- No company-specific catalyst found in the September 23, 2026 window.\n- No specific sector lead stock or sympathy driver for Astera Labs was identified in the available September 23 reports.\n\n## Strategy Inc (MSTR) `[Internet & Platforms]`\n- Zacks Research upgraded Strategy from \u201cStrong Sell\u201d to \u201cHold\u201d in a report published September 21, 2026; the report did not provide a new price target (Zacks Research, via MarketBeat).\n- Barclays had previously raised its price target from $125 to $160 while maintaining an \u201cOverweight\u201d rating on September 15, 2026; this falls outside the requested window and is included only as directly reported context (Barclays note, via MarketBeat).\n\n## Warner Bros. Discovery, Inc. (WBD) `[Internet & Platforms]`\n- No company-specific catalyst found in the September 23, 2026 window.\n- No specific sector lead stock or sympathy driver for Warner Bros. Discovery was identified in the available September 23 reports.\n\n## IonQ, Inc. (IONQ) `[Quantum Computing]`\n- IonQ announced development and successful testing of what it described as the industry\u2019s first end-to-end, real-time quantum-error-correction decoder operating on a single standard, off-the-shelf CPU; the announcement was made Tuesday, September 22, 2026, after the close (IonQ, as reported by CNBC).\n- IonQ said the decoder can identify, correct, and decode quantum-computing errors in real time without slowing execution; the validation covered hundreds of logical qubits and millions of logical operations (IonQ statement, as reported by CNBC).\n- IonQ quantum research lead Nicolas Delfosse said validation across hundreds of logical qubits and millions of logical operations provided a path toward commercial-scale fault-tolerant quantum computing (Nicolas Delfosse, IonQ statement, as reported by CNBC).\n- IonQ announced that its Superion 256 quantum computer would be installed at Nvidia\u2019s Accelerated Quantum Research Center in 2027 (IonQ, as reported by Investor\u2019s Business Daily).\n- IonQ\u2019s announcement led to gains across quantum-computing stocks; Rigetti Computing and D-Wave Quantum each rose more than 5.5% in premarket trading on September 23, 2026 (CNBC).\n- IonQ announced a multi-year strategic partnership with South Korea\u2019s SDT to deliver a Superion 256 quantum computer (IonQ, as reported by Investing.com).\n\n## Quantum Corporation (QMCO) `[AI Infrastructure]`\n- Quantum Corporation reported fiscal first-quarter 2027 adjusted earnings of $0.18 per share and revenue of $80.8 million, compared with analyst estimates of a $0.24-per-share loss and $71.5 million in revenue (Quantum Corporation, as reported by Investing.com).\n- Quantum Corporation said the quarter marked its first positive non-GAAP adjusted net income since 2023 (Quantum Corporation, as reported by Investing.com).\n- Quantum Corporation disclosed that Chief Accounting Officer and Principal Accounting Officer Laura A. Nash stepped down effective September 1, 2026; she will remain in a transition role through the end of 2026, and the company reported no disagreements or operational disruption (Quantum Corporation, as reported by Investing.com).\n- Quantum Corporation shares reached a 52-week high of $27.82 on September 23, 2026 (Investing.com).\n\n## Sportradar Group AG (SRAD) `[Software & SaaS]`\n- No company-specific catalyst found in the September 23, 2026 window.\n- No specific sector lead stock or sympathy driver for Sportradar Group was identified in the available September 23 reports.\n\n## On Holding AG (ONON) `[Internet & Platforms]`\n- No company-specific catalyst found in the September 23, 2026 window.\n- No specific sector lead stock or sympathy driver for On Holding was identified in the available September 23 reports.\n\n## Dell Technologies Inc. (DELL) `[AI Infrastructure]`\n- No company-specific catalyst found in the September 23, 2026 window.\n- Dell was included in the requested news search, but no September 23, 2026 company release, filing, analyst action, contract, or sector-sympathy lead was identified in the available results.\n\n## Valero Energy Corporation (VLO) `[Power & Wide-Bandgap]`\n- No company-specific catalyst found in the September 23, 2026 window.\n- A September 23 report said Valero and Marathon Petroleum were affected by a threat from President Donald Trump to ban diesel exports; the report stated that no decision had been made (TS2.tech).\n- Jefferies analyst Lloyd Byrne rated Valero \u201cHold\u201d with a $401 price target on September 21, 2026; the action was outside the requested window (Jefferies note, via TS2.tech).\n\n## Marathon Petroleum Corporation (MPC) `[Power & Wide-Bandgap]`\n- No company-specific catalyst found in the September 23, 2026 window.\n- A September 23 report said Marathon Petroleum and Valero were affected by a threat from President Donald Trump to ban diesel exports; the report stated that no decision had been made (TS2.tech).\n- UBS analyst Manav Gupta rated Marathon Petroleum \u201cBuy\u201d with a $450 price target on September 21, 2026; the action was outside the requested window (UBS note, via TS2.tech).",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published Wed, Sep 23 20267:29 AM EDT\n...\nCheck out the companies making the biggest moves premarket: Worthington Enterprises \u2013 The industrial manufacturing company surged about 16% on an encouraging outlook from leadership.\nCEO Joseph Hayek said the company is seeing opportunities across its busine...",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: IonQ, Maplebear, Worthington & more",
+      "url": "https://www.cnbc.com/2026/09/23/stocks-making-the-biggest-moves-premarket-ionq-cart-wor.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "**IonQ** (NYSE:IONQ), a full-stack trapped-ion quantum computing provider, closed at $42.54, up 4.42%.\nIt rose after a real-time error-correction breakthrough and a research-center collaboration with **Nvidia** (NASDAQ:NVDA).\n...\nThe **S&P 500** (SNPINDEX:^GSPC) fell 0.75% to 7,706, and the **Nasdaq...",
+      "source": "web",
+      "title": "Stock Market Today, Sept. 23: IonQ Surges on Quantum Breakthrough and Nvidia Partnership",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-212749029.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Investing.com -- IonQ stock surged 11.8% in pre-open trading today after the quantum computing company announced, following Tuesday\u2019s close, the successful development and testing of the industry\u2019s first end-to-end real-time quantum error correction decoder that operates on a single standard off-the...",
+      "source": "web",
+      "title": "Why is IonQ stock surging today? By Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/why-is-ionq-stock-surging-today-93CH-4912296"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published Sep 23, 2026, 11:18 AM\n...\nQuantum Corp stock has reached a notable milestone, hitting a 52-week high of 27.82 USD.\n...\nIn other recent news, Quantum Corporation reported fiscal first-quarter 2027 earnings that exceeded Wall Street expectations.\nThe company achieved adjusted earnings of $0...",
+      "source": "web",
+      "title": "Quantum Corp stock hits 52-week high at 27.82 USD - Investing.com",
+      "url": "https://www.investing.com/news/company-news/quantum-corp-stock-hits-52week-high-at-2782-usd-93CH-4913498"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "13. AMD(AMD) / NASDAQ\n\uc810\uc218: 10.90 / \uc0c1\ud0dc: \ud83d\udd25 \ucd5c\uadfc \uc5f0\uc18d \ud3ec\ucc29\n...\n- [21:45] Advanced Micro Devices (AMD) Stock Moves 1.34%: What You Should Know - Yahoo Finance\n- [21:00] AMD Stock Has Blown Past Nvidia This Year.\nIs It Still the Better Buy?\n- The Motley Fool\n- [22:00] AMD: Likely Dead Money From Here (Rating Do...",
+      "source": "web",
+      "title": "\ubbf8\uad6d \uc8fc\uc2dd \ub370\uc77c\ub9ac \uc885\ubaa9 \ubd84\uc11d (2026.09.23)",
+      "url": "https://contents.premium.naver.com/chartedu/charteduest/contents/260923155504256dc"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "The Quantum World Congress 2026 opened on September 23 in College Park, Maryland, with IonQ, D-Wave, Rigetti, Microsoft, and IBM in attendance.\nIonQ surged over 12% in after-hours trading and rose nearly 12% pre-market.\nMonolithic Power Systems (MPWR) climbed over 8% as demand for AI and quantum inf...",
+      "source": "web",
+      "title": "Quantum Computing Conference Begins as IONQ Rises 12 ...",
+      "url": "https://www.kucoin.com/news/flash/quantum-computing-conference-kicks-off-as-ionq-surges-12-pre-market"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Strategy (NASDAQ:MSTR - Get Free Report) was upgraded by analysts at Zacks Research from a \"strong sell\" rating to a \"hold\" rating in a report released on Monday, Zacks reports.\n...\nBarclays restated an \"overweight\" rating and set a $160.00 target price (up from $125.00) on shares of Strategy in a r...",
+      "source": "web",
+      "title": "Strategy (NASDAQ:MSTR) Upgraded at Zacks Research",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-strategy-nasdaq-mstr-upgraded-at-zacks-research-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "**Wednesday, September 23, 2026**\n|Index|Up/Down|%|Last|\n...\nU.S. stocks slumped on Wednesday as Treasury yields resumed their upward rise, hitting around 20-year highs (again) on stronger economic data and ever increasing expectations of additional FOMC rate hikes in coming months (including Octobe...",
+      "source": "web",
+      "title": "Market Review: September 23, 2026 | eOption",
+      "url": "https://www.eoption.com/market-review-september-23-2026/"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Investing.com -- IonQ Inc (NYSE:IONQ) shares rose 7% after-hours Tuesday after the company announced the development of the industry\u2019s first end-to-end real-time quantum error correction decoder that operates on a single standard central processing unit.\nThe quantum computing company said the breakt...",
+      "source": "web",
+      "title": "IonQ stock jumps 7% on quantum error correction breakthrough",
+      "url": "https://in.investing.com/news/stock-market-news/ionq-stock-jumps-7-on-quantum-error-correction-breakthrough-93CH-5601842"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "- Valero traded at $382.20, up 1.34%, at 12:14 p.m.\nEDT.\n- Marathon Petroleum added 0.75% to $392.60 in regular trading.\n...\nNo decision has been made.\nValero Energy Corporation NYSE:VLO rose 1.34% to $382.20 by 12:14 p.m.\nEDT.\nMarathon Petroleum Corporation NYSE:MPC added 0.75% to $392.60.\n...\nAs o...",
+      "source": "web",
+      "title": "Valero and Marathon Stocks Rise Despite Trump\u2019s Diesel Export ...",
+      "url": "https://ts2.tech/en/valero-and-marathon-stocks-rise-despite-trumps-diesel-export-ban-threat/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published Wed, Sep 23 20268:35 AM EDTUpdated 4 Hours Ago\n...\nKey Points\n- The quantum computing firm announced a successful demonstration of the industry\u2019s first real-time error decoder Tuesday.\n- Some quantum industry stocks surged following the news.\n...\nShares of IonQ rose Wednesday after the com...",
+      "source": "web",
+      "title": "IonQ shares rise after company says it made a major quantum computing breakthrough",
+      "url": "https://www.cnbc.com/2026/09/23/ionq-shares-rally-after-company-says-it-made-a-major-quantum-computing-breakthrough.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "IonQ surged 11.8% in premarket trading after the quantum computing company announced the successful development and testing of what it described as the industry\u2019s first end-to-end real-time quantum error-correction decoder operating on a single standard off-the-shelf CPU.\nThe development addresses a...",
+      "source": "web",
+      "title": "Premarket movers: IonQ surges on quantum, Six Flags gains",
+      "url": "https://ca.investing.com/news/stock-market-news/premarket-movers-ionq-surges-on-quantum-six-flags-gains-4849642"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "- Updated 12:11 PM ET 09/23/2026\n**IonQ** (IONQ) stock rose on Wednesday after the company announced an advance in quantum computing during one of the industry's largest conferences.\n...\nIonQ said it developed the industry's first end-to-end real-time quantum error correction decoder that runs on a ...",
+      "source": "web",
+      "title": "Quantum Stocks: IonQ Claims Key Advance, Sets Nvidia Research Pact",
+      "url": "https://www.investors.com/news/technology/ionq-stock-jumps-quantum-advance-industry-conference/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "23 Sep 2026, 18:00\n...\nSemiconductor stocks rallied earlier this week as signs of success for Meta Platforms\u2019 [META] new artificial intelligence (AI) agent fuelled expectations of increased chip demand.\nAdvanced Micro Devices [AMD] became the latest US chipmaker to surpass a $1tn market capitalisati...",
+      "source": "web",
+      "title": "The trillion-dollar club - CMC Markets",
+      "url": "https://www.cmcmarkets.com/en-au/opto/the-trillion-dollar-club"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Diageo CEO Dave Lewis on Wednesday brought in former Tesco \u200ccolleague Joanne Wilson as finance chief, replacing Nik Jhangiani, who had become a key figure in the struggling Guinness maker's turnaround plan.",
+      "source": "web",
+      "title": "September 2026 - Sitemap | Reuters",
+      "url": "https://www.reuters.com/sitemap/2026-09/23/1/"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/2026/09/23/stocks-making-the-biggest-moves-premarket-ionq-cart-wor.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-212749029.html",
+    "https://www.investing.com/news/stock-market-news/why-is-ionq-stock-surging-today-93CH-4912296",
+    "https://www.investing.com/news/company-news/quantum-corp-stock-hits-52week-high-at-2782-usd-93CH-4913498",
+    "https://contents.premium.naver.com/chartedu/charteduest/contents/260923155504256dc",
+    "https://www.kucoin.com/news/flash/quantum-computing-conference-kicks-off-as-ionq-surges-12-pre-market",
+    "https://www.marketbeat.com/instant-alerts/analyst-strategy-nasdaq-mstr-upgraded-at-zacks-research-2026-09-23/",
+    "https://www.eoption.com/market-review-september-23-2026/",
+    "https://in.investing.com/news/stock-market-news/ionq-stock-jumps-7-on-quantum-error-correction-breakthrough-93CH-5601842",
+    "https://ts2.tech/en/valero-and-marathon-stocks-rise-despite-trumps-diesel-export-ban-threat/",
+    "https://www.cnbc.com/2026/09/23/ionq-shares-rally-after-company-says-it-made-a-major-quantum-computing-breakthrough.html",
+    "https://ca.investing.com/news/stock-market-news/premarket-movers-ionq-surges-on-quantum-six-flags-gains-4849642",
+    "https://www.investors.com/news/technology/ionq-stock-jumps-quantum-advance-industry-conference/",
+    "https://www.cmcmarkets.com/en-au/opto/the-trillion-dollar-club",
+    "https://www.reuters.com/sitemap/2026-09/23/1/"
+  ],
+  "usage": {
+    "label": "tickers_04",
+    "model": "sonar-pro",
+    "prompt_tokens": 1264,
+    "completion_tokens": 1228,
+    "search_context_size": "high",
+    "cost_usd": 0.03621,
+    "seconds": 14.5
+  }
+}

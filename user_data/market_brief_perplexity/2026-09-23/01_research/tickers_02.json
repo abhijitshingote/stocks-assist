@@ -1,0 +1,169 @@
+{
+  "name": "tickers_02",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Wednesday September 23, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Wednesday September 23, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| IR | Ingersoll Rand Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +3.44% | +6.1% | 2.2\u00d7 | \u2014 |\n| TRI | Thomson Reuters Corporation | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +3.16% | -2.8% | 1.4\u00d7 | \u2014 |\n| E | Eni S.p.A. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +3.12% | -0.8% | 1.1\u00d7 | \u2014 |\n| TEAM | Atlassian Corporation | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +3.02% | +4.0% | 0.9\u00d7 | \u2014 |\n| VEEV | Veeva Systems Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +2.97% | +3.0% | 1.2\u00d7 | \u2014 |\n| ILMN | Illumina, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +2.91% | +11.7% | 1.0\u00d7 | \u2014 |\n| VG | Venture Global, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +2.85% | -8.6% | 1.3\u00d7 | \u2014 |\n| DVN | Devon Energy Corporation | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +2.82% | -0.5% | 1.6\u00d7 | \u2014 |\n| CDNS | Cadence Design Systems, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +2.69% | +11.6% | 1.3\u00d7 | \u2014 |\n| NNBR | NN, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +14.03% | +19.1% | 10.3\u00d7 | \u2014 |\n| FSLY | Fastly, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +12.57% | +28.5% | 5.2\u00d7 | \u2014 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Ingersoll Rand Inc. (IR) `[AI Infrastructure]`\n- Ingersoll Rand\u2019s second-quarter 2026 revenue increased 8.5% year over year to approximately $2.05 billion, and adjusted EPS was $0.86 versus consensus of approximately $0.80. (company earnings materials)\n- Management said at a September 17, 2026 investor conference that July trends were improving, organic orders had high-single-digit growth in the Americas, and liquidity was approximately $3.8 billion. (September 17 investor-conference presentation)\n- No new September 23 company filing or contract was identified; the available September 23 coverage linked the move to the recent quarterly results and September 17 management commentary. (Quiver Quantitative)\n\n## Thomson Reuters Corporation (TRI) `[Software & SaaS]`\n- No company-specific catalyst found in window\n\n## Eni S.p.A. (E) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window\n\n## Atlassian Corporation (TEAM) `[Software & SaaS]`\n- Atlassian said on September 23, 2026 that it would pull forward by six months its submission timeline for a higher U.S. federal security authorization. (Atlassian announcement)\n- Atlassian also committed to a fully disconnected, air-gapped deployment of its platform for government customers requiring network isolation. (Atlassian announcement)\n- Salesforce rose 3%, Monday.com rose 3%, ServiceNow rose 2%, and the iShares Expanded Tech-Software Sector ETF rose 1% during the session as enterprise-software shares moved higher. (247WallSt)\n\n## Veeva Systems Inc. (VEEV) `[Software & SaaS]`\n- Veeva announced that another top-20 biopharmaceutical company selected Vault CRM, extending the product\u2019s reported market leadership. (Veeva company announcement)\n- Veeva\u2019s most recently reported quarter showed EPS of $2.35 versus consensus of $2.23 and revenue of $927.96 million, up 17.6% year over year. (MarketBeat)\n- Andra AP-fonden reduced its Veeva position by 22.4%, selling 18,540 shares during the second quarter and retaining 64,377 shares. (SEC filing reported by MarketBeat)\n\n## Illumina, Inc. (ILMN) `[Specialty Materials & IP Licensing]`\n- Illumina\u2019s second-quarter fiscal 2026 EPS was $1.31 versus consensus of $1.23. (MarketBeat)\n- Second-quarter revenue was $1.16 billion, net income was $207 million, and reported profit margin was 17.86%. (Yahoo Finance data reported by Ad-hoc-news)\n- UBS upgraded Illumina to Buy from its prior rating and raised its price target from $135 to $260 on September 9, 2026. (UBS analyst note reported by Yahoo Finance)\n\n## Venture Global, Inc. (VG) `[Power & Wide-Bandgap]`\n- No company-specific catalyst found in window\n\n## Devon Energy Corporation (DVN) `[Power & Wide-Bandgap]`\n- Toms Capital, described as one of Devon Energy\u2019s five largest shareholders, urged Devon in a letter sent earlier in September 2026 to consider strategic alternatives, including a potential sale. (Toms Capital letter reported by GuruFocus)\n- Devon shares rose approximately 3% on September 23, 2026, while available coverage said there was no fresh major company announcement that day. (GuruFocus; Quiver Quantitative)\n- The available analysis also cited firmer oil-market sentiment and expectations for post-merger execution following the Coterra combination. (Quiver Quantitative)\n\n## Cadence Design Systems, Inc. (CDNS) `[Chip Equipment]`\n- No company-specific catalyst found in window\n\n## NN, Inc. (NNBR) `[Specialty Materials & IP Licensing]`\n- NN raised its 2026 net-sales outlook to $470 million\u2013$490 million from $460 million\u2013$480 million. (NN company release)\n- NN raised 2026 adjusted EBITDA guidance to $58 million\u2013$68 million from $55 million\u2013$65 million. (NN company release)\n- Second-quarter revenue was $128.7 million, up 19.3% year over year, versus analyst estimates of $116.1 million. (company release reported by StockStory)\n- Second-quarter adjusted EPS was $0.11 versus consensus of $0.01, and adjusted EBITDA was $17.94 million, representing a 13.9% margin. (company release reported by StockStory)\n- NN said it would present at the 25th Annual D.A. Davidson Diversified Industrials & Services Conference on September 23, 2026. (NN company announcement)\n\n## Fastly, Inc. (FSLY) `[EdgeAI]`\n- D.A. Davidson raised Fastly\u2019s price target from $21 to $23 while maintaining a Neutral rating on September 23, 2026. (D.A. Davidson note reported by MarketBeat)\n- Fastly\u2019s latest quarter showed adjusted EPS of $0.15 versus consensus of $0.07 and revenue of $183.32 million versus consensus of $173.94 million. (MarketBeat)\n- No new Fastly earnings release, contract, or SEC filing was identified in the September 23 window beyond the D.A. Davidson analyst action. (MarketBeat)",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "On September 23, 2026, Devon Energy Corp (NYSE: DVN) shares rose 3% following activist investor Toms Capital's call for the company to explore strategic alternatives, including a potential sale.\nThis development comes amid ongoing investor focus on the company's dividend sustainability and valuation...",
+      "source": "web",
+      "title": "DVN Looks 6.2% Overvalued on GF Value\u2122 as Dividend Sustainabilit",
+      "url": "https://www.gurufocus.com/news/9093803/dvn-looks-62-overvalued-on-gf-value-as-dividend-sustainability-faces-scrutiny"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Ingersoll Rand stock gains 2.13 percent as Q2 growth holds\n...\nPublished on 09/23/2026 at 10:57 | Editorial responsibility: Rafael M\u00fcller, Editor-in-Chief AD HOC NEWS\nIngersoll Rand stock closed at USD 73.85 on September 22, 2026, after a 2.13 percent gain.\nQ2 revenue rose 8.5 percent year over year...",
+      "source": "web",
+      "title": "Ingersoll Rand stock gains 2.13 percent as Q2 growth holds",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/ingersoll-rand-stock-gains-2-13-percent-as-q2-growth-holds/70164930"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Posted: 2 minutes ago / Sept. 23, 2026 5:34 p.m.\nUTC\nIR\nIngersoll Rand (IR) is up 3.1% today.\nHere is some analysis on what might have caused this price movement.\n**Analysis:** The move appears tied to improving sentiment around Ingersoll Rand\u2019s growth outlook after the company recently posted a sec...",
+      "source": "web",
+      "title": "Ingersoll Rand Rises as Investors Lean Into Improving Demand Trends | IR Stock News",
+      "url": "https://www.quiverquant.com/news/Ingersoll+Rand+Rises+as+Investors+Lean+Into+Improving+Demand+Trends"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Ingersoll Rand stock rises 2.13 percent ahead of the open\n...\nPublished on 09/23/2026 at 06:04 | Editorial responsibility: Rafael M\u00fcller, Editor-in-Chief AD HOC NEWS\nAt the close on September 22, 2026, Ingersoll Rand stock stood at USD 73.85 after a 2.13 percent gain, while the S&P 500 slipped 0.06 ...",
+      "source": "web",
+      "title": "Ingersoll Rand stock rises 2.13 percent ahead of the open",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/ingersoll-rand-stock-rises-2-13-percent-ahead-of-the-open/70162225"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Atlassian accelerates its federal security authorization by six months and adds air-gapped government deployment, while Salesforce and Monday.com each climb 3% on sector rotation.\nIGV rises 1% as QQQ drops 1% and ServiceNow gains 2%, with enterprise software defying long-dated Treasury yields near t...",
+      "source": "web",
+      "title": "Enterprise Software Stocks Rally as Tech Tape Slides: Atlassian Corporation, Monday.com and Salesforce Climb 3%, ServiceNow Nudges Higher",
+      "url": "https://247wallst.com/investing/2026/09/23/enterprise-software-stocks-rally-as-tech-tape-slides-atlassian-corporation-monday-com-and-salesforce-climb-3-servicenow-nudges-higher/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Veeva Systems Inc.\n(NYSE:VEEV - Get Free Report)'s stock price shot up 2.8% during trading on Wednesday . The company traded as high as $271.52 and last traded at $268.2950.\nApproximately 299,983 shares changed hands during mid-day trading, a decline of 88% from the average session volume of 2,400,3...",
+      "source": "web",
+      "title": "Veeva Systems (NYSE:VEEV) Trading Up 2.8%  - What's Next?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-veeva-systems-nyse-veev-trading-up-28-whats-next-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "+3.31%\nINGERSOLL RAND INC.\n+3.21%\nBOOKING HOLDINGS INC.\n-5.07%\n-5.49%\n...\n|Market Closed - Australian S.E.\n** 02:14:01 2026-09-23 am EDT|Market Closed - Australian S.E.\n** 02:14:01 2026-09-23 am EDT|Market Closed - Australian S.E.\n** 02:14:01 2026-09-23 am EDT|5-day change|1st Jan Change|\n|--|--|--|...",
+      "source": "web",
+      "title": "PRESS DIGEST-New York Times business news - September 23",
+      "url": "https://www.marketscreener.com/news/press-digest-new-york-times-business-news-september-23-ce785ad9db8df025"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **DA Davidson raised Fastly\u2019s price target** from $21 to $23 while maintaining a \u201cneutral\u201d rating, implying roughly 7% downside from the prior close.\n- Analyst sentiment remains mixed: Fastly has an overall \u201cHold\u201d rating and an average price target of $26, with ratings ranging from \u201c...",
+      "source": "web",
+      "title": "Fastly (NASDAQ:FSLY) Price Target Raised to $23.00 at DA Davidson",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-fastly-nasdaq-fsly-price-target-raised-to-2300-at-da-davidson-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Posted: 6 minutes ago / Sept. 23, 2026 2:49 p.m.\n...\nDevon Energy Corporation (DVN) is up 3.0% today.\n...\n**Analysis:** The most likely driver appears to be a mix of firmer oil-market sentiment and continued confidence in Devon\u2019s post-merger execution.\nThere does not appear to be a fresh major compa...",
+      "source": "web",
+      "title": "Devon Energy Gains as Post-Merger Execution and Oil Strength Support Shares | DVN Stock News",
+      "url": "https://www.quiverquant.com/news/Devon+Energy+Gains+as+Post-Merger+Execution+and+Oil+Strength+Support+Shares"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "NN Inc.\nstocks have been trading up by 11.87 percent after upbeat coverage highlights strengthening operations and improving growth prospects.\n## Key Takeaways\n- NN Inc.\nraised its full-year 2026 net sales outlook to $470M\u2013$490M from $460M\u2013$480M, edging ahead of prior expectations and signaling grow...",
+      "source": "web",
+      "title": "NNBR Stock Climbs As NN Inc. Lifts 2026 Guidance",
+      "url": "https://www.timothysykes.com/news/nn-inc-nnbr-news-2026_09_23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "WVE : Nasdaq\nWave Life Sciences Initiates Phase 2a Combination Trial of WVE-007 (GalNAc-siRNA) with Tirzepatide for Obesity\n\u2026\nBiomea Fusion Announces Termination of Proposed Public Offering of Securities\n...\n09/23/2026 07:03 AM\nVEEV : NYSE\nVault CRM Extends Market Leadershipas Another Top 20 Biophar...",
+      "source": "web",
+      "title": "Stock Market News Today \u2014 NYSE, NASDAQ & OTC Headlines",
+      "url": "https://www.stocktitan.net/news/2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Shares of industrial components supplier NN (NASDAQ: NNBR) jumped 16% in the morning session after the company raised its full-year 2026 guidance ranges for net sales and adjusted EBITDA.\nAccording to a company press release, NN reported strong second-quarter results, with revenue reaching $128.7 mi...",
+      "source": "web",
+      "title": "User",
+      "url": "http://markets.chroniclejournal.com/chroniclejournal/article/stockstory-2026-9-23-why-nn-nnbr-stock-is-trading-up-today"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Bondholders in IRSA (NYSE: IRS) set for $19.2M interest payout in 2026",
+      "source": "web",
+      "title": "SEC Filings for Sep 23, 2026 - 10-K, 10-Q, 8-K Forms - Stock Titan",
+      "url": "https://www.stocktitan.net/sec-filings/2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Illumina stock closed at USD 247.46 on September 22, 2026, up 3.62 percent.\nQ2 FY2026 EPS reached USD 1.31, beating estimates by USD 0.08.\n...\nIllumina reported second-quarter fiscal 2026 earnings of USD 1.31 per share, compared with the consensus estimate of USD 1.23, according to MarketBeat on Sep...",
+      "source": "web",
+      "title": "Illumina stock gains 3.62 percent as earnings beat estimates",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/illumina-stock-gains-3-62-percent-as-earnings-beat-estimates/70168051"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Veeva Systems Inc.\n$VEEV Shares Sold by Andra AP fonden\n...\n- **Andra AP fonden reduced its Veeva Systems stake by 22.4%** in the second quarter, selling 18,540 shares and retaining 64,377 shares worth approximately $11.4 million.\nInstitutional investors and hedge funds collectively own 88.2% of Vee...",
+      "source": "web",
+      "title": "Veeva Systems Inc. $VEEV Shares Sold by Andra AP fonden",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-veeva-systems-inc-veev-shares-sold-by-andra-ap-fonden-2026-09-23/"
+    }
+  ],
+  "citations": [
+    "https://www.gurufocus.com/news/9093803/dvn-looks-62-overvalued-on-gf-value-as-dividend-sustainability-faces-scrutiny",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/ingersoll-rand-stock-gains-2-13-percent-as-q2-growth-holds/70164930",
+    "https://www.quiverquant.com/news/Ingersoll+Rand+Rises+as+Investors+Lean+Into+Improving+Demand+Trends",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/ingersoll-rand-stock-rises-2-13-percent-ahead-of-the-open/70162225",
+    "https://247wallst.com/investing/2026/09/23/enterprise-software-stocks-rally-as-tech-tape-slides-atlassian-corporation-monday-com-and-salesforce-climb-3-servicenow-nudges-higher/",
+    "https://www.marketbeat.com/instant-alerts/price-veeva-systems-nyse-veev-trading-up-28-whats-next-2026-09-23/",
+    "https://www.marketscreener.com/news/press-digest-new-york-times-business-news-september-23-ce785ad9db8df025",
+    "https://www.marketbeat.com/instant-alerts/analyst-fastly-nasdaq-fsly-price-target-raised-to-2300-at-da-davidson-2026-09-23/",
+    "https://www.quiverquant.com/news/Devon+Energy+Gains+as+Post-Merger+Execution+and+Oil+Strength+Support+Shares",
+    "https://www.timothysykes.com/news/nn-inc-nnbr-news-2026_09_23/",
+    "https://www.stocktitan.net/news/2026-09-23/",
+    "http://markets.chroniclejournal.com/chroniclejournal/article/stockstory-2026-9-23-why-nn-nnbr-stock-is-trading-up-today",
+    "https://www.stocktitan.net/sec-filings/2026-09-23/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/illumina-stock-gains-3-62-percent-as-earnings-beat-estimates/70168051",
+    "https://www.marketbeat.com/instant-alerts/filing-veeva-systems-inc-veev-shares-sold-by-andra-ap-fonden-2026-09-23/"
+  ],
+  "usage": {
+    "label": "tickers_02",
+    "model": "sonar-pro",
+    "prompt_tokens": 1166,
+    "completion_tokens": 1145,
+    "search_context_size": "high",
+    "cost_usd": 0.03467,
+    "seconds": 14.4
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "name": "tickers_06",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Wednesday September 23, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Wednesday September 23, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ASST | Strive, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -1.59% | +7.1% | 0.6\u00d7 | both 2026-08-21 |\n| SDGR | Schr\u00f6dinger, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -6.19% | +21.0% | 1.4\u00d7 | both 2026-09-17 |\n| CHPT | ChargePoint Holdings, Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -6.72% | +5.0% | 0.2\u00d7 | volume_spike 2026-09-04 |\n| PURR | Hyperliquid Strategies Inc Common Stock | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +0.12% | +22.2% | 0.9\u00d7 | gapper 2026-09-17 |\n| FWDI | Forward Industries, Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -5.51% | +37.6% | 1.0\u00d7 | gapper 2026-09-18 |\n| CVI | CVR Energy, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -0.51% | -2.9% | 1.2\u00d7 | \u2014 |\n| ATRC | AtriCure, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +0.24% | +5.1% | 1.0\u00d7 | \u2014 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Strive, Inc. (ASST) `[Internet & Platforms]`\n- Strive disclosed the acquisition of **1,355 BTC for approximately $107.7 million**, at an average price of about **$79,475 per bitcoin**; the purchase was reported on **September 23, 2026**. (Stocktwits)\n- The purchase exceeded Strategy\u2019s reported acquisition of **950 BTC for approximately $75.7 million**, providing the primary crypto-treasury sector catalyst during the window. (Yahoo Finance)\n- B. Riley raised its price target from **$26 to $33** and maintained a **Buy** rating on **September 22, 2026**. (B. Riley note)\n\n## Schr\u00f6dinger, Inc. (SDGR) `[Software & SaaS]`\n- A September 23, 2026 article discussed Schr\u00f6dinger\u2019s **Tectora deal** and the company\u2019s valuation; the article did not identify a new filing, earnings release, contract value, or analyst action published during the specified window. (Simply Wall St)\n- No company-specific catalyst with a quantified financial impact was identified in the available September 23, 2026 coverage. (Simply Wall St)\n\n## ChargePoint Holdings, Inc. (CHPT) `[Power & Wide-Bandgap]`\n- ChargePoint reported fiscal second-quarter 2027 revenue of **$116 million**, versus consensus of **$105.43 million**, and adjusted EPS of **-$1.35**, versus consensus of **-$1.60**; the results were reported before the September 23 window. (Investing.com)\n- UBS maintained a **Neutral** rating and raised its price target from **$8 to $9** on September 22, 2026. (UBS note)\n- UBS raised its fiscal 2027, 2028, and 2029 revenue estimates to **$449 million, $512 million, and $630 million**, respectively, from **$438 million, $490 million, and $603 million**. (UBS note)\n- ChargePoint Chief Financial Officer Mansi Khetani filed a sale of **4,931 shares at a weighted-average price of $9.86**, valued at **$48,619**, on September 22, 2026; the sale covered tax withholding connected with restricted-stock-unit vesting. (SEC filing)\n- ChargePoint General Counsel Eric Batill filed a sale of **4,302 shares at $9.86**, valued at **$42,417**, for the same tax-withholding purpose. (SEC filing)\n- No new company-specific operating announcement was identified in the available September 23, 2026 coverage. (MarketBeat)\n\n## Hyperliquid Strategies Inc. Common Stock (PURR) `[Internet & Platforms]`\n- No company-specific catalyst found in window\n\n## Forward Industries, Inc. (FWDI) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window\n\n## CVR Energy, Inc. (CVI) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window\n\n## AtriCure, Inc. (ATRC) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Sep 23, 2026\nGet AI intraday signals\nStrive (ASST) Climbs +61% Over 30 Days as Bitcoin Rebounds\n# Strive (ASST) Climbs +61% Over 30 Days as Bitcoin Rebounds\n## Key Takeaways\n- ASST shares climbed roughly 61% over the last 30 days, rising from about $18.22 on Aug. 21 to $29.35 at the Sept. 22 close.\n...",
+      "source": "web",
+      "title": "Strive (ASST) Climbs +61% Over 30 Days as Bitcoin ...",
+      "url": "https://tickeron.com/blogs/strive-asst-climbs-61-over-30-days-as-bitcoin-rebounds-16956/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Strategy (NASDAQ: MSTR) Restarts Bitcoin Purchases While Strive (NYSE: ASST) Outbuys It This Week\n...\nBy\u00a0David Prior | Sep 23, 2026 | Economy & Business, Featured, News & Analysis\nStrategy (NASDAQ: MSTR) resumed bitcoin (BTC-USD) purchases this week, but it was Strive (NYSE: ASST) that stole the spo...",
+      "source": "web",
+      "title": "Strategy (NASDAQ: MSTR) Restarts Bitcoin Purchases While Strive (NYSE: ASST) Outbuys It This Week",
+      "url": "https://www.foreignpolicyjournal.com/2026/09/23/strategy-nasdaq-mstr-restarts-bitcoin-purchases-while-strive-nyse-asst-outbuys-it-this-week/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# MSTR Purchases Bitcoin After 2-Week Pause, Keeps Buying Back STRC: BMNR, ASST Keep Adding To Their Crypto Treasuries\nPrabhjote Gill\nWed, September 23, 2026 at 6:28 AM GMT-34 min read\n- BMNR\n...\n- MSTR\n-0.69%\n- ASST\n-3.23%\n- Strive added 1,355 BTC for $107.7 million, exceeding Strategy's latest pur...",
+      "source": "web",
+      "title": "MSTR Purchases Bitcoin After 2-Week Pause, Keeps Buying Back STRC: BMNR, ASST Keep Adding To Their Crypto Treasuries",
+      "url": "https://finance.yahoo.com/markets/crypto/articles/mstr-purchases-bitcoin-2-week-092822794.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# ChargePoint (CHPT) Stock Price, News & Analysis\n**$9.21** ** -0.64\u00a0(-6.48%)**\nClosing price 03:59 PM Eastern\nExtended Trading\n**$9.22** ** +0.01\u00a0(+0.14%)**\nAs of 06:51 PM Eastern\n...\n## CHPT Stock News Headlines\nConsensus price target for ChargePoint Holdings drops 24.76% to MX$132.26\nSeptember 23...",
+      "source": "web",
+      "title": "ChargePoint (CHPT) Stock Price, News & Analysis - MarketBeat",
+      "url": "https://www.marketbeat.com/stocks/NYSE/CHPT/"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "|Market Closed - Nasdaq ** 04:00:00 2026-09-23 pm EDT|Market Closed - Nasdaq ** 04:00:00 2026-09-23 pm EDT|Market Closed - Nasdaq ** 04:00:00 2026-09-23 pm EDT|5-day change|1st Jan Change|\n...\n|28.99^USD^|-1.23%|+5.76%|+96.41%| |\n|Sep. 22|Bitcoin 'Go to Moon', DATs Not Broken: Strive CEO|MT|\n|Sep. 2...",
+      "source": "web",
+      "title": "Bitcoin 'Go to Moon', DATs Not Broken: Strive CEO",
+      "url": "https://www.marketscreener.com/news/bitcoin-go-to-moon-dats-not-broken-strive-ceo-ce785ad8d080f72c"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published Sep 23, 2026, 03:02\n...\nChargePoint Holdings, Inc.\n(NASDAQ:CHPT) General Counsel Eric Batill sold 4,302 shares of the company\u2019s common stock on September 22, 2026, for a total value of $42,417.\nThe shares were sold at a weighted average price of $9.86 per share.\nThe sale occurred as Charge...",
+      "source": "web",
+      "title": "ChargePoint general counsel Eric Batill sells $42417 in stock",
+      "url": "https://ng.investing.com/news/stock-market-news/chargepoint-general-counsel-eric-batill-sells-42417-in-stock-93CH-2705183"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Schr\u00f6dinger (SDGR) Stock May Be Below Fair Value On Tectora Deal - Simply Wall St News\n- United States\n...\n# Schr\u00f6dinger (SDGR) Stock May Be Below Fair Value On Tectora Deal\nSeptember 23, 2026\nReviewed by Bailey Pemberton\nSchr\u00f6dinger has had a powerful run in 2026, which puts a fresh spotlight on a ...",
+      "source": "web",
+      "title": "Schr\u00f6dinger (SDGR) Stock May Be Below Fair Value On Tectora Deal",
+      "url": "https://simplywall.st/stocks/us/healthcare/nasdaq-sdgr/schrodinger/news/schrdinger-sdgr-stock-may-be-below-fair-value-on-tectora-dea"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published Sep 23, 2026, 03:02\n...\nMansi Khetani, the Chief Financial Officer of ChargePoint Holdings, Inc.\n(NYSE:CHPT), recently sold common stock valued at $48,619.\nThe transaction took place on September 22, 2026, according to a filing with the Securities and Exchange Commission.\nMs. Khetani dispo...",
+      "source": "web",
+      "title": "ChargePoint CFO Mansi Khetani sells $48,619 in company stock By Investing.com",
+      "url": "https://ng.investing.com/news/stock-market-news/chargepoint-cfo-mansi-khetani-sells-48619-in-company-stock-93CH-2705185"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# stock setter on X: \"$MSTR $STRC $BMNR $ASST Strategy Purchases Bitcoin After 2-Week Pause, : Bitmine Immersion, Strive Keep Adding To Their Crypto Treasuries - Michael Saylor\u2019s Strategy repurchased 1.77 million STRC shares for $174 million, taking its combined Bitcoin and STRC spend to nearly $250...",
+      "source": "web",
+      "title": "Bitmine Immersion, Strive Keep Adding To ...",
+      "url": "https://x.com/MarcJacksonLA/status/2102787176639668352"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published 23-09-2026, 08:02 am\n...\nJagdeep Singh, Chief Customer Experience Officer (CCXO) at ChargePoint Holdings, Inc.\n(NASDAQ:CHPT), sold 5,965 shares of the company\u2019s common stock on September 22, 2026.\nThe transaction totaled $58,814, with shares sold at a price of $9.86 each.\nThe stock has sur...",
+      "source": "web",
+      "title": "ChargePoint CCXO Singh sells $58814 in common stock",
+      "url": "https://in.investing.com/news/stock-market-news/chargepoint-ccxo-singh-sells-58814-in-common-stock-93CH-5602137"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# Schrodinger stock gains 69.1 percent year to date\nPublished on 09/23/2026 at 06:30 | Editorial responsibility: Rafael M\u00fcller, Editor-in-Chief AD HOC NEWS\nSchrodinger stock is up 69.1 percent year to date as of September 22, 2026.\nCash remains a significant share of market value, but operating prof...",
+      "source": "web",
+      "title": "Schrodinger stock gains 69.1 percent year to date",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/schrodinger-stock-gains-69-1-percent-year-to-date/70162443"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-22",
+      "place_metadata": null,
+      "snippet": "**$29.35** ** -0.98\u00a0(-3.23%)**\nClosing price 04:00 PM Eastern\nExtended Trading\n**$29.27** ** -0.08\u00a0(-0.28%)**\nAs of 07:25 PM Eastern\n...\n**Strive, Inc.\n(NASDAQ: ASST)** has attracted buying interest as it expands its Bitcoin holdings and receives more bullish analyst coverage.\nThe stock\u2019s recent inc...",
+      "source": "web",
+      "title": "ASST News Today | Why did Strive stock go down today?",
+      "url": "https://www.marketbeat.com/stocks/NASDAQ/ASST/news/"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "ChargePoint gets price target raise from UBS after strong second-quarter results\n...\n- CHPT\n+4.68%\n...\nChargePoint gets price target raise from UBS after strong second-quarter results Proactive uses images sourced from Shutterstock\nChargePoint (NYSE:CHPT) is showing stronger progress toward profitab...",
+      "source": "web",
+      "title": "ChargePoint gets price target raise from UBS after strong second ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/chargepoint-gets-price-target-raise-164800827.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published Sep 23, 2026 | 5:28 AM EDT\n- Strive added 1,355 BTC for $107.7 million, exceeding Strategy\u2019s latest purchase of 950 BTC for $75.7 million.\n- Strategy returned to Bitcoin buying after a roughly two-week pause, bringing its total holdings to 846,000 BTC.\n...\nStrive (ASST) bought more Bitcoin...",
+      "source": "web",
+      "title": "ASST Outbuys MSTR In Latest Bitcoin Purchase, But Michael Saylor\u2019s Strategy Still Leads With 846,000 BTC Stack",
+      "url": "https://stocktwits.com/news-articles/markets/equity/asst-outbuys-mstr-latest-bitcoin-purchase-strategy-846k-btc-strc-buybacks/cZMEYuGRBJP"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "- **Five social media stocks highlighted:** Strive (ASST), JOYY (YY), JOYY (JOYY), Trump Media & Technology Group (DJT), and Sprout Social (SPT) had the highest recent dollar trading volume among stocks in the category.\n...\nStrive, JOYY, JOYY, Trump Media & Technology Group, and Sprout Social are th...",
+      "source": "web",
+      "title": "Top Social Media Stocks To Watch Today - September 23rd",
+      "url": "https://www.marketbeat.com/instant-alerts/list-top-social-media-stocks-to-watch-today-september-23rd-2026-09-23/"
+    }
+  ],
+  "citations": [
+    "https://tickeron.com/blogs/strive-asst-climbs-61-over-30-days-as-bitcoin-rebounds-16956/",
+    "https://www.foreignpolicyjournal.com/2026/09/23/strategy-nasdaq-mstr-restarts-bitcoin-purchases-while-strive-nyse-asst-outbuys-it-this-week/",
+    "https://finance.yahoo.com/markets/crypto/articles/mstr-purchases-bitcoin-2-week-092822794.html",
+    "https://www.marketbeat.com/stocks/NYSE/CHPT/",
+    "https://www.marketscreener.com/news/bitcoin-go-to-moon-dats-not-broken-strive-ceo-ce785ad8d080f72c",
+    "https://ng.investing.com/news/stock-market-news/chargepoint-general-counsel-eric-batill-sells-42417-in-stock-93CH-2705183",
+    "https://simplywall.st/stocks/us/healthcare/nasdaq-sdgr/schrodinger/news/schrdinger-sdgr-stock-may-be-below-fair-value-on-tectora-dea",
+    "https://ng.investing.com/news/stock-market-news/chargepoint-cfo-mansi-khetani-sells-48619-in-company-stock-93CH-2705185",
+    "https://x.com/MarcJacksonLA/status/2102787176639668352",
+    "https://in.investing.com/news/stock-market-news/chargepoint-ccxo-singh-sells-58814-in-common-stock-93CH-5602137",
+    "https://www.ad-hoc-news.de/boerse/news/nebenwerte/schrodinger-stock-gains-69-1-percent-year-to-date/70162443",
+    "https://www.marketbeat.com/stocks/NASDAQ/ASST/news/",
+    "https://finance.yahoo.com/markets/stocks/articles/chargepoint-gets-price-target-raise-164800827.html",
+    "https://stocktwits.com/news-articles/markets/equity/asst-outbuys-mstr-latest-bitcoin-purchase-strategy-846k-btc-strc-buybacks/cZMEYuGRBJP",
+    "https://www.marketbeat.com/instant-alerts/list-top-social-media-stocks-to-watch-today-september-23rd-2026-09-23/"
+  ],
+  "usage": {
+    "label": "tickers_06",
+    "model": "sonar-pro",
+    "prompt_tokens": 1053,
+    "completion_tokens": 689,
+    "search_context_size": "high",
+    "cost_usd": 0.02749,
+    "seconds": 7.5
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "name": "tickers_05",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Wednesday September 23, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Wednesday September 23, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| PSX | Phillips 66 | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.91% | -3.4% | 1.7\u00d7 | \u2014 |\n| NET | Cloudflare, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +0.05% | +10.3% | 1.0\u00d7 | both 2026-01-27 |\n| META | Meta Platforms, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +1.21% | +11.3% | 1.5\u00d7 | gapper 2026-07-01 |\n| ZS | Zscaler, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +1.96% | +11.4% | 0.6\u00d7 | gapper 2026-09-14 |\n| RBRK | Rubrik, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +2.07% | +10.1% | 0.8\u00d7 | gapper 2026-09-14 |\n| NTRA | Natera, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +0.46% | +12.9% | 1.5\u00d7 | gapper 2026-08-07 |\n| SMCI | Super Micro Computer, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +0.17% | +15.7% | 1.0\u00d7 | gapper 2026-09-17 |\n| CRCL | Circle Internet Group | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -3.56% | +16.2% | 0.7\u00d7 | gapper 2026-09-03 |\n| TWLO | Twilio Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +1.75% | +21.8% | 2.3\u00d7 | both 2026-08-07 |\n| CYPH | Cypherpunk Technologies Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -1.38% | +45.0% | 1.0\u00d7 | gapper 2026-09-18 |\n| REAX | The Real Brokerage Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -9.22% | -15.1% | 1.1\u00d7 | gapper 2026-08-25 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Phillips 66 (PSX) `[Energy & Refining]`\n- Shares were cited among refiners that fell after reports that the White House was preparing a **90-day diesel-export ban** amid record fuel prices; the report did not identify a Phillips 66-specific announcement. (eOption)\n- WTI crude settled at **$92.16 per barrel**, up **$1.64**, while the 10-year Treasury yield reached **5.11%** during the session. (eOption)\n\n## Cloudflare, Inc. (NET) `[Software & SaaS]`\n- **No company-specific catalyst found in window.**\n- Cloudflare was included in a September 23 Zacks feature highlighting **Cloudflare, NVIDIA, Meta, Astera Labs, and SpaceX**; the item did not report a new filing, contract, earnings release, or analyst action for Cloudflare. (Zacks)\n\n## Meta Platforms, Inc. (META) `[Internet & Platforms]`\n- Meta held its annual **Meta Connect** event on September 23, with Mark Zuckerberg scheduled to deliver the keynote at **7:00 p.m. ET**. (eOption)\n- Meta\u2019s **Muse** AI agent had been downloaded more than **902,000 times in six days** after its September 8 introduction, according to Bloomberg. (Bloomberg)\n- Shopify announced a partnership allowing Meta\u2019s Muse AI agents to complete checkouts across Shopify\u2019s platform. (StockStory)\n- Expedia announced that Muse could access its platform to help users plan trips. (eOption)\n- Morgan Stanley identified Twilio and Wix as the communications-software companies \u201cbest exposed\u201d if Muse increased communications volumes and demand. (Morgan Stanley note via Seeking Alpha)\n\n## Zscaler, Inc. (ZS) `[Software & SaaS]`\n- **No company-specific catalyst found in window.**\n- No September 23 company release, SEC filing, contract, earnings report, or named analyst action was identified in the available search results.\n\n## Rubrik, Inc. (RBRK) `[Software & SaaS]`\n- **No company-specific catalyst found in window.**\n- No September 23 company release, SEC filing, contract, earnings report, or named analyst action was identified in the available search results.\n\n## Natera, Inc. (NTRA) `[Healthcare Diagnostics]`\n- Natera\u2019s **Signatera** test received regulatory approval in Japan from the **Pharmaceuticals and Medical Devices Agency** as a companion diagnostic for **muscle-invasive bladder cancer**; the item described the approval as the catalyst for a **5.2% rise on Tuesday, September 22**, not a new September 23 catalyst. (StockStory)\n- **No additional company-specific catalyst found in the September 23 window.**\n\n## Super Micro Computer, Inc. (SMCI) `[AI Infrastructure]`\n- Super Micro said it had begun shipping **NVIDIA Vera Rubin NVL72 racks** for production deployments, incorporating Supermicro liquid cooling and data-center infrastructure. (Yahoo Finance)\n- The company said it received more than **$60 billion in new orders during fiscal Q4** and entered fiscal 2027 with a record backlog. (Yahoo Finance)\n- Super Micro projected fiscal 2027 revenue of **$65 billion to $72 billion**. (Yahoo Finance)\n- Super Micro\u2019s fiscal 2026 net sales reached **$39.1 billion**, versus **$22.0 billion** in the prior year. (Yahoo Finance)\n- MarketBeat reported that Super Micro was expanding manufacturing capacity to produce more than **6,000 racks per month**. (MarketBeat)\n- Nykredit A/S initiated a position of **121,341 shares**, valued at approximately **$3.56 million**, during the second quarter; this was disclosed through a 13F filing rather than a September 23 operating announcement. (Nykredit A/S 13F via MarketBeat)\n\n## Circle Internet Group (CRCL) `[Fintech & Digital Assets]`\n- Circle had a consensus **Hold** rating based on **12 hold, 10 buy, 4 sell, and 1 strong-buy** recommendations; the average price target was **$99.94**. (MarketBeat)\n- MarketBeat reported quarterly revenue of **$701.32 million**, up **6.6% year over year**, and earnings of **$0.18 per share** versus a **$0.26 consensus estimate**; the publication did not date those results to September 23. (MarketBeat)\n- CEO Jeremy Allaire sold **56,200 shares**, while reported insider sales totaled **528,386 shares** worth approximately **$40.3 million** during the quarter; these were background filing-related facts, not a new September 23 catalyst. (MarketBeat)\n- Binance agreed to purchase **$100 million** of Circle shares at **$80.84 per share** and expanded its USDC partnership; the report did not identify the transaction as newly announced on September 23. (MarketBeat)\n- **No September 23 company-specific catalyst found in window.**\n- The available market commentary attributed the broader move to a crypto-sector risk-off session, with Bitcoin trading below **$69,000**. (Tickeron)\n\n## Twilio Inc. (TWLO) `[Software & SaaS]`\n- Rosenblatt Securities maintained a **Buy** rating and raised its price target from **$275 to $290** on September 23. (Rosenblatt Securities note via MarketBeat)\n- Morgan Stanley said Twilio was among the communications-software companies \u201cbest exposed\u201d if Meta\u2019s Muse AI agent increased communications volumes and demand. (Morgan Stanley note via Seeking Alpha)\n- Twilio had been reported at **$5.07 billion** of fiscal 2025 revenue, up **13.7% year over year**, and **$997.40 million** of free cash flow versus **$709.26 million** in fiscal 2024; these figures were background information published September 23, not a new earnings release. (Investing.com)\n\n## Cypherpunk Technologies Inc. (CYPH) `[Digital Assets & Technology]`\n- **No company-specific catalyst found in window.**\n- No September 23 company release, SEC filing, contract, earnings report, or named analyst action was identified in the available search results.\n- An X post from **InvestmentGuru_** mentioned CYPH and a **$4** level at **11:17 a.m. on September 23**, but it did not provide a verified corporate catalyst. [rumor] (X)\n\n## The Real Brokerage Inc. (REAX) `[Internet & Platforms]`\n- **No company-specific catalyst found in window.**\n- No September 23 company release, SEC filing, contract, earnings report, or named analyst action was identified in the available search results.\n- No verified sector-sympathy lead stock was identified for REAX\u2019s September 23 move.",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Wed, September 23, 2026 at 11:00 AM GMT-33 min read\n- SMCI\n-0.65%\n- NVDA\n-1.47%\n...\nSuper Micro Computer Inc.\n(SMCI) said it has begun shipping Nvidia Corp.\n(NVDA) Vera Rubin NVL72 racks, bringing Nvidia's latest AI computing platform into production deployments alongside Supermicro's liquid cooling...",
+      "source": "web",
+      "title": "Super Micro Starts Shipping Nvidia Vera Rubin NVL72 Racks \u2014 Why It Matters",
+      "url": "https://finance.yahoo.com/technology/ai/articles/super-micro-starts-shipping-nvidia-140029299.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "**AutoZone (NYSE:AZO): ** Auto parts and accessories retailer AutoZone (NYSE:AZO) rose by 6.1% on Tuesday after the company reported fourth-quarter earnings per share above Wall Street expectations, supported by margin expansion.\n...\n**Natera (NASDAQ:NTRA): ** Genetic testing company Natera (NASDAQ:...",
+      "source": "web",
+      "title": "Stocks making big moves yesterday: AutoZone, Natera, Shopify, Twilio, and Lennar - StockStory",
+      "url": "https://stockstory.org/us/stocks/nyse/azo/news/why-it-moves-summary/stocks-making-big-moves-yesterday-autozone-natera-shopify-twilio-and-lennar"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Circle Internet Group, Inc.\n(NYSE:CRCL) Given Consensus Recommendation of \"Hold\" by Brokerages\n...\n## Key Points\n- **Analysts have a \u201cHold\u201d consensus** on Circle Internet Group, with 12 hold, 10 buy, 4 sell and 1 strong-buy ratings.\nThe average 12-month price target is $99.94.\n- Circle reported quar...",
+      "source": "web",
+      "title": "Circle Internet Group, Inc. (NYSE:CRCL) Given Consensus ...",
+      "url": "https://www.marketbeat.com/instant-alerts/consensus-circle-internet-group-inc-nyse-crcl-given-consensus-recommendation-of-hold-by-brokerages-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "**Wednesday, September 23, 2026**\n|Index|Up/Down|%|Last|\n...\n|**DJ Industrials**|-351.27|0.68%|51,512|\n|**S&P 500**|-58.25|0.75%|7,706|\n|**Nasdaq**|-308.24|1.13%|26,936|\n|**Russell 2000**|-51.25|1.77%|2,838|\nU.S. stocks slumped on Wednesday as Treasury yields resumed their upward rise, hitting aroun...",
+      "source": "web",
+      "title": "Market Review: September 23, 2026 | eOption",
+      "url": "https://www.eoption.com/market-review-september-23-2026/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "U.S. markets close in 2h 29m\nS&P 500 7,703.11-61.53-0.79%\nDow 30 51,559.25-304.44-0.59%\nNasdaq 26,894.69-349.59-1.28%\nRussell 2000 2,841.86-48.06-1.66%\nVIX 15.42+1.21+8.52%\n...\nWed, September 23, 2026 at 10:05 AM GMT-34 min read\n- ALAB\n-1.74%\n- NET\n+0.41%\n- NVDA\n-1.92%\n- SPCX\n-2.71%\n- META\n+1.34%\n.....",
+      "source": "web",
+      "title": "Zacks Investment Ideas feature highlights: Astera Labs, SpaceX, Cloudflare, NVIDIA and Meta Platforms",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/zacks-investment-ideas-feature-highlights-130500116.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Today's biggest winners and losers in the stock market, a look at the notable movers:\nOn this episode of Stock Movers:\n- Meta Platforms (META) shares are up 2.7% on Wednesday, with investors looking ahead to the Facebook parent\u2019s upcoming Meta Connect event, which comes amid high excitement for the ...",
+      "source": "web",
+      "title": "Stock Movers: Meta, McDonald's, Royal Caribbean",
+      "url": "https://www.bloomberg.com/news/audio/2026-09-23/stock-movers-meta-mcdonald-s-royal-caribbean-podcast"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "On September 23, Eastern Time, Meta stock faced heavy selling pressure near the $750 resistance level following a recent surge driven by its successful AI initiatives, including the Muse app and agentic commerce partnerships.\nDespite short-term stagnation and a potential retest of the $700 support, ...",
+      "source": "web",
+      "title": "Meta Stock Price Forecast: Stalled Twice at $750, Is the Rally Over?",
+      "url": "https://www.tradingkey.com/analysis/stocks/us-stocks/262182825-stock-meta-muse-ai-price-preditction-tradingkey"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "- **Twilio shares rose 3.2%** after Rosenblatt Securities raised its price target from $275 to $290 and maintained a \u201cbuy\u201d rating.\nThe stock reached nearly $295, while analysts overall hold a \u201cModerate Buy\u201d consensus.\n...\nTwilio Inc.\n(NYSE:TWLO - Get Free Report)'s share price was up 3.2% during tra...",
+      "source": "web",
+      "title": "Twilio (NYSE:TWLO) Stock Price Up 3.2% on Analyst Upgrade",
+      "url": "https://www.marketbeat.com/instant-alerts/price-twilio-nyse-twlo-stock-price-up-32-on-analyst-upgrade-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Twilio, Wix 'best exposed' if Meta's Muse boosts communications volumes, demand: MS (TWLO:NYSE) | Seeking Alpha\n...\nSep 23, 2026, 9:58 AM ETTwilio Inc.\n(TWLO) Stock, WIX StockMETA, GDDYBy: Chris Ciaccia, SA News Editor\nhapabapa\nTwilio (TWLO) and Wix.com (WIX) are the communication software companies...",
+      "source": "web",
+      "title": "Twilio, Wix 'best exposed' if Meta's Muse boosts communications volumes, demand: MS (TWLO:NYSE)",
+      "url": "https://seekingalpha.com/news/4646019-twilio-wix-best-exposed-if-metas-muse-boosts-communications-volumes-demand-ms"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Nykredit A S initiated a position** in Super Micro Computer during the second quarter, buying 121,341 shares valued at approximately $3.56 million.\nInstitutional investors collectively own 84.06% of SMCI.\n- Super Micro reported a record AI-focused backlog, including more than **$60...",
+      "source": "web",
+      "title": "Nykredit A S Makes New Investment in Super Micro Computer, Inc ...",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-nykredit-a-s-makes-new-investment-in-super-micro-computer-inc-smci-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "11:17 AM \u00b7 Sep 23, 2026\n\u00b7",
+      "source": "web",
+      "title": "InvestmentGuru on X: \"$CYPH Let's see if it holds $4 today, can ...",
+      "url": "https://x.com/InvestmentGuru_/status/2102719078896927045"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "- **TRVG** shares fell roughly 10.09% to $5.70 in Wednesday trading, after closing the prior session at $6.34.\n...\n**trivago N.V.** (TRVG), the Germany-based hotel and accommodation metasearch company, saw its American Depositary Receipts slide sharply on Wednesday, falling about 10.09% to $5.70 fro...",
+      "source": "web",
+      "title": "Bullish Trend Analysis",
+      "url": "https://tickeron.com/blogs/why-is-trivago-n-v-trvg-stock-down-10-09-today-16976/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published Sep 23, 2026, 06:57 AM\n...\nTWLO+2.34%\nInvesting.com -- Twilio Inc (TWLO) has gained **99.18% year to date**, reaching **$284.53 as of September 22, 2026 at 3:59 PM EDT**.\n...\n- **Revenue:** $5.07B in FY2025, up **13.7%** year over year as of December 31, 2025.\n- **Free cash flow:** $997.40...",
+      "source": "web",
+      "title": "From AI loser to AI winner: This software stock is up 100% ...",
+      "url": "https://www.investing.com/news/stock-market-news/from-ai-loser-to-ai-winner-this-software-stock-is-up-100-in-2026-93CH-4912613"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Bitcoin\n85681.84\n-542.94\n...\n# Super Micro Computer Inc.\nU.S.: Nasdaq\nbefore hours\n$41.50\nSMCI\n-0.04 (-0.10%)\nSep 23, 2026 7:22 a.m.\nEDT\nBefore Hours Vol. 472.41K\nDelayed quote\nPrice at close\n$41.540.34 (0.83)\nSep 22, 2026 4:00 p.m.\nEDT\n...\nSymbolPriceChange% Chg\nSMCI\n$41.54\n0.34\n+0.83\nDJIA\n51,863.6...",
+      "source": "web",
+      "title": "Super Micro Computer Inc. Advanced Charts | SMCI | Barron's",
+      "url": "https://www.barrons.com/market-data/stocks/smci/interactive-chart?amp%252525253Bmod=searchbar"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Morgan Stanley reiterates SpaceX as overweight Morgan Stanley said SpaceX is not a likely threat to the wireless companies right now.",
+      "source": "web",
+      "title": "Here are Wednesday's biggest analyst calls: SpaceX, Apple, Micron, Microsoft, CoreWeave, Palantir & more",
+      "url": "https://www.cnbc.com/2026/09/23/wednesday-biggest-analyst-calls-on-wall-street.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/technology/ai/articles/super-micro-starts-shipping-nvidia-140029299.html",
+    "https://stockstory.org/us/stocks/nyse/azo/news/why-it-moves-summary/stocks-making-big-moves-yesterday-autozone-natera-shopify-twilio-and-lennar",
+    "https://www.marketbeat.com/instant-alerts/consensus-circle-internet-group-inc-nyse-crcl-given-consensus-recommendation-of-hold-by-brokerages-2026-09-23/",
+    "https://www.eoption.com/market-review-september-23-2026/",
+    "https://finance.yahoo.com/markets/stocks/articles/zacks-investment-ideas-feature-highlights-130500116.html",
+    "https://www.bloomberg.com/news/audio/2026-09-23/stock-movers-meta-mcdonald-s-royal-caribbean-podcast",
+    "https://www.tradingkey.com/analysis/stocks/us-stocks/262182825-stock-meta-muse-ai-price-preditction-tradingkey",
+    "https://www.marketbeat.com/instant-alerts/price-twilio-nyse-twlo-stock-price-up-32-on-analyst-upgrade-2026-09-23/",
+    "https://seekingalpha.com/news/4646019-twilio-wix-best-exposed-if-metas-muse-boosts-communications-volumes-demand-ms",
+    "https://www.marketbeat.com/instant-alerts/filing-nykredit-a-s-makes-new-investment-in-super-micro-computer-inc-smci-2026-09-23/",
+    "https://x.com/InvestmentGuru_/status/2102719078896927045",
+    "https://tickeron.com/blogs/why-is-trivago-n-v-trvg-stock-down-10-09-today-16976/",
+    "https://www.investing.com/news/stock-market-news/from-ai-loser-to-ai-winner-this-software-stock-is-up-100-in-2026-93CH-4912613",
+    "https://www.barrons.com/market-data/stocks/smci/interactive-chart?amp%252525253Bmod=searchbar",
+    "https://www.cnbc.com/2026/09/23/wednesday-biggest-analyst-calls-on-wall-street.html"
+  ],
+  "usage": {
+    "label": "tickers_05",
+    "model": "sonar-pro",
+    "prompt_tokens": 1249,
+    "completion_tokens": 1457,
+    "search_context_size": "high",
+    "cost_usd": 0.0396,
+    "seconds": 18.2
+  }
+}

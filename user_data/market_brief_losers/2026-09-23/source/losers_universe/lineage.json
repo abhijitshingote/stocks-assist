@@ -1,0 +1,461 @@
+{
+  "asof": "2026-09-23",
+  "source": "stock_metrics (DB) — bottom dr_1",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_by_bucket": {
+    "mega": 15,
+    "large": 10,
+    "mid_small": 10
+  },
+  "unique_tickers": 35,
+  "by_ticker": {
+    "ABNB": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": -6.75,
+      "dr_5": -10.26,
+      "sector": "Consumer Cyclical",
+      "industry": "Travel Services",
+      "market_cap": 88777768626,
+      "company_name": "Airbnb, Inc."
+    },
+    "ALKT": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": -19.83,
+      "dr_5": -22.69,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 1561353200,
+      "company_name": "Alkami Technology, Inc."
+    },
+    "APP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": -3.96,
+      "dr_5": -2.36,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 105904930212,
+      "company_name": "AppLovin Corporation"
+    },
+    "ASTS": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": -6.08,
+      "dr_5": 4.19,
+      "sector": "Communication Services",
+      "industry": "Telecommunications Services",
+      "market_cap": 24405385279,
+      "company_name": "AST SpaceMobile, Inc."
+    },
+    "AU": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": -5.84,
+      "dr_5": -0.31,
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "market_cap": 49937374654,
+      "company_name": "AngloGold Ashanti plc"
+    },
+    "BABA": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": -4.73,
+      "dr_5": 3.98,
+      "sector": "Consumer Cyclical",
+      "industry": "Specialty Retail",
+      "market_cap": 265525493121,
+      "company_name": "Alibaba Group Holding Limited"
+    },
+    "BHP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": -3.54,
+      "dr_5": 1.57,
+      "sector": "Basic Materials",
+      "industry": "Industrial Materials",
+      "market_cap": 215802315565,
+      "company_name": "BHP Group Limited"
+    },
+    "BKNG": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": -4.18,
+      "dr_5": -8.57,
+      "sector": "Consumer Cyclical",
+      "industry": "Travel Services",
+      "market_cap": 120803480200,
+      "company_name": "Booking Holdings Inc."
+    },
+    "BOBS": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": -10.8,
+      "dr_5": -6.28,
+      "sector": "Consumer Cyclical",
+      "industry": "Specialty Retail",
+      "market_cap": 1772614985,
+      "company_name": "Bob's Discount Furniture, Inc."
+    },
+    "BX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": -3.99,
+      "dr_5": -2.13,
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "market_cap": 144077303641,
+      "company_name": "Blackstone Inc."
+    },
+    "CCOI": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": -10.97,
+      "dr_5": -3.14,
+      "sector": "Communication Services",
+      "industry": "Telecommunications Services",
+      "market_cap": 407131701,
+      "company_name": "Cogent Communications Holdings, Inc."
+    },
+    "DB": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": -4.67,
+      "dr_5": -5.83,
+      "sector": "Financial Services",
+      "industry": "Banks - Regional",
+      "market_cap": 67402599600,
+      "company_name": "Deutsche Bank AG"
+    },
+    "EOSE": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": -10.83,
+      "dr_5": -6.27,
+      "sector": "Industrials",
+      "industry": "Electrical Equipment & Parts",
+      "market_cap": 1036645389,
+      "company_name": "Eos Energy Enterprises, Inc."
+    },
+    "EXK": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": -11.74,
+      "dr_5": -1.17,
+      "sector": "Basic Materials",
+      "industry": "Silver",
+      "market_cap": 2742293440,
+      "company_name": "Endeavour Silver Corp."
+    },
+    "GFI": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": -5.36,
+      "dr_5": -1.85,
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "market_cap": 36534879680,
+      "company_name": "Gold Fields Limited"
+    },
+    "GOOG": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": -3.96,
+      "dr_5": -0.9,
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "market_cap": 4065284603371,
+      "company_name": "Alphabet Inc."
+    },
+    "GOOGL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": -4.03,
+      "dr_5": -0.68,
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "market_cap": 4096080585860,
+      "company_name": "Alphabet Inc."
+    },
+    "INNV": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": -14.32,
+      "dr_5": -17.0,
+      "sector": "Healthcare",
+      "industry": "Medical - Care Facilities",
+      "market_cap": 1221624000,
+      "company_name": "Innovage Holding Corp."
+    },
+    "MCD": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": -5.44,
+      "dr_5": -4.9,
+      "sector": "Consumer Cyclical",
+      "industry": "Restaurants",
+      "market_cap": 169327789920,
+      "company_name": "McDonald's Corporation"
+    },
+    "NVO": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 13,
+      "dr_1": -3.29,
+      "dr_5": -7.98,
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - General",
+      "market_cap": 169498030873,
+      "company_name": "Novo Nordisk A/S"
+    },
+    "ORCL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": -3.75,
+      "dr_5": 1.65,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 416371938500,
+      "company_name": "Oracle Corporation"
+    },
+    "PAAS": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": -5.99,
+      "dr_5": 1.75,
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "market_cap": 20271148500,
+      "company_name": "Pan American Silver Corp."
+    },
+    "PAYX": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": -8.2,
+      "dr_5": -9.49,
+      "sector": "Industrials",
+      "industry": "Staffing & Employment Services",
+      "market_cap": 37165302041,
+      "company_name": "Paychex, Inc."
+    },
+    "PGY": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": -11.12,
+      "dr_5": -12.07,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 1561731781,
+      "company_name": "Pagaya Technologies Ltd."
+    },
+    "RKT": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": -4.47,
+      "dr_5": -4.65,
+      "sector": "Financial Services",
+      "industry": "Financial - Mortgages",
+      "market_cap": 34311772336,
+      "company_name": "Rocket Companies, Inc."
+    },
+    "SHOP": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 11,
+      "dr_1": -3.47,
+      "dr_5": 11.14,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 184708167578,
+      "company_name": "Shopify Inc."
+    },
+    "SKHY": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 15,
+      "dr_1": -3.15,
+      "dr_5": 8.37,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 1343613337685,
+      "company_name": "SK hynix Inc."
+    },
+    "SNDK": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": -4.15,
+      "dr_5": 19.11,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 269015397158,
+      "company_name": "Sandisk Corporation"
+    },
+    "SPCX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 12,
+      "dr_1": -3.32,
+      "dr_5": -0.98,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 1955648872640,
+      "company_name": "Space Exploration Technologies Corp."
+    },
+    "SVIA": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": -13.52,
+      "dr_5": 24.0,
+      "sector": "Financial Services",
+      "industry": "Financial - Capital Markets",
+      "market_cap": 365011302,
+      "company_name": "ProCap Financial, Inc. Common Stock"
+    },
+    "TPL": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": -5.35,
+      "dr_5": -3.3,
+      "sector": "Energy",
+      "industry": "Oil & Gas Exploration & Production",
+      "market_cap": 23157465056,
+      "company_name": "Texas Pacific Land Corporation"
+    },
+    "UBS": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 14,
+      "dr_1": -3.24,
+      "dr_5": -4.68,
+      "sector": "Financial Services",
+      "industry": "Banks - Diversified",
+      "market_cap": 156482406976,
+      "company_name": "UBS Group AG"
+    },
+    "VITL": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": -11.23,
+      "dr_5": 1.79,
+      "sector": "Consumer Defensive",
+      "industry": "Agricultural Farm Products",
+      "market_cap": 441768035,
+      "company_name": "Vital Farms, Inc."
+    },
+    "VOYG": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": -15.62,
+      "dr_5": -8.13,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 1902034716,
+      "company_name": "Voyager Technologies, Inc."
+    },
+    "WPM": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": -5.79,
+      "dr_5": 0.06,
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "market_cap": 66052481250,
+      "company_name": "Wheaton Precious Metals Corp."
+    }
+  },
+  "slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "ticker_count": 15,
+      "tickers": [
+        "MCD",
+        "BABA",
+        "BKNG",
+        "SNDK",
+        "GOOGL",
+        "BX",
+        "GOOG",
+        "APP",
+        "ORCL",
+        "BHP",
+        "SHOP",
+        "SPCX",
+        "NVO",
+        "UBS",
+        "SKHY"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "PAYX",
+        "ABNB",
+        "ASTS",
+        "PAAS",
+        "AU",
+        "WPM",
+        "GFI",
+        "TPL",
+        "DB",
+        "RKT"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "ALKT",
+        "VOYG",
+        "INNV",
+        "SVIA",
+        "EXK",
+        "VITL",
+        "PGY",
+        "CCOI",
+        "EOSE",
+        "BOBS"
+      ]
+    }
+  ]
+}

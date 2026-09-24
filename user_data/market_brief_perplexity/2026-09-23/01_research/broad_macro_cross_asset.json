@@ -1,0 +1,169 @@
+{
+  "name": "broad_macro_cross_asset",
+  "kind": "channel",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Wednesday September 23, 2026. Scope: Macro & cross-asset.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Wednesday September 23, 2026 ~6:00 AM ET.\n\nCOVER EVERY ITEM BELOW (run a separate search for each bullet; do not skip one because another was rich)\n- US index closes: S&P 500, Nasdaq Composite, Dow, Russell 2000, PHLX SOX (% change).\n- Rates/FX: 2-yr and 10-yr Treasury yields, DXY; Treasury auctions.\n- Economic data released: actual vs consensus vs prior.\n- Fed/FOMC decisions and named speaker quotes; ECB/BoE/BoJ/PBoC actions.\n- Commodities: WTI, Brent, natural gas, gold, silver, copper (price, % change); OPEC.\n- Crypto: Bitcoin, Ether (price, % change); SEC/CFTC/Congress crypto actions; ETF flows.\n- Policy/geopolitics: tariffs, export controls, sanctions, wars moving oil or risk assets.\n\nPrefer primary sources and wire services (Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's,\ncompany press releases, SEC EDGAR, BLS/BEA/Fed releases).\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar, or\ninvent a concise one. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## US Index Closes [Macro]\n\n- **S&P 500** closed at 7,706.03, down 58.61 points, or 0.75%, on Wednesday, September 23, 2026. (Yahoo Finance)\n- **Nasdaq Composite** closed at 26,936.04, down 308.24 points, or 1.13%. (Yahoo Finance)\n- **Dow Jones Industrial Average** closed at 51,511.59, down 352.10 points, or 0.68%. (Yahoo Finance)\n- **Russell 2000** closed at 2,838.66, down 51.26 points, or 1.77%. (Yahoo Finance)\n- The **PHLX Semiconductor Index (SOX)** closing level and percentage change were not available in the gathered results. (Source unavailable)\n\n## Rates and FX [Macro]\n\n- The **2-year Treasury yield** rose 11.4 basis points to 4.891%; it reached an intraday high of 4.947%, its highest level since May 2024. (Reuters)\n- The **10-year Treasury yield** rose 13.89 basis points to 5.106%, its highest level since 2007 and its largest one-day increase since April 2025. (Reuters)\n- The 10-year Treasury yield reached 5.135% intraday, according to CNBC. (CNBC)\n- The **DXY** closing level and percentage change were not available in the gathered results. (Source unavailable)\n- A **5-year Treasury auction** was listed on the September 23 calendar, but the auction\u2019s high yield, bid-to-cover ratio, and indirect allotment were not available in the gathered results. (Investing.com)\n\n## Economic Data [Macro / Calendar]\n\n- The **S&P Global Flash US Composite PMI Output Index** rose to 58.4 in September from 56.0 in August, reaching its highest level since July 2021. (Reuters)\n- The September **Flash Services PMI** was 58.7, while the **Flash Manufacturing PMI** was 57.0; consensus estimates and the prior monthly readings for each subindex were not provided in the gathered results. (XTB)\n- The September PMI readings indicated that US business activity reached a more-than-five-year high, according to S&P Global\u2019s release cited by Reuters. (Reuters)\n- The **Richmond Fed Manufacturing Index** fell to -2 in September from 4 in the prior month; consensus was not provided in the gathered results. (Investing.com)\n- Euro-area preliminary consumer confidence declined to -16.5 from -15.5; consensus was not provided in the gathered results. (Investing.com)\n\n## Federal Reserve and Other Central Banks [Macro]\n\n- The gathered results reported that several Federal Reserve officials emphasized the need to return inflation to target, but they did not identify the speakers or provide direct quotations. (Reuters)\n- Market expectations for a Federal Reserve rate increase at the October meeting rose after the September PMI data; the specific probability was not provided. (Reuters)\n- No confirmed ECB, Bank of England, Bank of Japan, or People\u2019s Bank of China decision published within the specified window was identified in the gathered results. (Source unavailable)\n\n## Commodities [Commodities]\n\n- **WTI crude oil** settled at $92.16 per barrel, up approximately 1.8%. (CNBC)\n- Another Reuters market report placed US crude at $91.87 per barrel, up 1.49%; the difference reflects timing or contract-data variation. (Reuters)\n- **Brent crude oil** settled at $103.08 per barrel, up approximately 3.9%. (CNBC)\n- Another Reuters market report placed Brent at $101.62 per barrel, up 2.39%; the difference reflects timing or contract-data variation. (Reuters)\n- **Gold** was reported at $4,287.05 per ounce, down 1.55%, in a Reuters market update. (Reuters)\n- Another market close reported gold at $4,322.20 per ounce, up $3.80, or 0.09%; the conflicting figures were not reconciled in the gathered results. (Yahoo Finance)\n- Closing prices and percentage changes for **natural gas, silver, and copper** were not available in the gathered results. (Source unavailable)\n- No confirmed OPEC decision or statement published within the specified window was identified in the gathered results. (Source unavailable)\n\n## Crypto [Crypto]\n\n- **Bitcoin** was reported at $84,413.93, down $1,707.95, or 1.98%. (Yahoo Finance)\n- **Ether** price and percentage change were not available in the gathered results. (Source unavailable)\n- US spot Bitcoin ETFs recorded approximately $998.95 million of net inflows on September 21, led by BlackRock\u2019s IBIT with $381.4 million; the flow date was outside the specified September 23 reporting window but was reported on September 23. (CoinStats)\n- US spot Ethereum ETFs recorded approximately $269.98 million of net inflows on September 21, according to the same report. (CoinStats)\n- Combined Bitcoin and Ethereum spot-ETF inflows were approximately $1.27 billion for the September 21 session. (CoinStats)\n- A report citing Galaxy Research said US spot Bitcoin ETFs became net positive for 2026 after an inflow day of nearly $1 billion. (Investing.com)\n- BlackRock\u2019s ETHA led the reported Ethereum ETF inflows, which totaled approximately $270 million for the session. (Investing.com)\n- CME Group announced Bitcoin Cash and Uniswap futures on September 23, with trading scheduled to begin October 19, 2026. (CoinStats)\n- No confirmed SEC, CFTC, or congressional crypto action published within the specified window was identified in the gathered results. (Source unavailable)\n\n## Oil and Geopolitics [Geopolitics]\n\n- Iran\u2019s president said Tehran would not surrender to US pressure, according to a Reuters market report accompanying the September 23 selloff. (Reuters)\n- The Iran-related statement was reported alongside higher oil prices and higher Treasury yields; no additional confirmed tariff, export-control, or sanctions action was identified in the gathered results. (Reuters)\n- No confirmed new war-related development, tariff action, or semiconductor export-control measure published within the specified window was identified in the gathered results. (Source unavailable)",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "The 10-year Treasury yield rose to its highest level since 2007 on Wednesday.\n...\n### U.S. markets closed\nCryptocurrencies\nRates\nCommodities\nCurrencies\nS&P 500 7,706.03-58.61-0.75%\nDow 30 51,511.59-352.10-0.68%\nNasdaq 26,936.04-308.24-1.13%\nRussell 2000 2,838.66-51.26-1.77%\nVIX 15.18+0.97+6.83%\nGold...",
+      "source": "web",
+      "title": "How major US stock indexes fared Wednesday 9/23/2026",
+      "url": "https://finance.yahoo.com/markets/world-indices/articles/major-us-stock-indexes-fared-201246183.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "### U.S. markets closed\nCryptocurrencies\nRates\nCommodities\nCurrencies\nS&P 500 7,706.03-58.61-0.75%\nDow 30 51,511.59-352.10-0.68%\nNasdaq 26,936.04-308.24-1.13%\nRussell 2000 2,838.66-51.26-1.77%\nVIX 15.18+0.97+6.83%\nGold 4,322.20-54.20-1.24%\nBitcoin USD 84,497.68-1,689.34-1.96%\n...\nMajor U.S. stock in...",
+      "source": "web",
+      "title": "Markets News, Sept. 23, 2026: Stocks Fall as Nasdaq\u2019s Record ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-futures-little-104021073.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "- Flash US Composite PMI Output Index rises to 58.4, highest since July 2021\n...\nNEW YORK, Sept 23 (Reuters) - US shares fell and benchmark \u200b10-year Treasury yields climbed to their highest level since 2007 on Wednesday, after data showed US business activity racing to a more-than-five-year high in ...",
+      "source": "web",
+      "title": "US stocks fall as 10-year Treasury yield hits highest since 2007",
+      "url": "https://www.reuters.com/world/china/global-markets-global-markets-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Stock Market Today (Sept. 23, 2026): Nasdaq, Russell 2000 sink as 5-year Treasury hits 5% for first time since 2007\n...\n### U.S. markets close in 1h 51m\nCryptocurrencies\nRates\nCommodities\n...\nU.S. markets close in 1h 51m\nS&P 500 7,713.92-50.72-0.65%\nDow 30 51,600.07-263.62-0.51%\nNasdaq 26,945.06-299...",
+      "source": "web",
+      "title": "Stock Market Today (Sept. 23, 2026): Nasdaq, Russell 2000 ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-134802225.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "### U.S. markets close in 2h 32m\nCryptocurrencies\nRates\nCommodities\nCurrencies\nU.S. markets close in 2h 32m\nS&P 500 7,702.75-61.89-0.80%\nDow 30 51,559.21-304.48-0.59%\nNasdaq 26,894.20-350.07-1.28%\nRussell 2000 2,841.34-48.58-1.68%\nVIX 15.45+1.24+8.73%\nGold 4,315.70-60.70-1.39%\nBitcoin USD 84,071.26-...",
+      "source": "web",
+      "title": "Stock Market News for Sep 23, 2026 - Yahoo Finance",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-23-132700528.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Sept 23 (Reuters) - Wall Street ended lower on Wednesday, pulled down by Alphabet and Amazon, as Treasury yields climbed and Iran\u2019s president said Tehran would never surrender to US pressure.\n...\nA survey showed US business activity raced to a more than five-year high in September, pushing governmen...",
+      "source": "web",
+      "title": "Wall Street ends down as oil prices, Treasury yields rise",
+      "url": "https://www.investing.com/news/economy-news/wall-st-futures-steady-with-focus-on-mideast-talks-uschina-summit-4912483"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "The squeeze caused U.S. stocks to sink Wednesday, and the S&P 500 slid 0.8%.\nThe Dow Jones Industrial Average dropped 0.7%, while the Nasdaq composite fell 1.1% from its all-time high.\nThe yield on the 10-year Treasury jumped to 5.11% and is back to where it was in 2007 after a report said both acti...",
+      "source": "web",
+      "title": "How major US stock indexes fared Wednesday 9/23/2026",
+      "url": "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-wednesday-9232026-136697299"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "U.S. markets close in 3h 37m\nS&P 500 7,713.42-51.22-0.66%\nDow 30 51,553.03-310.66-0.60%\nNasdaq 26,948.22-296.06-1.09%\nRussell 2000 2,851.22-38.70-1.34%\nVIX 14.82+0.61+4.30%\nGold 4,318.90-57.50-1.31%\nBitcoin USD 84,217.98-2,208.32-2.56%\nCrude Oil Nov 26 92.73+2.21+2.44%\n...\nThe 10-year Treasury yield...",
+      "source": "web",
+      "title": "Stock market today: Dow, S&P 500, Nasdaq fall as 10-year ...",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-september-23-dow-sp-500-nasdaq-080556640.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "U.S. equities fell on Wednesday as Treasury yields marched higher amid concerns among investors that more interest rate hikes from the Federal Reserve may be coming down the pike.\nThe S&P 500 dropped 0.75% to end at 7,706.03, while the Nasdaq Composite shed 1.13% to close at 26,936.04.\nThe Dow Jones...",
+      "source": "web",
+      "title": "Stock market news for Sept. 23, 2026",
+      "url": "https://www.cnbc.com/2026/09/22/stock-market-today-live-updates.html"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "NEW YORK, Sept 23 (Reuters) - US shares \u200bdropped while benchmark 10-year Treasury yields hit the highest level since 2007 on Wednesday after data showed that US business activity \u200craced to a more than five-year high in September, fueled by a surge in new orders.\nS&P Global said on Wednesday its flas...",
+      "source": "web",
+      "title": "US stocks fall as 10-year Treasury yield hits highest since ...",
+      "url": "https://www.kitco.com/news/off-the-wire/2026-09-23/us-stocks-fall-10-year-treasury-yield-hits-highest-2007"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "- US spot bitcoin ETFs are net positive for 2026 for the first time since April, Galaxy Research says, after a near $1 billion inflow day.\n...\nThe demand has spread beyond bitcoin: spot Ether ETFs took in about $270 million in the same session, their best day since October 2025, led by BlackRock's E...",
+      "source": "web",
+      "title": "Bitcoin ETF flows turn positive for 2026 after near $1 billion inflow day",
+      "url": "https://investinglive.com/cryptocurrency/bitcoin-etf-flows-turn-positive-for-2026-after-near-1-billion-inflow-day/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Interest rate markets were calmer, even though bond yields nudged higher as more Fed officials underlined their impatience in getting inflation back \u200cto \u2060target.\n...\nUS bond yields soared on Wednesday, in many cases to the highest since 2007, and expectations of an interest rate hike next month surg...",
+      "source": "web",
+      "title": "Morning Bid: Speechifying",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "10-year Treasury yields climbed to 5.12%, reaching their highest level since 2007.\n...\nHowever, the broader Wall Street market was not spared either:\n- Nasdaq: -0,9%\n- S&P 500: -0,7%\n- Dow Jones: -0,5%\n...\nUS 10-year Treasury yields rose by approximately 14 bps today to 5.08%.\n...\nThe Services PMI r...",
+      "source": "web",
+      "title": "Daily Summary: US dollar reaches new highs, Wall Street, gold and bitcoin fall (23.09.2026)",
+      "url": "https://www.xtb.com/en/market-analysis/daily-summary-us-dollar-reaches-new-highs-wall-street-gold-and-bitcoin-fall-23-09-2026"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "DXY+0.51%\n...\nU.S. equity index futures are little changed following a mixed session where the S&P 500 (0% to 7,764) finished flat, the tech-heavy Nasdaq 100 (+0.8% to 30,732, a record close) outperformed again, while the Dow 30 (-0.4% to 51,863) was in retreat once more, with market participants no...",
+      "source": "web",
+      "title": "Dow 30's Underperformance Sees Long Traders Pile in ...",
+      "url": "https://www.investing.com/analysis/dow-30s-underperformance-sees-long-traders-pile-in-again-200688198"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "\u2022 CME Group announced Bitcoin Cash and Uniswap futures on 23 September 2026, with trading set for 19 October 2026.\n\u2022 Bitcoin Cash rose 33.03% to $355.00 on $3.31B volume; Uniswap gained 15.60% to $10.45 on $2.76B.\n\u2022 U.S. spot Bitcoin ETFs saw $998.95M net inflows on 21 September, led by BlackRock\u2019s ...",
+      "source": "web",
+      "title": "Latest Crypto News Update - September 23, 2026 - CoinStats",
+      "url": "https://coinstats.app/ai/a/crypto-news-update-23-September-2026"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/world-indices/articles/major-us-stock-indexes-fared-201246183.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-futures-little-104021073.html?fr=sycsrp_catchall",
+    "https://www.reuters.com/world/china/global-markets-global-markets-2026-09-23/",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-134802225.html?fr=sycsrp_catchall",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-23-132700528.html?fr=sycsrp_catchall",
+    "https://www.investing.com/news/economy-news/wall-st-futures-steady-with-focus-on-mideast-talks-uschina-summit-4912483",
+    "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-wednesday-9232026-136697299",
+    "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-september-23-dow-sp-500-nasdaq-080556640.html?fr=sycsrp_catchall",
+    "https://www.cnbc.com/2026/09/22/stock-market-today-live-updates.html",
+    "https://www.kitco.com/news/off-the-wire/2026-09-23/us-stocks-fall-10-year-treasury-yield-hits-highest-2007",
+    "https://investinglive.com/cryptocurrency/bitcoin-etf-flows-turn-positive-for-2026-after-near-1-billion-inflow-day/",
+    "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-09-23/",
+    "https://www.xtb.com/en/market-analysis/daily-summary-us-dollar-reaches-new-highs-wall-street-gold-and-bitcoin-fall-23-09-2026",
+    "https://www.investing.com/analysis/dow-30s-underperformance-sees-long-traders-pile-in-again-200688198",
+    "https://coinstats.app/ai/a/crypto-news-update-23-September-2026"
+  ],
+  "usage": {
+    "label": "broad_macro_cross_asset",
+    "model": "sonar-pro",
+    "prompt_tokens": 663,
+    "completion_tokens": 1365,
+    "search_context_size": "high",
+    "cost_usd": 0.03646,
+    "seconds": 11.8
+  }
+}

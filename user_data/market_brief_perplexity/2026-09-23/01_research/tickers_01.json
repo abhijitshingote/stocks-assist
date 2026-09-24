@@ -1,0 +1,169 @@
+{
+  "name": "tickers_01",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Wednesday September 23, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Wednesday September 23, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| CRWD | CrowdStrike Holdings, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.83% | +8.7% | 1.2\u00d7 | \u2014 |\n| PANW | Palo Alto Networks, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.31% | +3.8% | 0.9\u00d7 | \u2014 |\n| PLTR | Palantir Technologies Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.90% | +11.6% | 1.6\u00d7 | \u2014 |\n| BP | BP p.l.c. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.08% | -2.0% | 0.9\u00d7 | \u2014 |\n| FTNT | Fortinet, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.73% | +4.2% | 0.9\u00d7 | \u2014 |\n| EQNR | Equinor ASA | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.67% | -3.1% | 1.2\u00d7 | \u2014 |\n| WDC | Western Digital Corporation | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.40% | +13.0% | 0.8\u00d7 | \u2014 |\n| CRM | Salesforce, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.39% | -4.4% | 0.8\u00d7 | \u2014 |\n| NOW | ServiceNow, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.08% | +1.0% | 0.9\u00d7 | \u2014 |\n| TMUS | T-Mobile US, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.08% | -4.8% | 1.6\u00d7 | \u2014 |\n| OKTA | Okta, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +4.17% | +9.1% | 1.4\u00d7 | \u2014 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## CrowdStrike Holdings, Inc. (CRWD) `[Software & SaaS]`\n- CrowdStrike, Palo Alto Networks, and Okta gained about 4% during September 23 trading while the First Trust Nasdaq Cybersecurity ETF gained 1%; 24/7 Wall St. attributed the move to a cybersecurity-sector rally rather than a company-specific announcement. (24/7 Wall St.)\n- Bank of America raised its price target to **$260**, citing AI-related attack surfaces as a cybersecurity growth catalyst. (Bank of America note)\n- Wedbush initiated coverage with an **Outperform** rating, citing **25% year-over-year ARR growth** and a **51% increase in net-new ARR** in the latest reported quarter. (Wedbush note)\n- CrowdStrike\u2019s latest reported quarter included **$1.47 billion of revenue**, **$333 million of net-new ARR**, **$2.29 billion of Falcon Flex ARR**, and full-year ARR guidance of **$1.35 billion**. (company results)\n\n## Palo Alto Networks, Inc. (PANW) `[Software & SaaS]`\n- Palo Alto Networks rose with CrowdStrike, Okta, and other cybersecurity shares; the First Trust Nasdaq Cybersecurity ETF gained **1%** during the session. (24/7 Wall St.)\n- Palo Alto Networks and Palantir were identified as stocks flashing technical buy signals after September 23 trading. (Investor\u2019s Business Daily)\n- Palo Alto Networks had announced a new **AI defense service** before the September 23 session; the company\u2019s next quarterly results were listed for **November 12, 2026**. (AD HOC NEWS)\n\n## Palantir Technologies Inc. (PLTR) `[AI Infrastructure]`\n- Palantir rose alongside cybersecurity and AI-related software stocks while the Nasdaq-100 and broader large-cap technology sector declined; 24/7 Wall St. described the move as part of an AI-adjacent enterprise-software bid. (24/7 Wall St.)\n- Palantir advanced **3.7%** to **$191.79** in Investor\u2019s Business Daily\u2019s September 23 market recap and moved above a short-term high of **$118.37**. (Investor\u2019s Business Daily)\n- Palantir and Palo Alto Networks were identified as stocks flashing technical buy signals after the session. (Investor\u2019s Business Daily)\n\n## BP p.l.c. (BP) `[Energy]`\n- No company-specific catalyst found in window.\n- Crude oil rose **1.8% to $92.16 per barrel** on September 23 after five consecutive sessions of declines; the energy sector was reported as the only sector to advance in the session. (Investor\u2019s Business Daily; US Stock Today)\n\n## Fortinet, Inc. (FTNT) `[Software & SaaS]`\n- Fortinet rose with cybersecurity peers; a September 23 market recap listed Fortinet higher by **2.6%** while Palo Alto Networks and CrowdStrike each gained about **5%**. (WOLF Financial)\n- Josh Brown identified Fortinet, CrowdStrike, and Palo Alto Networks as cybersecurity stocks he considered attractive and cited Fortinet\u2019s trading range of **$150\u2013$175**, a 50-day moving average near **$160**, and a 200-day moving average near **$114**. (Ritholtz CEO Josh Brown)\n\n## Equinor ASA (EQNR) `[Energy]`\n- No company-specific catalyst found in window.\n- Crude oil prices rebounded on September 23 after five sessions of declines; Reuters reported world crude prices above **$100 per barrel** amid attention on possible U.S.-Iranian presidential talks in New York. (Reuters)\n\n## Western Digital Corporation (WDC) `[Memory & Interconnect]`\n- No company-specific catalyst found in window.\n\n## Salesforce, Inc. (CRM) `[Software & SaaS]`\n- No company-specific catalyst found in window.\n- The broader market declined as the 10-year Treasury yield rose **15 basis points to 5.11%**, a level described as the highest since 2007; this was cited as a factor affecting large-cap technology stocks. (Investor\u2019s Business Daily)\n\n## ServiceNow, Inc. (NOW) `[Software & SaaS]`\n- No company-specific catalyst found in window.\n- The broader market declined as the 10-year Treasury yield rose **15 basis points to 5.11%**, while cybersecurity and selected AI-related software stocks advanced. (Investor\u2019s Business Daily; 24/7 Wall St.)\n\n## T-Mobile US, Inc. (TMUS) `[Wireless & Mobile]`\n- No company-specific catalyst found in window.\n- T-Mobile was listed among Nasdaq-100 stocks advancing on September 23, with an intraday gain of **1.80%** in a market-data recap that also identified cybersecurity and AI-related stocks as leaders. (TechFlow Post)\n\n## Okta, Inc. (OKTA) `[Software & SaaS]`\n- Scotiabank raised its price target from **$165 to $190** and maintained a **Sector Outperform** rating; MarketBeat reported that Okta shares rose **3.7%** during Wednesday trading. (Scotiabank note, via MarketBeat)\n- MarketBeat listed Okta\u2019s consensus rating as **Moderate Buy** and its consensus price target as **$177.61**. (MarketBeat)\n- Okta rose with CrowdStrike and Palo Alto Networks in a cybersecurity-sector rally; the First Trust Nasdaq Cybersecurity ETF gained **1%** during the session. (24/7 Wall St.)",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Cybersecurity Stocks Rally While Large-Cap Tech Slides: CrowdStrike, Palo Alto, Okta, and Palantir Each Gain 4% - 24/7 Wall St.\n...\nPublished September 23, 2026, 11:41am ET \u00b7 3 min read\n...\n## Quick Read\n- CrowdStrike, Palo Alto, and Okta each surged 4% Wednesday while the broader QQQ ETF dropped 0....",
+      "source": "web",
+      "title": "Cybersecurity Stocks Rally While Large-Cap Tech Slides: CrowdStrike, Palo Alto, Okta, and Palantir Each Gain 4%",
+      "url": "https://247wallst.com/investing/2026/09/23/cybersecurity-stocks-rally-while-large-cap-tech-slides-crowdstrike-palo-alto-okta-and-palantir-each-gain-4/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# Dow Jones Futures: Stocks Fall As Treasury Yields Soar; Palantir, Palo Alto Flash Buy Signals\n...\n- Updated 05:25 PM ET 09/23/2026\nDow Jones futures were little changed after hours, along with S&P 500 futures and Nasdaq futures.\n...\nThe stock market rally retreated\u00a0as Treasury yields surged and cr...",
+      "source": "web",
+      "title": "Dow Jones Futures: Stocks Fall As Treasury Yields Soar",
+      "url": "https://www.investors.com/market-trend/stock-market-today/dow-jones-futures-stocks-fall-as-treasury-yields-soar-palantir-flashes-buy-signal/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "The US \u200bExport-Import Bank plans to fund up to $7 billion worth of critical minerals and \u200cenergy projects in Argentina, according to a document seen by Reuters, as part of a push to deepen economic cooperation between Washington and Buenos Aires.",
+      "source": "web",
+      "title": "September 2026 - Sitemap | Reuters",
+      "url": "https://www.reuters.com/sitemap/2026-09/23/1/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "HERE'S WHAT THE \ud83c\uddfa\ud83c\uddf8 STOCK MARKET LOOKED LIKE TODAY Online travel sank: - Expedia $EXPE -7.8% - Airbnb $ABNB -7.6% - Booking Holdings $BKNG -5.1% Cybersecurity climbed: - Palo Alto $PANW +5.0% - CrowdStrike $CRWD +5.0% - Palantir $PLTR +3.7% - Fortinet $FTNT +2.6% Also moving: - Show more\n8:42 PM \u00b7 Se...",
+      "source": "web",
+      "title": "This is how every stock in the S&amp",
+      "url": "https://x.com/StockMKTNewz/status/2102861158017327568"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# 2026\ub144 9\uc6d4 23\uc77c \ubbf8\uad6d\uc99d\uc2dc \uc694\uc57d\n...\n\ub098\uc2a4\ub2e5\n26,936.04\n-1.13%\nS&P 500\n7,706.03\n-0.75%\n\ub2e4\uc6b0\n51,511.59\n-0.68%\nVIX\n15.19\n+6.90%\n\uacf5\ud3ec\ud0d0\uc695\uc9c0\uc21835\uacf5\ud3ec\n0 \uacf5\ud3ec50100 \ud0d0\uc695\n...\n1\uc624\ub298 \uc6d4\uac00\uc758 \uc8fc\uc778\uacf5\uc740 \uc8fc\uc2dd\uc774 \uc544\ub2c8\ub77c \ucc44\uad8c\uc774\uc5c8\uc2b5\ub2c8\ub2e4.\n2\ubbf8\uad6d \uae30\uc5c5\ub4e4\uc774 5\ub144 \ub9cc\uc5d0 \uac00\uc7a5 \ubc14\uc058\uac8c \ub3cc\uc544\uac04\ub2e4\ub294 \uc870\uc0ac\uac00 \ub098\uc654\ub294\ub370, \uc2dc\uc7a5\uc740 \ud658\ud638 \ub300\uc2e0 \ubb3c\uac00\ub97c \uac71\uc815\ud588\uc2b5\ub2c8\ub2e4.\n310\ub144\ubb3c \uad6d\ucc44 \uae08\ub9ac(\uc815\ubd80\uac00 \ub3c8\uc744 \ube4c\ub9b4 \ub54c \ub0b4\ub294 \uc774\uc790)\uac00 2007\ub144 \uc774\ud6c4 \ucc98\uc74c\uc73c\ub85c 5.1%\ub300\uc5d0 \uc62c\ub77c\uc130\uc2b5\ub2c8\ub2e4.\n...\n** 10\ub144\ubb3c ...",
+      "source": "web",
+      "title": "2026\ub144 9\uc6d4 23\uc77c \ubbf8\uad6d\uc99d\uc2dc \uc694\uc57d | \uc624\ub298\uc758 \ubbf8\uad6d\uc8fc\uc2dd",
+      "url": "https://usstock.today/blog/market-summary-20260923"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Aktualisiert 23.09.2026, 17:58\n...\nCHKP+2,63%\nGEN-2,38%\nFTNT+1,51%\nQLYS+0,73%\nPANW+2,93%\nVRNS+1,06%\nOKTA+3,59%\nZS+0,67%\nTENB+0,06%\nCRWD+4,20%\nNET+0,91%\nS+0,22%\nRBRK+0,87%\nSAIL+0,37%\n...\nNeun der 14 Treffer notieren \u00fcber ihrem InvestingPro-Fair-Value, und zwar nicht knapp.\nCloudflare liegt 45,3 Proze...",
+      "source": "web",
+      "title": "CrowdStrike, Palo Alto und Co: 14 Cybersecurity-Aktien im ...",
+      "url": "https://de.investing.com/news/stock-market-news/crowdstrike-palo-alto-und-co-14-cybersecurityaktien-im-bewertungscheck-3673558"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# Nasdaq 100 component stocks show mixed performance, with cybersecurity and AI concept stocks leading the gains, while mobility and consumer stocks, alongside semiconductors, face pressure and pull back.\n...\nTechFlow reports that on September 23, based on Bitget market data, US stock intraday tradi...",
+      "source": "web",
+      "title": "Nasdaq 100 component stocks show mixed performance, with cybersecurity and AI concept stocks leading the gains, while m\u2026",
+      "url": "https://www.techflowpost.com/en-US/newsletter/137535"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Ritholtz chief executive Josh Brown contends the current expansion cycle leaves substantial upside for select industry leaders.\nHis analysis identifies CrowdStrike (CRWD), Palo Alto Networks (PANW), and Fortinet (FTNT) as primary vehicles to capture this ongoing re-rating.\nThese three holdings prese...",
+      "source": "web",
+      "title": "Josh Brown says these 3 cybersecurity stocks remain attractive",
+      "url": "https://invezz.com/news/2026/09/23/josh-brown-says-these-3-cybersecurity-stocks-remain-attractive/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# WOLF on X: \"HERE'S WHAT THE \ud83c\uddfa\ud83c\uddf8 STOCK MARKET LOOKED LIKE TODAY Online travel sank: - Expedia $EXPE -7.8% - Airbnb $ABNB -7.6% - Booking Holdings $BKNG -5.1% Cybersecurity climbed: - Palo Alto $PANW +5.0% - CrowdStrike $CRWD +5.0% - Palantir $PLTR +3.7% - Fortinet $FTNT +2.6% Also moving: - Paychex ...",
+      "source": "web",
+      "title": "WOLF on X: \"HERE'S WHAT THE STOCK MARKET LOOKED LIKE ...",
+      "url": "https://x.com/WOLF_Financial/status/2102852153551528287"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published on 09/23/2026 at 09:18 | Editorial responsibility: Rafael M\u00fcller, Editor-in-Chief AD HOC NEWS\nAt the close on September 22, 2026, Palo Alto Networks stock traded at USD 369.50 on Nasdaq after a USD 363.58 to USD 373.22 session.\nThe company announced a new AI defense service, while results ...",
+      "source": "web",
+      "title": "Palo Alto Networks stock falls 0.6 percent ahead of the open",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/palo-alto-networks-stock-falls-0-6-percent-ahead-of-the-open/70164215"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "\u3010\u5373\u6642\u65b0\u805e\u3011\u6700\u65b0AI\u8cc7\u5b89\u98a8\u96aa\u98c6\u5347\uff01CrowdStrike(CRWD)\u7b492\u6a94\u6982\u5ff5\u80a1\u62c9\u56de\uff0c\u8e8d\u5347\u6295\u8cc7\u7d44\u5408\u57fa\u77f3\n...\n# \u6b0a\u77e5\u9053\n- 2026-09-23 18:49\n- \u66f4\u65b0\uff1a2026-09-23 18:49\n- ** \u7f8e\u80a1\u65b0\u805e\u5feb\u8a0a, \u7f8e\u80a1\u6700\u65b0\u52d5\u614b\n...\n\u7db2\u8def\u5b89\u5168\u6982\u5ff5\u80a1CrowdStrike(CRWD)\u8207Palo Alto Networks(PANW)\u5728\u8fd1\u671f\u51fa\u73fe\u5fae\u5e45\u62c9\u56de\uff0c\u4f46Meta(META)\u65b0\u63a8\u51fa\u7684Muse\u61c9\u7528\u7a0b\u5f0f\u518d\u6b21\u63d0\u9192\u5e02\u5834\uff0c\u96a8\u8457AI\u4ee3\u7406\u7684\u666e\u53ca\uff0c\u7db2\u8def\u5b89\u5168\u7684\u91cd\u8981\u6027\u5c07\u8207\u65e5\u4ff1\u589e\u3002\n...\n\u7531\u65bcCrowdStrike(CRWD)\u8207Palo Alto Networks(PANW)\u4eca\u5e74\u4ee5\u4f86\u7684\u80a1\u50f9\u5df2\u7d93\u7ffb\u500d...",
+      "source": "web",
+      "title": "\u3010\u5373\u6642\u65b0\u805e\u3011\u6700\u65b0AI\u8cc7\u5b89\u98a8\u96aa\u98c6\u5347\uff01CrowdStrike(CRWD)\u7b492\u6a94\u6982\u5ff5\u80a1 ...",
+      "url": "https://www.cmoney.tw/notes/note-detail.aspx?nid=1273144"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Okta shares rose 3.7%** after Scotiabank raised its price target from $165 to $190 and maintained a sector outperform rating.\nAnalysts overall rate the stock a \u201cModerate Buy,\u201d with a consensus target of $177.61.\n...\nOkta, Inc.\n(NASDAQ:OKTA - Get Free Report)'s share price was up 3....",
+      "source": "web",
+      "title": "Okta (NASDAQ:OKTA) Trading Up 3.7% After Analyst ...",
+      "url": "https://www.marketbeat.com/instant-alerts/price-okta-nasdaq-okta-trading-up-37-after-analyst-upgrade-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "2026-09-23T02:30:20.559Z",
+      "source": "web",
+      "title": "Post by @reuters.com \u2014 Bluesky",
+      "url": "https://bsky.app/profile/reuters.com/post/3mw5p3vnnbt2b"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Plus world crude prices hover above $100 per barrel, as the chance of U.S. and Iranian presidents meeting in New York is watched closely.",
+      "source": "web",
+      "title": "Transcript - Reuters",
+      "url": "https://www.reuters.com/info-pages/transcript/76514c58-b667-11f1-8345-d3913c28706e"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "CRWD+4.79%\nInvesting.com -- CrowdStrike stock surged 4.5% in mid-day trading to reach $261.69, a fresh 52-week high, as a confluence of bullish analyst actions and new platform partnership announcements drove the cybersecurity leader well above the prior session\u2019s close of $250.06.\n...\nThe primary d...",
+      "source": "web",
+      "title": "Why is CrowdStrike stock surging today?",
+      "url": "https://ca.investing.com/news/stock-market-news/why-is-crowdstrike-stock-surging-today-93CH-4850308"
+    }
+  ],
+  "citations": [
+    "https://247wallst.com/investing/2026/09/23/cybersecurity-stocks-rally-while-large-cap-tech-slides-crowdstrike-palo-alto-okta-and-palantir-each-gain-4/",
+    "https://www.investors.com/market-trend/stock-market-today/dow-jones-futures-stocks-fall-as-treasury-yields-soar-palantir-flashes-buy-signal/",
+    "https://www.reuters.com/sitemap/2026-09/23/1/",
+    "https://x.com/StockMKTNewz/status/2102861158017327568",
+    "https://usstock.today/blog/market-summary-20260923",
+    "https://de.investing.com/news/stock-market-news/crowdstrike-palo-alto-und-co-14-cybersecurityaktien-im-bewertungscheck-3673558",
+    "https://www.techflowpost.com/en-US/newsletter/137535",
+    "https://invezz.com/news/2026/09/23/josh-brown-says-these-3-cybersecurity-stocks-remain-attractive/",
+    "https://x.com/WOLF_Financial/status/2102852153551528287",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/palo-alto-networks-stock-falls-0-6-percent-ahead-of-the-open/70164215",
+    "https://www.cmoney.tw/notes/note-detail.aspx?nid=1273144",
+    "https://www.marketbeat.com/instant-alerts/price-okta-nasdaq-okta-trading-up-37-after-analyst-upgrade-2026-09-23/",
+    "https://bsky.app/profile/reuters.com/post/3mw5p3vnnbt2b",
+    "https://www.reuters.com/info-pages/transcript/76514c58-b667-11f1-8345-d3913c28706e",
+    "https://ca.investing.com/news/stock-market-news/why-is-crowdstrike-stock-surging-today-93CH-4850308"
+  ],
+  "usage": {
+    "label": "tickers_01",
+    "model": "sonar-pro",
+    "prompt_tokens": 1163,
+    "completion_tokens": 1174,
+    "search_context_size": "high",
+    "cost_usd": 0.0351,
+    "seconds": 13.3
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "name": "broad_calendar",
+  "kind": "channel",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Wednesday September 23, 2026. Scope: Calendar.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Wednesday September 23, 2026 ~6:00 AM ET.\n\nCOVER EVERY ITEM BELOW (run a separate search for each bullet; do not skip one because another was rich)\nScheduled catalysts from the brief date through the next 5 NYSE sessions: earnings (date, BMO/AMC, EPS and revenue consensus) for US stocks >= $10B plus notable mid-caps, investor/analyst days, FDA PDUFA dates, major economic releases with consensus, Fed speakers, options expiry, index rebalances, lockup expiries.\n\nPrefer primary sources and wire services (Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's,\ncompany press releases, SEC EDGAR, BLS/BEA/Fed releases).\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar, or\ninvent a concise one. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## **CTAS** \u2014 Cintas `[Software & SaaS]`\n- Fiscal third-quarter 2026 EPS was **$1.36** versus **$1.35 consensus**; revenue was **$3.01 billion** versus **$2.98 billion consensus**. (Investing.com)\n- Cintas issued fiscal 2027 EPS guidance of **$5.45\u2013$5.54** versus **$5.49 consensus**, and revenue guidance of **$12.15\u2013$12.27 billion** versus **$12.22 billion consensus**. (Investing.com)\n- The earnings report was scheduled **before the market open on Wednesday, September 23, 2026**. (Newsquawk)\n\n## **GIS** \u2014 General Mills `[Consumer Staples]`\n- General Mills was scheduled to report **before the market open on Wednesday, September 23, 2026**, with consensus EPS of **$0.72** and revenue of **$4.35 billion**. (Newsquawk)\n\n## **PAYX** \u2014 Paychex `[Software & SaaS]`\n- Paychex was scheduled to report **before the market open on Wednesday, September 23, 2026**, with consensus EPS of **$1.32** and revenue of **$1.63 billion**. (Newsquawk)\n\n## **DRI** \u2014 Darden Restaurants `[Consumer Discretionary]`\n- Darden Restaurants was scheduled to report **before the market open on Thursday, September 24, 2026**, with consensus EPS of **$2.05** and revenue of **$3.21 billion**. (Newsquawk)\n\n## **COST** \u2014 Costco Wholesale `[Consumer Staples]`\n- Costco Wholesale was scheduled to report **after the market close on Thursday, September 24, 2026**, with consensus EPS of **$6.55** and revenue of **$94.86 billion**. (Newsquawk)\n\n## **FUL** \u2014 H.B. Fuller `[Specialty Materials & IP Licensing]`\n- H.B. Fuller was scheduled to report **after the market close on Wednesday, September 23, 2026**. (Investrade)\n\n## **NEOV** \u2014 NeoGenomics `[Healthcare]`\n- NeoGenomics was scheduled to report **after the market close on Wednesday, September 23, 2026**. (Investrade)\n\n## **SFIX** \u2014 Stitch Fix `[Internet & Platforms]`\n- Stitch Fix was scheduled to report **after the market close on Wednesday, September 23, 2026**. (Investrade)\n\n## **Fed / Macro** \u2014 Federal Reserve `[Macro / Calendar]`\n- Federal Reserve Governor **Michael S. Barr** was scheduled to speak at **10:05 a.m. EDT on Wednesday, September 23, 2026**, at the Federal Reserve Bank of Chicago\u2019s Housing Affordability 2026 summit; his subject was **\u201cEconomic Outlook and Housing.\u201d** (Federal Reserve Board schedule)\n- The September 23 US S&P Global consensus readings were **53.6** for manufacturing PMI, **56.0** for services PMI, and **55.2** for composite PMI. (Global Economy briefing)\n- The prior US S&P Global readings were **53.9** for manufacturing PMI, **56.5** for services PMI, and **56.0** for composite PMI. (Global Economy briefing)\n- The September 23 US MBA mortgage calendar listed a prior **30-year mortgage rate of 6.97%**, a prior purchase index of **156.2**, and a prior mortgage market index of **230.8**. (Global Economy briefing)\n- The September 23 EIA calendar included gasoline stocks and crude-oil-imports data; the listed prior changes were **+0.794 million barrels** for gasoline stocks and **\u22121.18 million barrels** for crude-oil imports. (Global Economy briefing)\n\n## Options `[Macro / Calendar]`\n- FX options expiries for the **10:00 a.m. New York cut on Wednesday, September 23, 2026** included **$664 million** at USD/CAD **1.3655**, **$380 million** at USD/CAD **1.4150**, and **$300 million** at USD/CAD **1.4130**. (Tickmill)\n\n## **BMO** \u2014 Bank of Montreal `[Financials]`\n- Bank of Montreal reported third-quarter EPS of **$2.84** versus **$2.71 consensus**, and revenue of **$7.10 billion** versus **$6.94 billion expected**. (Ad Hoc News)\n- Bank of Montreal reported third-quarter return on equity of **14%** and pre-provision, pre-tax income of **C$4.5 billion**. (Ad Hoc News)\n\n## **AVGO** \u2014 Broadcom `[AI Infrastructure]`\n- Broadcom\u2019s reported fourth-quarter guidance was described as **12% above consensus** in a September 23 market report. (TickerDaily)\n\n## **AMD** \u2014 Advanced Micro Devices `[AI Compute]`\n- AMD was listed as scheduled to report **after 4:00 p.m. ET on Wednesday, September 23, 2026**, with consensus EPS of **$1.08** and revenue of **$22.3 billion**. (TickerDaily)\n\n## **QCOM** \u2014 Qualcomm `[Wireless & Mobile]`\n- Qualcomm was listed as scheduled to report **after 4:00 p.m. ET on Wednesday, September 23, 2026**, with consensus EPS of **$2.89** and revenue of **$9.84 billion**. (TickerDaily)\n\n## **KBH** \u2014 KB Home `[Consumer Discretionary]`\n- KB Home\u2019s fiscal third-quarter EPS was **$1.05** versus **$0.89 consensus**, and revenue was approximately **$1.3 billion**, described as in line with consensus. (Investrade)\n- KB Home\u2019s net orders fell **12% year over year to 2,604**, backlog rose **2% to 4,398 homes**, and backlog value rose **3% to $2.05 billion**. (Investrade)\n- KB Home maintained fourth-quarter deliveries of **3,000\u20133,500 homes** and full-year deliveries of **10,500\u201311,000 homes**. (Investrade)\n- KB Home guided fourth-quarter revenue to **$1.45\u2013$1.65 billion** versus **$1.61 billion consensus**. (Investrade)\n\n*The available search results did not provide verified September 23\u201324, 2026 items for investor or analyst days, FDA PDUFA dates, index rebalances, lockup expiries, or a complete five-session calendar through September 30; no additional facts are included for those categories.*",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# Earnings Calendar for:\nSep 20, 2026 - Sep 26, 2026\n### Trending Tickers\n...\nSun, Sep 20\nMon, Sep 21\n4 Earnings\nTue, Sep 22\n8 Earnings\nWed, Sep 23\n16 Earnings\nThu, Sep 24\n...\nEarnings On Wed, Sep 23\n|Symbol|Company|Event Name|Earnings Call Time|EPS Estimate|Reported EPS|Surprise (%)|Market Cap|Foll...",
+      "source": "web",
+      "title": "Company Earnings Calendar - Yahoo Finance",
+      "url": "https://finance.yahoo.com/calendar/earnings/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "The S&P 500 edged down 0.1% to close at 5,847.32, holding above its intraday low of 5,821.14 but unable to break past the session high of 5,889.47.\n...\n- **Broadcom (AVGO):** +3.4% to $156.27 \u2014 AI infrastructure demand offsets semiconductor sector weakness; Q4 guidance beat came in 12% above consens...",
+      "source": "web",
+      "title": "Stock Market Today, September 23, 2026: S&P 500 Closes Near ...",
+      "url": "https://tickerdaily.com/article/stock-market-today-september-23-2026-sandp-500-closes-near-flat-on-mixed-earnings-tech-weighs"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "## S&P 500\nGeneral Mills Inc.\n(GIS) EPS (exp. 0.72), Revenue (exp. 4.35bln), Next Qtr.\nEPS (exp. 0.98), Next Qtr.\nRev.\n(exp. 4.78bln), Current FY EPS (exp. 3.08), Current FY Rev.\n(exp. 17.81bln), Next FY EPS (exp. 3.21), Next FY Rev.\n(exp. 17.94bln) 12:00BST/07:00EDT\n**Cintas (CTAS) EPS (exp. 1.35),...",
+      "source": "web",
+      "title": "Daily US Earnings Estimates: 23rd September 2026: CTAS, PAYX, GIS",
+      "url": "https://www.newsquawk.com/headlines/daily-us-earnings-estimates-23rd-september-2026-ctas-payx-gis"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-22",
+      "place_metadata": null,
+      "snippet": "Tuesday, September 22, 2026: **5 earnings reports hit the tape** \u2014 3 beat consensus EPS, 1 missed, and 0 were inline.\n...\n3beat1miss\u00b7 0 inline\n...\nReaction\n...\nEPS est\n+0.89\nEPS actual\n+0.78\nSurprise\n-12.4%\nRevenue est\n$2.19B\nRevenue actual\n$2.31B\nSurprise\n+5.5%\n...\nSurprise\n+16.0%\nRevenue est\n$962M...",
+      "source": "web",
+      "title": "Earnings Calendar Today: Stocks Reporting Before & After ...",
+      "url": "https://www.thetrading.tools/earnings-calendar"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Economic Calendar for Today\n...\nEarnings Calendar:\n- Earnings Before the Open: CBRL CTAS GIS MANU PAYX\n- Earnings After the Close: FUL NEOV SFIX\nOther Key Events:\n...\n-\n**KB Homes (KBH)** Q3 EPS $1.05 vs. est.\n$0.89 and revs fell -20% y/y but was in-line with consensus at $1.3B; Q3 Net income droppe...",
+      "source": "web",
+      "title": "Morning Preview: September 23, 2026 - Investrade",
+      "url": "https://investrade.com/morning-preview-september-23-2026/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Companies reporting earnings in the next 14 days, with consensus EPS and revenue, the session, and FN2's report on their last quarter.\n## Wednesday, Sep 23, 2026 3 reports\n|Company|Session|Consensus EPS|Consensus revenue|Last quarter|Preview|\n|--|--|--|--|--|--|\n|**CTAS** Cintas Corporation|Before m...",
+      "source": "web",
+      "title": "Earnings calendar: who reports next | FN2 Research",
+      "url": "https://fn2.ai/earnings/calendar"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "- Autodesk exceeded quarterly expectations, reporting $3.30 in earnings per share versus a $3.12 estimate and $2.05 billion in revenue versus $2.01 billion expected.\nRevenue increased 16.1% year over year, and institutional investors own 90.24% of the company\u2019s stock.\n...\nAutodesk (NASDAQ:ADSK - Get...",
+      "source": "web",
+      "title": "Autodesk, Inc. (NASDAQ:ADSK) Receives Average Rating of \"Moderate Buy\" from Brokerages",
+      "url": "https://www.marketbeat.com/instant-alerts/consensus-autodesk-inc-nasdaq-adsk-receives-average-rating-of-moderate-buy-from-brokerages-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Bank of Montreal stock reached USD 177.19 on September 23, 2026, while third-quarter EPS beat estimates by USD 0.13.\nRevenue rose 10.1 percent year over year.\n...\nBank of Montreal stock (ISIN CA0636711016) traded at USD 177.19 on the NYSE on September 23, 2026, up 1.55 percent, while the latest quar...",
+      "source": "web",
+      "title": "Bank of Montreal stock rises as returns improve",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/bank-of-montreal-stock-rises-as-returns-improve/70166437"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Date:** Tuesday, September 22**\n...\n**SPEECH: Governor Michael S. Barr\nDate:** Wednesday, September 23**\nTime:** 10:05 a.m.\nEDT (9:05 a.m. local time)**\nPlace:** Federal Reserve Bank of Chicago, 230 S.\nLaSalle Street, Chicago, Ill.**\nEvent:** Housing Affordability 2026: A Community Development Summi...",
+      "source": "web",
+      "title": "Federal Reserve Board Schedule of Public Appearances ...",
+      "url": "https://www.forth.news/lists/fed/CfJUtJGpS14GGkkXtZFNf"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "News by Dow Jones Newswires on TradingView, 2026-09-23 \u2014 DJN_DN20260923002326:0",
+      "source": "web",
+      "title": "News by Dow Jones Newswires on TradingView, 2026-09-23",
+      "url": "https://www.tradingview.com/news/DJN_DN20260923002326:0/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "A calendar entry rather than a print: Darden reports pre-market and Costco after the close, with the listed consensus figures serving as the reference point for the subsequent release.\n...\nDarden Restaurants Inc.\n(DRI) EPS (exp. 2.05), Revenue (exp. 3.21bln), Next Qtr.\nEPS (exp. 2.30), Next Qtr.\nRev...",
+      "source": "web",
+      "title": "Daily US Earnings Estimates - 24th September 2026: COST, DRI | Newsquawk",
+      "url": "https://www.newsquawk.com/headlines/daily-us-earnings-estimates---24th-september-2026-cost-dri"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "**FX Options Expiries For 10am New York Cut\u00a0**\n(**1BLN+ represents larger expiries and is more magnetic when trading within the daily ATR.**)\n...\n- USD/CAD: 1.3655 ($664m), 1.4150 ($380m), 1.4130 ($300m)\n...\n- NZD/USD: 0.5960 (NZD333.9m)",
+      "source": "web",
+      "title": "Daily Market Outlook, September 23, 2026 - Tickmill",
+      "url": "https://www.tickmill.com/blog/daily-market-outlook-september-23-2026"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Investing.com - Cintas (NASDAQ: CTAS) reported third quarter EPS of $1.36, $0.01 better than the analyst estimate of $1.35.\nRevenue for the quarter came in at $3.01B versus the consensus estimate of $2.98B.\n...\nCintas sees FY 2027 EPS of $5.45-$5.54 versus the analyst consensus of $5.49.\nCintas sees...",
+      "source": "web",
+      "title": "Cintas earnings beat by $0.01, revenue topped estimates",
+      "url": "https://www.investing.com/news/earnings/cintas-earnings-beat-by-001-revenue-topped-estimates-4913026"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "#earnings after the close on Tuesday, September 22, 2026, and before the open on Wednesday, September 23, 2026 earningswhispers.com/calendar $KBH $CBRL $GIS $WOR $PAYX $AYTU $CTAS",
+      "source": "web",
+      "title": "Earnings Whispers - @eWhispers",
+      "url": "https://x.com/eWhispers/status/2102427123591884828"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "## Today\u2019s Economic Calendar \u2014 Wednesday, September 23, 2026\n|Time (UTC)|Country|Event|Consensus|Prior|\n|--|--|--|--|--|\n|00:00|JP|Autumnal Equinox Day|\u2014|\u2014|\n|00:00|US|UN General Assembly|\u2014|\u2014|\n|07:30|DE|S&P Global Manufacturing PMI|54|54.3|\n|07:30|DE|S&P Global Composite PMI|51.8|51.8|\n|07:30|DE|S&P ...",
+      "source": "web",
+      "title": "Global Economy: Fed Keeps Dollar Firm as Flash PMIs Test Growth",
+      "url": "https://www.riotimesonline.com/global-economy-briefing-september-23-2026"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/calendar/earnings/",
+    "https://tickerdaily.com/article/stock-market-today-september-23-2026-sandp-500-closes-near-flat-on-mixed-earnings-tech-weighs",
+    "https://www.newsquawk.com/headlines/daily-us-earnings-estimates-23rd-september-2026-ctas-payx-gis",
+    "https://www.thetrading.tools/earnings-calendar",
+    "https://investrade.com/morning-preview-september-23-2026/",
+    "https://fn2.ai/earnings/calendar",
+    "https://www.marketbeat.com/instant-alerts/consensus-autodesk-inc-nasdaq-adsk-receives-average-rating-of-moderate-buy-from-brokerages-2026-09-23/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/bank-of-montreal-stock-rises-as-returns-improve/70166437",
+    "https://www.forth.news/lists/fed/CfJUtJGpS14GGkkXtZFNf",
+    "https://www.tradingview.com/news/DJN_DN20260923002326:0/",
+    "https://www.newsquawk.com/headlines/daily-us-earnings-estimates---24th-september-2026-cost-dri",
+    "https://www.tickmill.com/blog/daily-market-outlook-september-23-2026",
+    "https://www.investing.com/news/earnings/cintas-earnings-beat-by-001-revenue-topped-estimates-4913026",
+    "https://x.com/eWhispers/status/2102427123591884828",
+    "https://www.riotimesonline.com/global-economy-briefing-september-23-2026"
+  ],
+  "usage": {
+    "label": "broad_calendar",
+    "model": "sonar-pro",
+    "prompt_tokens": 581,
+    "completion_tokens": 1461,
+    "search_context_size": "high",
+    "cost_usd": 0.03766,
+    "seconds": 13.6
+  }
+}

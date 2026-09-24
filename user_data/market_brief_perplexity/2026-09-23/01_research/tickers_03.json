@@ -1,0 +1,169 @@
+{
+  "name": "tickers_03",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Wednesday September 23, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Wednesday September 23, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| MEI | Methode Electronics, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +11.52% | +15.9% | 1.7\u00d7 | \u2014 |\n| SECZ | Securitize Corp. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +10.93% | +92.1% | 3.2\u00d7 | \u2014 |\n| ACMR | ACM Research, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +7.57% | +25.8% | 3.8\u00d7 | \u2014 |\n| NUAI | New Era Energy & Digital, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +6.64% | +33.4% | 1.0\u00d7 | \u2014 |\n| BHF | Brighthouse Financial, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +6.31% | +6.6% | 1.8\u00d7 | \u2014 |\n| CBRL | Cracker Barrel Old Country Store | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +6.15% | +11.8% | 3.4\u00d7 | \u2014 |\n| VICR | Vicor Corporation | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +6.07% | +55.3% | 2.2\u00d7 | \u2014 |\n| VIA | Via Transportation, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +5.75% | +13.3% | 1.9\u00d7 | \u2014 |\n| SHOP | Shopify Inc. | Mega | Vol spike / gapper \u00b7 last 5D \u00b7 Mega cap | -3.47% | +11.1% | 2.4\u00d7 | both 2026-09-22 |\n| ARM | Arm Holdings plc American Depositary Shares | Mega | Vol spike / gapper \u00b7 last 5D \u00b7 Mega cap | +0.76% | +37.5% | 1.4\u00d7 | both 2026-09-21 |\n| INTC | Intel Corp. | Mega | Vol spike / gapper \u00b7 last 5D \u00b7 Mega cap | -0.49% | +22.1% | 0.8\u00d7 | gapper 2026-09-21 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Methode Electronics, Inc. (MEI) `[Analog & Mixed-Signal]`\n- No company-specific catalyst found in the available September 23, 2026 search results.\n\n## Securitize Corp. (SECZ) `[Internet & Platforms]`\n- Securitize shares rose as much as 9.6% in morning trading to $14.25, reaching a new 52-week high amid bullish analyst actions and a regulatory development; the report did not identify the specific firms, ratings, price targets, or regulatory action. (Investing.com Canada)\n- SECZ was listed among the session\u2019s leading gainers, with a reported September 23 close of $14.47 and a gain of 11.31% on volume of 4,731,289 shares. (BullStory)\n\n## ACM Research, Inc. (ACMR) `[Chip Equipment]`\n- ACM Research shares traded as high as $78.29 and were reported up 4.8% during Wednesday trading. (MarketBeat)\n- No company-specific catalyst was identified in the available September 23, 2026 search results.\n\n## New Era Energy & Digital, Inc. (NUAI) `[AI Infrastructure]`\n- New Era Energy & Digital had risen more than 60% during September by September 23 as attention focused on the broader neocloud trade; the report did not identify a company announcement explaining the September 23 move. (Yahoo Finance)\n- No company-specific catalyst was identified in the available September 23, 2026 search results.\n\n## Brighthouse Financial, Inc. (BHF) `[Financial Services]`\n- No company-specific catalyst found in the available September 23, 2026 search results.\n\n## Cracker Barrel Old Country Store (CBRL) `[Consumer Services]`\n- Cracker Barrel reported fiscal fourth-quarter 2026 revenue of $849.3 million, down 2.2% from the prior-year quarter, for the quarter ended July 31, 2026. (Quiver Quantitative)\n- GAAP net income was $12.2 million, or $0.54 per diluted share, for the quarter ended July 31, 2026. (Quiver Quantitative)\n- The available report did not provide consensus EPS, consensus revenue, fiscal 2027 guidance, or analyst actions. (Quiver Quantitative)\n\n## Vicor Corporation (VICR) `[Power & Wide-Bandgap]`\n- Vicor revised its third-quarter 2026 sequential revenue-growth outlook to more than 20% from its earlier projection of nearly 10%. (Zacks Equity Research)\n- A September 23 market report described the outlook revision as involving licensing royalties; the available result did not provide the dollar amount of royalties or the corresponding revenue guidance. (X post by @iamJMinx)\n- Vicor appeared among the session\u2019s leading gainers, with a reported intraday gain of 5.52% in one market report. (Yahoo Finance)\n\n## Via Transportation, Inc. (VIA) `[Software & SaaS]`\n- Via Transportation was listed among the leading September 23 gainers, with a reported close of $29.84 and a gain of 5.18%. (BullStory)\n- No company-specific catalyst was identified in the available September 23, 2026 search results.\n\n## Shopify Inc. (SHOP) `[Internet & Platforms]`\n- A September 23 market post attributed Shopify\u2019s premarket gain to a partnership with Meta involving the Muse artificial-intelligence agent; the post did not provide an announcement date, contract value, or terms. [rumor] (X post by @iamJMinx)\n- Shopify\u2019s September 23 session result in the available search results was not consistent across reports; the verified tape supplied in the request reports a 3.47% decline, which is used here. (verified exchange OHLC data supplied in the request)\n\n## Arm Holdings plc (ARM) `[Specialty Materials & IP Licensing]`\n- A September 23 market post identified Arm among chip and AI-infrastructure stocks trading approximately 1% lower in premarket conditions as sector sentiment weakened. (X post by @iamJMinx)\n- Arm was scheduled to report fiscal second-quarter 2027 results on November 4, 2026, according to the available market-calendar report. (Ad-Hoc-News)\n- The available search results did not identify a September 23 company announcement, contract, analyst action, or guidance change for Arm. (Ad-Hoc-News)\n\n## Intel Corp. (INTC) `[Fab & Foundry]`\n- Intel was reported to have declined 3.10% on September 23 in one market report, which attributed the move to profit-taking after recent gains. (TradingKey)\n- The same report said the technology-equipment sector declined 1.35% during the session. (Mitrade)\n- Another September 23 report described Intel\u2019s September gain as 22.6% for the week and linked semiconductor-stock strength to demand for artificial-intelligence infrastructure. (Investing.com)\n- The verified tape supplied in the request reports Intel\u2019s September 23 close at down 0.49%, which supersedes the differing third-party percentage reports. (verified exchange OHLC data supplied in the request)\n- No company-specific September 23 catalyst was identified in the available search results.",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Company News for Sep 23, 2026\n- MCD\n237.08\n-5.3%\n- IONQ\n42.80\n+5.06%\n...\n+401.5790%\n- PLTR\n191.43\n(+3.48%\n...\n# Company News for Sep 23, 2026\nZacks Equity Research\nWed, September 23, 2026 at 9:32 AM AST1 min read\n- AZO\n-0.61%\n- THO\n-2.66%\n- MLKN\n-0.49%\n- +3.33%\n...\nLearn more\n- Shares of AutoZone, I...",
+      "source": "web",
+      "title": "Company News for Sep 23, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-sep-23-2026-133200145.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Posted: 7 hours ago / Sept. 23, 2026 11:35 a.m.\nUTC\n...\nCracker Barrel Old Country Store (CBRL) reported fourth-quarter fiscal 2026 revenue of $849.3 million, down 2.2% from the prior-year quarter.\nGAAP net income was $12.2 million, or $0.54 per diluted share, for the quarter ended July 31, 2026.",
+      "source": "web",
+      "title": "Cracker Barrel Q4 Revenue Falls 2.2% to $849.3 Million | CBRL Stock News",
+      "url": "https://www.quiverquant.com/news/Cracker+Barrel+Q4+Revenue+Falls+2.2%25+to+$849.3+Million"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "## Las acciones que m\u00e1s se movieron en esta sesi\u00f3n\nSecuritize Corp.\nlider\u00f3 las subidas con un +11,31%.\nEndeavour Silver Corp.\nlider\u00f3 las bajadas con un -12,80%.\nIonQ, Inc.\nregistr\u00f3 el mayor volumen de acciones.\n...\n|Puesto|Empresa|Cierre|Variaci\u00f3n|Importe|\n|--|--|--|--|--|\n|1|\ub9c8\uc774\ud06c\ub860 \ud14c\ud06c\ub180\ub85c\uc9c0MU|1075,89\u00a0US...",
+      "source": "web",
+      "title": "Mayores movimientos de Estados Unidos el 23 de septiembre de 2026",
+      "url": "https://bullstory.io/es/markets/us/movers/2026-09-23"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Stock Market Today (Sept. 23, 2026): Nasdaq, Russell 2000 sink as 5-year Treasury hits 5% for first time since 2007\n- MCD\n236.94\n-5.36%\n- IONQ\n42.67\n+4.74%\n- BENF\n2.4500\n+355.1365%\n- PLTR\n190.26\n(+2.85%\n...\nStocks closed mixed on Friday as the 10-year Treasury yield hovered near 5%\n...\nS&P 500 7,713...",
+      "source": "web",
+      "title": "Stock Market Today (Sept. 23, 2026): Nasdaq, Russell 2000 ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-134802225.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "At the close on September 23, 2026, Arm Holdings stock ended at USD 329.92 on the Nasdaq, down 1.0 percent.\nThe shares traded between USD 324.56 and USD 331.85, while the Nasdaq 100 was at 30,465 points during the session.\n...\nArm Holdings stock closed at USD 329.92 on the Nasdaq on September 23, 20...",
+      "source": "web",
+      "title": "Arm Holdings stock slips 1.0 percent at the close",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/arm-holdings-stock-slips-1-0-percent-at-the-close/70170481"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Sep 23, 02:16 PM (EDT)\nPrice\n$327.05\nChange\n-$6.15 (-1.85%)\nCapitalization\n294.35B\n42 days until earnings call",
+      "source": "web",
+      "title": "Arm Holdings (ARM) Consolidates in the Mid-$200s After ...",
+      "url": "https://tickeron.com/blogs/arm-holdings-arm-consolidates-in-the-mid-200s-after-sharp-gains-16939/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Markets News, Sept. 23, 2026: Stocks Fall as Nasdaq\u2019s Record Streak Ends; Treasury Yields Rise to Highest Level Since 2007\n- MCD\n...\nMajor U.S. stock indexes declined Wednesday, with the Nasdaq Composite sinking after it registered its second consecutive record-high close, as Treasury yields soared ...",
+      "source": "web",
+      "title": "Markets News, Sept. 23, 2026: Stocks Fall as Nasdaq\u2019s Record ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-futures-little-104021073.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# Minx on X: \"Key Points Summary \u2014 Wednesday, September 23 Index Futures Dec S&P 500 E-Mini (ESZ26) -0.10%, Dec Nasdaq 100 E-Mini (NQZ26) -0.22% \u2014 pointing to a lower open as bond yields climbed after oil snapped a five-day losing streak.\nPremarket Movers Winners: WOR +17% (strong FQ1 beat), IONQ +1...",
+      "source": "web",
+      "title": "0.10%, Dec Nasdaq 100 E-Mini (NQZ26) - ...",
+      "url": "https://x.com/iamJMinx/status/2102744347473002668"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Intel Corp Stock (INTC) Moved Down by 3.10% on Sep 23: What Investors Need To Know\n...\n\u2022 Intel shares pulled back as investors engaged in profit-taking following recent rallies.\n...\nIntel Corp (INTC) moved down by 3.10%.",
+      "source": "web",
+      "title": "Intel Corp Stock (INTC) Moved Down by 3.10% on Sep 23: What Investors Need To Know",
+      "url": "https://www.tradingkey.com/news/market-movers/262183000-market-movers-intc-20260923"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "INTC+1,71%\n...\nNTRA+5,47%\nARM+3,19%\n**Investing.com** \u2014 As fabricantes de chips registraram alta pela sexta sess\u00e3o consecutiva ontem, com o capital institucional continuando a fluir para os gigantes do setor de semicondutores.\nImpulsionada pela demanda incessante por infraestrutura de IA, s\u00f3 nesta s...",
+      "source": "web",
+      "title": "+42%, +39%, +36%: as a\u00e7\u00f5es de chips escolhidas por IA que disparam em setembro Por Investing.com",
+      "url": "https://br.investing.com/news/stock-market-news/42-39-36-as-acoes-de-chips-escolhidas-por-ia-que-disparam-em-setembro-2072507"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "ACM Research, Inc.\n(NASDAQ:ACMR - Get Free Report) shares traded up 4.8% during trading on Wednesday . The company traded as high as $78.29 and last traded at $79.4030.",
+      "source": "web",
+      "title": "ACM Research (NASDAQ:ACMR) Shares Up 4.8%  - What's Next?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-acm-research-nasdaq-acmr-shares-up-48-whats-next-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Intel Corp Stock (INTC) Moved Down by 3.10% on Sep 23: What Investors Need To Know\n...\nIntel Corp (INTC) moved down by 3.10%.\nThe Technology Equipment sector is down by 1.35%.\nThe company underperformed the industry.",
+      "source": "web",
+      "title": "Intel Corp Stock (INTC) Moved Down by 3.10% on Sep 23: What Investors Need To Know",
+      "url": "https://www.mitrade.com/ae-en/insights/news/live-news/article-0-2110205-20260923"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "## The day's top movers\nGainers\nBENF2.87 **+378.36%**\nWHLR5.41 **+186.68%**\nVSA3.83 **+90.91%**\nARTL7.19 **+73.23%**\nTJGC23.49 **+39.75%**\nIPDN5.39 **+39.36%**\nMSS2.16 **+36.60%**\nSMJF1.57 **+26.61%**\nLosers\nJAGX8.86 **-74.35%**\nHVII4.38 **-51.66%**\nIMCC2.92 **-29.57%**\nRPGL1.01 **-29.47%**\nHUBC3.20...",
+      "source": "web",
+      "title": "Market Digest \u2014 Wednesday, September 23, 2026",
+      "url": "https://stockmarketwatch.com/digest/2026-09-23"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "SECZ+13.23%\nInvesting.com -- Securitize Corp.\nstock surged nearly 9.6% in morning trading to reach $14.25, a fresh 52-week high, as buying momentum tied to a wave of bullish analyst actions and a pivotal regulatory development continued to propel shares higher into today\u2019s session.",
+      "source": "web",
+      "title": "Why is Securitize stock surging today? - Investing.com Canada",
+      "url": "https://ca.investing.com/news/stock-market-news/why-is-securitize-stock-surging-today-93CH-4850129"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "+438.7330%\n...\n(+2.94%\n...\n- NUAI\n+0.22%\n...\n-1.47%\n...\n**New Era Energy & Digital** (NASDAQ: NUAI) stock has surged by more than 60% over the past month, attracting more attention as the broader neocloud trade gains momentum.\n...\n- FSLY Fastly, Inc.\n29.65\n- SECZ Securitize Corp.\n14.36\n- ACMR ACM Re...",
+      "source": "web",
+      "title": "New Era Energy & Digital Is Up by More Than 60% This Month. Here's What's Fueling the Rally.",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/era-energy-digital-more-60-084100539.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-sep-23-2026-133200145.html",
+    "https://www.quiverquant.com/news/Cracker+Barrel+Q4+Revenue+Falls+2.2%25+to+$849.3+Million",
+    "https://bullstory.io/es/markets/us/movers/2026-09-23",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-134802225.html?fr=sycsrp_catchall",
+    "https://www.ad-hoc-news.de/boerse/news/nebenwerte/arm-holdings-stock-slips-1-0-percent-at-the-close/70170481",
+    "https://tickeron.com/blogs/arm-holdings-arm-consolidates-in-the-mid-200s-after-sharp-gains-16939/",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-futures-little-104021073.html?fr=sycsrp_catchall",
+    "https://x.com/iamJMinx/status/2102744347473002668",
+    "https://www.tradingkey.com/news/market-movers/262183000-market-movers-intc-20260923",
+    "https://br.investing.com/news/stock-market-news/42-39-36-as-acoes-de-chips-escolhidas-por-ia-que-disparam-em-setembro-2072507",
+    "https://www.marketbeat.com/instant-alerts/price-acm-research-nasdaq-acmr-shares-up-48-whats-next-2026-09-23/",
+    "https://www.mitrade.com/ae-en/insights/news/live-news/article-0-2110205-20260923",
+    "https://stockmarketwatch.com/digest/2026-09-23",
+    "https://ca.investing.com/news/stock-market-news/why-is-securitize-stock-surging-today-93CH-4850129",
+    "https://finance.yahoo.com/markets/stocks/articles/era-energy-digital-more-60-084100539.html"
+  ],
+  "usage": {
+    "label": "tickers_03",
+    "model": "sonar-pro",
+    "prompt_tokens": 1209,
+    "completion_tokens": 1126,
+    "search_context_size": "high",
+    "cost_usd": 0.03452,
+    "seconds": 12.6
+  }
+}
