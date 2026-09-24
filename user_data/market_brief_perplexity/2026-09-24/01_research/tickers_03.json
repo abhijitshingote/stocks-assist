@@ -1,0 +1,165 @@
+{
+  "name": "tickers_03",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Thursday September 24, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Thursday September 24, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| SECZ | Securitize Corp. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +10.46% | +84.8% | 2.1\u00d7 | \u2014 |\n| MEI | Methode Electronics, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +9.69% | +11.7% | 1.6\u00d7 | \u2014 |\n| ACMR | ACM Research, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +6.42% | +24.4% | 2.9\u00d7 | \u2014 |\n| KVYO | Klaviyo, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +5.73% | +3.4% | 1.3\u00d7 | \u2014 |\n| VICR | Vicor Corporation | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +5.52% | +54.0% | 1.8\u00d7 | \u2014 |\n| ALNT | Allient Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +5.13% | +19.9% | 1.2\u00d7 | \u2014 |\n| AMPL | Amplitude, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +4.72% | +2.1% | 1.0\u00d7 | \u2014 |\n| BETA | BETA Technologies, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +4.55% | +20.1% | 0.4\u00d7 | \u2014 |\n| INTC | Intel Corp. | Mega | Vol spike / gapper \u00b7 last 5D \u00b7 Mega cap | -1.02% | +21.3% | 0.7\u00d7 | gapper 2026-09-21 |\n| ARM | Arm Holdings plc American Depositary Shares | Mega | Vol spike / gapper \u00b7 last 5D \u00b7 Mega cap | -0.19% | +36.3% | 1.3\u00d7 | gapper 2026-09-21 |\n| WBD | Warner Bros. Discovery, Inc. | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | -0.23% | +9.6% | 2.5\u00d7 | both 2026-09-21 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Securitize Corp. (SECZ) `[Internet & Platforms]`\n- Securitize shares rose 10.46% on September 23 amid coverage of a \u201clandmark tokenized-securities partnership\u201d; the available report did not identify the partner or disclose a contract value. (StocksToTrade)\n- SECZ gained 84.8% over the five sessions through September 23; no additional verified company filing, earnings release, analyst action, or contract amount was identified in the available search results. (Trefis)\n\n## Methode Electronics, Inc. (MEI) `[Analog & Mixed-Signal]`\n- No company-specific catalyst found in window.\n- MEI rose 9.69% on September 23 and 11.7% over five sessions; the available market-mover coverage listed the move but did not identify a dated company announcement or named sympathy driver. (Trefis)\n\n## ACM Research, Inc. (ACMR) `[Chip Equipment]`\n- No company-specific catalyst found in window.\n- ACMR rose 6.42% on September 23 and 24.4% over five sessions; available coverage referenced valuation commentary and a MarketBeat trading item but did not identify a new filing, contract, earnings report, or named sector lead in the window. (Yahoo Finance; MarketBeat)\n\n## Klaviyo, Inc. (KVYO) `[Software & SaaS]`\n- Klaviyo shares rose 5.73% on September 23 amid coverage describing \u201cfresh AI platform updates\u201d; the available result did not provide revenue, customer, product-launch, or contract figures. (Yahoo Finance)\n- KVYO rose 3.4% over five sessions; no dated company filing, earnings release, analyst action, or contract amount was identified in the available search results. (Trefis)\n\n## Vicor Corporation (VICR) `[Power & Wide-Bandgap]`\n- VICR rose 5.52% on September 23 amid coverage citing an AI-power patent-licensing agreement and expected growth in VPD royalties; the available result did not identify the licensee, agreement date, or dollar value. (Stock Market Lab)\n- VICR gained 54.0% over five sessions; no verified filing or company release with financial terms was identified in the available search results. (Trefis)\n\n## Allient Inc. (ALNT) `[Analog & Mixed-Signal]`\n- No company-specific catalyst found in window.\n- ALNT rose 5.13% on September 23 and 19.9% over five sessions; available market-mover coverage identified the performance but no dated company announcement or named sympathy driver. (Trefis)\n\n## Amplitude, Inc. (AMPL) `[Software & SaaS]`\n- No company-specific catalyst found in window.\n- AMPL rose 4.72% on September 23 and 2.1% over five sessions; available coverage attributed the move only to valuation observations, including cash as a significant percentage of market capitalization, and did not identify a dated company catalyst. (Trefis)\n\n## BETA Technologies, Inc. (BETA) `[AI Infrastructure]`\n- BETA rose 4.55% on September 23 amid coverage of an electric-aircraft medical-supplies delivery simulation in North Carolina; the available report did not provide a contract value or customer name. (Stock Market Lab)\n- Coverage also cited 146% revenue growth for BETA; the available result did not specify the comparison period or report the corresponding revenue figure. (Stock Market Lab)\n\n## Intel Corp. (INTC) `[Fab & Foundry]`\n- Intel was cited among chip stocks benefiting from Meta\u2019s Muse AI product coverage; Muse had more than 500,000 total users, 250,000 daily active users, and more than 2 million prompts in its first week. (Market Review)\n- INTC fell 1.02% on September 23 but gained 21.3% over five sessions; the available market review said Intel, AMD, and ARM benefited from the recent Meta/Muse developments, without identifying a new Intel filing or company-specific September 23 announcement. (Market Review)\n- Intel was part of a broader AI-semiconductor move led in the available coverage by AMD, which rose 21.7% during the week cited, while Intel rose 22.6% over the same period in that report. (Investing.com)\n\n## Arm Holdings plc (ARM) `[Specialty Materials & IP Licensing]`\n- ARM was cited among chip stocks benefiting from Meta\u2019s Muse AI product coverage; Muse had more than 500,000 total users, 250,000 daily active users, and more than 2 million prompts in its first week. (Market Review)\n- ARM fell 0.19% on September 23 but gained 36.3% over five sessions; the available search results did not identify a new Arm filing, contract, earnings release, or analyst action in the stated window. (Market Review)\n- A September 23 report cited Arm\u2019s full-year revenue of $4.92 billion, up 22.8% year over year, and profit growth of 27%; the result did not identify the applicable consensus estimates or provide a new September 23 release. (Investing.com)\n\n## Warner Bros. Discovery, Inc. (WBD) `[Communications & Networking]`\n- No company-specific catalyst found in window.\n- WBD fell 0.23% on September 23, gained 9.6% over five sessions, and traded with volume at 2.5 times its 10-day average; available coverage discussed the stock\u2019s recent performance but did not identify a dated filing, earnings release, analyst action, transaction, or named sympathy driver. (Trefis)",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Wed, September 23, 2026 at 10:27 AM GMT-33 min read\n...\nU.S. stocks ended mixed on Tuesday, with the Nasdaq notching a record closing high, while the S&P 500 ended flat as investors closely monitored developments between the United States and Iran.\n...\n- Recently viewed\n- - FSLY Fastly, Inc.\n- SECZ ...",
+      "source": "web",
+      "title": "Stock Market News for Sep 23, 2026 - Yahoo Finance",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-23-132700528.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "2026\ub144 09\uc6d4 23\uc77c(\uc218) \ubbf8\uad6d \uc99d\uc2dc \uc804\uccb4 \uc0c1\uc7a5 \uc885\ubaa9 \uc911 \uc2dc\uac00\ucd1d\uc561 10\uc5b5 \ub2ec\ub7ec \uc774\uc0c1, \uc0c1\uc2b9\ub960 \uae30\uc900 \uc0c1\uc704 20\uac1c \uc885\ubaa9\uc744 \uc120\uc815\ud588\uc2b5\ub2c8\ub2e4.\n...\n## 2\uc704 Securitize Corp.\nSECZ \u00b7 NYSE +10.5%\n**Securitize Corp.\uc774(\uac00) \uac15\ud55c \ub9e4\uc218\uc138\uc640 \ud568\uaed8 +10.5% \uae09\ub4f1\ud588\uc2b5\ub2c8\ub2e4.**\n\ub2f9\uc77c \uc218\uc9d1\ub41c \ub274\uc2a4 \ud5e4\ub4dc\ub77c\uc778: SECZ Stock Surges As Traders Chase Momentum Run - StocksToTrade; Stock options are the source of shares in offi...",
+      "source": "web",
+      "title": "\ubbf8\uad6d \uc8fc\uc2dd \uae09\ub4f1\uc8fc 2026\ub144 9\uc6d4 23\uc77c \u2014 Fastly +14%\u00b7Securitize\u00b7ACM ...",
+      "url": "https://stockmarketlab.tistory.com/2109"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "## Latest in markets\n- ### Bittensor (TAO) declines 8.55% over 24-hour window to 24 September 2026\n24 September 2026\n- ### Hedera (HBAR) falls 8.66% over 24-hour window to 24 September 2026\n24 September 2026\n- ### Cronos (CRO) declines 7.99% over the 24-hour window to 24 September 2026\n24 September ...",
+      "source": "web",
+      "title": "Markets - Global Banking & Finance Review",
+      "url": "https://www.globalbankingandfinance.com/markets/?country=TR&screener=1"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "On has cleared a buyback of up to $1 billion through the end of 2029, its first ever.\n...\n|#|Ticker|Company|1D Rtn|YTD Rtn|Highlights|\n...\n|2|SECZ|Securitize|10.5%| | |\n|3|MEI|Methode Electronics|9.7%|127.2%|** Expensive valuation multiples** Stock price has recently run up significantly|\n|4|ACMR|AC...",
+      "source": "web",
+      "title": "Why Did On Holding Stock Jump If Its Near-Term Guidance ...",
+      "url": "https://www.trefis.com/articles/616301/why-did-on-holding-stock-jump-if-its-near-term-guidance-did-not-change/2026-09-23"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Closing Recap\nWednesday, September 23, 2026\nIndex\nUp/Down\n%\nLast\nDJ Industrials\n-351.27\n0.68%\n51,512\nS&P 500\n-58.25\n0.75%\n7,706\nNasdaq\n-308.24\n1.13%\n26,936\nRussell 2000\n...\nMETA shares helped the Nasdaq, holding its annual conference today, as CEO Zuckerberg delivers his Connect keynote tonight at 7...",
+      "source": "web",
+      "title": "Market Review: September 23, 2026",
+      "url": "https://www.eoption.com/market-review-september-23-2026/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Driven by relentless demand for AI infrastructure, this week alone has seen **Marvell (NASDAQGS:MRVL)** surge **+14.2%**, **AMD (NASDAQGS:AMD)** jump **+21.7%**, and I**ntel (NASDAQGS:INTC)** climb **+22.6%** \u2014 extending already massive gains for the month to date.",
+      "source": "web",
+      "title": "These AI-picked chip stocks are rallying in September - see why",
+      "url": "https://uk.investing.com/news/stock-market-news/42-39-36-these-aipicked-chip-stocks-are-rallying-in-september--see-why-4878667"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Asian cash markets finished mixed: the Nikkei 225 closed up 0.76 percent, the Hang Seng closed down 1.28 percent, the Shanghai Composite closed down 1.61 percent and the ASX 200 closed down 0.64 percent.",
+      "source": "web",
+      "title": "September 24, 2026 Market LiveCast Brief - SquawkNews",
+      "url": "https://squawknews.com/brief/livecast/2026-09-24"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- **Arm (NASDAQGS:ARM): **+41.62% in Sep alone\n- **Intel (NASDAQGS:INTC): **+37.80% in Sep alone",
+      "source": "web",
+      "title": "93% hit rate \u2014 these AI-picked tech stocks have notched a +213% return By Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/93-hit-rate--these-aipicked-tech-stocks-have-notched-a-213-return-4914554"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "|#|Ticker|Company|1D Rtn|YTD Rtn|Highlights|\n...\n|2|SECZ|Securitize|10.5%| | |\n|3|MEI|Methode Electronics|9.7%|127.2%|** Expensive valuation multiples** Stock price has recently run up significantly|\n|4|ACMR|ACM Research|6.4%|104.5%|** Cash is significant % of market cap** Stock price has recently r...",
+      "source": "web",
+      "title": "What Changed In AMD\u2019s Story?",
+      "url": "https://www.trefis.com/stock/amd/articles/616271/what-changed-in-amds-story/2026-09-23"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "|#|Ticker|Company|1D Rtn|YTD Rtn|Highlights|\n|--|--|--|--|--|--|\n|1|FSLY|Fastly|13.7%|191.3%|** Attractive cash flow generation** Not profitable at operating income level|\n|2|SECZ|Securitize|10.5%| | |\n|3|MEI|Methode Electronics|9.7%|127.2%|** Expensive valuation multiples** Stock price has recently...",
+      "source": "web",
+      "title": "S&P 500 Movers | Winners: MPWR, SNDK, LEN | Losers - Trefis",
+      "url": "https://www.trefis.com/stock/spy/articles/616252/sp-500-movers-winners-mpwr-sndk-len-losers-gen-gddy-rcl/2026-09-23"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "23, 2026, 12:32 PM ET\n...\nSecuritize Corp.\njumps as a landmark tokenized-securities partnership boosts confidence, and stocks have been trading up by 11.65 percent.\n...\n**Live Update At 12:32:03 EDT:** On Wednesday, September 23, 2026 Securitize Corp.\nstock [NYSE: SECZ] is trending up by 11.65%!",
+      "source": "web",
+      "title": "SECZ Stock Surges As Traders Chase Momentum Run",
+      "url": "https://stockstotrade.com/news/securitize-corp-secz-news-2026_09_23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "**Investing.com** \u2014 Arm Holdings (ARM) has surged 36%+ this week, leading a massive semiconductor rally among megacap stocks.\nDriven by stellar full-year results\u2014including a 22.8% year-over-year revenue jump to $4.92 billion and 27% profit growth\u2014Arm has shown that profitability is scaling faster th...",
+      "source": "web",
+      "title": "Arm Holdings is up 36% this week: Is it an AI megatrend buy or a valuation trap? By Investing.com",
+      "url": "https://in.investing.com/news/stock-market-news/arm-holdings-is-up-36-this-week-is-it-an-ai-megatrend-buy-or-a-valuation-trap-5602493"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "The latest Top News, from leading exponents of , Stock Market, BlockChain, New Economy Accredited Sources.",
+      "source": "web",
+      "title": "US Premarket Movers for September 24, 2026",
+      "url": "https://www.bloomberg.com/news/articles/2026-09-24/us-stock-futures-today-darden-dropbox-everpure-mgm-resorts"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "**Sectors in focus:**\n...\n- **September 24:** Quarterly earnings from Costco (COST) and BlackBerry (BB).\n...\n|#|Ticker|Company|RSI(14)|RS rank|1M|\n...\n|2|ALNT|Allient Inc.\nCommon Stock|67|97|+20%|",
+      "source": "web",
+      "title": "Market Digest \u2014 Wednesday, September 23, 2026",
+      "url": "https://stockmarketwatch.com/digest/2026-09-23"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "WBDYTD+6.7%SPYYTD+13.2%XLCYTD-3.8%\n...\nShares of Warner Bros.\nDiscovery (WBD) have rewarded investors with a 60% return over the last twelve months, a run that has the stock trading essentially at its 52-week high.\n...\n|#|Ticker|Company|1D Rtn|YTD Rtn|Highlights|\n...\n|1|FSLY|Fastly|13.7%|191.3%|** A...",
+      "source": "web",
+      "title": "WBD Stock Is Running. Is There Fuel Left?",
+      "url": "https://www.trefis.com/stock/wbd/articles/616254/wbd-stock-is-running-is-there-fuel-left/2026-09-23"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-23-132700528.html",
+    "https://stockmarketlab.tistory.com/2109",
+    "https://www.globalbankingandfinance.com/markets/?country=TR&screener=1",
+    "https://www.trefis.com/articles/616301/why-did-on-holding-stock-jump-if-its-near-term-guidance-did-not-change/2026-09-23",
+    "https://www.eoption.com/market-review-september-23-2026/",
+    "https://uk.investing.com/news/stock-market-news/42-39-36-these-aipicked-chip-stocks-are-rallying-in-september--see-why-4878667",
+    "https://squawknews.com/brief/livecast/2026-09-24",
+    "https://www.investing.com/news/stock-market-news/93-hit-rate--these-aipicked-tech-stocks-have-notched-a-213-return-4914554",
+    "https://www.trefis.com/stock/amd/articles/616271/what-changed-in-amds-story/2026-09-23",
+    "https://www.trefis.com/stock/spy/articles/616252/sp-500-movers-winners-mpwr-sndk-len-losers-gen-gddy-rcl/2026-09-23",
+    "https://stockstotrade.com/news/securitize-corp-secz-news-2026_09_23/",
+    "https://in.investing.com/news/stock-market-news/arm-holdings-is-up-36-this-week-is-it-an-ai-megatrend-buy-or-a-valuation-trap-5602493",
+    "https://www.bloomberg.com/news/articles/2026-09-24/us-stock-futures-today-darden-dropbox-everpure-mgm-resorts",
+    "https://stockmarketwatch.com/digest/2026-09-23",
+    "https://www.trefis.com/stock/wbd/articles/616254/wbd-stock-is-running-is-there-fuel-left/2026-09-23"
+  ],
+  "usage": {
+    "input_tokens": 1212,
+    "output_tokens": 1217,
+    "cost_usd": 0.03589
+  }
+}

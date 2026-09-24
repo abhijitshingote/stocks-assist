@@ -1,0 +1,165 @@
+{
+  "name": "tickers_06",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Thursday September 24, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Thursday September 24, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| SDGR | Schr\u00f6dinger, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -4.79% | +22.1% | 1.2\u00d7 | both 2026-09-17 |\n| QMCO | Quantum Corporation | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +1.25% | +9.0% | 3.4\u00d7 | both 2026-08-11 |\n| CHPT | ChargePoint Holdings, Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -6.29% | +3.6% | 0.2\u00d7 | volume_spike 2026-09-04 |\n| PURR | Hyperliquid Strategies Inc Common Stock | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -0.07% | +21.9% | 0.9\u00d7 | gapper 2026-09-17 |\n| FWDI | Forward Industries, Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -6.28% | +34.1% | 1.0\u00d7 | gapper 2026-09-18 |\n| CVI | CVR Energy, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -0.63% | -2.4% | 1.0\u00d7 | \u2014 |\n| ATRC | AtriCure, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +1.92% | +4.9% | 0.7\u00d7 | \u2014 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Schr\u00f6dinger, Inc. (SDGR) `[Software & SaaS]`\n- A September 23 technical-market report said SDGR had reached a two-year high of $31.59 on September 22; Barchart listed a 100% \u201cBuy\u201d technical opinion, analyst price targets ranging from $17 to $41.17, and short interest of 15.02% of the float (Barchart).\n- A September 23 valuation article cited Schr\u00f6dinger\u2019s creation of Tectora and recent restricted-stock-unit grants as developments that could affect future drug-discovery programs and royalty streams; it also reported trailing-twelve-month free cash flow of negative $133.9 million (Simply Wall St).\n- No company earnings release, SEC filing, contract announcement, or named analyst action explaining the September 23 decline was identified in the available results.\n\n## Quantum Corporation (QMCO) `[AI Infrastructure]`\n- Quantum reported fiscal first-quarter 2027 adjusted EPS of $0.18 on revenue of $80.8 million, versus analyst estimates of a $0.17 loss per share and $75.05 million of revenue (MarketBeat).\n- The company\u2019s fiscal first-quarter 2027 results were also reported as $0.18 of adjusted EPS versus an expected $0.24 loss and $80.8 million of revenue versus an expected $71.5 million (Investing.com).\n- Quantum\u2019s shares reached a 52-week high of $27.82 on September 23 (Investing.com).\n- Laura A. Nash left her positions as chief accounting officer and principal accounting officer effective September 1; Quantum said she would remain in a transition role through the end of 2026 and that there were no disagreements with the company (Investing.com).\n\n## ChargePoint Holdings, Inc. (CHPT) `[Power & Wide-Bandgap]`\n- No company-specific catalyst found in window.\n\n## Hyperliquid Strategies Inc. Common Stock (PURR) `[Internet & Platforms]`\n- No company-specific catalyst found in window.\n\n## Forward Industries, Inc. (FWDI) `[Internet & Platforms]`\n- Forward Industries announced a registered direct offering of approximately $25 million to a single institutional investor at $8.00 per share (GlobeNewswire, as reported by Solana Compass).\n- The offering consists of 3,125,000 common shares, with net proceeds allocated to purchases of Solana for the company\u2019s treasury; closing was expected around September 24, 2026 (GlobeNewswire, as reported by Solana Compass).\n- A September 23 market report said FWDI fell from a prior close of $8.60 to an opening price of $8.20 and traded near $8.3150 (MarketBeat).\n- The registered direct offering was reported as the catalyst for the September 23 decline; the offering price was $8.00 per share (Solana Compass).\n\n## CVR Energy, Inc. (CVI) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window.\n\n## AtriCure, Inc. (ATRC) `[Semiconductors]`\n- AtriCure was reported as reaching a new one-year high on September 23, 2026 (MarketBeat).\n- No company-specific catalyst, earnings release, SEC filing, contract announcement, or named analyst action explaining the September 23 move was identified in the available results.",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Schrodinger Stock Has Technical Strength as It Hits New 2-Year Highs\n...\n# Schrodinger Stock Has Technical Strength as It Hits New 2-Year Highs\nJim Van Meerten\nWed, September 23, 2026 at 1:50 PM AST3 min read\n- SDGR\n-4.79%\n...\nSDGR - Schrodinger (SDGR) is trading at new 2-year highs.\n- SDGR maintain...",
+      "source": "web",
+      "title": "Schrodinger Stock Has Technical Strength as It Hits New 2- ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/schrodinger-stock-technical-strength-hits-175003541.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Schrodinger stock gains 69.1 percent year to date\n...\n# Schrodinger stock gains 69.1 percent year to date\nPublished on 09/23/2026 at 06:30 | Editorial responsibility: Rafael M\u00fcller, Editor-in-Chief AD HOC NEWS\nSchrodinger stock is up 69.1 percent year to date as of September 22, 2026.\nCash remains a...",
+      "source": "web",
+      "title": "Schrodinger stock gains 69.1 percent year to date",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/schrodinger-stock-gains-69-1-percent-year-to-date/70162443"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Schr\u00f6dinger (SDGR) Stock May Be Below Fair Value On Tectora Deal - Simply Wall St News\n1. United States\n...\n# Schr\u00f6dinger (SDGR) Stock May Be Below Fair Value On Tectora Deal\nSeptember 23, 2026\nSimply Wall St\nSchr\u00f6dinger has had a powerful run in 2026, which puts a fresh spotlight on a simple questi...",
+      "source": "web",
+      "title": "Schr\u00f6dinger (SDGR) Stock May Be Below Fair Value On ...",
+      "url": "https://simplywall.st/stocks/us/healthcare/nasdaq-sdgr/schrodinger/news/schrdinger-sdgr-stock-may-be-below-fair-value-on-tectora-dea/amp"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Bybit Lists SDGRUSDT Perpetual For Schr\u00f6dinger Stock Exposure\nScan to Download\n...\n# Bybit Lists SDGRUSDT Perpetual For Schr\u00f6dinger Stock Exposure\nBitcoinistSep 23, 2026 11:30 PM\n...\n## TL;DR\n- Bybit has listed SDGRUSDT, a perpetual contract tracking Schr\u00f6dinger Inc. shares.\n- The contract offers up...",
+      "source": "web",
+      "title": "Bybit Lists SDGRUSDT Perpetual For Schr\u00f6dinger Stock Exposure",
+      "url": "https://www.tradingkey.com/news/cryptocurrencies/262183730-bitcoinist"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "September 23, 2026, 14:14 pm ET\nBY Quantitative Research Desk - Contributor Editor: Thomas H. Kee Jr.\n...\n### Key findings for Schrodinger Inc.\n(NASDAQ: SDGR)\n- If Near and Mid-Term Strong Sentiment Holds, It Could Extend to Long Term\n- No clear price positioning signal identified.\n- No resistance l...",
+      "source": "web",
+      "title": "Precision Trading with Schrodinger Inc. (SDGR) Risk Zones",
+      "url": "https://news.stocktradersdaily.com/news_release/134/Precision_Trading_with_Schrodinger_Inc._SDGR_Risk_Zones_092326021402_1790187242.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "September 23rd, 2026 \u00b7 by Trefis Team\n...\n|#|Ticker|Company|1M Rtn|YTD Rtn|Highlights|\n|--|--|--|--|--|--|\n...\n|3|SDGR|Schrodinger|55.7%|63.5%|** Cash is significant % of market cap** Not profitable at operating income level|",
+      "source": "web",
+      "title": "The Premium On Abbott Laboratories Keeps Growing. So Does The Case For Stryker and Boston Scientific",
+      "url": "https://www.trefis.com/stock/abt/articles/616253/the-premium-on-abbott-laboratories-keeps-growing-so-does-the-case-for-stryker-and-boston-scientific/2026-09-23"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "MarketBeat broke the news in Sioux Falls, United States 20 hours ago on Wednesday, September 23, 2026.",
+      "source": "web",
+      "title": "AtriCure (NASDAQ:ATRC) Reaches New 1-Year High - Here's What Happened",
+      "url": "https://ground.news/article/atricure-nasdaq-atrc-reaches-new-1-year-high-heres-what-happened"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "|#|Ticker|Company|1M Rtn|YTD Rtn|Highlights|\n|--|--|--|--|--|--|\n...\n|2|OKTA|Okta|56.8%|137.5%|** Attractive cash flow generation** Expensive valuation multiples|\n|3|SDGR|Schrodinger|55.7%|63.5%|** Cash is significant % of market cap** Not profitable at operating income level|",
+      "source": "web",
+      "title": "Seagate Technology Stock Climbs 19% On A 5-Day Winning Streak",
+      "url": "https://www.trefis.com/stock/stx/articles/616260/seagate-technology-stock-climbs-19-on-a-5-day-winning-streak/2026-09-23"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Il titolo azionario di Quantum Corp raggiunge il massimo a 52 settimane a 27,82 USD Da Investing.com\n...\nPubblicato 23.09.2026, 17:20\n...\nQMCO+7,66%\nIl titolo di Quantum Corp ha raggiunto un traguardo significativo, toccando il massimo a 52 settimane di 27,82 USD.\n...\nIn altre notizie recenti, Quant...",
+      "source": "web",
+      "title": "Il titolo azionario di Quantum Corp raggiunge il massimo a 52 ...",
+      "url": "https://it.investing.com/news/company-news/il-titolo-azionario-di-quantum-corp-raggiunge-il-massimo-a-52-settimane-a-2782-usd-93CH-3559981"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Quantum shares rose 7.7%** to about $27.63 in mid-day trading, despite volume running 24% below the average session level.\n- Analyst sentiment remains broadly positive: four analysts rate the stock a Buy and one rates it Sell, resulting in a \u201cModerate Buy\u201d consensus and a $26.50 av...",
+      "source": "web",
+      "title": "Quantum (NASDAQ:QMCO) Trading Up 7.7% - MarketBeat",
+      "url": "https://www.marketbeat.com/instant-alerts/price-quantum-nasdaq-qmco-trading-up-77-heres-what-happened-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Quantum Corp stock hits 52-week high at 27.82 USD By Investing.com\n...\nPublished Sep 23, 2026, 11:20 a.m.\n...\nQuantum Corp stock has reached a notable milestone, hitting a 52-week high of 27.82 USD.\nThis achievement reflects a significant upward trend for the company, which has seen its stock price ...",
+      "source": "web",
+      "title": "Quantum Corp stock hits 52-week high at 27.82 USD By Investing.com",
+      "url": "https://ca.investing.com/news/stock-market-news/quantum-corp-stock-hits-52week-high-at-2782-usd-93CH-4850254"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Schrodinger Stock Has Technical Strength as It Hits New 2-Year Highs\n...\nFor more information please view the Barchart Disclosure Policy here\n- Schrodinger (SDGR) is trading at new 2-year highs.\n- SDGR maintains strong technical momentum with shares up more than 50% over the past year.\n- SDGR mainta...",
+      "source": "web",
+      "title": "Barchart's Technical...",
+      "url": "https://www.barchart.com/story/news/4761573/schrodinger-stock-has-technical-strength-as-it-hits-new-2-year-highs"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-22",
+      "place_metadata": null,
+      "snippet": "30.31-0.39(-1.27%)\n...\nNo news in this category\nSee other Stock Markets news",
+      "source": "web",
+      "title": "Schrodinger News Today (SDGR) - Investing.com",
+      "url": "https://www.investing.com/equities/schrodinger-inc-news/41"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Forward Industries shares fell at the open**, dropping from a prior close of $8.60 to $8.20 before trading around $8.3150.",
+      "source": "web",
+      "title": "Forward Industries (NASDAQ:FWDI) Shares Gap Down - Here's Why",
+      "url": "https://www.marketbeat.com/instant-alerts/price-forward-industries-nasdaq-fwdi-shares-gap-down-heres-why-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Forward Industries (FWDI) $25M Registered Direct Offering to Buy More SOL | Solana Compass\n...\n# Forward Industries Raises $25 Million in Registered Direct Offering to Expand SOL Treasury\nBy Solana \ud83e\udded Compass ** Sep 23, 2026 \u00b7 13:22 UTC\nForward Industries (FWDI) raises $25M in a registered direct off...",
+      "source": "web",
+      "title": "Forward Industries (FWDI) $25M Registered Direct Offering ...",
+      "url": "https://solanacompass.com/news/forward-industries-raises-25-million-in-registered-direct-offering-to-expand-sol-treasury"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/schrodinger-stock-technical-strength-hits-175003541.html",
+    "https://www.ad-hoc-news.de/boerse/news/nebenwerte/schrodinger-stock-gains-69-1-percent-year-to-date/70162443",
+    "https://simplywall.st/stocks/us/healthcare/nasdaq-sdgr/schrodinger/news/schrdinger-sdgr-stock-may-be-below-fair-value-on-tectora-dea/amp",
+    "https://www.tradingkey.com/news/cryptocurrencies/262183730-bitcoinist",
+    "https://news.stocktradersdaily.com/news_release/134/Precision_Trading_with_Schrodinger_Inc._SDGR_Risk_Zones_092326021402_1790187242.html",
+    "https://www.trefis.com/stock/abt/articles/616253/the-premium-on-abbott-laboratories-keeps-growing-so-does-the-case-for-stryker-and-boston-scientific/2026-09-23",
+    "https://ground.news/article/atricure-nasdaq-atrc-reaches-new-1-year-high-heres-what-happened",
+    "https://www.trefis.com/stock/stx/articles/616260/seagate-technology-stock-climbs-19-on-a-5-day-winning-streak/2026-09-23",
+    "https://it.investing.com/news/company-news/il-titolo-azionario-di-quantum-corp-raggiunge-il-massimo-a-52-settimane-a-2782-usd-93CH-3559981",
+    "https://www.marketbeat.com/instant-alerts/price-quantum-nasdaq-qmco-trading-up-77-heres-what-happened-2026-09-23/",
+    "https://ca.investing.com/news/stock-market-news/quantum-corp-stock-hits-52week-high-at-2782-usd-93CH-4850254",
+    "https://www.barchart.com/story/news/4761573/schrodinger-stock-has-technical-strength-as-it-hits-new-2-year-highs",
+    "https://www.investing.com/equities/schrodinger-inc-news/41",
+    "https://www.marketbeat.com/instant-alerts/price-forward-industries-nasdaq-fwdi-shares-gap-down-heres-why-2026-09-23/",
+    "https://solanacompass.com/news/forward-industries-raises-25-million-in-registered-direct-offering-to-expand-sol-treasury"
+  ],
+  "usage": {
+    "input_tokens": 1051,
+    "output_tokens": 721,
+    "cost_usd": 0.02797
+  }
+}

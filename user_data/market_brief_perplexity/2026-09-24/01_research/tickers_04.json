@@ -1,0 +1,165 @@
+{
+  "name": "tickers_04",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Thursday September 24, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Thursday September 24, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| MSTR | Strategy Inc | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | -3.07% | +28.6% | 0.8\u00d7 | gapper 2026-09-21 |\n| IONQ | IonQ, Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +4.42% | +15.5% | 3.7\u00d7 | volume_spike 2026-09-23 |\n| INOD | Innodata Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +2.89% | +29.9% | 3.6\u00d7 | volume_spike 2026-09-22 |\n| BFLY | Butterfly Network, Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -7.35% | +26.7% | 1.4\u00d7 | both 2026-09-22 |\n| ONON | On Holding AG | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +2.62% | +11.1% | 1.4\u00d7 | both 2026-09-22 |\n| SGRY | Surgery Partners, Inc. | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -7.85% | +4.5% | 1.4\u00d7 | gapper 2026-09-22 |\n| EAF | GrafTech International Ltd. | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +1.34% | +40.1% | 1.2\u00d7 | gapper 2026-09-22 |\n| GRPN | Groupon, Inc. | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -5.83% | +3.7% | 1.1\u00d7 | gapper 2026-09-21 |\n| DELL | Dell Technologies Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +0.17% | -2.4% | 0.8\u00d7 | both 2026-09-02 |\n| MPC | Marathon Petroleum Corporation | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.33% | -6.2% | 1.2\u00d7 | \u2014 |\n| VLO | Valero Energy Corporation | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.34% | -6.8% | 1.7\u00d7 | gapper 2026-01-05 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Strategy Inc (MSTR) `[AI Infrastructure]`\n- No company-specific catalyst found in window\n\n## IonQ, Inc. (IONQ) `[Quantum Computing]`\n- IonQ announced development and testing of what it called the industry\u2019s first end-to-end real-time quantum-error-correction decoder operating on a single standard, off-the-shelf CPU on September 22, 2026; the system performs error correction without slowing quantum operations (CNBC).\n- IonQ said its Superion 256 quantum system will be installed at NVIDIA\u2019s Accelerated Quantum Research Center alongside NVIDIA GPU clusters (The Motley Fool).\n- IonQ\u2019s announcement led Rigetti Computing, D-Wave Quantum, Quantum Computing Inc. and Infleqtion higher by more than 5.5% in premarket trading on September 23, 2026 (CNBC).\n\n## Innodata Inc. (INOD) `[AI Infrastructure]`\n- No company-specific catalyst found in window\n- Innodata was among the September 23, 2026 stocks identified as a major market mover, but no company announcement, filing, contract value or analyst action was identified in the available results (Trefis).\n\n## Butterfly Network, Inc. (BFLY) `[EdgeAI]`\n- No company-specific catalyst found in window\n- Butterfly Network was listed among the September 23, 2026 market movers, with no company announcement, filing, contract value or analyst action identified in the available results (Trefis).\n\n## On Holding AG (ONON) `[Internet & Platforms]`\n- No company-specific catalyst found in window\n\n## Surgery Partners, Inc. (SGRY) `[Healthcare Services]`\n- No company-specific catalyst found in window\n- Surgery Partners was listed among the September 23, 2026 market movers, with no company announcement, filing, contract value or analyst action identified in the available results (Trefis).\n\n## GrafTech International Ltd. (EAF) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window\n\n## Groupon, Inc. (GRPN) `[Internet & Platforms]`\n- No company-specific catalyst found in window\n\n## Dell Technologies Inc. (DELL) `[AI Infrastructure]`\n- No company-specific catalyst found in window\n- Dell was mentioned in a September 23, 2026 trading watchlist as having pulled back to its 10-day moving average; the item did not identify a new company announcement, filing, contract or analyst action (social-media market commentary).\n\n## Marathon Petroleum Corporation (MPC) `[Specialty Materials & IP Licensing]`\n- President Donald Trump said on September 23, 2026 that his administration was considering restrictions on diesel exports after U.S. diesel prices reached a record $6.529 per gallon on September 21, 2026 (TS2).\n- U.S. Treasury Secretary Scott Bessent said the administration was assessing whether a full or partial diesel-export restriction was feasible; the White House later said a Reuters-cited report of a 90-day ban was \u201cfake news\u201d (Reuters, as reported by Investing.com).\n- Jefferies analyst Lloyd Byrne downgraded Marathon Petroleum from Buy to Hold and set a $413 price target on September 21, 2026, citing valuation and the potential downside risk from diesel-export restrictions (Jefferies note).\n- Marathon Petroleum and Valero Energy moved with the U.S. refining sector after the diesel-export discussion; Marathon was reported down 3% intraday before closing at the verified tape figure (Reuters).\n\n## Valero Energy Corporation (VLO) `[Specialty Materials & IP Licensing]`\n- President Donald Trump said on September 23, 2026 that his administration was considering restrictions on diesel exports after U.S. diesel prices reached a record $6.529 per gallon on September 21, 2026 (TS2).\n- U.S. Treasury Secretary Scott Bessent said the administration was assessing the feasibility of a full or partial diesel-export restriction; a White House official later told Reuters that a reported 90-day ban was \u201cfake news\u201d (Reuters, as reported by Investing.com).\n- Jefferies analyst Lloyd Byrne downgraded Valero Energy from Buy to Hold and set a $401 price target on September 21, 2026 (Jefferies note).\n- Valero and Marathon Petroleum moved with the refining sector after the diesel-export discussion; Valero was reported down more than 4% intraday before closing at the verified tape figure (Reuters).",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "IonQ Shares Rise 11.8% After Quantum Error Correction Decoder Test\n...\n# IonQ Shares Rise 11.8% After Quantum Error Correction Decoder Test\n...\nWed, September 23, 2026 at 6:13 AM GMT-42 min read\nIonQ (NYSE:IONQ) shares rose 11.8% in pre-market trading on Wednesday after the quantum computing company...",
+      "source": "web",
+      "title": "IonQ Shares Rise 11.8% After Quantum Error Correction Decoder Test",
+      "url": "https://finance.yahoo.com/technology/ai/articles/ionq-shares-rise-11-8-101313153.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Valero and Marathon Stocks Rise Despite Trump\u2019s Diesel Export Ban Threat\n...\nNew York, September 23, 2026, 12:23 (EDT)\n- Valero traded at $382.20, up 1.34%, at 12:14 p.m.\nEDT.\n- Marathon Petroleum added 0.75% to $392.60 in regular trading.\n- U.S. diesel averaged a record $6.529 per gallon on Septemb...",
+      "source": "web",
+      "title": "Valero and Marathon Stocks Rise Despite Trump\u2019s Diesel Export ...",
+      "url": "https://ts2.tech/en/valero-and-marathon-stocks-rise-despite-trumps-diesel-export-ban-threat/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "**IonQ** (IONQ +4.42%), a full-stack trapped-ion quantum computing provider, closed at $42.54, up 4.42%.\nIt rose after a real-time error-correction breakthrough and a research-center collaboration with **Nvidia** (NVDA -1.47%).\n...\nIonQ defied a tech downturn today on company-specific news, promptin...",
+      "source": "web",
+      "title": "Stock Market Today, Sept. 23: IonQ Surges on Quantum ...",
+      "url": "https://www.fool.com/coverage/stock-market-today/2026/09/23/stock-market-today-sept-23-ionq-surges-on-quantum-breakthrough-and-nvidia-partnership/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Marathon Petroleum fell more than 3% on Tuesday after Jefferies downgraded both Marathon and Valero Energy from Buy to Hold, just as Washington started talking seriously about capping diesel exports.\n...\nJefferies analyst Lloyd Byrne cut Marathon to Hold with a $413 price target, writing that the st...",
+      "source": "web",
+      "title": "Refiner Stocks Slip as Jefferies Downgrades Valero and ...",
+      "url": "https://www.tradingtips.com/blog/refiner-stocks-slip-as-jefferies-downgrades-valero-and-marathon"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- IonQ stock surged Wednesday after the company hit a technical milestone.\n- IonQ's rally helped other quantum stocks rise, including Rigetti and Quantum Computing.\n...\nQuantum computing stocks jumped on Wednesday, with IonQ leading a rally in the sector after reporting a breakthrough and a new deal...",
+      "source": "web",
+      "title": "Quantum stocks jump after IonQ reports a technological breakthrough - AOL",
+      "url": "https://www.aol.ca/articles/quantum-stocks-jump-ionq-reports-145500000.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Investment bank Jefferies downgraded the ratings of Valero Energy and Marathon Petroleum from \"Buy\" to \"Hold\".\nFollowing the news, the stock prices of the two companies once fell by about 2%, and the S&P 1500 Oil & Gas Refining and Marketing Index closed lower for the second consecutive trading day.",
+      "source": "web",
+      "title": "U.S. diesel prices top $6.5! Export curbs expectations ...",
+      "url": "https://news.chemnet.com/news-10208.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Sep 23 05:27\n** MPC -0.33% ** VLO -0.34%\nTrump said he has internally called for a ban on diesel exports, and U.S. Treasury Secretary Bessent confirmed that the government is assessing the feasibility of such a ban.\n...\nBoth the Energy Secretary and the Interior Secretary warned that the ban could b...",
+      "source": "web",
+      "title": "Trump's support for a ban on diesel exports puts pressure ...",
+      "url": "https://news.futunn.com/en/post/1000046624/trump-s-support-for-a-ban-on-diesel-exports-puts"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Wed, September 23, 2026 at 4:27 PM GMT-52 min read\n...\n**IonQ** (NYSE:IONQ), a full-stack trapped-ion quantum computing provider, closed at $42.54, up 4.42%.\nIt rose after a real-time error-correction breakthrough and a research-center collaboration with **Nvidia** (NASDAQ:NVDA).\n...\nThe **S&P 500**...",
+      "source": "web",
+      "title": "Stock Market Today, Sept. 23: IonQ Surges on Quantum Breakthrough and Nvidia Partnership",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-212749029.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Wed, September 23, 2026 at 11:13 PM GMT+5:301 min read\n- MPC\n-0.33%\n- VLO\n-0.34%\n- PBF\n-1.36%\n...\nInvesting.com -- A White House official quoted by Reuters dismissed earlier report by Politico that the US is considering a 90-day ban on diesel exports in bid to control record fuel prices as \"fake new...",
+      "source": "web",
+      "title": "Trump admin said to mull 90-day diesel export ban, refiner ...",
+      "url": "https://finance.yahoo.com/energy/articles/trump-admin-said-mull-90-174333966.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Home \u203a Market Updates \u203a Expedia and Airbnb led Wednesday's losers, each falling over 7%\nAs seen on the 24/7 Wall St. homepage on September 23, 2026.\nGainers PANW Palo Alto Networks $392.81 +4.9%\nASAN Asana $9.47 +4.2%\nIONQ IonQ $42.43 +4.1%\nDOCU DocuSign $69.29 +3.8%\nPLTR Palantir $191.7 +3.6% Loser...",
+      "source": "web",
+      "title": "Expedia and Airbnb led Wednesday's losers, each falling over 7%",
+      "url": "https://247wallst.com/cards/travel-took-the-worst-of-wednesday-s-close-with-expedia-dow-expe-session-movers-01m37yaxhwc2daj5g0fp31py60"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Published Wed, Sep 23 20267:29 AM EDT\n...\nCheck out the companies making the biggest moves premarket: Worthington Enterprises \u2013 The industrial manufacturing company surged about 16% on an encouraging outlook from leadership.\n...\nFirst-quarter adjusted earnings and revenue surpassed the Street\u2019s esti...",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: IonQ, Maplebear, Worthington & more",
+      "url": "https://www.cnbc.com/2026/09/23/stocks-making-the-biggest-moves-premarket-ionq-cart-wor.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# \u667a\u901a\u8d22\u7ecf on X: \"Jefferies Downgrades Valero and Marathon as Valuations Rise Jefferies downgraded Valero Energy (https://t.co/OqwRVNYZAW) and Marathon Petroleum (https://t.co/ppMfRC91qJ) from \"Buy\" to \"Hold\", setting price targets of $401 and $413, respectively.\nThe firms' shares remain up 135% and 142...",
+      "source": "web",
+      "title": "Post",
+      "url": "https://x.com/ZHITONGCAIJING/status/2102707046743433366"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Market Movers | Winners: VKTX, INDP, MAZE | Losers: XNDU, EVER, CLDX | Trefis\n...\nSPYYTD+14.0%SPYYTD+14.0%QQQYTD+22.0%\n...\nThe 10 US-listed stocks in the Trefis coverage universe with the highest returns on the last trading day:\n|#|Ticker|Company Name|1-D Returns|YTD Returns|\n...\n|1|VKTX|Viking Ther...",
+      "source": "web",
+      "title": "Market Movers | Winners: VKTX, INDP, MAZE | Losers: XNDU, EVER, CLDX",
+      "url": "https://www.trefis.com/stock/spy/articles/616251/market-movers-winners-vktx-indp-maze-losers-xndu-ever-cldx/2026-09-23"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- U.S. quantum computing stocks surged in pre-market trading, led by IonQ, whose shares rose around 12% following a breakthrough in real-time quantum error correction.\n...\nIonQ (IONQ.US) shares are up around 12% in pre-market trading today after the company announced the development and testing of a...",
+      "source": "web",
+      "title": "Market wrap: European indices under pressure from a ...",
+      "url": "https://www.xtb.com/cy/market-analysis/news-and-research/market-wrap-european-indices-under-pressure-from-a-stronger-dollar-quantum-stocks-rally-ionq-jumps-12"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# breakout stocks on X: \"September 23 \u2014 Morning Watchlist News: - $IONQ shows real-time quantum error correction on a single CPU - $IONQ's Superion 256 to be the first quantum processor installed at $NVDA\u2019s NVAQC - $NOW partner INRY deploys EmployeeWorks in 6 weeks, slashing request times 60% with A...",
+      "source": "web",
+      "title": "$IONQ's Superion 256 to be the first quantum processor ...",
+      "url": "https://x.com/gbstocks/status/2102742817755861211"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/technology/ai/articles/ionq-shares-rise-11-8-101313153.html",
+    "https://ts2.tech/en/valero-and-marathon-stocks-rise-despite-trumps-diesel-export-ban-threat/",
+    "https://www.fool.com/coverage/stock-market-today/2026/09/23/stock-market-today-sept-23-ionq-surges-on-quantum-breakthrough-and-nvidia-partnership/",
+    "https://www.tradingtips.com/blog/refiner-stocks-slip-as-jefferies-downgrades-valero-and-marathon",
+    "https://www.aol.ca/articles/quantum-stocks-jump-ionq-reports-145500000.html",
+    "https://news.chemnet.com/news-10208.html",
+    "https://news.futunn.com/en/post/1000046624/trump-s-support-for-a-ban-on-diesel-exports-puts",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-212749029.html",
+    "https://finance.yahoo.com/energy/articles/trump-admin-said-mull-90-174333966.html?fr=sycsrp_catchall",
+    "https://247wallst.com/cards/travel-took-the-worst-of-wednesday-s-close-with-expedia-dow-expe-session-movers-01m37yaxhwc2daj5g0fp31py60",
+    "https://www.cnbc.com/2026/09/23/stocks-making-the-biggest-moves-premarket-ionq-cart-wor.html",
+    "https://x.com/ZHITONGCAIJING/status/2102707046743433366",
+    "https://www.trefis.com/stock/spy/articles/616251/market-movers-winners-vktx-indp-maze-losers-xndu-ever-cldx/2026-09-23",
+    "https://www.xtb.com/cy/market-analysis/news-and-research/market-wrap-european-indices-under-pressure-from-a-stronger-dollar-quantum-stocks-rally-ionq-jumps-12",
+    "https://x.com/gbstocks/status/2102742817755861211"
+  ],
+  "usage": {
+    "input_tokens": 1267,
+    "output_tokens": 944,
+    "cost_usd": 0.03196
+  }
+}

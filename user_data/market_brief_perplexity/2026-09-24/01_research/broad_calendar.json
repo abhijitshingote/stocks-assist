@@ -1,0 +1,165 @@
+{
+  "name": "broad_calendar",
+  "kind": "channel",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Thursday September 24, 2026. Scope: Calendar.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Thursday September 24, 2026 ~6:00 AM ET.\n\nCOVER EVERY ITEM BELOW (run a separate search for each bullet; do not skip one because another was rich)\nScheduled catalysts from the brief date through the next 5 NYSE sessions: earnings (date, BMO/AMC, EPS and revenue consensus) for US stocks >= $10B plus notable mid-caps, investor/analyst days, FDA PDUFA dates, major economic releases with consensus, Fed speakers, options expiry, index rebalances, lockup expiries.\n\nPrefer primary sources and wire services (Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's,\ncompany press releases, SEC EDGAR, BLS/BEA/Fed releases).\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar, or\ninvent a concise one. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## **COST** \u2014 Calendar\n- Costco Wholesale is scheduled to report fiscal Q4 2026 results after the close on Thursday, September 24; consensus is **$6.55 EPS** and **$94.86 billion revenue**. (Newsquawk)\n- The next-quarter consensus is **$4.89 EPS** and **$73.50 billion revenue**; fiscal-year 2026 consensus is **$20.52 EPS** and **$302.29 billion revenue**. (Newsquawk)\n\n## **DRI** \u2014 Calendar\n- Darden Restaurants is scheduled to report fiscal Q1 2027 results before the open on Thursday, September 24; consensus is **$2.05 EPS** and **$3.21 billion revenue**. (Newsquawk)\n- The next-quarter consensus is **$2.30 EPS** and **$3.27 billion revenue**; fiscal-year 2027 consensus is **$11.29 EPS** and **$13.69 billion revenue**. (Newsquawk)\n\n## **SNX** \u2014 Calendar\n- TD SYNNEX is scheduled to report fiscal Q3 2026 results before the open on Thursday, September 24. (Simply Wall St)\n- The retrieved source did not provide EPS or revenue consensus for the release. (Simply Wall St)\n\n## **PAYX** \u2014 Software & SaaS\n- Jefferies cut its price target on Paychex on Thursday, September 24; the retrieved source did not specify the old or new target. (Simply Wall St)\n\n## **CRWV** \u2014 AI Infrastructure\n- UBS initiated coverage of CoreWeave at **Buy** with a **$120 price target** on Wednesday, September 23. (CNBC)\n\n## **GRDN** \u2014 Healthcare Services\n- KeyBanc initiated coverage of Guardian Pharmacy Services at **Overweight** on Wednesday, September 23; the retrieved source did not specify a price target. (CNBC)\n\n## **AMZN** \u2014 Internet & Platforms\n- Wolfe reiterated Amazon at **Outperform** and raised its price target to **$320 from $315** on Wednesday, September 23. (CNBC)\n\n## **MSFT** \u2014 Software & SaaS\n- Stifel upgraded Microsoft to **Buy from Hold** on Wednesday, September 23; the retrieved source did not specify price targets. (CNBC)\n\n## **MU** \u2014 Memory & Interconnect\n- Citi reiterated Micron at **Buy** and raised its price target ahead of the company\u2019s earnings report scheduled for the following week; the retrieved source did not specify the old or new target. (CNBC)\n\n## **AAPL** \u2014 Semiconductors\n- Bank of America reiterated Apple at **Buy** on Wednesday, September 23; the firm said its checks showed stable iPhone lead times. (CNBC)\n\n## **BP** \u2014 Macro / Commodities\n- JPMorgan upgraded BP to **Overweight from Neutral** on Wednesday, September 23; the retrieved source did not specify price targets. (CNBC)\n\n## **GPK** \u2014 Specialty Materials\n- JPMorgan upgraded Graphic Packaging to **Overweight from Neutral** and cut its December 2027 price target to **$11.50 from $12.50** on Wednesday, September 23. (CNBC)\n\n## **RIVN** \u2014 Electric Vehicles\n- Rivian recalled approximately **100,700 vehicles**, including certain R1T, R1S and R2 models, because software could obscure the rearview-camera display on Wednesday, September 23. (S&P Global / Reuters, as reported by AI Business Hunter)\n\n## **RCL** \u2014 Travel & Leisure `[rumor]`\n- Royal Caribbean agreed to acquire a **50% stake** in Sandals Resorts International for approximately **$3 billion** on Wednesday, September 23. (AI Business Hunter)\n\n## **META** \u2014 Internet & Platforms\n- Meta unveiled new versions of its AI glasses during a keynote led by CEO Mark Zuckerberg on Wednesday evening, September 23. (Investopedia)\n\n## Macro / Calendar\n- U.S. initial jobless claims are scheduled for **8:30 a.m. ET** on Thursday, September 24; consensus is **201,000**, versus **196,000** previously. (SVMUU)\n- U.S. August building permits are scheduled for **8:30 a.m. ET**; consensus is **1.39 million**, versus **1.43 million** previously. (SVMUU)\n- U.S. August building permits are expected to decline **2.7% month over month**, versus a prior **4.3% increase**. (SVMUU)\n- U.S. Q2 current-account data are scheduled for **8:30 a.m. ET**; consensus is a **$255 billion deficit**, versus a **$226.8 billion deficit** previously. (SVMUU)\n- U.S. August new-home sales are scheduled for **10:00 a.m. ET**; consensus is **620,000**, versus **610,000** previously. (SVMUU)\n- New York Fed President John Williams said on Thursday, September 24, that another U.S. rate increase before year-end was reasonable to consider. (Reuters)\n- Richmond Fed President Tom Barkin is scheduled to speak at **8:00 a.m. ET**; Fed Governor Adriana Kugler Hammack is scheduled to speak at **8:50 a.m. ET**. (SVMUU)\n- Federal Reserve officials scheduled to speak on September 24 include John Williams, Tom Barkin, Adriana Kugler Hammack and Beth Hammack/Paulson as listed in the daily events calendar. (Newsquawk)\n- The U.S. Treasury announced a buyback of up to **$6 billion** of coupon securities maturing from **November 2046 through August 2056** for September 24. (Newsquawk)\n- Nasdaq is scheduled to present at the Bank of America 31st Annual Financials CEO Conference at **7:00 a.m. ET** on September 24. (Newsquawk)\n- Arista Networks is scheduled to present at the Global Photonics Economic Forum on September 24. (Newsquawk)\n- Baker Hughes is scheduled to present at the TD Cowen Annual Energy Conference at **9:00 a.m. ET** on September 24. (Newsquawk)\n- Plug Power is scheduled to present at the TD Cowen Annual Energy Conference at **8:00 a.m. ET** on September 24. (Newsquawk)",
+  "search_results": [
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "News by Dow Jones Newswires on TradingView, 2026-09-24 \u2014 DJN_DN20260924002645:0",
+      "source": "web",
+      "title": "News by Dow Jones Newswires on TradingView, 2026-09-24",
+      "url": "https://www.tradingview.com/news/DJN_DN20260924002645:0/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Stocks are pointing to a lower open Thursday as markets extend a pullback from record highs set earlier in the week; Treasury yields are around 2007 levels amid worries about inflation and rising oil prices; talks between President Donald Trump and Chinese President Xi Jinping are set to begin today...",
+      "source": "web",
+      "title": "5 Things to Know Before the Stock Market Opens on Thursday",
+      "url": "https://www.investopedia.com/5-things-to-know-before-the-stock-market-opens-on-thursday-september-24-2026-12138012"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "\u00b7 4 before open, 4 after close, 30 time TBD\n## Before market open\nReports expected before the opening bell (pre-market / BMO).\n4\n|Company|Market cap|EPS (act. / est.)|Revenue (act. / est.)|\n...\nEarnings date known; before/after market timing not yet specified.",
+      "source": "web",
+      "title": "Stock Earnings Calendar Sep 24, 2026 | Digrin",
+      "url": "https://www.digrin.com/stocks/earnings_calendar/2026-09-24"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "A calendar entry rather than a print: Darden reports pre-market and Costco after the close, with the listed consensus figures serving as the reference point for the subsequent release.\n...\nUS Treasury announces buyback of up to USD 6bln coupons maturing Nov 2046\u2013Aug 2056, for Sep 24 (Preliminary)\n.....",
+      "source": "web",
+      "title": "Daily US Earnings Estimates - 24th September 2026: COST, DRI",
+      "url": "https://www.newsquawk.com/headlines/daily-us-earnings-estimates---24th-september-2026-cost-dri"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "US stock futures are slightly higher this morning, with E-mini S&P 500 contracts up about 0.1%, as investors weigh stronger business activity overseas against softer readings at home.\nFresh PMI data shows the euro area and UK both above the 50 line that marks growth, helped by manufacturing and serv...",
+      "source": "web",
+      "title": "US Stock Market Today: S&P 500 Futures Edge Higher On ...",
+      "url": "https://simplywall.st/stocks/us/software/nasdaq-panw/palo-alto-networks/news/us-stock-market-today-sp-500-futures-edge-higher-on-mixed-gl-1/amp"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "|Time|Event|Importance|Previous|Forecast|Actual|\n...\n|Sep 24, 2026 \u00b7 Thu|Sep 24, 2026 \u00b7 Thu|Sep 24, 2026 \u00b7 Thu|Sep 24, 2026 \u00b7 Thu|Sep 24, 2026 \u00b7 Thu|Sep 24, 2026 \u00b7 Thu|\n|00:00|Euro Area Aug New Car Sales YoY|\u2605\u2605\u2605\u2605\u2605|13.6%|11%|Pending|\n|00:00|Euro Area Jul New Car Sales YoY|\u2605\u2605\u2605\u2605\u2605|--|7.5%|Pending|\n|02:4...",
+      "source": "web",
+      "title": "Sep 24, 2026 Economic Calendar \u2014 Global Data Releases ...",
+      "url": "https://www.svmuu.com/en/calendar/2026-09-24/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Asian cash markets finished mixed: the Nikkei 225 closed up 0.76 percent, the Hang Seng closed down 1.28 percent, the Shanghai Composite closed down 1.61 percent and the ASX 200 closed down 0.64 percent.",
+      "source": "web",
+      "title": "September 24, 2026 Market LiveCast Brief - SquawkNews",
+      "url": "https://squawknews.com/brief/livecast/2026-09-24"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- **Speakers**: ECB's Schnabel, Lane; Fed's Williams, Barkin, Hammack, Paulson; BoE's Dhingra, Breeden, Lombardelli; SNB's Schlegel; Riksbank's Thedeen; Norges Bank's Bache",
+      "source": "web",
+      "title": "Newsquawk Daily Economic Releases - 24th September ...",
+      "url": "https://www.newsquawk.com/headlines/newsquawk-daily-economic-releases---24th-september-2026"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "The latest Top News, from leading exponents of , Stock Market, BlockChain, New Economy Accredited Sources.",
+      "source": "web",
+      "title": "US Premarket Movers for September 24, 2026",
+      "url": "https://www.bloomberg.com/news/articles/2026-09-24/us-stock-futures-today-darden-dropbox-everpure-mgm-resorts"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "|BST|EDT|Ticker|Event|\n...\n|**08:00**|**03:00**|**NDAQ**|**Nasdaq, Inc.\nPresents at Bank of America 31th Annual Financials CEO Conference, Sep-24-2026 07:00 AM**|\n|13:00|08:00|BHE|Benchmark Electronics, Inc.\nPresents at Small-Cap Virtual Conference, Sep-24-2026 08:00 AM|\n|13:00|08:00|KNSL|Kinsale Ca...",
+      "source": "web",
+      "title": "Daily US Conference Calendar - September 24th 2026: NDAQ, BKR, ANET, BNY, COHR, EPD, KEYS, LITE, PSX, UNH, WMT | Newsquawk",
+      "url": "https://www.newsquawk.com/headlines/daily-us-conference-calendar---september-24th-2026-ndaq-bkr-anet-bny-cohr-epd-keys-lite-psx-unh-wmt"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- **1st: Rivian recalls approximately 100,000 vehicles\u2014Software obscures rearview camera, a safety issue in the 'SDV era'**\n- **2nd: Royal Caribbean acquires 50% of Sandals Resorts for $3 billion\u2014Cruise line vertically integrates into 'land-based stays'**\n- **3rd: Anthropic and OpenEvidence provide ...",
+      "source": "web",
+      "title": "[September 24] AI BUSINESS HUNTER DAILY NEWS",
+      "url": "https://note.com/aibusinesshunter/n/n4b600c11c389?hl=en"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "UBS initiates CoreWeave as buy UBS said it sees robust growth.\n\u201cWe are launching coverage of CoreWeave shares with a Buy rating and $120 PT (~40% upside to current price), extending our coverage of the AI infrastructure market beyond the hyperscalers and Oracle.\u201d\n...\nKeyBanc initiates Guardian Pharm...",
+      "source": "web",
+      "title": "Wednesday biggest analyst calls on Wall Street - CNBC",
+      "url": "https://www.cnbc.com/2026/09/23/wednesday-biggest-analyst-calls-on-wall-street.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- First half profit down 19.7%\n...\n- Sticks to full-year guidance that was cut last month\nLONDON, Sept 23 (Reuters) - British sports and fashion retailer JD Sports (JD.L), opens new tab reported \u200ca 19.7% drop in first-half profit on Wednesday, hurt by weakness in its key North American market, but m...",
+      "source": "web",
+      "title": "JD Sports first-half profit hit by North American weakness | Reuters",
+      "url": "https://www.reuters.com/business/retail-consumer/jd-sports-first-half-profit-hit-by-north-american-weakness-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Wed, Sep 23 20265:19 PM EDT\n...\nMcDonald\u2019s CEO Chris Kempczinski: AI ordering system allows us to put labor in other areas of restaurant",
+      "source": "web",
+      "title": "Post Market Wrap: September 23, 2026 - CNBC",
+      "url": "https://www.cnbc.com/video/2026/09/23/post-market-wrap-september-23-2026.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "By Andre Janse Van Vuuren and Levin Stamm\n...\nUpdated on\nSeptember 24, 2026 at 10:15 AM UTC\nSave\n...\nStocks fell after a fresh surge in oil prices fueled further selling in bonds and strengthened the case for a series of interest-rate hikes.\nThe S&P 500 looked set to nearly erase its weekly advance ...",
+      "source": "web",
+      "title": "Stocks Fall as High Yields, Oil Sap Risk Appetite: Markets Wrap",
+      "url": "https://www.bloomberg.com/news/articles/2026-09-23/stock-market-today-dow-s-p-live-updates"
+    }
+  ],
+  "citations": [
+    "https://www.tradingview.com/news/DJN_DN20260924002645:0/",
+    "https://www.investopedia.com/5-things-to-know-before-the-stock-market-opens-on-thursday-september-24-2026-12138012",
+    "https://www.digrin.com/stocks/earnings_calendar/2026-09-24",
+    "https://www.newsquawk.com/headlines/daily-us-earnings-estimates---24th-september-2026-cost-dri",
+    "https://simplywall.st/stocks/us/software/nasdaq-panw/palo-alto-networks/news/us-stock-market-today-sp-500-futures-edge-higher-on-mixed-gl-1/amp",
+    "https://www.svmuu.com/en/calendar/2026-09-24/",
+    "https://squawknews.com/brief/livecast/2026-09-24",
+    "https://www.newsquawk.com/headlines/newsquawk-daily-economic-releases---24th-september-2026",
+    "https://www.bloomberg.com/news/articles/2026-09-24/us-stock-futures-today-darden-dropbox-everpure-mgm-resorts",
+    "https://www.newsquawk.com/headlines/daily-us-conference-calendar---september-24th-2026-ndaq-bkr-anet-bny-cohr-epd-keys-lite-psx-unh-wmt",
+    "https://note.com/aibusinesshunter/n/n4b600c11c389?hl=en",
+    "https://www.cnbc.com/2026/09/23/wednesday-biggest-analyst-calls-on-wall-street.html",
+    "https://www.reuters.com/business/retail-consumer/jd-sports-first-half-profit-hit-by-north-american-weakness-2026-09-23/",
+    "https://www.cnbc.com/video/2026/09/23/post-market-wrap-september-23-2026.html",
+    "https://www.bloomberg.com/news/articles/2026-09-23/stock-market-today-dow-s-p-live-updates"
+  ],
+  "usage": {
+    "input_tokens": 581,
+    "output_tokens": 1374,
+    "cost_usd": 0.03635
+  }
+}

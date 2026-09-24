@@ -1,0 +1,165 @@
+{
+  "name": "tickers_02",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Thursday September 24, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Thursday September 24, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| VEEV | Veeva Systems Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +3.77% | +2.2% | 0.9\u00d7 | \u2014 |\n| TEAM | Atlassian Corporation | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +3.41% | +2.5% | 0.7\u00d7 | \u2014 |\n| RBRK | Rubrik, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +3.31% | +10.1% | 0.8\u00d7 | \u2014 |\n| IR | Ingersoll Rand Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +3.21% | +6.7% | 1.9\u00d7 | \u2014 |\n| ILMN | Illumina, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +3.20% | +11.6% | 0.5\u00d7 | \u2014 |\n| E | Eni S.p.A. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +2.95% | -0.8% | 1.1\u00d7 | \u2014 |\n| TRI | Thomson Reuters Corporation | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +2.92% | -2.8% | 1.2\u00d7 | \u2014 |\n| VG | Venture Global, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +2.79% | -9.4% | 1.1\u00d7 | \u2014 |\n| DVN | Devon Energy Corporation | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +2.37% | -0.8% | 1.0\u00d7 | \u2014 |\n| NNBR | NN, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +14.54% | +18.4% | 7.3\u00d7 | \u2014 |\n| FSLY | Fastly, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +13.69% | +26.0% | 4.3\u00d7 | \u2014 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Veeva Systems Inc. (VEEV) `[Software & SaaS]`\n- Veeva announced that another **top-20 biopharmaceutical company** selected **Vault CRM**; the company said **14 of the top 20** biopharma companies have now selected the platform (Seeking Alpha).\n- Veeva announced **Falcon Router**, an agentic solution for routing safety, quality, and medical cases, with early-adopter availability scheduled for **January 2027** (Zacks Equity Research).\n- Veeva\u2019s fiscal 2027 second-quarter results included **$928 million revenue**, **$2.35 adjusted EPS**, and raised fiscal 2027 revenue and profit guidance; the figures were reported as **$928 million versus $905 million consensus** and **$2.35 versus $2.22 consensus** (StocksToTrade).\n\n## Atlassian Corporation (TEAM) `[Software & SaaS]`\n- No company-specific catalyst found in window\n\n## Rubrik, Inc. (RBRK) `[AI Infrastructure]`\n- No company-specific catalyst found in window\n\n## Ingersoll Rand Inc. (IR) `[AI Infrastructure]`\n- No company-specific catalyst found in window\n\n## Illumina, Inc. (ILMN) `[Specialty Materials & IP Licensing]`\n- Illumina shares reached a **52-week high of $256.17** on September 23, 2026; no company-specific announcement explaining the move was identified in the available results (RTTNews).\n\n## Eni S.p.A. (E) `[Specialty Materials & IP Licensing]`\n- Eni was among energy stocks benefiting from higher crude prices; **Brent November futures rose about 3.9% to $103.08 per barrel**, while the energy sector gained about **1.1%** on September 23, 2026 (CNBC).\n\n## Thomson Reuters Corporation (TRI) `[Software & SaaS]`\n- No company-specific catalyst found in window\n\n## Venture Global, Inc. (VG) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window\n\n## Devon Energy Corporation (DVN) `[Specialty Materials & IP Licensing]`\n- No major company announcement was identified on September 23, 2026; Devon\u2019s move was attributed to higher oil-market sentiment and ongoing expectations surrounding post-merger execution and synergies from the **Coterra combination** (Quiver Quantitative).\n- **Brent crude** rose about **3.9% to $103.08 per barrel**, and **WTI** settled up about **1.8% at $92.16 per barrel**, providing the reported sector driver for energy shares (CNBC).\n\n## NN, Inc. (NNBR) `[Specialty Materials & IP Licensing]`\n- NN raised its 2026 net-sales outlook to **$470 million\u2013$490 million from $460 million\u2013$480 million** (Timothy Sykes).\n- NN raised its 2026 adjusted EBITDA guidance to **$58 million\u2013$68 million from $55 million\u2013$65 million** (Timothy Sykes).\n\n## Fastly, Inc. (FSLY) `[Internet & Platforms]`\n- Fastly shares rose about **13%** after Wall Street firms assessed the company\u2019s investor day held on September 22; management presented fiscal 2029 targets of **14%\u201321% revenue CAGR**, **20%\u201322% non-GAAP operating margin**, and **12%\u201315% free-cash-flow margin** (Seeking Alpha).\n- **RBC Capital Markets** was cited in connection with the investor-day assessment; the available result did not specify a rating or price-target change (Seeking Alpha).",
+  "search_results": [
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# Veeva Systems Inc.\n(VEEV)\nIs VEEV a long-term buy?\n270.75 +9.84 (+3.77%)\nAt close: September 23 at 4:00:03 PM EDT\n269.31 -1.57 (-0.58%)\nPre-Market: 4:59:51 AM EDT\nIs VEEV a long-term buy?\nAll News Earnings Calls Press Releases SEC Filings\n- ### Vault CRM Extends Market Leadershipas Another Top 20 ...",
+      "source": "web",
+      "title": "Veeva Systems Inc. (VEEV) Latest Press Releases & ...",
+      "url": "https://finance.yahoo.com/quote/VEEV/press-releases/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Veeva Systems Inc.\nstocks have been trading up by 3.87 percent after upbeat analyst coverage signaled stronger growth prospects.\n...\n## Key Takeaways\n- Veeva Systems beat Q2 expectations with adjusted EPS of $2.35 vs. $2.22 consensus and revenue of $928M vs. $905M, powered by record Vault CRM and ra...",
+      "source": "web",
+      "title": "VEEV Stock Climbs As AI Vault CRM Momentum Fuels Target Hikes",
+      "url": "https://stockstotrade.com/news/veeva-systems-inc-veev-news-2026_09_23/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "(RTTNews) - The following biotech stocks reached a 52-week high on September 23, 2026, driven by key catalysts such as positive quarterly reports or results from clinical trials.\nAlpha Teknova Inc.\n...\nThe company's stock rose to a 52-week high of $9.35 on Wednesday.\n...\nOn Wednesday, the company sa...",
+      "source": "web",
+      "title": "Biotech Stocks At 52-Week Highs - TKNO, MRNA, ATRC, ILMN",
+      "url": "https://www.rttnews.com/3693571/biotech-stocks-at-52-week-highs-tkno-mrna-atrc-ilmn.aspx"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Also, Director Priscilla Hung sold 750 shares of the stock in a transaction on Wednesday, September 9th.\nThe shares were sold at an average price of $261.04, for a total value of $195,780.00.\nFollowing the sale, the director directly owned 3,242 shares in the company, valued at approximately $846,29...",
+      "source": "web",
+      "title": "Veeva Systems (NYSE:VEEV) Trading Up 2.8%  - What's Next?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-veeva-systems-nyse-veev-trading-up-28-whats-next-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Veeva Unveils Falcon Router to Streamline Biopharma Case Routing\n- MCD\n...\n# Veeva Unveils Falcon Router to Streamline Biopharma Case Routing\nZacks Equity Research\nWed, September 23, 2026 at 2:02 PM GMT-36 min read\n- VCYT\n+1.06%\n- VEEV\n+3.77%\n- WST\n...\n**Veeva Systems ** VEEV recently expanded its A...",
+      "source": "web",
+      "title": "Veeva Unveils Falcon Router to Streamline Biopharma ...",
+      "url": "https://finance.yahoo.com/healthcare/articles/veeva-unveils-falcon-router-streamline-170200230.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Sep 23, 2026, 2:51 PM ETFastly, Inc.\n(FSLY) StockBy: Chris Ciaccia, SA News Editor4 Comments\n...\nFastly (FSLY) shares jumped 13% on Wednesday as Wall Street firms weighed in on the company's investor day, held the day prior.\n\u201c[Management] unveiled its FY29 targets: a revenue CAGR of 14%-21%, non-GAA...",
+      "source": "web",
+      "title": "Fastly jumps as Wall Street weighs in on investor day (FSLY:NASDAQ)",
+      "url": "https://seekingalpha.com/news/4646238-fastly-jumps-as-wall-street-weighs-in-on-investor-day"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "NN Inc.\nstocks have been trading up by 11.87 percent after upbeat coverage highlights strengthening operations and improving growth prospects.\n...\n- NN Inc.\nraised its full-year 2026 net sales outlook to $470M\u2013$490M from $460M\u2013$480M, edging ahead of prior expectations and signaling growing confidenc...",
+      "source": "web",
+      "title": "NNBR Stock Climbs As NN Inc. Lifts 2026 Guidance",
+      "url": "https://www.timothysykes.com/news/nn-inc-nnbr-news-2026_09_23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Posted: 19 hours ago / Sept. 23, 2026 2:49 p.m.\nUTC\n...\nDevon Energy Corporation (DVN) is up 3.0% today.\n...\n**Analysis:** The most likely driver appears to be a mix of firmer oil-market sentiment and continued confidence in Devon\u2019s post-merger execution.\nThere does not appear to be a fresh major co...",
+      "source": "web",
+      "title": "Devon Energy Gains as Post-Merger Execution and Oil Strength Support Shares | DVN Stock News",
+      "url": "https://www.quiverquant.com/news/Devon+Energy+Gains+as+Post-Merger+Execution+and+Oil+Strength+Support+Shares"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- MCD\n-4.81%\n...\nThe Dow, S&P 500, and Nasdaq sold off as bond yields surged on inflation worries\n...\nThe 10-year Treasury yield rose to its highest level since 2007 on Wednesday.\n...\n- ^IXIC\n-1.13%\n- CL=F\n+1.20%\n...\n-0.68%\n...\nStocks sold off on Wednesday as Treasury yields surged amid inflation wo...",
+      "source": "web",
+      "title": "Stock market today: Dow, S&P 500, Nasdaq slip as oil ...",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-september-23-dow-sp-500-nasdaq-080556640.html"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Updated Wed, Sep 23 20264:45 PM EDT\n# Dow tumbles more than 300 points, Nasdaq drops 1% as Treasury yields surge: Live updates\n...\nU.S. equities fell on Wednesday as Treasury yields marched higher amid concerns among investors that more interest rate hikes from the Federal Reserve may be coming down...",
+      "source": "web",
+      "title": "Stock market news for Sept. 23, 2026 - CNBC",
+      "url": "https://www.cnbc.com/2026/09/22/stock-market-today-live-updates.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "WVE : Nasdaq\nWave Life Sciences Initiates Phase 2a Combination Trial of WVE-007 (GalNAc-siRNA) with Tirzepatide for Obesity\n\u2026\nBiomea Fusion Announces Termination of Proposed Public Offering of Securities\noffering penny stock\n...\n09/23/2026 07:03 AM\nVEEV : NYSE\nVault CRM Extends Market Leadershipas A...",
+      "source": "web",
+      "title": "Stock Market News Today \u2014 NYSE, NASDAQ & OTC ...",
+      "url": "https://www.stocktitan.net/news/2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Sep 23, 2026, 12:19 PM ETVeeva Systems Inc.\n(VEEV) StockAMGN, LLYBy: Dulan Lokuwithana, SA News Editor1 Comment\n...\nVeeva Systems (VEEV) traded higher on Wednesday after announcing that one of the top 20 biopharma companies has chosen Vault CRM, its customer relationship management platform.\nAccordi...",
+      "source": "web",
+      "title": "Veeva Systems gains on new top 20 biopharma win (VEEV:NYSE)",
+      "url": "https://seekingalpha.com/news/4646184-veeva-systems-gains-new-top-20-biopharma-win"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "**BREAKING: Stocks Fall On Soaring Yields, But This Sector Rallies**\n...\n- 06:08 PM ET 09/23/2026\n|**Comp.\nRating**|**EPS Rating**|**Rel Str**|**Ind Grp Str**|**SMR**|**Acc Dis**|**52 Week High**|**Name**|****|**Symbol**|**Close Price**|**Chg**|**Vol% Chg**|\n|--|--|--|--|--|--|--|--|--|--|--|--|--|\n...",
+      "source": "web",
+      "title": "TimeSaver Table -- Sep 23, 2026",
+      "url": "https://www.investors.com/data-tables/timesaver-table-sep-23-2026/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Stocks Fall as the 10-Year T-note Yield Soars to a 19-Year High\n- MCD\n238.32\n-4.81%\n- BENF\n2.9000\n+438.7330%\n- 44.10\n(+2.30%\n- ^TNX\n5.11\n+2.94%\n...\nThe 10-year Treasury yield rose to its highest level since 2007 on Wednesday.\n...\n# Stocks Fall as the 10-Year T-note Yield Soars to a 19-Year High\nRich...",
+      "source": "web",
+      "title": "Stocks Fall as the 10-Year T-note Yield Soars to a 19-Year High",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stocks-fall-10-t-note-203742497.html"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "\u5024\u4e0a\u304c\u308a261.62USD \u5909\u5316 0 \u5909\u5316\uff05 0.00%\n...\n4280 Hacienda Drive\nPLEASANTON, CA\n94588\nUnited States\n...\n+1 (302) 6365400\n...\n### \u30ea\u30fc\u30c0\u30fc\u30b7\u30c3\u30d7\u30c1\u30fc\u30e0\n- **Gordon Ritter**\nIndependent Chairman of the Board\n- **Thomas D. Schwenger**\nPresident, Chief Customer Officer\n- **E.\nNitsa Zuppas**\nPresident, Chief of Staff\n- **Peter ...",
+      "source": "web",
+      "title": "VEEV.MW - | Stock Price & Latest News | Reuters",
+      "url": "https://www.reuters.com/jp/markets/companies/VEEV.MW/"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/quote/VEEV/press-releases/",
+    "https://stockstotrade.com/news/veeva-systems-inc-veev-news-2026_09_23/",
+    "https://www.rttnews.com/3693571/biotech-stocks-at-52-week-highs-tkno-mrna-atrc-ilmn.aspx",
+    "https://www.marketbeat.com/instant-alerts/price-veeva-systems-nyse-veev-trading-up-28-whats-next-2026-09-23/",
+    "https://finance.yahoo.com/healthcare/articles/veeva-unveils-falcon-router-streamline-170200230.html",
+    "https://seekingalpha.com/news/4646238-fastly-jumps-as-wall-street-weighs-in-on-investor-day",
+    "https://www.timothysykes.com/news/nn-inc-nnbr-news-2026_09_23/",
+    "https://www.quiverquant.com/news/Devon+Energy+Gains+as+Post-Merger+Execution+and+Oil+Strength+Support+Shares",
+    "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-september-23-dow-sp-500-nasdaq-080556640.html",
+    "https://www.cnbc.com/2026/09/22/stock-market-today-live-updates.html",
+    "https://www.stocktitan.net/news/2026-09-23/",
+    "https://seekingalpha.com/news/4646184-veeva-systems-gains-new-top-20-biopharma-win",
+    "https://www.investors.com/data-tables/timesaver-table-sep-23-2026/",
+    "https://finance.yahoo.com/markets/stocks/articles/stocks-fall-10-t-note-203742497.html",
+    "https://www.reuters.com/jp/markets/companies/VEEV.MW/"
+  ],
+  "usage": {
+    "input_tokens": 1165,
+    "output_tokens": 800,
+    "cost_usd": 0.0295
+  }
+}

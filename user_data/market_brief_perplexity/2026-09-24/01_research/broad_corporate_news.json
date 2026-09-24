@@ -1,0 +1,165 @@
+{
+  "name": "broad_corporate_news",
+  "kind": "channel",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Thursday September 24, 2026. Scope: Corporate news flow.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Thursday September 24, 2026 ~6:00 AM ET.\n\nCOVER EVERY ITEM BELOW (run a separate search for each bullet; do not skip one because another was rich)\n- Biggest US movers (market cap >= $2B) in the session, after-hours, and pre-market, with the catalyst for each (CNBC / MarketWatch / Barron's / Reuters 'stocks making the biggest moves').\n- Earnings after the close or pre-market: EPS and revenue actual vs consensus, guidance old \u2192 new.\n- Notable analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- M&A (terms, value), contracts with $ size, FDA decisions, SEC filings (8-K, 13D, S-1, offerings), buybacks, executive changes, index adds/deletes, activist stakes.\n- Sector threads: AI capex / hyperscaler spend, semis and memory pricing, AI networking and optics, data-center power, software/SaaS; supply-chain reports (Nikkei, DigiTimes, TrendForce).\n\nPrefer primary sources and wire services (Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's,\ncompany press releases, SEC EDGAR, BLS/BEA/Fed releases).\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar, or\ninvent a concise one. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## **MCD** \u2014 Consumer / Restaurants\n- CEO Chris Kempczinski said at McDonald\u2019s investor day on September 23 that high inflation and flat traffic were expected to weigh on the restaurant industry; U.S. same-store sales growth in the latest quarter was 0.8%, with domestic traffic down, and shares fell more than 5% during the session. (CNBC)\n- McDonald\u2019s shares reached their lowest level since 2022 during the September 23 session. (CNBC)\n\n## **CBRL** \u2014 Consumer / Restaurants\n- Cracker Barrel reported fiscal fourth-quarter adjusted EPS of **$0.99**, versus **$0.74** a year earlier, and revenue of **$849.3 million**, versus a FactSet consensus estimate of **$834.6 million**. (CNBC)\n- Shares rose approximately **5%** during the September 23 session. (CNBC)\n\n## **WOR** \u2014 Specialty Materials & Industrial\n- Worthington Enterprises reported fiscal first-quarter adjusted EPS and revenue above Street estimates, and CEO Joseph Hayek cited demand for engineered ASME tanks used in data-center liquid-cooling systems. (CNBC)\n- Shares rose approximately **4%** intraday and approximately **16%** pre-market on September 24. (CNBC)\n\n## **AHG** \u2014 Software & SaaS / Healthcare\n- Astrana Health disclosed in a regulatory filing that private and confidential information had been accessed without authorization; the company described the incident as a \u201cmaterial\u201d data breach and said its investigation was ongoing. (CNBC)\n- Shares fell approximately **6%** during the September 23 session. (CNBC)\n\n## **RCL** \u2014 Consumer / Travel\n- Royal Caribbean announced an agreement to acquire a **50% stake** in the parent company of Sandals and Beaches Resorts for **$3 billion**; the transaction was expected to close in early 2027 and add to earnings in 2027. (CNBC)\n- Shares declined nearly **3%** and reached a 52-week low during the September 23 session. (CNBC)\n\n## **BABA** \u2014 Internet & Platforms\n- Alibaba\u2019s U.S.-listed shares declined approximately **4%** on September 23 after a four-session advance. (CNBC)\n- Investing.com reported a September 23 decline of approximately **4.5%** for Alibaba. (Investing.com)\n\n## **PAYX** \u2014 Software & SaaS\n- Paychex reported first-quarter adjusted EPS above estimates, while revenue of **$1.63 billion** was in line with the FactSet consensus estimate. (CNBC)\n- Shares fell nearly **7%** during the September 23 session. (CNBC)\n\n## **IONQ** \u2014 Quantum Computing\n- IonQ said it had tested what it described as the industry\u2019s first real-time quantum-error decoder. (CNBC)\n- Shares rose approximately **5%** during the September 23 session and approximately **12%** pre-market on September 24. (CNBC)\n\n## **CART** \u2014 Internet & Platforms\n- Maplebear said customers on the Instacart grocery platform would be able to use Meta\u2019s personal AI agent, Muse. (CNBC)\n- Shares fell approximately **3%** during the September 23 session. (CNBC)\n\n## **IMVT** \u2014 Biotechnology\n- Immunovant reported disappointing proof-of-concept trial results for IMVT-1402 in cutaneous lupus erythematosus. (CNBC)\n- Shares fell approximately **9%** during the September 23 session. (CNBC)\n\n## **VICR** \u2014 Power & Wide-Bandgap\n- Vicor revised its third-quarter sequential revenue-growth outlook to **more than 20%**, from its prior projection of **nearly 10%**. (Yahoo Finance)\n- Shares rose **19.9%** on September 23. (Yahoo Finance)\n\n## **GRAIL** \u2014 Biotechnology / Diagnostics\n- FDA advisers voted **7\u20132** that the benefits of Grail\u2019s Galleri multi-cancer blood test outweighed its risks and voted **6\u20134** on whether the test was effective. (The Company Chronicle)\n- Grail shares had risen **34%** before the advisory vote. (The Company Chronicle)\n\n## **KNR** \u2014 Industrials / Construction Materials\n- Activist investor Starboard built a stake in Knife River and pushed for a sale or higher margins. **[rumor]** (The Company Chronicle)\n\n## **SMR / SWR** \u2014 Specialty Materials & Packaging\n- Smurfit Westrock agreed to acquire CMPC\u2019s Chilean box business for **$420 million**. (The Company Chronicle)\n\n## **AMC** \u2014 Media & Entertainment / Credit\n- AMC priced a refinancing consisting of **$2 billion** of first-lien notes at **8.875%** and an **$850 million** loan at **SOFR plus 4.5%**; the refinancing extended the 2029 debt wall to 2031 and later. (The Company Chronicle)\n\n## **ALCOA / South32** \u2014 Specialty Materials\n- Alcoa closed **$2.6 billion** of bonds carrying coupons of up to **6.875%** to fund the **$3.1 billion** cash portion of its acquisition of South32\u2019s aluminum assets. (The Company Chronicle)\n\n## **PTON** \u2014 Software & SaaS / Consumer\n- Peloton was considering an approximately **$800 million** debut bond at about **8%**, compared with its existing term loan priced at SOFR plus 6%. **[rumor]** (The Company Chronicle)\n\n## **NYSE / Blockchain.com** \u2014 Crypto / Market Infrastructure\n- NYSE signed a nonbinding agreement with Blockchain.com to explore tokenized U.S. stocks for Blockchain.com\u2019s approximately **44 million** accounts; the memorandum set no launch date. (The Company Chronicle)\n\n## **MoonPay / North Capital** \u2014 Crypto / Financial Infrastructure\n- MoonPay agreed to acquire broker-dealer and trading platform North Capital for more than **$60 million** in stock; North Capital had handled more than **$8.7 billion** of securities transactions. (The Company Chronicle)\n\n## **OTC Link** \u2014 Financial Infrastructure / Regulation\n- The SEC fined OTC Link **$575,000** over more than eight years of deficiencies involving systems-security compliance. (The Company Chronicle)\n\n## **MPWR** \u2014 Semiconductors\n- Monolithic Power Systems was the leading S&P 500 gainer on September 23, rising **8.1%**. (Trefis)\n\n## **SNDK** \u2014 Memory & Interconnect\n- SanDisk rose **6.8%** on September 23. (Trefis)\n\n## **MU** \u2014 Memory & Interconnect\n- Micron rose **5.0%** on September 23. (Trefis)\n\n## **STX** \u2014 Memory & Interconnect\n- Seagate Technology rose **4.8%** on September 23. (Trefis)\n\n## **TER** \u2014 Test & Advanced Packaging\n- Teradyne rose **4.5%** on September 23. (Trefis)\n\n## **GEN** \u2014 Software & SaaS / Cybersecurity\n- Gen Digital was the weakest S&P 500 performer listed for September 23, declining **6.4%**. (Trefis)\n\n## **EXPE** \u2014 Internet & Platforms\n- Expedia declined approximately **6.2%** on September 23. (Investing.com)\n\n## **APP** \u2014 Software & SaaS\n- AppLovin declined approximately **6.2%** on September 23. (Investing.com)\n\n## **VOYG** \u2014 Communications & Networking\n- Voyager Technologies declined approximately **13.3%** on September 23. (Investing.com)\n\n## **RELY** \u2014 Software & SaaS\n- Remitly Global declined approximately **7.0%** on September 23. (Investing.com)\n\n## **VKTX** \u2014 Biotechnology\n- Viking Therapeutics declined approximately **5.1%** on September 23. (Investing.com)\n\n## **BFLY** \u2014 Medical Devices\n- Butterfly Network declined approximately **5.2%** on September 23. (Investing.com)\n\n## **ALKT** \u2014 Software & SaaS\n- Alkami Technology declined approximately **18.8%** on September 23; its market capitalization was listed below the requested **$2 billion** threshold in the cited market-mover data. (Investing.com)\n\n## **INNV** \u2014 Healthcare Services\n- InnovAge Holding declined approximately **10.8%** on September 23; its market capitalization was listed below the requested **$2 billion** threshold in the cited market-mover data. (Investing.com)\n\n## **September 24 Earnings Calendar** \u2014 Calendar\n- Darden Restaurants was listed with an expected pre-market EPS of **$2.08** and revenue of **$3.2 billion**; actual results were not available in the gathered material. (Digrin)\n- TD SYNNEX was listed with an expected pre-market EPS of **$4.75** and revenue of **$19.1 billion**; actual results were not available in the gathered material. (Digrin)\n- Blackstone Mortgage Trust was listed with an expected pre-market EPS of **$0.27** and revenue of **$78.5 million**; actual results were not available in the gathered material. (Digrin)\n- Endava was listed with an expected pre-market EPS of **$0.15** and revenue of **$243.6 million**; its market capitalization was listed at **$146.9 million**, below the requested **$2 billion** threshold. (Digrin)\n\n## **SEC Filings** \u2014 Corporate Filings\n- SEC filings dated September 23 included a report of **$425 million** in share buybacks through September 21 by an issuer identified in the filing index as Sun Communities. (Stock Titan)\n- Meta COO Javier Olivan reported a sale of **1,575 shares** at **$680.27** per share under a trading plan. (Stock Titan)\n- An H&S Investments filing disclosed plans for another sale of Broadcom shares following a **$120 million** share sale in June. (Stock Titan)\n- A director-controlled firm reported the sale of **245,129 Bullish shares** under a trading plan over three days. (Stock Titan)\n- Big Digital Energy disclosed a **$2.57 million** debt exchange that granted shares to the executive chairman\u2019s firm. (Stock Titan)\n\n## **IPO / SEC Statistics** \u2014 Macro / Calendar\n- The SEC reported **208 IPOs** in the first half of 2026, with proceeds above **$137 billion**; **118** of the offerings were blank-check companies, and operating-company listings declined **21%**. (The Company Chronicle)",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Stocks making the biggest moves midday: MCD, CBRL, BABA, WOR\nMarket Insider\n# Stocks making the biggest moves midday: McDonald\u2019s, Cracker Barrel, Alibaba, Worthington & more\nPublished Wed, Sep 23 202612:01 PM EDTUpdated Wed, Sep 23 20261:15 PM EDT\n...\nCheck out some of the companies making the bigge...",
+      "source": "web",
+      "title": "Stocks making the biggest moves midday: McDonald's, Cracker Barrel, Alibaba, Worthington & more",
+      "url": "https://www.cnbc.com/2026/09/23/stocks-making-the-biggest-moves-midday-mcd-cbrl-baba-wor-.html"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "The S&P 500 dropped 0.75% to end at 7,706.03, while the Nasdaq Composite shed 1.13% to close at 26,936.04.\nThe Dow Jones Industrial Average was down 352.10 points, or 0.68%, and settled at 51,511.59.\n...\n## Stocks making big moves: McDonald\u2019s, Cracker Barrel Old Country Store, Worthington Enterprise...",
+      "source": "web",
+      "title": "Stock market news for Sept. 23, 2026 - CNBC",
+      "url": "https://www.cnbc.com/2026/09/22/stock-market-today-live-updates.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "DELL+0.17%\nAMZN-2.24%\nEXPE-7.72%\nKLAC-0.24%\nHL-3.99%\nMETA+1.02%\nFIVE-2.10%\nBABA-4.74%\nVKTX+1.96%\nAHG+4.03%\nBFLY-7.35%\nPLTR+3.68%\nINNV-15.53%\nALKT-19.29%\nAPP-4.10%\nRELY-5.12%\nAUR-2.17%\nCHYM-7.55%\nVOYG-16.33%\nAUGO-8.01%\nEMAT-10.48%\nBOBS-11.25%\n...\nToday, stocks like Dell (DELL) and Palantir Technologi...",
+      "source": "web",
+      "title": "Alibaba, Dell among market cap stock movers on Wednesday",
+      "url": "https://www.investing.com/news/stock-market-news/alibaba-dell-among-market-cap-stock-movers-on-wednesday-93CH-4913431"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": ">> it is literally the biggest upside contributor to the s&p this morning up 1.3%.",
+      "source": "web",
+      "title": "Squawk on the Street : CNBC : September 23, 2026 9:00am-12 ...",
+      "url": "https://archive.org/details/CNBC_20260923_130000_Squawk_on_the_Street"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "+5.06%\n...\n- Vicor Corporation's (VICR) shares surged 19.9% after the company revised its third-quarter outlook for sequential revenue growth to more than 20% from its earlier projection of nearly 10%.",
+      "source": "web",
+      "title": "Company News for Sep 23, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-sep-23-2026-133200145.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- September 23, 2026\n## FDA advisers back Grail's Galleri cancer blood test 7-2, but split 6-4 on whether it works\nThe panel said the benefits outweigh the risks, a first for a multi-cancer blood test.\nIn Grail's main study the test caught about one in three cancers diagnosed within a year, and the ...",
+      "source": "web",
+      "title": "Stocks | The Company Chronicle",
+      "url": "https://thecompanychronicle.com/section/stocks"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "# CNBC on X: \"These stocks were the S&amp;P 500, Nasdaq and Dow's top market movers for the day \u2014 September 23, 2026.",
+      "source": "web",
+      "title": "P 500, Nasdaq and Dow's top market movers for the day - @CNBC - X",
+      "url": "https://x.com/CNBC/status/2102861290033050023/photo/1"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Canada's main stock index fell by the most in three months on Wednesday, with financial and \u200bmetal mining shares among the biggest decliners as bond yields \u200cglobally climbed.",
+      "source": "web",
+      "title": "Sitemap - 23 September 2026",
+      "url": "https://www.reuters.com/sitemap/2026-09/23/1/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# SEC Filings for September 23, 2026\n728 filings published.\n...\nVessel and other asset sales yielded $395M in gains as CMB.TECH (CMBT)'s first-half profit climbed.\n...\nA typo in the merger agreement: Independence Realty Trust (IRT) replaces the earlier version.\n...\n[425] Medtronic plc Business Combi...",
+      "source": "web",
+      "title": "Today's SEC Filings - Latest 10-K, 10-Q, 8-K Forms",
+      "url": "https://www.stocktitan.net/sec-filings/2026-09-23/?page=2"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Reports expected before the opening bell (pre-market / BMO).\n4\n|Company|Market cap|EPS (act. / est.)|Revenue (act. / est.)|\n|--|--|--|--|\n|D **DRI** Darden Restaurants, Inc.|23.8 billion USD|\u2014 / 2.08|\u2014 / 3.2 billion|\n|S **SNX** TD Synnex Corp|21.0 billion USD|\u2014 / 4.75|\u2014 / 19.1 billion|\n|B **BXMT** B...",
+      "source": "web",
+      "title": "Stock Earnings Calendar Sep 24, 2026 | Digrin",
+      "url": "https://www.digrin.com/stocks/earnings_calendar/2026-09-24"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# SEC Filings for September 23, 2026\n728 filings published.\n...\n09/23/2026 09:48 PM\n...\nPrimeEnergy Resources (PNRG) director Fong Gifford reports a 100-share transaction at $211.70 a share.\n...\nA $2.57 million debt exchange gives the executive chairman\u2019s firm shares in Big Digital Energy (BGDE).\n.....",
+      "source": "web",
+      "title": "Today's SEC Filings - Latest 10-K, 10-Q, 8-K Forms - Stock Titan",
+      "url": "https://www.stocktitan.net/sec-filings/2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# CNBC on X: \"These stocks were the S&amp;P 500, Nasdaq and Dow's top market movers for the day \u2014 September 23, 2026.\n...\nPANW and CRWD led while ABNB, BKNG and GOOGL took the hit.",
+      "source": "web",
+      "title": "P 500, Nasdaq and Dow's top market movers for ...",
+      "url": "https://x.com/CNBC/status/2102861290033050023"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Monolithic Power Systems (MPWR) led the index with a +8.1% gain, while Gen Digital (GEN) marked the low with a -6.4% loss.\n...\nThe 10 S&P 500 stocks with the highest returns on the last trading day:\n|#|Ticker|Company Name|1-D Returns|YTD Returns|\n|--|--|--|--|--|\n|1|MPWR|Monolithic Power Systems|8.1...",
+      "source": "web",
+      "title": "S&P 500 Movers | Winners: MPWR, SNDK, LEN | Losers - Trefis",
+      "url": "https://www.trefis.com/stock/spy/articles/616252/sp-500-movers-winners-mpwr-sndk-len-losers-gen-gddy-rcl/2026-09-23"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "SellBuy\nMean consensus\nHOLD\nNumber of Analysts\n...\nAverage target price",
+      "source": "web",
+      "title": "Swiss stocks - Factors to watch on September 24",
+      "url": "https://www.marketscreener.com/news/swiss-stocks-factors-to-watch-on-september-24-ce785adeda89f32d"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Stocks sold off on Wednesday as Treasury yields surged amid inflation worries, while investors monitored US diplomatic efforts with Iran and China.\nThe Dow Jones Industrial Average (^DJI) dropped 0.7%, while the S&P 500 (^GSPC) declined by 0.8%.\n...\n### Trending Tickers",
+      "source": "web",
+      "title": "Stock market today: Dow, S&P 500, Nasdaq slip as oil ...",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-september-23-dow-sp-500-nasdaq-080556640.html"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/2026/09/23/stocks-making-the-biggest-moves-midday-mcd-cbrl-baba-wor-.html",
+    "https://www.cnbc.com/2026/09/22/stock-market-today-live-updates.html",
+    "https://www.investing.com/news/stock-market-news/alibaba-dell-among-market-cap-stock-movers-on-wednesday-93CH-4913431",
+    "https://archive.org/details/CNBC_20260923_130000_Squawk_on_the_Street",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-sep-23-2026-133200145.html",
+    "https://thecompanychronicle.com/section/stocks",
+    "https://x.com/CNBC/status/2102861290033050023/photo/1",
+    "https://www.reuters.com/sitemap/2026-09/23/1/",
+    "https://www.stocktitan.net/sec-filings/2026-09-23/?page=2",
+    "https://www.digrin.com/stocks/earnings_calendar/2026-09-24",
+    "https://www.stocktitan.net/sec-filings/2026-09-23/",
+    "https://x.com/CNBC/status/2102861290033050023",
+    "https://www.trefis.com/stock/spy/articles/616252/sp-500-movers-winners-mpwr-sndk-len-losers-gen-gddy-rcl/2026-09-23",
+    "https://www.marketscreener.com/news/swiss-stocks-factors-to-watch-on-september-24-ce785adeda89f32d",
+    "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-september-23-dow-sp-500-nasdaq-080556640.html"
+  ],
+  "usage": {
+    "input_tokens": 684,
+    "output_tokens": 2319,
+    "cost_usd": 0.05084
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "name": "tickers_05",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Thursday September 24, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Thursday September 24, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| CRM | Salesforce, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +1.84% | -5.2% | 0.9\u00d7 | both 2026-08-27 |\n| PSX | Phillips 66 | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.12% | -3.1% | 1.2\u00d7 | \u2014 |\n| NET | Cloudflare, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.19% | +8.5% | 0.9\u00d7 | both 2026-01-27 |\n| META | Meta Platforms, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +1.02% | +10.5% | 1.3\u00d7 | gapper 2026-07-01 |\n| ZS | Zscaler, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +2.03% | +11.9% | 0.6\u00d7 | gapper 2026-09-14 |\n| NTRA | Natera, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -0.03% | +13.2% | 1.1\u00d7 | gapper 2026-08-07 |\n| SMCI | Super Micro Computer, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -0.24% | +12.5% | 1.0\u00d7 | gapper 2026-08-12 |\n| CRCL | Circle Internet Group | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -3.03% | +14.0% | 0.6\u00d7 | gapper 2026-09-03 |\n| TWLO | Twilio Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +2.17% | +21.7% | 1.9\u00d7 | both 2026-08-07 |\n| CYPH | Cypherpunk Technologies Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -3.22% | +48.0% | 0.9\u00d7 | gapper 2026-09-18 |\n| ASST | Strive, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -1.23% | +5.8% | 0.6\u00d7 | volume_spike 2026-08-24 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Salesforce, Inc. (CRM) `[Software & SaaS]`\n- Salesforce\u2019s Agentforce annual recurring revenue exceeded **$1.5 billion** in fiscal second-quarter 2027, up more than **240% year over year**; the company\u2019s full-year revenue guidance was **$46.1 billion\u2013$46.4 billion** (CNBC).\n- A September 23 article cited Salesforce\u2019s **$50 billion buyback**, fiscal-2026 free cash flow of **$14.402 billion**, and second-quarter free cash flow of **$1.098 billion** (247WallSt).\n- Salesforce co-founder Marc Benioff and President Miguel Milano had shares withheld for taxes on September 23; Milano\u2019s withholding was **1,001 shares at $233.28** (SEC filing summary, Stock Titan).\n\n## Phillips 66 (PSX) `[Power & Wide-Bandgap]`\n- No company-specific catalyst found in window\n\n## Cloudflare, Inc. (NET) `[Communications & Networking]`\n- A Cloudflare director\u2019s trust sold **5,000 shares at $353.1501** under a trading plan on September 23 (SEC filing summary, Stock Titan).\n\n## Meta Platforms, Inc. (META) `[Internet & Platforms]`\n- Meta COO Javier Olivan sold **1,575 shares at $680.27** under a trading plan on September 23 (SEC filing summary, Stock Titan).\n- Meta product chief\u2019s trust also sold shares under a trading plan on September 23; the filing summary did not specify the transaction size (SEC filing summary, Stock Titan).\n- Meta\u2019s Muse AI agent added Shopify store browsing and checkout capabilities, and a September 23 report listed Shopify, PayPal, Expedia, and Instacart among Muse-related partners (Dove Journal).\n- Morgan Stanley said Meta\u2019s Muse could increase communication volumes as AI agents complete more tasks on users\u2019 behalf, potentially increasing demand for Twilio services (StockTwits).\n\n## Zscaler, Inc. (ZS) `[Software & SaaS]`\n- No company-specific catalyst found in window\n\n## Natera, Inc. (NTRA) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window\n- Natera\u2019s September 22 regulatory announcement that Japan\u2019s Pharmaceuticals and Medical Devices Agency approved Signatera as a companion diagnostic for muscle-invasive bladder cancer was cited as the catalyst for the prior session\u2019s **5.2%** rise; it predates the requested September 23 window (StockStory; Yahoo Finance).\n\n## Super Micro Computer, Inc. (SMCI) `[AI Infrastructure]`\n- No company-specific catalyst found in window\n- September 23 coverage described semiconductor strength as being driven by AI-infrastructure demand, including reported gains of **14.2% for Marvell**, **21.7% for AMD**, and **22.6% for Intel** during the week; no source in the gathered results directly attributed September 23 SMCI trading to a specific lead stock (Investing.com).\n\n## Circle Internet Group (CRCL) `[Internet & Platforms]`\n- No company-specific catalyst found in window\n- A September 23 market report attributed Circle\u2019s broader pullback to cryptocurrency-sector risk aversion as Bitcoin fell below **$69,000** and the Crypto Fear & Greed Index reached \u201cextreme fear\u201d; the report concerned a separate move and did not identify a new Circle-specific announcement in the requested window (Tickeron).\n\n## Twilio Inc. (TWLO) `[Communications & Networking]`\n- Twilio rose as high as **2.4%** intraday on September 23, reaching its highest level since **November 2021**, amid discussion of AI-agent-driven communications demand (StockTwits).\n- Morgan Stanley said Meta\u2019s Muse AI agent could increase communication volumes as agents complete tasks for users, potentially creating additional demand for Twilio services (StockTwits).\n- Twilio\u2019s September 23 move followed a prior-session analyst-action catalyst: Rosenblatt and TD Cowen had raised their price targets, according to a September 23 market recap; the recap did not provide the old and new targets (StockStory).\n\n## Cypherpunk Technologies Inc. (CYPH) `[Internet & Platforms]`\n- No company-specific catalyst found in window\n- No named sector lead stock or sympathy driver was identified in the gathered September 23\u201324 sources.\n\n## Strive, Inc. (ASST) `[Internet & Platforms]`\n- No company-specific catalyst found in window",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "CRM : NYSE\nSalesforce (CRM) co-founder has 630 and 631 shares withheld for stock-award taxes\n\u2026\nCRM : NYSE\nSalesforce (CRM) withholds 908 shares for its president\u2019s taxes as stock awards convert.\n...\nCRM : NYSE\nSalesforce (CRM) withholds 1,001 of COO Miguel Milano\u2019s shares for taxes at $233.28 each\ni...",
+      "source": "web",
+      "title": "Today's SEC Filings - Latest 10-K, 10-Q, 8-K Forms - Stock Titan",
+      "url": "https://www.stocktitan.net/sec-filings/2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Moderna and Twilio climbed to multi-year highs on Wednesday, fueled by optimism around Moderna\u2019s broader mRNA pipeline and Twilio\u2019s emerging opportunity from the rapid adoption of AI agents.\n...\nPublished Sep 23, 2026 | 1:54 PM EDT\n...\nModerna (MRNA) and Twilio (TWLO) defied the broader market sello...",
+      "source": "web",
+      "title": "These 2 Stocks Are Bucking The Broader Market Selloff To ...",
+      "url": "https://stocktwits.com/news-articles/markets/equity/twlo-mrna-stocks-hit-multi-year-highs/cZM4TO8RBBc"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Published September 23, 2026, 10:45am ET \u00b7 3 min read\n## Quick Read\n- Salesforce's Agentforce ARR hit $1.5B, combined with Data Cloud 360 surging 210% YoY, while CRM trades at just a 14x forward P/E with a 7.5% free cash flow yield.\n- Microsoft owns the reflexive AI trade, but CRM's $50B buyback and...",
+      "source": "web",
+      "title": "The Street is Finally Going Bullish on Salesforce and I Keep Buying",
+      "url": "https://247wallst.com/investing/2026/09/23/the-street-is-finally-going-bullish-on-salesforce-and-i-keep-buying/?tpid=1665863&tv=link&tc=in_content"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "**AutoZone (NYSE:AZO): ** Auto parts and accessories retailer AutoZone (NYSE:AZO) rose by 6.1% on Tuesday after the company reported fourth-quarter earnings per share above Wall Street expectations, supported by margin expansion.\n...\n**Natera (NASDAQ:NTRA): ** Genetic testing company Natera (NASDAQ:...",
+      "source": "web",
+      "title": "Stocks making big moves yesterday: AutoZone, Natera, Shopify, Twilio, and Lennar - StockStory",
+      "url": "https://stockstory.org/us/stocks/nyse/azo/news/why-it-moves-summary/stocks-making-big-moves-yesterday-autozone-natera-shopify-twilio-and-lennar"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Asian cash markets finished mixed: the Nikkei 225 closed up 0.76 percent, the Hang Seng closed down 1.28 percent, the Shanghai Composite closed down 1.61 percent and the ASX 200 closed down 0.64 percent.",
+      "source": "web",
+      "title": "September 24, 2026 Market LiveCast Brief - SquawkNews",
+      "url": "https://squawknews.com/brief/livecast/2026-09-24"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "According to data from MarketBeat.com, the stock presently has an average rating of \"Moderate Buy\" and a consensus target price of $275.14.",
+      "source": "web",
+      "title": "Salesforce (NYSE:CRM) Shares Up 1.8%  - Here's What Happened",
+      "url": "https://www.marketbeat.com/instant-alerts/price-salesforce-nyse-crm-shares-up-18-heres-what-happened-2026-09-23/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "22 news published.\n...\n09/24/2026 04:01 AM\n...\nTORM plc capital increase in connection with RSU exercise as part of TORM's incentive program\n...\n09/24/2026 04:00 AM\n...\nWTKWY : OTC\nShare Buyback Transaction Details September 17 \u2013 September 23, 2026\n...\n09/24/2026 04:00 AM\n...\nVR Submits NOI Permit A...",
+      "source": "web",
+      "title": "Stock Market News Today \u2014 NYSE, NASDAQ & OTC Headlines",
+      "url": "https://www.stocktitan.net/news/2026-09-24/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "2. 2026-09-23\n### META Shopify and Meta sign deal on AI-agent shopping\nNews Agent/retail-insight-network.com/DJ-META-260923-03/AI commerce partnerships\nVerified\n3. 2026-09-23\n### MSFT Market chatter: Microsoft plans larger Copilot discounts for large customers\nNews Agent/finance.yahoo.com/DJ-MSFT-26...",
+      "source": "web",
+      "title": "The archive. The Dove Journal",
+      "url": "https://dovejournal.com/archive"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "**Investing.com** \u2014 Chipmakers rallied for a sixth straight session yesterday as the wave of institutional capital continues to pour into semiconductor giants.\nDriven by relentless demand for AI infrastructure, this week alone has seen **Marvell (NASDAQGS:MRVL)** surge **+14.2%**, **AMD (NASDAQGS:AM...",
+      "source": "web",
+      "title": "These AI-picked chip stocks are rallying in September - see why",
+      "url": "https://uk.investing.com/news/stock-market-news/42-39-36-these-aipicked-chip-stocks-are-rallying-in-september--see-why-4878667"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Published Wed, Sep 23 202611:19 AM EDT\n...\nAgentforce annual recurring revenue topped $1.5 billion in the second quarter, up more than 240% year over year, helping push full-year revenue guidance up to a range of $46.1 billion to $46.4 billion.",
+      "source": "web",
+      "title": "Salesforce is set to rebound after a recent pullback. How trader Tony Zhang is playing the bounce",
+      "url": "https://www.cnbc.com/2026/09/23/salesforce-is-set-to-rebound-after-a-recent-pullback-how-tony-zhang-is-playing-the-bounce.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- **Shares fell roughly 8.5%** after Paychex reported fiscal first-quarter 2027 results that revealed a sharp slowdown in revenue growth.\n- **Primary catalyst:** The core Management Solutions segment missed revenue expectations, growing just 4% and underscoring deceleration from the prior quarter's ...",
+      "source": "web",
+      "title": "Why Is Paychex (PAYX) Stock Down -8.46% Today?",
+      "url": "https://tickeron.com/blogs/why-is-paychex-payx-stock-down-8-46-today-16973/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# Stock Market News for September 23, 2026\n548 news published.\n...\n**CoreWeave (CRWV)** became the only provider to earn SemiAnalysis' Platinum ClusterMAX\u2122 rating three consecutive times, a validation for customers and investors focused on GPU compute quality and uptime; read the rating announcement...",
+      "source": "web",
+      "title": "Stock Market News Today \u2014 NYSE, NASDAQ & OTC ...",
+      "url": "https://www.stocktitan.net/news/2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# breakout stocks on X: \"September 23 \u2014 Morning Watchlist News: - $IONQ shows real-time quantum error correction on a single CPU - $IONQ's Superion 256 to be the first quantum processor installed at $NVDA\u2019s NVAQC - $NOW partner INRY deploys EmployeeWorks in 6 weeks, slashing request times 60% with A...",
+      "source": "web",
+      "title": "$IONQ's Superion 256 to be the first quantum processor ...",
+      "url": "https://x.com/gbstocks/status/2102742817755861211"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Thursday, September 24, 2026\n...\n\u00b7 4 before open, 4 after close, 30 time TBD\n## Before market open\nReports expected before the opening bell (pre-market / BMO).\n4\n|Company|Market cap|EPS (act. / est.)|Revenue (act. / est.)|\n|--|--|--|--|\n|D **DRI** Darden Restaurants, Inc.|23.8 billion USD|\u2014 / 2.08|\u2014...",
+      "source": "web",
+      "title": "Stock Earnings Calendar Sep 24, 2026 | Digrin",
+      "url": "https://www.digrin.com/stocks/earnings_calendar/2026-09-24"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Shares of Natera (NTRA) and Omeros (OMER) surged on Tuesday, hitting key milestones, after Natera secured regulatory approval in Japan for its cancer test and Cantor Fitzgerald upgraded Omeros amid growing optimism about its lead drug's commercial potential.\nAt the time of writing, OMER shares were ...",
+      "source": "web",
+      "title": "NTRA Stock Hits All-Time High, OMER Stock Scales 5- ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/ntra-stock-hits-time-high-175050577.html"
+    }
+  ],
+  "citations": [
+    "https://www.stocktitan.net/sec-filings/2026-09-23/",
+    "https://stocktwits.com/news-articles/markets/equity/twlo-mrna-stocks-hit-multi-year-highs/cZM4TO8RBBc",
+    "https://247wallst.com/investing/2026/09/23/the-street-is-finally-going-bullish-on-salesforce-and-i-keep-buying/?tpid=1665863&tv=link&tc=in_content",
+    "https://stockstory.org/us/stocks/nyse/azo/news/why-it-moves-summary/stocks-making-big-moves-yesterday-autozone-natera-shopify-twilio-and-lennar",
+    "https://squawknews.com/brief/livecast/2026-09-24",
+    "https://www.marketbeat.com/instant-alerts/price-salesforce-nyse-crm-shares-up-18-heres-what-happened-2026-09-23/",
+    "https://www.stocktitan.net/news/2026-09-24/",
+    "https://dovejournal.com/archive",
+    "https://uk.investing.com/news/stock-market-news/42-39-36-these-aipicked-chip-stocks-are-rallying-in-september--see-why-4878667",
+    "https://www.cnbc.com/2026/09/23/salesforce-is-set-to-rebound-after-a-recent-pullback-how-tony-zhang-is-playing-the-bounce.html",
+    "https://tickeron.com/blogs/why-is-paychex-payx-stock-down-8-46-today-16973/",
+    "https://www.stocktitan.net/news/2026-09-23/",
+    "https://x.com/gbstocks/status/2102742817755861211",
+    "https://www.digrin.com/stocks/earnings_calendar/2026-09-24",
+    "https://finance.yahoo.com/markets/stocks/articles/ntra-stock-hits-time-high-175050577.html"
+  ],
+  "usage": {
+    "input_tokens": 1245,
+    "output_tokens": 953,
+    "cost_usd": 0.03203
+  }
+}

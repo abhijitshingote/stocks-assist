@@ -1,0 +1,165 @@
+{
+  "name": "tickers_01",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Thursday September 24, 2026.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Thursday September 24, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| PANW | Palo Alto Networks, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +5.00% | +4.7% | 0.9\u00d7 | \u2014 |\n| CRWD | CrowdStrike Holdings, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.97% | +8.8% | 1.1\u00d7 | \u2014 |\n| PLTR | Palantir Technologies Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.68% | +10.0% | 1.3\u00d7 | \u2014 |\n| BP | BP p.l.c. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.23% | -2.0% | 0.9\u00d7 | \u2014 |\n| NOW | ServiceNow, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.76% | +0.7% | 0.8\u00d7 | \u2014 |\n| EQNR | Equinor ASA | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.61% | -2.9% | 1.1\u00d7 | \u2014 |\n| FTNT | Fortinet, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.57% | +4.1% | 0.8\u00d7 | \u2014 |\n| COP | ConocoPhillips | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.25% | -3.4% | 0.7\u00d7 | \u2014 |\n| TTE | TotalEnergies SE | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.03% | +0.9% | 1.4\u00d7 | \u2014 |\n| TMUS | T-Mobile US, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.00% | -6.0% | 1.4\u00d7 | \u2014 |\n| OKTA | Okta, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +4.45% | +9.2% | 1.4\u00d7 | \u2014 |\n\nTASK\nFor EACH ticker, find why it moved on Wednesday September 23, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Palo Alto Networks, Inc. (PANW) `[Software & SaaS]`\n- Morgan Stanley raised its price target to **$410** and maintained an **Overweight** rating; Wedbush initiated coverage at **Outperform** with a **$400** target. (Morgan Stanley note; Wedbush note)\n- Palo Alto Networks\u2019 Unit 42 launched **Continuous Frontier AI Defense**, a subscription service using Anthropic and OpenAI models with Palo Alto threat intelligence. (Unit 42/company announcement)\n- Bernstein rated PANW **Market Perform** with a **$351** target, while Daiwa raised its target to **$390** and maintained **Buy**. (Bernstein note; Daiwa note)\n\n## CrowdStrike Holdings, Inc. (CRWD) `[Software & SaaS]`\n- No company-specific catalyst found in window.\n- CRWD, PANW, and OKTA rose together while the **QQQ ETF fell 0.7%**, indicating a cybersecurity-sector rotation; PANW was the lead stock named in the Wednesday market-mover coverage. (Yahoo Finance)\n\n## Palantir Technologies Inc. (PLTR) `[AI Infrastructure]`\n- Rosenblatt reaffirmed a **Buy** rating and assigned a **$225** price target. (Rosenblatt note)\n- Surf Air Mobility appointed **Barrett Brown** to lead **SurfOS**, its AI-enabled operating system powered by Palantir software. (Surf Air Mobility announcement)\n- Palantir\u2019s AI sovereignty strategy was highlighted in coverage of its recent AIPCon, with sovereign control of data, infrastructure, and AI systems identified as a central commercial theme. (Palantir AIPCon coverage)\n\n## BP p.l.c. (BP) `[Specialty Materials & IP Licensing]`\n- J.P. Morgan upgraded BP from **Neutral to Overweight** and raised its price target from **550 pence to 675 pence**, equivalent to approximately **$54** for the ADR. (J.P. Morgan note)\n- J.P. Morgan projected that BP\u2019s total financial obligations could fall **50% by the end of 2027** and estimated upstream volume growth of approximately **3% annually from 2030 to 2035**. (J.P. Morgan note)\n\n## ServiceNow, Inc. (NOW) `[Software & SaaS]`\n- No company-specific catalyst found in window.\n\n## Equinor ASA (EQNR) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window.\n\n## Fortinet, Inc. (FTNT) `[Software & SaaS]`\n- No company-specific catalyst found in window.\n- Fortinet was identified by Josh Brown as one of three preferred cybersecurity stocks alongside **CrowdStrike and Palo Alto Networks**, with cybersecurity-sector strength cited as the relevant group catalyst. (Josh Brown/Ritholtz commentary)\n\n## ConocoPhillips (COP) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window.\n\n## TotalEnergies SE (TTE) `[Specialty Materials & IP Licensing]`\n- J.P. Morgan downgraded TotalEnergies from **Overweight to Neutral**. (J.P. Morgan note)\n- J.P. Morgan cited TotalEnergies\u2019 **highest direct Middle East asset exposure among European companies** and the possibility of windfall taxes. (J.P. Morgan note)\n\n## T-Mobile US, Inc. (TMUS) `[Wireless & Mobile]`\n- No company-specific catalyst found in window.\n\n## Okta, Inc. (OKTA) `[Software & SaaS]`\n- Scotiabank raised its price target from **$165 to $190** and maintained a **Sector Outperform** rating. (Scotiabank note)\n- BTIG raised its price target from **$187 to $219** and reiterated **Buy**, citing customer and partner feedback on Okta\u2019s AI Agents products. (BTIG note)\n- Baird raised its target to **$200** and maintained **Outperform**; Bank of America raised its target from **$170 to $200** while maintaining **Neutral**. (Baird note; Bank of America note)\n- Wells Fargo raised its target to **$200** and cited AI-driven demand; the **Oktane \u201926** conference was identified as a forthcoming company event. (Wells Fargo note)",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Cybersecurity Stocks Rally While Large-Cap Tech Slides: CrowdStrike, Palo Alto, Okta, and Palantir Each Gain 4%\n...\nWed, September 23, 2026 at 10:41 AM GMT-54 min read\n- QQQ\n-0.84%\n- CRWD\n+4.97%\n- PANW\n+5.00%\n- PLTR\n+3.68%\n...\n### Quick Read\n- CrowdStrike, Palo Alto, and Okta each surged 4% Wednesda...",
+      "source": "web",
+      "title": "Cybersecurity Stocks Rally While Large-Cap Tech Slides: CrowdStrike, Palo Alto, Okta, and Palantir Each Gain 4%",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/cybersecurity-stocks-rally-while-large-154102562.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Cybersecurity Stocks Rally While Large-Cap Tech Slides: CrowdStrike, Palo Alto, Okta, and Palantir Each Gain 4% - 24/7 Wall St.\n...\n## Quick Read\n- CrowdStrike, Palo Alto, and Okta each surged 4% Wednesday while the broader QQQ ETF dropped 0.7%, signaling a defensive rotation into cybersecurity.\n- P...",
+      "source": "web",
+      "title": "Cybersecurity Stocks Rally While Large-Cap Tech Slides: CrowdStrike, Palo Alto, Okta, and Palantir Each Gain 4%",
+      "url": "https://247wallst.com/investing/2026/09/23/cybersecurity-stocks-rally-while-large-cap-tech-slides-crowdstrike-palo-alto-okta-and-palantir-each-gain-4/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Palo Alto Networks Inc.\nstocks have been trading up by 4.32 percent after upbeat analyst upgrades boosted cybersecurity growth expectations.\n...\n- Morgan Stanley lifted its price target on Palo Alto Networks to $410 and kept it a top pick, pointing to faster cybersecurity spending and more market sh...",
+      "source": "web",
+      "title": "Palo Alto Networks Stock Climbs As AI Security Bets Grow",
+      "url": "https://www.timothysykes.com/news/palo-alto-networks-inc-panw-news-2026_09_23/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "CrowdStrike Holdings (CRWD): Trading at **$262.49**, as of Sep 23, 2026, 3:59 PM EDT;\nrevenue rose from **$3.06B in FY2024 to $4.81B in FY2026**, as of Jan 31, 2026 || **24.3% revenue growth**, as of Jul 31, 2026 || **$1.61B levered FCF**, as of Jul 31, 2026 || Fair-value estimate: **46.6% downside*...",
+      "source": "web",
+      "title": "Cybersecurity stocks outlook: Which stocks to hold amid stretched valuations? By Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/cybersecurity-stocks-outlook-which-stocks-to-hold-amid-stretched-valuations-93CH-4914871"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Based on data from MarketBeat, Palo Alto Networks presently has a consensus rating of \"Moderate Buy\" and an average target price of $390.02.",
+      "source": "web",
+      "title": "Palo Alto Networks (NASDAQ:PANW) Trading Up 5%  - Here's What Happened",
+      "url": "https://www.marketbeat.com/instant-alerts/price-palo-alto-networks-nasdaq-panw-trading-up-5-heres-what-happened-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Two investment analysts have rated the stock with a Strong Buy rating, twenty-one have issued a Buy rating, ten have assigned a Hold rating and three have given a Sell rating to the company's stock.",
+      "source": "web",
+      "title": "Palantir Technologies (NASDAQ:PLTR) Stock Price Up 3.7%  - Still a Buy?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-palantir-technologies-nasdaq-pltr-stock-price-up-37-still-a-buy-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "PLTRYTD+7.9%SPYYTD+13.2%QQQYTD+20.9%\n...\n|#|Ticker|Company|1D Rtn|YTD Rtn|Highlights|\n...\n|8|PANW|Palo Alto Networks|5.0%|113.5%|** Low stock price volatility** Stock price has recently run up significantly|\n|9|CRWD|CrowdStrike|5.0%|124.0%|** Attractive cash flow generation** Not profitable at opera...",
+      "source": "web",
+      "title": "What Is Really Driving Palantir's Growth?",
+      "url": "https://www.trefis.com/stock/pltr/articles/616275/what-is-really-driving-palantirs-growth/2026-09-23"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Okta (NASDAQ:OKTA) Trading Up 3.7% After Analyst Upgrade\n...\n- **Okta shares rose 3.7%** after Scotiabank raised its price target from $165 to $190 and maintained a sector outperform rating.\nAnalysts overall rate the stock a \u201cModerate Buy,\u201d with a consensus target of $177.61.\n...\nOkta, Inc.\n(NASDAQ:...",
+      "source": "web",
+      "title": "Okta (NASDAQ:OKTA) Trading Up 3.7% After Analyst ...",
+      "url": "https://www.marketbeat.com/instant-alerts/price-okta-nasdaq-okta-trading-up-37-after-analyst-upgrade-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Okta Inc.\nstocks have been trading up by 4.9 percent after strong identity security demand fueled renewed investor optimism.\n...\n- BTIG lifted its OKTA price target from $187 to $219 on strong field feedback around Okta\u2019s AI Agents products.\n- Wells Fargo and Baird each raised OKTA targets to $200, ...",
+      "source": "web",
+      "title": "Okta Stock Climbs As AI Blueprint Alliance Fuels Bullish Targets",
+      "url": "https://www.timothysykes.com/news/okta-inc-okta-news-2026_09_23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Ritholtz chief executive Josh Brown contends the current expansion cycle leaves substantial upside for select industry leaders.\nHis analysis identifies CrowdStrike (CRWD), Palo Alto Networks (PANW), and Fortinet (FTNT) as primary vehicles to capture this ongoing re-rating.\n...\nBacked by Nvidia-partn...",
+      "source": "web",
+      "title": "Josh Brown says these 3 cybersecurity stocks remain attractive",
+      "url": "https://invezz.com/news/2026/09/23/josh-brown-says-these-3-cybersecurity-stocks-remain-attractive/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Rosenblatt Securities Reiterates Buy Rating for Palantir Technologies (NASDAQ:PLTR)\n...\n## Key Points\n- **Rosenblatt Securities reaffirmed its Buy rating** on Palantir Technologies and set a $225 price target, implying 21.63% upside from the stock\u2019s current price.\n- Analyst sentiment is broadly posi...",
+      "source": "web",
+      "title": "Rosenblatt Securities Reiterates Buy Rating for Palantir ...",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-rosenblatt-securities-reiterates-buy-rating-for-palantir-technologies-nasdaq-pltr-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "BP upgraded at J.P.\nMorgan after lagging rivals for years; TotalEnergies cut to Neutral (BP:NYSE) | Seeking Alpha\n...\nBP (BP) climbs 2.8% in Wednesday's trading as J.P.\nMorgan upgraded the oil giant to Overweight from Neutral and hiked its price target to 675 pence (~$54) from 550 pence, after the s...",
+      "source": "web",
+      "title": "BP upgraded at J.P. Morgan after lagging rivals for years; TotalEnergies cut to Neutral (BP:NYSE)",
+      "url": "https://seekingalpha.com/news/4646235-bp-upgraded-at-jp-morgan-after-lagging-rivals-for-years-totalenergies-cut-to-neutral"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "\u2022 Palo Alto Networks launched the Unit 42 Continuous Frontier AI Defense service.\n\u2022 Fourth-quarter fiscal revenue exceeded consensus expectations driven by strong AI adoption.\n\u2022 The MACD value of 6.338 indicates a buy signal for PANW.\n...\nThe renewed buying pressure also builds upon the company's ro...",
+      "source": "web",
+      "title": "Palo Alto Networks Inc Stock (PANW) Moved Up by 3.04% on Sep 23",
+      "url": "https://www.tradingkey.com/news/market-movers/262183322-market-movers-panw-20260923"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "BP stock is upgraded to 'overweight' by JPMorgan\nBP stock has lagged its rivals through two energy crises.\nIntegrated oil giant BP has lagged its closest rivals over the last three to five years, but now one leading Wall Street firm says it's time to buy the beleaguered company.\nJPMorgan lifted its ...",
+      "source": "web",
+      "title": "This oil giant has lagged its leading rivals through two energy crises ...",
+      "url": "https://www.morningstar.com/news/marketwatch/2026092376/this-oil-giant-has-lagged-its-leading-rivals-through-two-energy-crises-now-one-wall-street-giant-says-its-time-to-buy"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Palo Alto Networks (PANW) is up 3.0% today.\n...\n**Analysis:** The most likely driver is investor enthusiasm around Palo Alto Networks\u2019 new AI-focused security offering announced on September 22, 2026, which expands its push into higher-growth cyber defense products.\n...\n## $PANW Analyst Ratings\nWall...",
+      "source": "web",
+      "title": "Why Palo Alto Networks (PANW) Stock Is Up Today | PANW Stock News",
+      "url": "https://www.quiverquant.com/news/Why+Palo+Alto+Networks+(PANW)+Stock+Is+Up+Today"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/cybersecurity-stocks-rally-while-large-154102562.html",
+    "https://247wallst.com/investing/2026/09/23/cybersecurity-stocks-rally-while-large-cap-tech-slides-crowdstrike-palo-alto-okta-and-palantir-each-gain-4/",
+    "https://www.timothysykes.com/news/palo-alto-networks-inc-panw-news-2026_09_23/",
+    "https://www.investing.com/news/stock-market-news/cybersecurity-stocks-outlook-which-stocks-to-hold-amid-stretched-valuations-93CH-4914871",
+    "https://www.marketbeat.com/instant-alerts/price-palo-alto-networks-nasdaq-panw-trading-up-5-heres-what-happened-2026-09-23/",
+    "https://www.marketbeat.com/instant-alerts/price-palantir-technologies-nasdaq-pltr-stock-price-up-37-still-a-buy-2026-09-23/",
+    "https://www.trefis.com/stock/pltr/articles/616275/what-is-really-driving-palantirs-growth/2026-09-23",
+    "https://www.marketbeat.com/instant-alerts/price-okta-nasdaq-okta-trading-up-37-after-analyst-upgrade-2026-09-23/",
+    "https://www.timothysykes.com/news/okta-inc-okta-news-2026_09_23/",
+    "https://invezz.com/news/2026/09/23/josh-brown-says-these-3-cybersecurity-stocks-remain-attractive/",
+    "https://www.marketbeat.com/instant-alerts/analyst-rosenblatt-securities-reiterates-buy-rating-for-palantir-technologies-nasdaq-pltr-2026-09-23/",
+    "https://seekingalpha.com/news/4646235-bp-upgraded-at-jp-morgan-after-lagging-rivals-for-years-totalenergies-cut-to-neutral",
+    "https://www.tradingkey.com/news/market-movers/262183322-market-movers-panw-20260923",
+    "https://www.morningstar.com/news/marketwatch/2026092376/this-oil-giant-has-lagged-its-leading-rivals-through-two-energy-crises-now-one-wall-street-giant-says-its-time-to-buy",
+    "https://www.quiverquant.com/news/Why+Palo+Alto+Networks+(PANW)+Stock+Is+Up+Today"
+  ],
+  "usage": {
+    "input_tokens": 1165,
+    "output_tokens": 930,
+    "cost_usd": 0.03145
+  }
+}

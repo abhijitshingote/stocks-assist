@@ -1,0 +1,165 @@
+{
+  "name": "broad_macro_cross_asset",
+  "kind": "channel",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Thursday September 24, 2026. Scope: Macro & cross-asset.\n\nWindow: Wednesday September 23, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Thursday September 24, 2026 ~6:00 AM ET.\n\nCOVER EVERY ITEM BELOW (run a separate search for each bullet; do not skip one because another was rich)\n- US index closes: S&P 500, Nasdaq Composite, Dow, Russell 2000, PHLX SOX (% change).\n- Rates/FX: 2-yr and 10-yr Treasury yields, DXY; Treasury auctions.\n- Economic data released: actual vs consensus vs prior.\n- Fed/FOMC decisions and named speaker quotes; ECB/BoE/BoJ/PBoC actions.\n- Commodities: WTI, Brent, natural gas, gold, silver, copper (price, % change); OPEC.\n- Crypto: Bitcoin, Ether (price, % change); SEC/CFTC/Congress crypto actions; ETF flows.\n- Policy/geopolitics: tariffs, export controls, sanctions, wars moving oil or risk assets.\n\nPrefer primary sources and wire services (Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's,\ncompany press releases, SEC EDGAR, BLS/BEA/Fed releases).\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar, or\ninvent a concise one. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## US Index Closes [Macro]\n\n- **S&P 500** closed at **7,706.03**, down **0.75%** on Wednesday, September 23, 2026. (Reuters)\n- **Nasdaq Composite** closed at **26,936.04**, down **1.13%**. (Reuters)\n- **Dow Jones Industrial Average** closed at **51,511.59**, down **0.68%**. (Reuters)\n- **Russell 2000** closed at **2,838.66**, down **1.77%**. (ABC News)\n- **PHLX Semiconductor Index** fell **1.2%**. (Reuters)\n\n## Treasury Yields [Rates]\n\n- The **U.S. 10-year Treasury yield** rose to approximately **5.12%**, up about **16.8 basis points** on September 23. (market data report)\n- The **U.S. 2-year Treasury yield** rose to approximately **4.90%**, up about **12 basis points**. (market data report)\n- Treasury yields reached **19-year highs** during Wednesday\u2019s session, according to market coverage. (Investopedia)\n\n## Market Context [Macro]\n\n- Rising Treasury yields accompanied the declines in the S&P 500, Nasdaq Composite, Dow, Russell 2000, and semiconductor stocks. (Reuters)\n- **Alphabet** fell **3.8%**, **Amazon** fell **2.2%**, and **Nvidia** fell **1.5%** during the session. (market coverage)\n- The September 23 session ended the Nasdaq Composite\u2019s **two-session streak of record closes**. (Reuters)\n\n## Data Availability [Calendar]\n\n- The retrieved material identifies **hotter-than-expected manufacturing data** as a contributor to the rise in Treasury yields, but it does not provide the release\u2019s **actual, consensus, and prior values**. (Investopedia)\n- The retrieved material does not provide verified September 23\u201324 figures for **DXY, Treasury auction results, WTI, Brent, natural gas, gold, silver, copper, Bitcoin, Ether, ETF flows, central-bank actions, named policymaker quotes, tariffs, export controls, sanctions, or geopolitical developments** within the requested window.",
+  "search_results": [
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "The Nasdaq Composite sank after two days of closing records, with the S&P 500 and Dow Jones Industrial Average also ending sharply lower, as Treasury yields soared to a 19-year high.\nThe tech-focused Nasdaq, benchmark S&P 500, and blue-chip Dow Jones Industrial Average finished Wednesday down 1.1%, ...",
+      "source": "web",
+      "title": "Stock Market Today: Futures Little Changed After Nasdaq Closes at ...",
+      "url": "https://www.investopedia.com/stock-market-today-futures-little-changed-after-nasdaq-closes-at-fresh-record-12136110"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "The Nasdaq Composite sank after two days of closing records, with the S&P 500 and Dow Jones Industrial Average also ending sharply lower, as Treasury yields soared to a 19-year high.\nThe tech-focused Nasdaq, benchmark S&P 500, and blue-chip Dow Jones Industrial Average finished Wednesday down 1.1%, ...",
+      "source": "web",
+      "title": "Markets News, Sept. 23, 2026: Stocks Fall as Nasdaq's Record ...",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09232026-12136110"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "Stock Market Today (Sept. 23, 2026): Nasdaq, Russell 2000 sink as 5-year Treasury hits 5% for first time since 2007\n...\n### U.S. markets close in 1h 51m\nCryptocurrencies\n...\nU.S. markets close in 1h 51m\nS&P 500 7,713.92-50.72-0.65%\nDow 30 51,600.07-263.62-0.51%\nNasdaq 26,945.06-299.22-1.10%\nRussell ...",
+      "source": "web",
+      "title": "Stock Market Today (Sept. 23, 2026): Nasdaq, Russell 2000 ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-134802225.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- S&P 500 -0.75%, Nasdaq -1.13%, Dow -0.68%\nSept 23 (Reuters) - Wall Street ended lower on Wednesday, pulled down by Alphabet and Amazon, as Treasury yields climbed and Iran's president said Tehran would never surrender \u200bto US pressure.\n...\nThe PHLX chip index (.SOX), opens new tab dropped 1.2%, wit...",
+      "source": "web",
+      "title": "Wall Street ends down as oil prices, Treasury yields rise",
+      "url": "https://www.reuters.com/5f374b32b07b/world/china/wall-st-futures-steady-with-focus-mideast-talks-us-china-summit-2026-09-23/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "**US.** The **Nasdaq 100 rose 0.82% to 30,732.40**, its first record close since June, on a sixth consecutive advance in the Philadelphia semiconductor index.\nThe **S&P 500 was little changed at 7,764.64**, while the Dow fell 0.36% to 51,869.20 and the Russell 2000 added 0.51%.",
+      "source": "web",
+      "title": "Market Quick Take - Oil slips under 90 as bank shares slide ...",
+      "url": "https://www.home.saxo/content/articles/macro/market-quick-take---oil-slips-under-90-as-bank-shares-slide---23-september-2026-23092026"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "### U.S. markets closed\nCryptocurrencies\nRates\nCommodities\nCurrencies\nS&P 500 7,706.03-58.61-0.75%\nDow 30 51,511.59-352.10-0.68%\nNasdaq 26,936.04-308.24-1.13%\nRussell 2000 2,838.66-51.26-1.77%\nVIX 15.18+0.97+6.83%\nGold 4,322.20-54.20-1.24%\nBitcoin USD 84,497.68-1,689.34-1.96%\n...\nMajor U.S. stock in...",
+      "source": "web",
+      "title": "Markets News, Sept. 23, 2026: Stocks Fall as Nasdaq\u2019s Record ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-futures-little-104021073.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# Ryzm on X: \"US Close | September 23, 2026 The S&P 500 fell 0.75% to 7,706.03.\nThe Nasdaq Composite lost 1.13%, the Nasdaq 100 fell 0.85%, and the PHLX Semiconductor Index dropped about 2%.\nThe larger move was in rates.\n...\nThe semiconductor index lost about 2%.\n...\nUS Close | September 23, 2026 Th...",
+      "source": "web",
+      "title": "US Close | September 23, 2026 The S&P 500 fell 0.75% to ...",
+      "url": "https://x.com/Goeun_6121/status/2102880538919043218"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "The S&P 500 lost 0.43 points, or 0.01%, to end at 7,764.27 points, while the Nasdaq Composite gained 121.15 points, or 0.45%, to 27,243.24.\nThe Dow Jones Industrial Average fell 184.94 points, or 0.36%, to 51,863.89.\n...\nThe S&P 500 lost 0.43 points, or 0.01%, to end at 7,764.27 points, while the Na...",
+      "source": "web",
+      "title": "Dow Jones| Nasdaq | US Stock Market Today | Live: Dow, S&P 500 slip as oil stays near $100 despite Nasdaq\u2019s record close - The Economic Times",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/wall-street-guide/dow-jones-stock-market-live-updates-nasdaq-sp-500-us-iran-war-hormuz-deal-brent-crude-oil-fed-warsh-treasury-yields-amazon-meta-nvidia-microsoft-ai-chip-stock-price-news-22nd-september-2026/liveblog/134412418.cms"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-23",
+      "place_metadata": null,
+      "snippet": "## Nasdaq Composite rises, S&P 500 and Dow Jones fall.\n...\nThe S&P 500 closed at 7,764.64 (-0.00%), the Dow Jones Industrial Average at 51,863.69 (-0.36%), and the Nasdaq Composite at 27,244.28 (+0.45%).",
+      "source": "web",
+      "title": "US Stock Market Closing Report | September 23, 2026 - note",
+      "url": "https://note.com/clear_weasel4703/n/n81eddb19bcaf?hl=en"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "The squeeze caused U.S. stocks to sink Wednesday, and the S&P 500 slid 0.8%.\nThe Dow Jones Industrial Average dropped 0.7%, while the Nasdaq composite fell 1.1% from its all-time high.\n...\nOn Wednesday:\nThe S&P 500 fell 58.61 points, or 0.8%, to 7,706.03.\nThe Dow Jones Industrial Average fell 352.10...",
+      "source": "web",
+      "title": "How major US stock indexes fared Wednesday 9/23/2026 - ABC News",
+      "url": "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-wednesday-9232026-136697299"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# alldaystocks | 24/7 Market News on X: \"\ud83d\udd14 CLOSING BELL | Wednesday, September 23, 2026 Wall Street slides \u2022 US 10Y surges above 5% \u2022 Rising oil and rate expectations pressure tech \u2800 \ud83d\udd0e Market Overview U.S. stocks closed lower on Wednesday.\nThe S&P 500 fell 0.75%, the Dow lost 0.68%, while the Nasdaq...",
+      "source": "web",
+      "title": "alldaystocks | 24/7 Market News on X: \"   CLOSING BELL - X",
+      "url": "https://x.com/allday_stocks/status/2102873739855638750"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# Markets Today on X: \"US Stock Market Closing Summary (September 23, 2026) \ud83d\udd39 S&P 500 $SPY: Declined 58.61 points (-0.80%) to close at 7,706.03 as climbing Treasury yields and persistent inflation concerns weighed on broad market sentiment.\n\ud83d\udd39 Nasdaq Composite $QQQ: Retreated 308.24 points (-1.10%) t...",
+      "source": "web",
+      "title": "US Stock Market Closing Summary (September 23, 2026) S&P 500 ...",
+      "url": "https://x.com/marketsday/status/2102930181715628532"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "At close\nS&P 500 7,661.80 \u22120.73%\nDow Jones 51,298.90 \u22120.50%\nNasdaq 100 30,138.20 \u22121.25%\nRussell 2000 2,827.30 \u22120.55%",
+      "source": "web",
+      "title": "Expedia and Airbnb led Wednesday's losers, each falling over 7%",
+      "url": "https://247wallst.com/cards/travel-took-the-worst-of-wednesday-s-close-with-expedia-dow-expe-session-movers-01m37yaxhwc2daj5g0fp31py60"
+    },
+    {
+      "date": "2026-09-22",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "# Dow tumbles more than 300 points, Nasdaq drops 1% as Treasury yields surge: Live updates\n...\nThe S&P 500 dropped 0.75% to end at 7,706.03, while the Nasdaq Composite shed 1.13% to close at 26,936.04.\nThe Dow Jones Industrial Average was down 352.10 points, or 0.68%, and settled at 51,511.59.\n...\nT...",
+      "source": "web",
+      "title": "Stock market news for Sept. 23, 2026 - CNBC",
+      "url": "https://www.cnbc.com/2026/09/22/stock-market-today-live-updates.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "## Summary\n...\nU.S. stocks closed lower across all five major indices on Wednesday.\nThe Russell 2000 fell 1.77%, the largest percentage decline of the group, while the Nasdaq Composite gave back 1.13%.\n...\n#### U.S. stock indices falls led by the small cap Russell 2000\n- **Dow Industrial Average:** ...",
+      "source": "web",
+      "title": "US stocks close lower led by declines in the small-cap Russell 2000 and Nasdaq indices.",
+      "url": "https://investinglive.com/stocks/us-stocks-close-lower-led-by-declines-in-the-small-cap-russell-2000-and-nasdaq-indices/"
+    }
+  ],
+  "citations": [
+    "https://www.investopedia.com/stock-market-today-futures-little-changed-after-nasdaq-closes-at-fresh-record-12136110",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09232026-12136110",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-23-134802225.html?fr=sycsrp_catchall",
+    "https://www.reuters.com/5f374b32b07b/world/china/wall-st-futures-steady-with-focus-mideast-talks-us-china-summit-2026-09-23/",
+    "https://www.home.saxo/content/articles/macro/market-quick-take---oil-slips-under-90-as-bank-shares-slide---23-september-2026-23092026",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-futures-little-104021073.html?fr=sycsrp_catchall",
+    "https://x.com/Goeun_6121/status/2102880538919043218",
+    "https://economictimes.indiatimes.com/markets/us-stocks/wall-street-guide/dow-jones-stock-market-live-updates-nasdaq-sp-500-us-iran-war-hormuz-deal-brent-crude-oil-fed-warsh-treasury-yields-amazon-meta-nvidia-microsoft-ai-chip-stock-price-news-22nd-september-2026/liveblog/134412418.cms",
+    "https://note.com/clear_weasel4703/n/n81eddb19bcaf?hl=en",
+    "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-wednesday-9232026-136697299",
+    "https://x.com/allday_stocks/status/2102873739855638750",
+    "https://x.com/marketsday/status/2102930181715628532",
+    "https://247wallst.com/cards/travel-took-the-worst-of-wednesday-s-close-with-expedia-dow-expe-session-movers-01m37yaxhwc2daj5g0fp31py60",
+    "https://www.cnbc.com/2026/09/22/stock-market-today-live-updates.html",
+    "https://investinglive.com/stocks/us-stocks-close-lower-led-by-declines-in-the-small-cap-russell-2000-and-nasdaq-indices/"
+  ],
+  "usage": {
+    "input_tokens": 663,
+    "output_tokens": 484,
+    "cost_usd": 0.02325
+  }
+}
