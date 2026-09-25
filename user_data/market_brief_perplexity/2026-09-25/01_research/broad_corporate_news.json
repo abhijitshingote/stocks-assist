@@ -1,0 +1,165 @@
+{
+  "name": "broad_corporate_news",
+  "kind": "channel",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday September 25, 2026. Scope: Corporate news flow.\n\nWindow: Thursday September 24, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Friday September 25, 2026 ~6:00 AM ET.\n\nCOVER EVERY ITEM BELOW (run a separate search for each bullet; do not skip one because another was rich)\n- Biggest US movers (market cap >= $2B) in the session, after-hours, and pre-market, with the catalyst for each (CNBC / MarketWatch / Barron's / Reuters 'stocks making the biggest moves').\n- Earnings after the close or pre-market: EPS and revenue actual vs consensus, guidance old \u2192 new.\n- Notable analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- M&A (terms, value), contracts with $ size, FDA decisions, SEC filings (8-K, 13D, S-1, offerings), buybacks, executive changes, index adds/deletes, activist stakes.\n- Sector threads: AI capex / hyperscaler spend, semis and memory pricing, AI networking and optics, data-center power, software/SaaS; supply-chain reports (Nikkei, DigiTimes, TrendForce).\n\nPrefer primary sources and wire services (Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's,\ncompany press releases, SEC EDGAR, BLS/BEA/Fed releases).\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar, or\ninvent a concise one. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## **AKAM** \u2014 AI Infrastructure\n- Akamai announced a **seven-year, $11.6 billion computing-power agreement with Anthropic** on September 24; Anthropic also received a warrant to purchase up to approximately **5% of Akamai\u2019s shares at $111.33 per share**. Akamai rose nearly **20% after hours** and more than **21% pre-market** on September 25. (CNBC)\n- The agreement includes a **seven-year power contract** supporting Anthropic\u2019s computing requirements. (CNBC)\n\n## **COST** \u2014 Retail / Earnings\n- Costco reported fiscal fourth-quarter adjusted EPS of **$6.60**, versus **$6.53 LSEG consensus**, and revenue of **$95.72 billion**, versus **$94.86 billion consensus**, after the September 24 close. (CNBC)\n- Costco shares were **marginally higher** in extended trading following the earnings release. (CNBC)\n\n## **SNX** \u2014 AI Infrastructure / Distribution\n- TD SYNNEX reported fiscal third-quarter EPS of **$5.68**, versus **$4.64 consensus**, and revenue of **$21.6 billion**, versus **$18.79 billion consensus**. (Investing.com)\n- TD SYNNEX issued fiscal fourth-quarter EPS guidance of **$5.65\u2013$6.15**, versus **$4.87 consensus**, and revenue guidance of **$21.80\u2013$22.60 billion**, versus **$19.44 billion consensus**. (Investing.com)\n- TD SYNNEX declined approximately **9.9%** in pre-market trading on September 25 despite the reported results. (Yahoo Finance)\n\n## **S** \u2014 Software & SaaS\n- Synopsys gained more than **3% pre-market** after HSBC upgraded the stock from **Hold to Buy**. (CNBC)\n- HSBC analyst **Frank Lee** cited Synopsys\u2019s new business model and described the company as a **high-growth AI beneficiary**. (CNBC)\n\n## **NKE** \u2014 Consumer / Apparel\n- Bank of America downgraded Nike from **Neutral to Underperform** and forecast sales declines from the second quarter through the remainder of fiscal 2027. Nike declined nearly **2% pre-market**. (CNBC)\n- The available report did not provide Bank of America\u2019s prior or new price target. (CNBC)\n\n## **SCHL** \u2014 Media / Education\n- Scholastic reported a fiscal first-quarter adjusted loss of **$3.63 per share**, compared with an adjusted loss of **$2.52 per share** in the year-ago quarter, and revenue of **$216.8 million**, down **4% year over year**. (CNBC)\n- Scholastic shares declined more than **10% pre-market** after the report. (CNBC)\n\n## **META** \u2014 Internet & Platforms\n- Meta shares rose **4.5%** on September 24 after CEO **Mark Zuckerberg** and other executives introduced new AI products at the company\u2019s Connect developer conference. (Investopedia)\n\n## **ORCL** \u2014 AI Infrastructure\n- Oracle declined **3.5%** on September 24 after Bloomberg reported that the company cited **force majeure** to limit expenses associated with a large data center being built in New Mexico. (Investopedia)\n- The report attributed the information to **people familiar with the matter**. **[rumor]** (Investopedia)\n\n## **MGM** \u2014 Travel & Leisure\n- MGM Resorts International declined **11%** on September 24 and ranked among the largest S&P 500 decliners. (Investopedia)\n\n## **P** \u2014 Data Storage\n- Everpure forecast fiscal 2028 revenue of **$7.0\u2013$7.3 billion**, compared with analyst expectations of **$5.23 billion**, and operating income of **$1.7\u2013$1.9 billion**, compared with expectations of **$1.09 billion**. (Investopedia)\n- Everpure shares rose **18%** on September 24, according to the market report. (Investopedia)\n- Everpure affirmed its fiscal 2027 guidance issued during its second-quarter earnings call in August 2026. (Investopedia)\n\n## **SFIX** \u2014 Software & SaaS\n- Stitch Fix declined approximately **20% pre-market** on September 24 after issuing weaker guidance for the current quarter and fiscal year. (Investopedia)\n\n## **DRI** \u2014 Restaurants / Earnings\n- Darden Restaurants reported fiscal first-quarter EPS of **$2.05**, matching **$2.05 consensus**, and revenue of **$3.2 billion**, versus **$3.21 billion consensus**. (Investing.com)\n- Darden issued fiscal 2027 EPS guidance of **$11.10\u2013$11.35**, versus **$11.28 consensus**. (Investing.com)\n\n## **Viking Therapeutics** \u2014 Biotech / Financing\n- Viking Therapeutics priced a combined **$500 million financing** consisting of approximately **$275 million of common stock** at **$35.00 per share** and **$225 million of 2.00% convertible senior notes due 2032**. (Zar Newsdesk)\n- The equity tranche represented approximately **7.86 million new shares** and settled on **September 25, 2026**. (Zar Newsdesk)\n- Viking Therapeutics declined **12.4% pre-market** following the financing. (Zar Newsdesk)\n\n## **DBX** \u2014 Software & SaaS\n- Citi downgraded Dropbox from **Neutral to Sell** and cut its price target from **$33 to $29**, citing growth concerns related to the company\u2019s AI-driven storage transition. Dropbox declined **5.3% pre-market** to **$32.42**. (Zar Newsdesk)\n\n## **NBIS** \u2014 AI Infrastructure\n- BNP Paribas upgraded Nebius Group to **Outperform** and raised its price target; the available report did not provide the prior or new target levels. Nebius rose **7.44%**. (Yahoo Finance)\n\n## **FSLR** \u2014 Power & Wide-Bandgap\n- GLJ Research cut First Solar\u2019s price target to **$250**. First Solar declined **10.32%** and reached a 52-week low of **$172**. (Yahoo Finance; The Company Chronicle)\n\n## **ARM** \u2014 Semiconductors\n- Arm Holdings declined **7.88%** after renewed focus on SoftBank\u2019s larger margin loan secured by Arm shares. (Yahoo Finance)\n\n## **MU / NVDA / AVGO / SKHY / AMD / SNDK / MRVL / TSM** \u2014 Memory & Interconnect\n- In September 25 pre-market trading, Micron rose **0.89%**, Nvidia **0.29%**, Broadcom **1.02%**, SK hynix **1.23%**, AMD **1.94%**, SanDisk **1.88%**, Marvell **1.61%**, and Taiwan Semiconductor **0.46%**. (TechFlow)\n\n## Index / Market Calendar \u2014 Macro / Calendar\n- September 24 was the **third consecutive losing session for the Dow**, according to the market report. (Investopedia)\n- Futures before the September 25 session showed S&P 500 futures down **0.05%**, Nasdaq-100 futures marginally higher, and Dow futures up **3 points**, or **0.01%**. (CNBC)\n\n## SEC / Corporate Actions \u2014 Corporate Filings\n- A September 25 filing compilation listed **28 SEC filings** and reported completion of a **1.71 billion-share buyback at Lloyds Banking Group**. Lloyds is not a US equity issuer, so the item falls outside the requested US-equity scope. (StockTitan)",
+  "search_results": [
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Check out the companies making the biggest moves premarket: Akamai Technologies \u2013 The cloud computing company jumped over 21% after announcing a seven-year power contract and $11.6 billion deal with Anthropic on Thursday.\nAkamai also issued a warrant that gives Anthropic the right to buy up to rough...",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: Akamai, Synopsys, Nike & more",
+      "url": "https://www.cnbc.com/2026/09/25/stocks-making-the-biggest-moves-premarket-akam-snps-nke.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Investing.com - TD Synnex (NYSE: SNX) reported third quarter EPS of $5.68, $1.04 better than the analyst estimate of $4.64.\nRevenue for the quarter came in at $21.6B versus the consensus estimate of $18.79B.\n...\nTD Synnex sees Q4 2026 EPS of $5.65-$6.15 versus the analyst consensus of $4.87.\nTD Synn...",
+      "source": "web",
+      "title": "TD Synnex earnings beat by $1.04, revenue topped ...",
+      "url": "https://www.investing.com/news/earnings/td-synnex-earnings-beat-by-104-revenue-topped-estimates-4915074"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Shares of Meta Platforms (META) rose 4.5% to approach their all-time high after CEO Mark Zuckerberg and other executives introduced new AI products at the company\u2019s Connect developer conference.\n...\nShares of Oracle (ORCL) fell 3.5% after *Bloomberg*, citing people familiar with the matter, reported...",
+      "source": "web",
+      "title": "Markets News, Sept. 24, 2026: Dow Closes Lower for 3rd ...",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "StoneX started Cathay General Bancorp at Hold; the stock closed $60.47, down 2.47% on the week, against a consensus mean target of $67.12, with the broader analyst split 1 strong buy, 5 hold, 2 sell, 2 strong sell, unchanged from the prior month.\nHeadline-only ratings elsewhere: Goldman reiterating ...",
+      "source": "web",
+      "title": "Dashboard - ZARR",
+      "url": "https://zarnewsdesk.com/dash?tab=general"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "S&P 500 futures were down 0.05%, and Nasdaq-100 futures inched higher.\nFutures tied to the Dow Jones Industrial Average gained 3 points, or 0.01%.\n...\n## Stocks making the biggest moves in extended trading\nA few stocks saw notable swings in after-hours trading.\nAkamai Technologies \u2013 The cloud comput...",
+      "source": "web",
+      "title": "Stock futures are little changed as Dow heads for fourth straight losing week: Live updates",
+      "url": "https://www.cnbc.com/2026/09/24/stock-market-today-live-updates.html"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "50 stocks gained in pre-market trading.\nTop gainer: Lowe's Companies Inc.\n(LOW) at 0.00%.\n...\n|Ticker|Company|Sector|Price|% Change|RVOL|\n...\n|LOW|Lowe's Companies Inc.|Cons Cyclical|$188.49|0.00%|\u2014|\n...\n|PWR|Quanta Services, Inc.|Industrials|$643.50|0.00%|\u2014|\n|ISRG|Intuitive Surgical Inc.|Healthcare...",
+      "source": "web",
+      "title": "Premarket Gainers for Friday, September 25, 2026",
+      "url": "https://premarketprice.com/premarket-gainers/2026-09-25"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Top Movers\nEverpure (P) jumped 11.15% after multiple analysts lifted price targets following an upbeat analyst day outlook.\nNebius Group (NBIS) gained 7.44% as BNP Paribas upgraded the stock to Outperform with a higher price target.\nIllumina (ILMN) rose 7.25%.\n...\nFirst Solar (FSLR) fell 10.32% afte...",
+      "source": "web",
+      "title": "US Stock Market Today: S&P 500 Futures Slip As Hot Growth Keeps Rate Fears High",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/us-stock-market-today-p-080952587.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- Energy shares top gainers on STOXX 600\n...\nSept 24 (Reuters) - European shares closed lower on Thursday as oil prices resumed \u200btheir rise on faltering hopes of US-Iran negotiations, keeping euro zone bond yields near multi-year highs and denting \u200crisk appetite.\nThe pan-European STOXX 600 (.STOXX),...",
+      "source": "web",
+      "title": "European shares slip as rising oil, bond yield weigh",
+      "url": "https://www.reuters.com/markets/europe/european-shares-dip-middle-east-tensions-ahead-us-china-talks-2026-09-24/"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "28 filings published.\n...\nA 1.71 billion-share buyback is complete at Lloyds Banking Group (LYG).",
+      "source": "web",
+      "title": "SEC Filings for Sep 25, 2026 - 10-K, 10-Q, 8-K Forms",
+      "url": "https://www.stocktitan.net/sec-filings/2026-09-25/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Investing.com - Darden Restaurants (NYSE: DRI) reported first quarter EPS of $2.05, in line with the analyst estimate of $2.05.\nRevenue for the quarter came in at $3.2B versus the consensus estimate of $3.21B.\n...\nDarden Restaurants sees FY 2027 EPS of $11.10-$11.35 versus the analyst consensus of $...",
+      "source": "web",
+      "title": "Darden Restaurants earnings matched, revenue fell short of estimates By Investing.com",
+      "url": "https://ca.investing.com/news/earnings/darden-restaurants-earnings-matched-revenue-fell-short-of-estimates-4851571"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "TechFlow reported that on September 25, during US premarket trading, AI hardware stocks nearly rose across the board.\nNvidia (NVDA.O) rose 0.29%, Taiwan Semiconductor (TSM.N) rose 0.46%, Broadcom (AVGO.O) rose 1.02%, SK Hynix (SKHY.O) rose 1.23%, Micron Technology (MU.O) rose 0.89%, AMD(AMD.O) rose ...",
+      "source": "web",
+      "title": "Almost all AI hardware stocks rise in US premarket trading",
+      "url": "https://www.techflowpost.com/en-US/newsletter/137763"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "## First Solar falls 10.3% to a 52-week low of $172; borrowing costs explain only part of the solar selloff\nSolar stocks slid as Treasury yields hit two-decade highs, but the damage was uneven: Sunrun fell 6.8%, Enphase 0.8%, and Array rose.\nFirst Solar traded almost three times its usual volume.\n.....",
+      "source": "web",
+      "title": "Stocks | The Company Chronicle",
+      "url": "https://thecompanychronicle.com/section/stocks"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- COST\n896.48\n-0.91%\n- META\n777.59\n(+4.50%\n- AKAM\n110.41\n(-6.78%\n- MRNA\n194.82\n+6.98%\n- APUS\n+114.8470%\n1. News \u2022 5 hours ago\n...\nThu, September 24, 2026 at 5:16 PM GMT-3 3 min read\n- ARW\n+0.22%\n- Earlier this quarter, Arrow Electronics reported a strong Q2, with revenues surpassing analyst expectat...",
+      "source": "web",
+      "title": "Why Arrow Electronics (ARW) Is Up 7.1% After Raising EPS Guidance On Strong Q2 Results And What's Next",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/why-arrow-electronics-arw-7-201655298.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- **TransUnion issued Q3 2026 EPS guidance of $1.18\u2013$1.21**, broadly in line with the $1.19 consensus estimate, while revenue guidance of approximately $1.3 billion matched expectations.\nFull-year 2026 EPS guidance was set at $4.75\u2013$4.83.\n...\nThe company provided EPS guidance of 1.180-1.210 for the ...",
+      "source": "web",
+      "title": "TransUnion (NYSE:TRU) Issues Q3 2026 Earnings Guidance",
+      "url": "https://www.marketbeat.com/instant-alerts/guidance-transunion-nyse-tru-issues-q3-2026-earnings-guidance-2026-09-24/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "It trades at **$130.78 pre-market as of September 24, 2026 at 5:36 AM EDT**, only modestly above its **$127.98 52-week low**.\n...\n**Earnings risk:** Q3 results are scheduled for **October 8, 2026, pre-market**.\nConsensus expects **$2.30 EPS** and **$25.00B revenue**.\nRecent estimates have drifted lo...",
+      "source": "web",
+      "title": "PepsiCo stock near 52-week low ahead of October ...",
+      "url": "https://www.investing.com/news/stock-market-news/pepsico-stock-near-52week-low-ahead-of-october-earnings-test-is-it-a-buy-93CH-4914833"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/2026/09/25/stocks-making-the-biggest-moves-premarket-akam-snps-nke.html",
+    "https://www.investing.com/news/earnings/td-synnex-earnings-beat-by-104-revenue-topped-estimates-4915074",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008",
+    "https://zarnewsdesk.com/dash?tab=general",
+    "https://www.cnbc.com/2026/09/24/stock-market-today-live-updates.html",
+    "https://premarketprice.com/premarket-gainers/2026-09-25",
+    "https://finance.yahoo.com/markets/stocks/articles/us-stock-market-today-p-080952587.html",
+    "https://www.reuters.com/markets/europe/european-shares-dip-middle-east-tensions-ahead-us-china-talks-2026-09-24/",
+    "https://www.stocktitan.net/sec-filings/2026-09-25/",
+    "https://ca.investing.com/news/earnings/darden-restaurants-earnings-matched-revenue-fell-short-of-estimates-4851571",
+    "https://www.techflowpost.com/en-US/newsletter/137763",
+    "https://thecompanychronicle.com/section/stocks",
+    "https://finance.yahoo.com/markets/stocks/articles/why-arrow-electronics-arw-7-201655298.html",
+    "https://www.marketbeat.com/instant-alerts/guidance-transunion-nyse-tru-issues-q3-2026-earnings-guidance-2026-09-24/",
+    "https://www.investing.com/news/stock-market-news/pepsico-stock-near-52week-low-ahead-of-october-earnings-test-is-it-a-buy-93CH-4914833"
+  ],
+  "usage": {
+    "input_tokens": 684,
+    "output_tokens": 1675,
+    "cost_usd": 0.04118
+  }
+}

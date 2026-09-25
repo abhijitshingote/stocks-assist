@@ -1,0 +1,165 @@
+{
+  "name": "tickers_04",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday September 25, 2026.\n\nWindow: Thursday September 24, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Friday September 25, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| BFLY | Butterfly Network, Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +2.55% | +18.5% | 0.7\u00d7 | both 2026-09-22 |\n| ONON | On Holding AG | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +0.27% | +10.7% | 0.6\u00d7 | both 2026-09-22 |\n| VICR | Vicor Corporation | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -1.52% | +28.9% | 0.6\u00d7 | gapper 2026-09-22 |\n| INOD | Innodata Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +0.80% | +27.4% | 0.8\u00d7 | volume_spike 2026-09-22 |\n| DELL | Dell Technologies Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -1.06% | -7.5% | 0.7\u00d7 | both 2026-09-02 |\n| MPC | Marathon Petroleum Corporation | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +0.85% | -7.2% | 0.4\u00d7 | \u2014 |\n| CRWD | CrowdStrike Holdings, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.08% | +6.7% | 0.5\u00d7 | gapper 2026-08-27 |\n| CRM | Salesforce, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +0.92% | -1.3% | 0.5\u00d7 | both 2026-08-27 |\n| PLTR | Palantir Technologies Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +0.44% | +9.3% | 0.7\u00d7 | both 2026-08-04 |\n| PSX | Phillips 66 | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +0.35% | -6.1% | 0.5\u00d7 | \u2014 |\n| NOW | ServiceNow, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -1.68% | -0.0% | 0.5\u00d7 | gapper 2026-06-01 |\n| TEAM | Atlassian Corporation | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -0.91% | +0.4% | 0.3\u00d7 | both 2026-08-07 |\n\nTASK\nFor EACH ticker, find why it moved on Thursday September 24, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Butterfly Network, Inc. (BFLY) `[Medical Imaging Technology]`\n- No company-specific catalyst found in the September 24\u201325 window.\n- A September 25 report cited Needham analyst David Saxon\u2019s earlier Buy initiation and a $10 sum-of-the-parts target, plus a multi-year Butterfly Embedded licensing agreement with Merge Labs; the report did not provide a September 24 catalyst or contract value. (Simply Wall St)\n\n## On Holding AG (ONON) `[Consumer Internet & Platforms]`\n- No company-specific catalyst found in the September 24\u201325 window.\n\n## Vicor Corporation (VICR) `[Power & Wide-Bandgap]`\n- No new company-specific catalyst found during the September 24\u201325 window.\n- The prior September 21 announcement cited a new non-exclusive license for Vicor\u2019s Vertical Power Delivery technology to a leading AI original-equipment manufacturer and raised third-quarter 2026 sequential revenue-growth guidance from nearly 10% to more than 20%; this older announcement was identified as the direct cause of the preceding move. (company announcement, as reported by ZAR Newsdesk)\n\n## Innodata Inc. (INOD) `[AI Infrastructure]`\n- No company-specific catalyst found in the September 24\u201325 window.\n- The September 22 move was linked to a Hunterbrook report alleging that Innodata may have worked on Meta\u2019s Muse AI assistant; the report estimated the account at approximately $146 million, or 58% of Innodata\u2019s 2025 sales, but Meta and Innodata did not confirm the association. [rumor] (Economic Times)\n\n## Dell Technologies Inc. (DELL) `[AI Infrastructure]`\n- Dell director Lynn Vojvodich Radakovich reported the sale of 2,022 shares at an average price of $565.28, totaling $1.14 million; Silver Lake-affiliated holders also reported sales, and MarketBeat cited approximately $5.7 million in director sales. (MarketBeat)\n- A September 24 report said broader technology pressure and insider-selling activity were factors in the session; the report also cited a $999 \u201cGooglebook\u201d test, without identifying a company filing or official Dell announcement supporting that item. (Ad Hoc News)\n- Dell\u2019s fiscal second-quarter 2027 revenue was reported at $46.971 billion, and full-year fiscal 2027 revenue guidance was reported at $192.0 billion, with AI-optimized-server revenue guidance at $74.0 billion. (Ad Hoc News)\n- Dell management reported $60.9 billion in AI orders during the fiscal second quarter of 2027. (Trefis)\n\n## Marathon Petroleum Corporation (MPC) `[Energy & Refining]`\n- No company-specific catalyst found in the September 24\u201325 window.\n- Investor\u2019s Business Daily reported a revised 2027 EPS estimate of $45.81, 19% below its 2026 estimate and 32% above the prior-month 2027 estimate of $34.83. (Investor\u2019s Business Daily)\n\n## CrowdStrike Holdings, Inc. (CRWD) `[Cybersecurity Software]`\n- No company-specific catalyst found in the September 24\u201325 window.\n\n## Salesforce, Inc. (CRM) `[Software & SaaS]`\n- No company-specific catalyst found in the September 24\u201325 window.\n\n## Palantir Technologies Inc. (PLTR) `[AI Infrastructure]`\n- Rosenblatt Securities reiterated a Buy rating and a $225 price target in a September 23 research note; the action was published before the specified September 24\u201325 window. (Rosenblatt Securities note, as reported by MarketBeat)\n- A September 24 report cited a $48 million U.S. Army contract as a recent source of attention, but the report did not establish that the contract was announced during the specified window. (Rosenblatt Securities note, as reported by MarketBeat)\n- The Federal Aviation Administration\u2019s SMART system began limited Washington, D.C., operations on September 21, 2026, under a 12-year, $875 million award for which Air Space Intelligence\u2014not Palantir\u2014was identified as prime contractor. (FinanceFeeds)\n\n## Phillips 66 (PSX) `[Energy & Refining]`\n- No company-specific catalyst found in the September 24\u201325 window.\n- Investor\u2019s Business Daily reported a revised 2027 EPS estimate of $25.45, down 9% from its 2026 estimate and 13% above the prior-month 2027 estimate of $22.47. (Investor\u2019s Business Daily)\n\n## ServiceNow, Inc. (NOW) `[Software & SaaS]`\n- No company-specific catalyst found in the September 24\u201325 window.\n\n## Atlassian Corporation (TEAM) `[Software & SaaS]`\n- No company-specific catalyst found in the September 24\u201325 window.",
+  "search_results": [
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Dell shares fell 2.4%** to about $536.59 after several insiders and Silver Lake-affiliated holders sold stock, including director sales totaling roughly $5.7 million.\n...\nDell Technologies Inc.\n(NYSE:DELL - Get Free Report) shares dropped 2.4% on Thursday following insider selling ...",
+      "source": "web",
+      "title": "Dell Technologies (NYSE:DELL) Shares Down 2.4% Following Insider Selling",
+      "url": "https://www.marketbeat.com/instant-alerts/price-dell-technologies-nyse-dell-shares-down-24-following-insider-selling-2026-09-24/"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Dell Technologies stock falls 2.44 percent after guidance rises\n...\nPublished on 09/25/2026 at 11:57 | Editorial responsibility: Rafael M\u00fcller, Editor-in-Chief AD HOC NEWS\nDell Technologies stock stood at USD 536.39 on September 24, 2026, after fiscal Q2 revenue reached USD 46.971 billion.\n...\nDell ...",
+      "source": "web",
+      "title": "Dell Technologies stock falls 2.44 percent after guidance ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/dell-technologies-stock-falls-2-44-percent-after-guidance-rises/70182939"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "At the close on September 24, 2026, Dell Technologies stock fell 2.51 percent to USD 536.02, while the Nasdaq Composite rose 0.01 percent to 26,939.37.\nInsider selling and broader technology pressure shaped the session.\n...\nDell Technologies stock closed at USD 536.02 on Nasdaq on September 24, 2026...",
+      "source": "web",
+      "title": "Dell Technologies stock slips 2.51 percent ahead of the open",
+      "url": "https://www.ad-hoc-news.de/boerse/news/vorboerse/dell-technologies-stock-slips-2-51-percent-ahead-of-the-open/70181363"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Dell no longer leads with the PC refresh.\nDell now leads with AI server orders.\nOn the fiscal Q2 2027 call, in September 2026, management reported a record $60.9 billion in AI orders in the quarter.\n...\nIn fiscal 2026, servers and storage, reported as the Infrastructure Solutions Group, brought in $...",
+      "source": "web",
+      "title": "What Changed In Dell\u2019s Story?",
+      "url": "https://www.trefis.com/stock/dell/articles/616461/what-changed-in-dells-story/2026-09-24"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- PLTR posted 93% revenue growth and a Rule of 40 score of 155%, driving a BUY rating with a $311 price target and 68% upside.\n...\nFew software stories in the market right now match the sheer velocity of **Palantir** (NASDAQ:PLTR | PLTR Price Prediction).\n...\nOur 24/7 Wall St. price target for Palan...",
+      "source": "web",
+      "title": "Palantir Stock Has a Growth Story Few Companies Can Match",
+      "url": "https://247wallst.com/investing/2026/09/24/palantir-stock-has-a-growth-story-few-companies-can-match/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "BFLY was down 7.4%.\nThere's a Form 144 filed for 23 September, but the item carries no detail beyond the title, so there's nothing to read into it on the numbers.\n...\nVicor rose 5.5%, with a headline noting a raised Q3 outlook driven by AI licensing, Roth Capital maintaining a $375 target, and Vicor...",
+      "source": "web",
+      "title": "ZARR \u2014 Dashboard",
+      "url": "https://zarnewsdesk.com/dash"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- Updated 04:01 PM ET 09/24/2026\n...\n**Dell Technologies**: Wall Street now forecasts 2027 EPS of $30.93, which would be 19% above 2026 estimates, and 33% above analysts' expectations for $23.27 in 2027 a month earlier.\n...\n**Marathon Petroleum**: Analysts expect 2027 EPS of $45.81.\nThat would be 19...",
+      "source": "web",
+      "title": "These S&P 500 Stocks Are Earning The Biggest EPS ...",
+      "url": "https://www.investors.com/news/dell-stock-cien-mpc-vlo-psx-biggest-eps-estimate-upgrades/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Dell Technologies Inc (DELL) moved down by 3.19%.",
+      "source": "web",
+      "title": "Dell Technologies Inc Stock (DELL) Moved Down by 3.19% on Sep 24: Drivers Behind the Movement",
+      "url": "https://www.tradingkey.com/news/market-movers/262185333-market-movers-dell-20260924"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "25 Sept 2026\nPeshwa Wheat IPO Day-1 Surge amid Institutional Stampede\nBy James Picern...",
+      "source": "web",
+      "title": "Form 144 Dell Technologies Inc. For: 23 September By Investing.com",
+      "url": "https://in.investing.com/news/stock-market-news/form-144-dell-technologies-inc-for-23-september-93CH-5604090"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Butterfly Network (BFLY) Could Be 12% Undervalued Following Needham Coverage And Merge Labs Deal - Simply Wall St News\n...\n# Butterfly Network (BFLY) Could Be 12% Undervalued Following Needham Coverage And Merge Labs Deal\nSeptember 25, 2026\n...\nButterfly Network (BFLY) jumped 22% on heavy trading af...",
+      "source": "web",
+      "title": "Butterfly Network (BFLY) Could Be 12% Undervalued Following Needham Coverage And Merge Labs Deal",
+      "url": "https://simplywall.st/stocks/us/healthcare/nyse-bfly/butterfly-network/news/butterfly-network-bfly-could-be-12-undervalued-following-nee/amp"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Innodata shares jumped 14.6% to $69.97 on September 22, marking their strongest single-day gain since May. The rally followed a Hunterbrook report suggesting Innodata may be involved in training Meta\u2019s new AI assistant, Muse.\n(Sources: TradingView, GuruFocus)\n...\nHunterbrook said former employees an...",
+      "source": "web",
+      "title": "Stock Rally: Why Innodata shares jumped 14.6% in one session - \u200bINOD Stock Surges",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/stock-rally-why-innodata-shares-jumped-14-6-in-one-session/slideshow/134427013.cms"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Palantir Technologies (NASDAQ: PLTR) delivered one of the strongest quarters in enterprise software this year, and Palantir stock has moved with it.\nShares gained 11.28% in a single week and now trade just under their 52-week high of $207.52, as investors react to a second-quarter report showing rev...",
+      "source": "web",
+      "title": "Palantir Stock Gets $311 Price Target as Q2 Revenue Nearly Doubles",
+      "url": "https://www.kobaran.com/palantir-stock-gets-311-price-target-as-q2-revenue-nearly-doubles/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Dell Technologies stock falls 1.34 percent as AI orders surge\n...\nDell Technologies stock traded at USD 542.45 at 9:47 a.m.\nET on September 24, 2026.\n...\nDell Technologies stock (ISIN US24703L2025) was trading at USD 542.45 on the NYSE at 9:47 a.m.\nET on September 24, 2026, down 1.34 percent from th...",
+      "source": "web",
+      "title": "Dell Technologies stock falls 1.34 percent as AI orders surge",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/dell-technologies-stock-falls-1-34-percent-as-ai-orders-surge/70177998"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Palantir Technologies (NASDAQ:PLTR) Given Buy Rating at Rosenblatt Securities\n...\nPalantir Technologies (NASDAQ:PLTR - Get Free Report)'s stock had its \"buy\" rating restated by investment analysts at Rosenblatt Securities in a research note issued to investors on Wednesday, Benzinga reports.\nThey cu...",
+      "source": "web",
+      "title": "Rosenblatt Securities Reiterates Buy Rating for Palantir ...",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-rosenblatt-securities-reiterates-buy-rating-for-palantir-technologies-nasdaq-pltr-2026-09-23/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "On Wednesday PLTR traded as high as $193.67, a fresh 2026 high and the first print above $190 since December, after the Federal Aviation Administration switched on an AI airspace tool called SMART in Washington, D.C. airspace.\n...\n- The FAA\u2019s SMART platform went live in limited Washington, D.C. oper...",
+      "source": "web",
+      "title": "Palantir Stock Hit a 2026 High on a Contract It Lost",
+      "url": "https://financefeeds.com/palantir-stock-2026-high-faa-smart-contract-it-lost/"
+    }
+  ],
+  "citations": [
+    "https://www.marketbeat.com/instant-alerts/price-dell-technologies-nyse-dell-shares-down-24-following-insider-selling-2026-09-24/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/dell-technologies-stock-falls-2-44-percent-after-guidance-rises/70182939",
+    "https://www.ad-hoc-news.de/boerse/news/vorboerse/dell-technologies-stock-slips-2-51-percent-ahead-of-the-open/70181363",
+    "https://www.trefis.com/stock/dell/articles/616461/what-changed-in-dells-story/2026-09-24",
+    "https://247wallst.com/investing/2026/09/24/palantir-stock-has-a-growth-story-few-companies-can-match/",
+    "https://zarnewsdesk.com/dash",
+    "https://www.investors.com/news/dell-stock-cien-mpc-vlo-psx-biggest-eps-estimate-upgrades/",
+    "https://www.tradingkey.com/news/market-movers/262185333-market-movers-dell-20260924",
+    "https://in.investing.com/news/stock-market-news/form-144-dell-technologies-inc-for-23-september-93CH-5604090",
+    "https://simplywall.st/stocks/us/healthcare/nyse-bfly/butterfly-network/news/butterfly-network-bfly-could-be-12-undervalued-following-nee/amp",
+    "https://economictimes.indiatimes.com/markets/us-stocks/news/stock-rally-why-innodata-shares-jumped-14-6-in-one-session/slideshow/134427013.cms",
+    "https://www.kobaran.com/palantir-stock-gets-311-price-target-as-q2-revenue-nearly-doubles/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/dell-technologies-stock-falls-1-34-percent-as-ai-orders-surge/70177998",
+    "https://www.marketbeat.com/instant-alerts/analyst-rosenblatt-securities-reiterates-buy-rating-for-palantir-technologies-nasdaq-pltr-2026-09-23/",
+    "https://financefeeds.com/palantir-stock-2026-high-faa-smart-contract-it-lost/"
+  ],
+  "usage": {
+    "input_tokens": 1287,
+    "output_tokens": 1032,
+    "cost_usd": 0.03334
+  }
+}

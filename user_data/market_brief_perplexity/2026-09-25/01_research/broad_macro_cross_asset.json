@@ -1,0 +1,165 @@
+{
+  "name": "broad_macro_cross_asset",
+  "kind": "channel",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday September 25, 2026. Scope: Macro & cross-asset.\n\nWindow: Thursday September 24, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Friday September 25, 2026 ~6:00 AM ET.\n\nCOVER EVERY ITEM BELOW (run a separate search for each bullet; do not skip one because another was rich)\n- US index closes: S&P 500, Nasdaq Composite, Dow, Russell 2000, PHLX SOX (% change).\n- Rates/FX: 2-yr and 10-yr Treasury yields, DXY; Treasury auctions.\n- Economic data released: actual vs consensus vs prior.\n- Fed/FOMC decisions and named speaker quotes; ECB/BoE/BoJ/PBoC actions.\n- Commodities: WTI, Brent, natural gas, gold, silver, copper (price, % change); OPEC.\n- Crypto: Bitcoin, Ether (price, % change); SEC/CFTC/Congress crypto actions; ETF flows.\n- Policy/geopolitics: tariffs, export controls, sanctions, wars moving oil or risk assets.\n\nPrefer primary sources and wire services (Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's,\ncompany press releases, SEC EDGAR, BLS/BEA/Fed releases).\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar, or\ninvent a concise one. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## US Index Closes [Macro]\n\n- **S&P 500:** 7,704.13, down 0.02% on Thursday, September 24, 2026. (Reuters)\n- **Nasdaq Composite:** 26,939.37, up 0.01%. (Reuters)\n- **Dow Jones Industrial Average:** 51,349.98, down 0.31%, or 161.61 points. (Reuters)\n- **Russell 2000:** 2,835.57, down 0.11%. (Associated Press)\n- **PHLX Semiconductor Index:** No verified September 24 closing level or percentage change was available in the gathered sources.\n\n## Rates and FX [Macro]\n\n- **10-year Treasury yield:** Approximately 5.20% late Thursday, up more than 8 basis points and at its highest level since 2007. (Investopedia)\n- **2-year Treasury yield:** Approximately 4.85% in Thursday evening trading. (247WallSt)\n- **U.S. Dollar Index:** 101.27, up 0.2% Thursday afternoon. (Investopedia)\n- **Treasury auctions:** No verified auction result for the September 24 session was available in the gathered sources.\n\n## Economic Data [Calendar]\n\n- No verified U.S. economic release with actual, consensus, and prior values was identified for the September 24\u201325 window in the gathered sources.\n\n## Central Banks and Speakers [Macro]\n\n- No verified Fed, ECB, Bank of England, Bank of Japan, or People\u2019s Bank of China decision or named-speaker quotation was identified for the window in the gathered sources.\n- Reuters reported that September U.S. nonfarm payrolls were scheduled for the following Friday, with economists expecting 100,000 jobs and a 4.2% unemployment rate; this was forward-looking information, not a release during the requested window. (Reuters)\n\n## Crude Oil [Commodities]\n\n- **WTI:** Approximately $95.10 per barrel at 4:00 p.m. ET Thursday, up 3.2%. (Investopedia)\n- **Brent:** Approximately $107.30 per barrel at 4:00 p.m. ET Thursday, up 4.1%. (Investopedia)\n- Another market report cited November WTI futures settling at $92.16 and Brent at $103.08; the gathered sources therefore contain conflicting pricing conventions or contract references. (Yahoo Finance)\n- Reuters reported Friday pre-market that Brent was above $100 per barrel and November WTI futures were approximately $92.91, down 1.8%. (Reuters)\n- The reported oil move was linked to uncertainty surrounding the Middle East conflict and concerns involving Iran and Ukraine. (Reuters)\n- No verified OPEC decision or announcement was identified in the gathered sources.\n\n## Natural Gas [Commodities]\n\n- No verified September 24 closing price or percentage change for U.S. natural gas was identified in the gathered sources.\n\n## Precious and Industrial Metals [Commodities]\n\n- **Gold:** Approximately $4,310 per ounce Thursday afternoon, down 0.2%. (Investopedia)\n- Friday pre-market gold was approximately $4,345 per ounce, up 1.1%. (Investopedia)\n- **Silver:** No verified price or percentage change was identified in the gathered sources.\n- **Copper:** No verified price or percentage change was identified in the gathered sources.\n\n## Bitcoin and Ether [Crypto]\n\n- **Bitcoin:** Approximately $84,500 Thursday, little changed over 24 hours. (Investopedia)\n- Friday pre-market Bitcoin was approximately $84,700. (Investopedia)\n- Another Thursday market report recorded Bitcoin at $84,417.27, up 0.05%. (Yahoo Finance)\n- **Ether:** No verified price or percentage change was identified in the gathered sources.\n- No verified SEC, CFTC, congressional crypto action, or ETF-flow data was identified for the window.\n\n## Policy and Geopolitics [Geopolitics]\n\n- Reuters reported that uncertainty about prospects for a resolution to the Middle East conflict lifted oil prices and Treasury yields on September 24. (Reuters)\n- Reuters identified the prolonged Iran and Ukraine conflicts as factors cited alongside higher oil prices, inflation concerns, and a 5.1% 10-year Treasury yield in Friday pre-market trading. (Reuters)\n- A U.S.\u2013China summit involving Donald Trump and Xi Jinping was described as a market focus on September 24. (Reuters)\n- No verified tariff, export-control, or sanctions announcement was identified in the gathered sources.\n\n## Friday Pre-Market [Macro]\n\n- At approximately 5:15 a.m. ET, Dow futures were up 162 points, or 0.31%; S&P 500 futures were up 23.75 points, or 0.31%; and Nasdaq 100 futures were up 188 points, or 0.61%. (Reuters)\n- Advanced Micro Devices, Marvell, Cerebras, and Intel were each reported up approximately 2% in pre-market trading. (Reuters)\n- Tesla, Nvidia, and SpaceX were reported marginally higher in pre-market trading. (Reuters)\n- The 10-year Treasury yield was reported at approximately 5.1% in Friday pre-market trading. (Reuters)",
+  "search_results": [
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Rates\n...\nU.S. markets open in 2h 45m\nS&P Futures 7,788.75 +21.75 +0.28%\nDow Futures 51,842.00 +125.00 +0.24%\nNasdaq Futures 30,929.25 +162.50 +0.53%\nRussell 2000 Futures 2,864.10 +7.30 +0.26%\nVIX 15.32 -0.35 -2.23%\nGold 4,342.00 +44.00 +1.02%\nBitcoin USD 84,767.26 +1,270.30 +1.52%\nCrude Oil Nov 26 ...",
+      "source": "web",
+      "title": "Wall St futures gain as AI enthusiasm eases worries over higher oil prices, yields",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/wall-st-futures-gain-ai-095035646.html"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Sept 25 (Reuters) - US stock index futures rose on Friday as AI optimism offset weak sentiment due to worrying levels of oil prices and rising Treasury yields.\nChip stocks Advanced Micro Devices, Marvell, Cerebras and Intel rose 2% each to lead gains in premarket trading.\nMegacaps Tesla, Nvidia and ...",
+      "source": "web",
+      "title": "Wall St futures gain as AI enthusiasm eases worries over higher oil prices, yields",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VB0V4?channel=FBi345"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The 10-year Treasury yield touched 5.2% Thursday, its highest level since 2007.\n...\nThe Dow fell for a third consecutive session as oil prices rose and Treasury yields hit a fresh 19-year high.\nThe blue-chip Dow industrials closed down 0.3%.\nThe benchmark S&P 500 and tech-focused Nasdaq Composite fi...",
+      "source": "web",
+      "title": "Markets News, Sept. 24, 2026: Dow Closes Lower for 3rd ...",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- Indexes down: Dow 0.40%, S&P 0.30%, Nasdaq 0.58%\n...\nSept 24 (Reuters) - Wall Street's main indexes dropped on Thursday as uncertainty over prospects for a resolution to the Middle East \u200cconflict lifted oil prices and Treasury yields, keeping risk appetite in check ahead of a keenly watched US-Chi...",
+      "source": "web",
+      "title": "Wall St slips as Middle East uncertainty lifts oil; Trump-Xi talks in focus",
+      "url": "https://www.reuters.com/business/wall-st-futures-fall-middle-east-uncertainties-ahead-trump-xi-talks-2026-09-24?link_source=ta_bluesky_link"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The S&P 500 was virtually unchanged Thursday following several turns between losses and gains.\nThe Dow Jones Industrial Average dropped 0.3%, and the Nasdaq composite was basically flat.\n...\nOn Thursday:\nThe S&P 500 fell 1.90 points, or less than 0.1%, to 7,704.13.\nThe Dow Jones Industrial Average f...",
+      "source": "web",
+      "title": "How major US stock indexes fared Thursday 9/24/2026",
+      "url": "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-thursday-9242026-136734081"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "### U.S. markets open in 9h 23m\nCryptocurrencies\nRates\nCommodities\nCurrencies\nU.S. markets open in 9h 23m\nS&P Futures 7,762.75 -4.25 -0.05%\nDow Futures 51,720.00 +3.00 +0.01%\nNasdaq Futures 30,787.25 +20.50 +0.07%\nRussell 2000 Futures 2,857.50 +0.70 +0.02%\nVIX 15.67 +0.49 +3.23%\nGold 4,306.60 +8.60 ...",
+      "source": "web",
+      "title": "Stock market today: Dow, S&P 500, Nasdaq trims losses as ...",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-thursday-september-24-dow-sp-500-nasdaq-080352893.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The 30-year Treasury yield rose to its highest level since 2004 on Thursday as stocks fell, raising questions about whether volatility in bond yields could prompt a larger pullback in stocks.\n...\n### U.S. markets closed\nCryptocurrencies\nRates\nCommodities\nCurrencies\nS&P Futures 7,752.75 -14.25 -0.18%...",
+      "source": "web",
+      "title": "Wall Street dips as investors focus on US-Iran war",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/wall-st-futures-fall-middle-102658799.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "At close\nS&P 5007,724.80+0.23%\nDow Jones51,486.70+0.22%\nNasdaq 10030,639.00+0.49%\nRussell 20002,846.58+0.32%\n...\nSep 24, 4:00pm ET - S&P 500+0.01%\n- Dow Jones Industrial Average-0.29%\n- Nasdaq Composite-0.11%\nThe S&P 500 held its ground by less than a point while the Dow gave back 148, a split that ...",
+      "source": "web",
+      "title": "S&P 500 Closes Nearly Flat at 7,707 While the Dow Slips",
+      "url": "https://247wallst.com/cards/the-s-p-500-held-its-ground-by-less-than-a-point-while-the-d-gspc-market-bell-01m3ag96f9301xhv03et1weztd"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "At the close in NYSE, the Dow Jones Industrial Average fell 0.31% to hit a new 3-months low, while the S&P 500 index lost 0.02%, and the NASDAQ Composite index added 0.01%.",
+      "source": "web",
+      "title": "U.S. stocks mixed at close of trade; Dow Jones Industrial Average ...",
+      "url": "https://www.investing.com/news/stock-market-news/us-stocks-mixed-at-close-of-trade-dow-jones-industrial-average-down-031-4916183"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Stock futures pointed higher Friday, with the Nasdaq Composite and S&P 500 poised for weekly gains, as oil prices and Treasury yields slipped.\nHowever, the Dow Jones Industrial Average was on pace for its fourth straight weekly loss.\nNasdaq 100, S&P 500, and Dow futures were up 0.5%, 0.3%, and 0.2%,...",
+      "source": "web",
+      "title": "Stock Market Today: Futures Point to Higher Open as Treasury Yields, Oil Prices Pull Back; Nasdaq, S&P 500 on Pace for Weekly Gains",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09252026-12139934"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The Dow pared steeper morning deficits to finish 0.3% lower, while the S&P 500 erased its losses and hovered just below the break-even point.\nThe tech-heavy Nasdaq composite also cut losses and finished a few ticks in the black.\nSmall caps on the Russell 2000, which were down 0.9% earlier, ended wit...",
+      "source": "web",
+      "title": "Stock Market Today: Dow Slides As Treasury Yields Surge",
+      "url": "https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-treasury-yields-nvidia-stock-nvda-buy-point/"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "A fresh look at US employment and inflation trends in the coming week will shed light on the economy's strength and when the Federal Reserve will hike interest rates again.\nSeptember's nonfarm payrolls report, due on Friday, is Wall Street's main event, following a blowout report the prior month tha...",
+      "source": "web",
+      "title": "Take Five: It's Q4 already?",
+      "url": "https://www.reuters.com/business/take-five/global-markets-themes-graphic-2026-09-25/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "S&P 5007,743.40+0.47%\nDow Jones51,585.20+0.42%\nNasdaq 10030,735.40+0.81%\nRussell 20002,852.83+0.54%\n...\nU.S. Markets\nSep 24, 12:00pm ET - S&P 500-0.52%\n- Dow Jones Industrial Average-0.68%\n- Nasdaq Composite-0.51%\nSelling is broad across the market: all three major indexes are down more than 0.5% at...",
+      "source": "web",
+      "title": "S&P 500 Slides to 7,666 at Midday as Selling Hits All Three Major Indexes",
+      "url": "https://247wallst.com/cards/selling-is-broad-across-the-market-all-three-major-indexes-gspc-market-bell-01m3a2fq38218nywxpagz17rst"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "### U.S. markets closed\nCryptocurrencies\nRates\nCommodities\nCurrencies\nS&P 500 7,704.13 -1.90 -0.02%\nDow 30 51,349.98 -161.61 -0.31%\nNasdaq 26,939.37 +3.34 +0.01%\nRussell 2000 2,835.57 -3.09 -0.11%\nVIX 15.67 +0.49 +3.23%\nGold 4,307.70 +9.70 +0.23%\nBitcoin USD 84,417.27 +38.96 +0.05%\nCrude Oil Nov 26 ...",
+      "source": "web",
+      "title": "Stock Market Today (Sept. 24, 2026): S&P 500, Dow stagnate as higher treasury yields and oil weigh on sentiment",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-24-135147386.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "U.S. markets open in 1h 4m\nS&P Futures 7,790.75 +23.75 +0.31%\nDow Futures 51,845.00 +128.00 +0.25%\nNasdaq Futures 30,939.25 +172.50 +0.56%\nRussell 2000 Futures 2,863.70 +6.90 +0.24%\nVIX 15.05 -0.62 -3.95%\nGold 4,335.20 +37.20 +0.87%\nBitcoin USD 84,306.90 +727.96 +0.87%\n...\nU.S. stocks ended lower on...",
+      "source": "web",
+      "title": "Stock Market News for Sep 24, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-24-123300781.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/wall-st-futures-gain-ai-095035646.html",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VB0V4?channel=FBi345",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008",
+    "https://www.reuters.com/business/wall-st-futures-fall-middle-east-uncertainties-ahead-trump-xi-talks-2026-09-24?link_source=ta_bluesky_link",
+    "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-thursday-9242026-136734081",
+    "https://finance.yahoo.com/markets/live/stock-market-today-thursday-september-24-dow-sp-500-nasdaq-080352893.html?fr=sycsrp_catchall",
+    "https://finance.yahoo.com/markets/stocks/articles/wall-st-futures-fall-middle-102658799.html",
+    "https://247wallst.com/cards/the-s-p-500-held-its-ground-by-less-than-a-point-while-the-d-gspc-market-bell-01m3ag96f9301xhv03et1weztd",
+    "https://www.investing.com/news/stock-market-news/us-stocks-mixed-at-close-of-trade-dow-jones-industrial-average-down-031-4916183",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09252026-12139934",
+    "https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-treasury-yields-nvidia-stock-nvda-buy-point/",
+    "https://www.reuters.com/business/take-five/global-markets-themes-graphic-2026-09-25/",
+    "https://247wallst.com/cards/selling-is-broad-across-the-market-all-three-major-indexes-gspc-market-bell-01m3a2fq38218nywxpagz17rst",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-sept-24-135147386.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-24-123300781.html"
+  ],
+  "usage": {
+    "input_tokens": 663,
+    "output_tokens": 1119,
+    "cost_usd": 0.03277
+  }
+}

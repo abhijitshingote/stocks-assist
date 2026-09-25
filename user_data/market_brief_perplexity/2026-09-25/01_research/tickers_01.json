@@ -1,0 +1,165 @@
+{
+  "name": "tickers_01",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday September 25, 2026.\n\nWindow: Thursday September 24, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Friday September 25, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| META | Meta Platforms, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.48% | +13.9% | 1.2\u00d7 | \u2014 |\n| LLY | Eli Lilly and Company | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.45% | +3.3% | 0.7\u00d7 | \u2014 |\n| INTC | Intel Corp. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.83% | +15.9% | 0.8\u00d7 | \u2014 |\n| NET | Cloudflare, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.81% | +8.5% | 0.7\u00d7 | \u2014 |\n| TMO | Thermo Fisher Scientific Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.44% | +3.5% | 0.6\u00d7 | \u2014 |\n| VLO | Valero Energy Corporation | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.39% | -6.7% | 0.6\u00d7 | \u2014 |\n| WELL | Welltower Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +2.14% | +1.1% | 0.5\u00d7 | \u2014 |\n| SHOP | Shopify Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +1.98% | +12.9% | 0.6\u00d7 | \u2014 |\n| UBS | UBS Group AG | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +1.97% | -3.8% | 3.1\u00d7 | \u2014 |\n| AMD | Advanced Micro Devices, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +1.97% | +15.0% | 0.8\u00d7 | \u2014 |\n| P | Everpure, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +12.63% | +18.8% | 1.1\u00d7 | \u2014 |\n| NBIS | Nebius Group N.V. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +8.42% | +12.7% | 1.3\u00d7 | \u2014 |\n\nTASK\nFor EACH ticker, find why it moved on Thursday September 24, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Meta Platforms, Inc. (META) `Internet & Platforms`\n- CEO Mark Zuckerberg introduced Meta\u2019s $1,299 Meta VR Glasses and the Muse Charm handheld device at the company\u2019s Connect developer conference on Wednesday, September 23, 2026; the Muse Charm is designed to work with Meta\u2019s Muse AI agent and is expected to go on sale by December 2026. (CNBC)\n- Meta shares rose after the product announcements and reports of optimism around the Muse AI agent; the company\u2019s Thursday move followed a gain of approximately 12% earlier in the week. (CNBC)\n- The S&P 500 Communication Services sector rose 1.5% on Thursday, with Meta, Verizon, and Walt Disney among the sector\u2019s advancing stocks. (Investopedia)\n\n## Eli Lilly and Company (LLY) `Specialty Materials & IP Licensing`\n- No company-specific catalyst found in window\n- Meta Platforms\u2019 AI-product announcements and broader gains in large-cap technology and communication-services stocks were reported alongside Eli Lilly\u2019s Thursday advance; no named lead stock was identified for Lilly. (Yahoo Finance)\n\n## Intel Corp. (INTC) `Fab & Foundry`\n- No company-specific catalyst found in window\n- No named sector-sympathy driver for Intel was identified in the available September 24\u201325 coverage.\n\n## Cloudflare, Inc. (NET) `Software & SaaS`\n- No company-specific catalyst found in window\n- Fastly fell about 9% after presenting 2029 revenue targets of $1.1 billion to $1.3 billion at its investor day, while Cloudflare traded approximately flat in the cited morning coverage; Fastly was not identified as a driver of Cloudflare\u2019s Thursday gain. (24/7 Wall St.)\n\n## Thermo Fisher Scientific Inc. (TMO) `Specialty Materials & IP Licensing`\n- No company-specific catalyst found in window\n- No named sector-sympathy driver for Thermo Fisher was identified in the available September 24\u201325 coverage.\n\n## Valero Energy Corporation (VLO) `Power & Wide-Bandgap`\n- No company-specific catalyst found in window\n- No named sector-sympathy driver for Valero was identified in the available September 24\u201325 coverage.\n\n## Welltower Inc. (WELL) `AI Infrastructure`\n- No company-specific catalyst found in window\n- No named sector-sympathy driver for Welltower was identified in the available September 24\u201325 coverage.\n\n## Shopify Inc. (SHOP) `Software & SaaS`\n- No company-specific catalyst found in window\n- No named sector-sympathy driver for Shopify was identified in the available September 24\u201325 coverage.\n\n## UBS Group AG (UBS) `AI Infrastructure`\n- No company-specific catalyst found in window\n- No named sector-sympathy driver for UBS was identified in the available September 24\u201325 coverage.\n\n## Advanced Micro Devices, Inc. (AMD) `AI Compute`\n- No company-specific catalyst found in window\n- Coverage described AMD as part of a broader semiconductor advance and reported that AMD reached a new record during the September 24 session; no specific lead stock or company announcement was identified. (Yahoo Finance)\n\n## Everpure, Inc. (P) `AI Infrastructure`\n- Everpure reported fiscal 2027 revenue guidance of $5.03 billion to $5.07 billion and non-GAAP operating-income guidance of $940 million to $960 million. (Everpure company release)\n- Everpure issued preliminary fiscal 2028 revenue guidance of $7.0 billion to $7.3 billion and non-GAAP operating-income guidance of $1.7 billion to $1.9 billion. (Everpure company release)\n- The preliminary fiscal 2028 revenue range exceeded the $6.19 billion average analyst estimate cited by FactSet. (CNBC)\n- Everpure\u2019s shares advanced after the company\u2019s financial analyst meeting and the release of its fiscal 2028 outlook. (CNBC)\n\n## Nebius Group N.V. (NBIS) `AI Infrastructure`\n- Bank of America raised its 2026, 2027, and 2028 revenue expectations for Nebius, reiterated a Buy rating, and maintained a $310 price target in a Thursday, September 24, 2026 report. (CNBC)\n- Bank of America analyst Tal Liani said Nebius uses long-duration hyperscaler contracts as a utilization base and reserves capacity for one- to three-year contracts priced at approximately twice hyperscaler rates. (CNBC)\n- Nebius announced planned October 1, 2026 price increases of approximately 17% for H100 capacity, 20% for H200, 19% for B200, and 21% for B300 capacity. (24/7 Wall St.)\n- The October 1 pricing changes were described as Nebius\u2019s second announced price increase in three months. (24/7 Wall St.)",
+  "search_results": [
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Nebius Group \u2014 Shares advanced more than 6% after Bank of America lifted its expectations for revenue in 2026, 2027 and 2028.\n\u201cNebius uses long-duration hyperscaler contracts to establish a stable utilization base while reserving a portion of capacity for 1-3 year contracts priced at roughly 2x hype...",
+      "source": "web",
+      "title": "Stocks making the biggest moves midday: Oracle, Everpure, Meta Platforms, Nebius, Bloom Energy, MGM & more",
+      "url": "https://www.cnbc.com/2026/09/24/stocks-making-the-biggest-moves-midday-orcl-p-meta-nbis-be.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Stock Market Midday, Sept. 24: Stocks Slide as Treasury Yields Climb, Oracle Declares Force Majeure\n- ORCL\n138.49\n-4.2%\n- NBIS\n247.13\n+9.06%\n- P\n126.09\n(+15.00%\n...\n# Stock Market Midday, Sept. 24: Stocks Slide as Treasury Yields Climb, Oracle Declares Force Majeure\n...\nThu, September 24, 2026 at 1:...",
+      "source": "web",
+      "title": "Stock Market Midday, Sept. 24: Stocks Slide as Treasury ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-midday-sept-24-164423138.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Roundhill\u2019s Memory ETF (DRAM) closed down 2%, with components Western Digital (WDC) and Sandisk (SNDK) among the biggest Nasdaq 100 decliners.\nU.S.-listed shares of British semiconductor firm Arm Holdings (ARM) led the index lower with a roughly 8% drop.\nShares of Meta Platforms (META) rose 4.5% to ...",
+      "source": "web",
+      "title": "Markets News, Sept. 24, 2026: Dow Closes Lower for 3rd ...",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Top Movers\nEverpure (P) jumped 11.15% after multiple analysts lifted price targets following an upbeat analyst day outlook.\nNebius Group (NBIS) gained 7.44% as BNP Paribas upgraded the stock to Outperform with a higher price target.",
+      "source": "web",
+      "title": "US Stock Market Today: S&P 500 Futures Slip As Hot Growth Keeps Rate Fears High",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/us-stock-market-today-p-080952587.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Meta \u2014 The tech giant slipped 2%, following its nearly 12% move higher so far this week on optimism around its Muse AI agent.\nCEO Mark Zuckerberg introduced the company\u2019s $1,299 Meta VR Glasses and Muse Charm, its handheld device that works with Muse, late Wednesday.",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: MGM, Darden Restaurants, Meta, BlackBerry & more",
+      "url": "https://www.cnbc.com/2026/09/24/stocks-making-the-biggest-moves-premarket-mgm-dri-meta-bb.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Thursday, September 24, 2026\n- NBIS\n248.53\n+9.67%\n- META\n777.88\n+4.54%\n...\n### Trending Tickers\n- NBIS\nNebius Group N.V.\nEquityNMS\n- META\nMeta Platforms, Inc.\nEquityNMS\n...\nEverpure, Inc.\n...\n- - NBIS Nebius Group N.V.\n+21.91\n- (+4.54%)",
+      "source": "web",
+      "title": "Thursday, September 24, 2026 - Yahoo Finance",
+      "url": "https://finance.yahoo.com/economy/policy/articles/thursday-september-24-2026-234800235.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "On this episode of Stock Movers:\n- Meta (META) shares are taking a breather off a massive rip after it unveiled the Muse Charm, a palm-sized gadget for using the company's artificial intelligence assistant Muse, with a 2-inch display and a new operating system.\nThe device is expected to go on sale b...",
+      "source": "web",
+      "title": "Stock Movers: META, MGM, P - Bloomberg",
+      "url": "https://www.bloomberg.com/news/audio/2026-09-24/stock-movers-meta-mgm-p-podcast"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "23. News \u2022 3 days ago\nAMD stock soars to new record as semiconductors bounce\n...\nMeta (META) shares gained another 4% after CEO Mark Zuckerberg laid out his plan for monetizing the company's wildly popular Muse AI agent.\n...\nMeta (META) and Eli Lilly (LLY) shares popped, boosting the indexes, while ...",
+      "source": "web",
+      "title": "Stock market today: Dow, S&P 500, Nasdaq trims losses as hopes of Hormuz deal offset rising bond yields",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-thursday-september-24-dow-sp-500-nasdaq-080352893.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Nebius Surges 6%, CoreWeave Treads Water as JPMorgan Upgrade Flags Rising Compute Pricing; IREN Slides 4% - 24/7 Wall St.\n...\n- JPMorgan upgraded CoreWeave (CRWV) to Overweight at $125, but the stock barely moved while Nebius (NBIS) surged 6% on pricing momentum.\n- Nebius plans price hikes of 17 to ...",
+      "source": "web",
+      "title": "Nebius Surges 6%, CoreWeave Treads Water as JPMorgan Upgrade Flags Rising Compute Pricing; IREN Slides 4%",
+      "url": "https://247wallst.com/investing/2026/09/24/nebius-surges-6-coreweave-treads-water-as-jpmorgan-upgrade-flags-rising-compute-pricing-iren-slides-4/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "24. News \u2022 3 days ago\nAMD stock soars to new record as semiconductors bounce\n25. News \u2022 3 days ago\n...\n# Stock Market News for Sep 24, 2026\n...\nThu, September 24, 2026 at 9:33 AM GMT-3 3 min read\n- ^DJI\n-0.31%\n...\n- -0.98%\nU.S. stocks ended lower on Wednesday, as Treasury yields and oil prices rose,...",
+      "source": "web",
+      "title": "Stock Market News for Sep 24, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-24-123300781.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The major domestic equity indices closed flat to slightly lower on Thursday after having tested\u00a0much lower levels earlier.\nThe S&P 500 and Nasdaq Composite both closed very close to flat on the day.\n...\nFour of the 11 S&P sector SPDR ETFs closed higher, with Communication Services (XLC) atop the per...",
+      "source": "web",
+      "title": "Selected Street Research",
+      "url": "https://pro.thestreet.com/dougs-daily-diary/2026-09-24"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "# Why Everpure (P) Stock Is Up Today\n...\nThu, September 24, 2026 at 11:14 PM GMT+5:30 2 min read\n- +11.15%\n...\nShares of data storage solutions provider Everpure (NYSE:P) jumped 5.5% in the pre-market session after the company reaffirmed its fiscal year 2027 guidance and announced an ambitious preli...",
+      "source": "web",
+      "title": "Why Everpure (P) Stock Is Up Today",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/why-everpure-p-stock-today-174458341.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Everpure Ord Shs Class A (P) opened up by 15.89%.",
+      "source": "web",
+      "title": "Everpure Ord Shs Class A Stock (P) Opened Up by 15.89% on Sep 24: Facts Behind the Movement",
+      "url": "https://www.tradingkey.com/news/market-movers/262185125-market-movers-p-20260924"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Thu, September 24, 2026 at 12:29 PM GMT-3 5 min read\n...\n### Quick Read\n- JPMorgan upgraded CoreWeave (CRWV) to Overweight at $125, but the stock barely moved while Nebius (NBIS) surged 6% on pricing momentum.\n- Nebius plans price hikes of 17 to 21 percent across H100 through B300 GPU capacity on Oc...",
+      "source": "web",
+      "title": "Nebius Surges 6%, CoreWeave Treads Water as JPMorgan Upgrade Flags Rising Compute Pricing; IREN Slides 4%",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/nebius-surges-6-coreweave-treads-152956064.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Fastly Sinks 8% as Selling After Investor Day Cuts Into a 164% YTD Run; Cloudflare Holds Flat - 24/7 Wall St.\n...\nPublished September 24, 2026, 10:02am ET \u00b7 4 min read\n...\n- Fastly (FSLY) fell 9% as profit-taking followed Investor Day targets of between $1.1B and $1.3B by 2029, even as the stock rem...",
+      "source": "web",
+      "title": "Fastly Sinks 8% as Selling After Investor Day Cuts Into a ...",
+      "url": "https://247wallst.com/investing/2026/09/24/fastly-sinks-8-as-selling-after-investor-day-cuts-into-a-164-ytd-run-cloudflare-holds-flat/?tpid=1666843&tv=link&tc=in_content"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/2026/09/24/stocks-making-the-biggest-moves-midday-orcl-p-meta-nbis-be.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-midday-sept-24-164423138.html",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008",
+    "https://finance.yahoo.com/markets/stocks/articles/us-stock-market-today-p-080952587.html",
+    "https://www.cnbc.com/2026/09/24/stocks-making-the-biggest-moves-premarket-mgm-dri-meta-bb.html",
+    "https://finance.yahoo.com/economy/policy/articles/thursday-september-24-2026-234800235.html",
+    "https://www.bloomberg.com/news/audio/2026-09-24/stock-movers-meta-mgm-p-podcast",
+    "https://finance.yahoo.com/markets/live/stock-market-today-thursday-september-24-dow-sp-500-nasdaq-080352893.html",
+    "https://247wallst.com/investing/2026/09/24/nebius-surges-6-coreweave-treads-water-as-jpmorgan-upgrade-flags-rising-compute-pricing-iren-slides-4/",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-24-123300781.html",
+    "https://pro.thestreet.com/dougs-daily-diary/2026-09-24",
+    "https://finance.yahoo.com/markets/stocks/articles/why-everpure-p-stock-today-174458341.html",
+    "https://www.tradingkey.com/news/market-movers/262185125-market-movers-p-20260924",
+    "https://finance.yahoo.com/markets/stocks/articles/nebius-surges-6-coreweave-treads-152956064.html",
+    "https://247wallst.com/investing/2026/09/24/fastly-sinks-8-as-selling-after-investor-day-cuts-into-a-164-ytd-run-cloudflare-holds-flat/?tpid=1666843&tv=link&tc=in_content"
+  ],
+  "usage": {
+    "input_tokens": 1199,
+    "output_tokens": 1021,
+    "cost_usd": 0.03291
+  }
+}

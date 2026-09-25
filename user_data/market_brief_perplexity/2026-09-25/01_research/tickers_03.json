@@ -1,0 +1,165 @@
+{
+  "name": "tickers_03",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday September 25, 2026.\n\nWindow: Thursday September 24, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Friday September 25, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| WRBY | Warby Parker Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +12.42% | +8.6% | 1.9\u00d7 | \u2014 |\n| RSKD | Riskified Ltd. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +11.55% | +26.2% | 3.4\u00d7 | \u2014 |\n| CYPH | Cypherpunk Technologies Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +11.50% | +31.1% | 1.1\u00d7 | \u2014 |\n| BLLN | BillionToOne, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +11.17% | +14.9% | 1.1\u00d7 | \u2014 |\n| TSSI | TSS, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +10.99% | +19.5% | 3.1\u00d7 | \u2014 |\n| VCYT | Veracyte, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +10.92% | +19.8% | 1.5\u00d7 | \u2014 |\n| ARM | Arm Holdings plc American Depositary Shares | Mega | Vol spike / gapper \u00b7 last 5D \u00b7 Mega cap | -6.68% | +17.2% | 1.3\u00d7 | gapper 2026-09-21 |\n| MSTR | Strategy Inc | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | +0.49% | +23.2% | 0.6\u00d7 | gapper 2026-09-21 |\n| WBD | Warner Bros. Discovery, Inc. | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | +0.24% | +9.2% | 0.8\u00d7 | both 2026-09-21 |\n| IONQ | IonQ, Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +4.44% | +10.1% | 1.5\u00d7 | volume_spike 2026-09-23 |\n| FSLY | Fastly, Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -10.17% | +8.4% | 1.6\u00d7 | volume_spike 2026-09-23 |\n| SGRY | Surgery Partners, Inc. | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -2.20% | +6.7% | 0.4\u00d7 | gapper 2026-09-22 |\n\nTASK\nFor EACH ticker, find why it moved on Thursday September 24, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Warby Parker Inc. (WRBY) `[Internet & Platforms]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.\n- Warby Parker\u2019s latest reported quarter had revenue of $235.5 million versus $214.6 million a year earlier, while EPS was $0.04 versus a $0.10 consensus estimate; those figures were cited as prior-quarter background, not new window-period news. (MarketBeat)\n\n## Riskified Ltd. (RSKD) `[Software & SaaS]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.\n- Riskified\u2019s most recently reported quarter had EPS of $0.02, in line with consensus, and revenue of $98.69 million, above estimates; those figures were cited as prior-quarter background, not new window-period news. (MarketBeat)\n\n## Cypherpunk Technologies Inc. (CYPH) `[Cryptocurrency Infrastructure]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.\n\n## BillionToOne, Inc. (BLLN) `[Diagnostics & Life Sciences]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.\n\n## TSS, Inc. (TSSI) `[AI Infrastructure]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.\n\n## Veracyte, Inc. (VCYT) `[Diagnostics & Life Sciences]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.\n- Veracyte shares were reported up 6.5% during Thursday trading, with approximately 99,915 shares traded at midday versus a 1,113,705-share average; no accompanying company announcement was identified in the available window-period results. (MarketBeat)\n\n## Arm Holdings plc (ARM) `[Specialty Materials & IP Licensing]`\n- Arm CFO Jason Child sold 10,400 shares for approximately $3.12 million under a pre-arranged Rule 10b5-1 plan on September 24, 2026. (MarketBeat)\n- Arm shares fell 7.9% to approximately $306.19 in Thursday trading in the report attributing the move to the disclosed insider sale. (MarketBeat)\n- Another market-movers report described Arm as down 8.48% on September 24, 2026, the largest decline in its tracked 111-stock list. (24/7 Wall St.)\n\n## Strategy Inc. (MSTR) `[AI Infrastructure]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.\n- No separate sympathy driver was identified in the available results.\n\n## Warner Bros. Discovery, Inc. (WBD) `[Internet & Platforms]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.\n- No separate sympathy driver was identified in the available results.\n\n## IonQ, Inc. (IONQ) `[Quantum Computing]`\n- IonQ announced on September 22, 2026, that it had demonstrated what it described as the first end-to-end, real-time quantum-error-correction decoder. (IonQ announcement, as reported by Yahoo Finance)\n- The September 22 announcement was cited as the catalyst for IonQ\u2019s subsequent stock move; IonQ was reported up more than 5% in Wednesday trading and appeared among Thursday\u2019s leading gainers. (Yahoo Finance; 24/7 Wall St.)\n- IonQ had a reported Form 4 filing for September 23, 2026, but the available result did not provide a transaction amount or explain a material effect on Thursday\u2019s move. (SEC Form 4 listing)\n\n## Fastly, Inc. (FSLY) `[EdgeAI]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.\n- Fastly\u2019s September 24 move was described in available coverage as a decline following an earlier Investor Day; that coverage did not provide a new September 24\u201325 announcement, updated guidance, contract value, or analyst action. (MEXC Crypto Pulse)\n\n## Surgery Partners, Inc. (SGRY) `[Healthcare Services]`\n- No company-specific catalyst found in the September 24\u201325, 2026 window.",
+  "search_results": [
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Arm Holdings stock falls 7.88 percent ahead of the open\n...\nPublished on 09/25/2026 at 06:23 | Editorial responsibility: Rafael M\u00fcller, Editor-in-Chief AD HOC NEWS\nAt the close on September 24, 2026, Arm Holdings stock finished at USD 306.34 after trading between USD 303.65 and USD 326.00.\n...\nArm H...",
+      "source": "web",
+      "title": "Arm Holdings stock falls 7.88 percent ahead of the open",
+      "url": "https://www.ad-hoc-news.de/boerse/news/vorboerse/arm-holdings-stock-falls-7-88-percent-ahead-of-the-open/70180973"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Shares of Veracyte, Inc.\n(NASDAQ:VCYT - Get Free Report) rose 6.5% during trading on Thursday . The stock traded as high as $45.49 and last traded at $46.6530.\nApproximately 99,915 shares were traded during mid-day trading, a decline of 91% from the average session volume of 1,113,705 shares.",
+      "source": "web",
+      "title": "Veracyte (NASDAQ:VCYT) Shares Up 6.5%  - Still a Buy?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-veracyte-nasdaq-vcyt-shares-up-65-still-a-buy-2026-09-24/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "September 24, 2026\n...\n## Key Points\n- **Warby Parker shares rose 4.8%** to $24.46 in Thursday trading, although volume was 77% below the average daily level.\n- Analysts remain broadly positive, with seven Buy ratings and four Holds, an overall \u201cModerate Buy\u201d consensus, and an average price target o...",
+      "source": "web",
+      "title": "Warby Parker (NYSE:WRBY) Trading 4.8% Higher - MarketBeat",
+      "url": "https://www.marketbeat.com/instant-alerts/price-warby-parker-nyse-wrby-trading-48-higher-heres-what-happened-2026-09-24/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "September 24, 2026\n...\n- **Riskified\u2019s trading volume surged 65%** to 1.72 million shares, while the stock rose to $7.588 from a prior close of $7.14.\n- Analyst sentiment remains mixed: Riskified has an average \u201cHold\u201d rating and a consensus price target of $6.50, below its reported trading price, de...",
+      "source": "web",
+      "title": "Riskified (NYSE:RSKD) Sees Large Volume Increase - Here's Why",
+      "url": "https://www.marketbeat.com/instant-alerts/price-riskified-nyse-rskd-sees-large-volume-increase-heres-why-2026-09-24/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- IONQ\n+5.74%\n- -0.41%\n...\nOn Tuesday, Sept. 22, 2026, IonQ announced that it had cleared one of quantum computing's biggest hurdles by demonstrating the first end-to-end real-time quantum error correction decoder.",
+      "source": "web",
+      "title": "IonQ Cleared One of Quantum Computing's Biggest ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/ionq-cleared-one-quantum-computings-081201118.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Arm leads Wednesday's losers with an 8.5% drop as Bruker tops the gainers | 24/7 Wall St.\n...\nBiggest movers \u00b7 At the close Sep 24, 4:11pm ET\nGainers - BRKRBruker$64.13+7.5%\n- TEMTempus AI$82.15+7.3%\n- IONQIonQ$45.01+5.8%\n- AFRMAffirm$71.54+5.1%\n- METAMeta$778.35+4.6%\nLosers - ARMArm$304.35-8.5%\n- A...",
+      "source": "web",
+      "title": "Arm leads Wednesday's losers with an 8.5% drop as Bruker tops the gainers",
+      "url": "https://247wallst.com/cards/arm-s-8-5-slide-was-the-deepest-move-in-a-111-stock-priorit-arm-session-movers-01m3agqv31acanrassy22k184s"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Alphabet traded near $340.93 at midday Thursday, worth about $4.17 trillion.",
+      "source": "web",
+      "title": "Stocks | The Company Chronicle",
+      "url": "https://thecompanychronicle.com/section/stocks"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Here are Thursday\u2019s biggest calls on Wall Street: JPMorgan upgrades CoreWeave to overweight from neutral The firm said it sees an improving \u201cpricing backdrop.\u201d\n\u201cWe are upgrading CoreWeave to Overweight from Neutral, led by the favorable pricing backdrop for compute given the strong demand backdrop a...",
+      "source": "web",
+      "title": "Here are Thursday's biggest analyst calls of the day: Nvidia, SpaceX, Imax, Meta, CoreWeave, Tesla & more",
+      "url": "https://www.cnbc.com/2026/09/24/biggest-wall-street-analyst-calls-thursday.html"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Published 24/09/2026, 00:02\n...\nFTSE 100 today: Stocks rise as U.S.-Iran ceasefire talks offset Hormuz supply fear",
+      "source": "web",
+      "title": "Form 4 IONQ Inc For: 23 September",
+      "url": "https://uk.investing.com/news/stock-market-news/form-4-ionq-inc-for-23-september-93CH-4880494"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The Dow fell for a third consecutive session as oil prices rose and Treasury yields hit a fresh 19-year high.\n...\nShares of Stitch Fix (SFIX) are sinking 20% in premarket trading Thursday, a day after the online personal styling service company issued weaker-than-expected guidance for the current qu...",
+      "source": "web",
+      "title": "Markets News, Sept. 24, 2026: Dow Closes Lower for 3rd ...",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- **ARM shares fell 7.9% to approximately $306.19** after CFO Jason Child sold 10,400 shares for $3.12 million.\nThe sale was conducted under a pre-arranged Rule 10b5-1 plan, reducing its significance as a trading signal.\n- Analyst sentiment remains broadly positive, with a \u201cModerate Buy\u201d consensus a...",
+      "source": "web",
+      "title": "ARM (NASDAQ:ARM) Stock Price Down 7.9% on Insider ...",
+      "url": "https://www.marketbeat.com/instant-alerts/price-arm-nasdaq-arm-stock-price-down-79-on-insider-selling-2026-09-24/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Pre-Market Briefing on Sept 24: Fastly Jumps 13.69% on 2029 Target From Investor Day, and Jobless Claims Are Due Today | MEXC Crypto Pulse\n...\nThe same day Fastly (FSLY) rose 13.69% to $29.65, while application software averaged \u22120.85% and Nasdaq technology \u22120.82%: a move against its sector, not a s...",
+      "source": "web",
+      "title": "Pre-Market Briefing on Sept 24: Fastly Jumps 13.69% on 2029 Target From Investor Day, and Jobless Claims Are Due Today | MEXC Crypto Pulse",
+      "url": "https://www.mexc.com/crypto-pulse/article/pre-market-briefing-on-sept-24-158349"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Arm Holdings stock falls 3.66 percent in Nasdaq trading\n...\nArm Holdings stock traded at USD 320.39 on September 24, 2026, 29.2 percent below its 52-week high.\n...\nArm Holdings stock was trading at USD 320.39 on Nasdaq at 10:37 a.m.\nET on September 24, 2026, down 3.66 percent from the previous close...",
+      "source": "web",
+      "title": "Arm Holdings stock falls 3.66 percent in Nasdaq trading",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/arm-holdings-stock-falls-3-66-percent-in-nasdaq-trading/70178204"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "- IonQ said Tuesday it pulled off what it describes as the first real-time, end-to-end error decoder for quantum computing.\n- The stock climbed Wednesday, up over 5% in morning trading after leaping more than 10% before the open.\n...\nA displayed quote showed IonQ at 42.93, up 2.19 or 5.38%, at 12:46...",
+      "source": "web",
+      "title": "IonQ Demonstrates Real-Time Quantum Error Decoder",
+      "url": "https://www.briefs.co/news/ionq-shares-jump-after-company-says-it-demonstrated-real-tim/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "|**Stock**|**Ticker**|**Analyst Firm**|**Call**|\n...\n|AkzoNobel|AKZOY|JPMorgan|Reinstated with Overweight|\n|Americold Realty Trust|COLD|JPMorgan|Underweight \u2192 Neutral|\n|Arcturus Therapeutics|ARCT|Citi|Neutral \u2192 Buy|\n|Ares Management|ARES|Piper Sandler|Initiated with Overweight|\n|Avidbank Holdings|AV...",
+      "source": "web",
+      "title": "Analyst Upgrades and Downgrades for Thursday, 9/24",
+      "url": "https://dailytradealert.com/2026/09/24/analyst-upgrades-and-downgrades-for-thursday-9-24/"
+    }
+  ],
+  "citations": [
+    "https://www.ad-hoc-news.de/boerse/news/vorboerse/arm-holdings-stock-falls-7-88-percent-ahead-of-the-open/70180973",
+    "https://www.marketbeat.com/instant-alerts/price-veracyte-nasdaq-vcyt-shares-up-65-still-a-buy-2026-09-24/",
+    "https://www.marketbeat.com/instant-alerts/price-warby-parker-nyse-wrby-trading-48-higher-heres-what-happened-2026-09-24/",
+    "https://www.marketbeat.com/instant-alerts/price-riskified-nyse-rskd-sees-large-volume-increase-heres-why-2026-09-24/",
+    "https://finance.yahoo.com/markets/stocks/articles/ionq-cleared-one-quantum-computings-081201118.html",
+    "https://247wallst.com/cards/arm-s-8-5-slide-was-the-deepest-move-in-a-111-stock-priorit-arm-session-movers-01m3agqv31acanrassy22k184s",
+    "https://thecompanychronicle.com/section/stocks",
+    "https://www.cnbc.com/2026/09/24/biggest-wall-street-analyst-calls-thursday.html",
+    "https://uk.investing.com/news/stock-market-news/form-4-ionq-inc-for-23-september-93CH-4880494",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008",
+    "https://www.marketbeat.com/instant-alerts/price-arm-nasdaq-arm-stock-price-down-79-on-insider-selling-2026-09-24/",
+    "https://www.mexc.com/crypto-pulse/article/pre-market-briefing-on-sept-24-158349",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/arm-holdings-stock-falls-3-66-percent-in-nasdaq-trading/70178204",
+    "https://www.briefs.co/news/ionq-shares-jump-after-company-says-it-demonstrated-real-tim/",
+    "https://dailytradealert.com/2026/09/24/analyst-upgrades-and-downgrades-for-thursday-9-24/"
+  ],
+  "usage": {
+    "input_tokens": 1297,
+    "output_tokens": 914,
+    "cost_usd": 0.0316
+  }
+}

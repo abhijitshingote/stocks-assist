@@ -1,0 +1,165 @@
+{
+  "name": "broad_calendar",
+  "kind": "channel",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday September 25, 2026. Scope: Calendar.\n\nWindow: Thursday September 24, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Friday September 25, 2026 ~6:00 AM ET.\n\nCOVER EVERY ITEM BELOW (run a separate search for each bullet; do not skip one because another was rich)\nScheduled catalysts from the brief date through the next 5 NYSE sessions: earnings (date, BMO/AMC, EPS and revenue consensus) for US stocks >= $10B plus notable mid-caps, investor/analyst days, FDA PDUFA dates, major economic releases with consensus, Fed speakers, options expiry, index rebalances, lockup expiries.\n\nPrefer primary sources and wire services (Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's,\ncompany press releases, SEC EDGAR, BLS/BEA/Fed releases).\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar, or\ninvent a concise one. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## **COST** \u2014 Earnings [Calendar]\n- Costco Wholesale is scheduled to report fiscal fourth-quarter results after the market close on Friday, September 25; consensus is **$6.66 EPS** and **$96.76 billion revenue** (QuarterCharts/Finnhub).\n\n## **SNX** \u2014 Earnings [Software & SaaS]\n- TD SYNNEX is scheduled to report fiscal third-quarter results before the market opens on Friday, September 25; consensus was **$4.75 EPS** and **$19.1 billion revenue**, while reported EPS was **$5.68** (QuarterCharts/Finnhub).\n\n## **BXMT** \u2014 Earnings [Financials]\n- Blackstone Mortgage Trust is scheduled to report results before the market opens on Friday, September 25; consensus was **$0.27 EPS** and **$78.51 million revenue** (QuarterCharts/Finnhub).\n\n## **Micron Technology (MU)** \u2014 Earnings [Memory & Interconnect]\n- Micron is scheduled to report fiscal fourth-quarter results on Wednesday, September 30; consensus is **$31.45 EPS** and **$50.8 billion revenue** (CMC Markets).\n\n## **Cal-Maine Foods (CALM)** \u2014 Earnings [Specialty Materials & IP Licensing]\n- Cal-Maine Foods is scheduled to report fiscal first-quarter results on Wednesday, September 30 (CMC Markets).\n\n## **Conagra Brands (CAG)** \u2014 Earnings [Consumer Staples]\n- Conagra Brands is scheduled to report fiscal first-quarter results on Wednesday, September 30 (CMC Markets).\n\n## **FactSet Research Systems (FDS)** \u2014 Earnings [Software & SaaS]\n- FactSet is scheduled to report fiscal fourth-quarter results on Wednesday, September 30 (CMC Markets).\n\n## **Jabil (JBL)** \u2014 Earnings [AI Infrastructure]\n- Jabil is scheduled to report fiscal fourth-quarter results on Wednesday, September 30 (CMC Markets).\n\n## **Nike (NKE)** \u2014 Earnings [Consumer]\n- Nike is scheduled to report fiscal first-quarter results on Thursday, October 1 (CMC Markets).\n\n## **McCormick (MKC)** \u2014 Earnings [Consumer Staples]\n- McCormick is scheduled to report fiscal third-quarter results on Thursday, October 1 (CMC Markets).\n\n## **U.S. Economic Calendar** \u2014 Economic Releases [Macro / Calendar]\n- **Monday, September 28:** No major U.S. economic reports are scheduled (Schaeffers Research).\n- **Tuesday, September 29:** August **JOLTS job openings** and the September **consumer-confidence** report are scheduled (Schaeffers Research; CMC Markets).\n- **Wednesday, September 30:** The **ADP employment report**, final second-quarter **GDP estimate**, wholesale and retail inventories, personal income, consumer spending, the August **core PCE price index**, and the Chicago Business Barometer are scheduled (Schaeffers Research; CMC Markets).\n- **Thursday, October 1:** Weekly **initial jobless claims**, construction spending, the September **S&P Global manufacturing PMI**, the September **ISM manufacturing PMI**, and the September Challenger job-cuts report are scheduled (Schaeffers Research; CMC Markets).\n\n## **U.S. Employment Report** \u2014 Economic Releases [Macro / Calendar]\n- **Friday, October 2:** September nonfarm payrolls, the unemployment rate, average hourly earnings, and August factory orders are scheduled; the cited calendar gives a **0.3% month-over-month consensus forecast for average hourly earnings** (CMC Markets).\n\n## **Strait of Hormuz / Iran** \u2014 Geopolitics [Macro / Commodities / Geopolitics]\n- U.S. and Iranian negotiators were reported to be exploring a phased arrangement involving Tehran reopening the Strait of Hormuz and Washington lifting its economic blockade; the report was published on September 24 (Reuters).\n- September 24 closing prices were **$95.10 per barrel for WTI** and **$107.30 per barrel for Brent** (Investopedia).\n\n## **U.S. Equities** \u2014 Regular Session [Macro / Calendar]\n- On Thursday, September 24, the **S&P 500 fell 1.90 points, or less than 0.1%, to 7,704.13**, the **Dow Jones Industrial Average fell 161.61 points, or 0.3%, to 51,349.98**, and the **Nasdaq Composite rose 3.34 points, or less than 0.1%, to 26,939.37** (Associated Press).\n- The **Russell 2000 fell 3.09 points, or 0.1%, to 2,835.57** on September 24 (Associated Press).\n\n## **DG** \u2014 Analyst Action [Consumer Staples]\n- HSBC upgraded Dollar General to **Buy** from its prior rating and raised its price target to **$160 from $125** on September 24 (Investrade).\n\n## **GOSS** \u2014 FDA / Regulatory [Biotechnology]\n- Gossamer Bio submitted a new drug application to the FDA for **seralutinib** for pulmonary arterial hypertension; the FDA is expected to determine filing acceptance later in 2026 (Investrade).\n\n## **SPCX** \u2014 Lockup Expiry [Space / Communications]\n- Approximately **328.4 million SpaceX shares** became eligible for trading after post-IPO lockup restrictions expired on September 24; at Wednesday\u2019s close of **$148.36**, the shares were valued at approximately **$48.7 billion** (Yahoo Finance).\n- Additional SpaceX lockup tranches are scheduled for **October 9 and October 24** (Yahoo Finance).\n\n## **Options** \u2014 Expiration [Calendar]\n- The September 25 options expiry was identified as the Friday expiry in an options-market brief dated September 24 (Saxo Bank).\n\n## Coverage limitations\n- The available search results did not provide verified details for every requested category, including a complete list of investor or analyst days, Fed speakers, index rebalances, all FDA PDUFA dates, all lockup expiries, or a fully sourced universe of U.S. companies with market capitalizations of at least $10 billion.\n- The available earnings results did not include consensus EPS and revenue figures for every listed company, nor actual-versus-consensus results or guidance changes for the September 24 after-hours reports.",
+  "search_results": [
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The blue-chip Dow industrials closed down 0.3%.\n...\nAccording to CME FedWatch, traders now see a 71% likelihood that the Federal Reserve will raise interest rates a quarter-percentage point at its meeting next month, up from 55% one week ago.\n...\nOil prices remain elevated but pared steeper gains Th...",
+      "source": "web",
+      "title": "Markets News, Sept. 24, 2026: Dow Closes Lower for 3rd ...",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Sept 24 (Reuters) - The S&P 500 ended marginally down on Thursday, with Microsoft dipping and Meta Platforms rising, as uncertainty about the Middle East lifted oil prices and Treasury yields.\nThe S&P 500 and Nasdaq rebounded from session lows after Reuters reported US and Iranian negotiators were e...",
+      "source": "web",
+      "title": "S&P 500 ends marginally lower as investors focus on US- ...",
+      "url": "https://www.investing.com/news/economy-news/wall-st-futures-fall-on-middle-east-uncertainties-ahead-of-trumpxi-talks-4914927"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "S&P Futures 7,786.25 +19.25 +0.25%\n...\nUS stocks wavered on Thursday as hopes of a deal to reopen the Strait of Hormuz revived, counterbalancing inflation fears and rising bond yields.\nThe Dow Jones Industrial Average (^DJI) fell 0.3%, while tech-heavy Nasdaq Composite (^IXIC) was little changed.\nTh...",
+      "source": "web",
+      "title": "Stock market today: Dow, S&P 500, Nasdaq trims losses as hopes of Hormuz deal offset rising bond yields",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-thursday-september-24-dow-sp-500-nasdaq-080352893.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "U.S. markets open in 1h 4m\nS&P Futures 7,790.75 +23.75 +0.31%\nDow Futures 51,845.00 +128.00 +0.25%\nNasdaq Futures 30,939.25 +172.50 +0.56%\n...\nThu, September 24, 2026 at 9:33 AM GMT-3 3 min read\n- ^DJI\n-0.31%\n- ^IXIC\n+0.01%\n- CL=F\n-1.79%\n- ^GSPC\n-0.02%\n- -0.98%\nU.S. stocks ended lower on Wednesday, ...",
+      "source": "web",
+      "title": "Stock Market News for Sep 24, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-24-123300781.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "Below is the schedule of key market events for the week ahead.\n...\nMonday, September 28 will be a quiet session, with no major economic reports scheduled.\nTuesday, September 29 will bring the Job Openings and Labor Turnover Survey (JOLTS), as well as the S&P Cotality Case-Shiller home price index.\nI...",
+      "source": "web",
+      "title": "The Week Ahead: Employment Report, PMI Data Kick Off October",
+      "url": "https://www.schaeffersresearch.com/content/news/2026/09/24/the-week-ahead-employment-report-pmi-data-kick-off-october"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "**Wednesday 30 September **\nAnalysts are forecasting Micron\u2019s fiscal fourth-quarter 2026 results to rise more than tenfold to $31.45 a share from $3.03 a year ago.\nRevenue for the Nasdaq-listed memory-chip company is expected to soar to $50.8bn, from $11.3bn a year earlier.\nGross margins are also ex...",
+      "source": "web",
+      "title": "The Week Ahead: US PCE, jobs report, Micron earnings | CMC Markets",
+      "url": "https://www.cmcmarkets.com/en-ie/news-and-analysis/the-week-ahead-us-pce-jobs-report-micron-earnings"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "S&P 500 futures were down 0.05%, and Nasdaq-100 futures inched higher.\nFutures tied to the Dow Jones Industrial Average gained 3 points, or 0.01%.\nIn Thursday\u2019s regular trading, the S&P 500 and Nasdaq Composite both finished flat.\n...\nThe Dow is heading for a fourth consecutive losing week, down 0.6...",
+      "source": "web",
+      "title": "Stock futures are little changed as Dow heads for fourth straight losing week: Live updates",
+      "url": "https://www.cnbc.com/2026/09/24/stock-market-today-live-updates.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Sept 24 (Reuters) - Just as some investors were wondering whether it was time to return to battered bond markets, Wednesday's fresh rout offered a clear answer: not yet.",
+      "source": "web",
+      "title": "COMMENTARY: Morning Bid: Bonds bomb",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-09-24/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "US-listed earnings \u00b7 week of 2026-09-21 \u2192 2026-09-27 \u00b7 sources: finnhub\n## Week navigation\n\u2190 Prev week\nMon\nSep 21, 2026\n22\nTue\nSep 22, 2026\n11\nWed\nSep 23, 2026\n15\nThu\nSep 24, 2026\n20\nFri\nSep 25, 2026\n3\nSat\nSep 26, 2026\n0\nSun\nSep 27, 2026\n0\nNext week \u2192\n...\n\u2014 before market open\n- **AMC**\n\u2014 after marke...",
+      "source": "web",
+      "title": "Earnings Calendar \u2014 QuarterCharts United States",
+      "url": "https://us.quartercharts.com/earnings?day=2026-09-24"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- The latest release follows roughly 378 million shares becoming eligible earlier this month across two tranches.\n...\nSpaceX (SPCX) drew investors' attention on Thursday as a fresh wave of insider shares became available for trading, with roughly 328.4 million shares released from post-IPO lockup re...",
+      "source": "web",
+      "title": "SpaceX Lockup Expiry: Mizuho Reiterates 'Outperform' ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/spacex-lockup-expiry-mizuho-reiterates-153149780.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The S&P 500 was virtually unchanged Thursday following several turns between losses and gains.\nThe Dow Jones Industrial Average dropped 0.3%, and the Nasdaq composite was basically flat.\n...\nOn Thursday:\nThe S&P 500 fell 1.90 points, or less than 0.1%, to 7,704.13.\nThe Dow Jones Industrial Average f...",
+      "source": "web",
+      "title": "How major US stock indexes fared Thursday 9/24/2026",
+      "url": "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-thursday-9242026-136734081"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "*Expected move to the 25 September expiry, drawn around the Friday 18 September close with the nearest listed strike at each bound, and Wednesday\u2019s close marked.",
+      "source": "web",
+      "title": "Yields spiked equity vol stayed cheap - Options Brief",
+      "url": "https://www.home.saxo/en-sg/content/articles/options/yields-spiked-equity-vol-stayed-cheap---options-brief---24-september-2026-24092026"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The Dow Jones Industrial Average fell for a third straight session on Thursday, as Treasury yields at multidecade highs continued to weigh on the most cyclical parts of the market.\nThe 30-stock index slid 161.61 points, or 0.31%, to 51,349.98.\nThe S&P 500 ticked lower by 0.02% to 7,704.13.\nThe Nasda...",
+      "source": "web",
+      "title": "Dow falls for a third day as bond yields hit fresh highs",
+      "url": "https://www.cnbc.com/2026/09/23/stock-market-today-live-updates.html"
+    },
+    {
+      "date": "2026-09-25",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "The S&P 500 lost 2.20 points, or 0.03%, to end at 7,703.83 points, while the Nasdaq Composite gained 1.76 points, or 0.01%, to 26,937.79.\nThe Dow Jones Industrial Average fell 162.41 points, or 0.32%, to 51,349.18.,932.46, respectively.",
+      "source": "web",
+      "title": "Dow Jones| Nasdaq | US Stock Market Today | Live: S&P ...",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/wall-street-guide/dow-jones-us-stock-market-live-updates-nasdaq-sp-500-trump-xi-china-talks-iran-war-hormuz-brent-crude-oil-inflation-fed-rate-treasury-yields-meta-apple-tesla-amazon-ai-chip-stock-price-news-24th-september-2026/liveblog/134462304.cms"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "**Thursday, September 24, 2026**\n|Index|Up/Down|%|Last|\n|--|--|--|--|\n|**DJ Industrials**|-161.70|0.31%|51,350|\n|**S&P 500**|-1.80|0.02%|7,704|\n|**Nasdaq**|3.34|0.01%|26,939|\n|**Russell 2000**|-3.05|0.11%|2,835|\n...\nHeading into the final hour of trading today, stocks held near flat on both the S&P ...",
+      "source": "web",
+      "title": "Market Review: September 24, 2026 - Investrade",
+      "url": "https://investrade.com/market-review-september-24-2026/"
+    }
+  ],
+  "citations": [
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-09242026-12138008",
+    "https://www.investing.com/news/economy-news/wall-st-futures-fall-on-middle-east-uncertainties-ahead-of-trumpxi-talks-4914927",
+    "https://finance.yahoo.com/markets/live/stock-market-today-thursday-september-24-dow-sp-500-nasdaq-080352893.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-sep-24-123300781.html",
+    "https://www.schaeffersresearch.com/content/news/2026/09/24/the-week-ahead-employment-report-pmi-data-kick-off-october",
+    "https://www.cmcmarkets.com/en-ie/news-and-analysis/the-week-ahead-us-pce-jobs-report-micron-earnings",
+    "https://www.cnbc.com/2026/09/24/stock-market-today-live-updates.html",
+    "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-09-24/",
+    "https://us.quartercharts.com/earnings?day=2026-09-24",
+    "https://finance.yahoo.com/markets/stocks/articles/spacex-lockup-expiry-mizuho-reiterates-153149780.html",
+    "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-thursday-9242026-136734081",
+    "https://www.home.saxo/en-sg/content/articles/options/yields-spiked-equity-vol-stayed-cheap---options-brief---24-september-2026-24092026",
+    "https://www.cnbc.com/2026/09/23/stock-market-today-live-updates.html",
+    "https://economictimes.indiatimes.com/markets/us-stocks/wall-street-guide/dow-jones-us-stock-market-live-updates-nasdaq-sp-500-trump-xi-china-talks-iran-war-hormuz-brent-crude-oil-inflation-fed-rate-treasury-yields-meta-apple-tesla-amazon-ai-chip-stock-price-news-24th-september-2026/liveblog/134462304.cms",
+    "https://investrade.com/market-review-september-24-2026/"
+  ],
+  "usage": {
+    "input_tokens": 581,
+    "output_tokens": 1372,
+    "cost_usd": 0.03632
+  }
+}

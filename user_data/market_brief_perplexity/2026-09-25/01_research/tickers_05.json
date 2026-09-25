@@ -1,0 +1,165 @@
+{
+  "name": "tickers_05",
+  "kind": "ticker",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday September 25, 2026.\n\nWindow: Thursday September 24, 2026 regular session (9:30-16:00 ET), after-hours that evening, and overnight/pre-market news through Friday September 25, 2026 ~6:00 AM ET.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| OKTA | Okta, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +1.09% | +9.2% | 1.0\u00d7 | both 2026-08-27 |\n| RBRK | Rubrik, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -1.37% | +5.7% | 0.3\u00d7 | gapper 2026-09-14 |\n| ZS | Zscaler, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +0.79% | +9.5% | 0.4\u00d7 | gapper 2026-09-14 |\n| SMCI | Super Micro Computer, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +0.82% | +3.5% | 0.7\u00d7 | gapper 2026-08-12 |\n| BRR | ProCap Financial, Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +0.00% | +29.6% | 1.2\u00d7 | volume_spike 2026-09-18 |\n| ASST | Strive, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +3.57% | +6.2% | 0.7\u00d7 | volume_spike 2026-08-24 |\n| SDGR | Schr\u00f6dinger, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +1.03% | -2.4% | 0.6\u00d7 | both 2026-09-17 |\n| SECZ | Securitize Corp. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +10.24% | +77.3% | 1.8\u00d7 | gapper 2026-09-21 |\n| PURR | Hyperliquid Strategies Inc Common Stock | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +0.25% | +8.9% | 0.6\u00d7 | gapper 2026-09-17 |\n| FWDI | Forward Industries, Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +1.99% | +32.6% | 0.5\u00d7 | gapper 2026-09-18 |\n| CVI | CVR Energy, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -1.22% | -5.5% | 0.4\u00d7 | \u2014 |\n| ATRC | AtriCure, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +2.50% | +4.0% | 0.4\u00d7 | \u2014 |\n\nTASK\nFor EACH ticker, find why it moved on Thursday September 24, 2026 and any other material news in the window.\nSearch press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,\nWSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.\nIf a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the\nlead stock it followed.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking. If none fit, invent a concise category.\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),\n  (Morgan Stanley note). \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].\n- Only facts published in the window below. Older background only if it is the direct cause of this\n  move, and label it with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not drop facts to save space.",
+  "content": "## Okta, Inc. (OKTA) `[Software & SaaS]`\n- Jefferies raised its price target to **$240 from $200** and maintained a **Buy** rating after Okta\u2019s Oktane 2026 conference. (Jefferies note)\n- Barclays raised its price target to **$215 from $180** while maintaining an **Overweight** rating. (Barclays note)\n- TD Cowen raised its price target to **$200 from $175** and maintained a **Hold** rating. (TD Cowen note)\n- Mizuho raised its price target to **$200 from $165** and maintained a **Neutral** rating. (Mizuho note)\n- Guggenheim raised its price target to **$227 from $188** and maintained a **Buy** rating. (Guggenheim note)\n- DA Davidson raised its price target to **$235 from $190** and maintained a **Buy** rating. (DA Davidson note)\n- Wells Fargo raised its price target to **$230 from $200** and assigned an **Overweight** rating. (Wells Fargo note)\n- Okta\u2019s previously reported fiscal second-quarter 2027 results were **$1.05 adjusted EPS versus $0.96 consensus** and **$805 million revenue versus $793 million consensus**. (MarketBeat earnings report)\n\n## Rubrik, Inc. (RBRK) `[Software & SaaS]`\n- No company-specific catalyst found in window.\n\n## Zscaler, Inc. (ZS) `[Software & SaaS]`\n- No company-specific catalyst found in window.\n\n## Super Micro Computer, Inc. (SMCI) `[AI Infrastructure]`\n- No company-specific catalyst found in window.\n\n## ProCap Financial, Inc. (BRR) `[Internet & Platforms]`\n- No company-specific catalyst found in window.\n\n## Strive, Inc. (ASST) `[Internet & Platforms]`\n- No company-specific catalyst found in window.\n\n## Schr\u00f6dinger, Inc. (SDGR) `[Software & SaaS]`\n- No company-specific catalyst found in window.\n\n## Securitize Corp. (SECZ) `[Internet & Platforms]`\n- No company-specific catalyst found in window.\n\n## Hyperliquid Strategies Inc. (PURR) `[Internet & Platforms]`\n- No company-specific catalyst found in window.\n\n## Forward Industries, Inc. (FWDI) `[Specialty Materials & IP Licensing]`\n- Forward Industries announced a registered direct offering of **3.125 million shares at $8.00 per share**, for approximately **$25 million gross proceeds**. (GlobeNewswire)\n- The offering was expected to close on or about **September 24, 2026**, subject to customary closing conditions. (GlobeNewswire)\n- Forward said it intended to use the net proceeds to acquire additional **Solana (SOL)** for its treasury and increase SOL per fully diluted share. (GlobeNewswire)\n\n## CVR Energy, Inc. (CVI) `[Power & Wide-Bandgap]`\n- No company-specific catalyst found in window.\n\n## AtriCure, Inc. (ATRC) `[Medical Devices]`\n- Bank of America acquired **874,370 shares**, valued at approximately **$24.5 million** and representing about **1.72%** of AtriCure. (MarketBeat)\n- AtriCure\u2019s previously reported quarterly revenue was **$153.6 million**, and quarterly earnings were **$0.18 per share**. (MarketBeat)",
+  "search_results": [
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "VIX 15.67 +0.49 +3.23%\n...\nBitcoin USD 83,924.84 -578.61 -0.68%\n...\nThu, September 24, 2026 at 5:19 AM CST 3 min read\n- OKTA\n+0.62%\n- JEF\n-1.58%\n- Jefferies raised its target to $240 from $200 and maintained a 'Buy' rating, while Barclays lifted its target to $215 from $180.\n- TD Cowen raised its ta...",
+      "source": "web",
+      "title": "OKTA Stock Pulls Back From 4-Year High Despite Three Price ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/okta-stock-pulls-back-4-111943458.html"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Published Sep 24, 2026, 06:10 AM\n...\nInvesting.com - Mizuho raised its price target on Okta, Inc (NASDAQ:OKTA) to $200 from $165 while maintaining a Neutral rating on the stock.\n...\nAccording to InvestingPro analysis, the stock appears overvalued relative to its Fair Value, though 19 analysts have r...",
+      "source": "web",
+      "title": "Mizuho raises Okta stock price target on agentic AI momentum By Investing.com",
+      "url": "https://www.investing.com/news/analyst-ratings/mizuho-raises-okta-stock-price-target-on-agentic-ai-momentum-93CH-4914850"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- Forward Industries said on Wednesday it entered an agreement to sell 3.125M common shares at $8 each for gross proceeds of about $25M.\n- The company plans to use the net proceeds to buy additional SOL and increase the size of its Solana treasury.\n- The closing of the offering is expected to take p...",
+      "source": "web",
+      "title": "Forward Industries prices $25M registered direct offering",
+      "url": "https://www.tradingview.com/news/seekingalpha:ac75f139f094b:0-forward-industries-prices-25m-registered-direct-offering/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Published Sep 24, 2026, 06:58 AM\n...\nInvesting.com - Guggenheim raised its price target on Okta, Inc (NASDAQ:OKTA) to $227 from $188 while maintaining a Buy rating on the stock.\nThe upgrade comes as shares trade at $205.36, near their 52-week high of $207.20, with the stock delivering an impressive ...",
+      "source": "web",
+      "title": "Guggenheim raises Okta stock price target on AI security ...",
+      "url": "https://www.investing.com/news/analyst-ratings/guggenheim-raises-okta-stock-price-target-on-ai-security-momentum-93CH-4914999"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Bank of America acquired 874,370 AtriCure shares** worth approximately $24.5 million, representing about 1.72% of the medical device company.\nInstitutional investors and hedge funds collectively own 99.11% of ATRC.\n- Analyst sentiment is broadly positive: AtriCure has a \u201cModerate B...",
+      "source": "web",
+      "title": "Bank of America Corp DE Buys New Position in AtriCure, Inc. $ATRC",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-bank-of-america-corp-de-buys-new-position-in-atricure-inc-atrc-2026-09-24/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "On Thursday:\nThe S&P 500 fell 1.90 points, or less than 0.1%, to 7,704.13.\nThe Dow Jones Industrial Average fell 161.61 points, or 0.3%, to 51,349.98.\nThe Nasdaq composite rose 3.34 points, or less than 0.1%, to 26,939.37.\nThe Russell 2000 index of smaller companies fell 3.09 points, or 0.1%, to 2,8...",
+      "source": "web",
+      "title": "How major US stock indexes fared Thursday 9/24/2026",
+      "url": "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-thursday-9242026-136734081"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Yet the strongest one-month run on the list belongs to Okta (OKTA), which is up 56.8%.\n...\nHere are all 9 names, sorted by market capitalization, with returns over four windows:\n|Tickers|Market Cap|1D % Chg|1W % Chg|1M % Chg|1Y % Chg|\n|--|--|--|--|--|--|\n...\n|OKTA|$36.17 Bil|4.4%|9.2%|56.8%|122.3%|\n...",
+      "source": "web",
+      "title": "9 Mid Cap Stocks Hit 52-Week Highs On Wednesday",
+      "url": "https://www.trefis.com/stock/spy/articles/616399/9-mid-cap-stocks-hit-52-week-highs-on-wednesday/2026-09-24"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "AUSTIN, TX, Sept. 23, 2026 (GLOBE NEWSWIRE) -- Forward Industries, Inc.\n(NASDAQ: FWDI) (the \"Company\" or \"Forward\"), the leading Solana treasury company, today announced that it has entered into a securities purchase agreement with an institutional investor for the purchase and sale of 3,125,000 sha...",
+      "source": "web",
+      "title": "Forward Industries Announces $25 Million Registered Direct ...",
+      "url": "https://markets.businessinsider.com/news/stocks/forward-industries-announces-25-million-registered-direct-offering-with-institutional-investor-1036567156"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Published 24/09/2026, 15:16\n...\nInvesting.com - DA Davidson raised its price target on Okta, Inc.\n(NASDAQ:OKTA) shares to $235 from $190 while maintaining a Buy rating on Tuesday.\nThe stock currently trades at $204.93, up 137% year-to-date and near its 52-week high of $207.20, reflecting strong inve...",
+      "source": "web",
+      "title": "DA Davidson raises Okta stock price target on AI agent traction By Investing.com",
+      "url": "https://uk.investing.com/news/stock-market-news/da-davidson-raises-okta-stock-price-target-on-ai-agent-traction-93CH-4881789"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- **DA Davidson raised Okta\u2019s price target to $235 from $190** and reiterated its \u201cbuy\u201d rating, implying 14.43% upside from the prior close.\nThe broader analyst consensus is \u201cModerate Buy,\u201d with an average target of $184.42.\n- Okta beat quarterly expectations, reporting adjusted EPS of $1.05 versus ...",
+      "source": "web",
+      "title": "DA Davidson Issues Positive Forecast for Okta (NASDAQ:OKTA) Stock Price",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-da-davidson-issues-positive-forecast-for-okta-nasdaq-okta-stock-price-2026-09-24/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Okta (OKTA) \u2014 Bank of America raised its price target for the stock to $200.00 from $170.00 while maintaining a Neutral rating.\nOkta (OKTA) \u2014 Barclays raised its price target for the stock to $215.00 from $180.00 while maintaining a Overweight rating.\nOkta (OKTA) \u2014 BTIG Research reiterated its Buy r...",
+      "source": "web",
+      "title": "Analyst Updates: Sept 24, 2026",
+      "url": "https://www.theglobeandmail.com/investing/markets/stocks/TSLA/pressreleases/4792514/analyst-updates-sept-24-2026/"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-24",
+      "place_metadata": null,
+      "snippet": "AUSTIN, TX, Sept. 23, 2026 (GLOBE NEWSWIRE) -- Forward Industries, Inc.\n(NASDAQ: FWDI) (the \"Company\" or \"Forward\"), the leading Solana treasury company, today announced that it has entered into a securities purchase agreement with an institutional investor for the purchase and sale of 3,125,000 sha...",
+      "source": "web",
+      "title": "UPDATE: Forward Industries Announces $25 Million Registered ...",
+      "url": "https://markets.businessinsider.com/news/stocks/update-forward-industries-announces-25-million-registered-direct-offering-with-institutional-investor-1036567321"
+    },
+    {
+      "date": "2026-09-23",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Forward Industries agreed to sell 3,125,000 common shares to an institutional investor in a registered direct at $8.00/share for approximately $25.0M gross, with A.G.P./Alliance Global Partners as sole placement agent.\nThe offering is expected to close on or about September 24, 2026, so dilution is ...",
+      "source": "web",
+      "title": "to sell 3.125M shares in $25M registered direct at $8; close...",
+      "url": "https://www.moomoo.com/community/feed/to-sell-3-125m-shares-in-25m-registered-direct-at-117320450638241"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "Okta (NASDAQ:OKTA - Get Free Report) had its price target increased by analysts at Royal Bank Of Canada from $195.00 to $230.00 in a report issued on Thursday.\nThe firm currently has an \"outperform\" rating on the stock.\n...\nSanford C. Bernstein lowered Okta from an \"outperform\" rating to a \"market p...",
+      "source": "web",
+      "title": "Royal Bank Of Canada Increases Okta (NASDAQ:OKTA) Price Target to $230.00",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-royal-bank-of-canada-increases-okta-nasdaq-okta-price-target-to-23000-2026-09-24/"
+    },
+    {
+      "date": "2026-09-24",
+      "last_updated": "2026-09-25",
+      "place_metadata": null,
+      "snippet": "- **Integrated Wealth Concepts LLC cut its Okta stake by 72.4%** in the second quarter, selling 6,241 shares and retaining 2,376 shares valued at approximately $324,000.\nInstitutional investors collectively own 86.64% of Okta.\n- Okta reported quarterly earnings of **$1.05 per share**, beating estima...",
+      "source": "web",
+      "title": "Okta, Inc. $OKTA Shares Sold by Integrated Wealth Concepts LLC",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-okta-inc-okta-shares-sold-by-integrated-wealth-concepts-llc-2026-09-24/"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/okta-stock-pulls-back-4-111943458.html",
+    "https://www.investing.com/news/analyst-ratings/mizuho-raises-okta-stock-price-target-on-agentic-ai-momentum-93CH-4914850",
+    "https://www.tradingview.com/news/seekingalpha:ac75f139f094b:0-forward-industries-prices-25m-registered-direct-offering/",
+    "https://www.investing.com/news/analyst-ratings/guggenheim-raises-okta-stock-price-target-on-ai-security-momentum-93CH-4914999",
+    "https://www.marketbeat.com/instant-alerts/filing-bank-of-america-corp-de-buys-new-position-in-atricure-inc-atrc-2026-09-24/",
+    "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-thursday-9242026-136734081",
+    "https://www.trefis.com/stock/spy/articles/616399/9-mid-cap-stocks-hit-52-week-highs-on-wednesday/2026-09-24",
+    "https://markets.businessinsider.com/news/stocks/forward-industries-announces-25-million-registered-direct-offering-with-institutional-investor-1036567156",
+    "https://uk.investing.com/news/stock-market-news/da-davidson-raises-okta-stock-price-target-on-ai-agent-traction-93CH-4881789",
+    "https://www.marketbeat.com/instant-alerts/analyst-da-davidson-issues-positive-forecast-for-okta-nasdaq-okta-stock-price-2026-09-24/",
+    "https://www.theglobeandmail.com/investing/markets/stocks/TSLA/pressreleases/4792514/analyst-updates-sept-24-2026/",
+    "https://markets.businessinsider.com/news/stocks/update-forward-industries-announces-25-million-registered-direct-offering-with-institutional-investor-1036567321",
+    "https://www.moomoo.com/community/feed/to-sell-3-125m-shares-in-25m-registered-direct-at-117320450638241",
+    "https://www.marketbeat.com/instant-alerts/analyst-royal-bank-of-canada-increases-okta-nasdaq-okta-price-target-to-23000-2026-09-24/",
+    "https://www.marketbeat.com/instant-alerts/filing-okta-inc-okta-shares-sold-by-integrated-wealth-concepts-llc-2026-09-24/"
+  ],
+  "usage": {
+    "input_tokens": 1319,
+    "output_tokens": 759,
+    "cost_usd": 0.02934
+  }
+}
