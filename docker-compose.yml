@@ -67,6 +67,20 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
+  price_alerts:
+    build:
+      context: .
+      dockerfile: docker/price_alerts.Dockerfile
+    env_file:
+      - .env
+    environment:
+      - USER_DATA_DIR=/app/user_data
+      - TZ=America/New_York
+    volumes:
+      - ./price_alerts:/app/price_alerts
+      - ./user_data:/app/user_data
+    restart: unless-stopped
+
   nginx:
     image: nginx:alpine
     ports:
