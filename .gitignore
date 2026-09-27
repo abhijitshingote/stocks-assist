@@ -95,3 +95,6 @@ build/
 
 postgres_data
 .cursorrules
+
+# price_alerts watcher dedup state (runtime, pruned daily)
+user_data/price_alerts_state.json
