@@ -368,6 +368,8 @@
     }
     .icon-btn.disp-buy:hover { border-color: var(--success); color: var(--success); }
     .icon-btn.disp-short:hover { border-color: var(--danger); color: var(--danger); }
+    .icon-btn.disp-buy.in-trades { border-color: var(--success); color: var(--success); background: color-mix(in oklab, var(--success) 15%, var(--surface)); }
+    .icon-btn.disp-short.in-trades { border-color: var(--danger); color: var(--danger); background: color-mix(in oklab, var(--danger) 15%, var(--surface)); }
     .tf-group {
       display: flex;
       background: var(--bg);

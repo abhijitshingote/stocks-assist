@@ -164,6 +164,18 @@ body.light-theme .btn-secondary:hover {
     color: var(--accent-red);
 }
 
+.abi-wl-btn.disp-buy.in-trades {
+    background: color-mix(in srgb, var(--accent-green) 20%, transparent);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+}
+
+.abi-wl-btn.disp-short.in-trades {
+    background: color-mix(in srgb, var(--accent-red) 20%, transparent);
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+}
+
 /* ── Ticker Notes collapsible panel (above chart) ────────────────── */
 .ticker-notes-panel {
     display: none;

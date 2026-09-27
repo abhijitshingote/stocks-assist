@@ -31,6 +31,8 @@
     const hideWeeklyDisposed = typeof weeklyDisp === 'string';
     // TICKER → 'watch' | 'trade'. Hidden while hideListed; chip-on is session-only.
     let listedKind = {};
+    // TICKER → 'buy' | 'short' from abi_trades; drives Buy/Short chip-on.
+    let tradeSide = {};
     let hideListed = false;
 
     if (!config.fetchStocks) {
@@ -450,6 +452,13 @@
       btn.textContent = inWl ? 'Watching' : 'Watch';
     }
 
+    function updateTradeBtns(ticker) {
+      const side = tradeSide[String(ticker || '').toUpperCase()];
+      document.querySelectorAll('#wrDisp [data-disp="buy"], #wrDisp [data-disp="short"]').forEach(b => {
+        b.classList.toggle('in-trades', b.dataset.disp === side);
+      });
+    }
+
     function updateNotesBtn(ticker) {
       const btn = document.getElementById('notesBtn');
       if (!btn) return;
@@ -513,6 +522,7 @@
 
       updateAbiNotes(ticker);
       updateWatchlistBtn(ticker);
+      updateTradeBtns(ticker);
       updateNotesBtn(ticker);
       updateDlBtn(ticker);
       U.renderTagsStrip(document.getElementById('tagsStrip'), stock);
@@ -599,7 +609,11 @@
         }
         if (trResp.ok) {
           const tr = await trResp.json();
-          Object.keys(tr || {}).forEach(t => { listedKind[String(t).toUpperCase()] = 'trade'; });
+          Object.entries(tr || {}).forEach(([t, e]) => {
+            const tu = String(t).toUpperCase();
+            listedKind[tu] = 'trade';
+            tradeSide[tu] = (e && e.side) || 'buy';
+          });
         }
         if (psResp && psResp.ok) {
           const ps = await psResp.json();
@@ -660,6 +674,21 @@
     async function disposeWeekly(kind) {
       const ticker = selectedTicker;
       if (!ticker) return;
+      const tu = ticker.toUpperCase();
+      if (kind !== 'pass' && tradeSide[tu] === kind) {
+        try {
+          const resp = await fetch('/api/frontend/abi-trades/' + encodeURIComponent(ticker), { method: 'DELETE' });
+          if (!resp.ok) throw new Error('trade remove HTTP ' + resp.status);
+        } catch (e) {
+          console.error('trade remove failed', e);
+          return;
+        }
+        delete tradeSide[tu];
+        if (listedKind[tu] === 'trade') delete listedKind[tu];
+        updateTradeBtns(ticker);
+        renderList();
+        return;
+      }
       try {
         let resp;
         if (kind === 'pass') {
@@ -684,10 +713,16 @@
         console.error('disposition failed', e);
         return;
       }
-      if (kind !== 'pass' && !hideListed) {
-        listedKind[ticker.toUpperCase()] = 'trade';
-        renderList();
-        return;
+      if (kind !== 'pass') {
+        tradeSide[tu] = kind;
+        delete watchlistStatus[ticker];
+        if (!hideListed) {
+          listedKind[tu] = 'trade';
+          updateWatchlistBtn(ticker);
+          updateTradeBtns(ticker);
+          renderList();
+          return;
+        }
       }
       window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
         detail: { action: 'saved', ticker },

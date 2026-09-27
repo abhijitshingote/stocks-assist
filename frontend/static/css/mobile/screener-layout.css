@@ -446,6 +446,16 @@
 .phone.stock-page .icon-btn.disp-buy { color: var(--success); }
 .phone.screener .icon-btn.disp-short,
 .phone.stock-page .icon-btn.disp-short { color: var(--danger); }
+.phone.screener .icon-btn.disp-buy.in-trades,
+.phone.stock-page .icon-btn.disp-buy.in-trades {
+  border-color: var(--success);
+  background: color-mix(in oklab, var(--success) 15%, var(--surface));
+}
+.phone.screener .icon-btn.disp-short.in-trades,
+.phone.stock-page .icon-btn.disp-short.in-trades {
+  border-color: var(--danger);
+  background: color-mix(in oklab, var(--danger) 15%, var(--surface));
+}
 .phone.screener #tradeRemoveBtn:hover,
 .phone.stock-page #tradeRemoveBtn:hover { border-color: var(--danger); color: var(--danger); }
 

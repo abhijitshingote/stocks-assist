@@ -79,10 +79,10 @@
 | | |
 |---|---|
 | **HTML** | `templates/desktop/_weekly_disp_btns.html` via `detail_header_extras` |
-| **CSS class** | `.wr-disp` / `.disp-buy` / `.disp-short` |
+| **CSS class** | `.wr-disp` / `.disp-buy` / `.disp-short` / `.in-trades` (selected ticker's `abi_trades` side) |
 | **JS** | `DesktopScreener.init({ weeklyDisposition })` in `screener-app.js` |
 | **Used by** | `/weekly-review` (`true`), the 4 source pages (`vsg90` / `strong` / `top520` / `fastrs`), and Daily Review (`daily`) |
-| **Behavior** | Pass → `abi_passes.json`. Weekly: cycle Sat ET → Friday. Daily (`scope=daily`): current NYSE session → next open 9:30 ET. Buy/Short → `abi_trades.json`. Row drops. Source pages also hide current-cycle passes on load. Daily also hides current weekly-cycle passes. Watchlist/trades rows show by default with `W`/`T` badge (Weekly fetches `?include_listed=1`); Watch/Buy/Short tag the row instead of dropping it. `− Watch/Trades` chip (default off, session-only) hides them and restores drop-on-Watch/Buy/Short. |
+| **Behavior** | Pass → `abi_passes.json`. Weekly: cycle Sat ET → Friday. Daily (`scope=daily`): current NYSE session → next open 9:30 ET. Buy/Short → `abi_trades.json`; clicking the lit (`.in-trades`) side again DELETEs the trade. Row drops. Source pages also hide current-cycle passes on load. Daily also hides current weekly-cycle passes. Watchlist/trades rows show by default with `W`/`T` badge (Weekly fetches `?include_listed=1`); Watch/Buy/Short tag the row instead of dropping it. `− Watch/Trades` chip (default off, session-only) hides them and restores drop-on-Watch/Buy/Short. |
 
 ### Why? (copy research prompt)
 | | |
