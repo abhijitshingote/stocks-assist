@@ -466,10 +466,7 @@ window.DesktopScreener = (function () {
                 if (wlResp.ok) watchlistStatus = await wlResp.json();
                 if (cmtResp.ok) abiTickerNotesStatus = await cmtResp.json();
                 renderList();
-                if (selectedTicker) {
-                    updateWatchlistBtn(selectedTicker);
-                    updateWatchlistNotes(selectedTicker);
-                }
+                if (selectedTicker) updateWatchlistBtn(selectedTicker);
             } catch (e) { console.error('Error loading watchlist/notes:', e); }
         }
 
@@ -486,21 +483,6 @@ window.DesktopScreener = (function () {
             document.querySelectorAll('#wrDisp [data-disp="buy"], #wrDisp [data-disp="short"]').forEach(b => {
                 b.classList.toggle('in-trades', b.dataset.disp === side);
             });
-        }
-
-        function updateWatchlistNotes(ticker) {
-            const section = document.getElementById('wlNotesSection');
-            const textEl = document.getElementById('wlNotesText');
-            if (!ticker) { section.style.display = 'none'; return; }
-            section.style.display = 'block';
-            const cmt = abiTickerNotesStatus[ticker];
-            if (cmt && cmt.notes) {
-                textEl.innerHTML = (typeof marked !== 'undefined') ? marked.parse(cmt.notes) : cmt.notes;
-                textEl.classList.remove('empty');
-            } else {
-                textEl.innerHTML = '<em>No Abi ticker notes</em>';
-                textEl.classList.add('empty');
-            }
         }
 
         function dropTickerFromList(ticker) {
@@ -576,7 +558,6 @@ window.DesktopScreener = (function () {
             window._notesOpen(selectedTicker, currentNotes, !!currentNotes, function (action, ticker, newNotes) {
                 if (action === 'saved') abiTickerNotesStatus[ticker] = { notes: newNotes || '' };
                 else if (action === 'removed') delete abiTickerNotesStatus[ticker];
-                updateWatchlistNotes(ticker);
             }, { edit: !!forceEdit });
         };
 
@@ -919,7 +900,6 @@ window.DesktopScreener = (function () {
             updateMetrics(stock);
             updateWatchlistBtn(ticker);
             updateTradeBtns(ticker);
-            updateWatchlistNotes(ticker);
 
             if (config.onStockSelected) {
                 config.onStockSelected(stock, {

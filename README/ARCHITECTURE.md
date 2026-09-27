@@ -81,7 +81,7 @@ Typical daily chain (order matters):
 4. `ticker_moving_averages_update.py` — `ticker_moving_averages` (dma/ema)
 5. `volspike_gapper_update.py` — `stock_volspike_gapper`
 6. `main_view_update.py` — `main_view` (metrics + volspike/gapper + tags)
-7. Optional: `market_breadth_update.py`, `rs_screener_update.py`
+7. Optional: `market_breadth_update.py`, `rs_screener_update.py`, `revenue_accel_update.py`
 
 Benzinga cache: `create_benzinga_articles_table.py`, refreshed from backend/`benzinga_news.py` (Polygon).
 
@@ -94,6 +94,7 @@ Benzinga cache: `create_benzinga_articles_table.py`, refreshed from backend/`ben
 | `main_view` | `main_view_update` | Main view / technical screener UI |
 | `ticker_moving_averages` | `ticker_moving_averages_update` | Charts (dma/ema), market breadth |
 | `rs_screener`, `market_breadth` | respective updates | RS / breadth views |
+| `revenue_acceleration` | `revenue_accel_update` (from `earnings`) | `/rev-accel` |
 | `benzinga_articles` | Polygon ingest | Stock news, `market_brief` |
 
 Schema + ORM: `backend/models.py`. Shared DB access pattern in `db_scripts/*` (SQLAlchemy, same `DATABASE_URL`).
@@ -118,7 +119,7 @@ Flask + Jinja templates under `frontend/templates/`, static under `frontend/stat
 - `/api/frontend/*` routes are BFF-style proxies (themes, watchlist, daily shortlist, market brief, screeners).
 - **No business logic** for screening metrics; renders tables/charts from backend JSON.
 
-Notable pages: `/main-view`, `/top-performance`, `/volspike-gapper`, `/rs-screener`, `/stock/<ticker>`, `/abi-watchlist`, `/daily-shortlist`, `/daily-themes`, `/market-brief`, `/themes`.
+Notable pages: `/main-view`, `/rev-accel`, `/top-performance`, `/volspike-gapper`, `/rs-screener`, `/stock/<ticker>`, `/abi-watchlist`, `/daily-shortlist`, `/daily-themes`, `/market-brief`, `/themes`.
 
 ## LLM pipelines
 

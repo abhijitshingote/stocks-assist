@@ -1,0 +1,5 @@
+{% extends "mobile/_base.html" %}
+{% block title %}Rev Accel — Mobile{% endblock %}
+{% block styles %}{% include "mobile/_screener_styles.html" %}<link rel="stylesheet" href="{{ url_for('static', filename='css/rev-accel.css') }}">{% endblock %}
+{% block body %}{% include "mobile/_screener_shell.html" %}{% endblock %}
+{% block scripts %}{% include "mobile/_screener_libs.html" %}<script src="{{ url_for('static', filename='js/rev-accel.js') }}"></script><script src="{{ url_for('static', filename='js/mobile/pages/rev-accel.js') }}"></script>{% endblock %}

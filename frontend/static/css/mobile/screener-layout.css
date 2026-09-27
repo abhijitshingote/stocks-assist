@@ -165,7 +165,7 @@
 .phone.screener .dr-card-list { padding: 0 0 24px; }
 .phone.screener .dr-row {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 14px;
   align-items: center;
   width: 100%;
@@ -505,18 +505,6 @@
 .phone.screener .chart-canvas,
 .phone.stock-page .chart-canvas { padding: 0; }
 
-.phone.screener .notes-box,
-.phone.stock-page .notes-box {
-  font-size: var(--dr-body);
-  line-height: 1.5;
-  padding: 14px 16px;
-}
-.phone.screener .notes-box .h,
-.phone.stock-page .notes-box .h {
-  font-size: var(--dr-cap);
-  letter-spacing: 0.06em;
-  margin-bottom: 8px;
-}
 .phone.screener .tag-pill,
 .phone.stock-page .tag-pill { font-size: var(--dr-meta); padding: 5px 10px; }
 .phone.screener #metricsContent .ms-section,

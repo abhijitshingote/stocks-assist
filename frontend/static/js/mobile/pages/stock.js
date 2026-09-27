@@ -30,24 +30,6 @@
     }
   }
 
-  function parseNotesMarkdown(text) {
-    if (typeof marked !== 'undefined' && marked.parse) return marked.parse(text);
-    return text;
-  }
-
-  function updateAbiNotes() {
-    const body = document.getElementById('abiNotesBody');
-    if (!body) return;
-    const entry = abiTickerNotesStatus[ticker];
-    if (entry && entry.notes) {
-      body.innerHTML = parseNotesMarkdown(entry.notes);
-      body.classList.remove('empty');
-    } else {
-      body.textContent = 'No Abi ticker notes yet.';
-      body.classList.add('empty');
-    }
-  }
-
   function updateWatchlistBtn() {
     const btn = document.getElementById('wlBtn');
     if (!btn) return;
@@ -157,11 +139,6 @@
     }
     updateWatchlistBtn();
     updateNotesBtn();
-    try {
-      updateAbiNotes();
-    } catch (e) {
-      console.error('Notes render failed', e);
-    }
   }
 
   function getStockChartHeight() {
@@ -343,7 +320,6 @@
           if (action === 'saved')
             abiTickerNotesStatus[t] = { notes: newNotes || '' };
           else delete abiTickerNotesStatus[t];
-          updateAbiNotes();
           updateNotesBtn();
         }
       );

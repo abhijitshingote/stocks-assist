@@ -160,6 +160,7 @@ case $ACTION in
         "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
         "db_scripts/update_data/main_view_update.py:Update main screener view"
         "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
+        "db_scripts/update_data/revenue_accel_update.py:Compute revenue acceleration"
         # stock_notes is removed; superseded by file-only
         # abi_ticker_notes.json. Nothing to seed.
         # stock_preferences is removed; superseded by file-only
@@ -281,6 +282,7 @@ case $ACTION in
             "db_scripts/update_data/volspike_gapper_update.py:Update volume spikes/gappers"
             "db_scripts/update_data/main_view_update.py:Update main screener view"
             "db_scripts/update_data/rs_screener_update.py:Update relative strength screener"
+            "db_scripts/update_data/revenue_accel_update.py:Update revenue acceleration"
         )
 
         total_scripts=${#scripts[@]}
@@ -448,6 +450,7 @@ case $ACTION in
             "db_scripts/update_data/volspike_gapper_update.py:Detect volume spikes/gappers"
             "db_scripts/update_data/main_view_update.py:Update main screener view"
             "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
+            "db_scripts/update_data/revenue_accel_update.py:Compute revenue acceleration"
             # stock_notes is removed; superseded by file-only
             # abi_ticker_notes.json. Nothing to seed.
             # stock_preferences is removed; superseded by file-only

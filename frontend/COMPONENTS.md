@@ -81,7 +81,7 @@
 | **HTML** | `templates/desktop/_weekly_disp_btns.html` via `detail_header_extras` |
 | **CSS class** | `.wr-disp` / `.disp-buy` / `.disp-short` / `.in-trades` (selected ticker's `abi_trades` side) |
 | **JS** | `DesktopScreener.init({ weeklyDisposition })` in `screener-app.js` |
-| **Used by** | `/weekly-review` (`true`), the 4 source pages (`vsg90` / `strong` / `top520` / `fastrs`), and Daily Review (`daily`) |
+| **Used by** | `/weekly-review` (`true`), the 4 source pages (`vsg90` / `strong` / `top520` / `fastrs`), Rev Accel (`revaccel`, weekly scope; not in the Weekly Review union), and Daily Review (`daily`) |
 | **Behavior** | Pass → `abi_passes.json`. Weekly: cycle Sat ET → Friday. Daily (`scope=daily`): current NYSE session → next open 9:30 ET. Buy/Short → `abi_trades.json`; clicking the lit (`.in-trades`) side again DELETEs the trade. Row drops. Source pages also hide current-cycle passes on load. Daily also hides current weekly-cycle passes. Watchlist/trades rows show by default with `W`/`T` badge (Weekly fetches `?include_listed=1`); Watch/Buy/Short tag the row instead of dropping it. `− Watch/Trades` chip (default off, session-only) hides them and restores drop-on-Watch/Buy/Short. |
 
 ### Why? (copy research prompt)
@@ -121,7 +121,7 @@
 
 ## Desktop Screener Components
 
-One layout system for all 14 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
+One layout system for all 15 desktop screener pages: shared shell + `screener.css` + `DesktopScreener.init(config)`.
 
 | Page | Template | Route |
 |------|----------|-------|
@@ -135,6 +135,7 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | Top Returns | `top_performance.html` | `/top-performance` |
 | Top 5D/20D | `top_returns_5_20.html` | `/top-returns-5-20` |
 | High Growth | `high_sales_growth.html` | `/high-sales-growth` |
+| Rev Accel | `rev_accel.html` | `/rev-accel` |
 | Slow/Fast RS | `rs_screener.html` | `/rs-screener` |
 | Fast RS | `fast_rs.html` | `/fast-rs` |
 | Top Losers | `top_losers.html` | `/top-losers` |
@@ -218,6 +219,14 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | **JS** | `setupColumnToggle()` in `screener-app.js` |
 | **Persistence** | `localStorage['tpColCollapsed']` |
 | **Effect** | Collapses news+metrics to a thin rail so the chart column expands |
+
+### Rev Accel Metrics  *(quarterly YoY bars + accel/TTM/fwd sections)*
+| | |
+|---|---|
+| **JS** | `static/js/rev-accel.js` — `RevAccel.metricsHtml(stock, msItem)`, `SORTS`, `FILTERS`, `sortBy`, `passes`. Shared desktop + mobile |
+| **CSS** | `static/css/rev-accel.css` (`.ra-bars` / `.ra-col` / `.ra-bar.pos\|.neg`) |
+| **Hook** | Desktop `prependMetricsFn` in `static/js/desktop/rev-accel.js`; mobile `prependMetricsFn` in `static/js/mobile/pages/rev-accel.js` |
+| **Used by** | `/rev-accel`, `/m/rev-accel` |
 
 ### Tags Strip
 | | |
@@ -373,9 +382,9 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | **CSS** | `_screener_styles.html` → benzinga-news.css + `_mobile_styles.html` + `screener-layout.css` |
 | **Layout** | List-first cards; row tap pushes detail over `.phone-body` (`#phone.dr-open`). Cap/filter toolbar + header docked at bottom (toolbar hidden while detail is open). Filters in a sheet above the dock. No Analyze/Browse. |
 | **JS engine** | `static/js/mobile/screener-app.js` |
-| **Config** | `pageLabel`, `listBadgeFn`, `listMetaFn`, `listRowClassFn`, `listValueClsFn`, `subtitleFn`, plus existing `listValueFn` / `weeklyDisposition` / `extraFilterHtml` |
+| **Config** | `pageLabel`, `listBadgeFn`, `listMetaFn`, `listRowClassFn`, `listValueClsFn`, `subtitleFn`, `prependMetricsFn` (stock → html before standard metrics), plus existing `listValueFn` / `weeklyDisposition` / `extraFilterHtml` |
 | **Script partial** | `templates/mobile/_screener_libs.html` (sets `page_libs` and calls `_page_libs.html`) |
-| **Exclude** | `#screenerExcludes` filled by the engine (Biotech excluded on every page load; chip-off is session-only). AND-ed with `filterStocks`. `weeklyDisposition: 'vsg90'|'strong'|'top520'|'fastrs'` hides current weekly-cycle passes. `'daily'` also hides session-scoped daily passes (until next open 9:30 ET). Any `weeklyDisposition` shows watchlist ∪ trades rows with `W`/`T` badge (`fetchStocks(cap, { includeListed: true })`) and adds a default-off `− Watch/Trades` chip that hides them. |
+| **Exclude** | `#screenerExcludes` filled by the engine (Biotech excluded on every page load; chip-off is session-only). AND-ed with `filterStocks`. `weeklyDisposition: 'vsg90'|'strong'|'top520'|'fastrs'|'revaccel'` hides current weekly-cycle passes. `'daily'` also hides session-scoped daily passes (until next open 9:30 ET). Any `weeklyDisposition` shows watchlist ∪ trades rows with `W`/`T` badge (`fetchStocks(cap, { includeListed: true })`) and adds a default-off `− Watch/Trades` chip that hides them. |
 | **Used by** | All mobile screener pages (thin config wrappers) |
 
 ### Mobile Screener Pages
@@ -394,6 +403,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Top 5D/20D | `mobile/top_returns_5_20.html` | `/m/top-returns-5-20` |
 | Top Losers | `mobile/top_losers.html` | `/m/top-losers` |
 | High Growth | `mobile/high_sales_growth.html` | `/m/high-sales-growth` |
+| Rev Accel | `mobile/rev_accel.html` | `/m/rev-accel` |
 | Slow/Fast RS | `mobile/rs_screener.html` | `/m/rs-screener` |
 | Fast RS | `mobile/fast_rs.html` | `/m/fast-rs` |
 | All Stocks | `mobile/all_stocks.html` | `/m/all-stocks` |

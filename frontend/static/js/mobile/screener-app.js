@@ -420,30 +420,6 @@
       updateCounts();
     }
 
-    function updateAbiNotes(ticker) {
-      const body = document.getElementById('abiNotesBody');
-      if (config.notesFromStock) {
-        const stock = allStocks.find(s => s.ticker === ticker);
-        const notes = stock && stock.watchlist_notes;
-        if (notes) {
-          body.innerHTML = marked.parse(notes);
-          body.classList.remove('empty');
-        } else {
-          body.textContent = 'No Abi ticker notes yet.';
-          body.classList.add('empty');
-        }
-        return;
-      }
-      const entry = abiTickerNotesStatus[ticker];
-      if (entry && entry.notes) {
-        body.innerHTML = marked.parse(entry.notes);
-        body.classList.remove('empty');
-      } else {
-        body.textContent = 'No Abi ticker notes yet.';
-        body.classList.add('empty');
-      }
-    }
-
     function updateWatchlistBtn(ticker) {
       const btn = document.getElementById('wlBtn');
       if (!btn) return;
@@ -520,13 +496,16 @@
 
       document.getElementById('detailLink').href = '/m/stock/' + ticker;
 
-      updateAbiNotes(ticker);
       updateWatchlistBtn(ticker);
       updateTradeBtns(ticker);
       updateNotesBtn(ticker);
       updateDlBtn(ticker);
       U.renderTagsStrip(document.getElementById('tagsStrip'), stock);
-      U.renderMetrics(document.getElementById('metricsContent'), stock);
+      const metricsEl = document.getElementById('metricsContent');
+      U.renderMetrics(metricsEl, stock);
+      if (config.prependMetricsFn && metricsEl) {
+        metricsEl.insertAdjacentHTML('afterbegin', config.prependMetricsFn(stock));
+      }
       renderList();
 
       if (newsPanel) {
@@ -578,10 +557,7 @@
       }
 
       renderList();
-      if (selectedTicker) {
-        updateWatchlistBtn(selectedTicker);
-        updateAbiNotes(selectedTicker);
-      }
+      if (selectedTicker) updateWatchlistBtn(selectedTicker);
     }
 
     function showLoading(on) {
@@ -1144,7 +1120,6 @@
           if (action === 'saved') abiTickerNotesStatus[ticker] = { notes: newNotes || '' };
           else delete abiTickerNotesStatus[ticker];
         }
-        updateAbiNotes(ticker);
         updateNotesBtn(ticker);
       });
     });

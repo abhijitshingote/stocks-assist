@@ -26,6 +26,11 @@
         </div>
 
         <div class="help-card">
+            <div class="help-name"><a href="/rev-accel">Rev Accel</a><span class="help-route">/rev-accel</span></div>
+            <div class="help-desc">Quarterly revenue from <code>earnings</code> → <code>revenue_acceleration</code>. Quarter YoY pairs each report with the one ~365d earlier; actuals outside <code>0.5–2×</code> consensus dropped. Base screen: <code>rev_yoy_q0 ≥ 15</code>, <code>rev_accel_1q &gt; 0</code> (yoy_q0 − yoy_q1, pp), <code>rev_ttm_yoy ≥ 10</code>, <code>ttm_rev ≥ $25M</code>, AllStocks liquidity. Chips: <code>Streak 2+</code> (yoy rising 2+ Q), <code>TTM ↑</code> (ttm_yoy − ttm_yoy 1Q ago &gt; 0), <code>Fwd ↑</code> (next-Q consensus YoY &gt; yoy_q0), <code>Beat</code>. Score <code>= 100 × (0.4·ln((1+y0)/(1+y1)) + 0.3·ln((1+y0)/(1+y2)) + 0.3·ln((1+ttm)/(1+ttm_prev)))</code>.</div>
+        </div>
+
+        <div class="help-card">
             <div class="help-name"><a href="/daily-review">Daily Review</a><span class="help-route">/daily-review</span></div>
             <div class="help-desc">Union of (1) <code>stock_volspike_gapper</code> rows with <code>last_event_date</code> = max OHLC date and (2) $200M+ names with <code>dr_1 &gt;= 1.5 × p90(mcap)</code> where <code>p90 ≈ 3.53 × (clip(mcap,$200M,$100B)/$100B)^-0.134</code> (60d median of p90(positive 1d) in a ±0.25 log10 window; flattens above $100B). Real bars: $100B+ <code>+5.3%</code>, $4B <code>+8.0%</code>, $0.5B <code>+10.7%</code>. Count floats with the tape. Default sort is mega-equivalent <code>adjusted_dr_1 = dr_1 / (clip/100B)^-0.134</code>; toggle switches to flat <code>dr_1</code>. List value is always raw <code>dr_1</code>; S/G/SG chips only when <code>event_today</code>. Same Pass / Watch / Buy / Short / Exclude as weekly, but Pass is session-scoped (hidden until next open 9:30 ET), not Sat→Fri. Also hides current weekly-cycle passes, watchlist, and trades.</div>
         </div>

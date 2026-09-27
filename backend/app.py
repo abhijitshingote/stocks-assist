@@ -3061,6 +3061,110 @@ def get_high_sales_growth_mega():
     finally:
         s.close()
 
+# ============================================================================
+# Revenue Acceleration (AllStocks universe JOIN revenue_acceleration)
+# ============================================================================
+
+REV_ACCEL_CRITERIA = {
+    'yoy_q0_min': 15,       # latest quarter YoY %
+    'accel_1q_min': 0,      # yoy_q0 - yoy_q1, pp (strictly greater)
+    'ttm_yoy_min': 10,      # TTM YoY %
+    'ttm_rev_min': 25e6,
+}
+
+_REV_ACCEL_COLS = [
+    'q0_date', 'q0_rev', 'q0_rev_est', 'next_date', 'next_rev_est', 'ttm_rev',
+    'rev_yoy_q0', 'rev_yoy_q1', 'rev_yoy_q2', 'rev_yoy_q3', 'rev_qoq_q0',
+    'rev_accel_1q', 'rev_accel_2q', 'rev_accel_streak',
+    'rev_ttm_yoy', 'rev_ttm_yoy_prev', 'rev_ttm_accel',
+    'rev_fwd_yoy_est', 'rev_fwd_accel', 'rev_surprise_q0',
+    'rev_accel_score', 'rev_quarters',
+]
+
+
+def get_rev_accel_stocks(session, market_cap_category=None):
+    c = REV_ACCEL_CRITERIA
+    where = [
+        'ra.rev_yoy_q0 >= :yoy_q0_min',
+        'ra.rev_accel_1q > :accel_1q_min',
+        'ra.rev_ttm_yoy >= :ttm_yoy_min',
+        'ra.ttm_rev >= :ttm_rev_min',
+    ]
+    params = dict(c)
+    bind_params = []
+    excluded = list(_active_excluded_tickers())
+    if excluded:
+        where.append('a.ticker NOT IN :excluded')
+        params['excluded'] = excluded
+        bind_params.append(bindparam('excluded', expanding=True))
+    category = MARKET_CAP_CATEGORIES.get(market_cap_category) if market_cap_category else None
+    if category:
+        where.append('a.market_cap >= :mc_min')
+        params['mc_min'] = category['min']
+        if category['max'] is not None:
+            where.append('a.market_cap < :mc_max')
+            params['mc_max'] = category['max']
+
+    ra_cols = ', '.join(f'ra.{col}' for col in _REV_ACCEL_COLS)
+    sql = text(
+        f'SELECT a.*, {ra_cols} FROM ({_ALL_STOCKS_SQL}) a '
+        'JOIN revenue_acceleration ra ON ra.ticker = a.ticker '
+        'WHERE ' + ' AND '.join(where) +
+        ' ORDER BY ra.rev_accel_score DESC NULLS LAST'
+    )
+    if bind_params:
+        sql = sql.bindparams(*bind_params)
+
+    results = []
+    for r in session.execute(sql, params).mappings().all():
+        row = _format_all_stocks_row(r)
+        for col in _REV_ACCEL_COLS:
+            v = r[col]
+            row[col] = v.isoformat() if isinstance(v, date) else v
+        results.append(row)
+    return results
+
+
+def _json_rev_accel(market_cap_category=None):
+    s = Session()
+    try:
+        return jsonify(get_rev_accel_stocks(s, market_cap_category=market_cap_category))
+    except Exception as e:
+        logger.error(f"Error getting RevAccel stocks for {market_cap_category}: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        s.close()
+
+
+@app.route('/api/RevAccel-All')
+def get_rev_accel_all():
+    return _json_rev_accel(None)
+
+
+@app.route('/api/RevAccel-MicroCap')
+def get_rev_accel_micro():
+    return _json_rev_accel('micro')
+
+
+@app.route('/api/RevAccel-SmallCap')
+def get_rev_accel_small():
+    return _json_rev_accel('small')
+
+
+@app.route('/api/RevAccel-MidCap')
+def get_rev_accel_mid():
+    return _json_rev_accel('mid')
+
+
+@app.route('/api/RevAccel-LargeCap')
+def get_rev_accel_large():
+    return _json_rev_accel('large')
+
+
+@app.route('/api/RevAccel-MegaCap')
+def get_rev_accel_mega():
+    return _json_rev_accel('mega')
+
 # Stock Notes endpoints removed (along with AI Stock Research). This store
 # has been deprecated. Per-ticker notes are now served exclusively by the
 # file-only abi_ticker_notes store (user_data/abi_ticker_notes.json). The

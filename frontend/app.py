@@ -185,6 +185,10 @@ def m_technical_screener():
 def m_high_sales_growth():
     return render_template('mobile/high_sales_growth.html')
 
+@app.route('/m/rev-accel')
+def m_rev_accel():
+    return render_template('mobile/rev_accel.html')
+
 @app.route('/m/daily-review')
 def m_daily_review():
     return render_template('mobile/daily_review.html')
@@ -717,6 +721,29 @@ def api_high_sales_growth(market_cap):
     data, status_code = make_backend_request(f'/api/HighSalesGrowth-{endpoint_cap}')
     if data is None:
         return jsonify({'error': 'Failed to fetch High Sales Growth data'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/rev-accel')
+def rev_accel_page():
+    return render_template('rev_accel.html')
+
+@app.route('/api/frontend/rev-accel/<market_cap>')
+def api_rev_accel(market_cap):
+    cap_map = {
+        'all': 'All',
+        'micro': 'MicroCap',
+        'small': 'SmallCap',
+        'mid': 'MidCap',
+        'large': 'LargeCap',
+        'mega': 'MegaCap'
+    }
+    endpoint_cap = cap_map.get(market_cap.lower())
+    if not endpoint_cap:
+        return jsonify({'error': 'Invalid market cap category'}), 400
+
+    data, status_code = make_backend_request(f'/api/RevAccel-{endpoint_cap}')
+    if data is None:
+        return jsonify({'error': 'Failed to fetch Revenue Acceleration data'}), status_code
     return jsonify(data), status_code
 
 # Stock Notes + AI Research proxy endpoints removed: the underlying

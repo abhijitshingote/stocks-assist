@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block body_class %}screener-page page-rev-accel{% endblock %}
+{% block title %}Revenue Acceleration - Stocks Assist{% endblock %}
+
+{% set screener_label = "Rev Accel" %}
+{% set screener_stats_label = "Stocks" %}
+
+{% set topbar_extra_controls %}
+<div class="recency-filter" role="group" aria-label="Filters">
+    <span id="raFilters"></span>
+    <span class="ra-sep">|</span>
+    <span id="raSorts"></span>
+</div>
+{% endset %}
+
+{% set detail_header_extras %}
+{% include "desktop/_weekly_disp_btns.html" %}
+{% endset %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/screener.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/rev-accel.css') }}">
+{% endblock %}
+
+{% block extra_styles %}
+{% include "desktop/_vsg_grouped_styles.html" %}
+    .ra-sep { color: var(--text-muted); font-size: 0.7rem; margin: 0 0.15rem; }
+    #raFilters, #raSorts { display: inline-flex; gap: 0.25rem; }
+{% endblock %}
+
+{% block content %}
+{% include "desktop/_screener_shell.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="/static/css/benzinga-news.css">
+<script src="/static/js/stock-news-shared.js"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/static/js/stock-chart.js"></script>
+<script src="/static/js/desktop/screener-app.js"></script>
+<script src="/static/js/rev-accel.js"></script>
+<script src="/static/js/desktop/rev-accel.js"></script>
+{% endblock %}

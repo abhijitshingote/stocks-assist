@@ -606,6 +606,52 @@ class RsScreener(Base):
 
 
 # ------------------------------------------------------------
+# 20b. RevenueAcceleration (quarterly revenue YoY / acceleration from earnings)
+# ------------------------------------------------------------
+class RevenueAcceleration(Base):
+    __tablename__ = "revenue_acceleration"
+
+    ticker = Column(String(20), ForeignKey("tickers.ticker"), primary_key=True)
+
+    q0_date = Column(Date)                # latest reported quarter
+    q0_rev = Column(BigInteger)
+    q0_rev_est = Column(BigInteger)
+    next_date = Column(Date)              # next scheduled report
+    next_rev_est = Column(BigInteger)
+    ttm_rev = Column(BigInteger)
+
+    # Quarterly YoY (%), q0 = latest, q3 = three quarters back
+    rev_yoy_q0 = Column(Float)
+    rev_yoy_q1 = Column(Float)
+    rev_yoy_q2 = Column(Float)
+    rev_yoy_q3 = Column(Float)
+    rev_qoq_q0 = Column(Float)            # sequential q0 vs q1 (%)
+
+    # Acceleration in percentage points
+    rev_accel_1q = Column(Float)          # yoy_q0 - yoy_q1
+    rev_accel_2q = Column(Float)          # yoy_q0 - yoy_q2
+    rev_accel_streak = Column(Integer)    # consecutive quarters of rising YoY ending at q0
+
+    # TTM (sum of 4 quarters) YoY and its change vs one quarter earlier
+    rev_ttm_yoy = Column(Float)
+    rev_ttm_yoy_prev = Column(Float)
+    rev_ttm_accel = Column(Float)
+
+    # Next quarter consensus vs year-ago quarter
+    rev_fwd_yoy_est = Column(Float)
+    rev_fwd_accel = Column(Float)         # fwd_yoy_est - yoy_q0
+    rev_surprise_q0 = Column(Float)       # q0_rev / q0_rev_est - 1 (%)
+
+    rev_accel_score = Column(Float)
+    rev_quarters = Column(JSONB)          # last 8 quarters oldest→newest: [{d, rev, yoy}]
+
+    updated_at = Column(DateTime, default=lambda: datetime.now(pytz.timezone("US/Eastern")),
+                       onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
+
+    ticker_rel = relationship("Ticker")
+
+
+# ------------------------------------------------------------
 # 21. BenzingaArticle (Polygon/Massive Benzinga news, per fetch ticker)
 # ------------------------------------------------------------
 class BenzingaArticle(Base):

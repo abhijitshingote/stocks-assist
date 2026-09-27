@@ -546,23 +546,6 @@
     .chart-canvas svg { width: 100%; height: 100%; }
 
 
-    .notes-box {
-      background: var(--surface-warm);
-      border: 1px solid color-mix(in oklab, var(--accent) 20%, var(--border));
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      margin-bottom: 12px;
-      font-size: 0.82rem;
-      line-height: 1.6;
-      color: var(--fg-2);
-    }
-    .notes-box .h {
-      font-size: 0.58rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 6px;
-    }
     .metric-block {
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
@@ -732,5 +715,3 @@
 .sector-strip, .industry-strip { min-height: 0; }
 .sector-strip:empty, .industry-strip:empty { display: none; }
 .industry-strip.hidden { display: none; }
-.notes-box .notes-body { white-space: pre-wrap; }
-.notes-box .notes-body.empty { color: var(--muted); font-style: italic; }

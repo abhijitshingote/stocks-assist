@@ -107,6 +107,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | **StrongStocks-Setup** | Same setupParts fields as VolspikeGapper-Setup, ticker universe = liquid + `ti65` |
 | **MainView** `MainView-*` | Full `main_view` row |
 | **HighSalesGrowth** `HighSalesGrowth-*` | `main_view.tags LIKE '%high_sales_growth%'`; order `rev_growth_t_plus_1 DESC` |
+| **RevAccel** `RevAccel-*` | AllStocks row JOIN `revenue_acceleration`. `REV_ACCEL_CRITERIA`: `rev_yoy_q0 >= 15`, `rev_accel_1q > 0`, `rev_ttm_yoy >= 10`, `ttm_rev >= $25M`. Adds `rev_*`, `q0_*`, `next_*`, `rev_quarters` (8Q `{d, rev, yoy}`). Order `rev_accel_score DESC` |
 | **TechnicalScreener-Reversal** `TechnicalScreener-Reversal-*` | Latest day `(close-low)/low*100` reversal %; liquidity filters |
 
 **MainView query param**
@@ -194,6 +195,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | `/top-returns-5-20` | Union of top 30 adj `dr_5` and top 30 adj `dr_20` |
 | `/technical-screener` | Reversal criterion |
 | `/high-sales-growth` | Tagged main_view rows |
+| `/rev-accel` | Quarterly revenue YoY acceleration + TTM YoY |
 | `/sector-performance` | Sector/index ETF returns |
 | `/rs-screener` | Relative strength |
 | `/fast-rs` | Frozen-weight Fast RS, mcap-adjusted |
@@ -243,6 +245,7 @@ Proxies to backend unless noted. Market-cap path segments use `all|micro|small|m
 | `GET /api/frontend/main-view/<market_cap>` | `/api/MainView-{Bucket}` |
 | `GET /api/frontend/main-view/by-tickers?tickers=` | `/api/MainView-ByTickers` |
 | `GET /api/frontend/high-sales-growth/<market_cap>` | `/api/HighSalesGrowth-{Bucket}` |
+| `GET /api/frontend/rev-accel/<market_cap>` | `/api/RevAccel-{Bucket}` |
 | `GET /api/frontend/technical-screener/<criterion>/<market_cap>` | `/api/TechnicalScreener-{Criterion}-{Bucket}` (`criterion`: `reversal`) |
 | `GET /api/frontend/rs-screener/<market_cap>` | `/api/rs-screener/<market_cap>` |
 | `GET /api/frontend/fast-rs/<market_cap>` | `/api/FastRs-{Bucket}` |
