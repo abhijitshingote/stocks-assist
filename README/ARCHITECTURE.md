@@ -57,11 +57,12 @@ flowchart TB
 | `db` | postgres:14 | 5432 | `stocks_db` |
 | `backend` | `docker/backend.Dockerfile` | 5001→5000 | Flask API, batch scripts, LLM pipelines |
 | `frontend` | `docker/frontend.Dockerfile` | 5002→5000 | Flask UI, thin proxy to backend |
+| `price_alerts` | `docker/price_alerts.Dockerfile` | — | `price_alerts/watcher.py`: every `ALERT_POLL_SECONDS` (300) during 9:30–16:00 ET, batch yfinance 1m quotes for tickers in `abi_chart_levels.json`; push to ntfy (`NTFY_TOPIC`) when `\|price - level\| / level <= ALERT_NEAR_PCT` (0.5). Once per level per day. |
 | `nginx` | nginx:alpine | 80, 443 | Reverse proxy → frontend |
 
 - Repo root is bind-mounted into `backend` (`/app`).
 - `frontend` mounts `./frontend`, `./user_data`, `./logs`.
-- Env: `.env` → `DATABASE_URL`, `FMP_API_KEY`, `POLYGON_API_KEY`, `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY`, SMTP, `OLLAMA_BASE_URL`.
+- Env: `.env` → `DATABASE_URL`, `FMP_API_KEY`, `POLYGON_API_KEY`, `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY`, SMTP, `OLLAMA_BASE_URL`, `NTFY_TOPIC`, `ALERT_CHART_BASE_URL` (ntfy click-through).
 - Ops: `./manage-env.sh prod|dev` (start/stop/init/update/backup). Run scripts via `docker-compose exec backend …`, not on host.
 
 ## Data layer
@@ -153,6 +154,8 @@ Ticker universe from DB screens (`screener_universe.py`: r1d, vol_spike_5d, main
 | `abi_dislikes.json` | Global ticker exclude: `kind=permanent` or `kind=temporary` (`expires_at` = +30d). Applied to all screener queries + daily_screener s1. |
 | `abi_passes.json` | Pass: `{scope: weekly\|daily, cycle}`. Weekly = Sat-ET-iso, hidden on weekly pages until next Saturday. Daily = session-iso, hidden on `/daily-review` until next open 9:30 ET. Daily GET also hides current weekly-cycle passes. |
 | `abi_trades.json` | Buy/short candidates. Hidden on `/weekly-review` and the 4 weekly source pages while listed. |
+| `abi_chart_levels.json` | Chart S/R levels `{TICKER: {levels: [..]}}`; also the price-alert list |
+| `price_alerts_state.json` | Alert dedup `{"TICKER\|level": {date, price, fired_at}}`; pruned to today |
 | `daily_screener/<date>/` | Pipeline stage JSON |
 | `daily_screener_feedback.json` | Judge calibration |
 | `market_brief/<date>/` | Brief artifacts, `run_costs.json` |

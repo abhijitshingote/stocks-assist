@@ -191,6 +191,7 @@ One layout system for all 14 desktop screener pages: shared shell + `screener.cs
 | **CSS** | `.chart-panel`, `.charts-container` in `screener.css` |
 | **Config** | `CHART_CONFIG` constant in `stock-chart.js` |
 | **Chart notes** | Click identity overlay (ticker/name/sector). Gold lines under sector/industry; no click to read. Store: `user_data/abi_chart_notes.json`, ≤5 lines × 80 chars. Separate from Abi ticker notes panel. |
+| **Chart levels** | Horizontal price lines (`series.createPriceLine`). Legend `+ Line` toggles draw mode (Esc exits); Shift+click works without it. Click plot adds a line, click within 6px of one removes it. Tap via `pointerdown/up` (touch never fires `click`). Store: `user_data/abi_chart_levels.json`, ≤20 per ticker. |
 | **Used by** | All screener pages, `stock.html` detail page |
 
 ### News Panel
