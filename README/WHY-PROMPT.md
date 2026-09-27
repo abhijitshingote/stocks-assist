@@ -1,0 +1,1 @@
+Do a deep dive analysis on TEAM stock. Specifically since its earnings in August. It gapped up huge and kept rising. Was there a sea change event, a secular sector tailwind , or idiosyncratic to TEAM. What do its prospects look like now - traction on products, material announcements , etc
