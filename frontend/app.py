@@ -593,7 +593,8 @@ def api_top_returns_5_20(market_cap):
 
 @app.route('/api/frontend/weekly-review')
 def api_weekly_review():
-    data, status_code = make_backend_request('/api/WeeklyReview')
+    qs = 'include_listed=1' if request.args.get('include_listed') in ('1', 'true') else ''
+    data, status_code = make_backend_request('/api/WeeklyReview' + ('?' + qs if qs else ''))
     if data is None:
         return jsonify({'error': 'Failed to fetch weekly review'}), status_code
     return jsonify(data), status_code

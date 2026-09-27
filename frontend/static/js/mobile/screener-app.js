@@ -29,6 +29,9 @@
 
     const weeklyDisp = config.weeklyDisposition;
     const hideWeeklyDisposed = typeof weeklyDisp === 'string';
+    // TICKER → 'watch' | 'trade'. Hidden while hideListed; chip-on is session-only.
+    let listedKind = {};
+    let hideListed = false;
 
     if (!config.fetchStocks) {
       throw new Error('MobileScreener.init: fetchStocks is required');
@@ -119,7 +122,16 @@
 
     function isTickerExcluded(s) {
       const t = (s.ticker || '').toUpperCase();
+      if (weeklyDisp && hideListed && listedKind[t]) return true;
       return tickerExcludes.has(t);
+    }
+
+    function listedBadge(s) {
+      if (!weeklyDisp || hideListed) return '';
+      const kind = listedKind[(s.ticker || '').toUpperCase()];
+      if (kind === 'trade') return '<span class="dr-evt listed-trade">T</span>';
+      if (kind === 'watch') return '<span class="dr-evt listed-watch">W</span>';
+      return '';
     }
 
     function filteredStocks() {
@@ -174,7 +186,18 @@
           '" data-exclude="' + r.id + '">− ' + r.label +
           ' <span class="n" id="exclCount-' + r.id + '">0</span></button>'
         ).join('') +
+        (weeklyDisp
+          ? '<button type="button" class="pill recency-pill' + (hideListed ? ' active' : '') + '" data-listed>− Watch/Trades</button>'
+          : '') +
         '</div>';
+      const listedBtn = host.querySelector('[data-listed]');
+      if (listedBtn) {
+        listedBtn.addEventListener('click', () => {
+          hideListed = !hideListed;
+          listedBtn.classList.toggle('active', hideListed);
+          loadData(config.usesCapFilter ? currentCap : undefined);
+        });
+      }
       host.querySelectorAll('[data-exclude]').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.exclude;
@@ -365,7 +388,7 @@
       cardList.innerHTML = visible.map(s => {
         const active = s.ticker === selectedTicker ? ' active' : '';
         const extra = config.listRowClassFn ? (config.listRowClassFn(s) || '') : '';
-        const badge = config.listBadgeFn ? (config.listBadgeFn(s) || '') : '';
+        const badge = (config.listBadgeFn ? (config.listBadgeFn(s) || '') : '') + listedBadge(s);
         const meta = config.listMetaFn ? config.listMetaFn(s) : '';
         const name = s.company_name || '';
         const sub = [name, U.fmtMktCap(s.market_cap), s.sector ? U.abbrevSector(s.sector) : '', meta]
@@ -568,17 +591,17 @@
         const [wlResp, trResp, psResp] = await Promise.all([
           fetch('/api/frontend/abi-watchlist'),
           fetch('/api/frontend/abi-trades'),
-          fetch(passUrl),
+          hideWeeklyDisposed ? fetch(passUrl) : Promise.resolve(null),
         ]);
         if (wlResp.ok) {
           const wl = await wlResp.json();
-          Object.keys(wl || {}).forEach(addExcludeTicker);
+          Object.keys(wl || {}).forEach(t => { listedKind[String(t).toUpperCase()] = 'watch'; });
         }
         if (trResp.ok) {
           const tr = await trResp.json();
-          Object.keys(tr || {}).forEach(addExcludeTicker);
+          Object.keys(tr || {}).forEach(t => { listedKind[String(t).toUpperCase()] = 'trade'; });
         }
-        if (psResp.ok) {
+        if (psResp && psResp.ok) {
           const ps = await psResp.json();
           Object.entries((ps && ps.passes) || {}).forEach(([t, e]) => {
             if (e && e.is_active) addExcludeTicker(t);
@@ -598,7 +621,7 @@
             .forEach(([t]) => addExcludeTicker(t));
         }
       } catch (e) { /* exclude list is best-effort */ }
-      if (hideWeeklyDisposed) await loadWeeklyDisposed();
+      if (weeklyDisp) await loadWeeklyDisposed();
     }
 
     function dropTickerFromList(ticker) {
@@ -661,6 +684,11 @@
         console.error('disposition failed', e);
         return;
       }
+      if (kind !== 'pass' && !hideListed) {
+        listedKind[ticker.toUpperCase()] = 'trade';
+        renderList();
+        return;
+      }
       window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
         detail: { action: 'saved', ticker },
       }));
@@ -675,7 +703,7 @@
 
       try {
         const capArg = config.usesCapFilter ? currentCap : undefined;
-        allStocks = await config.fetchStocks(capArg);
+        allStocks = await config.fetchStocks(capArg, { includeListed: !hideListed });
         if (!Array.isArray(allStocks)) allStocks = [];
       } catch (e) {
         console.error('Failed to load ' + (config.pageTitle || 'screener') + ' data', e);
@@ -966,14 +994,17 @@
       if (!selectedTicker) return;
       const inWl = !!watchlistStatus[selectedTicker];
       window._wlToggle(selectedTicker, inWl, (nowIn, ticker) => {
+        const tu = String(ticker).toUpperCase();
         if (nowIn) {
           watchlistStatus[ticker] = watchlistStatus[ticker] || { stars: 0 };
-          if (weeklyDisp || config.removeOnWatch) {
+          if (weeklyDisp && !listedKind[tu]) listedKind[tu] = 'watch';
+          if ((weeklyDisp && hideListed) || (!weeklyDisp && config.removeOnWatch)) {
             dropTickerFromList(ticker);
             return;
           }
         } else {
           delete watchlistStatus[ticker];
+          if (listedKind[tu] === 'watch') delete listedKind[tu];
           if (config.removeOnUnwatch) {
             dropTickerFromList(ticker);
             return;

@@ -5,7 +5,7 @@
    {
      endpoint:       string   API path segment, e.g. 'top-losers'
                               → fetches /api/frontend/{endpoint}/{cap}
-     endpointFn:     null | function(cap) → URL string
+     endpointFn:     null | function(cap, { includeListed }) → URL string
                               Override for non-standard endpoint patterns.
                               If provided, endpoint is ignored.
      capFilter:      'server' (default) | 'client'
@@ -92,6 +92,9 @@
                               current-cycle passes + watchlist + trades on load
                               and implies removeOnWatch. 'daily' uses session
                               pass window (until next open 9:30 ET), not Sat→Fri.
+                              Adds a default-off '− Watch/Trades' chip. Listed rows
+                              show with a W/T badge; endpointFn gets
+                              { includeListed: true } unless the chip is on.
    }
 */
 
@@ -128,6 +131,9 @@ window.DesktopScreener = (function () {
         const weeklyDisp = config.weeklyDisposition;
         if (weeklyDisp) config.removeOnWatch = true;
         const hideWeeklyDisposed = typeof weeklyDisp === 'string';
+        // TICKER → 'watch' | 'trade'. Hidden while hideListed; chip-on is session-only.
+        let listedKind = {};
+        let hideListed = false;
 
         const EXCLUDE_KEY = 'screenerExclude';
         const EXCLUDE_RULES = [
@@ -214,7 +220,7 @@ window.DesktopScreener = (function () {
 
         // ── URL builder ────────────────────────────────────────────
         function buildUrl(cap) {
-            if (config.endpointFn) return config.endpointFn(cap);
+            if (config.endpointFn) return config.endpointFn(cap, { includeListed: !hideListed });
             return `/api/frontend/${config.endpoint}/${cap}`;
         }
 
@@ -265,7 +271,7 @@ window.DesktopScreener = (function () {
                     );
                 }
             } catch (e) { /* exclude list is best-effort */ }
-            if (hideWeeklyDisposed) await loadWeeklyDisposed();
+            if (weeklyDisp) await loadWeeklyDisposed();
         }
 
         async function loadWeeklyDisposed() {
@@ -276,17 +282,17 @@ window.DesktopScreener = (function () {
                 const [wlResp, trResp, psResp] = await Promise.all([
                     fetch('/api/frontend/abi-watchlist'),
                     fetch('/api/frontend/abi-trades'),
-                    fetch(passUrl),
+                    hideWeeklyDisposed ? fetch(passUrl) : Promise.resolve(null),
                 ]);
                 if (wlResp.ok) {
                     const wl = await wlResp.json();
-                    Object.keys(wl || {}).forEach(t => tickerExcludes.add(String(t).toUpperCase()));
+                    Object.keys(wl || {}).forEach(t => { listedKind[String(t).toUpperCase()] = 'watch'; });
                 }
                 if (trResp.ok) {
                     const tr = await trResp.json();
-                    Object.keys(tr || {}).forEach(t => tickerExcludes.add(String(t).toUpperCase()));
+                    Object.keys(tr || {}).forEach(t => { listedKind[String(t).toUpperCase()] = 'trade'; });
                 }
-                if (psResp.ok) {
+                if (psResp && psResp.ok) {
                     const ps = await psResp.json();
                     Object.entries((ps && ps.passes) || {}).forEach(([t, e]) => {
                         if (e && e.is_active) tickerExcludes.add(String(t).toUpperCase());
@@ -331,9 +337,19 @@ window.DesktopScreener = (function () {
                 console.error('disposition failed', e);
                 return;
             }
+            if (kind !== 'pass' && !hideListed) {
+                listedKind[ticker.toUpperCase()] = 'trade';
+                renderList();
+                return;
+            }
             window.dispatchEvent(new CustomEvent('abi-exclude-changed', {
                 detail: { action: 'saved', ticker },
             }));
+        }
+
+        async function reloadForListedToggle() {
+            allStocks = [];
+            await loadData(currentCap);
         }
 
         async function loadData(cap) {
@@ -350,9 +366,10 @@ window.DesktopScreener = (function () {
                     lastResponse = json;
                     allStocks = config.transformData ? config.transformData(json) : json;
                     if (!Array.isArray(allStocks) || allStocks.error) allStocks = [];
-                    if (tickerExcludes.size) {
+                    if (tickerExcludes.size || (weeklyDisp && hideListed)) {
                         allStocks = allStocks.filter(s => {
                             const t = s.ticker || '';
+                            if (weeklyDisp && hideListed && listedKind[t.toUpperCase()]) return false;
                             return !tickerExcludes.has(t) && !tickerExcludes.has(t.toUpperCase());
                         });
                     }
@@ -499,13 +516,16 @@ window.DesktopScreener = (function () {
             if (!selectedTicker) return;
             const inWl = !!watchlistStatus[selectedTicker];
             window._wlToggle(selectedTicker, inWl, function (nowIn, ticker) {
+                const tu = String(ticker).toUpperCase();
                 if (nowIn) {
                     watchlistStatus[ticker] = watchlistStatus[ticker] || { stars: 0 };
-                    if (config.removeOnWatch) {
+                    if (weeklyDisp && !listedKind[tu]) listedKind[tu] = 'watch';
+                    if (config.removeOnWatch && hideListed) {
                         dropTickerFromList(ticker);
                     }
                 } else {
                     delete watchlistStatus[ticker];
+                    if (listedKind[tu] === 'watch') delete listedKind[tu];
                     if (config.removeOnUnwatch) {
                         dropTickerFromList(ticker);
                     }
@@ -666,6 +686,14 @@ window.DesktopScreener = (function () {
             return s.at_52w_high ? '<span class="tag-near-52w" title="At/near 52-week high">52W</span>' : '';
         }
 
+        function badgeListed(s) {
+            if (!weeklyDisp || hideListed) return '';
+            const kind = listedKind[(s.ticker || '').toUpperCase()];
+            if (kind === 'trade') return '<span class="mini-badge listed-trade" title="In abi_trades">T</span>';
+            if (kind === 'watch') return '<span class="mini-badge listed-watch" title="In watchlist">W</span>';
+            return '';
+        }
+
         function defaultListValue(s) {
             const v = s.dr_1;
             return {
@@ -688,6 +716,7 @@ window.DesktopScreener = (function () {
                     prefix +
                     `<span class="ticker">${s.ticker}</span>` +
                     badge52w(s) +
+                    badgeListed(s) +
                     `</span>` +
                     `<span class="ret ${listVal.cls}">${listVal.text}</span>` +
                 `</div>` +
@@ -755,6 +784,16 @@ window.DesktopScreener = (function () {
                     ensureSelectedVisible();
                 });
             });
+            if (weeklyDisp) {
+                host.insertAdjacentHTML('beforeend',
+                    `<button type="button" class="recency-btn${hideListed ? ' active' : ''}" data-listed title="Hide tickers in watchlist / abi_trades">− Watch/Trades</button>`);
+                const listedBtn = host.querySelector('[data-listed]');
+                listedBtn.addEventListener('click', () => {
+                    hideListed = !hideListed;
+                    listedBtn.classList.toggle('active', hideListed);
+                    reloadForListedToggle();
+                });
+            }
         }
 
         function renderList() {

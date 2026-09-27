@@ -153,7 +153,7 @@ Ticker universe from DB screens (`screener_universe.py`: r1d, vol_spike_5d, main
 | `abi_watchlist.json` | Stars, notes |
 | `abi_dislikes.json` | Global ticker exclude: `kind=permanent` or `kind=temporary` (`expires_at` = +30d). Applied to all screener queries + daily_screener s1. |
 | `abi_passes.json` | Pass: `{scope: weekly\|daily, cycle}`. Weekly = Sat-ET-iso, hidden on weekly pages until next Saturday. Daily = session-iso, hidden on `/daily-review` until next open 9:30 ET. Daily GET also hides current weekly-cycle passes. |
-| `abi_trades.json` | Buy/short candidates. Hidden on `/weekly-review` and the 4 weekly source pages while listed. |
+| `abi_trades.json` | Buy/short candidates. Shown with `T` badge (watchlist: `W`) on `/weekly-review`, `/daily-review` and the 4 weekly source pages; `− Watch/Trades` chip hides them. |
 | `abi_chart_levels.json` | Chart S/R levels `{TICKER: {levels: [..]}}`; also the price-alert list |
 | `price_alerts_state.json` | Alert dedup `{"TICKER\|level": {date, price, fired_at}}`; pruned to today |
 | `daily_screener/<date>/` | Pipeline stage JSON |

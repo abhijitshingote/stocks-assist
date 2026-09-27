@@ -236,6 +236,10 @@
   background: color-mix(in oklab, var(--warn) 16%, transparent);
   color: var(--warn);
 }
+.phone.screener .dr-evt.listed-trade {
+  background: color-mix(in oklab, var(--success) 16%, transparent);
+  color: var(--success);
+}
 
 /* ── Detail overlay (screener) ── */
 .phone.screener .analyze-zone {

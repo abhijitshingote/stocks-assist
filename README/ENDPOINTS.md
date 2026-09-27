@@ -142,7 +142,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | POST | `/api/abi-watchlist/batch-check` | |
 | GET | `/api/abi-watchlist/data` | watchlist + `stock_metrics` join |
 | GET/POST | `/api/abi-dislikes` | `abi_dislikes.json`. POST body: `{ticker, kind?}` (`temporary` default, `permanent`). Temporary sets `expires_at` = now+30d. GET includes `kind`, `expires_at`, `is_active`, `days_left`. |
-| GET | `/api/WeeklyReview` | Live union of vsg90/strong/top520/fastrs minus pass/watch/trade. |
+| GET | `/api/WeeklyReview` | Live union of vsg90/strong/top520/fastrs minus pass/watch/trade. `?include_listed=1` keeps watch/trade rows (`listed: watch\|trade`). |
 | GET | `/api/WeeklyReview-Config` | `cycle`, `cycle_ends`, `WEEKLY_REVIEW_CUTOFFS` (no DB scan). |
 | GET/POST | `/api/abi-passes` | `abi_passes.json`. POST `{ticker, sources?, scope?}`. `scope=weekly` (default): cycle = Sat ET. `scope=daily` (or sources contains `daily`): cycle = current NYSE session, expires next open 9:30 ET. GET `?scope=daily` sets `is_active` for daily-cycle daily passes ∪ weekly-cycle weekly passes. |
 | DELETE | `/api/abi-passes/<ticker>` | |

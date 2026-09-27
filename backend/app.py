@@ -2285,8 +2285,11 @@ def _rank_source_rows(rows, field):
     return out
 
 
-def build_weekly_review(session):
-    """Live union of vsg90 / strong / top520 / fastrs, minus pass/watch/trade."""
+def build_weekly_review(session, include_listed=False):
+    """Live union of vsg90 / strong / top520 / fastrs, minus pass/watch/trade.
+
+    include_listed keeps watch/trade rows (tagged ``listed``); passes still drop.
+    """
     cycle, friday = current_weekly_cycle()
     cutoffs = WEEKLY_REVIEW_CUTOFFS
     funnel = {}
@@ -2322,15 +2325,19 @@ def build_weekly_review(session):
     queue = []
     for t, row in merged.items():
         tu = t.upper()
-        if tu in watch:
+        if tu in watch and not include_listed:
             hidden_watch += 1
             continue
-        if tu in trades:
+        if tu in trades and not include_listed:
             hidden_trade += 1
             continue
         if tu in passes:
             hidden_pass += 1
             continue
+        if tu in trades:
+            row['listed'] = 'trade'
+        elif tu in watch:
+            row['listed'] = 'watch'
         row['sources'] = sorted(row.get('sources') or [])
         if not row.get('cap_bucket') and row.get('market_cap') is not None:
             row['cap_bucket'] = _market_cap_bucket(row['market_cap'])
@@ -2388,7 +2395,8 @@ def weekly_review_config():
 def weekly_review():
     s = Session()
     try:
-        return jsonify(build_weekly_review(s))
+        include_listed = request.args.get('include_listed') in ('1', 'true')
+        return jsonify(build_weekly_review(s, include_listed=include_listed))
     except Exception as e:
         logger.error(f"Error building weekly review: {str(e)}")
         return jsonify({'error': str(e)}), 500

@@ -479,6 +479,8 @@
 .stock-item .mini-badge.spike { background: rgba(210, 153, 34, 0.2); color: var(--accent-yellow); }
 .stock-item .mini-badge.gap   { background: rgba(248, 81, 73, 0.2);  color: var(--accent-red); }
 .stock-item .mini-badge.both  { background: linear-gradient(135deg, rgba(210, 153, 34, 0.25) 0%, rgba(248, 81, 73, 0.25) 100%); color: var(--accent-yellow); }
+.stock-item .mini-badge.listed-watch { background: rgba(88, 166, 255, 0.2); color: var(--accent-blue); margin-left: 0.25rem; }
+.stock-item .mini-badge.listed-trade { background: rgba(63, 185, 80, 0.2);  color: var(--accent-green); margin-left: 0.25rem; }
 
 .stock-item .last-date {
     font-family: var(--font-mono);

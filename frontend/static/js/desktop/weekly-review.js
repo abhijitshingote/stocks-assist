@@ -97,7 +97,8 @@
     }
 
     DesktopScreener.init({
-        endpointFn: () => '/api/frontend/weekly-review',
+        endpointFn: (cap, opts) => '/api/frontend/weekly-review' +
+            (opts && opts.includeListed ? '?include_listed=1' : ''),
         capFilter: 'client',
         capField: 'cap_bucket',
         accentCss: 'var(--accent-green)',

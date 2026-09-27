@@ -14,7 +14,7 @@
     }
   } catch (e) {}
 
-  let cached = null;
+  const cached = {};
 
   function fmtCutoff(id, spec) {
     if (!spec) return id;
@@ -89,16 +89,17 @@
     pageTitle: 'Weekly Review',
     pageLabel: 'Weekly',
     weeklyDisposition: true,
-    fetchStocks: cap => {
-      const req = cached
-        ? Promise.resolve(cached)
-        : fetch('/api/frontend/weekly-review')
+    fetchStocks: (cap, opts) => {
+      const key = opts && opts.includeListed ? 'listed' : 'default';
+      const req = cached[key]
+        ? Promise.resolve(cached[key])
+        : fetch('/api/frontend/weekly-review' + (key === 'listed' ? '?include_listed=1' : ''))
           .then(r => r.json())
           .then(data => {
-            cached = data && !data.error ? data : { stocks: [] };
-            renderMeta(cached);
-            return cached;
+            cached[key] = data && !data.error ? data : { stocks: [] };
+            return cached[key];
           });
+      req.then(renderMeta, () => {});
       return req.then(data => {
         const stocks = Array.isArray(data.stocks) ? data.stocks : [];
         if (!cap || cap === 'all') return stocks;
