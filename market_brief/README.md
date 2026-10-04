@@ -147,28 +147,41 @@ Channel slug probe: `docker compose exec backend python -m market_brief.discover
 
 ## Market Brief - Px (`perplexity_brief.py`)
 
-A/B variant that replaces Benzinga ingest with Perplexity web search. Fully decoupled from the Benzinga run: own DB screener universe (`screener_universe.py`) + verified tape (`tape.py`: OHLC + index closes), own output root.
+A/B variant that replaces Benzinga ingest with Perplexity web search. Fully decoupled from the Benzinga run: own DB screener universe (`screener_universe.py`) + verified tape (`tape.py`: OHLC + index closes), own output root. Search plan + prompts: `px_prompts.py`.
 
-| Step | Calls | Model |
-|---|---|---|
-| Broad market: `broad_macro_cross_asset`, `broad_corporate_news`, `broad_calendar` | 3 | `sonar-pro` (search) |
-| Ticker batches `tickers_NN`: universe (~62) flattened in slice priority, ~12/call, tape rows injected | ~6 | `sonar-pro` (search) |
-| Synthesis `synthesis_<model>`: `STEP4_SYSTEM_PROMPT`, same output format as `02_brief.md` above | 1 | Sonnet (default) · `--synth haiku\|opus\|perplexity` |
+| Phase | Files in `01_research/` | Calls | Model |
+|---|---|---|---|
+| A. Broad probes: one narrow topic each (`BROAD_PROBES`: rates, Fed context, econ data, oil, geopolitics, crypto, movers, pre-market, earnings, analyst actions, deals, FDA, AI capex, semis, AI platforms, software, AI policy, strategists, named investor calls, quantum/space, legal/IP, calendars, overnight/weekend corporate · analyst · megacap · policy, 10 sector company-news sweeps, earnings tonight/tomorrow, credit & housing) | `a_<slug>` | 42 | `sonar-pro` |
+| A. Ticker batches: universe (~62) in slice priority, 4/call, tape rows injected | `tickers_NN` | ~16 | `sonar-pro` |
+| Plan: reads A + tape → ≤12 follow-up threads (cross-ticker causal links, second-order winners/losers, contested catalysts, missing numbers) | `01b_plan.json` | 1 | Sonnet |
+| B. Thread follow-ups | `b_<slug>` | ≤12 | `sonar-pro` |
+| C. Gap fills: universe movers \|1D\| ≥ 3% (Mega ≥ 1.5%) still "No company-specific catalyst" | `c_<SYM>` | ≤15 | `sonar-pro` |
+| Compact: dedupe channel/thread research into a fact ledger (groups macro · corporate · themes); ticker ledger built in code (cap tier, \|move\|, no-catalyst names collapsed) | `02_ledger/*.md` | 3 | Sonnet |
+| Synthesis `synthesis_<model>`: `STEP4_SYSTEM_PROMPT` + `SYNTH_ADDENDUM` (length caps, causal chains, timing) | `02_brief_draft.md` | 1 | Opus (default) · `--synth sonnet\|haiku\|perplexity` |
+| Coverage + revise: Sonnet lists material ledger stories the draft omits → synth model integrates them | `02_coverage.md` | 2 | Sonnet + synth model |
+| Verify: Sonnet fact-checks numbers/weekdays/timestamps vs research + tape + calendar → exact find/replace fixes applied in code (`--no-verify` skips) | `02_verify.json` → `02_brief.md` | 1 | Sonnet |
+| Eval (opt-in `--eval`; off for normal/API runs): compare + grade Px brief vs Benzinga brief on a fixed per-date item list | `compare.md`, `eval_items.md`, `compare_nuance.md` | 1–2 | Sonnet |
 
-Search filter: `search_after_date_filter` = session − 1d, `search_before_date_filter` = asof + 1d.
+~100 calls, ~$4, ~30–35 min. Search filters: `search_domain_filter` = `DOMAIN_DENYLIST` (social, promo, SEO aggregators); `search_after_date_filter` = session − 1d (pre-market probes: session), `search_before_date_filter` = asof + 1d. Filters are day-granular; `--cutoff HH:MM` ET (default now if today, else 09:00) is enforced in prompts. **Backdated runs leak post-cutoff news** (e.g. an evening deal on the brief date) — score live runs.
 
 ```bash
-docker compose exec backend python -m market_brief.perplexity_brief                     # today
-docker compose exec backend python -m market_brief.perplexity_brief --dry-run           # prompts only → 00_prompts/ (no run.log)
-docker compose exec backend python -m market_brief.perplexity_brief --skip-research --synth haiku  # re-synth, no search
+docker compose exec backend python -m market_brief.perplexity_brief                     # today, cutoff = now
+docker compose exec backend python -m market_brief.perplexity_brief --asof 2026-09-24 --cutoff 08:37  # backdated
+docker compose exec backend python -m market_brief.perplexity_brief --dry-run           # phase A prompts only → 00_prompts/ (no run.log)
+docker compose exec backend python -m market_brief.perplexity_brief --skip-research     # re-compact + re-synth, no search
+docker compose exec backend python -m market_brief.perplexity_brief --resume-followups  # reuse phase A, rerun plan + B/C onward
+docker compose exec backend python -m market_brief.perplexity_brief --no-followups --no-revise --compact  # ablations (compaction is opt-in)
 docker compose exec backend python -m market_brief.perplexity_brief --asof 2026-09-17 --universe baseline  # opt-in: copy Benzinga run's lineage.json
 docker compose exec backend python -m market_brief.perplexity_brief --asof 2026-09-17 --compare-only      # rebuild compare.md
+docker compose exec backend python -m market_brief.perplexity_brief --asof 2026-09-17 --eval-only         # rebuild compare_nuance.md
 ```
 
 **UI:** `/market-brief-px`, `/m/market-brief-px` — same viewer as Market Brief via `brief_cfg` (`MARKET_BRIEF_PX_CFG` in `frontend/app.py`). API: `/api/market-brief-px/{dates,<date>,<date>/costs,<date>/pdf,generate}`.
 
-**Status:** `status.json` stages `hydrate` → `research` (`detail`: `N/M Perplexity searches done`) → `synthesis_<model>` → `done`; `failed` + `error` on exception. All searches failed → run fails; partial failures → `detail` on the complete status.
+**Status:** `status.json` stages `hydrate` → `research` (`detail`: `Phase A: N/M …`, `Planning follow-up threads`, `Phase B/C: N/M …`) → `compact` → `synthesis_<model>` → `coverage` → `revise` → `verify` → `eval` → `done`; `failed` + `error` on exception. All phase A searches failed → run fails; partial failures → `detail` on the complete status.
 
-**Artifacts** (`user_data/market_brief_perplexity/<date>/`): `status.json`, `tape.md`, `source/ticker_universe/`, `01_research/*.md` (facts + source URLs) / `*.json` (prompt + raw response), `02_synth_input.md`, `02_brief.md`, `run_costs.json` (Perplexity + Anthropic rows), `run.log`, `subprocess.log`, `compare.md`.
+**Artifacts** (`user_data/market_brief_perplexity/<date>/`): `status.json`, `tape.md`, `source/ticker_universe/`, `01_research/*.md` (facts + source URLs) / `*.json` (job + prompt + raw response), `01b_plan.json`, `02_ledger/`, `02_synth_input.md`, `02_brief_draft.md`, `02_coverage.md`, `02_brief.md`, `run_costs.json` (Perplexity + Anthropic rows), `run.log`, `subprocess.log`, `compare.md`, `eval_items.md`, `compare_nuance.md`. Earlier pipeline versions for A/B: `user_data/market_brief_perplexity_v1/` (3 broad + 12/call), `_v2/` (before coverage/revise + extra probes).
 
 **Compare** (no LLM): parses Top Movers tables from `user_data/market_brief/<date>/02_brief.md` and the Px brief → ticker overlap, sign mismatches, Narrative Thread titles. Skipped if no Benzinga brief for that date.
+
+**Nuance eval** (LLM): `eval_items.md` = material items extracted once from the Benzinga brief (rebuilt when it changes); `compare_nuance.md` grades the Px brief per item (found / partial / missing / misattributed / baseline_error, major/minor tier, snapshot-timing numbers not graded) → score computed in code: recall = (found + baseline_error + 0.5 × partial) / N and story coverage = not-missing / N, plus Px-only material. Experiment log, gaps and next steps: `PX_EXPERIMENT_NOTES.md`.

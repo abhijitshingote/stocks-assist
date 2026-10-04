@@ -1,9 +1,15 @@
 """Experimental market brief with Perplexity web search as the news source (no Benzinga).
 
-Hydration comes from Postgres (screener universe + OHLC tape). News comes from
-Perplexity `sonar-pro` web search: 3 broad market calls + ticker batches (12/call).
-Synthesis reuses STEP4_SYSTEM_PROMPT (default Sonnet) so the output is directly
-comparable to ``user_data/market_brief/<date>/02_brief.md``.
+Hydration comes from Postgres (screener universe + OHLC tape). News comes from Perplexity
+``sonar-pro`` web search in three phases (plan + prompts in ``px_prompts.py``):
+
+  A. ~26 narrow broad probes + ticker batches (4/call)
+  B. thread follow-ups planned by an LLM from A (second-order effects, contested catalysts)
+  C. single-ticker gap fills for movers still without a catalyst
+
+Research is compacted into a deduplicated fact ledger, then synthesized with STEP4_SYSTEM_PROMPT +
+``SYNTH_ADDENDUM`` (length caps, timing rules), audited for ledger omissions and revised so the output is comparable to
+``user_data/market_brief/<date>/02_brief.md``. ``compare_nuance.md`` grades recall vs that brief.
 
 Run inside the backend container:
 
@@ -12,7 +18,7 @@ Run inside the backend container:
     docker compose exec backend python -m market_brief.perplexity_brief --skip-research --synth haiku
     docker compose exec backend python -m market_brief.perplexity_brief --asof 2026-09-17 --compare-only
 
-Artifacts: ``user_data/market_brief_perplexity/<date>/`` (not listed by the UI).
+Artifacts: ``user_data/market_brief_perplexity/<date>/``.
 """
 
 from __future__ import annotations
@@ -34,6 +40,7 @@ from typing import Any
 import requests
 
 from market_brief import config
+from market_brief import px_prompts as P
 from market_brief import status as status_mod
 from market_brief.cost_tracker import CostRecord, CostTracker
 from market_brief.prompts_pipeline import STEP4_SYSTEM_PROMPT, step4_user_message
@@ -51,78 +58,60 @@ RESEARCH_MAX_TOKENS = 6000
 SYNTH_MAX_TOKENS = 8000
 RESEARCH_TIMEOUT_SECONDS = 240
 SYNTH_TIMEOUT_SECONDS = 300
-CONCURRENCY = 3
-BATCH_SIZE = 12
+CONCURRENCY = 5
+BATCH_SIZE = 4
+MAX_THREADS = 12
+MAX_GAPS = 15
+GAP_MIN_MOVE = 3.0
+GAP_MIN_MOVE_MEGA = 1.5
 ANTHROPIC_SYNTH_MODELS: dict[str, str] = {
     "sonnet": os.getenv("MARKET_BRIEF_PPLX_SONNET_MODEL", "claude-sonnet-4-6"),
     "haiku": os.getenv("MARKET_BRIEF_PPLX_HAIKU_MODEL", "claude-haiku-4-5"),
     "opus": os.getenv("MARKET_BRIEF_OPUS_MODEL", "claude-opus-4-6"),
 }
+# Planner, compaction, eval.
+AUX_MODEL = os.getenv("MARKET_BRIEF_PPLX_AUX_MODEL", ANTHROPIC_SYNTH_MODELS["sonnet"])
 RETRIES = 3
-
-CATEGORY_VOCAB = (
-    "AI Compute · Memory & Interconnect · Optical & Photonics · Chip Equipment · "
-    "Fab & Foundry · Wireless & Mobile · Analog & Mixed-Signal · Power & Wide-Bandgap · "
-    "Test & Advanced Packaging · Specialty Materials & IP Licensing · Quantum Computing · "
-    "EdgeAI · Semiconductors · AI Infrastructure · Software & SaaS · Internet & Platforms · "
-    "Communications & Networking"
-)
-
-# Broad market calls (replace Benzinga GENERAL_CHANNEL_FETCHES). One web-search call each.
-BROAD_PROBES: list[dict[str, str]] = [
-    {
-        "slug": "macro_cross_asset",
-        "label": "Macro & cross-asset",
-        "focus": (
-            "- US index closes: S&P 500, Nasdaq Composite, Dow, Russell 2000, PHLX SOX (% change).\n"
-            "- Rates/FX: 2-yr and 10-yr Treasury yields, DXY; Treasury auctions.\n"
-            "- Economic data released: actual vs consensus vs prior.\n"
-            "- Fed/FOMC decisions and named speaker quotes; ECB/BoE/BoJ/PBoC actions.\n"
-            "- Commodities: WTI, Brent, natural gas, gold, silver, copper (price, % change); OPEC.\n"
-            "- Crypto: Bitcoin, Ether (price, % change); SEC/CFTC/Congress crypto actions; ETF flows.\n"
-            "- Policy/geopolitics: tariffs, export controls, sanctions, wars moving oil or risk assets."
-        ),
-    },
-    {
-        "slug": "corporate_news",
-        "label": "Corporate news flow",
-        "focus": (
-            "- Biggest US movers (market cap >= $2B) in the session, after-hours, and pre-market, with the "
-            "catalyst for each (CNBC / MarketWatch / Barron's / Reuters 'stocks making the biggest moves').\n"
-            "- Earnings after the close or pre-market: EPS and revenue actual vs consensus, guidance old → new.\n"
-            "- Notable analyst actions: firm, rating old → new, PT old → new.\n"
-            "- M&A (terms, value), contracts with $ size, FDA decisions, SEC filings (8-K, 13D, S-1, "
-            "offerings), buybacks, executive changes, index adds/deletes, activist stakes.\n"
-            "- Sector threads: AI capex / hyperscaler spend, semis and memory pricing, AI networking and "
-            "optics, data-center power, software/SaaS; supply-chain reports (Nikkei, DigiTimes, TrendForce)."
-        ),
-    },
-    {
-        "slug": "calendar",
-        "label": "Calendar",
-        "focus": (
-            "Scheduled catalysts from the brief date through the next 5 NYSE sessions: earnings "
-            "(date, BMO/AMC, EPS and revenue consensus) for US stocks >= $10B plus notable mid-caps, "
-            "investor/analyst days, FDA PDUFA dates, major economic releases with consensus, Fed "
-            "speakers, options expiry, index rebalances, lockup expiries."
-        ),
-    },
-]
+NO_CATALYST = "No company-specific catalyst found"
+GENERIC_REASON_RE = re.compile(
+    r"profit[- ]taking|reversal|no new (?:\w+ )?catalyst|broad (?:ai[- ])?(?:sell-?off|rally)|"
+    r"sector[- ]wide|no (?:specific|company-specific) (?:reason|catalyst)", re.I)
 
 SYNTH_CHOICES = ("sonnet", "haiku", "opus", "perplexity")
 
 
 # ---------------------------------------------------------------------------
-# Perplexity client (returns content + search_results + cost)
+# Clients
 # ---------------------------------------------------------------------------
+
+
+class LockedTracker(CostTracker):
+    """CostTracker safe to share across research / compaction threads."""
+
+    _lock = threading.RLock()
+
+    def record_usage(self, **kwargs: Any) -> CostRecord:
+        with self._lock:
+            return super().record_usage(**kwargs)
+
+    def add(self, rec: CostRecord) -> None:
+        with self._lock:
+            self.calls = [c for c in self.calls if c.step != rec.step]
+            self.calls.append(rec)
+            self.flush()
+
+    def flush(self) -> None:
+        with self._lock:
+            super().flush()
 
 
 class PerplexityCall:
     """Perplexity chat completions; each successful call is appended to ``tracker``."""
 
-    def __init__(self, tracker: CostTracker) -> None:
+    def __init__(self, tracker: LockedTracker) -> None:
         self.tracker = tracker
         self.lock = threading.Lock()
+        self.quota_exhausted = False
 
     def __call__(
         self,
@@ -148,10 +137,13 @@ class PerplexityCall:
             payload["disable_search"] = True
         else:
             payload["web_search_options"] = {"search_context_size": "high"}
+            payload["search_domain_filter"] = P.DOMAIN_DENYLIST
             if date_window:
                 payload["search_after_date_filter"] = date_window[0]
                 payload["search_before_date_filter"] = date_window[1]
 
+        if self.quota_exhausted:
+            raise RuntimeError("Perplexity quota exhausted (earlier http 401)")
         headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
         last_err = ""
         for attempt in range(1, RETRIES + 1):
@@ -169,25 +161,22 @@ class PerplexityCall:
                 cost = float((usage.get("cost") or {}).get("total_cost") or 0.0)
                 in_tok = int(usage.get("prompt_tokens") or 0)
                 out_tok = int(usage.get("completion_tokens") or 0)
-                with self.lock:
-                    self.tracker.calls = [c for c in self.tracker.calls if c.step != label]
-                    self.tracker.calls.append(
-                        CostRecord(
-                            step=label,
-                            api_model=model,
-                            pricing_model=model,
-                            input_tokens=in_tok,
-                            output_tokens=out_tok,
-                            cache_creation_input_tokens=0,
-                            cache_read_input_tokens=0,
-                            input_cost_usd=0.0,
-                            output_cost_usd=0.0,
-                            cache_write_cost_usd=0.0,
-                            cache_read_cost_usd=0.0,
-                            total_cost_usd=round(cost, 6),
-                        )
+                self.tracker.add(
+                    CostRecord(
+                        step=label,
+                        api_model=model,
+                        pricing_model=model,
+                        input_tokens=in_tok,
+                        output_tokens=out_tok,
+                        cache_creation_input_tokens=0,
+                        cache_read_input_tokens=0,
+                        input_cost_usd=0.0,
+                        output_cost_usd=0.0,
+                        cache_write_cost_usd=0.0,
+                        cache_read_cost_usd=0.0,
+                        total_cost_usd=round(cost, 6),
                     )
-                    self.tracker.flush()
+                )
                 content = ((data.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
                 logger.info(
                     "PPLX OK %s | %.1fs | out=%d | $%.4f", label, time.time() - t0, out_tok, cost
@@ -199,12 +188,42 @@ class PerplexityCall:
                     "usage": {"input_tokens": in_tok, "output_tokens": out_tok, "cost_usd": cost},
                 }
             last_err = f"http {r.status_code}: {r.text[:300]}"
+            if r.status_code == 401:
+                self.quota_exhausted = True
+                break
             if r.status_code == 429 or r.status_code >= 500:
                 logger.warning("PPLX RETRY %s %d/%d: %s", label, attempt, RETRIES, last_err)
                 time.sleep(10 * attempt)
                 continue
             break
         raise RuntimeError(f"Perplexity failed for {label}: {last_err}")
+
+
+def claude(model: str, system: str, user: str, step: str, tracker: LockedTracker,
+           max_tokens: int = 16_000) -> str:
+    import httpx
+
+    from market_brief.anthropic_client import complete
+
+    for attempt in range(3):
+        try:
+            return complete(
+                model=model,
+                logical_model=model,
+                system=system,
+                user_message=user,
+                step=step,
+                tracker=tracker,
+                max_tokens=max_tokens,
+                use_stream=True,
+                pace_after=False,
+            )
+        except (httpx.RemoteProtocolError, httpx.ReadError, httpx.ReadTimeout) as e:
+            if attempt == 2:
+                raise
+            logger.warning("Anthropic %s stream error (%s), retry %d/2", step, e, attempt + 1)
+            time.sleep(10 * (attempt + 1))
+    raise AssertionError("unreachable")
 
 
 # ---------------------------------------------------------------------------
@@ -282,127 +301,22 @@ def build_batches(lineage: dict[str, Any], batch_size: int) -> list[tuple[str, l
 
 
 # ---------------------------------------------------------------------------
-# Prompts
+# Research
 # ---------------------------------------------------------------------------
 
 
-def _pretty(d: str) -> str:
-    return datetime.strptime(d, "%Y-%m-%d").strftime("%A %B %-d, %Y")
+def _fmt_date(d: datetime) -> str:
+    return f"{d.month}/{d.day}/{d.year}"
 
 
-def _window_text(session_date: str, asof: str) -> str:
-    return (
-        f"{_pretty(session_date)} regular session (9:30-16:00 ET), after-hours that evening, "
-        f"and overnight/pre-market news through {_pretty(asof)} ~6:00 AM ET"
-    )
-
-
-_FACT_RULES = f"""RULES
-- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.
-- End every bullet with the named source in parentheses: (Reuters), (company 8-K), (CNBC interview),
-  (Morgan Stanley note). "Analysts said" / "reports suggest" without a name is not allowed.
-- Earnings: actual vs consensus for EPS and revenue; guidance old → new.
-- Analyst actions: firm, rating old → new, PT old → new.
-- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor].
-- Only facts published in the window below. Older background only if it is the direct cause of this
-  move, and label it with its date.
-- Do not interpret price action. Do not write "strong", "beat expectations", "investors cheered",
-  "remains", "continues to", "well-positioned", "tailwinds". Write the number.
-- Do not drop facts to save space."""
-
-
-def ticker_batch_prompt(
-    tickers: list[str],
-    lineage: dict[str, Any],
-    moves: dict[str, float],
-    session_date: str,
-    asof: str,
-) -> str:
-    by_ticker = lineage.get("by_ticker") or {}
-    rows = [
-        "| Ticker | Company | Cap | Screen | 1D close | 5D | Vol× 10d | Vol/gap event |",
-        "|---|---|---|---|---:|---:|---:|---|",
-    ]
-    for sym in tickers:
-        d = by_ticker.get(sym, {})
-        d1 = moves.get(sym, d.get("dr_1"))
-        ev = f"{d.get('last_event_type')} {d.get('last_event_date')}" if d.get("last_event_date") else "—"
-        rows.append(
-            "| {t} | {c} | {cap} | {sec} | {d1} | {d5} | {vol} | {ev} |".format(
-                t=sym,
-                c=d.get("company_name") or "",
-                cap=_cap_label(d.get("market_cap")),
-                sec=d.get("label") or d.get("section") or "",
-                d1=f"{d1:+.2f}%" if d1 is not None else "n/a",
-                d5=f"{d['dr_5']:+.1f}%" if d.get("dr_5") is not None else "n/a",
-                vol=f"{d['vol_vs_10d_avg']:.1f}×" if d.get("vol_vs_10d_avg") is not None else "n/a",
-                ev=ev,
-            )
-        )
-    table = "\n".join(rows)
-    return f"""Search the web now for news on each stock below. You are a financial fact extractor for a
-pre-market brief. Brief date: {_pretty(asof)}.
-
-Window: {_window_text(session_date, asof)}.
-
-VERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):
-{table}
-
-TASK
-For EACH ticker, find why it moved on {_pretty(session_date)} and any other material news in the window.
-Search press releases (BusinessWire, PR Newswire, GlobeNewswire), SEC filings, Reuters, Bloomberg, CNBC,
-WSJ, Barron's, MarketWatch, Investor's Business Daily, company IR pages, analyst-action roundups.
-If a big mover (|1D| >= 5% or 5D >= 15%) has no company news, check for sector sympathy and name the
-lead stock it followed.
-
-OUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):
-
-## Company Name (TICKER) `[Category]`
-- fact (source)
-- fact (source)
-
-Category: pick from {CATEGORY_VOCAB}. If none fit, invent a concise category.
-If you find nothing, write exactly one bullet: "- No company-specific catalyst found in window" and,
-if applicable, a second bullet naming the sympathy driver.
-
-Include when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts
-with $ size, filings, management quotes with numbers, next catalyst date with consensus estimates.
-
-{_FACT_RULES}"""
-
-
-def channel_prompt(probe: dict[str, str], session_date: str, asof: str) -> str:
-    return f"""Search the web now. You are a financial fact extractor for a US-equity pre-market brief.
-Brief date: {_pretty(asof)}. Scope: {probe['label']}.
-
-Window: {_window_text(session_date, asof)}.
-
-COVER EVERY ITEM BELOW (run a separate search for each bullet; do not skip one because another was rich)
-{probe['focus']}
-
-Prefer primary sources and wire services (Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's,
-company press releases, SEC EDGAR, BLS/BEA/Fed releases).
-
-OUTPUT (markdown; no intro or conclusion). Group by ticker or topic:
-
-## TICKER or Topic `[Category]`
-- fact (source)
-
-Category: pick from {CATEGORY_VOCAB}, or Macro / Commodities / Geopolitics / Crypto / Calendar, or
-invent a concise one. Bold tickers.
-
-{_FACT_RULES}"""
-
-
-# ---------------------------------------------------------------------------
-# Research + synthesis
-# ---------------------------------------------------------------------------
-
-
-def _date_window(session_date: str, asof: str) -> tuple[str, str]:
-    start = datetime.strptime(session_date, "%Y-%m-%d") - timedelta(days=1)
-    end = datetime.strptime(asof, "%Y-%m-%d") + timedelta(days=1)
-    return f"{start.month}/{start.day}/{start.year}", f"{end.month}/{end.day}/{end.year}"
+def date_windows(session_date: str, asof: str) -> dict[str, tuple[str, str]]:
+    """Perplexity filters are day-granular; the prompt's cutoff time does the intraday cut."""
+    sess = datetime.strptime(session_date, "%Y-%m-%d")
+    end = _fmt_date(datetime.strptime(asof, "%Y-%m-%d") + timedelta(days=1))
+    return {
+        "session": (_fmt_date(sess - timedelta(days=1)), end),
+        "premarket": (_fmt_date(sess), end),
+    }
 
 
 def _sources_md(result: dict[str, Any]) -> str:
@@ -419,13 +333,14 @@ def _sources_md(result: dict[str, Any]) -> str:
 
 
 def run_research(
-    jobs: list[tuple[str, str, str]],
+    jobs: list[dict[str, Any]],
     research_dir: Path,
     pplx: PerplexityCall,
-    date_window: tuple[str, str] | None,
+    windows: dict[str, tuple[str, str]] | None,
     model: str,
+    phase: str,
 ) -> list[str]:
-    """jobs: (name, kind, prompt). Writes <name>.md (content + sources) and <name>.json."""
+    """jobs: {name, kind, group, window, prompt}. Writes <name>.md (content + sources) + <name>.json."""
     research_dir.mkdir(parents=True, exist_ok=True)
     outdir = research_dir.parent
     total = len(jobs)
@@ -435,22 +350,22 @@ def run_research(
     def _progress() -> None:
         status_mod.write_status(
             outdir, "running", stage="research",
-            extra={"detail": f"{len(done)}/{total} Perplexity searches done"
+            extra={"detail": f"{phase}: {len(done)}/{total} Perplexity searches done"
                    + (f" · {len(failed)} failed" if failed else "")},
         )
 
     _progress()
 
-    def _one(job: tuple[str, str, str]) -> None:
-        name, kind, prompt = job
+    def _one(job: dict[str, Any]) -> None:
+        name = job["name"]
         try:
             res = pplx(
                 label=name,
                 model=model,
-                messages=[{"role": "user", "content": prompt}],
+                messages=[{"role": "user", "content": job["prompt"]}],
                 max_tokens=RESEARCH_MAX_TOKENS,
                 timeout=RESEARCH_TIMEOUT_SECONDS,
-                date_window=date_window,
+                date_window=windows[job["window"]] if windows else None,
             )
         except Exception as e:  # noqa: BLE001
             logger.error("Research failed %s: %s", name, e)
@@ -458,8 +373,7 @@ def run_research(
             with pplx.lock:
                 failed.append(name)
         (research_dir / f"{name}.json").write_text(
-            json.dumps({"name": name, "kind": kind, "prompt": prompt, **res}, indent=2),
-            encoding="utf-8",
+            json.dumps({**job, **res}, indent=2), encoding="utf-8",
         )
         (research_dir / f"{name}.md").write_text(
             f"{res['content'].strip()}\n\n---\n\n### Sources\n\n{_sources_md(res)}\n",
@@ -472,78 +386,249 @@ def run_research(
     with ThreadPoolExecutor(max_workers=CONCURRENCY) as ex:
         list(ex.map(_one, jobs))
 
-    if len(failed) == total:
-        raise RuntimeError(f"All {total} Perplexity searches failed (see run.log)")
     if failed:
-        logger.warning("Research: %d/%d searches failed: %s", len(failed), total, ", ".join(failed))
+        logger.warning("%s: %d/%d searches failed: %s", phase, len(failed), total, ", ".join(failed))
+    if pplx.quota_exhausted:
+        logger.error("Perplexity returned 401 (quota/auth) — remaining searches skipped")
     return failed
 
 
-def load_research_text(research_dir: Path) -> tuple[str, str]:
-    """(channel_text, ticker_text) from 01_research/*.json content (sources excluded)."""
-    channel_parts: list[str] = []
-    ticker_parts: list[str] = []
-    for path in sorted(research_dir.glob("*.json")):
-        data = json.loads(path.read_text(encoding="utf-8"))
-        block = f"<summary source=\"{data['name']}\">\n{data['content'].strip()}\n</summary>"
-        (channel_parts if data["kind"] == "channel" else ticker_parts).append(block)
-    return "\n\n".join(channel_parts), "\n\n".join(ticker_parts)
+def load_research(research_dir: Path) -> list[dict[str, Any]]:
+    rows = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(research_dir.glob("*.json"))]
+    return [r for r in rows if not r["content"].startswith("_Research call failed")]
+
+
+def _block(r: dict[str, Any]) -> str:
+    return f"<summary source=\"{r['name']}\">\n{r['content'].strip()}\n</summary>"
+
+
+_SECTION_RE = re.compile(r"^##\s+.*?\(([A-Z][A-Z0-9.\-]*)\)", re.M)
+
+
+def ticker_sections(research: list[dict[str, Any]]) -> dict[str, str]:
+    """{TICKER: section markdown}. Gap-fill (kind=gap) results replace batch sections that found
+    nothing."""
+    out: dict[str, str] = {}
+    for kind in ("ticker", "gap"):
+        for r in research:
+            if r.get("kind") != kind:
+                continue
+            text = r["content"]
+            heads = list(_SECTION_RE.finditer(text))
+            for i, m in enumerate(heads):
+                end = heads[i + 1].start() if i + 1 < len(heads) else len(text)
+                sec = text[m.start():end].strip()
+                sym = m.group(1)
+                if kind == "gap" and NO_CATALYST in sec and sym in out:
+                    continue
+                out[sym] = sec
+    return out
+
+
+def select_gaps(
+    lineage: dict[str, Any], moves: dict[str, float], sections: dict[str, str]
+) -> list[str]:
+    by_ticker = lineage.get("by_ticker") or {}
+    picks: list[tuple[bool, float, str]] = []
+    for sym, d in by_ticker.items():
+        mv = moves.get(sym, d.get("dr_1"))
+        if mv is None:
+            continue
+        mega = _cap_label(d.get("market_cap")) == "Mega"
+        thresh = GAP_MIN_MOVE_MEGA if mega else GAP_MIN_MOVE
+        sec = sections.get(sym, "")
+        generic = mega and GENERIC_REASON_RE.search(sec)
+        if abs(mv) >= thresh and (not sec or NO_CATALYST in sec or generic):
+            picks.append((mega, abs(mv), sym))
+    return [s for *_, s in sorted(picks, reverse=True)[:MAX_GAPS]]
+
+
+def _parse_json_block(text: str) -> dict[str, Any]:
+    m = re.search(r"```json\s*(.*?)```", text, re.S) or re.search(r"(\{.*\})", text, re.S)
+    if not m:
+        return {}
+    try:
+        return json.loads(m.group(1))
+    except json.JSONDecodeError:
+        return {}
+
+
+def plan_threads(
+    *, asof: str, cutoff: str, tape_block: str, research: list[dict[str, Any]],
+    outdir: Path, tracker: LockedTracker,
+) -> list[dict[str, Any]]:
+    text = claude(
+        AUX_MODEL, P.PLANNER_SYSTEM,
+        P.planner_user(asof=asof, cutoff=cutoff, tape=tape_block,
+                       research="\n\n".join(_block(r) for r in research),
+                       max_threads=MAX_THREADS),
+        step="plan_threads", tracker=tracker, max_tokens=10_000,
+    )
+    threads = (_parse_json_block(text).get("threads") or [])[:MAX_THREADS]
+    seen: set[str] = set()
+    for i, t in enumerate(threads, start=1):
+        slug = re.sub(r"[^a-z0-9_]+", "_", str(t.get("slug") or f"thread_{i}").lower())[:30]
+        t["slug"] = slug if slug not in seen else f"{slug}_{i}"
+        seen.add(t["slug"])
+    (outdir / "01b_plan.json").write_text(json.dumps({"threads": threads, "raw": text}, indent=2),
+                                          encoding="utf-8")
+    logger.info("Planner: %d threads: %s", len(threads), ", ".join(t["slug"] for t in threads))
+    return threads
+
+
+# ---------------------------------------------------------------------------
+# Ledger (compaction) + synthesis
+# ---------------------------------------------------------------------------
+
+
+def build_ticker_ledger(
+    lineage: dict[str, Any], moves: dict[str, float], sections: dict[str, str]
+) -> str:
+    """Universe tickers ordered by cap tier then |move|; no-catalyst names collapsed to one line."""
+    by_ticker = lineage.get("by_ticker") or {}
+    tier = {"Mega": 0, "Large": 1, "Mid": 2, "Small": 3, "—": 4}
+    rows = []
+    for sym, d in by_ticker.items():
+        cap = _cap_label(d.get("market_cap"))
+        mv = moves.get(sym, d.get("dr_1"))
+        rows.append((tier[cap], -abs(mv or 0.0), sym, cap, mv))
+    rows.sort()
+    blocks: list[str] = []
+    quiet: list[str] = []
+    for _, _, sym, cap, mv in rows:
+        mv_s = f"{mv:+.2f}%" if mv is not None else "n/a"
+        sec = sections.get(sym)
+        if not sec or NO_CATALYST in sec and sec.count("\n- ") <= 1:
+            quiet.append(f"{sym} {mv_s} ({cap})")
+            continue
+        head, _, body = sec.partition("\n")
+        blocks.append(f"{head}\n- Tape 1D: {mv_s} · Cap: {cap}\n{body.strip()}")
+    if quiet:
+        blocks.append("## Universe tickers with no catalyst found\n- " + ", ".join(quiet))
+    return "\n\n".join(blocks)
+
+
+def build_channel_ledger(
+    *, asof: str, cutoff: str, research: list[dict[str, Any]], outdir: Path,
+    tracker: LockedTracker, compact: bool,
+) -> str:
+    groups: dict[str, list[dict[str, Any]]] = {g: [] for g in P.COMPACT_GROUPS}
+    for r in research:
+        if r.get("kind") == "channel":
+            g = r.get("group") or "corporate"
+            groups["macro" if g in ("macro", "calendar") else g].append(r)
+        elif r.get("kind") == "thread":
+            groups["themes"].append(r)
+    if not compact:
+        return "\n\n".join(_block(r) for g in groups.values() for r in g)
+
+    ledger_dir = outdir / "02_ledger"
+    ledger_dir.mkdir(parents=True, exist_ok=True)
+
+    def _one(g: str) -> str:
+        notes = "\n\n".join(_block(r) for r in groups[g])
+        if not notes:
+            return ""
+        text = claude(
+            AUX_MODEL, P.COMPACT_SYSTEM,
+            P.compact_user(asof=asof, cutoff=cutoff, group_label=P.COMPACT_GROUPS[g], notes=notes),
+            step=f"compact_{g}", tracker=tracker, max_tokens=24_000,
+        )
+        (ledger_dir / f"{g}.md").write_text(text, encoding="utf-8")
+        logger.info("Ledger %s: %s → %s chars", g, f"{len(notes):,}", f"{len(text):,}")
+        return f"<ledger group=\"{g}\">\n{text.strip()}\n</ledger>"
+
+    with ThreadPoolExecutor(max_workers=len(groups)) as ex:
+        parts = list(ex.map(_one, list(groups)))
+    return "\n\n".join(p for p in parts if p)
+
+
+def revise_brief(*, outdir: Path, draft: str, system: str, synth: str, ledger: str,
+                 tracker: LockedTracker) -> str:
+    """Coverage audit (ledger vs draft) → revision pass that integrates material omissions."""
+    (outdir / "02_brief_draft.md").write_text(draft, encoding="utf-8")
+    status_mod.write_status(outdir, "running", stage="coverage")
+    omissions = claude(AUX_MODEL, P.COVERAGE_SYSTEM, P.coverage_user(ledger=ledger, brief=draft),
+                       step="coverage", tracker=tracker, max_tokens=4000).strip()
+    (outdir / "02_coverage.md").write_text(omissions + "\n", encoding="utf-8")
+    n = sum(1 for ln in omissions.splitlines() if " | " in ln)
+    logger.info("Coverage: %d omissions", n)
+    if not n:
+        return draft
+    status_mod.write_status(outdir, "running", stage="revise")
+    return claude(ANTHROPIC_SYNTH_MODELS[synth], system + P.REVISE_ADDENDUM,
+                  P.revise_user(draft=draft, omissions=omissions),
+                  step=f"revise_{synth}", tracker=tracker)
+
+
+def verify_brief(*, asof: str, cutoff: str, outdir: Path, brief: str, notes: str, tape_block: str,
+                 tracker: LockedTracker) -> str:
+    """Fact-check pass → exact find/replace fixes applied in code (02_verify.json)."""
+    status_mod.write_status(outdir, "running", stage="verify")
+    raw = claude(AUX_MODEL, P.VERIFY_SYSTEM,
+                 P.verify_user(brief=brief, notes=notes, tape=tape_block,
+                               calendar=P.calendar_block(asof), asof=asof, cutoff=cutoff),
+                 step="verify", tracker=tracker, max_tokens=6000)
+    m = re.search(r"\{.*\}", raw, re.S)
+    try:
+        fixes = json.loads(m.group(0)).get("fixes", []) if m else []
+    except json.JSONDecodeError:
+        logger.warning("Verify: unparseable output")
+        fixes = []
+    applied = []
+    for f in fixes:
+        find, repl = f.get("find") or "", f.get("replace")
+        if find and repl is not None and brief.count(find) == 1:
+            brief = brief.replace(find, repl)
+            applied.append(f)
+    (outdir / "02_verify.json").write_text(
+        json.dumps({"proposed": fixes, "applied": len(applied)}, indent=2), encoding="utf-8")
+    logger.info("Verify: %d fixes proposed, %d applied", len(fixes), len(applied))
+    return brief
 
 
 def run_synthesis(
-    *,
-    asof: str,
-    outdir: Path,
-    overview: str,
-    tape_block: str,
-    synth: str,
-    pplx: PerplexityCall,
+    *, asof: str, cutoff: str, outdir: Path, overview: str, tape_block: str, synth: str,
+    channel_ledger: str, ticker_ledger: str, pplx: PerplexityCall, revise: bool = True,
+    verify: bool = True,
 ) -> Path:
-    channel_text, ticker_text = load_research_text(outdir / "01_research")
     user_msg = step4_user_message(
-        date_str=asof,
-        ticker_universe=f"{tape_block}\n\n{overview}",
-        channel_summaries=channel_text,
-        ticker_summaries=ticker_text,
+        date_str=f"{asof} (brief cutoff {cutoff} ET)",
+        ticker_universe=f"{P.calendar_block(asof)}\n\n{tape_block}\n\n{overview}",
+        channel_summaries=channel_ledger,
+        ticker_summaries=ticker_ledger,
     )
     (outdir / "02_synth_input.md").write_text(user_msg, encoding="utf-8")
     logger.info("Synthesis input: %s chars (%s)", f"{len(user_msg):,}", synth)
 
+    system = STEP4_SYSTEM_PROMPT + P.SYNTH_ADDENDUM
     step = f"synthesis_{synth}"
     pplx.tracker.set_current_step(step)
     status_mod.write_status(outdir, "running", stage=step)
     if synth in ANTHROPIC_SYNTH_MODELS:
-        from market_brief.anthropic_client import complete
-
-        model = ANTHROPIC_SYNTH_MODELS[synth]
-        brief = complete(
-            model=model,
-            logical_model=model,
-            system=STEP4_SYSTEM_PROMPT,
-            user_message=user_msg,
-            step=step,
-            tracker=pplx.tracker,
-            max_tokens=16_000,
-            use_stream=True,
-            pace_after=False,
-        )
+        brief = claude(ANTHROPIC_SYNTH_MODELS[synth], system, user_msg, step, pplx.tracker)
     else:
         res = pplx(
             label=step,
             model=SYNTH_MODEL,
-            messages=[
-                {"role": "system", "content": STEP4_SYSTEM_PROMPT},
-                {"role": "user", "content": user_msg},
-            ],
+            messages=[{"role": "system", "content": system}, {"role": "user", "content": user_msg}],
             max_tokens=SYNTH_MAX_TOKENS,
             timeout=SYNTH_TIMEOUT_SECONDS,
             disable_search=True,
         )
         brief = res["content"]
 
+    if revise and synth in ANTHROPIC_SYNTH_MODELS:
+        brief = revise_brief(outdir=outdir, draft=brief, system=system, synth=synth,
+                             ledger=f"{channel_ledger}\n\n{ticker_ledger}", tracker=pplx.tracker)
+    if verify:
+        brief = verify_brief(asof=asof, cutoff=cutoff, outdir=outdir, brief=brief,
+                             notes=f"{channel_ledger}\n\n{ticker_ledger}", tape_block=tape_block,
+                             tracker=pplx.tracker)
+
     path = outdir / "02_brief.md"
     path.write_text(brief, encoding="utf-8")
-    logger.info("Wrote %s", path)
+    logger.info("Wrote %s (%s chars)", path, f"{len(brief):,}")
     return path
 
 
@@ -551,7 +636,7 @@ def run_synthesis(
 # Compare vs Benzinga baseline
 # ---------------------------------------------------------------------------
 
-_ROW_RE = re.compile(r"^\|\s*\*\*([A-Z][A-Z0-9.\-]*)\*\*\s*\|\s*([^|]*)\|")
+_ROW_RE = re.compile(r"^\|\s*(?:\*\*)?([A-Z][A-Z0-9.\-]*)(?:\*\*)?\s*\|\s*([^|]*)\|")
 
 
 def _top_movers(md: str) -> dict[str, str]:
@@ -634,6 +719,61 @@ def compare(asof: str, outdir: Path) -> Path | None:
     return path
 
 
+def eval_nuance(asof: str, outdir: Path, tracker: LockedTracker) -> Path | None:
+    """LLM-graded recall of Benzinga brief items in the Px brief → compare_nuance.md.
+
+    Items are extracted once per date (``OUTPUTS_DIR/<date>/eval_items.md``, rebuilt when the
+    Benzinga brief changes) so scores across Px versions share a denominator.
+    """
+    base_path = BASELINE_DIR / asof / "02_brief.md"
+    test_path = outdir / "02_brief.md"
+    if not base_path.is_file() or not test_path.is_file():
+        logger.warning("Nuance eval skipped: need %s and %s", base_path, test_path)
+        return None
+    items_path = OUTPUTS_DIR / asof / "eval_items.md"
+    if not items_path.is_file() or items_path.stat().st_mtime < base_path.stat().st_mtime:
+        items = claude(AUX_MODEL, P.EVAL_ITEMS_SYSTEM, base_path.read_text(encoding="utf-8"),
+                       step="eval_items", tracker=tracker, max_tokens=6000)
+        items_path.parent.mkdir(parents=True, exist_ok=True)
+        items_path.write_text(items.strip() + "\n", encoding="utf-8")
+    text = claude(
+        AUX_MODEL, P.EVAL_SYSTEM,
+        P.eval_user(items=items_path.read_text(encoding="utf-8"),
+                    test=test_path.read_text(encoding="utf-8"), calendar=P.calendar_block(asof)),
+        step="eval_nuance", tracker=tracker, max_tokens=10_000,
+    )
+    item_rows = re.findall(r"^(I\d+)\s*\|\s*(major|minor)?", items_path.read_text(encoding="utf-8"),
+                           re.M | re.I)
+    ids = [i for i, _ in item_rows]
+    tiers = {i: (t or "minor").lower() for i, t in item_rows}
+    rows = re.findall(
+        r"^\|\s*(I\d+)\s*\|\s*\**(?:major|minor)\**\s*\|[^|]*\|\s*\**"
+        r"(found|partial|missing|misattributed|baseline_error)\**\s*\|", text, re.M | re.I)
+    graded = {i: (tiers.get(i, "minor"), s.lower()) for i, s in rows}
+    statuses = ("found", "partial", "missing", "misattributed", "baseline_error", "ungraded")
+
+    def _score(sel: list[str]) -> tuple[dict[str, int], float, float]:
+        c = {s: 0 for s in statuses}
+        for i in sel:
+            c[graded.get(i, ("", "ungraded"))[1]] += 1
+        n = len(sel) or 1
+        recall = 100 * (c["found"] + c["baseline_error"] + 0.5 * c["partial"]) / n
+        return c, recall, 100 * (n - c["missing"] - c["ungraded"]) / n
+
+    lines = ["## Score"]
+    for label, sel in (("All", ids), ("Major", [i for i in ids if tiers[i] == "major"])):
+        c, recall, story = _score(sel)
+        lines.append(f"- {label} ({len(sel)}): " + " · ".join(f"{k} {v}" for k, v in c.items() if v)
+                     + f" → recall **{recall:.1f}%** · story coverage **{story:.1f}%**")
+        logger.info("Nuance %s: recall %.1f%% · coverage %.1f%% %s", label, recall, story, c)
+    lines.append("- recall = (found + baseline_error + 0.5 × partial) / N; numbers from snapshot "
+                 "timing are not graded")
+    path = outdir / "compare_nuance.md"
+    path.write_text(f"# Nuance eval — {asof}\n\n" + "\n".join(lines) + f"\n\n{text.strip()}\n",
+                    encoding="utf-8")
+    return path
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -655,32 +795,55 @@ def _setup_logging(outdir: Path, verbose: bool, *, to_file: bool) -> None:
 def main() -> int:
     p = argparse.ArgumentParser(description="Perplexity-sourced market brief (no Benzinga)")
     p.add_argument("--asof", "--date", dest="asof", help="YYYY-MM-DD (default: today ET)")
+    p.add_argument("--cutoff", help="HH:MM ET news cutoff on the brief date "
+                                    "(default: now if today, else 09:00)")
     p.add_argument("--universe", choices=("db", "baseline", "auto"), default="db",
                    help="db = own DB screener run (default, decoupled); "
                         "baseline = copy Benzinga run's lineage.json; auto = baseline if present")
-    p.add_argument("--synth", choices=SYNTH_CHOICES, default="sonnet",
-                   help="Step 4 synthesis model (same STEP4_SYSTEM_PROMPT as production)")
+    p.add_argument("--synth", choices=SYNTH_CHOICES, default="opus",
+                   help="Synthesis model (STEP4_SYSTEM_PROMPT + Px addendum)")
     p.add_argument("--model", default=RESEARCH_MODEL, help="Perplexity research model")
     p.add_argument("--batch-size", type=int, default=BATCH_SIZE)
+    p.add_argument("--no-followups", action="store_true", help="Skip phases B (threads) and C (gaps)")
+    p.add_argument("--compact", action="store_true",
+                   help="Compact research into a fact ledger before synthesis (default: raw)")
+    p.add_argument("--no-compact", action="store_true", help=argparse.SUPPRESS)
+    p.add_argument("--no-revise", action="store_true", help="Skip coverage audit + revision pass")
+    p.add_argument("--no-verify", action="store_true", help="Skip fact-check pass (02_verify.json)")
+    p.add_argument("--eval", action="store_true",
+                   help="After the run, compare vs Benzinga (compare.md) + LLM grading (compare_nuance.md)")
     p.add_argument("--no-date-filter", action="store_true",
                    help="Drop search_after/before_date_filter (live runs only)")
-    p.add_argument("--dry-run", action="store_true", help="Write prompts to 00_prompts/; no API calls")
+    p.add_argument("--dry-run", action="store_true",
+                   help="Write phase A prompts to 00_prompts/; no API calls")
     p.add_argument("--skip-research", action="store_true", help="Reuse existing 01_research/")
+    p.add_argument("--resume-followups", action="store_true",
+                   help="Reuse phase A research; rerun phases B/C onward")
+    p.add_argument("--outdir", help="Run directory (default OUTPUTS_DIR/<date>); for A/B slots")
     p.add_argument("--compare-only", action="store_true", help="Only rebuild compare.md")
+    p.add_argument("--eval-only", action="store_true", help="Only rebuild compare_nuance.md")
     p.add_argument("-v", "--verbose", action="store_true")
     args = p.parse_args()
 
-    asof = args.asof or datetime.now(ET).strftime("%Y-%m-%d")
-    outdir = OUTPUTS_DIR / asof
-    _setup_logging(outdir, args.verbose, to_file=not (args.dry_run or args.compare_only))
+    now = datetime.now(ET)
+    asof = args.asof or now.strftime("%Y-%m-%d")
+    cutoff = args.cutoff or (now.strftime("%H:%M") if asof == now.strftime("%Y-%m-%d") else "09:00")
+    outdir = Path(args.outdir) if args.outdir else OUTPUTS_DIR / asof
+    _setup_logging(outdir, args.verbose,
+                   to_file=not (args.dry_run or args.compare_only or args.eval_only))
 
     if args.compare_only:
         path = compare(asof, outdir)
         print(path.read_text(encoding="utf-8") if path else "Nothing to compare")
         return 0
+    if args.eval_only:
+        tracker = LockedTracker.load_or_create(outdir)
+        path = eval_nuance(asof, outdir, tracker)
+        print(path.read_text(encoding="utf-8") if path else "Nothing to compare")
+        return 0
 
     try:
-        return _run(args, asof, outdir)
+        return _run(args, asof, cutoff, outdir)
     except Exception as e:  # noqa: BLE001
         logger.exception("Pipeline failed: %s", e)
         if not args.dry_run:
@@ -688,15 +851,13 @@ def main() -> int:
         return 1
 
 
-def _run(args: argparse.Namespace, asof: str, outdir: Path) -> int:
+def _run(args: argparse.Namespace, asof: str, cutoff: str, outdir: Path) -> int:
     if not args.dry_run:
         status_mod.write_status(outdir, "running", stage="hydrate")
-        stale = outdir / "02_brief.md"
-        if stale.exists() and not args.skip_research:
-            stale.unlink()
 
     lineage, overview = load_universe(asof, outdir, args.universe)
-    tickers = sorted((lineage.get("by_ticker") or {}).keys())
+    by_ticker = lineage.get("by_ticker") or {}
+    tickers = sorted(by_ticker)
     session_date, moves, tape_block = load_tape(asof, tickers)
     expected_session = prior_session_for_brief(asof).isoformat()
     if session_date != expected_session:
@@ -704,50 +865,111 @@ def _run(args: argparse.Namespace, asof: str, outdir: Path) -> int:
                        session_date, expected_session)
     (outdir / "tape.md").write_text(tape_block, encoding="utf-8")
 
-    jobs: list[tuple[str, str, str]] = [
-        (f"broad_{pr['slug']}", "channel", channel_prompt(pr, session_date, asof))
-        for pr in BROAD_PROBES
+    def table(syms: list[str]) -> str:
+        return P.tape_table(syms, lineage, moves, _cap_label)
+
+    jobs_a: list[dict[str, Any]] = [
+        {"name": f"a_{pr['slug']}", "kind": "channel", "group": pr["group"],
+         "window": pr["window"], "prompt": P.channel_prompt(pr, session_date, asof, cutoff)}
+        for pr in P.BROAD_PROBES
     ]
-    jobs += [
-        (name, "ticker", ticker_batch_prompt(syms, lineage, moves, session_date, asof))
+    jobs_a += [
+        {"name": name, "kind": "ticker", "group": "tickers", "window": "session",
+         "prompt": P.ticker_batch_prompt(table(syms), session_date, asof, cutoff)}
         for name, syms in build_batches(lineage, args.batch_size)
     ]
-    date_window = None if args.no_date_filter else _date_window(session_date, asof)
-    logger.info("Research jobs: %d (%d broad, %d ticker batches) · date filter %s",
-                len(jobs), len(BROAD_PROBES), len(jobs) - len(BROAD_PROBES), date_window)
+    windows = None if args.no_date_filter else date_windows(session_date, asof)
+    logger.info("Phase A jobs: %d · cutoff %s %s ET · date filters %s",
+                len(jobs_a), asof, cutoff, windows)
 
     if args.dry_run:
         pdir = outdir / "00_prompts"
         if pdir.exists():
             shutil.rmtree(pdir)
         pdir.mkdir(parents=True, exist_ok=True)
-        for name, _, prompt in jobs:
-            (pdir / f"{name}.md").write_text(prompt, encoding="utf-8")
-        print(f"Wrote {len(jobs)} prompts → {pdir}")
+        for job in jobs_a:
+            (pdir / f"{job['name']}.md").write_text(job["prompt"], encoding="utf-8")
+        print(f"Wrote {len(jobs_a)} phase A prompts → {pdir} (B/C depend on A results)")
         return 0
 
     research_dir = outdir / "01_research"
     failed: list[str] = []
-    if args.skip_research:
+    if args.skip_research or args.resume_followups:
         if not any(research_dir.glob("*.json")):
             raise FileNotFoundError(f"No research at {research_dir} — run without --skip-research")
-        tracker = CostTracker.load_or_create(outdir)
-        tracker.calls = [c for c in tracker.calls if not c.step.startswith("synthesis_")]
+        tracker = LockedTracker.load_or_create(outdir)
+        tracker.calls = [c for c in tracker.calls
+                         if not c.step.startswith(("synthesis_", "compact_", "eval_", "coverage", "revise_"))]
+        if args.resume_followups:
+            for f in list(research_dir.glob("b_*")) + list(research_dir.glob("c_*")):
+                f.unlink()
+            tracker.calls = [c for c in tracker.calls if c.step != "plan_threads"]
         pplx = PerplexityCall(tracker)
+        pplx.tracker.set_current_step("research")
     else:
+        # Previous research/brief are replaced only once phase A has produced something.
+        tmp_dir = outdir / "01_research.tmp"
+        if tmp_dir.exists():
+            shutil.rmtree(tmp_dir)
+        pplx = PerplexityCall(LockedTracker(outdir=outdir / "_run_costs.tmp"))
+        pplx.tracker.set_current_step("research")
+        failed += run_research(jobs_a, tmp_dir, pplx, windows, args.model, "Phase A")
+        if len(failed) == len(jobs_a):
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+            shutil.rmtree(outdir / "_run_costs.tmp", ignore_errors=True)
+            raise RuntimeError(f"All {len(jobs_a)} phase A searches failed (see run.log)")
         if research_dir.exists():
             shutil.rmtree(research_dir)
-        pplx = PerplexityCall(CostTracker(outdir=outdir))
-        pplx.tracker.set_current_step("research")
-        failed = run_research(jobs, research_dir, pplx, date_window, args.model)
+        tmp_dir.rename(research_dir)
+        (outdir / "02_brief.md").unlink(missing_ok=True)
+        pplx.tracker.outdir = outdir
+        pplx.tracker.flush()
+        shutil.rmtree(outdir / "_run_costs.tmp", ignore_errors=True)
 
-    run_synthesis(asof=asof, outdir=outdir, overview=overview, tape_block=tape_block,
-                  synth=args.synth, pplx=pplx)
+    if not args.skip_research and not args.no_followups:
+        research = load_research(research_dir)
+        status_mod.write_status(outdir, "running", stage="research",
+                                extra={"detail": "Planning follow-up threads"})
+        threads = plan_threads(asof=asof, cutoff=cutoff, tape_block=tape_block,
+                               research=research, outdir=outdir, tracker=pplx.tracker)
+        gaps = select_gaps(lineage, moves, ticker_sections(research))
+        logger.info("Gap fills: %d: %s", len(gaps), ", ".join(gaps))
+        sections = ticker_sections(research)
+        jobs_bc = [
+            {"name": f"b_{t['slug']}", "kind": "thread", "group": "themes",
+             "window": "session", "prompt": P.thread_prompt(t, session_date, asof, cutoff)}
+            for t in threads
+        ] + [
+            {"name": f"c_{sym}", "kind": "gap", "group": "tickers", "window": "session",
+             "prompt": P.gap_prompt(table([sym]), sym,
+                                    by_ticker.get(sym, {}).get("company_name") or sym,
+                                    session_date, asof, cutoff, sections.get(sym, ""))}
+            for sym in gaps
+        ]
+        failed += run_research(jobs_bc, research_dir, pplx, windows, args.model, "Phase B/C")
+
+    research = load_research(research_dir)
+    status_mod.write_status(outdir, "running", stage="compact")
+    ticker_ledger = build_ticker_ledger(lineage, moves, ticker_sections(research))
+    channel_ledger = build_channel_ledger(asof=asof, cutoff=cutoff, research=research,
+                                          outdir=outdir, tracker=pplx.tracker,
+                                          compact=args.compact and not args.no_compact)
+
+    run_synthesis(asof=asof, cutoff=cutoff, outdir=outdir, overview=overview,
+                  tape_block=tape_block, synth=args.synth, channel_ledger=channel_ledger,
+                  ticker_ledger=ticker_ledger, pplx=pplx, revise=not args.no_revise,
+                  verify=not args.no_verify)
 
     tracker = pplx.tracker
+    compare_path = compare(asof, outdir) if args.eval else None
+    if args.eval:
+        status_mod.write_status(outdir, "running", stage="eval")
+        try:
+            eval_nuance(asof, outdir, tracker)
+        except Exception as e:  # noqa: BLE001
+            logger.warning("Nuance eval failed: %s", e)
     tracker.set_current_step(None)
     tracker.flush()
-    compare_path = compare(asof, outdir)
     status_mod.write_status(
         outdir, "complete", stage="done",
         extra={
