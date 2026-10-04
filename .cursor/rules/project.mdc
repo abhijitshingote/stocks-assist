@@ -9,6 +9,13 @@ alwaysApply: true
 - Be concise. Technical, not product-style: `filter dr_5 > 20` not "picked 5 day momentum stocks". Specificity matters.
 - Page changes: verify desktop and `/m/*` mobile.
 
+## Git
+
+- `main` is golden: never commit, reset or push to it unless asked.
+- Feature branches: cut from current `main`; code only. Never commit `user_data/` (prod auto-backups own it) except on an explicit `*-experiment` branch, which is never merged or deployed.
+- Before any commit/push/branch switch: `git diff --stat main...<branch>` — only intended code files, no deletions of `main` files.
+- Never delete branches, tags or force-push unless asked. Keep one branch per purpose; say which branch is for what.
+
 ## Docs
 
 Do not merge these. Read the one that matches the work (both if the change spans layers).
