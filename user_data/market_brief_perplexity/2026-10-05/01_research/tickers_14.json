@@ -1,0 +1,167 @@
+{
+  "name": "tickers_14",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ILMN | Illumina, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +2.75% | +1.1% | 0.6\u00d7 | both 2025-10-31 |\n| TWLO | Twilio Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -2.22% | +6.8% | 1.2\u00d7 | both 2026-08-07 |\n| TEAM | Atlassian Corporation | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -1.06% | +0.1% | 0.5\u00d7 | both 2026-08-07 |\n| RBRK | Rubrik, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +2.76% | +8.2% | 1.0\u00d7 | gapper 2026-09-14 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Illumina, Inc. (ILMN) `[Pharma / Life-Science Tools]`\n- Guggenheim analyst Subbu Nambi maintained a **Buy** rating and raised the price target from **$226 to $305** on October 1, citing updated forecasts ahead of third-quarter earnings; this was the clearest company-specific catalyst associated with the October 2 gain. (Markets Insider, Oct. 1, 2026; 01:24 ET)\n- Illumina closed October 2 at **$273.04**, up **2.74%**; no separate company release or regulatory announcement published during the October 2\u20135 window was identified as the cause of the move. (Yahoo Finance, Oct. 2, 2026, 16:00 ET)\n- Wall Street Zen cut Illumina from **Buy to Hold** on October 3; MarketBeat reported a consensus target of **$214.69** based on **18 analysts**, including **10 Buy, 6 Hold, and 2 Sell** ratings. (MarketBeat, Oct. 3, 2026)\n- A Form 4 disclosed that director **Scott B. Ullem acquired 113 shares** at **$219.8037** per share on September 30 as compensation for his third-quarter board and committee retainers; the filing was accepted by EDGAR on October 2 at **19:56 ET**. (SEC Form 4 via StockTitan, Oct. 2, 2026, 19:56 ET)\n- Illumina\u2019s latest reported quarter showed **non-GAAP EPS of $1.31 versus $1.23 consensus** and **revenue of $1.16 billion versus $1.13 billion consensus**; the company\u2019s fiscal 2026 EPS guidance was **$5.30\u2013$5.40**. These figures were published before the requested window and are included only as the direct backdrop to the analyst action. (MarketBeat, Oct. 3, 2026)\n- Illumina\u2019s next scheduled earnings date is **October 29, 2026**. (Yahoo Finance, updated Oct. 5, 2026, 07:47 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Illumina, Inc. (ILMN)\n273.04 +7.29 (+2.74%)\nAt close: October 2 at 4:00:01 PM EDT\n273.50 +0.46 (+0.17%)\nOvernight: 2:43:22 AM EDT\n...\n- Earnings Date (est.)\nOct 29, 2026\n...\n### Illumina (ILMN) Tests Valuation As Russell Index Removal Forces A Fresh Look\n...\nTrailing total returns as of 10/2/2026,...",
+      "source": "web",
+      "title": "Illumina, Inc. (ILMN)",
+      "url": "https://finance.yahoo.com/quote/ILMN/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Illumina stock gains 2.74 percent as Guggenheim lifts target\n...\nIllumina stock stood at USD 273.04 on October 2, 2026, while Guggenheim lifted its target to USD 305 from USD 226.\nSecond-quarter revenue rose 9.5 percent.\n...\nIllumina Inc.\nstock (ISIN US4523271090) closed at USD 273.04 on Nasdaq on O...",
+      "source": "web",
+      "title": "Illumina stock gains 2.74 percent as Guggenheim lifts target",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/illumina-stock-gains-2-74-percent-as-guggenheim-lifts-target/70223602"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "|Date|Pre-market Price|Pre-market High|Pre-market Low|\n|--|--|--|--|\n|Oct 2, 2026|$267.26|$267.26|$267.26|\nData last updated Oct 2, 2026 9:30 AM EST.\n...\nAs of 9:30 AM EST on October 2, Illumina (ILMN) is trading at $267.26 in the pre-market session.\nThis reflects an increase of $1.54 (0.58%) compar...",
+      "source": "web",
+      "title": "Trade Illumina (ILMN) Stock Pre-Market on Public.com",
+      "url": "https://public.com/stocks/ilmn/pre-market"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Illumina (NASDAQ:ILMN) Stock Rating Cut to Hold at Wall Street Zen\n...\n## Key Points\n- **Wall Street Zen downgraded Illumina from \u201cBuy\u201d to \u201cHold.\u201d** Overall analyst sentiment is also \u201cHold,\u201d with 10 Buy, six Hold and two Sell ratings and a consensus price target of $214.69.\n- Illumina reported quart...",
+      "source": "web",
+      "title": "Illumina (NASDAQ:ILMN) Stock Rating Cut to Hold at Wall ...",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-illumina-nasdaq-ilmn-stock-rating-cut-to-hold-at-wall-street-zen-2026-10-03/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Illumina, Inc.\ndirector Keith A. Meister acquired 107 common shares on September 30, 2026, in lieu of cash for his third-quarter 2026 board and committee retainer fees.\n...\nOct 2, 2026\n[Form 4] ILLUMINA, INC.\nInsider Trading Activity",
+      "source": "web",
+      "title": "Illumina director Keith A. Meister acquires 107 shares",
+      "url": "https://www.stocktitan.net/sec-filings/ILMN/form-4-illumina-inc-insider-trading-activity-a69b46a5795b.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "10.0507:01\n\u7f8e\u80a1\u4e0a\u5e02\u516c\u53f8Illumina\uff08ILMN\uff09\u62ab\u9732\u4e00\u7b14\u5185\u90e8\u4eba\u80a1\u7968\u4ea4\u6613\u3002\u6587\u4ef6\u663e\u793a\uff0c\u516c\u53f8\u5185\u90e8\u4ebaUllem (Scott B)\uff08Director\uff092026-09-30\u589e\u6301\u516c\u53f8\u80a1\u7968\uff0c\u4ea4\u6613\u91d1\u989d\u7ea624837.40\u7f8e\u5143\u3002\n\u4ea4\u6613\u6570\u636e\u663e\u793a\uff1a\n\u2022 \u4ea4\u6613\u4eba\uff1aUllem (Scott B)\uff08Director\uff09\n\u2022 \u4ea4\u6613\u65b9\u5411\uff1a\u4e70\u5165\n\u2022 \u6210\u4ea4\u80a1\u6570\uff1a113\u80a1\n\u2022 \u6210\u4ea4\u5747\u4ef7\uff1a219.8\u7f8e\u5143/\u80a1\n\u2022 \u4ea4\u6613\u91d1\u989d\uff1a\u7ea624837.4\u7f8e\u5143\n\u2022 \u6700\u65b0\u6301\u80a1\uff1a11143\u80a1\n\u2022 \u6301\u80a1\u6bd4\u4f8b\uff1a0.01%",
+      "source": "web",
+      "title": "\u5185\u90e8\u4eba\u4ea4\u6613\uff5cIllumina\u62ab\u9732\u4e00\u7b14\u80a1\u7968\u589e\u6301\uff0c\u91d1\u989d\u7ea62.48\u4e07\u7f8e\u5143",
+      "url": "https://finance.sina.cn/2026-10-05/detail-iniuciqt6674724.d.html?oid=0LS&vt=4&cid=76524&node_id=76524"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**$273.04** ** +7.32\u00a0(+2.75%)**\nClosing price 10/2/2026 04:00 PM Eastern\nExtended Trading\n**$273.83** ** +0.79\u00a0(+0.29%)**\nAs of 10/2/2026 07:59 PM Eastern\n...\nBased on **18** Wall Street analysts who have issued ratings for Illumina in the last **12 months**, the stock has a consensus rating of **\"H...",
+      "source": "web",
+      "title": "Illumina (ILMN) Stock Forecast and Price Target 2026",
+      "url": "https://www.marketbeat.com/stocks/NASDAQ/ILMN/forecast/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Illumina price target raised to $305 from $226 at Guggenheim | Markets Insider\n...\nGuggenheim analyst Subbu Nambi raised the firm\u2019s price target on Illumina (ILMN) to $305 from $226 and keeps a Buy rating on the shares.\nThe firm adjusted its models and forecasts for select companies in its diagnosti...",
+      "source": "web",
+      "title": "Illumina price target raised to $305 from $226 at Guggenheim",
+      "url": "https://markets.businessinsider.com/news/stocks/illumina-price-target-raised-to-305-from-226-at-guggenheim-1036591094"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Form 4 Illumina Inc For: 2 October By Investing.com\n...\nPublished 03/10/2026, 02:46",
+      "source": "web",
+      "title": "Form 4 Illumina Inc For: 2 October",
+      "url": "https://uk.investing.com/news/stock-market-news/form-4-illumina-inc-for-2-october-93CH-4894253"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Illumina Stock Rallies As Regulatory Clouds Clear | Gokhshtein\nMonday, October 5, 2026\n...\n# Illumina Breaking Out as Regulatory Clouds Clear\nIllumina (ILMN) is rallying independently as the genomics sequencer emerges from years of regulatory tangles and activist pressure, with chart strength now ba...",
+      "source": "web",
+      "title": "Illumina Breaking Out as Regulatory Clouds Clear - Gokhshtein",
+      "url": "https://gokhshtein.com/news/2026-10-01-illumina-breaking-out-as-regulatory-clouds-clear"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Illumina, Inc.\n(ILMN)\nNASDAQ: ILMN \u00b7 Real-Time Price \u00b7 USD\n273.04\n+7.32 (2.75%)\nAt close: Oct 2, 2026, 4:00 PM EDT\n274.07\n+1.03 (0.38%)\nAfter-hours: Oct 2, 2026, 7:59 PM EDT\n...\nAccording to 21 analysts polled by S&P Global, Illumina stock has a consensus rating of \"Buy\" and an average price target ...",
+      "source": "web",
+      "title": "Illumina (ILMN) Stock Forecast & Analyst Price Targets",
+      "url": "https://stockanalysis.com/stocks/ilmn/forecast/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "269.65 USD\n-1.47%\nLast trade: Oct 1, 2026, 03:07 PM EDT\nUpdated: Oct 1, 2026, 03:07 PM EDT\n...\nUS$269.65\n+US$167.39 (+163.69%)\nOct 2, 2025 \u2013 Oct 2, 2026\n...\nOver the past year ILMN traded between 91 USD and 273.9 USD, closing at 269.65 USD on Oct 2, 2026.\n...\n|Next earnings|Oct 29, 2026|\n...\nThe nex...",
+      "source": "web",
+      "title": "Illumina, Inc. (ILMN) Stock Price & Analysis | InvestPane",
+      "url": "https://www.investpane.com/stocks/us/ilmn"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Illumina director Scott B. Ullem acquires 113 shares | ILMN Insider Trading\n...\nA director elected to receive 100% of his 2026 board and committee cash retainer fees in Illumina stock.\n...\nIllumina, Inc.\ndirector Scott B. Ullem acquired **113 shares** of common stock on September 30, 2026; the repor...",
+      "source": "web",
+      "title": "A director receives stock for 100% of Q3 retainer fees at Illumina (ILMN)",
+      "url": "https://www.stocktitan.net/sec-filings/ILMN/form-4-illumina-inc-insider-trading-activity-0bf0aee786f9.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "At the same time, biotechnology and life-science tools stocks posted some of the strongest gains, led by Moderna MRNA, Illumina ILMN and Revvity RVTY.\n...\nIllumina ILMN gained 28.11% on strong results and an improved outlook, while Revvity RVTY advanced 18.82% after upbeat results.\n...\n\"Illumina's I...",
+      "source": "web",
+      "title": "Moderna, Illumina lead healthcare gains in September as ...",
+      "url": "https://www.tradingview.com/news/seekingalpha:3d53bc352094b:0-moderna-illumina-lead-healthcare-gains-in-september-as-medtech-drags/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Wall Street Zen hat das Rating von \u201eBuy\u201c auf \u201eHold\u201c gesenkt, weil die Bewertung nach der Rally vorsichtiger betrachtet wird.\nDas Unternehmen berichtete zuletzt \u00fcberraschend gute Quartalszahlen und best\u00e4tigte die Planungen f\u00fcr das Gesamtjahr 2026.\n...\nDas Papier legte am Freitag um 2,6 Prozent auf 24...",
+      "source": "web",
+      "title": "Illumina-Aktie: Wall Street Zen senkt auf Hold nach Kursanstieg",
+      "url": "https://www.it-boltwise.de/illumina-aktie-wall-street-zen-senkt-auf-hold-nach-kursanstieg.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/quote/ILMN/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/illumina-stock-gains-2-74-percent-as-guggenheim-lifts-target/70223602",
+    "https://public.com/stocks/ilmn/pre-market",
+    "https://www.marketbeat.com/instant-alerts/analyst-illumina-nasdaq-ilmn-stock-rating-cut-to-hold-at-wall-street-zen-2026-10-03/",
+    "https://www.stocktitan.net/sec-filings/ILMN/form-4-illumina-inc-insider-trading-activity-a69b46a5795b.html",
+    "https://finance.sina.cn/2026-10-05/detail-iniuciqt6674724.d.html?oid=0LS&vt=4&cid=76524&node_id=76524",
+    "https://www.marketbeat.com/stocks/NASDAQ/ILMN/forecast/",
+    "https://markets.businessinsider.com/news/stocks/illumina-price-target-raised-to-305-from-226-at-guggenheim-1036591094",
+    "https://uk.investing.com/news/stock-market-news/form-4-illumina-inc-for-2-october-93CH-4894253",
+    "https://gokhshtein.com/news/2026-10-01-illumina-breaking-out-as-regulatory-clouds-clear",
+    "https://stockanalysis.com/stocks/ilmn/forecast/",
+    "https://www.investpane.com/stocks/us/ilmn",
+    "https://www.stocktitan.net/sec-filings/ILMN/form-4-illumina-inc-insider-trading-activity-0bf0aee786f9.html",
+    "https://www.tradingview.com/news/seekingalpha:3d53bc352094b:0-moderna-illumina-lead-healthcare-gains-in-september-as-medtech-drags/",
+    "https://www.it-boltwise.de/illumina-aktie-wall-street-zen-senkt-auf-hold-nach-kursanstieg.html"
+  ],
+  "usage": {
+    "input_tokens": 1091,
+    "output_tokens": 465,
+    "cost_usd": 0.02425
+  }
+}

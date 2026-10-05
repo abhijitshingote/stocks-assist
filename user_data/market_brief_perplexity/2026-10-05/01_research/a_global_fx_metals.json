@@ -1,0 +1,167 @@
+{
+  "name": "a_global_fx_metals",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Global, FX, metals.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nDXY, USD/JPY, EUR/USD; gold, silver, copper (price, % change); ECB, BoE, BoJ, PBoC actions and quotes; Europe/Asia index moves overnight into the brief date.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **DXY** `[Macro / FX]`\n- The dollar index was **101.88**, down **0.1%**, at the latest Reuters reading on Friday, October 2; it was headed for a **third consecutive weekly gain**. (Reuters, Oct 2; publish time not available)\n- DXY was reported above **102.00** early Monday, up **0.3%** in the session, after recovering from the post-payrolls decline. (Newsquawk, Oct 5 10:42 ET)\n\n## **EUR/USD** `[Macro / FX]`\n- EUR/USD was **$1.1259**, up **0.16%**, on Friday, October 2. (Reuters, Oct 2; publish time not available)\n- EUR/USD was reported near **$1.1185** on Monday, its lowest level since **May 2025**. (Amber Markets, Oct 5 05:13 ET)\n- French fiscal concerns and a widening French-German government-bond spread were cited alongside the euro\u2019s decline; the spread was reported near **130 basis points**, its widest since **2012**. (NordFX, Oct 5 03:28 ET)\n\n## **USD/JPY** `[Macro / FX]`\n- USD/JPY was **157.79**, down **0.18%**, on Friday, October 2. (Reuters, Oct 2; publish time not available)\n- USD/JPY was **157.81**, down **0.15%**, in a later Friday Reuters reading. (Reuters, Oct 2; publish time not available)\n- USD/JPY was reported at **157.98** on Monday, below **158.00**. (Amber Markets, Oct 5 05:13 ET)\n\n## **Gold** `[Macro / Commodities]`\n- Spot gold was **$4,135.68 per ounce**, down **1.01%**, in Friday trading. (Reuters, Oct 2; publish time not available)\n- A separate Friday Reuters reading placed spot gold at **$4,181.59 per ounce** at **04:33 ET**; gold was down more than **2% for the week** at that time. (Reuters, Oct 2 04:33 ET)\n- Gold was reported at **$4,137.36 per ounce** on Monday morning and later near **$4,140**. (Amber Markets, Oct 5 05:13 ET; NordFX, Oct 5 03:28 ET)\n\n## **Silver** `[Macro / Commodities]`\n- Spot silver was **$61.21 per ounce**, up **0.6%**, in Friday trading. (Reuters, Oct 2; publish time not available)\n- Another Friday reading placed spot silver at **$60.17 per ounce**, down **1.1%**. (CNBC, Oct 2; publish time not available)\n- Silver was reported at **$60.99 per ounce** on Monday morning. (Amber Markets, Oct 5 05:13 ET)\n\n## **Copper** `[Macro / Commodities]`\n- London Metal Exchange three-month copper was **$14,298.33 per metric ton**, up **0.2%**, on Friday. (Reuters, Oct 2; publish time not available)\n- U.S. copper futures were **$5.57 per pound**, up **0.4%**, in the same Friday report. (Reuters, Oct 2; publish time not available)\n- LME three-month copper was later reported at **$14,289 per metric ton**, up **0.32%**. (Morgan Downey Commodity News, Oct 2; publish time not available)\n\n## **ECB / Euro area** `[Macro / Calendar]`\n- No new ECB policy action or named ECB official quote published within the specified October 2\u20135 window was identified in the gathered results.\n\n## **BoE / United Kingdom** `[Macro / Calendar]`\n- No new BoE policy action or named BoE official quote published within the specified October 2\u20135 window was identified in the gathered results.\n\n## **BoJ / Japan** `[Macro / Calendar]`\n- Tokyo headline and core inflation were reported at their highest levels since **November 2025**, above the BoJ\u2019s **2%** target, on Friday, October 2. (Investing.com, Oct 2; publish time not available)\n- A BoJ September meeting summary was reported as not signaling an imminent rate hike. (Saxo, Oct 5 06:18 ET)\n- Japanese Finance Minister **Katayama** said over the weekend that the foreign-exchange trend had \u201cchanged somewhat\u201d since the joint FX-intervention announcement. (Newsquawk, Oct 5 10:42 ET)\n\n## **PBoC / China** `[Macro / Calendar]`\n- China was closed for **Golden Week** on Monday, October 5, with markets scheduled to return on **October 8**. (NordFX, Oct 5 03:28 ET)\n- No new PBoC policy action or named PBoC official quote published within the specified window was identified in the gathered results.\n\n## **Europe\u2014overnight indexes** `[Macro / Equities]`\n- On Friday, October 2, the **DAX** rose **1.2%**, the **STOXX Europe 600** rose **0.8%**, and the **FTSE 100** rose **0.3%**. (Saxo, Oct 5 06:18 ET)\n\n## **Asia\u2014overnight indexes** `[Macro / Equities]`\n- Early Monday, the **Nikkei 225** was up approximately **1.8%**, the **TOPIX** was up **0.8%**, and the MSCI Asia-Pacific index was up approximately **0.4%**. (Saxo, Oct 5 06:18 ET)\n- The **Hang Seng**, **ASX 200**, and **Straits Times Index** were trading while mainland China was closed for Golden Week. (Saxo, Oct 5 06:18 ET)\n- A later Monday report placed the **Nikkei 225** near **69,700**, up approximately **2.1%**, and the **Hang Seng** near **23,850**, down approximately **0.5%**. (NordFX, Oct 5 03:28 ET)\n\n## **U.S. reference markets** `[Macro / Equities]`\n- On Friday, October 2, the **S&P 500** rose **0.73%** to **7,722.72**, the **Nasdaq 100** rose **1.00%** to **30,807.93**, and the **Dow Jones Industrial Average** rose **0.49%** to **51,176.96**. (Saxo, Oct 5 06:18 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "The dollar weakened 0.30% to 0.8285 against the Swiss franc . It was also down 0.15% to 157.81 against the Japanese yen , but on track for its third straight weekly increase.",
+      "source": "web",
+      "title": "Dollar set for fourth weekly gain versus euro",
+      "url": "https://www.reuters.com/world/asia-pacific/dollar-17-month-high-global-bond-rout-hits-euro-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Oct 2 (Reuters) - Gold prices were \u200blargely steady on Friday but headed for a second consecutive weekly decline, \u200cas a stronger US dollar and elevated Treasury yields weighed on bullion ahead of closely watched US payrolls data.\nSpot gold held its ground at $4,181.59 per ounce by 0833 GMT, but has l...",
+      "source": "web",
+      "title": "Gold steadies ahead of US payrolls data, heads for weekly decline",
+      "url": "https://www.reuters.com/world/india/gold-slips-before-us-payrolls-data-set-second-weekly-loss-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "NEW YORK/LONDON, Oct 2 (Reuters) - Major stock indexes rose and the dollar fell on Friday as expectations for a Federal Reserve interest rate increase later this month fell after softer-than-forecast US jobs data.\n...\nThe dollar \u200cwas down against the euro and yen.\nThe euro was last up 0.16% at $1.12...",
+      "source": "web",
+      "title": "Stocks rise after weak US jobs data but bonds resume selling",
+      "url": "https://finance.yahoo.com/markets/currencies/articles/asian-shares-fall-wild-swings-020953867.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Oct 2 (Reuters) - Global markets are starting to wake up to the reality of borrowing costs at two-decade highs, oil above $100 a barrel and central bank rate hikes, which is heaping pressure on governments, investors and households and eroding some of the AI-driven enthusiasm in equities.\n...\nCurren...",
+      "source": "web",
+      "title": "Take Five: Reality bites",
+      "url": "https://www.reuters.com/business/take-five/global-markets-themes-graphic-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The red metal slipped 1.2% to settle at $14,243.50 a metric ton amid a stronger dollar and oil rally.\n...\nLME three-month copper rose 0.32% to $14,289/t overnight on supply concerns from Chile's 12.8% YoY output drop in August and Escondida supervisors rejecting a contract offer, paving the way for ...",
+      "source": "web",
+      "title": "commoditynews.morgandowney.com \u203a news \u203a 2026/10/02Morgan Downey's Commodity News \u00b7 Friday, October 2, 2026",
+      "url": "https://commoditynews.morgandowney.com/news/2026-10-02"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "## NEW YORK, Oct 2 (Reuters) - The dollar was on track for a fourth straight weekly gain against \u200bthe euro on Friday, supported by elevated US Treasury yields amid a selloff in European government bond markets and expectations the \u200cFederal Reserve will maintain its hawkish interest rate stance.\n...\n...",
+      "source": "web",
+      "title": "Dollar set for fourth weekly gain versus euro",
+      "url": "https://us.headtopics.com/news/dollar-set-for-fourth-weekly-gain-versus-euro-88399131"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The euro has broken to fresh lows near 1.1185, its fourth straight weekly decline, as French budget troubles and a widening French-German bond spread weigh on the currency and lift the dollar index to a 17-month high.\nThe move is specific to Europe: sterling, the yen, the Aussie and the Dow are broa...",
+      "source": "web",
+      "title": "Daily Report \u2013 October 5, 2026 - Amber Markets Limited",
+      "url": "https://ambermarkets.com/daily-report/oct-5th-2026/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Last week saw mixed market performance, with USD/JPY gaining 72 pips (+0.46%), EUR/USD dropping 120 pips (-1.05%), gold falling 3.36%, and Bitcoin rising 0.53%.\n...\n**Forex:** USD/JPY was the strongest major pair, rising from around **157.28 to 158.00**, gaining approximately **72 pips (+0.46%)**, a...",
+      "source": "web",
+      "title": "tentrade.com \u203a en \u203a weekly-market-outlook-october-5Weekly Market Outlook: USD/JPY Eyes 160.14, Gold Targets ...",
+      "url": "https://tentrade.com/en/weekly-market-outlook-october-5-9-2026/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- The U.S. dollar snapped a four-day win streak on Friday after a softer-than-expected jobs report reduced expectations for imminent Federal Reserve interest rate hikes.\nOn the other hand, the Japanese yen strengthened as hot Tokyo inflation data lifted Bank of Japan policy tightening...",
+      "source": "web",
+      "title": "Dollar set for first 3-week win streak since January, euro rebounds and yen gains",
+      "url": "https://finance.yahoo.com/markets/currencies/articles/japanese-yen-firms-strong-inflation-040620760.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Spot silver fell \u200b1.1% to\u00a0$60.17, platinum retreated 1.9% to\u00a0$1,692\u00a0and palladium \u200cdeclined 0.4% to\u00a0$1,166.25.",
+      "source": "web",
+      "title": "Gold slips before U.S. payrolls data, set for second weekly ...",
+      "url": "https://www.cnbc.com/amp/2026/10/02/gold-slips-before-us-payrolls-data-set-for-second-weekly-loss.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "FX: Dollar slips after weak payrolls; yen firms slightly, euro lags on fiscal worries\n...\nUS \u2014 On Friday 2 October, the S&P 500 rose 0.73% to 7,722.72, the Nasdaq 100 gained 1.00% to 30,807.93 (a fresh record high), and the Dow added 0.49% to 51,176.96, as the soft payrolls print reduced near-term F...",
+      "source": "web",
+      "title": "Asia Market Quick Take \u2013 5 October, 2026",
+      "url": "https://www.home.saxo/en-sg/content/articles/macro/asia-market-quick-take--5-october-2026-05102026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Gold prices were broadly stable on Friday as investors prepared for the September U.S. employment report, with the dollar remaining close to a 17-month high and Treasury yields staying elevated.\nSpot gold gained 0.1% to $4,179.65 an ounce as of 06:47 GMT, while U.S. gold futures increased 0.2% to $4...",
+      "source": "web",
+      "title": "Gold Trades Steady as Markets Await September U.S. Payrolls",
+      "url": "https://uk.finance.yahoo.com/news/gold-trades-steady-markets-await-090817621.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Weak US jobs data keeps the Fed debate alive.\nSeptember payrolls came in at just +29K (forecast +90K), unemployment rose to 4.2%, and wage growth slowed to 0.1% m/m.\n...\n\ud83c\uddef\ud83c\uddf5 Nikkei 225 is up about 2.1% at around 69,700 (intraday), near a three-month high on AI and chip stocks\n\ud83c\udded\ud83c\uddf0 Hang Seng is down abo...",
+      "source": "web",
+      "title": "nordfx.com \u203a market-news \u203a market-pulse-october-05-2026Market Pulse \u2013 October 05, 2026: Nikkei, Gold, EUR/USD",
+      "url": "https://nordfx.com/market-news/market-pulse-october-05-2026"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**DXY:** +0.3%\n-\nStrengthens to start the week and reclaimed the 102.00 status after rebounding from the post-NFP dip as the greenback benefits from the weakness in its major counterparts, despite the unwinding of October Fed rate hike bets.\n...\n**EUR/USD:** -0.3%\n- Trickled lower overnight to its w...",
+      "source": "web",
+      "title": "[MARKET ANALYSIS] DXY strengthens amid weakness in ...",
+      "url": "https://www.newsquawk.com/headlines/market-analysis-dxy-strengthens-amid-weakness-in-global-peers-despite-the-unwinding-of-fed-rate-hike-bets"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "NEW YORK/LONDON, Oct 2 (Reuters) - Major stock indexes rose and the dollar fell on Friday as expectations for a Federal Reserve interest rate increase\u00a0later this month fell after softer-than-forecast US jobs data.\n...\nThe Nasdaq Composite was 1.2% higher, leading Wall Street, as it gained 319.27 poi...",
+      "source": "web",
+      "title": "Global shares gain, bonds supported as oil drops, jobs ...",
+      "url": "https://lufkindailynews.com/news_reuters/business/global-shares-gain-bonds-supported-as-oil-drops-jobs-data-misses-expectations/article_c359d62f-81e9-52d7-bb97-3051fe7d45dd.html"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/world/asia-pacific/dollar-17-month-high-global-bond-rout-hits-euro-2026-10-02/",
+    "https://www.reuters.com/world/india/gold-slips-before-us-payrolls-data-set-second-weekly-loss-2026-10-02/",
+    "https://finance.yahoo.com/markets/currencies/articles/asian-shares-fall-wild-swings-020953867.html",
+    "https://www.reuters.com/business/take-five/global-markets-themes-graphic-2026-10-02/",
+    "https://commoditynews.morgandowney.com/news/2026-10-02",
+    "https://us.headtopics.com/news/dollar-set-for-fourth-weekly-gain-versus-euro-88399131",
+    "https://ambermarkets.com/daily-report/oct-5th-2026/",
+    "https://tentrade.com/en/weekly-market-outlook-october-5-9-2026/",
+    "https://finance.yahoo.com/markets/currencies/articles/japanese-yen-firms-strong-inflation-040620760.html",
+    "https://www.cnbc.com/amp/2026/10/02/gold-slips-before-us-payrolls-data-set-for-second-weekly-loss.html",
+    "https://www.home.saxo/en-sg/content/articles/macro/asia-market-quick-take--5-october-2026-05102026",
+    "https://uk.finance.yahoo.com/news/gold-trades-steady-markets-await-090817621.html",
+    "https://nordfx.com/market-news/market-pulse-october-05-2026",
+    "https://www.newsquawk.com/headlines/market-analysis-dxy-strengthens-amid-weakness-in-global-peers-despite-the-unwinding-of-fed-rate-hike-bets",
+    "https://lufkindailynews.com/news_reuters/business/global-shares-gain-bonds-supported-as-oil-drops-jobs-data-misses-expectations/article_c359d62f-81e9-52d7-bb97-3051fe7d45dd.html"
+  ],
+  "usage": {
+    "input_tokens": 743,
+    "output_tokens": 1495,
+    "cost_usd": 0.03865
+  }
+}

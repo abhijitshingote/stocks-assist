@@ -1,0 +1,167 @@
+{
+  "name": "a_sector_realestate_utilities",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Company news: REIT, homebuilder and utility.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed REIT, homebuilder and utility companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **KBH** / **LEN** \u2014 Homebuilders\n\n- A report published October 2 described U.S. housing conditions as a \u201csoft period\u201d as mortgage rates exceeded 7%; KB Home executive chairman Jeffrey Mezger said conditions had weakened since the company\u2019s June earnings report, while Lennar executive chairman Stuart Miller said the operating environment had deteriorated since its prior earnings call. (Yahoo Finance, Oct. 2, 20:30 ET)[4]\n- KB Home reported third-quarter revenue of **$1.297 billion** and EPS of **$1.05**; the available report did not provide consensus estimates or a new-versus-old guidance comparison. (Yahoo Finance, Oct. 2, 20:30 ET)[4]\n- Lennar reported third-quarter revenue of **$8.05 billion** and EPS of **$1.19**; the available report did not provide consensus estimates or a new-versus-old guidance comparison. (Yahoo Finance, Oct. 2, 20:30 ET)[4]\n- KB Home said its construction time had declined to **99 days**; Lennar said construction costs per square foot improved **1% sequentially** and **6% year over year**, while cycle time fell to **116 days** from **121 days** in the prior quarter. (Yahoo Finance, Oct. 2, 20:30 ET)[4]\n- Lennar\u2019s average sales incentive rate was approximately **12%** in the third quarter; KB Home said built-to-order homes represented **74%** of third-quarter deliveries. (Yahoo Finance, Oct. 2, 20:30 ET)[4]\n- Lennar shares were reported lower after short seller **Hunterbrook** raised concerns about the homebuilder; the available result did not state the percentage move or the publication time of the short-seller report. [rumor] (Indy Finance, Oct. 2, publication time not provided)[7]\n\n## **HHH** \u2014 REIT / Real Estate\n\n- Howard Hughes Holdings rose **3.8%** during the week ended October 2 while the State Street Real Estate Select Sector SPDR ETF declined **1.5%**; the available source did not identify a company-specific announcement during the requested window. (Citybiz, Oct. 5, 09:52 ET)[1]\n\n## **NLY** \u2014 Mortgage REIT\n\n- Annaly Capital Management declined **10%** during the week ended October 2; the available source did not identify a company-specific announcement during the requested window. (Citybiz, Oct. 5, 09:52 ET)[1]\n\n## **RITM** \u2014 REIT\n\n- Rithm Capital and DRA Advisors announced the closing of a joint venture to own **1301 Avenue of the Americas** in New York City through Rithm\u2019s real-estate operating platform, Elecor Properties; the available result did not provide the announcement\u2019s exact publication time. (Business Wire, Oct. 2, time not provided)[2]\n\n## **JAN** \u2014 REIT\n\n- Janus Living announced that it will release third-quarter 2026 results after the market close on **Monday, November 2, 2026**, followed by a conference call and webcast at **12:00 p.m. ET on Tuesday, November 3, 2026**. (Business Wire, Oct. 2, time not provided)[2]\n\n## Real Estate / Mortgage \u2014 Sector Data\n\n- The average U.S. 30-year fixed mortgage rate reached **7.28% on October 1**, described as a three-year high; the State Street Real Estate Select Sector SPDR ETF fell **1.5%** for the week ended October 2, while office REITs fell **4.7%** and health-care REITs rose **0.6%**. (Citybiz, Oct. 5, 09:52 ET)[1]\n- The 10-year Treasury yield reached **5.29%**, its highest level since **2002**, in a market report published October 2; the item characterized homebuilders, utilities, and REITs as interest-rate-sensitive sectors. (247WallSt, Oct. 2, 07:15 ET)[5]\n\n## Analyst Actions\n\n- No qualifying U.S.-listed REIT, homebuilder, or utility analyst rating or price-target change with both old and new values was identified in the available search results for the requested window.",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Real Estate Stocks Slide as Mortgage Rates Reach 7.28%; Howard Hughes Bucks Decline\nOctober 5, 2026\nReal estate stocks fell during the week ended Oct. 2 as rising borrowing costs pressured housing and mortgage-related companies, with **office landlords** and **mortgage REITs** among the hardest hi...",
+      "source": "web",
+      "title": "Real Estate Stocks Slide as Mortgage Rates Reach 7.28%",
+      "url": "https://www.citybiz.co/article/913602/real-estate-stocks-slide-as-mortgage-rates-reach-7-28-howard-hughes-bucks-decline/?abkw=citybizwashington"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5, 2026 at 12:01 AM\n## More Than Two-Thirds of Real Estate Inquiries Fail to Connect With an Agent, Pied Piper Study Finds\n...\nOct 2, 2026 at 3:41 PM\n## Liberty Home Guard Introduces AI Voice Agents That Bring a New Standard For Home Warranty Calls\nNEW YORK--(BUSINESS WIRE)--Liberty Home Guard, ...",
+      "source": "web",
+      "title": "Residential Building, Real Estate News and Press Releases",
+      "url": "https://www.businesswire.com/newsroom/industry/construction-property/residential-real-estate"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "HONG KONG, Oct 5 (Reuters) - Hong Kong stocks edged lower in light trading on Monday, as selling pressure on property developers and financial heavyweights outweighed modest gains in tech shares.",
+      "source": "web",
+      "title": "Hong Kong stocks tick down in thin trade as property, financials drag",
+      "url": "https://www.reuters.com/world/asia-pacific/hong-kong-stocks-tick-down-thin-trade-property-financials-drag-2026-10-05/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Homebuilders Sound Alarm on US Housing Slowdown as Mortgage Rates Top 7% \u2014 KBH, LEN Warn Conditions Have \u2018Deteriorated\u2019\n...\nFri, October 2, 2026 at 8:30 PM GMT-3\n...\nReal estate executives report that the U.S. housing market has entered a \"soft period\" as mortgage rates average above 7%, prompting h...",
+      "source": "web",
+      "title": "Homebuilders Sound Alarm on US Housing Slowdown as ...",
+      "url": "https://finance.yahoo.com/real-estate/articles/homebuilders-sound-alarm-us-housing-233007165.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "August inflation came in well below forecasts, but a quiet change in how the government counts service prices may deserve the credit.\nHere is what that means for the Fed's October decision and the rate-sensitive assets in your portfolio.\n...\nPublished October 2, 2026, 7:15am ET \u00b7 3 min read\n## Quick...",
+      "source": "web",
+      "title": "Inflation Cooled More Than Expected, but the Government ...",
+      "url": "https://247wallst.com/investing/2026/10/02/inflation-cooled-more-than-expected-but-the-government-changed-how-it-measures-prices/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "# Friday\u2019s analyst upgrades and downgrades\nDavid Leeder\nPublished October 2, 2026\n...\nAfter receiving shareholder approval for its sale to Kirin Holdings Co. in a deal valued at $2.5-billion, TD Cowen\u2019s Cheryl Zhang downgraded **Jamieson Wellness Inc.\n**(JWEL-T) to \u201csell\u201d from \u201chold\u201d previously, rec...",
+      "source": "web",
+      "title": "Friday's analyst upgrades and downgrades",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-fridays-analyst-upgrades-and-downgrades-320/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Friday, October 2, 2026, was defined by a bond market that moved in two directions within one session.\n...\nLennar shares slid after short seller Hunterbrook raised concerns about the homebuilder.\nTrade Desk and mortgage REIT Armour Residential both touched fresh 52-week lows.",
+      "source": "web",
+      "title": "Treasury Yields Hit 2002 Highs, Dollar at 17-Month Peak as ...",
+      "url": "https://www.indy.finance/news/daily/2026-10-02"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "# K-shaped economy keeps luxury homebuilder stocks steady despite high-rate environment\n...\nWhile homebuilding stocks lag the broader market, builders selling to wealthy buyers are faring better than those selling starter homes\u00a0 There's no place like home, but investors are finding plenty of places ...",
+      "source": "web",
+      "title": "Times Square Investment Journal | A take on business from ...",
+      "url": "https://coveringcompanies.journalism.cuny.edu/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "ayi-20261001\n...\nFORM 8-K\nCURRENT REPORT\nPURSUANT TO SECTION 13 OR 15(d) OF THE\nSECURITIES EXCHANGE ACT OF 1934\nDate of Report (Date of earliest event reported): October 1, 2026\n...\nOn October 1, 2026, Acuity Inc.\n(\u201cwe,\u201d \u201cour,\u201d \u201cus,\u201d \u201cthe Company,\u201d or similar references) issued a press release conta...",
+      "source": "web",
+      "title": "ayi-20261001 - securities exchange act of 1934",
+      "url": "https://www.sec.gov/Archives/edgar/data/1144215/000114421526000047/ayi-20261001.htm"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - The UK's FTSE 100 rose on Monday, steadying after its steepest drop since April last week, as mining shares led gains and oil prices stayed in check.",
+      "source": "web",
+      "title": "UK's FTSE 100 steadies after worst week since April as miners gain",
+      "url": "https://www.reuters.com/world/uk/uks-ftse-100-steadies-after-worst-week-since-april-miners-gain-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "This story was originally published October 5, 2026 at 6:46 AM.",
+      "source": "web",
+      "title": "Wall St futures dip as tech stocks take a breather",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "This story was originally published October 5, 2026 at 12:37 AM.",
+      "source": "web",
+      "title": "European shares rise after last week's selloff; French stocks lag",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL0MA?channel=FBi345"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Date of Report (Date of earliest event reported):\n**October 1, 2026**\n...\nOn October 1, 2026,\nChristian T. Chandler, Executive Vice President and General Counsel of the Company, provided the Company with notice of his decision\nto retire from his position effective December 31, 2026.",
+      "source": "web",
+      "title": "Untitled",
+      "url": "https://www.sec.gov/Archives/edgar/data/2101698/000121390026106420/ea0307420-8k_elmet.htm"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Only Zacks Rank stocks included in Zacks hypothetical portfolios at the beginning of each month are included in the return calculations.",
+      "source": "web",
+      "title": "Company News for Oct 2, 2026",
+      "url": "https://www.zacks.com/stock/news/2999281/company-news-for-oct-2-2026"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Highwoods Properties stock gained 2.05 percent on October 2\n...\n# Highwoods Properties stock gained 2.05 percent on October 2\n...\nHighwoods Properties stock gained 2.05 percent to USD 29.69 on October 2, 2026.\nThird-quarter results are scheduled for October 27 after market close.\n...\nHighwoods Prope...",
+      "source": "web",
+      "title": "Highwoods Properties stock gained 2.05 percent on October 2",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/highwoods-properties-stock-gained-2-05-percent-on-october-2/70228262"
+    }
+  ],
+  "citations": [
+    "https://www.citybiz.co/article/913602/real-estate-stocks-slide-as-mortgage-rates-reach-7-28-howard-hughes-bucks-decline/?abkw=citybizwashington",
+    "https://www.businesswire.com/newsroom/industry/construction-property/residential-real-estate",
+    "https://www.reuters.com/world/asia-pacific/hong-kong-stocks-tick-down-thin-trade-property-financials-drag-2026-10-05/",
+    "https://finance.yahoo.com/real-estate/articles/homebuilders-sound-alarm-us-housing-233007165.html",
+    "https://247wallst.com/investing/2026/10/02/inflation-cooled-more-than-expected-but-the-government-changed-how-it-measures-prices/",
+    "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-fridays-analyst-upgrades-and-downgrades-320/",
+    "https://www.indy.finance/news/daily/2026-10-02",
+    "https://coveringcompanies.journalism.cuny.edu/",
+    "https://www.sec.gov/Archives/edgar/data/1144215/000114421526000047/ayi-20261001.htm",
+    "https://www.reuters.com/world/uk/uks-ftse-100-steadies-after-worst-week-since-april-miners-gain-2026-10-05/",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL0MA?channel=FBi345",
+    "https://www.sec.gov/Archives/edgar/data/2101698/000121390026106420/ea0307420-8k_elmet.htm",
+    "https://www.zacks.com/stock/news/2999281/company-news-for-oct-2-2026",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/highwoods-properties-stock-gained-2-05-percent-on-october-2/70228262"
+  ],
+  "usage": {
+    "input_tokens": 778,
+    "output_tokens": 946,
+    "cost_usd": 0.03052
+  }
+}

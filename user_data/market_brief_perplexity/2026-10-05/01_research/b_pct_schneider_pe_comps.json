@@ -1,0 +1,167 @@
+{
+  "name": "b_pct_schneider_pe_comps",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Story: PTC $22.6B Schneider Deal: Comp Multiples & Peer Re-Rating. Related tickers: PTC, ANSS, CDNS, SNPS.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nWhy this needs follow-up: PTC's 42.3% premium acquisition at ~$23.7B EV is a major industrial-software deal, but the notes give no EV/revenue or EV/EBITDA multiples, no reaction from peers (Hexagon, Dassault, Siemens PLM, ANSS, CDNS), and no analyst read-through to remaining standalone PLM names.\n\nANSWER EACH QUESTION (run a separate search for each):\n- What EV/revenue and EV/EBITDA multiples does Schneider Electric's $23.7 billion acquisition of PTC imply based on PTC's last reported twelve-month financials?\n- Which industrial-software or PLM peers\u2014such as Ansys, Cadence, Synopsys, or Dassault Syst\u00e8mes\u2014did analysts flag as potential re-rating candidates following the Schneider-PTC deal announcement on October 5 2026?\n- What is Schneider Electric's planned financing split between equity issuance and new debt for the $22.6 billion PTC acquisition, and has any rating agency commented on the impact to Schneider's credit rating?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## PTC [Deal terms and valuation]\n\n- Schneider Electric agreed on October 5, 2026 to acquire PTC for **$205 per share in cash**, valuing PTC\u2019s equity at approximately **$22.6 billion** and its enterprise value at approximately **$23.7 billion**; the offer represented a **42.3% premium** to PTC\u2019s last closing price. (Reuters, Oct. 5, 05:45 ET; Schneider Electric, Oct. 5, 05:13 ET)\n- The transaction was expected to close in **Q3 2027**, subject to shareholder, regulatory and other closing conditions. (Reuters, Oct. 5, 05:45 ET; Schneider Electric, Oct. 5, 05:13 ET)\n- The available reports did **not disclose PTC\u2019s last-twelve-month revenue or EBITDA figures**, so an exact LTM EV/revenue or EV/EBITDA calculation cannot be established from the in-window information retrieved.\n- Schneider disclosed an implied valuation of **21\u00d7 2027E adjusted EBITA before synergies** and **13\u00d7 after full run-rate synergies**; these are forward EBITA multiples, not LTM EV/revenue or LTM EV/EBITDA multiples. (Quartr, Oct. 5, 05:54 ET)\n- Schneider forecast **\u20ac250 million of annual run-rate cost synergies by the third year after closing** and approximately **\u20ac800 million of revenue synergies**. (Reuters, Oct. 5, 06:48 ET; Schneider Electric, Oct. 5, 05:13 ET)\n\n## PTC [Stock move]\n\n- PTC shares rose **33.28% to $192.61** on the October 5 regular session, according to a post-announcement market report; the stated $205 offer price was above that closing level. (ABC Money, Oct. 5, 04:25 ET)\n- PTC shares were reported **more than 34% higher in early pre-market trading** on October 5 after Schneider confirmed the transaction. (Yahoo Finance, Oct. 5, 05:11 ET)\n\n## Schneider Electric [Financing and credit]\n\n- Schneider said the approximately **\u20ac22 billion** total cash consideration was secured through a fully committed bridge facility from **Morgan Stanley and Soci\u00e9t\u00e9 G\u00e9n\u00e9rale**. (Schneider Electric, Oct. 5, 05:13 ET)\n- The planned permanent financing comprised approximately **\u20ac5 billion\u2013\u20ac6 billion of new equity** and approximately **\u20ac16 billion\u2013\u20ac17 billion of new debt**. (Schneider Electric, Oct. 5, 05:13 ET)\n- The equity issuance was expected to use an **accelerated bookbuild offering** under existing shareholder authorization; the debt was expected to be issued across several currencies. (Schneider Electric, Oct. 5, 05:13 ET)\n- Schneider stated that it expected to retain **Category A credit ratings** after the acquisition. (Schneider Electric, Oct. 5, 05:13 ET)\n- The retrieved in-window reports did not identify a named rating agency issuing a separate rating action or outlook change by **12:20 ET on October 5, 2026**.\n- Schneider shares fell **more than 7%** on October 5 in a market report following the announced acquisition. (Investing.com, Oct. 5, 10:18 ET)\n\n## Industrial-software and PLM peers [Analyst read-through]\n\n- **Dassault Syst\u00e8mes** was identified as an industrial-software peer exposed to the valuation read-through, but the retrieved reports did not provide a named analyst\u2019s rating, price target, or October 5 percentage move for the stock. (TradingPedia, Oct. 5, 10:06 ET)\n- **Ansys, Cadence Design Systems and Synopsys** were listed as relevant industrial-software or engineering-software comparables in the requested peer set, but the retrieved in-window reports did not provide a named analyst\u2019s rating change, price-target change, or price move for any of the three by 12:20 ET. \n- **Lucas Ferhani of Jefferies** wrote that the transaction closed a gap in Schneider\u2019s portfolio in **product-lifecycle management** and improved its position in discrete end markets. (TradingPedia, Oct. 5, 10:06 ET)\n- **Nay Soe Naing of Berenberg** described the deal valuation as healthy in a compressed software-valuation environment and amid challenging investor sentiment. (Reuters, Oct. 5, 06:54 ET)\n- **Matthew Donen of Morningstar** said the acquisition filled a gap in Schneider\u2019s software capabilities by expanding into product design and engineering, while identifying integration risk and **\u20ac5 billion\u2013\u20ac6 billion of equity dilution**. (Morningstar, Oct. 5, 07:40 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Schneider Electric SE said it's buying PTC Inc.\nfor about $22.6 billion, further expanding its portfolio of industrial software and offerings powered by artificial intelligence.\nThe French conglomerate will buy Boston-based PTC for $205 per share in an all-cash deal expected to close by the third qu...",
+      "source": "web",
+      "title": "Schneider Electric expands in AI with $22.6 billion PTC purchase",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-05/schneider-electric-to-acquire-ptc-for-more-than-20-billion"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - France's Schneider Electric (SCHN.PA) , opens new tab said on Monday it \u200chad agreed to buy PTC (PTC.O) , opens new tab in an all-cash deal valuing the US software company's equity at around $22.6 billion, confirming reports from Sunday.\nThe $205-per-share offer implies \u200ban enterpri...",
+      "source": "web",
+      "title": "France's Schneider Electric confirms $22.6 billion deal to buy US software firm PTC",
+      "url": "https://www.reuters.com/business/frances-schneider-electric-nears-20-billion-deal-buy-us-software-group-ptc-ft-2026-10-04/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - France's Schneider Electric said on Monday it has agreed to buy PTC in an all-cash deal for $205 per share, valuing PTC's equity at about $22.6 billion.\nThe transaction is expected to close by the third quarter of 2027, Schneider Electric added.",
+      "source": "web",
+      "title": "Schneider Electric to buy PTC for $22.6 billion in all-cash deal",
+      "url": "https://www.reuters.com/legal/transactional/schneider-electric-buy-ptc-226-billion-all-cash-deal-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Rueil-Malmaison, France and Boston, United States \u2014 October 5, 2026 \u2014 Schneider Electric, a global energy technology leader, and PTC Inc.\n(\u201cPTC\u201d) (NASDAQ: PTC), a leader in complex industrial product design, engineering and data management, today announced that they have signed a definitive agreemen...",
+      "source": "web",
+      "title": "Schneider Electric to acquire PTC creating the next level of ...",
+      "url": "https://www.se.com/ww/en/assets/pdf/Schneider-Electric-to-acquire-PTC"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 05, 2026\n...\n(Bloomberg) -- Schneider Electric SE agreed to buy industrial software firm PTC Inc.\nfor about $22.6 billion, stepping up its effort to tap into the artificial-intelligence boom with its biggest acquisition to date.\nThe French conglomerate, which makes a suite of electrical products...",
+      "source": "web",
+      "title": "Schneider Expands in AI With Record $23 Billion Acquisition",
+      "url": "https://www.energyconnects.com/news/utilities/2026/october/schneider-expands-in-ai-with-record-23-billion-acquisition/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Updated 05/10/2026, 08:24\n...\nInvesting.com -- Shares of Schneider Electric fell more than 7% on Monday after the French electrical equipment maker agreed to buy U.S. industrial software company PTC in an all-cash deal valuing the company at about $22.6 billion.\nSchneider will pay $205 per PTC share...",
+      "source": "web",
+      "title": "Schneider Electric close to $20 bln deal for U.S. software ...",
+      "url": "https://uk.investing.com/news/stock-market-news/schneider-electric-close-to-20-bln-deal-of-us-software-maker-ptc--report-4894388"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The Schneider Electric PTC deal is real, and it is bigger than first reported.\nFrance\u2019s Schneider Electric has agreed to buy the US industrial software group PTC (NASDAQ: PTC) for $205 a share in cash, valuing its equity at about $22.6bn \u2013 roughly $2.6bn more than the \u201c$20 billion\u201d figure that broke...",
+      "source": "web",
+      "title": "Schneider Electric's PTC deal confirmed at $22.6bn, not $20bn",
+      "url": "https://www.abcmoney.co.uk/2026/10/schneider-electrics-ptc-deal-confirmed-at-22-6bn-not-20bn/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Schneider Electric to buy US software firm PTC in $22.6 billion deal\n...\nOct 5 (Reuters) \u2013 France\u2019s Schneider Electric struck its biggest deal ever on Monday, agreeing to buy US software company PTC for around $22.6 billion as it builds up its data centre business amid booming demand.\n...\n\u201cAI disr...",
+      "source": "web",
+      "title": "Schneider Electric to buy US software firm PTC in $22.6 ...",
+      "url": "https://wtaq.com/2026/10/04/frances-schneider-electric-nears-20-billion-deal-to-buy-us-software-group-ptc-ft-reports/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Schneider Electric to buy US software firm PTC in $22.6 billion deal | KSL.com\n...\nOct 5 \u2014 France's Schneider Electric struck its biggest deal ever on Monday, agreeing to buy PTC \u200bin an all-cash deal valuing the US software company's equity at around $22.6 billion, it said in a statement.\nThe $205-p...",
+      "source": "web",
+      "title": "France's Schneider Electric confirms $22.6 billion deal to ...",
+      "url": "https://www.ksl.com/article/51632224/frances-schneider-electric-nears-20-billion-deal-to-buy-us-software-group-ptc-ft-reports"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 5:11 AM GMT-3\n...\n- Schneider Electric will acquire PTC for $205 per share, a 42.3% premium to PTC's Friday close.\n...\n- Schneider will finance the acquisition with up to 6 billion euros of equity issuance and as much as 17 billion euros of new debt.\nPTC, Inc.\n(PTC) shares ju...",
+      "source": "web",
+      "title": "PTC Rallies Premarket After Schneider Electric Agrees To ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/ptc-rallies-premarket-schneider-electric-081120475.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "5 Oct, 2026\n...\n- All-cash offer for 100% of PTC at $205 per share; stated value is $23.7bn enterprise value and $22.6bn equity value, with \u20ac22bn total cash consideration also cited.\n...\n- Implied valuation is 21x 2027E adjusted EBITA before synergies and 13x with full run-rate synergies.\n- Funding ...",
+      "source": "web",
+      "title": "Schneider Electric (SU) M&A announcement Summary",
+      "url": "https://quartr.com/events/schneider-electric-s-e-su-m-a-announcement_3gmCZf3T"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The USD 22.6 billion deal comes as the French electrification and automation firm seeks to bolster its data center business amid surging demand.\n...\nSchneider Electric SU has agreed to acquire US engineering software firm PTC PTC in a USD 22.6 billion deal\u2014the French conglomerate\u2019s largest to date\u2014a...",
+      "source": "web",
+      "title": "Schneider Electric to Buy PTC in French Industrial Giant\u2019s Largest-Ever Acquisition | Morningstar Nordics",
+      "url": "https://global.morningstar.com/en-nd/stocks/schneider-electric-buy-ptc-french-industrial-giants-largest-ever-acquisition"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "French conglomerate Schneider Electric has agreed to buy Boston-based industrial software maker PTC for $22.6 billion.\n...\nBy the numbers: Schneider will pay $205 per share, representing a 42.3% premium to Friday's closing price.\nThe bottom line: PTC would be Schneider's largest-ever acquisition, to...",
+      "source": "web",
+      "title": "Schneider Electric buying PTC for $22.6 billion",
+      "url": "https://www.axios.com/2026/10/05/schneider-electric-ptc"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Schneider Electric launched a $22.6 billion all-cash offer for PTC at a 42.3% premium to the company's last closing price.\n...\nSchneider forecast \u20ac250 million in annual cost synergies and roughly \u20ac800 million in revenue synergies by year three, implying an effective 2027 EBITA multiple of 13x.\nSchne...",
+      "source": "web",
+      "title": "Schneider's $22.6B PTC Bid Boosts Software Valuations",
+      "url": "https://www.tradingpedia.com/2026/10/05/schneiders-22-6b-ptc-bid-boosts-software-valuations/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Schneider Electric agreed Monday to buy Boston-based PTC for $205 a share in cash, valuing the industrial-software company\u2019s equity at about $22.6 billion and its enterprise at $23.7 billion.\n...\nReuters reported that Schneider plans to finance the purchase with both new equity and new debt, while t...",
+      "source": "web",
+      "title": "Schneider Electric Agrees to Buy PTC for $22.6 Billion",
+      "url": "https://www.theamericanquorum.com/schneider-electric-agrees-to-buy-ptc-for-22-6-billion/"
+    }
+  ],
+  "citations": [
+    "https://www.bloomberg.com/news/articles/2026-10-05/schneider-electric-to-acquire-ptc-for-more-than-20-billion",
+    "https://www.reuters.com/business/frances-schneider-electric-nears-20-billion-deal-buy-us-software-group-ptc-ft-2026-10-04/",
+    "https://www.reuters.com/legal/transactional/schneider-electric-buy-ptc-226-billion-all-cash-deal-2026-10-05/",
+    "https://www.se.com/ww/en/assets/pdf/Schneider-Electric-to-acquire-PTC",
+    "https://www.energyconnects.com/news/utilities/2026/october/schneider-expands-in-ai-with-record-23-billion-acquisition/",
+    "https://uk.investing.com/news/stock-market-news/schneider-electric-close-to-20-bln-deal-of-us-software-maker-ptc--report-4894388",
+    "https://www.abcmoney.co.uk/2026/10/schneider-electrics-ptc-deal-confirmed-at-22-6bn-not-20bn/",
+    "https://wtaq.com/2026/10/04/frances-schneider-electric-nears-20-billion-deal-to-buy-us-software-group-ptc-ft-reports/",
+    "https://www.ksl.com/article/51632224/frances-schneider-electric-nears-20-billion-deal-to-buy-us-software-group-ptc-ft-reports",
+    "https://finance.yahoo.com/markets/stocks/articles/ptc-rallies-premarket-schneider-electric-081120475.html",
+    "https://quartr.com/events/schneider-electric-s-e-su-m-a-announcement_3gmCZf3T",
+    "https://global.morningstar.com/en-nd/stocks/schneider-electric-buy-ptc-french-industrial-giants-largest-ever-acquisition",
+    "https://www.axios.com/2026/10/05/schneider-electric-ptc",
+    "https://www.tradingpedia.com/2026/10/05/schneiders-22-6b-ptc-bid-boosts-software-valuations/",
+    "https://www.theamericanquorum.com/schneider-electric-agrees-to-buy-ptc-for-22-6-billion/"
+  ],
+  "usage": {
+    "input_tokens": 831,
+    "output_tokens": 1047,
+    "cost_usd": 0.0322
+  }
+}

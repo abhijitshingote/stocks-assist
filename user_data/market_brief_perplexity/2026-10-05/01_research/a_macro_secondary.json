@@ -1,0 +1,167 @@
+{
+  "name": "a_macro_secondary",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Secondary macro & officials.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nRegional Fed surveys (Dallas, Richmond, Kansas City, Empire, Philly) actual vs prior; every Fed governor/president speech with verbatim quotes; Treasury and White House economic appointments; fiscal watchdog reports (CBO, CRFB) on debt and rates; foreign CEOs of US-listed companies commenting on trade/export controls.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Fed Officials [Macro]\n\n- Federal Reserve Vice Chair **Philip Jefferson** said future policy adjustments should depend on \u201cincoming data, the evolving outlook and the balance of risks\u201d; he said policymakers\u2019 judgment \u201cmay take more time\u201d and described the economy as facing a \u201ccascade of shocks\u201d from energy prices, AI infrastructure investment and trade-policy changes. The remarks were delivered Thursday and reported Friday, October 2. (Yahoo Finance, Oct. 2, 08:23 ET)[2]\n\n- New York Fed President **John Williams** said there was \u201cno need for urgency\u201d in changing monetary policy and that the Fed had \u201ctime to gather more information\u201d; he also said \u201cone further upward adjustment\u201d could be appropriate later in 2026. (CNBC TV18, Oct. 2, publication time not provided)[8]\n\n- Chicago Fed President **Austan Goolsbee** said there was \u201cplenty of room for anything to be on the table\u201d when asked whether the Fed should raise rates or pause at its next meeting. (Reuters, Oct. 2, publication time not provided)[12]\n\n- Dallas Fed President **Lorie Logan** said the federal-funds target range needed to rise by \u201can additional 50 basis points or more\u201d to balance risks and the Fed\u2019s dual-mandate goals. Her remarks were delivered Thursday and reported during the October 2 window. (Bloomberg, Oct. 2, publication time not provided)[4]\n\n- Minneapolis Fed President **Neel Kashkari** said, \u201cI don\u2019t have a strong view\u201d on whether the next rate increase should occur at the end of October; he said his forecast called for one more rate hike in 2026 and another in 2027. His comments were made Thursday and reported during the window. (CNBC TV18, Oct. 2, publication time not provided)[8]\n\n- Richmond Fed President **Tom Barkin**, Boston Fed President **Susan Collins** and Kansas City Fed President **Jeff Schmid** declined to state their expected policy paths for the Fed\u2019s final two meetings of 2026 at an Asheville, North Carolina conference. (Yahoo Finance, Oct. 2, publication time not provided)[3]\n\n- Traders priced approximately a **25% probability** of an October rate increase, down from approximately **70%** earlier in the week, according to federal-funds futures pricing cited in reports published October 2. (CNBC TV18, Oct. 2, publication time not provided)[8]\n\n## Federal Reserve [Macro / Calendar]\n\n- The Federal Reserve Board extended the comment period for its proposal to modernize **Regulation O** until **November 4, 2026**; comments had originally been due October 5. (Federal Reserve, Oct. 2, 16:02 ET)[7]\n\n## Fiscal and Economic Policy [Macro]\n\n- The available search results did not provide a qualifying CBO or Committee for a Responsible Federal Budget report published between October 2, 2026 and October 5, 2026 at 12:20 ET concerning federal debt or interest rates.\n\n## Regional Fed Surveys [Macro / Calendar]\n\n- The available search results did not provide qualifying October 2\u20135, 2026 releases for the **Dallas, Richmond, Kansas City, Empire State or Philadelphia Fed surveys** with actual-versus-prior figures.\n\n## Treasury and White House Appointments [Macro / Calendar]\n\n- The available search results did not provide a qualifying Treasury or White House economic appointment announcement published between October 2, 2026 and October 5, 2026 at 12:20 ET.\n\n## Foreign CEOs and Trade Controls [Geopolitics / Semiconductors]\n\n- The available search results did not provide a qualifying report published between October 2, 2026 and October 5, 2026 at 12:20 ET in which a foreign CEO of a US-listed company commented on trade restrictions or export controls.",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Chris Phelan, chair of the President's Council of Economic Advisers, doesn't expect the Federal Reserve to raise interest rates again following Friday's employment report and this week's cooler inflation data.\nPhelan pointed to a subdued reading on the job market from September, coupled with comment...",
+      "source": "web",
+      "title": "White House top economist doesn't expect more rate hikes ...",
+      "url": "https://finance.yahoo.com/economy/article/white-house-top-economist-doesnt-expect-more-rate-hikes-this-year-after-september-jobs-miss-165916134.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 8:23 AM GMT-3\n...\nFederal Reserve Vice Chair Philip Jefferson said Treasury yields have risen further since the central bank's September meeting, signalling that investors are reassessing the economic outlook as policymakers consider their next move.\nFuture policy adjustments...",
+      "source": "web",
+      "title": "Fed's Jefferson Says Higher Yields Signal Investors Are ...",
+      "url": "https://finance.yahoo.com/economy/policy/articles/fed-jefferson-says-higher-yields-112329328.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fed Vice Chair Philip Jefferson and New York Fed President John Williams said in separate speeches they believe the central bank has time to assess the economy before considering another rate increase, comments that reeled in investor expectations for a rate hike this month.\nThe remarks \u2014 delivered ...",
+      "source": "web",
+      "title": "Warsh's Top Fed Deputies Step in to Give Markets a Clear ...",
+      "url": "https://finance.yahoo.com/economy/policy/articles/warsh-top-fed-deputies-step-174923002.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Federal Reserve Bank of Dallas President Lorie Logan said the central bank must continue raising interest rates to fully cool inflation and suggested that rising Treasury yields may also help slow the economy.\n\u201cI currently estimate the target range needs to rise an additional 50 basis points or more...",
+      "source": "web",
+      "title": "Fed's Logan Says More Hikes Needed, But Bond Moves ...",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-01/fed-s-logan-says-more-hikes-needed-but-bond-moves-could-help"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Federal Reserve Chairman Kevin Warsh has vowed to avoid sending clear signals to investors on where interest rates are headed.\nHis top deputies made clear this week they\u2019re willing to oblige \u2014 and investors showed they\u2019re still listening.\nFed Vice Chair Philip Jefferson and New York Fed President Jo...",
+      "source": "web",
+      "title": "Warsh's Top Fed Deputies Step in to Give Markets a Clear ...",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-02/warsh-s-top-fed-deputies-step-in-to-give-markets-a-clear-message"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- **15:00BST/10:00EDT: Fed\u2019s Logan** (2026 voter) will deliver opening remarks.\nSpeaking on Thursday, Logan said that the Fed needs to raise rates by at least another 50bps to make policy modestly restrictive and return inflation to its 2% goal.\nShe called last month\u2019s 25bps hike to 3.75-4.00% an im...",
+      "source": "web",
+      "title": "PRIMER - Today's Fedspeak includes: Logan",
+      "url": "https://www.newsquawk.com/headlines/primer---todays-fedspeak-includes-logan"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "October 02, 2026\n### Federal Reserve Board announces it will extend, until November 4, the comment period on its proposal to modernize Regulation O\n...\nThe Federal Reserve Board announced Friday that it will extend, until November 4, the comment period on its proposal to modernize Regulation O, its ...",
+      "source": "web",
+      "title": "Press Releases",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20261002a.htm"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "## Two top Fed officials signalled there is no urgency to raise interest rates in October, prompting markets to cut hike bets as policymakers seek more data before deciding on the next move.\n...\n\u201cThere is no need for urgency\u201d on changing the current setting of monetary policy, Federal Reserve Bank o...",
+      "source": "web",
+      "title": "US Fed officials signal October hike is unlikely as markets cut bets",
+      "url": "https://www.cnbctv18.com/world/us-fed-officials-signal-october-hike-is-unlikely-as-markets-cut-bets-20003488.htm"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "N/A FRB Dallas President Lorie Logan speaks at Workshop on the\nMacroeconomic Implications of Migration\nMonday, October 5, 2026 Exp Prev",
+      "source": "web",
+      "title": "News by Dow Jones Newswires on TradingView, 2026-10-02",
+      "url": "https://www.tradingview.com/news/DJN_DN20261002002014:0/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Monday 5th October\n** ***09:45 ET** * **US S&P Services PMI September Final\n...\nIn the September Preliminary survey, US service-sector activity accelerated sharply, with growth reaching its strongest pace since July 2021.\n...\n** At the September meeting, the Federal Reserve raised the federal fund...",
+      "source": "web",
+      "title": "Week Ahead: Economic Indicators 5th \u2013 9th October (US)",
+      "url": "https://features.financialjuice.com/2026/10/02/week-ahead-economic-indicators-5th-9th-october-us/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Two Federal Reserve officials, including Vice Chair Philip Jefferson, suggested policymakers should take more time before deciding whether additional interest-rate increases are needed to slow inflation.\nJefferson warned that inflation has been too high for too long, and sees risks that it could rem...",
+      "source": "web",
+      "title": "Jefferson Says Fed May Need More Time to Weigh Next ...",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-01/fed-s-jefferson-says-officials-may-need-more-time-for-next-move"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Oct 2 (Reuters) - Federal Reserve policymakers were already leaning against delivering a second straight rate hike this month to give \u200bthem time to sift through more economic data before pulling the trigger again, and a cooler than expected job market report Friday leaves that approach \u200cintact.\n...\n...",
+      "source": "web",
+      "title": "Fed seen skipping October rate hike as job market cools",
+      "url": "https://www.reuters.com/business/fed-seen-skipping-october-rate-hike-job-market-cools-2026-10-02/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Dallas Fed's Lorie Logan says more rate hikes likely, while higher bond yields may do some of the cooling\n...\n###### Summary:\n- Dallas Fed President Lorie Logan sees the policy rate needing to rise \"an additional 50 basis points or more\" to balance the outlook and risks.\n...\n- Odds of an October h...",
+      "source": "web",
+      "title": "Dallas Fed's Lorie Logan says more rate hikes likely, while higher bond yields may do some of the cooling",
+      "url": "https://www.briefs.co/news/dallas-fed-s-lorie-logan-says-more-rate-hikes-likely-while-h/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "In the US, several Federal Reserve officials are also due to speak, while earnings from PepsiCo and Delta Air Lines will be closely watched.\nThe FOMC meeting minutes on Wednesday will be scrutinized for further clues on the Fed\u2019s monetary policy outlook.\nThe central bank raised rates in September fo...",
+      "source": "web",
+      "title": "Week Ahead - Oct 5th",
+      "url": "https://tradingeconomics.com/calendar?article=29373&g=top&importance=2&startdate=2026-10-02"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- Fed officials hint that no urgent rate-hike is needed.\n- Historical precedent favors a pre-midterm pause.\n...\nLast month, Fed Chair Kevin Warsh and the Federal Reserve hiked interest rates by 0.25% to a target range of 3/75% to 4.00%.\nAlthough President Trump has been an outspoken proponent of low...",
+      "source": "web",
+      "title": "October FOMC: Why the Fed Will Pause - October 2, 2026 - Zacks.com",
+      "url": "https://www.zacks.com/commentary/2999637/october-fomc-why-the-fed-will-pause"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/economy/article/white-house-top-economist-doesnt-expect-more-rate-hikes-this-year-after-september-jobs-miss-165916134.html",
+    "https://finance.yahoo.com/economy/policy/articles/fed-jefferson-says-higher-yields-112329328.html",
+    "https://finance.yahoo.com/economy/policy/articles/warsh-top-fed-deputies-step-174923002.html",
+    "https://www.bloomberg.com/news/articles/2026-10-01/fed-s-logan-says-more-hikes-needed-but-bond-moves-could-help",
+    "https://www.bloomberg.com/news/articles/2026-10-02/warsh-s-top-fed-deputies-step-in-to-give-markets-a-clear-message",
+    "https://www.newsquawk.com/headlines/primer---todays-fedspeak-includes-logan",
+    "https://www.federalreserve.gov/newsevents/pressreleases/bcreg20261002a.htm",
+    "https://www.cnbctv18.com/world/us-fed-officials-signal-october-hike-is-unlikely-as-markets-cut-bets-20003488.htm",
+    "https://www.tradingview.com/news/DJN_DN20261002002014:0/",
+    "https://features.financialjuice.com/2026/10/02/week-ahead-economic-indicators-5th-9th-october-us/",
+    "https://www.bloomberg.com/news/articles/2026-10-01/fed-s-jefferson-says-officials-may-need-more-time-for-next-move",
+    "https://www.reuters.com/business/fed-seen-skipping-october-rate-hike-job-market-cools-2026-10-02/",
+    "https://www.briefs.co/news/dallas-fed-s-lorie-logan-says-more-rate-hikes-likely-while-h/",
+    "https://tradingeconomics.com/calendar?article=29373&g=top&importance=2&startdate=2026-10-02",
+    "https://www.zacks.com/commentary/2999637/october-fomc-why-the-fed-will-pause"
+  ],
+  "usage": {
+    "input_tokens": 758,
+    "output_tokens": 832,
+    "cost_usd": 0.02875
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "c_WOLF",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Wolfspeed Inc. (WOLF).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| WOLF | Wolfspeed Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +13.19% | +28.0% | 3.0\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why WOLF moved. Run several searches: \"why is Wolfspeed Inc. stock down/up\",\n\"Wolfspeed Inc. stock\", \"WOLF shares Friday October 2, 2026\", \"Wolfspeed Inc. concerns\", \"Wolfspeed Inc. FDA\",\n\"Wolfspeed Inc. analyst\", \"Wolfspeed Inc. price target\", \"Wolfspeed Inc. deal\", \"Wolfspeed Inc. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Wolfspeed Inc. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Wolfspeed Inc. (WOLF) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Wolfspeed Inc. (WOLF) `[Power & Wide-Bandgap]`\n- Wolfspeed closed at **$35.16**, up **13.19%** on **October 2, 2026**, with **7.35 million shares** traded. (Investing.com, Oct 4 12:24 ET)[7]\n- Wolfspeed announced commercial availability of a **Premium 200 mm n-type silicon-carbide substrate** on **September 27, 2026**, with fewer than **0.01 micropipes per cm\u00b2** and fewer than **3 micropipes per wafer**; the product was described as immediately orderable with dedicated capacity. (Wolfspeed company release, Sep 27; reported Oct 2 16:12 ET)[6]\n- The new substrate expands Wolfspeed\u2019s **200 mm silicon-carbide portfolio** and is designed to reduce defects and improve wafer-shape stability, potentially supporting manufacturing yield. (Moomoo, Oct 2 21:05 ET)[14]\n- The broader semiconductor group also advanced after **Micron** reported earnings that fueled a sector-wide rally; the available report identified Micron\u2019s results as the lead group catalyst but did not provide Micron\u2019s specific price move. (Moomoo, Oct 2 21:05 ET)[12]\n- Wolfspeed\u2019s fiscal fourth-quarter 2026 AI-data-center revenue was reported as **more than double year over year** and approximately **20% higher sequentially**; the company also reported approximately **$1.1 billion** of cash, cash equivalents and short-term investments as of **June 28, 2026**. (Quiver Quantitative, Oct 2; updated Oct 5 07:26 ET)[5]\n- Wolfspeed\u2019s reported short interest was approximately **26.1 million shares**, or **49.6% of public float**, as of **September 15, 2026**. (Quiver Quantitative, Oct 2; updated Oct 5 07:26 ET)[5]\n- Wolfspeed\u2019s **October 2 close** was reported at **$35.16**, compared with a median 12-month analyst price target of **$28** from **two analysts**. (TickerNerd, Oct 2; publication time not stated)[15]\n- Wolfspeed was identified as having **49.31% short interest** and the highest short interest among technology companies with market capitalizations below **$2 billion** in the cited October 2 data. (GuruFocus, Oct 2 17:32 ET)[13]\n- Wolfspeed\u2019s stock was quoted at **$35.12**, up **$3.95**, or **12.67%**, at **09:24 ET on October 5**; the cited report did not identify a new company-specific announcement for that move. (MarketBeat, Oct 5 09:24 ET)[1]\n- No specific **after-hours or pre-market October 5 catalyst** was identified in the available reports through **12:20 ET**.",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**$35.12** ** +3.95\u00a0(+12.67%)**\nClosing price 10/2/2026 03:59 PM Eastern\n...\n(NYSE:WOLF) develops and manufactures semiconductor technologies based primarily on silicon carbide, a wide-bandgap material designed to support efficient power conversion and high-temperature operation.\n...\nWolfspeed (NYSE...",
+      "source": "web",
+      "title": "Wolfspeed (WOLF) Stock Price, News & Analysis - NYSE",
+      "url": "https://www.marketbeat.com/stocks/NYSE/WOLF/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Wolfspeed (WOLF) has drawn fresh attention after its recent share price move, with the stock closing at US$31.17 and posting a 1 day return of 10.8% on the latest trading day.\nThe sharp 10.8% 1 day share price return sits on top of a 7 day share price gain of 18.5% and a 30 day share price return of...",
+      "source": "web",
+      "title": "Is Wolfspeed (WOLF) Overvalued As Its Share Price Jumps ...",
+      "url": "https://simplywall.st/stocks/us/semiconductors/nyse-wolf/wolfspeed/news/is-wolfspeed-wolf-overvalued-as-its-share-price-jumps-above"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Wolfspeed surged 16.30% to close at $36.25 on October 2, 2026, local time, gaining $5.08 in New York trading.\nThe sharp rally followed portfolio advancements in 200 mm silicon carbide substrates and selective investor buying across specialized semiconductor names.\nShares of Wolfspeed, Inc.\n(WOLF) ra...",
+      "source": "web",
+      "title": "Wolfspeed Surges Double Digits on Silicon Carbide Expansion",
+      "url": "https://news.jkn.co.kr/editions/english/post/1005774"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Im vierten Quartal 2026 sank der Umsatz auf 149,60 Millionen USD.\nDie Wolfspeed-Aktie kostet am 02.10.2026 28,90 Euro nach 27,77 Euro.\n...\nWolfspeed (ISIN US97785W1062) notiert am 02.10.2026 um 15:31 Uhr bei Lang & Schwarz mit 28,90 Euro, plus 4,07 Prozent gegen\u00fcber dem Vortagesschluss von 27,77 Eur...",
+      "source": "web",
+      "title": "Wolfspeed-Aktie legt 4,07 Prozent auf 28,90 Euro zu",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/wolfspeed-aktie-legt-4-07-prozent-auf-28-90-euro-zu/70215942"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Wolfspeed Jumps 11.1% as Investors Revisit AI Power Opportunity and Short-Squeeze Setup | Quiver Quantitative\n- NVDA NVIDIA Corporation\n- Nancy Pelosi\n...\nWolfspeed, Inc.\n(WOLF) is up 11.1% today.\n...\n**Analysis:** A clear company-specific headline did not appear alongside today\u2019s move, so the rally...",
+      "source": "web",
+      "title": "Wolfspeed Jumps 11.1% as Investors Revisit AI Power Opportunity and Short-Squeeze Setup | WOLF Stock News",
+      "url": "https://www.quiverquant.com/news/Wolfspeed+Jumps+11.1%25+as+Investors+Revisit+AI+Power+Opportunity+and+Short-Squeeze+Setup"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Sharkwater Trading: Wolfspeed Jumped 10.8 Percent.\n...\n## Friday, October 2, 2026\n...\n# Wolfspeed Jumped 10.8 Percent. I Cannot Find the Reason. October 2, 2026 Bottom Line Up FrontWolfspeed (NYSE: WOLF) closed October 1, 2026 at **$31.17**, up **10.81 percent** from **$28.13**, on **3.11 million sh...",
+      "source": "web",
+      "title": "www.sharkwatertrading.com \u00b7 2026 \u00b7 10Sharkwater Trading: Wolfspeed Jumped 10.8 Percent. I Cannot ...",
+      "url": "https://www.sharkwatertrading.com/2026/10/wolfspeed-jumped-108-percent-i-cannot.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "|Oct 02, 2026|35.28|32.35|36.49|31.62|7.35M|+13.19%|",
+      "source": "web",
+      "title": "Wolfspeed Stock Price History",
+      "url": "https://www.investing.com/equities/cree-inc.-historical-data"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "|End of Day Share Price|2026/10/02 00:00|",
+      "source": "web",
+      "title": "Grey Wolf Health (TSXV:WOLF) - Stock Analysis - Simply Wall St",
+      "url": "https://simplywall.st/stocks/ca/consumer-retailing/tsxv-wolf/grey-wolf-health-shares?_pr=web"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "+4.11 (13.19%)\nAt close: Oct 2, 2026, 4:00 PM EDT\n35.16",
+      "source": "web",
+      "title": "Wolfspeed (WOLF) Statistics & Valuation",
+      "url": "https://stockanalysis.com/stocks/wolf/statistics/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Wolfspeed shares saw a significant increase on Thursday, closing at $29.43, up $1.30 or 4.62% in local time.\nThe surge was primarily attributed to the company's announcement of an expanded 200 mm silicon carbide portfolio.\nWolfspeed, Inc.\n(WOLF) experienced a notable uptick in its stock performance ...",
+      "source": "web",
+      "title": "Wolfspeed Climbs on Expanded Silicon Carbide Offerings",
+      "url": "https://news.jkn.co.kr/editions/english/post/1004530"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Shares of TeraWulf Inc.\n(NASDAQ:WULF - Get Free Report) were up 8.2% during trading on Friday.",
+      "source": "web",
+      "title": "TeraWulf (NASDAQ:WULF) Shares Climb 8.2% - What's Next?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-terawulf-nasdaq-wulf-shares-climb-82-whats-next-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "\u30a6\u30eb\u30d5\u30b9\u30d4\u30fc\u30c9\u306e\u5fd9\u3057\u304b\u3063\u305f1\u9031\u9593\uff1a\u65b0\u57fa\u677f\u306e\u767a\u58f2\u3068\u30bb\u30af\u30bf\u30fc\u5168\u4f53\u306e\u682a\u4fa1\u4e0a\u6607\n- \u30cf\u30a4\u30e9\u30a4\u30c8 **\n...\n\u30a6\u30eb\u30d5\u30b9\u30d4\u30fc\u30c9\u793e\uff08NYSE\uff1aWOLF\uff09\u306f\u3001200mm\u70ad\u5316\u30b1\u30a4\u7d20\u88fd\u54c1\u30dd\u30fc\u30c8\u30d5\u30a9\u30ea\u30aa\u306e\u62e1\u5145\u3068\u3001\u30de\u30a4\u30af\u30ed\u30f3\u306e\u597d\u6c7a\u7b97\u306b\u727d\u5f15\u3055\u308c\u308b\u534a\u5c0e\u4f53\u76f8\u5834\u306e\u5e83\u304c\u308a\u3092\u4f34\u3046\u591a\u5fd9\u306a\u4e00\u9031\u9593\u3092\u904e\u3054\u3057\u307e\u3057\u305f\u3002",
+      "source": "web",
+      "title": "\u30a6\u30eb\u30d5\u30b9\u30d4\u30fc\u30c9\u306e\u5fd9\u3057\u304b\u3063\u305f1\u9031\u9593\uff1a\u65b0\u57fa\u677f\u306e\u767a\u58f2\u3068\u30bb\u30af\u30bf\u30fc\u5168\u4f53\u306e\u682a\u4fa1\u4e0a\u6607",
+      "url": "https://www.moomoo.com/ja/news/post/1000557797/wolfspeed-s-busy-week-a-new-substrate-launch-a-sector"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "On October 02, 2026, WolfSpeed Inc (ticker: WOLF) emerged as the most shorted stock in the technology sector for companies with market capitalizations up to $2 billion, with a short interest of 49.31%.\nThis elevated short interest highlights significant market skepticism despite recent price gains.\n...",
+      "source": "web",
+      "title": "WolfSpeed (WOLF) Tops Tech Sector Short Interest at 49.31% Among",
+      "url": "https://www.gurufocus.com/news/9107894/wolfspeed-wolf-tops-tech-sector-short-interest-at-4931-among-sub2b-market-caps"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Wolfspeed\u7684\u7e41\u5fd9\u4e00\u5468\uff1a\u65b0\u57fa\u677f\u53d1\u5e03\uff0c\u677f\u5757\u5168\u7ebf\u4e0a\u6da8\n- \u8981\u95fb **\n...\nWolfspeed Inc.\n(NYSE:WOLF) had a busy week that included an expansion of its 200mm silicon carbide portfolio and a broader semiconductor rally fueled by Micron's strong earnings.\nWolfspeed\u516c\u53f8\uff08\u7ebd\u7ea6\u8bc1\u5238\u4ea4\u6613\u6240\u4ee3\u7801\uff1aWOLF\uff09\u5ea6\u8fc7\u4e86\u4e00\u4e2a\u7e41\u5fd9\u7684\u4e00\u5468\uff0c\u671f\u95f4\u4e0d\u4ec5\u6269\u5145\u4e86\u5176200\u6beb\u7c73\u78b3\u5316\u7845\u4ea7\u54c1\u7ec4\u5408\uff0c\u8fd8\u53d7\u76ca\u4e8e\u7f8e\u5149\u5f3a\u52b2\u7684\u8d22\u62a5\u8868\u73b0\uff0c\u63a8\u52a8\u4e86\u66f4\u5e7f\u6cdb\u7684\u534a...",
+      "source": "web",
+      "title": "Wolfspeed\u7684\u7e41\u5fd9\u4e00\u5468\uff1a\u65b0\u57fa\u677f\u53d1\u5e03\uff0c\u677f\u5757\u5168\u7ebf\u4e0a\u6da8",
+      "url": "https://www.moomoo.com/hans/news/post/1000557797/wolfspeed-s-busy-week-a-new-substrate-launch-a-sector"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Last close, 2 Oct 2026\n$35\n+13.12% on the day\nThe 2 Wall Street analysts covering Wolfspeed, Inc.\nhold a median 12-month price target of $28 \u2014 -22.0% from the last close.\n...\nOver the twelve months to 2 Oct 2026, Wolfspeed, Inc.\n...\n### Wolfspeed's Busy Week: A New Substrate Launch, a Sector-Wide Ra...",
+      "source": "web",
+      "title": "WOLF Stock Forecast 2026-2027 - Wolfspeed, Inc. Price ...",
+      "url": "https://tickernerd.com/stock/wolf-forecast/"
+    }
+  ],
+  "citations": [
+    "https://www.marketbeat.com/stocks/NYSE/WOLF/",
+    "https://simplywall.st/stocks/us/semiconductors/nyse-wolf/wolfspeed/news/is-wolfspeed-wolf-overvalued-as-its-share-price-jumps-above",
+    "https://news.jkn.co.kr/editions/english/post/1005774",
+    "https://www.ad-hoc-news.de/boerse/news/nebenwerte/wolfspeed-aktie-legt-4-07-prozent-auf-28-90-euro-zu/70215942",
+    "https://www.quiverquant.com/news/Wolfspeed+Jumps+11.1%25+as+Investors+Revisit+AI+Power+Opportunity+and+Short-Squeeze+Setup",
+    "https://www.sharkwatertrading.com/2026/10/wolfspeed-jumped-108-percent-i-cannot.html",
+    "https://www.investing.com/equities/cree-inc.-historical-data",
+    "https://simplywall.st/stocks/ca/consumer-retailing/tsxv-wolf/grey-wolf-health-shares?_pr=web",
+    "https://stockanalysis.com/stocks/wolf/statistics/",
+    "https://news.jkn.co.kr/editions/english/post/1004530",
+    "https://www.marketbeat.com/instant-alerts/price-terawulf-nasdaq-wulf-shares-climb-82-whats-next-2026-10-02/",
+    "https://www.moomoo.com/ja/news/post/1000557797/wolfspeed-s-busy-week-a-new-substrate-launch-a-sector",
+    "https://www.gurufocus.com/news/9107894/wolfspeed-wolf-tops-tech-sector-short-interest-at-4931-among-sub2b-market-caps",
+    "https://www.moomoo.com/hans/news/post/1000557797/wolfspeed-s-busy-week-a-new-substrate-launch-a-sector",
+    "https://tickernerd.com/stock/wolf-forecast/"
+  ],
+  "usage": {
+    "input_tokens": 1020,
+    "output_tokens": 659,
+    "cost_usd": 0.02695
+  }
+}

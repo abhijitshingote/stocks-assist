@@ -1,0 +1,167 @@
+{
+  "name": "a_ai_platforms",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: AI platforms & disruption.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nConsumer and enterprise AI product launches (agents, models, devices), adoption metrics, big-tech event announcements; analyst notes naming stocks that win or lose from these launches (disruption baskets, second-order beneficiaries) with the stock moves.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **MDB** \u2014 Software & SaaS\n- MongoDB CEO Chirantan Desai resigned with immediate effect on October 2 to lead a new AI initiative at Meta; former CEO Dev Ittycheria returned as interim CEO while the board searches for a permanent replacement. MongoDB shares were reported down about 14.7% for the week as of October 2; Stifel\u2019s Brad Reback reiterated **Buy** with a **$465** price target. (Investing.com, Oct. 2; latest update available Oct. 5 08:52 ET)\n- Meta\u2019s consumer rollout of **Muse**, described as an autonomous web-navigating AI agent, was cited in connection with Desai\u2019s move to Meta. (Investing.com, Oct. 2; latest update available Oct. 5 08:52 ET)\n\n## **META**, **OPENAI**, **ASANA**, **MNDY**, **BL**, **DBX**, **HUBS**, **INTU**, **PAYC**, **PCTY**, **ZM** \u2014 Software & SaaS\n- Bank of America analysts led by Tal Liani identified **Asana, monday.com, BlackLine, Dropbox, HubSpot, Intuit, Paycom, Paylocity and Zoom** as software companies potentially exposed to disruption from consumer and small-business AI agents; the note cited Meta\u2019s **Muse** and OpenAI\u2019s **Dots** as examples of agents that could handle simpler workflows directly. (Yahoo Finance, Oct. 2 17:04 ET)\n- Bank of America identified **CoreWeave, Nebius and Oracle** as potential beneficiaries of higher inference and computing demand from wider agentic-AI adoption. (Yahoo Finance, Oct. 2 17:04 ET)\n\n## **SNPS** \u2014 Semiconductor IP / AI Infrastructure\n- Synopsys announced a partnership with OpenAI to develop **GPT-Synopsys**, a specialized model for chip design, and a multiyear intellectual-property agreement with Amazon for custom-silicon collaboration. Synopsys shares were reported up **12.8% on October 1** and about **9.2% for the week** as of October 2; StoneX analyst Gary Mobley reiterated **Buy** with a **$570** price target. (Investing.com, Oct. 2; latest update available Oct. 5 08:52 ET)\n\n## **HPE** \u2014 AI Infrastructure\n- Daiwa upgraded Hewlett Packard Enterprise to **Outperform** from **Neutral** and set a **$75** price target on October 2. (247WallSt, Oct. 2; latest update available Oct. 5 09:17 ET)\n- A separate October 2 analyst roundup reported that Truist, Piper Sandler and Wells Fargo raised HPE price targets on networking and AI, while Evercore moved to **In Line** on valuation; the available report did not provide each firm\u2019s old and new target. (Investing.com, Oct. 2; latest update available Oct. 5 11:13 ET)\n\n## **CSCO** \u2014 Communications & Networking\n- Cisco shares rose **3.2% to $112.20** on October 2; the report cited Zacks\u2019 upgrade from **Hold** to **Strong Buy**, fiscal-fourth-quarter 2026 product-order growth of **35% year over year**, and a sovereign-AI infrastructure partnership with Bell Canada. (MarketBeat, Oct. 2; latest update available Oct. 5 08:01 ET)\n- Piper Sandler lowered Cisco\u2019s price target to **$125**; the report stated that AI represented about **6% of fiscal-2026 revenue**. (MarketBeat, Oct. 2; latest update available Oct. 5 08:01 ET)\n\n## **CBRS** \u2014 AI Compute\n- Freedom Capital upgraded Cerebras Systems to **Buy** from **Hold** and set a **$209** price target on October 2. (247WallSt, Oct. 2; latest update available Oct. 5 09:17 ET)\n\n## **AAPL** \u2014 Internet & Platforms\n- Morgan Stanley lowered Apple\u2019s price target to **$355 from $360** while retaining an **Overweight** rating; the report cited potential disruption to Apple\u2019s services business if AI agents such as Meta\u2019s Muse bypass the App Store. (MarketBeat, Oct. 2; latest update available Oct. 5 06:28 ET)\n\n## **SpaceXSI / xAI** \u2014 AI Platforms\n- Elon Musk said on October 4 that SpaceX\u2019s AI unit would be renamed **SpaceXSI**; the report stated that no implementation date or additional details were provided, so the item is **[rumor]** regarding timing and corporate implementation. (Reuters, as reported by IndMoney, Oct. 5 09:21 ET)\n- The same report stated that **Grok 4.7** API availability had been dated September 21, with a **500,000-token context window** for coding, agentic tasks and knowledge work; this background predates the requested window. (IndMoney, latest update Oct. 5 10:00 ET)\n- SpaceX stock was reported at **$158.96 on October 2**, up approximately **7.35%** in that regular session; the report did not identify a US-listed public ticker. (IndMoney, latest update Oct. 5 10:00 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com - Freedom Broker upgraded Nike (NYSE:NKE) to Buy from Sell on Wednesday and lowered its price target to $51 from $54.\n...\nRBC Capital raises Accenture stock price target on AI momentum By Investing.com - Oct 02, 2026",
+      "source": "web",
+      "title": "Stock Analyst Ratings: Upgrades and Downgrades",
+      "url": "https://www.investing.com/news/analyst-ratings/bmo-capital-raises-mongodb-stock-price-target-to-360-on-ai-growth-93CH-4692801-0"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "BofA Reveals Software Stocks To Sell List Due to AI Agents Risk\n...\nFri, October 2, 2026 at 5:04 PM GMT-3\n...\nBank of America says the rise of agentic AI could create a much bigger threat for software companies serving consumers and small-to-medium-sized businesses than for large enterprise vendors....",
+      "source": "web",
+      "title": "BofA Reveals Software Stocks To Sell List Due to AI Agents Risk",
+      "url": "https://finance.yahoo.com/technology/ai/articles/bofa-reveals-software-stocks-sell-200419456.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "HONG KONG, Oct 5 (Reuters) - Hong Kong stocks edged lower in light trading on Monday, as selling pressure on property developers and financial heavyweights outweighed modest gains in tech shares.",
+      "source": "web",
+      "title": "Hong Kong stocks edge up as AI shares offset property ...",
+      "url": "https://www.reuters.com/world/asia-pacific/hong-kong-stocks-tick-down-thin-trade-property-financials-drag-2026-10-05/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 3:34 PM GMT-3\n...\nMongoDB plunged 18.5% on Monday and is currently on course to end the week down around 14.7% after President and CEO Chirantan Desai resigned with immediate effect to lead a new AI initiative at Meta Platforms.\nFormer chief executive Dev Ittycheria returns a...",
+      "source": "web",
+      "title": "Investing.com\u2019s stocks of the week",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/investing-com-stocks-week-183416661.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Analysts maintain a consensus \u201cModerate Buy\u201d rating with an average price target of $340.02.\n- Risks include higher memory and component costs, possible iPhone pricing pressure, a $5.7 billion patent verdict that could lead to ongoing royalties, and AI competitors potentially disrupting Apple\u2019s high...",
+      "source": "web",
+      "title": "Apple (NASDAQ:AAPL) Stock Jumps 1% - What's Next?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-apple-nasdaq-aapl-stock-jumps-1-whats-next-2026-10-02/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Offsetting that, Citigroup's index shows analyst upgrades have outpaced downgrades since May, the longest run in over four years, and Goldman Sachs Prime Services reports that September saw hedge funds make their largest net buying of European equities in more than five years.\n...\n### A.I. Boom Fill...",
+      "source": "web",
+      "title": "European Stocks Slip as Bond Yields Surge",
+      "url": "https://www.briefs.co/news/european-stocks-wobble-as-surging-bond-yields-stoke-inflatio/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On October 4, Musk confirmed that SpaceX\u2019s AI unit would be renamed SpaceXSI after an X user suggested the change.\nReuters reported that he supplied neither an implementation date nor further details.\nThe announcement should therefore be described as a planned rebrand rather than a completed corpora...",
+      "source": "web",
+      "title": "SpaceXAI to SpaceXSI: Inside Musk's Superintelligence Shift",
+      "url": "https://www.indmoney.com/blog/us-stocks/spacexai-to-spacexsi-musk-superintelligence"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Netflix is scheduled to report third-quarter results on October 20.\nAnalysts maintain a consensus \u201cModerate Buy\u201d rating with an average price target of $95.27, although recent ratings have included both upgrades and significant downgrades.\n...\n- Positive Sentiment: **Deutsche Bank upgraded Netflix...",
+      "source": "web",
+      "title": "38,152 Shares of Netflix, Inc. $NFLX Bought by Polaris Financial Partners",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-38152-shares-of-netflix-inc-nflx-bought-by-polaris-financial-partners-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Cisco shares rose 3.2% to $112.20** following positive analyst sentiment, including Zacks\u2019 upgrade to \u201cstrong buy.\u201d\nThe consensus rating remains \u201cModerate Buy,\u201d with an average price target of $128.52.\n- **AI infrastructure is a key growth catalyst:** product orders increased 35% year over year ...",
+      "source": "web",
+      "title": "Cisco Systems (NASDAQ:CSCO) Shares Climb 3.2%",
+      "url": "https://www.marketbeat.com/instant-alerts/price-cisco-systems-nasdaq-csco-shares-climb-32-time-to-buy-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "After receiving shareholder approval for its sale to Kirin Holdings Co. in a deal valued at $2.5-billion, TD Cowen\u2019s Cheryl Zhang downgraded **Jamieson Wellness Inc.\n**(JWEL-T) to \u201csell\u201d from \u201chold\u201d previously, recommending that investors tender their shares to the cash offer.\n...\n* **Sienna Senior ...",
+      "source": "web",
+      "title": "Friday's analyst upgrades and downgrades",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-fridays-analyst-upgrades-and-downgrades-320/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "EC was just upgraded to a Zen Rating of B, a Buy recommendation.\nLooking at the underlying Component Grades, Momentum earns an A, while Sentiment and Artificial Intelligence receive B grades.\n...\n\ud83e\udd76 NOT: Drone and counter-UAS company **Ondas Holdings (ONDS)** is spending aggressively to build a defen...",
+      "source": "web",
+      "title": "Hot or Not, Stock Market Edition: 10/02/2026",
+      "url": "https://www.wallstreetzen.com/news/hot-or-not-stock-market-edition-10-02-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "CrowdStrike currently carries a Zacks Rank #4 (Sell).",
+      "source": "web",
+      "title": "The Zacks Analyst Blog Highlights CrowdStrike, Okta and ...",
+      "url": "https://au.finance.yahoo.com/news/zacks-analyst-blog-highlights-crowdstrike-122700582.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Analyst notes from Sep 29 to Oct 2, 2026 lean cautious and valuation-driven.\nThe notes reviewed were mostly downgrades after big rallies or on slowing growth.\nUpgrades mostly went to beaten-down names.\nAnalysts weren\u2019t broadly bearish.\nThey were repricing winners and hunting for val...",
+      "source": "web",
+      "title": "Weekly analyst review: downgrades hit rally winners, upgrades favor beaten-down names By Investing.com",
+      "url": "https://uk.investing.com/news/stock-market-news/weekly-analyst-review-downgrades-hit-rally-winners-upgrades-favor-beatendown-names-93CH-4894007"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- RBC slashed Northrop Grumman's target to $525 from $640, while Jefferies cut Edison International to Underperform with a $42 target.\n...\n**Here are** some of the top Wall Street analyst upgrades, downgrades, and initiations from Friday, October 2, 2026.\n## Upgrades:\n- **Abbott Laboratories** (NYSE...",
+      "source": "web",
+      "title": "Here Are Friday\u2019s Top Wall Street Analyst Research Calls: Abbott Laboratories, Airbnb, Cerebras Systems, Coinbase Global, Edison International, Northrop Grumman, Pershing Square, Robinhood Markets, and More",
+      "url": "https://247wallst.com/investing/2026/10/02/here-are-fridays-top-wall-street-analyst-research-calls-abbott-laboratories-airbnb-cerebras-systems-coinbase-global-edison-international-northrop-grumman-pershing-square-robinhood-mar/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 2, 2026\n...\n- Analyst sentiment remains broadly positive, with a \u201cModerate Buy\u201d consensus and an average price target of $340.02, although one firm downgraded the stock to neutral.\nApple also faces concerns including potential patent-related costs, AI-driven disruption to its services busine...",
+      "source": "web",
+      "title": "Apple Inc. $AAPL Stock Sold by Nichols & Pratt Advisers LLP MA",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-apple-inc-aapl-stock-sold-by-nichols-pratt-advisers-llp-ma-2026-10-02/"
+    }
+  ],
+  "citations": [
+    "https://www.investing.com/news/analyst-ratings/bmo-capital-raises-mongodb-stock-price-target-to-360-on-ai-growth-93CH-4692801-0",
+    "https://finance.yahoo.com/technology/ai/articles/bofa-reveals-software-stocks-sell-200419456.html",
+    "https://www.reuters.com/world/asia-pacific/hong-kong-stocks-tick-down-thin-trade-property-financials-drag-2026-10-05/",
+    "https://finance.yahoo.com/markets/stocks/articles/investing-com-stocks-week-183416661.html",
+    "https://www.marketbeat.com/instant-alerts/price-apple-nasdaq-aapl-stock-jumps-1-whats-next-2026-10-02/",
+    "https://www.briefs.co/news/european-stocks-wobble-as-surging-bond-yields-stoke-inflatio/",
+    "https://www.indmoney.com/blog/us-stocks/spacexai-to-spacexsi-musk-superintelligence",
+    "https://www.marketbeat.com/instant-alerts/filing-38152-shares-of-netflix-inc-nflx-bought-by-polaris-financial-partners-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/price-cisco-systems-nasdaq-csco-shares-climb-32-time-to-buy-2026-10-02/",
+    "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-fridays-analyst-upgrades-and-downgrades-320/",
+    "https://www.wallstreetzen.com/news/hot-or-not-stock-market-edition-10-02-2026",
+    "https://au.finance.yahoo.com/news/zacks-analyst-blog-highlights-crowdstrike-122700582.html",
+    "https://uk.investing.com/news/stock-market-news/weekly-analyst-review-downgrades-hit-rally-winners-upgrades-favor-beatendown-names-93CH-4894007",
+    "https://247wallst.com/investing/2026/10/02/here-are-fridays-top-wall-street-analyst-research-calls-abbott-laboratories-airbnb-cerebras-systems-coinbase-global-edison-international-northrop-grumman-pershing-square-robinhood-mar/",
+    "https://www.marketbeat.com/instant-alerts/filing-apple-inc-aapl-stock-sold-by-nichols-pratt-advisers-llp-ma-2026-10-02/"
+  ],
+  "usage": {
+    "input_tokens": 739,
+    "output_tokens": 1149,
+    "cost_usd": 0.03345
+  }
+}

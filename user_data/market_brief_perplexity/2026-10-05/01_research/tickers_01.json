@@ -1,0 +1,167 @@
+{
+  "name": "tickers_01",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| SPCX | Space Exploration Technologies Corp. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +7.35% | +6.9% | 1.3\u00d7 | \u2014 |\n| ASX | ASE Technology Holding Co., Ltd. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +6.08% | +7.1% | 1.1\u00d7 | \u2014 |\n| ARM | Arm Holdings plc American Depositary Shares | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +5.18% | -0.9% | 0.9\u00d7 | \u2014 |\n| TSLA | Tesla, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.65% | -0.4% | 1.6\u00d7 | \u2014 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Space Exploration Technologies Corp. (SPCX) `[AI Infrastructure]`\n- SpaceX shares rose **7.35%** on Friday, October 2, after the company completed **three launches in less than 13 hours**: NASA\u2019s **Crew-13** mission carrying four astronauts to the International Space Station, the **Transporter-18** rideshare mission carrying 130 payloads, and the classified **NROL-97** National Reconnaissance Office mission; the Falcon Heavy flight was the first NRO payload launched on Falcon Heavy (Yahoo Finance, Oct. 2, 17:00 ET).[1]\n- Transporter-18 included a Planet Labs satellite carrying Google tensor-processing units for **Project Suncatcher**, Google\u2019s first orbital test of AI chips; the experiment is intended to test whether the hardware can operate reliably in space (Yahoo Finance, Oct. 2, 11:49 ET).[5]\n- SpaceX\u2019s Starship **Flight 14** reached Earth orbit for the first time earlier in the week and deployed **26 Starlink V3 satellites**; one of the vehicle\u2019s six upper-stage Raptor engines shut down prematurely, shortening the mission to about three hours (Aviation Week, Oct. 2, 07:33 ET).[6]\n- On Monday morning, October 5, SpaceX scrubbed the planned launch of **21 Space Development Agency Tranche 1 Transport Layer A satellites** during the final minute of the countdown; the next attempt was scheduled for Tuesday, October 6, at **04:17 ET** (Spaceflight Now, Oct. 5, 05:21 ET).[4]\n- The Federal Aviation Administration opened environmental scoping for SpaceX\u2019s proposed modification of its vehicle-operator license to permit commercial Starship-Super Heavy operations at **Launch Complex 37**, including up to **76 launches and 152 landings per year**; public comments are due October 14 (Federal Register notice, published Oct. 1; reported Oct. 4).[10]\n- Elon Musk said on Sunday that SpaceXAI would be renamed SpaceXSI after an X user proposed replacing \u201cAI\u201d with \u201csuper intelligence\u201d; the statement was reported as an overnight catalyst, with shares up more than **1%** overnight late Sunday (Yahoo Finance, Oct. 5, 00:34 ET).[14]\n- Morgan Stanley reportedly described SPCX shares as \u201cunusually cheap\u201d ahead of Starship Flight 15 and cited an unchanged **$300 price target**; the report was based on an excerpt shared on X and is **[report]** (Yahoo Finance, Oct. 5, 00:34 ET).[14]\n- SpaceX had not announced a date for its first full-quarter public-company earnings report; the report could affect the release of up to **1.3 billion locked-up shares** beginning on the second full trading day after earnings (Yahoo Finance, Oct. 3, 00:01 ET).[2]\n\n## ASE Technology Holding Co., Ltd. (ASX) `[Test & Advanced Packaging]`\n- No company-specific catalyst found in window\n\n## Arm Holdings plc (ARM) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window\n\n## Tesla, Inc. (TSLA) `[Electric Vehicles]`\n- No company-specific catalyst found in window",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 5:00 PM GMT-4\n...\n**Space Exploration Technologies Corp.** (NASDAQ:SPCX) shares jumped over 7% Friday after **Elon Musk's** rocket company completed three launches in less than 13 hours, sending astronauts, a classified U.S. intelligence payload and Google's first orbital AI ...",
+      "source": "web",
+      "title": "SpaceX Stock Jumps 7% After 3 Launches in 13 Hours ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/spacex-stock-jumps-7-3-210011551.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 9:01 PM GMT-3\n- SPCX\n+7.35%\n...\n**SpaceX** (NASDAQ:SPCX) wrapped up its third quarter on Sept. 30. Not only was it the rocket and artificial intelligence (AI) company's first full quarter as a public company, but also the first full quarter for several deals and price changes...",
+      "source": "web",
+      "title": "SpaceX's Third Quarter Just Ended. Here Are the 3 ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/spacexs-third-quarter-just-ended-000101914.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monday, October 5, 2026 at 8:18 AM UTC\n...\nSpaceX is launching SDA Tranche 1 Transport Layer A on a Falcon 9 Block 5 from Space Launch Complex 4E at Vandenberg SFB, CA, USA.\nIt is a classified government mission heading to Polar Orbit.\nThe first stage, B1103, is flying for the 6th time, and will att...",
+      "source": "web",
+      "title": "SDA Tranche 1 Transport Layer A launch from Vandenberg SFB",
+      "url": "https://www.rocketrune.com/launches/sda-tranche-1-transport-layer-a"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SpaceX scrubbed its launch attempt of the Space Development Agency\u2019s Tranche 1 Transport Layer A mission on Monday, Oct. 5, 2026.\n...\n***Update 4:28 a.m.\nEDT (0828 UTC): SpaceX aborted the launch countdown in the final minute.** *\nSpaceX will have to wait at least another day before launching a new ...",
+      "source": "web",
+      "title": "SpaceX scrubs launch attempt for 21 data transport ...",
+      "url": "https://spaceflightnow.com/2026/10/04/live-coverage-spacex-to-launch-21-data-transport-satellites-for-the-space-development-agency/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 11:49 AM GMT-3\n...\nSpaceX (SPCX) stock rose on Friday after the company's rockets successfully sent humans to the International Space Station (ISS) and a Google (GOOG) satellite into orbit.\n...\n158.96 +10.89 (+7.35%)\nAt close: October 2 at 4:00:01 PM EDT\n159.12 +0.16 (+0.10%)...",
+      "source": "web",
+      "title": "SpaceX stock surges after successful ISS and Google launches",
+      "url": "https://finance.yahoo.com/technology/article/spacex-stock-surges-after-successful-iss-and-google-launches-144708083.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "On its first orbital test run, Flight 14, SpaceX's Starship-Super Heavy managed two orbits of the Earth and deployed 26 Starlink V3 satellites.\nThe mission was a decade in the making.\n...\nAfter a decade in development, SpaceX\u2019s Starship-Super Heavy transport reaches orbit for a test run.",
+      "source": "web",
+      "title": "Aviation Week & Space Technology, October 5, 2026",
+      "url": "https://aviationweek.com/aviation-week-space-technology/2026-10-05"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Rocket Report: SpaceX completes launch triple-header; Rocket Lab nets big contract\nMonday, October 5, 2026Set Location\n...\n## The launches carried four astronauts, 130 commercial payloads and a classified intelligence satellite, while SpaceX said recovered boosters totaled four.\n...\nSpaceX completed...",
+      "source": "web",
+      "title": "Rocket Report: SpaceX completes launch triple-header; Rocket Lab nets big contract",
+      "url": "https://ground.news/article/rocket-report-spacex-completes-launch-triple-header-rocket-lab-nets-big-contract"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Space Exploration Technologies**' (NASDAQ:SPCX) stock hit $225.64 within three trading days of the SpaceX IPO in June.\nIt closed on Friday (2 October) at $158 \u2013 in the same week Starship reached orbit for the first time.",
+      "source": "web",
+      "title": "How SpaceX stock went from $225 to $158 in less than 4 ...",
+      "url": "https://uk.finance.yahoo.com/news/spacex-stock-went-225-158-071600774.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Live Coverage: SpaceX to Launch 21 Data Transport Satellites for the Space Development Agency\n...\n## The mission marks Northrop Grumman\u2019s first Tranche 1 launch as SDA works to finish its 154-satellite constellation after delays.\n...\nThe Tranche 1 Transporter Layer A mission is the fourth flight sup...",
+      "source": "web",
+      "title": "Space Development Agency to Launch 21 Data Transport ...",
+      "url": "https://ground.news/article/fourth-sda-tranche-1-mission-set-to-launch-from-vandenberg-sfb-early-monday-morning"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "### Recent News & Updates\nAnnouncement \u2022 Oct 01\n#### Space Exploration Technologies Corp. Seeks FAA Modification To Existing Vehicle Operator License To Authorize Commercial Starship-Super Heavy Operations At Space Launch Complex 37\nSpace Exploration Technologies Corp.'s (SpaceX) proposal obtain a m...",
+      "source": "web",
+      "title": "Space Exploration Technologies (WSE:SPCX) - Stock Analysis - Simply Wall St",
+      "url": "https://simplywall.st/stocks/pl/telecom/wse-spcx/space-exploration-technologies-shares"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- SPCX\n+7.35%\n...\nWhen **Space Exploration Technologies** (NASDAQ: SPCX) was preparing to go public, many experts worried that the company's targeted $1.77 trillion valuation was too rich.\n...\nSpaceX's stock price has been on a bit of a roller-coaster ride since the IPO, but it remains above its IPO...",
+      "source": "web",
+      "title": "Starlink Is Now SpaceX's Cash Machine. Can It Help ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/starlink-now-spacexs-cash-machine-103200497.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Jim Cramer sees Space Exploration Technologies Corp.\n(NASDAQ:SPCX) developing into a broader technology and infrastructure company, with Starlink, AI computing, and Starship providing multiple potential growth engines.\nOn September 28, during the episode of Mad Money, Cramer pointed to SpaceX's GPU ...",
+      "source": "web",
+      "title": "What Jim Cramer Says About Space Exploration ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/jim-cramer-says-space-exploration-220205490.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Musk says he will rename SpaceXAI to SpaceXSI\n...\n## Musk endorsed the rename after an X user suggested it, following Trump\u2019s order to replace AI with Super Intelligence in executive branch communications.\n...\nBias Comparison\n- On Sunday, Elon Musk announced SpaceXAI will rename itself to SpaceXSI, ...",
+      "source": "web",
+      "title": "Musk says he will rename SpaceXAI to SpaceXSI",
+      "url": "https://ground.news/article/musk-says-spacexai-will-be-renamed-spacexsi"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Musk signaled a SpaceXAI-to-SpaceXSI rename, declaring, \"SpaceX is a super intelligence company.\"\n...\n- SpaceX completed three launches in under 13 hours on Thursday, including a mission carrying Google's first Project Suncatcher orbital AI chip test.\nShares of Space Exploration Technologies Corp ...",
+      "source": "web",
+      "title": "SPCX Stock Climbs Overnight: Musk Teases SpaceXSI ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/spcx-stock-climbs-overnight-musk-012550126.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SpaceX launches 4 astronauts on a fast track to the International Space Station\n...\nFour astronauts pulled up at the International Space Station on Thursday after launching on an eight-hour express that set a United States speed record.\nThe SpaceX Dragon spacecraft carried NASA astronauts Jessica Wa...",
+      "source": "web",
+      "title": "Astronauts arrive at International Space Station on quickest US ...",
+      "url": "https://apnews.com/video/astronauts-arrive-at-international-space-station-on-quickest-us-express-flight-yet-8fa0a3e0a21d4e67b2812c07d8a3b41d"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/spacex-stock-jumps-7-3-210011551.html",
+    "https://finance.yahoo.com/markets/stocks/articles/spacexs-third-quarter-just-ended-000101914.html",
+    "https://www.rocketrune.com/launches/sda-tranche-1-transport-layer-a",
+    "https://spaceflightnow.com/2026/10/04/live-coverage-spacex-to-launch-21-data-transport-satellites-for-the-space-development-agency/",
+    "https://finance.yahoo.com/technology/article/spacex-stock-surges-after-successful-iss-and-google-launches-144708083.html",
+    "https://aviationweek.com/aviation-week-space-technology/2026-10-05",
+    "https://ground.news/article/rocket-report-spacex-completes-launch-triple-header-rocket-lab-nets-big-contract",
+    "https://uk.finance.yahoo.com/news/spacex-stock-went-225-158-071600774.html",
+    "https://ground.news/article/fourth-sda-tranche-1-mission-set-to-launch-from-vandenberg-sfb-early-monday-morning",
+    "https://simplywall.st/stocks/pl/telecom/wse-spcx/space-exploration-technologies-shares",
+    "https://finance.yahoo.com/markets/stocks/articles/starlink-now-spacexs-cash-machine-103200497.html",
+    "https://finance.yahoo.com/technology/ai/articles/jim-cramer-says-space-exploration-220205490.html",
+    "https://ground.news/article/musk-says-spacexai-will-be-renamed-spacexsi",
+    "https://finance.yahoo.com/markets/stocks/articles/spcx-stock-climbs-overnight-musk-012550126.html",
+    "https://apnews.com/video/astronauts-arrive-at-international-space-station-on-quickest-us-express-flight-yet-8fa0a3e0a21d4e67b2812c07d8a3b41d"
+  ],
+  "usage": {
+    "input_tokens": 1068,
+    "output_tokens": 703,
+    "cost_usd": 0.02775
+  }
+}

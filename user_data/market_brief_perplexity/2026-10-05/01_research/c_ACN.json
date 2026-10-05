@@ -1,0 +1,167 @@
+{
+  "name": "c_ACN",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Accenture plc (ACN).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ACN | Accenture plc | Mega | Vol spike / gapper \u00b7 last 5D \u00b7 Mega cap | -6.31% | +12.9% | 1.3\u00d7 | both 2026-10-01 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why ACN moved. Run several searches: \"why is Accenture plc stock down/up\",\n\"Accenture plc stock\", \"ACN shares Friday October 2, 2026\", \"Accenture plc concerns\", \"Accenture plc FDA\",\n\"Accenture plc analyst\", \"Accenture plc price target\", \"Accenture plc deal\", \"Accenture plc offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Accenture plc peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Accenture plc (ACN) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Accenture plc (ACN) `IT Services & Consulting`\n\n- Accenture shares fell **6.31% on Friday, October 2**, after rising approximately **16% on October 1** following fiscal fourth-quarter results; the pullback was attributed to profit-taking, measured organic growth, acquisition dependence, and valuation concerns. (Yahoo Finance/Benzinga, Oct 2; TradingKey, Oct 2 12:24 ET)\n- Accenture reported fiscal Q4 revenue of **$18.68 billion** versus **$18.04 billion consensus** and adjusted EPS of **$3.29** versus **$3.18 consensus**; full-year bookings reached **$84.5 billion** and Q4 bookings reached **$22.2 billion**. (MarketBeat, Oct 2; Yahoo Finance, Oct 1)\n- Fiscal 2027 guidance called for revenue of **$76.4 billion\u2013$78.7 billion** and EPS of **$14.39\u2013$14.81**; first-quarter revenue guidance was **$19.0 billion\u2013$19.6 billion**. (MarketBeat, Oct 2)\n- Reported growth included approximately **3% organic revenue growth**, while acquisitions contributed materially to overall growth; pricing pressure and cautious discretionary consulting spending were cited as constraints. (MarketBeat, Oct 2; TradingKey, Oct 2 12:24 ET)\n- **Truist Financial** raised its price target from **$150 to $220** and maintained **Hold**; **Morgan Stanley** raised its target from **$175 to $195** and maintained **Equal Weight**. (MarketBeat, Oct 2)\n- **Wells Fargo** reaffirmed a **Reduce** rating, while **TD Cowen** maintained **Hold** with a **$173** price target. (MarketBeat, Oct 2)\n- **Stifel** reiterated **Buy** and raised its price target from **$225 to $242** after the earnings report; analyst David Grossman cited smaller discretionary deals, federal-government activity, and AI-related partners. (CNBC, Oct 1)\n- Accenture\u2019s fiscal 2027 outlook and bookings also moved peers on October 1: **Cognizant rose about 8%** and **IBM rose about 3%** as the results addressed concerns about AI reducing demand for IT-services work. (Reuters, Oct 1)\n- **Infosys rose 8% to $11.61** and IBM rose **5% to $231.48** in another October 1 report describing the broader consulting-sector reaction to Accenture\u2019s bookings and outlook. (Yahoo Finance, Oct 1)\n- Accenture said pricing was lower in several areas during fiscal Q4, reflecting pressure from clients seeking to capture part of the savings from AI-driven efficiencies; the company also said AI opportunities exceeded the efficiency impact on its business. (Reuters, Oct 1)\n- Accenture and **Anthropic** committed at least **$1 billion each over five years** to expand AI-safety and testing capabilities under a September partnership; the partnership was cited as background to Accenture\u2019s AI-related strategy, not as a new October 2\u20135 announcement. (Reuters, Oct 1)\n- Accenture announced a **4.9% dividend increase to $1.71 per share**, payable November 13 to shareholders of record October 13. (MarketBeat, Oct 2)\n- No separate company-specific after-hours or pre-market catalyst for Monday, October 5 was identified in the available results; one October 5 report continued to describe the move as a post-earnings pullback after the October 1 rally. (Yahoo Finance, Oct 5)",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Accenture PLC** (NYSE:ACN) enters fiscal 2027 with stronger bookings and revenue momentum.\nStill, analysts remain divided over whether the improvement can translate into sustained organic growth as pricing pressure, acquisition dependence and elevated investment remain in focus.\nThe stock slid alm...",
+      "source": "web",
+      "title": "Accenture Stock Pulls Back as Investors Book Profits",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/accenture-stock-pulls-back-investors-180020984.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "With fiscal 2026 revenue coming in at $74.2 billion and total bookings outstripping sales, the global IT consulting leader's investment narrative centers on whether its expanding AI and data practice can drive structural margin expansion and durable organic growth despite macro consulting headwinds....",
+      "source": "web",
+      "title": "Is Accenture (ACN) Really Priced Like Its Best Days Are ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/accenture-acn-really-priced-best-173337701.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Shares of Accenture surged Thursday after the company\u2019s fiscal fourth-quarter results beat estimates.\n...\nThe stock surged more than 22% at one point, but ended the day up close to 16%.\n...\nFollowing the beat, Stifel reiterated its buy rating of the professional services company and increased the st...",
+      "source": "web",
+      "title": "Accenture stock rallies after earnings beat expectations",
+      "url": "https://www.cnbc.com/2026/10/01/accenture-rallies-more-than-20percent-after-earnings-beat-heads-for-best-day-ever.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Accenture shed nearly 60% from its peak on fears that AI would gut its consulting revenue, then surged in a single session after earnings.\n...\n- ACN surged 16% after record $22.2B Q4 bookings, yet UBS analyst Kevin McVeigh's $275 target still implies 29% additional upside.\n...\n**Accenture** (NYSE:AC...",
+      "source": "web",
+      "title": "Accenture Lost 15% Over a Year: One Analyst Says It Will ...",
+      "url": "https://247wallst.com/investing/2026/10/02/accenture-lost-15-over-a-year-one-analyst-says-it-will-rise-30-on-ai-and-digital-transformation/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Truist Financial raised Accenture\u2019s price target** from $150 to $220 while maintaining a Hold rating, implying approximately 8.9% upside.\nAnalysts remain divided, with a consensus Hold rating and average target price of $217.30.\n- Accenture\u2019s latest quarterly results exceeded expectations, with ...",
+      "source": "web",
+      "title": "Accenture (NYSE:ACN) Stock Price Target Raised at Truist ...",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-accenture-nyse-acn-stock-price-target-raised-at-truist-financial-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Accenture shares fell 4.2%** despite fiscal Q4 revenue of $18.68 billion and adjusted EPS of $3.29 beating analyst expectations.\nInvestors remain concerned that organic growth was only about 3% and that acquisitions contributed significantly to reported growth.\n- Management expects AI demand to ...",
+      "source": "web",
+      "title": "Accenture (NYSE:ACN) Shares Down 4.2% - Time to Sell?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-accenture-nyse-acn-shares-down-42-time-to-sell-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 10:00 AM GMT-3\n- ACN\n-6.31%\n**Accenture plc** ACN used its fiscal fourth-quarter 2026 earnings call to stress broad-based demand, expanding AI work and continued large-scale reinvention programs.\nManagement also framed fiscal 2027 around balanced growth despite pricing pressu...",
+      "source": "web",
+      "title": "Accenture Q4 Earnings Call Sees AI Demand Broaden Into ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/accenture-q4-earnings-call-sees-130000263.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Accenture posted $84.5 billion in full-year bookings and $18.68 billion in fiscal fourth-quarter revenue, easing concerns about AI-driven consulting demand.\n...\n- On Thursday, Accenture Plc stock soared 22.2% after the company reported record full-year bookings of $84.5 billion, beating fiscal 20...",
+      "source": "web",
+      "title": "Accenture Shares Surge as Consulting Giant Shrugs Off AI ...",
+      "url": "https://ground.news/article/accenture-shares-surge-as-consulting-giant-shrugs-off-ai-fears"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 1 (Reuters) \u2013 Accenture shares surged 22%, on track for their best day ever, after a stronger-than-anticipated annual revenue growth forecast underscored the resilience of the IT consulting business hammered by worries over AI-led disruption.\nThe outlook signaled how global consulting firms are ...",
+      "source": "web",
+      "title": "Accenture's forecast eases AI disruption fears, lifts battered ...",
+      "url": "https://srnnews.com/accentures-forecast-eases-ai-disruption-fears-lifts-battered-it-services-stocks/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u2022 Accenture shares pulled back due to post-earnings profit-taking and measured organic growth.\n...\nAccenture's stock experienced a pullback as investors engaged in profit-taking following an extraordinary single-day rally in the prior session, which was triggered by stronger-than-expected fourth-qua...",
+      "source": "web",
+      "title": "Accenture PLC Stock (ACN) Moved Down by 4.67% on Oct 2",
+      "url": "https://www.tradingkey.com/news/market-movers/262198314-market-movers-acn-20261002"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Morgan Stanley raised Accenture\u2019s price target** to $195 from $175 while maintaining an \u201cequal weight\u201d rating, implying roughly 8% downside from the reported share price.\nAnalysts overall remain cautious, with a consensus \u201cHold\u201d rating and an average target of $210.81.\n...\n- Shares opened at $21...",
+      "source": "web",
+      "title": "Accenture (NYSE:ACN) Price Target Raised to $195.00",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-accenture-nyse-acn-price-target-raised-to-19500-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Accenture will raise its quarterly dividend 4.9% to $1.71 per share**, payable November 13 to shareholders of record on October 13.\n...\nNYSE:ACN traded down $8.93 on Friday, reaching $203.37.",
+      "source": "web",
+      "title": "Accenture PLC (NYSE:ACN) to Issue Dividend Increase - MarketBeat",
+      "url": "https://www.marketbeat.com/instant-alerts/dividend-accenture-plc-nyse-acn-to-issue-dividend-increase-171-per-share-2026-10-02/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "NYSE ACN traded down $9.07 on Friday, hitting $203.23. 3,480,212 shares of the company's stock traded hands, compared to its average volume of 6,965,845.",
+      "source": "web",
+      "title": "Accenture (NYSE:ACN) Issues Quarterly Earnings Results",
+      "url": "https://www.marketbeat.com/instant-alerts/earnings-accenture-nyse-acn-releases-earnings-results-beats-estimates-by-011-eps-2026-10-01/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Accenture plc (ACN) beat on FY2026 Q4 and the stock jumped.\nIt was at **$214.84 (+17.16%) as of Oct 1, 2:53 PM EDT**.\nData shows a 3M gain of +63.68%, but the stock is still down 20.15% YTD and about 26% below its 52-week high of $291.09.\n...\n- **Are bookings stalling?** Q3 bookings...",
+      "source": "web",
+      "title": "Accenture earnings analysis: questions answered and next catalysts By Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/accenture-earnings-analysis-questions-answered-and-next-catalysts-93CH-4928129"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "-6.31%\n- INFY\n-2.73%\n...\n- Accenture surged 22% on record full-year bookings of $84.5 billion, lifting peers Infosys 8% and IBM 5% on broad consulting demand relief.\n...\nA record year of bookings has handed **Accenture** (NYSE:ACN) hard evidence against the fear that artificial intelligence (AI) wou...",
+      "source": "web",
+      "title": "Accenture Soars 23% as Record Bookings Dispel AI ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/accenture-soars-23-record-bookings-141118466.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/accenture-stock-pulls-back-investors-180020984.html",
+    "https://finance.yahoo.com/markets/stocks/articles/accenture-acn-really-priced-best-173337701.html",
+    "https://www.cnbc.com/2026/10/01/accenture-rallies-more-than-20percent-after-earnings-beat-heads-for-best-day-ever.html",
+    "https://247wallst.com/investing/2026/10/02/accenture-lost-15-over-a-year-one-analyst-says-it-will-rise-30-on-ai-and-digital-transformation/",
+    "https://www.marketbeat.com/instant-alerts/analyst-accenture-nyse-acn-stock-price-target-raised-at-truist-financial-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/price-accenture-nyse-acn-shares-down-42-time-to-sell-2026-10-02/",
+    "https://finance.yahoo.com/technology/ai/articles/accenture-q4-earnings-call-sees-130000263.html",
+    "https://ground.news/article/accenture-shares-surge-as-consulting-giant-shrugs-off-ai-fears",
+    "https://srnnews.com/accentures-forecast-eases-ai-disruption-fears-lifts-battered-it-services-stocks/",
+    "https://www.tradingkey.com/news/market-movers/262198314-market-movers-acn-20261002",
+    "https://www.marketbeat.com/instant-alerts/analyst-accenture-nyse-acn-price-target-raised-to-19500-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/dividend-accenture-plc-nyse-acn-to-issue-dividend-increase-171-per-share-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/earnings-accenture-nyse-acn-releases-earnings-results-beats-estimates-by-011-eps-2026-10-01/",
+    "https://www.investing.com/news/stock-market-news/accenture-earnings-analysis-questions-answered-and-next-catalysts-93CH-4928129",
+    "https://finance.yahoo.com/markets/stocks/articles/accenture-soars-23-record-bookings-141118466.html"
+  ],
+  "usage": {
+    "input_tokens": 997,
+    "output_tokens": 782,
+    "cost_usd": 0.02872
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "b_amd_world_labs_8b_deal",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Story: AMD $8.2B World Labs Acquisition: Rationale, Dilution & Competitive Impact. Related tickers: AMD, NVDA, INTC.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nWhy this needs follow-up: AMD announced an all-stock $8.2B acquisition of World Labs with year-end close expected, but the notes contain no detail on World Labs' products, revenue, or why AMD is paying this price\u2014nor any analyst reaction on accretion/dilution or competitive positioning vs NVDA.\n\nANSWER EACH QUESTION (run a separate search for each):\n- What products or AI model capabilities does World Labs provide that AMD cited as the strategic rationale for the $8.2 billion all-stock acquisition announced October 5 2026?\n- How many AMD shares will be issued in the World Labs deal at current prices, and what EPS dilution have sell-side analysts estimated for fiscal 2027?\n- Which analysts raised or lowered AMD price targets on October 5 2026 in response to the World Labs acquisition announcement, and what were their new targets?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## World Labs / Strategic rationale `[Products and AI capabilities]`\n\n- AMD announced a definitive agreement on **September 28, 2026** to acquire World Labs for approximately **$8.2 billion in an all-stock transaction**, with closing expected by **year-end 2026**, subject to regulatory approval and customary conditions. (GlobeNewswire/AMD, Sep. 28, 2026; reported Oct. 5)\n- World Labs develops **spatial-intelligence models** that generate, reconstruct, and simulate interactive **3D environments** from **text, images, video, and 3D data**. (AMD company release, Sep. 28, 2026)\n- World Labs\u2019 **Marble** platform generates persistent, explorable 3D worlds from text, images, and video. (Barchart, Oct. 1, 2026)\n- World Labs\u2019 **Atlas** is a multimodal world model pretrained from scratch for text, images, video, and 3D data; World Labs added Atlas on **September 1, 2026**. (Barchart, Oct. 1, 2026)\n- World Labs is developing technology for **robotic learning and simulation**, including applications involving robotics, autonomous systems, cinematic production, and physical-world simulation. (AMD company release, Sep. 28, 2026; Barchart, Oct. 1, 2026)\n- AMD said World Labs\u2019 researchers and model experts would help AMD develop **AI hardware, software, and systems** around emerging models and applications, including **reasoning, robotics, simulation, and physical AI**. (AMD company release, Sep. 28, 2026)\n- AMD CEO **Lisa Su** said access to frontier-model research would help AMD anticipate future computing requirements and shape its hardware, software, and system roadmaps. (Benzinga/TradingView, Oct. 1, 2026)\n- World Labs founder **Fei-Fei Li** is expected to join AMD as **executive vice president and chief scientist**, reporting to Lisa Su, after closing. (AMD company release, Sep. 28, 2026)\n\n## AMD `[Deal value, shares and dilution]`\n\n- The transaction value is approximately **$8.2 billion**, payable entirely in AMD common stock; AMD expects the deal to close by **year-end 2026**. (AMD company release, Sep. 28, 2026)\n- AMD had **not disclosed a fixed number of shares** to be issued as of the **October 5, 2026, 12:20 ET** cutoff; the final share count is calculated using AMD\u2019s **volume-weighted average price over trading days immediately before closing**. (MarketBeat, Oct. 1, 2026)\n- Using AMD\u2019s reported **$567.63** October 2 reference price, an $8.2 billion equity value implies approximately **14.45 million AMD shares**: \\( \\$8.2\\text{ billion} \\div \\$567.63 \\). (MarketBeat, Oct. 2, 2026)\n- Using the October 2 regular-session closing price of approximately **$569.96**, the implied issuance is approximately **14.39 million shares**: \\( \\$8.2\\text{ billion} \\div \\$569.96 \\). (Search result reporting AMD market data, Oct. 2, 2026)\n- No sell-side fiscal-2027 EPS-dilution estimate was identified in the available October 2\u20135 reporting before the **12:20 ET** cutoff.\n- The deal\u2019s all-stock structure dilutes existing AMD holders but preserves AMD cash for product development. (MarketBeat, Oct. 1, 2026)\n- AMD\u2019s potential World Labs issuance is separate from the **up to 160 million AMD shares** issuable under AMD\u2019s OpenAI warrant agreement if milestones are met. (Business Insider, Oct. 1, 2026)\n\n## AMD `[Analyst actions and price targets]`\n\n- **Rosenblatt Securities \u2014 Buy, $700 price target:** Rosenblatt reiterated its Buy rating and **$700** target on **September 29, 2026**, citing World Labs\u2019 potential to expand AMD\u2019s AI software, modeling, simulation, system-level, and robotics capabilities. (Yahoo Finance, Oct. 4, 2026)\n- **StoneX \u2014 Buy, $685 price target:** Analyst **Cody Acree** reiterated a Buy rating and **$685** target on **September 29, 2026**. (TradingView/Benzinga, Oct. 1, 2026)\n- **Bank of America \u2014 Buy, $620 \u2192 $720:** Analyst **Vivek Arya** raised AMD\u2019s target from **$620 to $720** on **September 25, 2026**, while retaining Buy; the cited rationale was higher CPU pricing driven by agentic-AI demand rather than a new October 5 World Labs-specific revision. (Ad-hoc News, Oct. 4, 2026)\n- No analyst price-target change published on **October 5, 2026, by 12:20 ET** was identified in the available reporting as directly responding to the World Labs announcement.\n- The reported analyst consensus target was **$648.07** in one October 1 market-data summary and **$618.84** in another October 1 report; the reports did not reconcile the difference. (Business Insider, Oct. 1, 2026; TradingView/Benzinga, Oct. 1, 2026)\n\n## AMD `[Stock move and competitive positioning]`\n\n- AMD shares gained **1.77%** in the cited October 1 report following the World Labs acquisition coverage; the report did not provide a regular-session timestamp for that move. (Ad-hoc News, Oct. 1, 2026)\n- AMD shares were reported at **\u20ac567.35**, up **3.50%**, in Lang & Schwarz trading on **October 2, 2026**; this was an off-exchange European quote rather than AMD\u2019s U.S. regular-session close. (Ad-hoc News, Oct. 3, 2026)\n- World Labs\u2019 spatial-intelligence capabilities were described as giving AMD exposure to **physical AI**, while Nvidia was reported to have existing technologies including **Cosmos** and **Omniverse** in that area. (Business Insider, Oct. 1, 2026)\n- AMD\u2019s stated competitive objective is to use World Labs\u2019 model expertise to shape AMD\u2019s future chips, software, and systems rather than compete directly with OpenAI or Anthropic as a standalone model provider. (MarketBeat, Oct. 1, 2026)\n\n## NVDA `[Competitive impact]`\n\n- Nvidia was reported to have agreed to acquire model platform **Hugging Face for $12.9 billion**, providing the competitive transaction context for AMD\u2019s **$8.2 billion** World Labs acquisition. (Barchart, Oct. 1, 2026)\n- Nvidia\u2019s **Cosmos** and **Omniverse** platforms were identified as existing Nvidia technologies related to physical AI and spatial or simulated environments. (Business Insider, Oct. 1, 2026)\n- No NVDA price move, analyst rating change, or price-target revision published within the specified window was identified in the available reporting.\n\n## INTC `[Related ticker]`\n\n- No Intel (**INTC**) price move, analyst rating change, or price-target revision tied to AMD\u2019s World Labs acquisition was identified in the available reporting through **October 5, 2026, 12:20 ET**.",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "AMD's own answer to that question arrived on September 28, when the company agreed to acquire World Labs Technologies, Inc.\nThe all-stock transaction carries a stated total value of $8.2 billion and brings the specialized AI research lab in-house, with management targeting an expansion of its work i...",
+      "source": "web",
+      "title": "AMD's $8.2 Billion World Labs Deal Now Faces Its Hardest Test: Execution",
+      "url": "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/amd-s-8-2-billion-world-labs-deal-now-faces-its-hardest-test-execution/70228936"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "announced last week that it will acquire World Labs, an AI model and research lab, in a deal that is expected to close at the end of 2026.\n...\nLast week, AMD announced that it would acquire World Labs, an AI model and research lab led by Dr. Fei-Fei Li, in an all-stock transaction worth about $8.2 b...",
+      "source": "web",
+      "title": "Stocktwits M&A Watch: Paramount-Warner Bros Combination, Skyworks-Qorvo Merger, AMD\u2019s World Labs Acquisition In Focus",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stocktwits-m-watch-paramount-warner-073129199.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "On September 29, Rosenblatt reiterated its Buy rating and $700 price target on Advanced Micro Devices, Inc.\n(NASDAQ:AMD) after the company announced that it had entered into a definitive agreement to acquire World Labs, an AI model and research lab led by AI pioneer Dr. Fei-Fei Li.\nRosenblatt believ...",
+      "source": "web",
+      "title": "AMD\u2019s $8.2 Billion AI Bet Comes With a $1 Trillion Valuation Problem",
+      "url": "https://ca.finance.yahoo.com/news/amd-8-2-billion-ai-190159237.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "The deal gives AMD a foothold in spatial intelligence, an area that could become increasingly important as AI moves from screens into robots, machines, and physical environments.\n...\nWorld Labs is working on getting AI to understand the physical world around it.\nIts models are intended to generate, ...",
+      "source": "web",
+      "title": "An $8.2 Billion Reason to Buy AMD Stock",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/8-2-billion-reason-buy-110002031.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Further, Nvidia's $12.9 billion acquisition of model platform Hugging Face has been matched by AMD, which announced it will buy spatial intelligence-focused frontier model developer World Labs for $8.2 billion in an all-stock deal.\n...\nFounded by the legendary Fei-Fei Li, often referred to as the \u201cG...",
+      "source": "web",
+      "title": "AMD Is Buying World Labs for $8.2 Billion. ...",
+      "url": "https://www.barchart.com/story/news/4902205/amd-is-buying-world-labs-for-8-2-billion-what-this-could-mean-for-amd-stock"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "On September 28, 2026, AMD announced a definitive agreement to acquire World Labs.\n...\nAMD said the acquisition will add World Labs researchers and model experts as it develops artificial intelligence hardware, software and systems.\nWorld Labs develops spatial-intelligence models for generating, rec...",
+      "source": "web",
+      "title": "AMD agrees to acquire World Labs as AMD stock costs EUR 562.80",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/amd-agrees-to-acquire-world-labs-as-amd-stock-costs-eur-562-80/70226604"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The company has agreed to acquire World Labs for roughly $8.2 billion in stock, a deal targeted for completion by the end of 2026, subject to regulatory approvals and customary closing conditions.\n...\nAn all-stock transaction of this magnitude dilutes existing shareholders and puts pressure on manag...",
+      "source": "web",
+      "title": "AMD's $8.2 Billion World Labs Bet and a $1.2 Billion Helios Order Put the Chipmaker's AI Ambitions t",
+      "url": "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/amd-s-8-2-billion-world-labs-bet-and-a-1-2-billion-helios-order-put-the-chipmaker-s-ai-ambitions-to/70222922"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "AMD is getting cutting-edge spatial-intelligence models, but more importantly, a leader who can help recruit top talent and bring real-world AI applications into focus.\n...\nAdvanced Micro Devices (AMD) stock gained on Tuesday after the chipmaker announced an $8.2 billion all-stock deal to acquire Wo...",
+      "source": "web",
+      "title": "Advanced Micro Devices (AMD) Stock Price & Overview",
+      "url": "https://stockanalysis.com/stocks/amd/?ref=raphael"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "According to AMD on September 28, 2026, the company agreed to acquire World Labs for approximately USD 8.2 billion in an all-stock transaction.\nThe deal adds an AI research team led by Fei-Fei Li to AMD's wider computing strategy.\n...\nThe transaction is expected to close by the end of 2026, subject ...",
+      "source": "web",
+      "title": "AMD agrees to buy World Labs: AMD stock gains 1.77 percent",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/amd-agrees-to-buy-world-labs-amd-stock-gains-1-77-percent/70209349"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The company's most consequential recent decision came on September 28, when it agreed to acquire World Labs Technologies for roughly $8.2 billion, payable entirely in AMD common stock.\nThe deal is expected to close by the end of 2026, subject to regulatory approvals and customary conditions.\nFor a c...",
+      "source": "web",
+      "title": "AMD's World Labs Integration Is the Real Test as Chip Stocks Ride a Macro Tailwind",
+      "url": "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/amd-s-world-labs-integration-is-the-real-test-as-chip-stocks-ride-a-macro-tailwind/70227347"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Labs does offer a consumer assistant; rather, it specializes in creating spatial-intelligence models that generate, reconstruct, and simulate interactive 3D environments from various inputs, including text, images, and video, while also focusing on robotic learning.\n...\nShe mentioned Marble, for per...",
+      "source": "web",
+      "title": "AMD Is Paying $8.2 Billion for World Labs With Shares Near $1 Trillion",
+      "url": "https://financefeeds.com/amd-world-labs-8-2-billion-1-trillion/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- AMD plans to acquire AI startup World Labs, founded by Fei-Fei Li, in an all-stock deal worth approximately $8.2 billion.\n- AMD intends to use World Labs' research into evolving AI workloads to help design better chips, hardware and systems rather than compete directly in AI models.\n- The all-stoc...",
+      "source": "web",
+      "title": "AMD Stock: $8.2 Billion World Labs Deal Reshapes AI Chip Strategy",
+      "url": "https://www.marketbeat.com/articles/advanced-micro-devices-is-spending-82-billion-to-learn-what-ai-needs-next/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The company recently agreed to acquire World Labs, the spatial intelligence startup founded by AI researcher Fei-Fei Li, in an $8.2 billion all-stock deal.\n...\nWorld Labs develops spatial intelligence models capable of creating detailed digital representations of physical environments.\nIts technolog...",
+      "source": "web",
+      "title": "\u2018This Changes the Story,\u2019 Says Top Investor About AMD Stock",
+      "url": "https://markets.businessinsider.com/news/stocks/this-changes-the-story-says-top-investor-about-amd-stock-1036591650"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "AMD (US0079031078) vereinbart die \u00dcbernahme von World Labs f\u00fcr 8,20 Mrd.\nUSD, w\u00e4hrend die AMD-Aktie am 02.10.2026 bei Lang & Schwarz um 3,50 Prozent auf 567,35 Euro steigt.\nDie Vereinbarung vom 28.09.2026 soll laut AMD bis Ende 2026 abgeschlossen werden und steht unter regulatorischen Genehmigungen....",
+      "source": "web",
+      "title": "AMD vereinbart World-Labs-\u00dcbernahme: AMD-Aktie steigt 3,50 Prozent",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/amd-vereinbart-world-labs-uebernahme-amd-aktie-steigt-3-50-prozent/70216372"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "AMD agreed to acquire **World Labs** for $8.2 billion in stock, gaining spatial-intelligence technology that can generate, reconstruct and simulate 3D environments for robotics, autonomous systems, simulation and other physical AI applications.\nCEO **Lisa Su** said closer access to frontier-model re...",
+      "source": "web",
+      "title": "What's Going On With AMD Stock Thursday?",
+      "url": "https://www.tradingview.com/news/benzinga:ef26f4d2e094b:0-what-s-going-on-with-amd-stock-thursday/"
+    }
+  ],
+  "citations": [
+    "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/amd-s-8-2-billion-world-labs-deal-now-faces-its-hardest-test-execution/70228936",
+    "https://finance.yahoo.com/markets/stocks/articles/stocktwits-m-watch-paramount-warner-073129199.html",
+    "https://ca.finance.yahoo.com/news/amd-8-2-billion-ai-190159237.html",
+    "https://finance.yahoo.com/markets/stocks/articles/8-2-billion-reason-buy-110002031.html",
+    "https://www.barchart.com/story/news/4902205/amd-is-buying-world-labs-for-8-2-billion-what-this-could-mean-for-amd-stock",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/amd-agrees-to-acquire-world-labs-as-amd-stock-costs-eur-562-80/70226604",
+    "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/amd-s-8-2-billion-world-labs-bet-and-a-1-2-billion-helios-order-put-the-chipmaker-s-ai-ambitions-to/70222922",
+    "https://stockanalysis.com/stocks/amd/?ref=raphael",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/amd-agrees-to-buy-world-labs-amd-stock-gains-1-77-percent/70209349",
+    "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/amd-s-world-labs-integration-is-the-real-test-as-chip-stocks-ride-a-macro-tailwind/70227347",
+    "https://financefeeds.com/amd-world-labs-8-2-billion-1-trillion/",
+    "https://www.marketbeat.com/articles/advanced-micro-devices-is-spending-82-billion-to-learn-what-ai-needs-next/",
+    "https://markets.businessinsider.com/news/stocks/this-changes-the-story-says-top-investor-about-amd-stock-1036591650",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/amd-vereinbart-world-labs-uebernahme-amd-aktie-steigt-3-50-prozent/70216372",
+    "https://www.tradingview.com/news/benzinga:ef26f4d2e094b:0-what-s-going-on-with-amd-stock-thursday/"
+  ],
+  "usage": {
+    "input_tokens": 779,
+    "output_tokens": 1613,
+    "cost_usd": 0.04053
+  }
+}

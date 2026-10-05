@@ -1,0 +1,167 @@
+{
+  "name": "tickers_17",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| CDNA | CareDx, Inc | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +1.39% | +5.5% | 1.1\u00d7 | gapper 2026-07-31 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## CareDx, Inc. (CDNA) `Pharma`\n- CareDx shares closed at **$67.15**, up **1.39%** on Friday, October 2, 2026; the stock reached a **52-week high of $69.80** during the session (StockAnalysis, Oct. 2; RTTNews, Oct. 5 08:57 ET).\n- The reported catalyst was recent **Medicare coverage** for CareDx\u2019s **AlloSure, AlloMap and AlloSeq** molecular-testing systems for transplant patients (RTTNews, Oct. 5 08:57 ET).\n- CareDx reported **second-quarter 2026 revenue of $132 million**, up **52% year over year**; testing-services revenue increased **61% year over year** (RTTNews, Oct. 5 08:57 ET; Zacks, Sep. 25).\n- CareDx\u2019s **2026 revenue outlook** was reported at **$490 million\u2013$500 million**, versus **$380 million** in 2025 (RTTNews, Oct. 5 08:57 ET).\n- CareDx closed at **$67.15** and was quoted at **$67.35**, up **0.30%**, in after-hours trading at **19:49 ET on October 2** (StockAnalysis, Oct. 3 12:22 ET).\n- No separate company-specific press release, SEC filing, FDA announcement, or analyst action published between the October 2 close and the **October 5, 2026 12:20 ET** cutoff was identified in the available search results.\n- The next reported earnings date was **November 2, 2026**; the consensus estimate cited was **$(0.11) EPS** (AltIndex, Oct. 4 12:22 ET).",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The following biotech stocks reached a 52-week high on October 2, 2026, driven by key catalysts such as encouraging quarterly reports.\nCareDx Inc.\n()\nis a precision medicine company specializing in the development of treatment and healthcare solutions for transplant and graft recipients.\nThe company...",
+      "source": "web",
+      "title": "Biotech Stocks At 52-Week Highs - CDNA, RCEL, AZTA, HNGE",
+      "url": "https://www.rttnews.com/3696391/biotech-stocks-at-52-week-highs-cdna-rcel-azta-hnge.aspx"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Biotech Stocks At 52-Week Highs - CDNA, RCEL, AZTA, HNGE\n(RTTNews) - The following biotech stocks reached a 52-week high on October 2, 2026, driven by key catalysts such as encouraging quarterly reports.\n**CareDx Inc.\n(CDNA)**\nCareDx is a precision medicine company specializing in the development ...",
+      "source": "web",
+      "title": "Biotech Stocks At 52-Week Highs - CDNA, RCEL, AZTA, HNGE",
+      "url": "https://www.finanzen.ch/nachrichten/aktien/biotech-stocks-at-52-week-highs-cdna-rcel-azta-hnge-1036596443"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**CareDx Inc.\n(CDNA)**\nCareDx is a precision medicine company specializing in the development of treatment and healthcare solutions for transplant and graft recipients.\nThe company saw its stock hit a 52-week high of 67.29% on Thursday.\nCareDx recently gained Medicare coverage for the *AlloSure*, *A...",
+      "source": "web",
+      "title": "Biotech Stocks At 52-Week Highs - KOD, MASS, OBIO, CDNA, PMVP",
+      "url": "https://www.rttnews.com/amp/3696059/biotech-stocks-at-52-week-highs-kod-mass-obio-cdna-pmvp.aspx"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "CareDx (CDNA) Stock Jumps 13.0%: Will It Continue to Soar?\n- September 25, 2026 - Zacks.com\n- Based on total page views over the last 7 trading days\n...\n# CareDx (CDNA) Stock Jumps 13.0%: Will It Continue to Soar?\nZacks Equity Research\nSeptember 25, 2026\n...\n**CareDx** (CDNA Quick QuoteCDNA - Free R...",
+      "source": "web",
+      "title": "CareDx (CDNA) Stock Jumps 13.0%: Will It Continue to Soar?",
+      "url": "https://www.zacks.com/stock/news/2995542/caredx-cdna-stock-jumps-130-will-it-continue-to-soar"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "# Consumer Confidence Falls Amid Ongoing Geopolitical Tensions: 4 Picks\nRitujay Ghosh\nSeptember 30, 2026\n...\n## Key Takeaways\n...\n- BHC, CDNA, DOLE and CHEF offer defensive exposure across healthcare and consumer staples.\n- Expected earnings growth ranges from 11.7% for DOLE to more than 100% for CD...",
+      "source": "web",
+      "title": "Consumer Confidence Falls Amid Ongoing Geopolitical Tensions: 4 Picks",
+      "url": "https://www.zacks.com/stock/news/2998033/consumer-confidence-falls-amid-ongoing-geopolitical-tensions-4-picks?cid=CS-ZC-FT-analyst_blog%7Cinvestment_ideas-2998033&miRedirects=1"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "CareDx (CDNA) \u2014 Markets\nSunday, 4 October 2026 | Global Edition\n...\n# CareDx\nCDNA 66.23 +2.52%\nClose of 1 October 2026,\nin USD \u2014 never converted.\nCareDx \u2014 daily CDNA Delayed\n...\nWhat is CareDx's ticker?\nCareDx trades as CDNA on its US listing, under ISIN US14167L1035.\nWhat was CareDx's last closing ...",
+      "source": "web",
+      "title": "CareDx (CDNA) \u2014 Markets",
+      "url": "https://www.globalbankingandfinance.com/markets/cdna/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Caredx (CDNA) Earnings Prediction \u2014 Next Report & AI Score (October 2026) | AltIndex\n...\nUpdated October 4, 2026 \u00b7 AltIndex alt-data view going into the print\nAltIndex AI Score on Caredx is **52 \u2014 signals are mixed** heading into the print.\nUnderlying trend: 2 of 3 tracked signals trending up over t...",
+      "source": "web",
+      "title": "Caredx (CDNA) Earnings Prediction \u2014 Next Report & AI ...",
+      "url": "https://altindex.com/earnings-calendar/cdna"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "|**FY2025Q2**|**FY2025Q3**|**FY2025Q4**|**FY2026Q1**|**FY2026Q2**|**LTM**?| | | |\n|\u0426\u0435\u043d\u0430 \u0430\u043a\u0446\u0438\u0438 \u0430\u043e, \u0440\u0443\u0431|19.5|14.5|18.8|17.4|28.5|17.4| | |\n|\u0418\u0437\u043c.\n\u0437\u0430 \u0433\u043e\u0434, \u0433/\u0433, %|\u0418\u0437\u043c.\n\u0437\u0430 \u0433\u043e\u0434, \u0433/\u0433, %|-53%|-12%|-2%|+46%| | | |\n|\u0418\u0437\u043c.\n\u0437\u0430 \u043a\u0432\u0430\u0440\u0442\u0430\u043b, \u043a/\u043a, %|\u0418\u0437\u043c.\n\u0437\u0430 \u043a\u0432\u0430\u0440\u0442\u0430\u043b, \u043a/\u043a, %|+10%|-26%|+30%|-8%|+64%| | |\n...\n\u0423\u0441\u043b\u043e\u0432\u0438\u044f IPO \u041f\u0410...",
+      "source": "web",
+      "title": "CareDx (CDNA) \u0426\u0435\u043d\u0430 \u0430\u043a\u0446\u0438\u0438 \u0430\u043e US GAAP",
+      "url": "https://smart-lab.ru/q/CDNA/GAAP/common_share/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "NYSE and AMEX data is at least 20 minutes delayed.\nNASDAQ data is at least 15 minutes delayed.",
+      "source": "web",
+      "title": "Company News for Oct 2, 2026",
+      "url": "https://www.zacks.com/stock/news/2999281/company-news-for-oct-2-2026"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 12:07 AM CST\n...\n- NIKE, Inc.\n...\n- Synaptics Incorporated (SYNA) shares surged 14.1% after ON Semiconductor (ON) revised its $5.7 billion acquisition terms.",
+      "source": "web",
+      "title": "Company News for Oct 5, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "CareDx, Inc.\n(CDNA)\nNASDAQ: CDNA \u00b7 Real-Time Price \u00b7 USD\n67.15\n+0.92 (1.39%)\nAt close: Oct 2, 2026, 4:00 PM EDT\n67.35\n+0.20 (0.30%)\nAfter-hours: Oct 2, 2026, 7:49 PM EDT\n...\nCareDx has a market cap or net worth of $3.47 billion as of October 2, 2026.\nIts market cap has increased by 335.11% in one ye...",
+      "source": "web",
+      "title": "CareDx (CDNA) Market Cap & Net Worth",
+      "url": "https://stockanalysis.com/stocks/cdna/market-cap/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-01",
+      "place_metadata": null,
+      "snippet": "# Intrusion Inc. (INTZ) Falls More Steeply Than Broader Market: What Investors Need to Know\n...\nSeptember 24, 2026\n...\nIntrusion Inc.\n(INTZ Quick QuoteINTZ - Free Report) closed at $0.73 in the latest trading session, marking a -3.93% move from the prior day.\nThis move lagged the S&P 500's daily los...",
+      "source": "web",
+      "title": "Intrusion Inc. (INTZ) Falls More Steeply Than Broader Market: What Investors Need to Know",
+      "url": "https://www.zacks.com/stock/news/2995499/intrusion-inc-intz-falls-more-steeply-than-broader-market-what-investors-need-to-know?cid=CS-ZC-FT-fundamental_analysis%7Cyseop_template_6v3-2995499&miRedirects=1"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "POP, Debuting Limited-Edition Holiday \u201cSpicy Bundt Nice\u201d Collection Inspired by Troms\u00f8, Norway",
+      "source": "web",
+      "title": "NYSE, NASDAQ & OTC Headlines - News",
+      "url": "https://www.stocktitan.net/news/2026-10-05/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "|#|Ticker|Company Name|1-W Returns|YTD Returns|\n...\n|7|MNTK|Montauk Renewables|20.0%|63.5%|\n|8|CDNA|CareDx|19.7%|245.0%|\n...\n|#|Ticker|Company|1W Rtn|YTD Rtn|Highlights|\n|--|--|--|--|--|--|\n|7|CDNA|CareDx|19.7%|245.0%|** Cash is significant % of market cap** Not profitable at operating income level|",
+      "source": "web",
+      "title": "Winners: PACB, MNKD, CTNM | Losers: LQDA, GLAS, QNC",
+      "url": "https://www.trefis.com/stock/spy/articles/617262/market-movers-winners-pacb-mnkd-ctnm-losers-lqda-glas-qnc/2026-10-01"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "OceanaGold Maps 30% Production Growth With Waihi North, Ausgold Deal \u2197",
+      "source": "web",
+      "title": "Stock Market News | NASDAQ, NYSE, and AMEX Stock Market News, Market News Categories, Market Indicators",
+      "url": "https://finance.minyanville.com/minyanville/news/marketbeat"
+    }
+  ],
+  "citations": [
+    "https://www.rttnews.com/3696391/biotech-stocks-at-52-week-highs-cdna-rcel-azta-hnge.aspx",
+    "https://www.finanzen.ch/nachrichten/aktien/biotech-stocks-at-52-week-highs-cdna-rcel-azta-hnge-1036596443",
+    "https://www.rttnews.com/amp/3696059/biotech-stocks-at-52-week-highs-kod-mass-obio-cdna-pmvp.aspx",
+    "https://www.zacks.com/stock/news/2995542/caredx-cdna-stock-jumps-130-will-it-continue-to-soar",
+    "https://www.zacks.com/stock/news/2998033/consumer-confidence-falls-amid-ongoing-geopolitical-tensions-4-picks?cid=CS-ZC-FT-analyst_blog%7Cinvestment_ideas-2998033&miRedirects=1",
+    "https://www.globalbankingandfinance.com/markets/cdna/",
+    "https://altindex.com/earnings-calendar/cdna",
+    "https://smart-lab.ru/q/CDNA/GAAP/common_share/",
+    "https://www.zacks.com/stock/news/2999281/company-news-for-oct-2-2026",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html",
+    "https://stockanalysis.com/stocks/cdna/market-cap/",
+    "https://www.zacks.com/stock/news/2995499/intrusion-inc-intz-falls-more-steeply-than-broader-market-what-investors-need-to-know?cid=CS-ZC-FT-fundamental_analysis%7Cyseop_template_6v3-2995499&miRedirects=1",
+    "https://www.stocktitan.net/news/2026-10-05/",
+    "https://www.trefis.com/stock/spy/articles/617262/market-movers-winners-pacb-mnkd-ctnm-losers-lqda-glas-qnc/2026-10-01",
+    "https://finance.minyanville.com/minyanville/news/marketbeat"
+  ],
+  "usage": {
+    "input_tokens": 942,
+    "output_tokens": 395,
+    "cost_usd": 0.02275
+  }
+}

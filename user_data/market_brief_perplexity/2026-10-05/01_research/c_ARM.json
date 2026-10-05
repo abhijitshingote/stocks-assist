@@ -1,0 +1,167 @@
+{
+  "name": "c_ARM",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Arm Holdings plc American Depositary Shares (ARM).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ARM | Arm Holdings plc American Depositary Shares | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +5.18% | -0.9% | 0.9\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## Arm Holdings plc (ARM) `[Specialty Materials & IP Licensing]`\n- No company-specific catalyst found in window\n\nTASK\nSearch harder for why ARM moved. Run several searches: \"why is Arm Holdings plc American Depositary Shares stock down/up\",\n\"Arm Holdings plc American Depositary Shares stock\", \"ARM shares Friday October 2, 2026\", \"Arm Holdings plc American Depositary Shares concerns\", \"Arm Holdings plc American Depositary Shares FDA\",\n\"Arm Holdings plc American Depositary Shares analyst\", \"Arm Holdings plc American Depositary Shares price target\", \"Arm Holdings plc American Depositary Shares deal\", \"Arm Holdings plc American Depositary Shares offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Arm Holdings plc American Depositary Shares peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Arm Holdings plc American Depositary Shares (ARM) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Arm Holdings plc American Depositary Shares (ARM) `[Specialty Materials & IP Licensing]`\n- ARM closed at **$307.49**, up **5.18%** on Friday, October 2, while the Nasdaq-100 semiconductor names **Teradyne**, **Monolithic Power Systems**, and **Marvell Technology** also gained more than **4%**; coverage linked the move to a broader chip rally after a weaker-than-expected September jobs report reduced expectations of an October Federal Reserve rate hike. (Investing.com, Oct 4 12:24 ET; Investors.com, Oct 5 02:09 ET)\n- Nvidia disclosed that **Arm-based processors** support AI-agent workload execution and safety monitoring in its **BlueField-4** infrastructure platform; ARM reached an intraday high of **$318.36** before closing at **$307.49**. (Blockonomi, Oct 2 13:05 ET; Investing.com, Oct 4 12:24 ET)\n- ARM rose alongside **AMD**, which gained approximately **3%**, and other semiconductor stocks as coverage cited AI-infrastructure demand and recent earnings beats from **AMD, Nvidia, and Broadcom**. (Yahoo Finance, Oct 4 18:35 ET)\n- Arm\u2019s fiscal first-quarter 2027 results, reported on **July 29**, included **$1.29 billion** of revenue versus **$1.26 billion** consensus and **$0.45** EPS versus **$0.40** consensus; revenue increased **22.4%** year over year. (MarketBeat, Oct 2 05:48 ET)\n- Arm CEO **Rene Haas** has identified **$2 billion** of customer orders for the company\u2019s AGI CPU and said manufacturing constraints involving wafers, substrates, test equipment, and memory were easing; the comments were originally reported on **September 16** and were cited in October 2 coverage. (Ad-hoc-news, Oct 2 04:48 ET)\n- The stock traded above the reported Wall Street mean price target of approximately **$289** after the October 2 close; another consensus compilation listed a **\u201cModerate Buy\u201d** rating and an average target of **$303.32**. (Yahoo Finance, Oct 4 23:24 ET; MarketBeat, Oct 2 05:48 ET)\n- No separately reported **analyst rating or price-target change**, **offering**, **acquisition**, **lawsuit**, **FDA action**, or **new government restriction** involving ARM was identified in the stated window.\n- No separately reported **after-hours or pre-market ARM catalyst** before **12:20 ET on Monday, October 5** was identified; available coverage attributed the move to Nvidia/BlueField-4 exposure and the broader semiconductor rally.",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Arm Stocks Surge Nearly 8% as Agentic AI Reprices CPU Royalties\n...\nFri, October 2, 2026 at 4:46 PM GMT-3\n- ARM\n+5.18%\n...\nArm Holdings (NASDAQ:ARM), the processor-architecture and computing-platform company, outlined how its technology supports both AI agents and the security systems watching them,...",
+      "source": "web",
+      "title": "Arm Stocks Surge Nearly 8% as Agentic AI Reprices CPU ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/arm-stocks-surge-nearly-8-194620720.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Arm Holdings (** ARM:NASDAQ**)** closed at $307.49 on October 2, 2026, up 5.18% during a broad rally in chip and tech stocks.\nThat left shares up 181% year to date and above the Street's mean target of around $289.\nThey remain below the $322.90 close of September 21.\nThat day's chip rally, which c...",
+      "source": "web",
+      "title": "Arm Holdings Stock Closed Above Wall Street's $289 ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/arm-holdings-stock-closed-above-154516034.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Zu den bestplatzierten Aktien des Tages z\u00e4hlt am Freitagnachmittag der Anteilsschein von Arm.\nDie Arm-Aktie stieg im NASDAQ-Handel.\nZuletzt verteuerte sich das Papier um 5,6 Prozent auf 308,74 USD.\n...\nDie Aktie legte um 15:53 Uhr in der NASDAQ-Sitzung 5,6 Prozent auf 308,74 USD zu.",
+      "source": "web",
+      "title": "Arm Aktie News: Arm z\u00fcndet am Nachmittag Kursrakete",
+      "url": "https://www.finanzen.net/nachricht/aktien/arm_holdings-aktie-kursbewegung-02-10-2026-12831405"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **ARM shares rose 5.2% to $307.49**, supported by Nvidia-related AI news and a broader semiconductor rally involving major chip stocks.\n- Investors are increasingly viewing Arm as a beneficiary of expanding AI applications, including agentic AI, edge computing, autonomous vehicles and robotics.\n- ...",
+      "source": "web",
+      "title": "ARM (NASDAQ:ARM) Shares Climb 5.2% - Here's What ...",
+      "url": "https://www.marketbeat.com/instant-alerts/price-arm-nasdaq-arm-shares-climb-52-heres-what-happened-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **ARM shares surged:** The stock opened at $306.78 after closing at $292.34 and was last trading at $311.89.\nIts market capitalization is approximately $335.7 billion, but its valuation is elevated at a P/E ratio of 324.\n- **Analyst sentiment is cautiously positive:** ARM has a consensus \u201cModerate...",
+      "source": "web",
+      "title": "ARM (NASDAQ:ARM) Shares Gap Up - Should You Buy?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-arm-nasdaq-arm-shares-gap-up-should-you-buy-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Arm Aktie News: Arm gewinnt am Freitagabend kr\u00e4ftig\n02.10.26 20:23 Uhr\nZu den bestplatzierten Aktien des Tages z\u00e4hlt am Freitagabend der Anteilsschein von Arm.\nZuletzt sprang die Arm-Aktie im NASDAQ-Handel an und legte um 5,5 Prozent auf 308,37 USD zu.\n...\nDie Arm-Aktie konnte um 20:07 Uhr im NASD...",
+      "source": "web",
+      "title": "Arm Aktie News: Arm gewinnt am Freitagabend kr\u00e4ftig",
+      "url": "https://www.finanzen.net/nachricht/aktien/arm_holdings-aktie-kursbewegung-02-10-2026-14752147"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Arm stock climbed 5.2% to 307.49.",
+      "source": "web",
+      "title": "Chip Stocks Roar Higher, Led By These Lesser-Known Names",
+      "url": "https://www.investors.com/news/technology/chip-stocks-sox-index-roars-higher-teradyne/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Arm-Holdings-Aktie kostet am 02.10.2026 264,50 Euro nach 261,25 Euro, plus 1,24 Prozent.\n...\nArm Holdings (ISIN US0420682058) notiert am 02.10.2026 um 10:37 Uhr bei Lang & Schwarz mit 264,50 Euro, plus 1,24 Prozent gegen\u00fcber dem Vortagesschluss von 261,25 Euro.\nWie CNBC am 16.09.2026 berichtete, erh...",
+      "source": "web",
+      "title": "Arm Holdings st\u00e4rkt 2-Milliarden-Dollar-Ziel. Arm-Holdings-Aktie legt 1,24 Prozent zu",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/arm-holdings-staerkt-2-milliarden-dollar-ziel-arm-holdings-aktie-legt-1-24-prozent-zu/70214434"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- AMD jumped 3% and ARM surged 8% as chip stocks broadly rally on AI infrastructure demand and strong earnings beats.\n...\nNotably, **Arm Holdings** (NASDAQ:ARM) stock is jumping 8% to $314.28, the biggest climb among the major chip names.\n...\nSector-wide buying is what's driving the gain in AMD stoc...",
+      "source": "web",
+      "title": "AMD Climbs 3% as Chip Stocks Extend Their Run; Arm Jumps 8 ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/amd-climbs-3-chip-stocks-154731873.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Stocks moved higher after weaker-than-expected US economic reports bolstered speculation that the Fed won't be forced to raise interest rates this month.\n...\nChipmakers and AI-infrastructure stocks rallied on Friday, supporting gains in the broader market.\n...\nARM Holdings Plc (ARM) closed up more t...",
+      "source": "web",
+      "title": "Stocks Settle Higher as Fed Rate Hike Concerns Ease",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stocks-settle-higher-fed-rate-203825391.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "- Arm (ARM) shares opened Friday at $306.78, up from Thursday\u2019s close of $292.34, and reached an intraday peak of $311.89.\n- The surge came after Nvidia disclosed that Arm-based chips manage AI agent operations and safety oversight within its BlueField 4 infrastructure.\n- CEO Rene Haas has highlight...",
+      "source": "web",
+      "title": "Arm Holdings (ARM) Shares Rally to $311.89 on BlueField 4 AI Infrastructure Integration - Blockonomi",
+      "url": "https://blockonomi.com/arm-holdings-arm-shares-rally-to-311-89-on-bluefield-4-ai-infrastructure-integration/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Chip stocks shined and lifted the Nasdaq composite to record-high territory Friday after a weaker-than-expected September jobs report slashed chances of the Federal Reserve raising interest rates in October.\n...\nIn the Nasdaq-100, chip names **Teradyne** (TER), **Monolithic Power Systems** (MPWR) an...",
+      "source": "web",
+      "title": "Stock Market Today: Nasdaq Leads Charge On Rate Hopes",
+      "url": "https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-september-jobs-report-nike-earnings-tesla-deliveries/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "|Oct 02, 2026|307.49|306.77|318.36|303.12|5.90M|+5.18%|",
+      "source": "web",
+      "title": "Arm ADR Stock Price History",
+      "url": "https://www.investing.com/equities/arm-historical-data"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Fiscal Q1 2027 revenue reached USD 1.29 billion, up 22.40 percent year over year.\n...\nArm Holdings stock was trading at EUR 270.25 at Lang & Schwarz on October 2, 2026, up 3.44 percent from the prior close of EUR 261.25.\nAccording to Finanznachrichten on September 22, 2026, Arm announced on Septembe...",
+      "source": "web",
+      "title": "Arm joins EuroCDP and Arm Holdings stock gains 3.44 percent",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/arm-joins-eurocdp-and-arm-holdings-stock-gains-3-44-percent/70216035"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Softer-than-expected U.S. payrolls reduced perceived near-term Fed hike risk, supporting valuation-sensitive tech and driving a broad semiconductor rally.\nArm's +5.18% move reflects sector beta and persistent AI-infrastructure optimism rather than idiosyncratic news, with traders focused on whether ...",
+      "source": "web",
+      "title": "Why Is Arm Holdings (ARM) Stock Up 5.18% Today, Oct 2? ...",
+      "url": "https://bingx.com/en/news/post/why-is-arm-holdings-arm-stock-up-today-oct-softer-jobs-data-and-semiconductor-rally-lift-shares"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/technology/ai/articles/arm-stocks-surge-nearly-8-194620720.html",
+    "https://finance.yahoo.com/markets/stocks/articles/arm-holdings-stock-closed-above-154516034.html",
+    "https://www.finanzen.net/nachricht/aktien/arm_holdings-aktie-kursbewegung-02-10-2026-12831405",
+    "https://www.marketbeat.com/instant-alerts/price-arm-nasdaq-arm-shares-climb-52-heres-what-happened-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/price-arm-nasdaq-arm-shares-gap-up-should-you-buy-2026-10-02/",
+    "https://www.finanzen.net/nachricht/aktien/arm_holdings-aktie-kursbewegung-02-10-2026-14752147",
+    "https://www.investors.com/news/technology/chip-stocks-sox-index-roars-higher-teradyne/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/arm-holdings-staerkt-2-milliarden-dollar-ziel-arm-holdings-aktie-legt-1-24-prozent-zu/70214434",
+    "https://finance.yahoo.com/markets/stocks/articles/amd-climbs-3-chip-stocks-154731873.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stocks-settle-higher-fed-rate-203825391.html",
+    "https://blockonomi.com/arm-holdings-arm-shares-rally-to-311-89-on-bluefield-4-ai-infrastructure-integration/",
+    "https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-september-jobs-report-nike-earnings-tesla-deliveries/",
+    "https://www.investing.com/equities/arm-historical-data",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/arm-joins-eurocdp-and-arm-holdings-stock-gains-3-44-percent/70216035",
+    "https://bingx.com/en/news/post/why-is-arm-holdings-arm-stock-up-today-oct-softer-jobs-data-and-semiconductor-rally-lift-shares"
+  ],
+  "usage": {
+    "input_tokens": 1053,
+    "output_tokens": 591,
+    "cost_usd": 0.02602
+  }
+}

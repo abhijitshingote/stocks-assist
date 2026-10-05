@@ -1,0 +1,167 @@
+{
+  "name": "c_ASX",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: ASE Technology Holding Co., Ltd. (ASX).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ASX | ASE Technology Holding Co., Ltd. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +6.08% | +7.1% | 1.1\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## ASE Technology Holding Co., Ltd. (ASX) `[Test & Advanced Packaging]`\n- No company-specific catalyst found in window\n\nTASK\nSearch harder for why ASX moved. Run several searches: \"why is ASE Technology Holding Co., Ltd. stock down/up\",\n\"ASE Technology Holding Co., Ltd. stock\", \"ASX shares Friday October 2, 2026\", \"ASE Technology Holding Co., Ltd. concerns\", \"ASE Technology Holding Co., Ltd. FDA\",\n\"ASE Technology Holding Co., Ltd. analyst\", \"ASE Technology Holding Co., Ltd. price target\", \"ASE Technology Holding Co., Ltd. deal\", \"ASE Technology Holding Co., Ltd. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"ASE Technology Holding Co., Ltd. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## ASE Technology Holding Co., Ltd. (ASX) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## ASE Technology Holding Co., Ltd. (ASX) `[Test & Advanced Packaging]`\n- ASE Technology closed at **$47.45**, up **6.08%** on Friday, October 2, 2026; it reached an intraday record of **$47.93** and moved above the **$45.52** cup-base buy point. (Investor\u2019s Business Daily, Oct. 2, 2026; StockAnalysis, Oct. 3, 2026)\n- ASE Technology reported **August consolidated revenue of TWD 82.247 billion**, up **45.70%** year over year from TWD 56.466 billion; its assembly, testing and materials business generated **TWD 51.287 billion**, up from TWD 33.510 billion. (Ad-hoc-News/Markets Insider, Oct. 2, 2026)\n- **Bank of America Securities analyst Haas Liu** maintained a **Buy** rating on September 30, 2026; no price-target change was reported in the October 2 publication. (Ad-hoc-News/Markets Insider, Oct. 2, 2026)\n- Investor\u2019s Business Daily reported that ASE\u2019s second-quarter earnings were **$0.28 per ADR**, up **155%** year over year, while revenue rose **16%** to **$5.88 billion**; the publication\u2019s FactSet forecast for the current quarter was **$0.32 per share** and **$7.21 billion** in revenue. (Investor\u2019s Business Daily, Oct. 2, 2026)\n- SinoPac analyst **Yen Chun Wang** rated ASE **Buy** and cited robust demand for LEAP services; ASE management\u2019s 2026 LEAP-sales guidance was above **$3.5 billion**, with at least **$7 billion** expected in 2027. (Investor\u2019s Business Daily, Oct. 2, 2026)\n- ASE benefited from order spillover from **Taiwan Semiconductor Manufacturing Co. (TSM)** and volume production ramp-up for **AMD\u2019s next-generation Venice CPU**, according to analysts cited by Investor\u2019s Business Daily. (Investor\u2019s Business Daily, Oct. 2, 2026)\n- Semiconductor packaging and testing stocks moved higher alongside ASE as demand for **AI and high-performance-computing applications** supported outsourced semiconductor assembly and test providers; no separate company-specific regulatory, lawsuit, FDA, offering or acquisition announcement was identified in the supplied search results. (TradingKey, Oct. 2, 2026)\n- ASE\u2019s ADR traded at **$47.90**, up **0.95%**, in after-hours trading at **7:59 p.m. ET on October 2**. (StockAnalysis, Oct. 3, 2026)\n- ASE was quoted at approximately **$47.45**, up about **5%**, in Monday, October 5 premarket coverage at **8:59 a.m. ET**; the cited report attributed the move to a broader risk-on market signal rather than a new ASE-specific announcement. (247WallSt, Oct. 5, 2026)",
+  "search_results": [
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ASE Technology shares have advanced on a string of positive headlines tied to accelerating demand for its assembly, testing and materials business.\nReports point to consolidated net revenue up 45.7% year-over-year for August 2026, with the core ATM segment growing 53.1%, alongside separate accounts ...",
+      "source": "web",
+      "title": "ASE Technology (ASX) Stock Analysis: Fair Value & Forecast",
+      "url": "https://www.gekko.app/stocks/asx"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "47.45\n+2.72 (6.08%)\nAt close: Oct 2, 2026, 4:00 PM EDT\n47.90\n+0.45 (0.95%)\nAfter-hours: Oct 2, 2026, 7:59 PM EDT\n...\nASE Technology Holding Co., Ltd., together with its subsidiaries, provides semiconductor manufacturing services in the United States, Taiwan, rest of Asia, Europe, and internationally...",
+      "source": "web",
+      "title": "ASE Technology Holding (ASX) Stock Price & Overview",
+      "url": "https://stockanalysis.com/stocks/asx/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "47.45 +2.72 (+6.08%)\nAt close: October 2 at 4:00:03 PM EDT",
+      "source": "web",
+      "title": "ASE Technology Holding Co., Ltd. (ASX)",
+      "url": "https://finance.yahoo.com/quote/ASX/chart/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "|3\u30f5\u6708|2026/10/02 --:--|",
+      "source": "web",
+      "title": "\u65e5\u6708\u5149\u96c6\u56e3(ASE\uff83\uff78\uff89\uff9b\uff7c\uff9e\uff70\u30fb\uff8e\uff70\uff99\uff83\uff9e\uff68\uff9d\uff78\uff9e) ADR\uff3bASE Technology ...",
+      "url": "https://ot32.qhit.net/mizuhosc/page2/main/index.aspx?F=gaikoku/result&search_type=1&sec_name_ticker=&input_exchange_code=&KEY1=@ASX/UR&MODE=3M"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**ASE Technology** (ASX), a key provider of semiconductor assembly and testing services primarily in Asia, is seeing strong demand for its services amid the artificial intelligence boom.\nThe company's growth has supercharged its stock over the past year.\nThe Kaohsiung, Taiwan-based company has poste...",
+      "source": "web",
+      "title": "This AI-Tied Play Packs Chips And An Earnings Punch",
+      "url": "https://www.investors.com/research/the-new-america/ase-technology-asx-stock-packs-earnings-punch/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "On October 02, 2026, ASE Technology Holding Co Ltd ASX shares rose 6.1% to a current price of $47.45.\nThe stock has experienced significant price movements over the past year, with a remarkable 329.7% increase, and is currently trading near its 52-week high of $45.75.\n...\nNotable signal: Insiders so...",
+      "source": "web",
+      "title": "Is ASE Technology Holding Co Ltd (ASX) Overvalued After ...",
+      "url": "https://www.gurufocus.com/news/9108100/is-ase-technology-holding-co-ltd-asx-overvalued-after-61-rally-gf-value-says-overvalued"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- +2.720+6.08%\nClose Oct 2 16:00 ET\n- 47.900\n- +0.450+0.95%",
+      "source": "web",
+      "title": "ASE Technology(ASX) Stock Price Today | Quotes & News",
+      "url": "https://www.moomoo.com/stock/ASX-US"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "\u2022 \u65e5\u6708\u5149\u6295\u63a7\u7684\u8d70\u5347\u8da8\u52e2\u53cd\u6620\u51fa\u534a\u5c0e\u9ad4\u5c01\u88dd\u52a0\u901f\u6210\u9577\u7684\u52d5\u80fd\u3002\n\u2022 \u5f37\u52c1\u7684 AI \u9700\u6c42\u5e36\u52d5\u9ad8\u7522\u80fd\u5229\u7528\u7387\u4e26\u63d0\u632f\u6cd5\u4eba\u4fe1\u5fc3\u3002\n...\n\u65e5\u6708\u5149\u6295\u63a7\u986f\u8457\u7684\u4e0a\u6f32\u8da8\u52e2\uff0c\u53cd\u6620\u51fa\u534a\u5c0e\u9ad4\u5c01\u6e2c\u7522\u696d\u52a0\u901f\u6210\u9577\u7684\u52d5\u80fd\uff0c\u9019\u4e3b\u8981\u5f97\u76ca\u65bc\u4eba\u5de5\u667a\u6167 (AI) \u8207\u9ad8\u6548\u80fd\u904b\u7b97 (HPC) \u61c9\u7528\u7684\u6301\u7e8c\u9700\u6c42\u3002\n\u4f5c\u70ba\u5148\u9032\u5c01\u88dd\u89e3\u6c7a\u65b9\u6848\u7684\u6838\u5fc3\u4f9b\u61c9\u5546\uff0c\u8a72\u516c\u53f8\u6301\u7e8c\u638c\u63e1\u9ad8\u5bc6\u5ea6\u8207\u6574\u5408\u578b\u6676\u7247\u5c01\u88dd\u67b6\u69cb\u65e5\u76ca\u589e\u9577\u7684\u9700\u6c42\u5546\u6a5f\u3002\n\u8fd1\u671f\u5f37\u52c1\u7684\u6708\u71df\u6536\u6578\u64da\u8207\u71df\u904b\u9032\u5c55\u7a81\u986f\u4e86\u5176\u5728\u7d44\u88dd\u3001\u6e2c\u8a66\u8207\u6750\u6599\u65b9\u9762\u7684\u512a\u7570\u8868\u73fe\uff0c\u9032\u4e00\u6b65\u589e\u5f37\u4e86\u6cd5\u4eba\u6a5f\u69cb\u5c0d\u8a72\u516c\u53f8\u6210\u9577\u8ecc\u8de1\u7684\u4fe1\u5fc3\uff0c\u4e26\u9a57\u8b49\u4e86\u5176\u65e8\u5728\u64f4\u5145\u5148\u9032\u5c01\u88dd\u7522\u80fd\u7684\u6230\u7565\u64f4\u7522\u8a08\u756b\u8207\u9f90\u5927\u8cc7\u672c\u652f\u51fa\u627f\u8afe\u3002\n\u9664\u4e86\u500b\u5225\u516c\u53f8\u7684\u71df\u904b\u6307\u6a19\u4e4b\u5916\uff0c\u66f4\u5ee3\u6cdb\u7684\u534a\u5c0e\u9ad4\u4f9b\u61c9\u93c8\u52d5\u614b\u4e5f\u70ba\u6cd5\u4eba\u8cc7...",
+      "source": "web",
+      "title": "ASE Technology Holding Co Ltd(ASX)\u80a1\u796810\u67082\u65e5\u76e4\u4e2d\u4e0a\u6f327.01%\uff1a\u80cc\u5f8c\u63a8\u624b\u66dd\u5149",
+      "url": "https://www.tradingkey.com/zh-hant/news/market-movers/262198337-market-movers-asx-20261002"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "August revenue rose 45.70 percent to TWD 82.247 billion year over year.\n...\nBank of America Securities analyst Haas Liu maintained a Buy rating on ASE Technology Holding stock on September 30, 2026, according to Markets Insider.\nThe company also reported August consolidated revenue of TWD 82.247 bil...",
+      "source": "web",
+      "title": "Bank of America maintains Buy for ASE Technology Holding stock",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/bank-of-america-maintains-buy-for-ase-technology-holding-stock/70213545"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u2022 ASE Technology's upward movement reflects accelerating momentum in semiconductor packaging.\n\u2022 Strong AI demand drives high utilization and institutional confidence.\n\u2022 The stock shows a MACD buy signal and neutral RSI.\nASE Technology Holding Co Ltd (ASX) moved up by 7.01%.\n...\nThe notable upward mo...",
+      "source": "web",
+      "title": "ASE Technology Holding Co Ltd Stock (ASX) Moved Up by 7.01% on Oct 2: Facts Behind the Movement",
+      "url": "https://www.tradingkey.com/news/market-movers/262198316-market-movers-asx-20261002"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-01",
+      "place_metadata": null,
+      "snippet": "|Ticker|3M|6M|9M|1Y|\n...\n|ASX|-1.46%|+112.83%|+177.35%|+300.90%|",
+      "source": "web",
+      "title": "ASE Technology Holding Co., Ltd. (ASX) Stock Price ...",
+      "url": "https://seekingalpha.com/symbol/ASX"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- ASXASE Technology Holding$47.45+5.0%",
+      "source": "web",
+      "title": "Nikkei 225 Opens 2.3% Higher, Signaling Risk-On Mood ...",
+      "url": "https://247wallst.com/cards/a-2-27-jump-at-the-tokyo-bell-is-the-kind-of-move-that-sets-n225-market-bell-01m44qn7e6276z68ssqkk76d8s"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ASE Technology Holding Co., Ltd.\n(ASX) stock is forecast to rise to $60.12 over the next 52 weeks, based on 26 years of historical data.\n...\n- Based on the share price being above its 5, 20 & 50 day exponential moving averages, the current trend is considered strongly bullish and ASX is experiencing...",
+      "source": "web",
+      "title": "ASX ASE Technology Holding Co., Ltd. - Stock Forecasts",
+      "url": "https://financhill.com/stock-forecast/asx-stock-prediction"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**ASE Technology** (ASX), a key provider of semiconductor assembly and testing services primarily in Asia, is seeing strong demand for its services amid the artificial intelligence boom.\nThe company's growth has supercharged its stock over the past year.\nThe Kaohsiung, Taiwan-based company has poste...",
+      "source": "web",
+      "title": "ASE Technology Packs AI Chips And An Earnings Punch",
+      "url": "https://investors.com/ase-technology-asx-stock-packs-earnings-punch/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\"Buying was sparked by a rise among semiconductor stocks in the United States overnight after a Fed official's dovish comments,\" Hua Nan Securities analyst Kevin Su said, referring to Federal Reserve Vice Chair Philip Jefferson, who said the American central bank may be patient about another rate in...",
+      "source": "web",
+      "title": "Taiwan shares end at new high but gains capped before ...",
+      "url": "https://focustaiwan.tw/business/202610020014"
+    }
+  ],
+  "citations": [
+    "https://www.gekko.app/stocks/asx",
+    "https://stockanalysis.com/stocks/asx/",
+    "https://finance.yahoo.com/quote/ASX/chart/",
+    "https://ot32.qhit.net/mizuhosc/page2/main/index.aspx?F=gaikoku/result&search_type=1&sec_name_ticker=&input_exchange_code=&KEY1=@ASX/UR&MODE=3M",
+    "https://www.investors.com/research/the-new-america/ase-technology-asx-stock-packs-earnings-punch/",
+    "https://www.gurufocus.com/news/9108100/is-ase-technology-holding-co-ltd-asx-overvalued-after-61-rally-gf-value-says-overvalued",
+    "https://www.moomoo.com/stock/ASX-US",
+    "https://www.tradingkey.com/zh-hant/news/market-movers/262198337-market-movers-asx-20261002",
+    "https://www.ad-hoc-news.de/boerse/news/nebenwerte/bank-of-america-maintains-buy-for-ase-technology-holding-stock/70213545",
+    "https://www.tradingkey.com/news/market-movers/262198316-market-movers-asx-20261002",
+    "https://seekingalpha.com/symbol/ASX",
+    "https://247wallst.com/cards/a-2-27-jump-at-the-tokyo-bell-is-the-kind-of-move-that-sets-n225-market-bell-01m44qn7e6276z68ssqkk76d8s",
+    "https://financhill.com/stock-forecast/asx-stock-prediction",
+    "https://investors.com/ase-technology-asx-stock-packs-earnings-punch/",
+    "https://focustaiwan.tw/business/202610020014"
+  ],
+  "usage": {
+    "input_tokens": 1061,
+    "output_tokens": 665,
+    "cost_usd": 0.02716
+  }
+}

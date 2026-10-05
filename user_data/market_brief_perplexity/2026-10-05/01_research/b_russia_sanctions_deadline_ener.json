@@ -1,0 +1,167 @@
+{
+  "name": "b_russia_sanctions_deadline_ener",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Story: Lindsey Graham Act Oct 18 Deadline: Secondary Sanctions on China & India. Related tickers: XOM, CVX, LNG, XLE.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nWhy this needs follow-up: Energy Secretary Wright confirmed Trump has until October 18 to decide on secondary tariffs on Russian energy buyers under the Graham Act, but the notes give no probabilities, no named analyst estimates of energy-market or equity impact, and no Chinese or Indian government response.\n\nANSWER EACH QUESTION (run a separate search for each):\n- What is the current status of Trump administration deliberations on imposing secondary sanctions or tariffs on China and India for buying Russian energy under the Lindsey Graham Act ahead of the October 18 2026 deadline?\n- How have Chinese and Indian government officials responded to the threatened October 18 2026 US secondary sanctions on Russian energy purchases?\n- Which US energy-sector stocks or LNG exporters do commodity analysts identify as beneficiaries if China and India reduce Russian energy imports following Graham Act sanctions?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Graham Act / Trump deliberations `[Policy]`\n- President Donald Trump had **not decided** by October 4 whether to impose tariffs on major Russian-energy buyers **China and India**; Energy Secretary **Chris Wright** said Trump would \u201cevaluate the trade-offs\u201d and make decisions at the last minute. (CBS News, Oct. 4; published Oct. 5 05:04 ET)\n- The administration\u2019s decision deadline was identified as **October 18, 2026**, under the Lindsey O. Graham Sanctioning Russia and Iran Act signed by Trump on **September 18, 2026**. (CBS News, Oct. 4; published Oct. 5 05:04 ET)\n- The Act authorizes tariffs of up to **100%** on imports from countries that are among the largest purchasers of Russian crude oil or natural gas and continue buying Russian energy; it separately permits tariffs of up to **500%** on Russian goods. (Davis Polk, Oct. 2; published Oct. 3 00:00 ET)\n- U.S. Trade Representative **Jamieson Greer** said on October 1 that the administration must issue a report within **30 days**, would \u201cname names\u201d during October, and that the type of action would be Trump\u2019s decision. (Semafor, Oct. 1; published Oct. 2 12:02 ET)\n- Greer said India\u2019s Russian oil and gas purchases were \u201creally kind of a wartime-discount situation\u201d and that the European Union had largely shifted to American oil and gas. (Semafor, Oct. 1; published Oct. 2 12:02 ET)\n- As of the October 5 12:20 ET cutoff, no reported administration decision imposed secondary tariffs on China or India.\n\n## China and India responses `[Policy]`\n- The available in-window reporting did not identify a new named **Chinese government** response to the threatened October 18 measures.\n- Indian External Affairs Minister **S. Jaishankar** reaffirmed India\u2019s policy of maintaining trade and diplomatic relations with friendly countries, including Russia. (Indian Defence News, Oct. 5; published Oct. 5 05:24 ET)\n- Indian officials have repeatedly described Russian energy procurement as being guided by **national interest, energy security, market conditions and protection of Indian consumers from price volatility**. (Indian Defence News, Oct. 5; published Oct. 5 05:24 ET)\n- The reported Indian position did not state that New Delhi would reduce Russian oil purchases before October 18. (Indian Defence News, Oct. 5; published Oct. 5 05:24 ET)\n\n## XOM `[Energy]`\n- No in-window analyst rating, price-target change, earnings estimate, deal value or stock-price move for **Exxon Mobil (XOM)** was identified in the available search results as specifically linked to the Graham Act story.\n\n## CVX `[Energy]`\n- No in-window analyst rating, price-target change, earnings estimate, deal value or stock-price move for **Chevron (CVX)** was identified in the available search results as specifically linked to the Graham Act story.\n\n## LNG `[LNG exporter]`\n- No in-window analyst rating, price-target change, price target, earnings estimate, deal value or stock-price move for **Cheniere Energy (LNG)** was identified in the available search results as specifically linked to the Graham Act story.\n\n## XLE `[Energy ETF]`\n- No in-window analyst rating, price-target change, earnings estimate, deal value or stock-price move for the **Energy Select Sector SPDR Fund (XLE)** was identified in the available search results as specifically linked to the Graham Act story.\n\n## Potential beneficiaries `[Commodity analysts]`\n- The available in-window results did not name a commodity analyst, U.S. energy-sector stock or LNG exporter as a quantified beneficiary if China or India reduces Russian energy imports.\n- The only stated market implication was that the Act could redirect some demand toward U.S. oil and gas; the available results did not provide a named analyst\u2019s stock list, rating, price target or estimated equity impact. (Semafor, Oct. 1; published Oct. 2 12:02 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "MARGARET BRENNAN: So we checked, and it looks like because of this Lindsey Graham bill that gives the president more, sort of, powers to punish the buyers of Russian fuel, he has to make a decision by October the 18th as to whether he's going to put tariffs on the biggest buyers.\nThat would be China...",
+      "source": "web",
+      "title": "Transcript: Energy Secretary Chris Wright on \"Face the ...",
+      "url": "https://www.cbsnews.com/news/chris-wright-energy-secretary-face-the-nation-transcript-10-04-2026/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Trump is postponing a decision on imposing sanctions against buyers of Russian energy resources until the last minute, U.S. Energy Secretary Chris Wright said (Photo: REUTERS/Kevin Lamarque)\nU.S. President Donald Trump continues to analyze the possibility of imposing sanctions on buyers of Russian e...",
+      "source": "web",
+      "title": "U.S. energy secretary on whether Trump is ready to impose 'hellish sanctions' on Russia",
+      "url": "https://english.nv.ua/nation/is-donald-trump-ready-to-impose-hellish-sanctions-against-russia-u-s-energy-secretary-talks-50647196.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The US administration doesn't rule out that a decision to impose secondary sanctions on Russia's trade partners would be made by October 18, US Energy Secretary Chris Wright said in an interview with CBS News.\nWhen asked whether President Trump is going to put tariffs on Russia's trade partners by O...",
+      "source": "web",
+      "title": "US doesn't rule out imposing secondary sanctions on Russia's trade partners by Oct. 18",
+      "url": "https://tass.com/economy/2197417"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "US doesn\u2019t rule out imposing secondary sanctions on Russia\u2019s trade partners by Oct. 18\n...\nThe US administration doesn\u2019t rule out that a decision to impose secondary sanctions on Russia\u2019s trade partners would be made by October 18, US Energy Secretary Chris Wright said in an interview with CBS News,...",
+      "source": "web",
+      "title": "US doesn't rule out imposing secondary sanctions on ...",
+      "url": "https://en.apa.az/america/us-doesnt-rule-out-imposing-secondary-sanctions-on-russias-trade-partners-by-oct-18-528105"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "U.S. President **Donald Trump** has not yet decided whether to impose additional tariffs on the largest oil buyers from Russia, China, and India\u2014countries considered aggressors.\nHe first intends to assess the possible compromises and consequences of such a move.\n...\nJournalist **Margaret Brennan** n...",
+      "source": "web",
+      "title": "Trump Will Make A Last-minute Decision On \"hellish Sanctions\" Against Russia",
+      "url": "https://charter97.org/en/news/2026/10/5/700752/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## The law allows tariffs of up to 100% for large buyers of Russian oil and gas. Among the countries potentially affected are China and India.\n...\nUS President Donald Trump must decide by October 18 whether to impose tariffs on large buyers of Russian oil and gas.\nAmong the countries potentially aff...",
+      "source": "web",
+      "title": "Trump decides by October 18 on sanctions against ...",
+      "url": "https://fakti.bg/en/world/1086335-tramp-reshava-do-18-oktomvri-za-sankcii-sreshtu-ruskia-petrol"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "US President Donald Trump has until October 18 to decide whether to impose tariffs on major buyers of Russian oil and gas.\nAmong the countries potentially affected are China and India.\nThe deadline stems from the Lindsey Graham Russia and Iran Sanctions Act, which Trump signed into law on September ...",
+      "source": "web",
+      "title": "Trump to Decide on Sanctions Against Russian Oil by ...",
+      "url": "https://ground.news/article/trump-to-decide-on-sanctions-against-russian-oil-by-october-18"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Energy Secretary Chris Wright said Sunday on CBS News that ending the Iran war would \"dramatically lower energy prices\" \u2014 while admitting that President Donald Trump knew the risks on fuel markets before entering the conflict.\n...\n\"Are we actually in a position where the U.S. might put tariffs on Ch...",
+      "source": "web",
+      "title": "Chris Wright Claims Trump 'Worked Ceaselessly' To End ...",
+      "url": "https://www.aol.com/articles/chris-wright-claims-trump-worked-180430000.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "MILWAUKEE \u2014 US Trade Representative Jamieson Greer on Thursday wouldn\u2019t commit to imposing recently enacted Russian sanctions, telling Semafor and two other outlets that officials plan to \u201cname names\u201d this month but it\u2019s ultimately President Donald Trump\u2019s decision whether to enact the levies.\nTrump...",
+      "source": "web",
+      "title": "US trade representative won't commit to new Russian ...",
+      "url": "https://www.semafor.com/article/10/01/2026/us-trade-representative-declines-to-commit-to-imposing-new-russian-sanctions"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "External Affairs Minister S Jaishankar has reaffirmed India's decision to maintain trade and diplomatic relations with friendly countries, including Russia, as New Delhi faces heightened pressure from the United States over its continued imports of Russian crude oil.\nThe issue has assumed greater si...",
+      "source": "web",
+      "title": "India's Russian Oil Strategy Stands Firm Amid New US ...",
+      "url": "https://www.indiandefensenews.in/2026/10/indias-russian-oil-strategy-stands-firm.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "**In brief:** Congress has handed President Trump a sweeping sanctions bill, signed Sept. 18, that lets him hit Russia's oil, banks, and buyers like China and India by Oct. 18 unless Moscow agrees to peace talks.\n...\nThe bill, signed by Trump on Sept. 18, permits the president until Oct. 18 to impos...",
+      "source": "web",
+      "title": "Opinion: Sledgehammer for Putin",
+      "url": "https://www.kyivpost.com/opinion/85872"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "According to Wright, a final decision could be made by October 18.**\n...\nTrump signed the law granting new sanctions authority on September 18, 2026.\nThis is the Lindsey O. Graham Sanctioning Russia and Iran Act, which expands the U.S.\u2019s ability to impose sanctions, tariffs, and other restrictions a...",
+      "source": "web",
+      "title": "Sanctions Against Russia Are in Doubt \u2014 U.S. Officials ...",
+      "url": "https://ua.news/en/world/sanktsiyi-proti-rf-pid-pitanniam-u-ssha-poiasnili-pozitsiiu-trampa"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "New Russia sanctions legislation provides \u201csecondary tariff\u201d authority to target countries most involved in the Russian oil and gas trade (and Russia itself) and codifies and incrementally expands sanctions targeting Russia; however, the actual impact depends heavily on executive branch implementati...",
+      "source": "web",
+      "title": "New Russia sanctions law enacted \u2013 what you need to know",
+      "url": "https://www.davispolk.com/insights/client-update/new-russia-sanctions-law-enacted-what-you-need-know"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## By October 18, the Donald Trump administration must determine which Russian and foreign individuals will fall under the new measures.\n...\nThe United States has until October 18, 2026, to determine which Russian individuals, companies and ships will be sanctioned under the new law to pressure Mosc...",
+      "source": "web",
+      "title": "US prepares secondary sanctions against Russias partners",
+      "url": "https://fakti.bg/en/world/1086294-sasht-podgotvat-vtorichni-sankcii-sreshtu-partnyori-na-rusia"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "The US Congress has handed the Trump administration broad authority to impose mandatory tariffs up to 100% on the largest buyers of Russian crude oil and natural gas \u2014 including China, Turkey and India \u2014 until they reduce their dependencies or take \"significant steps\u201d to do so.\nFrom Oct. 18, Preside...",
+      "source": "web",
+      "title": "Experts Wary of Trump's New Graham Act Tariff Powers",
+      "url": "https://www.energyintel.com/000001a0-f420-d03e-a1bb-f5bfef380000"
+    }
+  ],
+  "citations": [
+    "https://www.cbsnews.com/news/chris-wright-energy-secretary-face-the-nation-transcript-10-04-2026/",
+    "https://english.nv.ua/nation/is-donald-trump-ready-to-impose-hellish-sanctions-against-russia-u-s-energy-secretary-talks-50647196.html",
+    "https://tass.com/economy/2197417",
+    "https://en.apa.az/america/us-doesnt-rule-out-imposing-secondary-sanctions-on-russias-trade-partners-by-oct-18-528105",
+    "https://charter97.org/en/news/2026/10/5/700752/",
+    "https://fakti.bg/en/world/1086335-tramp-reshava-do-18-oktomvri-za-sankcii-sreshtu-ruskia-petrol",
+    "https://ground.news/article/trump-to-decide-on-sanctions-against-russian-oil-by-october-18",
+    "https://www.aol.com/articles/chris-wright-claims-trump-worked-180430000.html",
+    "https://www.semafor.com/article/10/01/2026/us-trade-representative-declines-to-commit-to-imposing-new-russian-sanctions",
+    "https://www.indiandefensenews.in/2026/10/indias-russian-oil-strategy-stands-firm.html",
+    "https://www.kyivpost.com/opinion/85872",
+    "https://ua.news/en/world/sanktsiyi-proti-rf-pid-pitanniam-u-ssha-poiasnili-pozitsiiu-trampa",
+    "https://www.davispolk.com/insights/client-update/new-russia-sanctions-law-enacted-what-you-need-know",
+    "https://fakti.bg/en/world/1086294-sasht-podgotvat-vtorichni-sankcii-sreshtu-partnyori-na-rusia",
+    "https://www.energyintel.com/000001a0-f420-d03e-a1bb-f5bfef380000"
+  ],
+  "usage": {
+    "input_tokens": 763,
+    "output_tokens": 890,
+    "cost_usd": 0.02964
+  }
+}

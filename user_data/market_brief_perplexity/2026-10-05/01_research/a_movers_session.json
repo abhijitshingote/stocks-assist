@@ -1,0 +1,167 @@
+{
+  "name": "a_movers_session",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Session movers.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nUS stocks >= $2B market cap making the biggest moves in the regular session (CNBC / MarketWatch / Barron's / Investopedia / Reuters mover roundups): % move and the stated catalyst for each.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **TSLA** \u2014 Semiconductors / Automotive\n- **Tesla** rose **4.7%** on Friday, October 2, after reporting **486,532 third-quarter vehicle deliveries**, above the **461,100 FactSet analyst estimate**. (CNBC, Oct. 2; publication time not shown)[2][10]\n- Tesla\u2019s shares were reported up **4.65%** in Friday\u2019s regular session. (Investing.com, Oct. 5 09:43 ET)[15]\n\n## **AVGO** \u2014 AI Compute\n- **Broadcom** rose **more than 3%** on Friday after Reuters reported that Broadcom had agreed to lend **Anthropic up to $42 billion** to finance infrastructure purchases; separate reporting described **$42 billion of Class A senior secured debt** and **$18 billion of Class B debt**. (CNBC, Oct. 2; publication time not shown)[2]\n- Broadcom rose approximately **3.5%** after Bloomberg reported that its syndicate was assembling **$60 billion of AI-chip financing** for Anthropic and other companies. (Yahoo Finance, Oct. 2; publication time not shown)[13]\n\n## **NKE** \u2014 Retail\n- **Nike** fell approximately **3.5%** in Friday\u2019s regular session after fiscal-first-quarter revenue missed LSEG consensus, sales declined **4%**, China sales weakened, and the company announced planned staff reductions in **2027**. (Yahoo Finance, Oct. 2; publication time not shown)[10][13]\n- CNBC reported that Nike shares fell nearly **6%** midday after the revenue miss and the company\u2019s disclosure of a **4% sales decline** and planned **2027 layoffs**. (CNBC, Oct. 2; publication time not shown)[2]\n\n## **ON** \u2014 Semiconductors\n- **ON Semiconductor** rose more than **5%** Friday after revising its offer to acquire Synaptics to **$123 per share in cash**, valuing the transaction at approximately **$5.7 billion**, down from the prior **$7 billion** agreement. (CNBC, Oct. 2; publication time not shown)[2]\n- ON Semiconductor rose approximately **7%** in premarket trading after reports of the revised acquisition offer. (CNBC, Oct. 2; publication time not shown)[4]\n\n## **SYNA** \u2014 Semiconductors\n- **Synaptics** rose approximately **14%** in Friday\u2019s regular session after ON Semiconductor revised its acquisition offer to **$123 per share in cash**, valuing the transaction at **$5.7 billion**. (CNBC, Oct. 2; publication time not shown)[2]\n- Synaptics rose more than **14%** premarket on the acquisition report. (CNBC, Oct. 2; publication time not shown)[4]\n\n## **STX** \u2014 Memory & Interconnect\n- **Seagate Technology** fell approximately **10.21%** Friday, with one market-mover report recording a decline of **11.61%**. (Investing.com, Oct. 5 09:43 ET)[15]\n- Seagate shares fell more than **11%** premarket after a Nikkei report said Toshiba would **double hard-disk-drive production capacity** for data centers and invest **$380 million** to expand facilities in the Philippines. (CNBC, Oct. 2; publication time not shown)[4]\n\n## **WDC** \u2014 Memory & Interconnect\n- **Western Digital** fell approximately **8%** Friday after a Nikkei report said Toshiba would double hard-disk-drive production capacity for data centers and invest **$380 million** in Philippine facilities. (CNBC, Oct. 2; publication time not shown)[4]\n- Western Digital was reported among the stocks that declined by double digits during Friday\u2019s session, alongside Seagate. (Yahoo Finance, Oct. 2; publication time not shown)[13]\n\n## **MXL** \u2014 Communications & Networking\n- **MaxLinear** rose approximately **12.62%** Friday; the company was listed among the **$2 billion\u2013$10 billion market-capitalization** movers. (Investing.com, Oct. 5 09:43 ET)[15]\n\n## **TER** \u2014 Test & Advanced Packaging\n- **Teradyne** rose approximately **5.79%** Friday and was listed among large-cap movers with market capitalization between **$10 billion and $200 billion**. (Investing.com, Oct. 5 09:43 ET)[15]\n\n## **ONTO** \u2014 Chip Equipment\n- **Onto Innovation** rose more than **5%** Friday after RBC Capital Markets initiated coverage with an **outperform** rating and a **$50 price target**, compared with Thursday\u2019s close of **$36**, implying approximately **37% upside**. (CNBC, Oct. 2; publication time not shown)[2]\n\n## **ARM** \u2014 AI Compute\n- **Arm Holdings** rose approximately **7.24%** Friday in one market-mover report. (Investing.com, Oct. 5 09:43 ET)[15]\n\n## **HPE** \u2014 AI Infrastructure\n- **Hewlett Packard Enterprise** rose approximately **5.87%** Friday after Daiwa upgraded the stock on a networking-growth outlook. (Investing.com, Oct. 5 09:43 ET)[15]\n\n## **VECO** \u2014 Chip Equipment\n- **Veeco Instruments** rose approximately **8.46%** Friday and was listed among companies with market capitalizations between **$2 billion and $10 billion**. (Investing.com, Oct. 5 09:43 ET)[15]\n\n## **IART** \u2014 Pharma\n- **Integra LifeSciences** fell approximately **20.33%** Friday; a company update cited expected third-quarter revenue of approximately **$410 million to $412 million** and adjusted diluted EPS of **$0.55 to $0.59**, alongside the continuing impact of a **July flooding event** at its Cincinnati facility. (Stockmarketwatch.com, Oct. 3 05:18 ET; Yahoo Finance, Oct. 3; publication time not shown)[12][6]\n\n## **EL** \u2014 Retail\n- **Est\u00e9e Lauder** rose **2.8%** on Monday, October 5, after Barclays upgraded the stock to **overweight** from **equal weight**. (CNBC, Oct. 5 11:50 ET)[1]\n\n## Macro / Calendar\n- The S&P 500, Dow Jones Industrial Average, and Nasdaq Composite rose approximately **0.7%**, **0.5%**, and **1.2%**, respectively, on Friday, October 2, after U.S. payrolls increased by **29,000** in the latest monthly report. (Yahoo Finance, Oct. 2; publication time not shown)[13]\n- Monday\u2019s scheduled U.S. releases included the final **S&P Global Composite PMI at 09:45 ET** and the **ISM Services PMI at 10:00 ET**. (CNBC, Oct. 4; last updated Oct. 5 09:31 ET)[3]",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Estee Lauder \u2014 The beauty stock moved 2.8% higher on the back of an upgrade at Barclays to overweight from equal weight.",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: DraftKings, Itau Unibanco, PTC & more",
+      "url": "https://www.cnbc.com/2026/10/05/stocks-making-the-biggest-moves-premarket-dkng-itub-ptc.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Stocks making the biggest moves midday: TSLA, AVGO, NKE, ON & more\n...\n# Stocks making the biggest moves midday: Tesla, Broadcom, Nike, ON Semiconductor & more\n...\nCheck out some of the companies making the biggest moves midday: Tesla \u2014 Elon Musk \u2019s electric vehicle maker rose 5% after reporting thi...",
+      "source": "web",
+      "title": "Stocks making the biggest moves midday: Tesla, Broadcom, Nike, ON Semiconductor & more",
+      "url": "https://www.cnbc.com/2026/10/02/stocks-making-the-biggest-moves-midday-tsla-avgo-nke-on-more-.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Week ahead Monday, Oct. 5 S & P Global PMI Composite (final) at 9:45 a.m.\nET ISM Services PMI at 10 a.m.",
+      "source": "web",
+      "title": "Here are 3 things we're watching in the stock market in the week ahead",
+      "url": "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Check out the companies making the biggest moves premarket: Nike \u2014 The company\u2019s shares fell over 10% after Nike missed on revenue against LSEG consensus for its fiscal first quarter.\nThe company reported that sales were down 4%, citing declines in its China business.\nThe company also announced plan...",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: Nike, ON ...",
+      "url": "https://www.cnbc.com/2026/10/02/stocks-making-the-biggest-moves-premarket-nike-on-semiconductor-synaptics-vylor-more.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Tech stocks rallied as risk-taking returned on Wall Street, with shares of Nvidia hitting an all-time high for the first time since May, though it eventually closed below its previous record close.\nCrowdStrike, Palo Alto Networks and AMD also all rose to all-time highs.\nShares of AMD also rose nearl...",
+      "source": "web",
+      "title": "Stocks rise Friday after soft jobs data, Nvidia leads Nasdaq ...",
+      "url": "https://www.cnbc.com/2026/10/01/stock-market-today-live-updates-.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Active Companies from around the markets with current developments this week include: RTX (NYSE: RTX), Integra LifeSciences Holdings Corporation (Nasdaq: IART), Trilogy Metals Inc.\n(NYSE American: TMQ), Phillips Edison & Company, Inc.\n(Nasdaq: PECO), and Axogen, Inc.\n...\n**RTX (NYSE: RTX) ** Rayth...",
+      "source": "web",
+      "title": "Nasdaq Hits Fresh Ground on Chip and Software Strength ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/nasdaq-hits-fresh-ground-chip-110000787.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The Nasdaq was leading the charge, up over 1.5% and touching a fresh record high.\nThe S & P 500 was up roughly 1%, while the Dow was the relative laggard, up about 300 points, or 0.6%.\n...\n2. One of those tech stocks on the ascent Friday was Nvidia , which was up over 2.5% and trading at record leve...",
+      "source": "web",
+      "title": "Nvidia breaks through to new record highs. Plus, more good news for Boeing",
+      "url": "https://www.cnbc.com/2026/10/02/nvidia-breaks-through-to-new-record-highs-plus-more-good-news-for-boeing.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "#### Premarket movers: PTC, Nu Holdings, Harley-Davidson, Intel",
+      "source": "web",
+      "title": "Stock Market Today: Dow, S&P 500 and Nasdaq set for steady start as bond yields remain heightened; U.S. services PMI on tap",
+      "url": "https://www.marketwatch.com/bulletins/redirect/go?g=0317fbab-b8aa-4958-a721-1eb24631743f&link=sfmw_fb"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On the next trading day, October 2, shares gained 3.35%, from $343.64 to $355.14.\nCNBC listed Broadcom among that day\u2019s biggest noon movers.",
+      "source": "web",
+      "title": "Broadcom's Massive $42 Billion Chip-Buying Deal with ...",
+      "url": "https://247wallst.com/investing/2026/10/04/broadcoms-massive-42-billion-chip-buying-deal-with-anthropic-raises-circular-financing-worries/?tpid=1673792&tv=link&tc=in_content"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "NEW YORK -- U.S. stocks climbed near their all-time high Friday after the latest update on the U.S. job market cooled worries that a potentially hot U.S economy could make inflation much worse.\nThe S&P 500 rose 0.7% and pulled within 1% of its record set in August.\nThe Dow Jones Industrial Average a...",
+      "source": "web",
+      "title": "US stocks rise near their record after the latest jobs report ...",
+      "url": "https://www.eldoradonews.com/news/2026/oct/03/us-stocks-rise-near-their-record-after-the-latest/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "U.S. stocks rise near their record after the latest jobs report calms the rattled bond market - The Columbian\n...\nNEW YORK \u2014 Some relief is returning to the rattled U.S. bond market on Friday after the latest jobs report cooled worries that a potentially hot U.S economy could make inflation much wor...",
+      "source": "web",
+      "title": "U.S. stocks rise near their record after the latest jobs report ...",
+      "url": "https://www.columbian.com/news/2026/oct/02/u-s-stocks-rise-near-their-record-after-the-latest-jobs-report-calms-the-rattled-bond-market/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "The soft data slashed October Fed rate hike odds to 21-24%, boosting growth-sensitive groups like Semiconductors & Related Devices (+3.49%), Printed Circuit Boards (+2.94%), and Special Industry Machinery, NEC (+5.06%).\nA 5% surge from Tesla on strong vehicle deliveries further anchored the tech ral...",
+      "source": "web",
+      "title": "Market Digest \u2014 Friday, October 2, 2026",
+      "url": "https://stockmarketwatch.com/digest/2026-10-02"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The tech-focused Nasdaq, benchmark S&P 500, and blue-chip Dow closed Friday up a respective 1.2%, 0.7%, and 0.5%, with the Nasdaq setting an intraday high mark.\n...\nNike (NKE) shares fell about 3.5% to lead Dow decliners after the sneaker giant projected a bigger slide in sales this fiscal year than...",
+      "source": "web",
+      "title": "Nasdaq Hits New High; Dow, S&P 500 Book Weekly Losses",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-2-2026-104753291.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Megacap stocks helped lead the advance, with Nvidia and Tesla the biggest boosts to the S&P 500.\nTesla's gains helped lift the S&P 500 consumer discretionary index more than 1% as the best-performing of the 11 major S&P sectors.",
+      "source": "web",
+      "title": "Live: Nasdaq rises 1% after softer jobs data eases rate hike ...",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/wall-street-guide/dow-jones-us-stock-market-live-updates-nasdaq-sp-500-iran-israel-war-hormuz-talks-brent-crude-oil-inflation-treasury-bond-yields-fed-rate-hike-earnings-forecast-jobs-nike-nvidia-amd-moderna-ai-chip-stock-price-news-2-october-2026/liveblog/134639271.cms"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "MRVL+1.57%\nTXN+4.44%\nTER+8.00%\nSTX-10.21%\nTSLA+4.65%\nVECO+7.88%\nMXL+14.99%\nIBRX+10.88%\nHPE+7.36%\nDOCN+0.19%\nTSLL+9.25%\nARM+5.18%\nSPCX+7.35%\nFriday\u2019s market has seen significant swings in various stocks, driven by a mix of news and investor sentiment.\nToday, mega-cap stocks like Arm (ARM) are rallyin...",
+      "source": "web",
+      "title": "Seagate and Arm among market cap stock movers on Friday By Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/seagate-and-arm-among-market-cap-stock-movers-on-friday-93CH-4930090"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/2026/10/05/stocks-making-the-biggest-moves-premarket-dkng-itub-ptc.html",
+    "https://www.cnbc.com/2026/10/02/stocks-making-the-biggest-moves-midday-tsla-avgo-nke-on-more-.html",
+    "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html",
+    "https://www.cnbc.com/2026/10/02/stocks-making-the-biggest-moves-premarket-nike-on-semiconductor-synaptics-vylor-more.html",
+    "https://www.cnbc.com/2026/10/01/stock-market-today-live-updates-.html",
+    "https://finance.yahoo.com/markets/stocks/articles/nasdaq-hits-fresh-ground-chip-110000787.html",
+    "https://www.cnbc.com/2026/10/02/nvidia-breaks-through-to-new-record-highs-plus-more-good-news-for-boeing.html",
+    "https://www.marketwatch.com/bulletins/redirect/go?g=0317fbab-b8aa-4958-a721-1eb24631743f&link=sfmw_fb",
+    "https://247wallst.com/investing/2026/10/04/broadcoms-massive-42-billion-chip-buying-deal-with-anthropic-raises-circular-financing-worries/?tpid=1673792&tv=link&tc=in_content",
+    "https://www.eldoradonews.com/news/2026/oct/03/us-stocks-rise-near-their-record-after-the-latest/",
+    "https://www.columbian.com/news/2026/oct/02/u-s-stocks-rise-near-their-record-after-the-latest-jobs-report-calms-the-rattled-bond-market/",
+    "https://stockmarketwatch.com/digest/2026-10-02",
+    "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-2-2026-104753291.html",
+    "https://economictimes.indiatimes.com/markets/us-stocks/wall-street-guide/dow-jones-us-stock-market-live-updates-nasdaq-sp-500-iran-israel-war-hormuz-talks-brent-crude-oil-inflation-treasury-bond-yields-fed-rate-hike-earnings-forecast-jobs-nike-nvidia-amd-moderna-ai-chip-stock-price-news-2-october-2026/liveblog/134639271.cms",
+    "https://www.investing.com/news/stock-market-news/seagate-and-arm-among-market-cap-stock-movers-on-friday-93CH-4930090"
+  ],
+  "usage": {
+    "input_tokens": 736,
+    "output_tokens": 1556,
+    "cost_usd": 0.03955
+  }
+}

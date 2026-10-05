@@ -1,0 +1,167 @@
+{
+  "name": "a_earnings",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Earnings reported.\n\nWindow: Friday October 2, 2026 4:00 PM ET (after the close) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery company that reported after the close on the session date or before the open on the brief date: EPS and revenue actual vs consensus, guidance old \u2192 new vs consensus, key KPIs, stock reaction.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Earnings reports [Calendar]\n\n- No **U.S.-listed company** was identified as reporting earnings after 4:00 PM ET on Friday, October 2, 2026, or before 12:20 PM ET on Monday, October 5, 2026; the week-ahead earnings calendars list no Monday, October 5, premarket or after-close reports of note. (CNBC, Oct. 4, 2026; Schwab Network, Oct. 4, 2026)\n- The next scheduled notable U.S. earnings reports were **Lamb Weston (LW)** before the open and **Constellation Brands (STZ)** after the close on Tuesday, October 6, 2026. (CNBC, Oct. 4, 2026; Schwab Network, Oct. 4, 2026)\n- **McCormick (MKC)** was listed for a Monday, October 5, premarket report with consensus EPS of **$0.76** and consensus revenue of **$2.0 billion**, but no actual results were identified by the 12:20 PM ET cutoff. (Digrin, Oct. 5, 2026)\n- **WuXi AppTec (WUXAY)** and **BETA Technologies (BETA)** were listed for Monday, October 5, after-close reports, with consensus EPS of **$0.23** and **$(0.58)**, respectively; both were outside the requested cutoff because they were scheduled after 12:20 PM ET. (Digrin, Oct. 5, 2026)\n- **DocuSign (DOCU)**, **Abercrombie & Fitch (ANF)**, **Koppers Holdings (KOP)**, and **Agilent Technologies (A)** appeared in search results as having reported earlier in their respective quarters, but the available items did not establish publication within the October 2, 4:00 PM ET\u2013October 5, 12:20 PM ET window; they are therefore omitted from the in-scope earnings list. (MarketBeat items syndicated by Ad Hoc News, Oct. 3\u20135, 2026)",
+  "search_results": [
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The relatively slow week comes as we await the start of third-quarter earnings season and leave behind conference season.\n...\n2. Earnings: While there are no Club names set to report, we will hear from Corona and Modelo brewer Constellation Brands on Tuesday evening; denim maker Levi Strauss on Wedn...",
+      "source": "web",
+      "title": "Here are 3 things we're watching in the stock market in the week ahead",
+      "url": "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "### 6. Next week's first prints: PepsiCo at $2.30 a share, Delta at $1.94, Constellation at $3.55 (Earnings)\n...\nThe FXEmpire calendar lists the main reports from October 6 to 9.\nConstellation Brands is expected to earn $3.55 a share after the close on October 6.\nApplied Digital is expected to lose ...",
+      "source": "web",
+      "title": "October 4, 2026 \u00b7 Finance & Markets Daily Digest | Swil-News",
+      "url": "https://news.supwil.com/en/news/finance/2026-10-04"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "## Earnings, Week of Oct. 5, 2026\n**Monday, October 5**\n- Premarket: n/a\n- Postmarket: n/a\n**Tuesday, October 6**\n- Premarket: Lamb Weston (LW)\n- Postmarket: Constellation Brands (STZ)\n**Wednesday, October 7**\n...\n**Thursday, October 8**\n- Premarket: PepsiCo (PEP), Helen of Troy (HELE)\n- Postmarket:...",
+      "source": "web",
+      "title": "Week Ahead: FOMC Minutes Kick Off Final Quarter of 2026",
+      "url": "https://schwabnetwork.com/articles/week-ahead-fomc-minutes-kick-off-final-quarter-of-2026"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Sun, October 4, 2026 at 4:00 AM GMT-5\n...\n*Levi Strauss is slated to report quarterly earnings this week.*\n...\nThird-quarter results start trickling in this week, with Delta, Pepsi and Levi Strauss due to report.\n...\nAnalysts have grown bullish about third-quarter results over the course of the quar...",
+      "source": "web",
+      "title": "Investors Prep for Earnings Season; Delta, Pepsi Report",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/expect-markets-week-investors-prep-090000033.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "American Express stock closed at USD 302.78 on October 2 after second-quarter EPS beat consensus by USD 0.12.\nFiscal 2026 EPS guidance remains USD 17.30-17.90.\n...\nAmerican Express stock (ISIN US0258161092) closed at USD 302.78 on the NYSE on October 2, 2026, up 0.23 percent from the prior close.\nTh...",
+      "source": "web",
+      "title": "American Express stock carries 10 percent growth into ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/american-express-stock-carries-10-percent-growth-into-october-23-earnings/70227062"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Q2 fiscal 2026 EPS reached USD 4.17 against USD 1.99 consensus, while revenue rose 4.8 percent year over year.\n...\nAbercrombie & Fitch stock (ISIN US0028962076) closed at USD 135.91 on the NYSE on October 2, 2026, down 0.33 percent from the prior session.\nThe retailer's latest quarterly report showe...",
+      "source": "web",
+      "title": "Abercrombie & Fitch stock reports strong Q2 earnings",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/abercrombie-und-fitch-stock-reports-strong-q2-earnings/70227710"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The week of October 5 brings 25 confirmed earnings reports across a range of industries, with 12 companies scheduled before the market open and 13 after the close.",
+      "source": "web",
+      "title": "25 Companies Report This Week Before the Big Banks Arrive",
+      "url": "https://247wallst.com/cards/next-week-s-25-reports-arrive-before-the-big-banks-do-with-lw-earnings-calendar-01m3ys1913ecatwdz2kfzy7dyx"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "DocuSign stock closed at USD 69.01 on October 2, 2026, after Q2 adjusted EPS reached USD 1.16.\nFiscal 2027 revenue guidance rose to USD 3.499 billion-USD 3.507 billion.\n...\nDocuSign (ISIN US2561631068) closed at USD 69.01 on Nasdaq on October 2, 2026, down 1.05 percent from USD 69.74.\n...\nDocuSign r...",
+      "source": "web",
+      "title": "DocuSign stock reports a Q2 beat and raises fiscal 2027 guidance",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/docusign-stock-reports-a-q2-beat-and-raises-fiscal-2027-guidance/70228374"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Oct 4, 2026 - Oct 10, 2026\n...\nSun, Oct 4\nMon, Oct 5",
+      "source": "web",
+      "title": "Company Earnings Calendar - Yahoo Finance",
+      "url": "https://finance.yahoo.com/calendar/earnings/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monday, October 5, 2026\n...\n11 reports\n...\n## Before market open\nReports expected before the opening bell (pre-market / BMO).\n1\n|Company|Market cap|EPS (act. / est.)|Revenue (act. / est.)|\n|--|--|--|--|\n|M **MKC** McCormick & Company, Incorporated|14.5 billion USD|\u2014 / 0.76|\u2014 / 2.0 billion|\n## After ...",
+      "source": "web",
+      "title": "Stock Earnings Calendar Oct 5, 2026",
+      "url": "https://www.digrin.com/stocks/earnings_calendar"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Consensus EPS Estimate:** $3.55\n...\n- **Consensus Revenue Estimate:** $18.99B",
+      "source": "web",
+      "title": "Earnings week ahead: PEP, DAL, STZ, TLRY, LEVI, and ...",
+      "url": "https://www.tradingview.com/news/seekingalpha:02b2db84d094b:0-earnings-week-ahead-pep-dal-stz-tlry-levi-and-more/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Koppers Holdings stock reported adjusted EPS of USD 1.37 for Q2 2026 against USD 1.12 consensus, with revenue up 3.0 percent to USD 520.1 million.\n...\nKoppers Holdings Inc.\n(ISIN US50060P1066) closed at USD 46.04 on the NYSE on October 2, 2026, gaining 1.88 percent as fiscal 2026 adjusted EPS guidan...",
+      "source": "web",
+      "title": "Koppers Holdings stock gains 1.88 percent as fiscal guidance holds",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/koppers-holdings-stock-gains-1-88-percent-as-fiscal-guidance-holds/70223622"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Agilent Technologies stock closed at USD 167.83 on October 2, 2026, after quarterly adjusted EPS beat estimates by USD 0.13.\nRevenue rose 8.1 percent year over year.\n...\nAgilent Technologies stock (ISIN US00846U1016) closed at USD 167.83 on the NYSE on October 2, 2026, up 0.69 percent for the sessio...",
+      "source": "web",
+      "title": "Agilent Technologies stock trades at USD 167.83 after Q3 beat",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/agilent-technologies-stock-trades-at-usd-167-83-after-q3-beat/70224962"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Amgen stock closed at USD 403.04 on October 2 after a 1.04 percent decline.\nQ2 EPS reached USD 6.29, beating consensus by USD 0.67.\n...\nAmgen (ISIN US0311621009) reported Q2 revenue growth of 9.5 percent to USD 10.05 billion, while EPS reached USD 6.29 against a USD 5.62 consensus estimate.\nThe shar...",
+      "source": "web",
+      "title": "Amgen stock reports 9.5 percent Q2 revenue growth",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/amgen-stock-reports-9-5-percent-q2-revenue-growth/70226938"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Dominion Energy stock delivered USD 0.79 in Q2 2026 adjusted EPS against USD 0.68 consensus.\nRevenue reached USD 4.48 billion, up 17.6 percent year over year.\n...\nDominion Energy stock (ISIN US25746U1097) closed at USD 61.31 on the NYSE on October 2, 2026, up 0.91 percent from the USD 60.76 prior cl...",
+      "source": "web",
+      "title": "Dominion Energy stock reports a quarterly earnings beat",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/dominion-energy-stock-reports-a-quarterly-earnings-beat/70228070"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html",
+    "https://news.supwil.com/en/news/finance/2026-10-04",
+    "https://schwabnetwork.com/articles/week-ahead-fomc-minutes-kick-off-final-quarter-of-2026",
+    "https://finance.yahoo.com/markets/stocks/articles/expect-markets-week-investors-prep-090000033.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/american-express-stock-carries-10-percent-growth-into-october-23-earnings/70227062",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/abercrombie-und-fitch-stock-reports-strong-q2-earnings/70227710",
+    "https://247wallst.com/cards/next-week-s-25-reports-arrive-before-the-big-banks-do-with-lw-earnings-calendar-01m3ys1913ecatwdz2kfzy7dyx",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/docusign-stock-reports-a-q2-beat-and-raises-fiscal-2027-guidance/70228374",
+    "https://finance.yahoo.com/calendar/earnings/",
+    "https://www.digrin.com/stocks/earnings_calendar",
+    "https://www.tradingview.com/news/seekingalpha:02b2db84d094b:0-earnings-week-ahead-pep-dal-stz-tlry-levi-and-more/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/koppers-holdings-stock-gains-1-88-percent-as-fiscal-guidance-holds/70223622",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/agilent-technologies-stock-trades-at-usd-167-83-after-q3-beat/70224962",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/amgen-stock-reports-9-5-percent-q2-revenue-growth/70226938",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/dominion-energy-stock-reports-a-quarterly-earnings-beat/70228070"
+  ],
+  "usage": {
+    "input_tokens": 733,
+    "output_tokens": 462,
+    "cost_usd": 0.02313
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "a_sector_energy_materials",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Company news: oil & gas, mining, chemicals and agriculture.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed oil & gas, mining, chemicals and agriculture companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **XOM** [Energy]\n- The U.S. Supreme Court heard arguments on October 5 in Exxon Mobil\u2019s appeal seeking to block Boulder, Colorado\u2019s climate-liability lawsuit; Boulder\u2019s city and county governments seek damages for infrastructure repairs, environmental damage, emergency management and public-health harms. Justice Samuel Alito recused himself, and a decision is expected by June 2027. (Reuters, Oct. 5, 10:30 ET)\n\n## **CVE** [Energy]\n- Cenovus Energy agreed to acquire Athabasca Oil in a cash-and-stock transaction with an implied enterprise value of **$5.7 billion** and consideration of **$12.00 per Athabasca share**; the deal includes maximum cash consideration of **$4.3 billion** and maximum issuance of **44.4 million Cenovus shares**. Closing is expected in **December 2026**, subject to regulatory and shareholder approvals. (Cenovus release via GlobeNewswire, Oct. 5, 11:18 ET)\n\n## **Suncor Energy** [Energy]\n- The U.S. Supreme Court heard Suncor Energy\u2019s appeal seeking to prevent Boulder, Colorado\u2019s climate-liability lawsuit from proceeding; the case concerns claims under state law for climate-change-related damages. Justice Samuel Alito recused himself, and the court\u2019s decision is expected by **June 2027**. (Reuters, Oct. 5, 10:30 ET)\n\n## Macro / Commodities [Energy]\n- Middle East crude exports exceeded pre-war levels on **four of seven days** during the final week of September, according to tanker-tracking data, while attacks on vessels continued in the Strait of Hormuz. (Reuters, Oct. 5, 05:21 ET)\n- U.S. oil and gas rigs declined by **1 to 598** in the week ended October 2; oil rigs increased by **1 to 456**, gas rigs fell by **2 to 133**, and miscellaneous rigs totaled **9**. (Baker Hughes data reported by Engine, Oct. 5, 02:35 ET)\n\n## Scope limitation\n\n- The available search results identified material items for Exxon Mobil, Suncor Energy and Cenovus Energy, but did not provide sufficient verified results to establish a complete universe of every qualifying U.S.-listed oil and gas, mining, chemicals and agriculture company in the stated window.",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "WASHINGTON, Oct 5 (Reuters) - The US Supreme Court is set on Monday to hear a bid by oil companies ExxonMobil and Suncor Energy to thwart a lawsuit by officials in Boulder, Colorado, seeking monetary damages for harms caused by climate change, as the justices open a new nine-month term.\nUS-based Exx...",
+      "source": "web",
+      "title": "US Supreme Court weighs bid by oil companies to avoid climate lawsuit",
+      "url": "https://www.reuters.com/sustainability/cop/us-supreme-court-weighs-bid-by-oil-companies-avoid-climate-lawsuit-2026-10-05/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "NEW DELHI/SINGAPORE, Oct 5 (Reuters) - Oil prices edged lower on Monday as rising \u200bMiddle East crude exports and a release of oil stocks by the Group of Seven \u200cnations boosted supplies, offsetting concerns about further damage to Gulf oil infrastructure amid the US-Israeli war on Iran.\n...\nThe Houth...",
+      "source": "web",
+      "title": "Oil falls as Middle East crude exports rise, G7 to release ...",
+      "url": "https://www.reuters.com/business/energy/oil-climbs-after-yemeni-houthis-attack-saudi-aramco-sites-2026-10-04/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "PRESS RELEASE\nPublished October 5, 2026\nCALGARY, Alberta, Oct. 05, 2026 (GLOBE NEWSWIRE) -- Cenovus Energy Inc.\n(TSX: CVE) (NYSE: CVE) today announced that it has entered into a definitive arrangement agreement to acquire Athabasca Oil Corporation (TSX: ATH) ('Athabasca') in a cash and stock transac...",
+      "source": "web",
+      "title": "Cenovus announces agreement to acquire Athabasca Oil Corporation",
+      "url": "https://www.digitaljournal.com/pr/news/globenewswire/cenovus-announces-agreement-acquire-athabasca-1177076237.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "CALGARY, AB, Oct. 5, 2026 /CNW/ -- Alvopetro Energy Ltd.\n(TSXV: ALV) (OTCQX: ALVOF) announces September sales volumes of 2,627 boepd (based on field estimates).\nIn Brazil, September sales averaged 2,508 boepd, including natural gas sales of 14.1 MMcfpd and associated natural gas liquids sales from c...",
+      "source": "web",
+      "title": "Alvopetro Announces September Sales Volumes and an Operational Update",
+      "url": "https://finance.yahoo.com/energy/articles/alvopetro-announces-september-sales-volumes-110200399.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The Syrian Petroleum Company (SPC) will participate in the Energy Intelligence Forum 2026, which will be held in London on Oct. 5-6, bringing together energy sector leaders, experts and decision-makers from around the world.",
+      "source": "web",
+      "title": "Syrian Petroleum Company to Participate in London ...",
+      "url": "https://sana.sy/en/economic/2347979/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "These Energy Companies Put Oklahoma City on the Map.\nNow They\u2019re Moving to Texas\nMonday, October 5, 2026Set Location\n...\n# These Energy Companies Put Oklahoma City on the Map. Now They\u2019re Moving to Texas\n...\nThe departures of Devon Energy and Expand Energy are the latest sign that oil-and-gas merger...",
+      "source": "web",
+      "title": "These Energy Companies Put Oklahoma City on the Map. Now They\u2019re Moving to Texas",
+      "url": "https://ground.news/article/these-energy-companies-put-oklahoma-city-on-the-map-now-theyre-moving-to-texas"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "LONDON, Oct 5 (Reuters) - Middle East crude exports recently climbed to their highest levels since the start of the Iran war as more Gulf producers resume transit through the Strait of Hormuz \u2013 despite the continued threat of Iranian attacks.",
+      "source": "web",
+      "title": "Oil's new problem isn't supply. It's logistics",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/oils-new-problem-isnt-supply-its-logistics-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Energy stocks hold gains as Hormuz crude flows top pre-war levels and Brent stays above $100 - WalletInvestor.com\n...\n# Energy stocks hold gains as Hormuz crude flows top pre-war levels and Brent stays above $100\n...\nOctober 5, 2026 \u00b7 3 min read\nCrude is leaving the Strait of Hormuz in greater volum...",
+      "source": "web",
+      "title": "Energy stocks hold gains as Hormuz crude flows top pre- ...",
+      "url": "https://walletinvestor.com/news/trading-news/energy-stocks-hold-gains-as-hormuz-crude-flows-top-pre-war-levels-and-brent-stays-above-100/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Enel stock is at EUR 8.79 pre-market, down 0.45 percent versus the prior close.\nLang & Schwarz recorded the price at 8:10 a.m.\nCEST on October 5, 2026.\nEnel stock was at EUR 8.79 pre-market at 8:10 a.m.\nCEST on October 5, 2026, down 0.45 percent versus the EUR 8.83 prior close at Lang & Schwarz on O...",
+      "source": "web",
+      "title": "Enel stock pre-market at EUR 8.79: minus 0.45 percent",
+      "url": "https://www.ad-hoc-news.de/boerse/news/vorboerse/enel-stock-pre-market-at-eur-8-79-minus-0-45-percent/70230003"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Clarence Thomas is in the hot seat for Supreme Court\u2019s biggest climate case in years\nMonday, October 5, 2026Set Location\n...\n# Clarence Thomas is in the hot seat for Supreme Court\u2019s biggest climate case in years\n## Environmentalists say Thomas\u2019s recent opinions could shape a case that may limit stat...",
+      "source": "web",
+      "title": "Clarence Thomas is in the hot seat for Supreme Court's ...",
+      "url": "https://ground.news/article/clarence-thomas-is-in-the-hot-seat-for-supreme-courts-biggest-climate-case-in-years"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Oil climbs after Yemeni Houthis attack Saudi Aramco sites\nOil prices rose on Monday after Yemen's Iran-backed Houthis said they launched ballistic missiles and drones at Saudi Aramco sites in Riyadh and the Khurais area, raising concerns about production at the top exporter in the region.\n...\n- Up...",
+      "source": "web",
+      "title": "Oil climbs after Yemeni Houthis attack Saudi Aramco sites",
+      "url": "https://energy.economictimes.indiatimes.com/amp/news/oil-and-gas/oil-climbs-after-yemeni-houthis-attack-saudi-aramco-sites/134684560"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SINGAPORE, Oct 5 (Reuters) - Crude oil exports from the Middle East rose above pre-war levels in four of the seven days of the final week of September, shipping data showed on Monday, despite attacks on vessels passing through the Strait of Hormuz.",
+      "source": "web",
+      "title": "Middle East oil exports top pre-war levels in September, ...",
+      "url": "https://www.reuters.com/business/energy/middle-east-crude-oil-exports-exceed-pre-war-levels-tanker-attacks-increase-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "By Florence Tan SINGAPORE, Oct 5 (Reuters) - Oil prices slipped on Monday as rising crude exports from the Middle East and a release of oil stocks from Group of Seven nations are adding to supplies despite ongoing concerns about further damage to Gulf oil [...]",
+      "source": "web",
+      "title": "Oil slips as Middle East crude exports rise, G7 to release stocks - Regional Media News",
+      "url": "https://ground.news/article/oil-slips-as-middle-east-crude-exports-rise-g7-to-release-stocks-regional-media-news"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "US rig count declines\n...\n# US rig count declines\nOctober 5, 2026\nThe total number of rigs drilling for crude oil and natural gas in the US decreased by one to 598 in the week ending 2 October, according to Baker Hughes.\nThe number of oil rigs increased by one unit over the week to 456, while gas ri...",
+      "source": "web",
+      "title": "US rig count declines",
+      "url": "https://www.engine.online/news/us-rig-count-declines-8234"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "International Petroleum Corporation Announces Results of\n# International Petroleum Corporation Announces Results of Normal Course Issuer Bid\nOctober 05, 2026 04:30 ET | Source: International Petroleum Corporation International Petroleum Corporation\nTORONTO, Oct. 05, 2026 (GLOBE NEWSWIRE) -- **Intern...",
+      "source": "web",
+      "title": "International Petroleum Corporation Announces Results of Normal Course Issuer Bid",
+      "url": "https://www.globenewswire.com/news-release/2026/10/05/3374222/0/en/international-petroleum-corporation-announces-results-of-normal-course-issuer-bid.html"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/sustainability/cop/us-supreme-court-weighs-bid-by-oil-companies-avoid-climate-lawsuit-2026-10-05/",
+    "https://www.reuters.com/business/energy/oil-climbs-after-yemeni-houthis-attack-saudi-aramco-sites-2026-10-04/",
+    "https://www.digitaljournal.com/pr/news/globenewswire/cenovus-announces-agreement-acquire-athabasca-1177076237.html",
+    "https://finance.yahoo.com/energy/articles/alvopetro-announces-september-sales-volumes-110200399.html",
+    "https://sana.sy/en/economic/2347979/",
+    "https://ground.news/article/these-energy-companies-put-oklahoma-city-on-the-map-now-theyre-moving-to-texas",
+    "https://www.reuters.com/commentary/reuters-open-interest/oils-new-problem-isnt-supply-its-logistics-2026-10-05/",
+    "https://walletinvestor.com/news/trading-news/energy-stocks-hold-gains-as-hormuz-crude-flows-top-pre-war-levels-and-brent-stays-above-100/",
+    "https://www.ad-hoc-news.de/boerse/news/vorboerse/enel-stock-pre-market-at-eur-8-79-minus-0-45-percent/70230003",
+    "https://ground.news/article/clarence-thomas-is-in-the-hot-seat-for-supreme-courts-biggest-climate-case-in-years",
+    "https://energy.economictimes.indiatimes.com/amp/news/oil-and-gas/oil-climbs-after-yemeni-houthis-attack-saudi-aramco-sites/134684560",
+    "https://www.reuters.com/business/energy/middle-east-crude-oil-exports-exceed-pre-war-levels-tanker-attacks-increase-2026-10-05/",
+    "https://ground.news/article/oil-slips-as-middle-east-crude-exports-rise-g7-to-release-stocks-regional-media-news",
+    "https://www.engine.online/news/us-rig-count-declines-8234",
+    "https://www.globenewswire.com/news-release/2026/10/05/3374222/0/en/international-petroleum-corporation-announces-results-of-normal-course-issuer-bid.html"
+  ],
+  "usage": {
+    "input_tokens": 782,
+    "output_tokens": 508,
+    "cost_usd": 0.02397
+  }
+}

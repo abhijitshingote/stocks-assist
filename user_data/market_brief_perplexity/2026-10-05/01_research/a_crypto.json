@@ -1,0 +1,167 @@
+{
+  "name": "a_crypto",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Crypto.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nBitcoin and Ether price (level, 24h % change, time quoted); spot ETF flows; SEC/CFTC/Congress crypto actions; tokenization news; crypto-treasury company offerings.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Crypto `[Crypto]`\n\n- **Bitcoin (BTC)** traded at approximately **$86,200**, up **3.7% over seven days**, as of **10:55 ET on October 5**; the available report did not provide a 24-hour percentage change. (LCX, Oct 5 10:55 ET)\n- **Ether (ETH)** traded at approximately **$2,727**, up **3.0% over seven days**, as of **10:55 ET on October 5**; the available report did not provide a 24-hour percentage change. (LCX, Oct 5 10:55 ET)\n- U.S. spot **Bitcoin ETFs** recorded **$241.1 million of net inflows** during the week ended **October 2**, marking a **third consecutive weekly inflow**; cumulative net inflows reached **$57.8 billion**. (LCX, Oct 5 10:55 ET)\n- U.S. spot **Ether ETFs** recorded **$138 million of net outflows** during the week ended **October 2**, following **$690 million of inflows** in the prior week; 2026 year-to-date net inflows were approximately **$1.5 billion**. (LCX, Oct 5 10:55 ET)\n- A separate Farside-based report put the week ended October 2 at **$82.9 million of provisional Bitcoin ETF inflows** and approximately **$118 million of Ether ETF outflows**; the figures were described as **not final**. (FinanceFeeds via Ground News, Oct 5 04:29 ET)\n- The SEC approved a **Cboe BZX rule change on October 2** permitting the listing of six **3\u00d7 leveraged ETPs**, including Bitcoin- and Ether-linked products from Volatility Shares; separate **Form S-1 registration approval** is required before trading can begin. (Tokenist, Oct 5 10:09 ET)\n- The Senate\u2019s **CLARITY Act** remains stalled after a **49\u201350 procedural vote on September 15**, below the **60 votes** required to advance; the bill had not become law as of October 5. (LCX, Oct 5 10:54 ET)\n- The CFTC\u2019s updated guidance permits eligible assets such as **tokenized Treasuries, corporate bonds and money-market-fund shares** to be held in tokenized form when the blockchain version carries the same legal and economic rights as the traditional asset; the guidance does **not** authorize customer funds to be invested directly in Bitcoin or Ether. (Adalytica, Oct 5 07:15 ET)\n- The CFTC guidance also permits regulated firms to use **blockchain and distributed-ledger technology for recordkeeping**, provided records remain authentic, reliable, retained and accessible. (Adalytica, Oct 5 07:15 ET)\n- **Supercycle Finance**, led by co-founder and CEO **Michael Terpin**, announced a Bitcoin-treasury program on **October 2** and proposed a **Regulation A offering of up to $75 million**, with most proceeds intended for Bitcoin purchases; the company plans to buy during declines, sell at higher prices and hold U.S. Treasuries and other interest-bearing assets between transactions. (Bitcoin.com News, Oct 4 18:18 ET) [report]\n- A report published October 4 said the SEC had approved a temporary **\u201cInnovation Exemption\u201d** for limited trading of tokenized U.S. stocks on selected on-chain venues; the same report said the SEC proposed a rule on October 1 addressing investment firms\u2019 handling and custody of customer crypto assets. (LCX, Oct 5 10:54 ET) [report]",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5, 2026\nBitcoin ETF inflows reached a third straight week, while Ether ETFs swung to outflows and Zcash funds posted their first weekly outflow.\nUS spot Bitcoin exchange-traded funds (ETFs) recorded a third consecutive week of net inflows as Ether ETFs flipped back to net outflows.\nBitcoin E...",
+      "source": "web",
+      "title": "Bitcoin ETFs notch third inflow week as Ether ETFs shed $138M",
+      "url": "https://lcx.com/en/cryptonews/bitcoin-etfs-notch-third-inflow-week-as-ether-etfs-shed-138m"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Bitcoin ETFs drew $241.1M for a third straight inflow week as Ether ETFs saw $138M in outflows and Zcash funds posted their first weekly outflow.\n...\nUS spot Bitcoin exchange-traded funds recorded a third straight week of net inflows last week.\nEther ETFs moved in the other direction, posting net ou...",
+      "source": "web",
+      "title": "Bitcoin ETFs Keep Winning While Ether ETFs Bleed $138 Million",
+      "url": "https://blockonomi.com/bitcoin-etfs-keep-winning-while-ether-etfs-bleed-138-million/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monday, October 5, 2026Set Location\n...\n## Strong institutional ETF inflows lifted Bitcoin about 2% this week and helped the token post its biggest quarter since the end of 2024.\n...\nBitcoin ETFs drew $103 million to open October as Bitcoin climbed above $85,000, while Ether ETFs posted a third stra...",
+      "source": "web",
+      "title": "Bitcoin ETFs Return to Inflows as 'Uptober' Gets Underway",
+      "url": "https://ground.news/article/us-spot-bitcoin-etfs-draw-1027-million-as-ether-funds-lose-554-million_fdeb2d"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Bitcoin ETFs Notch Third Inflow Week as Ether ETFs Shed $138M\n...\nBitcoin ETF inflows reached a third straight week, while Ether ETFs swung to outflows and Zcash funds posted their first weekly outflow.\nUS spot Bitcoin exchange-traded funds (ETFs) recorded a third consecutive week of net inflows as ...",
+      "source": "web",
+      "title": "Bitcoin ETFs Notch Third Inflow Week as Ether ETFs Shed $138M",
+      "url": "https://ground.news/article/spot-bitcoin-etfs-see-241m-in-net-inflows-for-third-straight-week"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "U.S. Bitcoin ETFs recorded provisional net inflows of $82.9 million for Sep. 28\u2013Oct. 2, while Ethereum ETFs posted $118 million in net outflows, according to Farside Investors.\nBitcoin\u2019s reported weekly intake fell sharply from $2.39 billion in the preceding week.\u2026\n...\nU.S. spot Bitcoin ETFs took in...",
+      "source": "web",
+      "title": "Crypto ETF Flows Split as Bitcoin Gains $82.9m, Ethereum ...",
+      "url": "https://ground.news/article/bitcoin-and-ether-etf-flows-diverge-over-seven-days-as-daily-totals-split"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Crypto fund inflows surged as investors deposited $3.55 billion into digital asset investment products during the week.\nBitcoin led demand, as did Ethereum, Solana, and XRP\u25b2$1.39.\n...\nWeekly crypto fund flows came to $3.55 billion, the strongest period of 2026 so far.\n...\nBitcoin attracted approxima...",
+      "source": "web",
+      "title": "Crypto Funds See $3.55B Inflows: Bitcoin Leads as Ethereum and Solana Surge - Bitcoin Foundation",
+      "url": "https://bitcoinfoundation.org/news/etfs/crypto-funds-see-3-55b-inflows-bitcoin-leads-as-ethereum-and-solana-surge/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Ethereum ETFs Saw Outflows Three Days Running After a $690 Million Week.\nIs Fund Demand Drying Up?\nMonday, October 5, 2026Set Location\n...\nEthereum ETFs pulled in $690 million one week, then sent investors rushing for the exits the next.\nWhether that reversal signals a deeper shift in appetite or ju...",
+      "source": "web",
+      "title": "Ethereum ETFs Saw Outflows Three Days Running After a ...",
+      "url": "https://ground.news/article/ethereum-etfs-saw-outflows-three-days-running-after-a-690-million-week-is-fund-demand-drying-up_877f31"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Prediction market platform Kalshi is reportedly in advanced talks to raise approximately $1 billion in a new funding round at a $40 billion valuation, according to Reuters.",
+      "source": "web",
+      "title": "Crypto's billions are back, but the premiums aren't",
+      "url": "https://lcx.com/en/cryptonews/cryptos-billions-are-back-but-the-premiums-arent"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monday, October 5, 2026\n...\nBitcoin ETFs flipped to $985 million in 2026 net inflows after a $6.34 billion third quarter, while Ethereum ETFs shed $118 million in three days.\n...\n- Bitcoin ETFs' cumulative 2026 net inflow reached $985 million, flipping from early-year outflows.\n...\n- Ethereum ETFs l...",
+      "source": "web",
+      "title": "en.coinotag.com \u203a bitcoin-btc-etfs-985m-2026-netBitcoin ETF Flows Turn Positive: $985M Net Inflow in 2026 ...",
+      "url": "https://en.coinotag.com/bitcoin-btc-etfs-985m-2026-net-inflow"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "But a new entrant to the space says it already plans to sell acquired assets in an effort to beat bitcoin\u2019s price moves.**\n...\n- Supercycle Finance plans to launch a bitcoin treasury program that won\u2019t purely focus on accumulation.\n...\nOn Friday, Supercycle Finance announced the launch of a bitcoin ...",
+      "source": "web",
+      "title": "Meet the New Bitcoin Treasury Firm That Already Plans to ...",
+      "url": "https://news.bitcoin.com/crypto-news/meet-new-bitcoin-treasury-firm-already-plans-sell-btc/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The U.S. Commodity Futures Trading Commission has moved to make room for tokenized assets and blockchain recordkeeping inside its existing rules, but it stopped well short of giving regulated firms permission to invest customer funds directly in Bitcoin or Ether.\n...\nFor banks, futures commission me...",
+      "source": "web",
+      "title": "CFTC Clarifies Tokenized Assets, Not Bitcoin Fund Use",
+      "url": "https://adalytica.com/news/cftc-tokenized-assets-no-bitcoin-fund-use-162d9fe0"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-01",
+      "place_metadata": null,
+      "snippet": "Oct 1 (Reuters) - Citigroup raised its 12-month forecasts for bitcoin and ether, citing stronger crypto activity, a \u200bsupportive macroeconomic backdrop and a resumption of \u200cETF inflows.",
+      "source": "web",
+      "title": "Citi raises bitcoin, ether forecasts on strong crypto activity",
+      "url": "https://www.reuters.com/business/finance/citi-raises-bitcoin-ether-forecasts-strong-crypto-activity-2026-10-01/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The SEC has approved a rule change by Cboe BZX that allows listing six triple-leveraged exchange-traded products (ETPs) from Volatility Shares.\nThis lineup includes products linked to Bitcoin, Ethereum, gold, silver, oil, and natural gas.\nThese products are designed to deliver three times the daily ...",
+      "source": "web",
+      "title": "tokenist.com \u203a sec-approves-3x-leveraged-ethereumSEC Approves 3x Leveraged Ethereum and Bitcoin ETPs",
+      "url": "https://tokenist.com/sec-approves-3x-leveraged-ethereum-and-bitcoin-etps/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "The Senate failed to advance the crypto market structure legislation in a procedural vote on September 15.\n...\n**At a Glance**\n- Status: The bill stalled in the Senate and has not become law.\n...\n- Main disputes: DeFi, tokenization, CFTC authority, stablecoin yields, enforcement and ethics.\n...\nEarl...",
+      "source": "web",
+      "title": "CLARITY Act News: What Happens After Failed Senate Vote",
+      "url": "https://www.coingabbar.com/en/clarity-act-news-senate-vote-next-draft-key-officials-talks"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The crypto industry had waited years for Congress to deliver what it has long wanted: a lasting U.S. rulebook for digital assets that would clarify which digital assets fall under the oversight of the Securities and Exchange Commission (SEC) and the Commodity Futures Trading Commission (CFTC).\n...\nT...",
+      "source": "web",
+      "title": "The Clarity Act stalled. Bankers aren't hitting the brakes yet ...",
+      "url": "https://lcx.com/en/cryptonews/the-clarity-act-stalled-bankers-arent-hitting-the-brakes-yet-on-crypto-dealmakin"
+    }
+  ],
+  "citations": [
+    "https://lcx.com/en/cryptonews/bitcoin-etfs-notch-third-inflow-week-as-ether-etfs-shed-138m",
+    "https://blockonomi.com/bitcoin-etfs-keep-winning-while-ether-etfs-bleed-138-million/",
+    "https://ground.news/article/us-spot-bitcoin-etfs-draw-1027-million-as-ether-funds-lose-554-million_fdeb2d",
+    "https://ground.news/article/spot-bitcoin-etfs-see-241m-in-net-inflows-for-third-straight-week",
+    "https://ground.news/article/bitcoin-and-ether-etf-flows-diverge-over-seven-days-as-daily-totals-split",
+    "https://bitcoinfoundation.org/news/etfs/crypto-funds-see-3-55b-inflows-bitcoin-leads-as-ethereum-and-solana-surge/",
+    "https://ground.news/article/ethereum-etfs-saw-outflows-three-days-running-after-a-690-million-week-is-fund-demand-drying-up_877f31",
+    "https://lcx.com/en/cryptonews/cryptos-billions-are-back-but-the-premiums-arent",
+    "https://en.coinotag.com/bitcoin-btc-etfs-985m-2026-net-inflow",
+    "https://news.bitcoin.com/crypto-news/meet-new-bitcoin-treasury-firm-already-plans-sell-btc/",
+    "https://adalytica.com/news/cftc-tokenized-assets-no-bitcoin-fund-use-162d9fe0",
+    "https://www.reuters.com/business/finance/citi-raises-bitcoin-ether-forecasts-strong-crypto-activity-2026-10-01/",
+    "https://tokenist.com/sec-approves-3x-leveraged-ethereum-and-bitcoin-etps/",
+    "https://www.coingabbar.com/en/clarity-act-news-senate-vote-next-draft-key-officials-talks",
+    "https://lcx.com/en/cryptonews/the-clarity-act-stalled-bankers-arent-hitting-the-brakes-yet-on-crypto-dealmakin"
+  ],
+  "usage": {
+    "input_tokens": 731,
+    "output_tokens": 793,
+    "cost_usd": 0.02809
+  }
+}

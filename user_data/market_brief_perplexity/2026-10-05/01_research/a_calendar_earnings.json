@@ -1,0 +1,167 @@
+{
+  "name": "a_calendar_earnings",
+  "kind": "channel",
+  "group": "calendar",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Earnings calendar.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEarnings from the brief date through the next 8 NYSE sessions for US stocks >= $10B plus notable mid-caps: date, BMO/AMC, EPS and revenue consensus vs year-ago, and analyst preview notes / PT changes ahead of the print (firm, rating, PT). Only events that have NOT yet reported as of the cutoff.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **STZ** \u2014 Constellation Brands `[Retail]`\n- Scheduled to report **Tuesday, October 6, 2026, after market close**; consensus EPS is **$3.62** versus **$3.63** in the year-ago quarter. (DipSonar, Oct. 4, 13:02 ET)\n- Another calendar estimate places consensus EPS at **$3.55** and revenue at **$2.54 billion**; the available result does not identify the fiscal quarter or provide a year-ago revenue comparison. (Seeking Alpha, Oct. 4, updated Oct. 5, 07:47 ET)\n- In the company\u2019s preceding quarter, EPS was **$3.43** versus **$3.27** consensus and sales were **$2.43 billion** versus **$2.42 billion** expected; these are prior-quarter figures, not the pending report. (Seeking Alpha, Oct. 4, updated Oct. 5, 07:47 ET)\n\n## **PEP** \u2014 PepsiCo `[Retail]`\n- Scheduled to report **Thursday, October 8, 2026, before market open**; consensus EPS is **$2.29** versus **$2.29** in the year-ago quarter. (DipSonar, Oct. 4, 13:02 ET)\n- A separate preview gives consensus EPS of **$2.30** and revenue of **$24.97 billion**. (Seeking Alpha, Oct. 4, updated Oct. 5, 07:47 ET)\n- A Monday preview gives consensus of approximately **$2.30 EPS** and **$25 billion revenue**. (Money Morning, Oct. 5, 06:32 ET)\n- PepsiCo reported **$24.18 billion** of revenue and **$2.20** core EPS in Q2 2026; revenue increased **6.4% year over year**, while core EPS increased **4%** and missed the cited **$2.21** consensus. (Seeking Alpha, Oct. 4, updated Oct. 5, 07:47 ET)\n\n## **DAL** \u2014 Delta Air Lines `[Travel & Transportation]`\n- Scheduled to report **Friday, October 9, 2026, before market open**; consensus EPS is **$1.96** versus **$1.71** in the year-ago quarter. (DipSonar, Oct. 4, 13:02 ET)\n- A separate preview gives consensus EPS of **$1.88** and revenue of **$18.99 billion**. (Seeking Alpha, Oct. 4, updated Oct. 5, 07:47 ET)\n- Delta reported **$19.76 billion** of revenue and **$1.56 adjusted EPS** in Q2 2026 versus **$1.47 consensus**. (Seeking Alpha, Oct. 4, updated Oct. 5, 07:47 ET)\n\n## **LEVI** \u2014 Levi Strauss & Co. `[Retail]`\n- Scheduled to report **Wednesday, October 7, 2026, after market close**; the available calendar results identify the timing but do not provide consensus EPS, revenue, or year-ago comparisons. (CNBC, Oct. 4, updated Oct. 5, 09:31 ET)\n\n## **APLD** \u2014 Applied Digital `[AI Infrastructure]`\n- Scheduled to report **Wednesday, October 7, 2026, after market close**; the available calendar results identify the timing but do not provide consensus EPS, revenue, or year-ago comparisons. (CNBC, Oct. 4, updated Oct. 5, 09:31 ET)\n\n## **RPM** \u2014 RPM International `[Specialty Chemicals]`\n- Scheduled to report **Tuesday, October 6, 2026, before market open**; the available results do not provide consensus EPS, revenue, or year-ago comparisons. (CNBC, Oct. 4, updated Oct. 5, 09:31 ET)\n\n## **LW** \u2014 Lamb Weston `[Retail / Food]`\n- Scheduled to report **Tuesday, October 6, 2026, before market open**; the available results do not provide consensus EPS, revenue, or year-ago comparisons. (CNBC, Oct. 4, updated Oct. 5, 09:31 ET)\n\n## **WS** \u2014 Worthington Steel `[Materials]`\n- Scheduled to report **Tuesday, October 6, 2026, after market close**; the available results do not provide consensus EPS, revenue, or year-ago comparisons. (CNBC, Oct. 4, updated Oct. 5, 09:31 ET)\n\n## **PENG** \u2014 Penguin Solutions `[Software & SaaS]`\n- Scheduled to report **Tuesday, October 6, 2026, after market close**; the available results do not provide consensus EPS, revenue, or year-ago comparisons. (CNBC, Oct. 4, updated Oct. 5, 09:31 ET)\n\n## Earnings calendar `[Calendar]`\n- The week of **October 5\u20139, 2026** was characterized as light before the major-bank reporting period; the cited schedule lists **STZ** on October 6, **LEVI** and **APLD** on October 7, **PEP** on October 8, and **DAL** on October 9. (CNBC, Oct. 4, updated Oct. 5, 09:31 ET)\n- A broader calendar lists **25 reports** during October 5\u20139, comprising **12 before-market releases** and **13 after-market releases**; the source identifies October 6 as the busiest day. (247WallSt, Oct. 2, updated Oct. 4, 20:32 ET)\n- No major earnings announcements were listed for **Monday, October 5, 2026**. (Seeking Alpha, Oct. 4, updated Oct. 5, 07:47 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Below is a rundown of major quarterly updates anticipated in the week of October 5 to October 9:\n**Monday, October 5 **\nThe week starts off relatively quiet, as there are no major earnings announcements planned.\n...\nIn Q1 FY2027, Constellation delivered a beat, with EPS of $3.43 versus $3.27 consens...",
+      "source": "web",
+      "title": "Earnings week ahead: PEP, DAL, STZ, TLRY, LEVI, and ...",
+      "url": "https://www.tradingview.com/news/seekingalpha:02b2db84d094b:0-earnings-week-ahead-pep-dal-stz-tlry-levi-and-more/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "This calendar shows **upcoming quarterly earnings releases** from companies in the **S&P 500 index**.\nEach entry shows the reporting date, the ticker, the company name, the report time, the **consensus quarterly EPS forecast**, the EPS from the **same quarter last year**, and the **market capitaliza...",
+      "source": "web",
+      "title": "S&P 500 Earnings Calendar | DipSonar",
+      "url": "https://dipsonar.com/earnings-calendar/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fiscal fourth-quarter revenue hit $54.23 billion and adjusted earnings landed at $33.42 a share, both above the bar, with a first-quarter guide near $61.5 billion.\n...\nThis week the calendar thins before bank season, which is exactly why PepsiCo (PEP) is Stock of the Week.\nThe snack-and-soda giant r...",
+      "source": "web",
+      "title": "PepsiCo's Grocery-Aisle Test at a 52-Week Low",
+      "url": "https://moneymorning.com/2026/10/05/monday-market-pulse-october-5-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "With little on the calendar next week before the start of third quarter earnings season, investors will likely remain under the thrall of the two forces buffeting the current market: higher oil prices and higher yields.\n...\nWeek ahead calendar All times ET.\nMonday, Oct. 5 9:45 a.m.\nS & P Global PMI ...",
+      "source": "web",
+      "title": "Stock market next week: Outlook for Oct. 5-9, 2026",
+      "url": "https://www.cnbc.com/2026/10/02/stock-market-next-week-outlook-for-oct-5-9-2026-.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "|Company|Time of\u00a0Day|Consensus Estimate|Actual Diluted\u00a0EPS|Surprise|\n|--|--|--|--|--|\n|Healthcare Services Group Inc HCSG| |$0.22| | |\n|Axis Capital Holdings Ltd AXS|After market close|$2.98| | |\n|Stewart Information Services Corp STC| | | | |\n|Las Vegas Sands Corp LVS| |$0.77| | |\n|American Electri...",
+      "source": "web",
+      "title": "Market Calendar",
+      "url": "https://www.morningstar.com/markets/calendar?date=2026-10-28&category=earnings"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 12:07 AM CST\n...\n- NIKE, Inc.\n(NKE) shares fell 3.6% after the company reported fourth-quarter fiscal 2026 revenues of $11.21 billion, missing the Zacks Consensus Estimate by 1.65%.",
+      "source": "web",
+      "title": "Company News for Oct 5, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Earnings on deck \u2014 Oct 5\u20139\n**25** companies **12** before open **13** after close\n...\nNext week's 25 reports arrive before the big banks do, with Tuesday the heaviest: Lamb Weston before the open, then Constellation Brands after the close for a read on beer and spirits demand.\nLevi Strauss and Appli...",
+      "source": "web",
+      "title": "25 Companies Report This Week Before the Big Banks Arrive",
+      "url": "https://247wallst.com/cards/next-week-s-25-reports-arrive-before-the-big-banks-do-with-lw-earnings-calendar-01m3ys1913ecatwdz2kfzy7dyx"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Season:** Q3 2026 (Jul-Sep) Results & Guidance | **Period:** October 1 \u2013 November 30, 2026\n...\n|Delta Air Lines|DAL|Industrials|Oct 5|Unit revenue (RASM), fuel costs|High|\n|Southwest Airlines|LUV|Industrials|Oct 5|Capacity growth, labor cost inflation|High|\n|American Airlines|AAL|Industrials|Oct 6...",
+      "source": "web",
+      "title": "US Earnings Season Framework: October-November 2026",
+      "url": "https://convictioncaution.com/2026/10/03/us-earnings-season-framework-october-november-2026/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Sun, Oct 4\nMon, Oct 5\n341 Earnings\n...\nEarnings On Mon, Oct 5\n|Symbol|Company|Event Name|Earnings Call Time|EPS Estimate|Reported EPS|Surprise (%)|Market Cap|Follow|\n|--|--|--|--|--|--|--|--|--|\n|UNC.TO|United Corporations Ord|Q4 2026 Earnings Announcement|AMC|-|-|-|1.67B| |\n...\n|AMX.V|Amex Gold Min...",
+      "source": "web",
+      "title": "Company Earnings Calendar - Yahoo Finance",
+      "url": "https://ca.finance.yahoo.com/calendar/earnings?day=2026-10-01"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "This week\u2019s earnings slate spans airlines, food, chemicals, apparel, diagnostics, and AI infrastructure, but Applied Digital stands out as the clearest high-volatility growth name.\n...\nThe Oct. 5-9 earnings calendar spans AI infrastructure, specialty chemicals, packaged foods, diagnostics, and airli...",
+      "source": "web",
+      "title": "Applied Digital Leads a Mixed Earnings Week",
+      "url": "https://tickerspark.ai/market/applied-digital-leads-a-mixed-earnings-week-1791133276352"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Scheduled U.S. economic releases on Monday, October 5, 2026, with verified Eastern Time release times and the forecast going into each report.",
+      "source": "web",
+      "title": "Economic Calendar for Monday, October 5, 2026",
+      "url": "https://terminal.hyperstocks.io/economic-calendar/2026-10-05"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The relatively slow week comes as we await the start of third-quarter earnings season and leave behind conference season.\n...\n2. Earnings: While there are no Club names set to report, we will hear from Corona and Modelo brewer Constellation Brands on Tuesday evening; denim maker Levi Strauss on Wedn...",
+      "source": "web",
+      "title": "Here are 3 things we're watching in the stock market in the week ahead",
+      "url": "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monday, October 5 \u2014 ISM services, 10:00 a.m.\nET.\nAugust printed 55.4, still expansion.\n...\nFinal S&P Global services PMI hits at 9:45 a.m.\n...\nFriday, October 9 \u2014 Delta before the open, the unofficial start of earnings season\u2019s travel chapter.\nMichigan sentiment and inflation expectations (Important...",
+      "source": "web",
+      "title": "A Tick in the Market: Week of October 5\u20139, 2026",
+      "url": "https://www.moomoo.com/community/feed/a-tick-in-the-market-week-of-october-5-9-117377089994757"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Week of October 5 - October 9, 2026\n...\nThis week's tape is quieter: Monday's ISM services (consensus near 55.0 after August's 55.4, with prices paid still 72.6) is the first activity check on that labour miss, Wednesday's FOMC minutes recap a meeting that happened before the soft PCE and payrolls...",
+      "source": "web",
+      "title": "thriveinmarkets.com \u203a calendar \u203a 2026/10/05Economic Calendar - October 5 - October 9, 2026 - ThriveInMarkets",
+      "url": "https://thriveinmarkets.com/calendar/2026-10-05/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Payrolls of just +29,000 (consensus about 84,000-90,000) and a 4.2% unemployment rate lifted tech.\nQ3 earnings season is next, with PepsiCo on Thursday and Delta on Friday.\n...\n|Mon 5 Oct|09:45|S&P Global Services PMI, final (September)|Medium|\n|Mon 5 Oct|10:00|ISM Services PMI (September) \u00b7 consens...",
+      "source": "web",
+      "title": "www.capitalstreetfx.com \u203a market-analysis \u203a weeklyWeekly US Market Outlook 5 - 8 October 2026: Fed Minutes ...",
+      "url": "https://www.capitalstreetfx.com/market-analysis/weekly-us-market-outlook-5-8-october-2026/"
+    }
+  ],
+  "citations": [
+    "https://www.tradingview.com/news/seekingalpha:02b2db84d094b:0-earnings-week-ahead-pep-dal-stz-tlry-levi-and-more/",
+    "https://dipsonar.com/earnings-calendar/",
+    "https://moneymorning.com/2026/10/05/monday-market-pulse-october-5-2026",
+    "https://www.cnbc.com/2026/10/02/stock-market-next-week-outlook-for-oct-5-9-2026-.html",
+    "https://www.morningstar.com/markets/calendar?date=2026-10-28&category=earnings",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html",
+    "https://247wallst.com/cards/next-week-s-25-reports-arrive-before-the-big-banks-do-with-lw-earnings-calendar-01m3ys1913ecatwdz2kfzy7dyx",
+    "https://convictioncaution.com/2026/10/03/us-earnings-season-framework-october-november-2026/",
+    "https://ca.finance.yahoo.com/calendar/earnings?day=2026-10-01",
+    "https://tickerspark.ai/market/applied-digital-leads-a-mixed-earnings-week-1791133276352",
+    "https://terminal.hyperstocks.io/economic-calendar/2026-10-05",
+    "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html",
+    "https://www.moomoo.com/community/feed/a-tick-in-the-market-week-of-october-5-9-117377089994757",
+    "https://thriveinmarkets.com/calendar/2026-10-05/",
+    "https://www.capitalstreetfx.com/market-analysis/weekly-us-market-outlook-5-8-october-2026/"
+  ],
+  "usage": {
+    "input_tokens": 766,
+    "output_tokens": 1294,
+    "cost_usd": 0.03571
+  }
+}

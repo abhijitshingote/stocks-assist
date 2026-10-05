@@ -1,0 +1,167 @@
+{
+  "name": "a_deals_filings",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Deals, offerings, filings.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nM&A (terms, value, withdrawn or approved deals), equity/convert/debt offerings (size, price, coupon), activist stakes, 13D/13G, buybacks, index adds/deletes, IPOs, lockup expiries, large contracts with $ value.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **PTC** [Software & SaaS]\n- Schneider Electric agreed to acquire PTC for **$205 per share in cash**, valuing PTC\u2019s equity at approximately **$22.6 billion**; closing is expected in **Q3 2027**. (Reuters, Oct 5 05:45 ET)\n\n## **SWKS / QRVO** [Wireless & Mobile]\n- Skyworks Solutions and Qorvo were scheduled to complete their previously announced **cash-and-stock merger on Oct. 5**, creating a company valued at approximately **$22 billion**; Skyworks extended the expiration and withdrawal deadlines for exchanges of Qorvo\u2019s **2029 and 2031 senior notes**, offering up to **$850 million** of new 2029 notes and **$700 million** of new 2031 notes. [report] (Stocktwits/Yahoo Finance, Oct 5 07:31 ET)\n\n## **ON / SYNA** [Semiconductors]\n- ON Semiconductor revised the terms of its proposed acquisition of Synaptics; the revised transaction value was reported at **$5.7 billion**, and Synaptics shares were reported up **14.1%**. (Yahoo Finance, Oct 5 08:22 ET)\n\n## **AMD** [AI Compute]\n- AMD announced an agreement to acquire AI model and research company World Labs in an all-stock transaction valued at approximately **$8.2 billion**; closing was expected by **year-end 2026**. (Stocktwits/Yahoo Finance, Oct 5 07:31 ET)\n\n## **PSKY / WBD** [Internet & Platforms]\n- Paramount Skydance and Warner Bros. Discovery\u2019s previously announced transaction, valued at approximately **$110.9 billion**, was scheduled to close on **Oct. 6** after the companies agreed to settlement negotiations with states that had sought to block the deal. (Stocktwits/Yahoo Finance, Oct 5 07:31 ET)\n\n## **SSTI** [Software & SaaS]\n- Transom Signal AcquireCo agreed to acquire SoundThinking through a tender offer at **$8.00 per share in cash**, plus one contingent value right per share providing up to **$3.00** in additional cash tied to specified revenue milestones; a shareholder group led by Lauder reported beneficial ownership of **2,255,406 shares, or 17.0%**, as of Oct. 2. (SEC EDGAR, Oct 2 17:34 ET)\n\n## **SPKL / ZincFive** [Power & Wide-Bandgap]\n- Spark I Acquisition and ZincFive filed an investor presentation for their proposed business combination; the transaction implied approximately **$762 million of enterprise value**. The related Form S-4 registration statement was filed on **Sept. 30** and had **not yet been declared effective** as of the Oct. 2 filing. (SEC filing, Oct 2 17:44 ET)\n\n## **ASPI / ENDRA** [Pharma]\n- ENDRA Life Sciences filed a Form S-4 registration statement for its proposed merger involving ASP Isotopes\u2019 Noble Africa subsidiary and Renergen; the transaction remained subject to satisfaction or waiver of the merger agreement\u2019s conditions. (SEC filing, Oct 2 06:01 ET)\n\n## **SAIQ** [Space & Communications]\n- Columbus Acquisition completed its business combination with WISeSat.Space Holdings on **Oct. 1**; the combined company\u2019s ordinary shares began trading on Nasdaq under ticker **SAIQ** on **Oct. 2**. (SEC filing, Oct 2 07:37 ET)\n\n## **MAT** [Retail]\n- Authentic Brands Group approached Mattel regarding a potential takeover that could value Mattel at approximately **$6 billion or more**, with discussions involving an offer above **$20 per share**. [rumor][report] (Reuters, reported Oct 4; publication time unavailable)\n\n## **FUL** [Specialty Materials & IP Licensing]\n- Ancora Holdings increased its proposed cash offer for H.B. Fuller\u2019s building-adhesives unit to as much as **$1.4 billion** after the company\u2019s board rejected its prior offer. (Reuters, reported Oct 4; publication time unavailable)\n\n## **FISV** [Software & SaaS]\n- Jana Partners urged Fiserv to more than double its planned cost reductions and use Palantir software in its technology-transformation program. (Reuters, reported Oct 4; publication time unavailable)\n\n## **MGM / PPLI** [Retail]\n- HighSage Ventures said it supported a potential MGM Resorts acquisition of People Inc.; the position was disclosed in a **13D filing**. (SEC 13D filing, reported Oct 4; publication time unavailable)\n\n## **IRT / CSR** [Real Estate]\n- Irenic Capital Management opposed Independence Realty Trust\u2019s proposed acquisition of Centerspace and asked Independence Realty Trust to consider alternatives, including a sale. (Irenic Capital press release, reported Oct 4; publication time unavailable)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - France's Schneider Electric said on Monday it has agreed to buy PTC in an all-cash deal for $205 per share, valuing PTC's equity at about $22.6 billion.\nThe transaction is expected to close by the third quarter of 2027, Schneider Electric added.",
+      "source": "web",
+      "title": "Schneider Electric to buy PTC for $22.6 billion in all-cash deal",
+      "url": "https://www.reuters.com/legal/transactional/schneider-electric-buy-ptc-226-billion-all-cash-deal-2026-10-05/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "SEC Filings for Oct 2, 2026 - 10-K, 10-Q, 8-K Forms\n...\n# SEC Filings for October 2, 2026\n2,108 filings published.\n...\n10/02/2026 05:44 PM\nSPKL : Nasdaq\nPreliminary merger materials may change for Spark I (SPKL) and ZincFive.\n...\nA $100M preferred equity commitment backs Spark I (SPKL)'s proposed Zi...",
+      "source": "web",
+      "title": "SEC Filings for Oct 2, 2026",
+      "url": "https://www.stocktitan.net/sec-filings/2026-10-02/?page=8"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "SEC Filings for Oct 2, 2026 - 10-K, 10-Q, 8-K Forms\n...\n# SEC Filings for October 2, 2026\n2,108 filings published.\n...\n[425] Piermont Valley Acquisition Corp Business Combination Communication",
+      "source": "web",
+      "title": "SEC Filings for Oct 2, 2026",
+      "url": "https://www.stocktitan.net/sec-filings/2026-10-02/?page=5"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "SEC Filings for Oct 2, 2026 - 10-K, 10-Q, 8-K Forms\n...\n# SEC Filings for October 2, 2026",
+      "source": "web",
+      "title": "Today's SEC Filings - Latest 10-K, 10-Q, 8-K Forms",
+      "url": "https://www.stocktitan.net/sec-filings/2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Date of Report (Date of earliest event reported): October 2, 2026\n...\nFurnished as Exhibit 99.1 to this Current Report on Form 8-K (this 'Current Report') is an investor presentation (the 'Investor Presentation'), which will be used by Spark I Acquisition Corporation, a Cayman Islands exempted compa...",
+      "source": "web",
+      "title": "Spark I shares proposed ZincFive merger presentation",
+      "url": "https://www.stocktitan.net/sec-filings/SPKL/425-spark-i-acquisition-corp-business-combination-communication-e79f3517fa38.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SEC Filings for Oct 2, 2026 - 10-K, 10-Q, 8-K Forms\n...\n# SEC Filings for October 2, 2026\n2,108 filings published.",
+      "source": "web",
+      "title": "SEC Filings for Oct 2, 2026",
+      "url": "https://www.stocktitan.net/sec-filings/2026-10-02/?page=9"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SoundThinking holders commit 2.26M shares to merger | SSTI SEC Filing - Form SCHEDULE 13D\n...\nSoundThinking, Inc.\nentered into a merger agreement providing for a tender offer for all outstanding common shares at **$8.00 in cash per share**, without interest and subject to applicable withholding, plu...",
+      "source": "web",
+      "title": "A 17% holder group agrees to tender shares in SoundThinking (Nasdaq: SSTI) and reinvest offer proceeds.",
+      "url": "https://www.stocktitan.net/sec-filings/SSTI/schedule-13d-soundthinking-inc-major-shareholder-acquisition-5-7f481c6cc7db.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **111 (YI):** The Board has established a special committee, comprising three independent directors, Chairman Jian Sun, Nee Chuan Teo, and Jun Luo, to consider and evaluate the non-binding offer from co-founders, as well as other potential strategic alternatives the company may pursue.\n...\n- **Mat...",
+      "source": "web",
+      "title": "The Special Situation Report #234: October 4 Roundup",
+      "url": "https://www.thespecialsituationreport.com/p/the-special-situation-report-234"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 4:31 AM GMT-3\n...\n- Paramount Skydance and Warner Bros.\nDiscovery's (WBD) merger is set to close on Oct. 6.\n- Skyworks Solutions and Qorvo will move to combine on Oct. 5 and create a $22 billion high-performance RF, analog and mixed-signal solutions company.\n- Advanced Micro ...",
+      "source": "web",
+      "title": "Stocktwits M&A Watch: Paramount-Warner Bros Combination, Skyworks-Qorvo Merger, AMD\u2019s World Labs Acquisition In Focus",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stocktwits-m-watch-paramount-warner-073129199.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Synaptics Incorporated (SYNA) shares surged 14.1% after ON Semiconductor (ON) revised its $5.7 billion acquisition terms.",
+      "source": "web",
+      "title": "Company News for Oct 5, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Furnished as Exhibit 99.1 to this Current Report on Form 8-K (this 'Current Report') is an investor presentation (the 'Investor Presentation'), which will be used by Spark I Acquisition Corporation, a Cayman Islands exempted company (the 'SPKL' or 'Spark I'), and ZincFive, Inc., a Delaware corporati...",
+      "source": "web",
+      "title": "Spark I outlines ZincFive merger at $762M enterprise value",
+      "url": "https://www.stocktitan.net/sec-filings/SPKL/8-k-spark-i-acquisition-corp-reports-material-event-b11dcd8b1a3e.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ASP Isotopes Inc.\n(NASDAQ:ASPI) announced Friday that ENDRA Life Sciences Inc.",
+      "source": "web",
+      "title": "SEC Filings",
+      "url": "https://www.investing.com/news/sec-filings/roblox-corp-completes-"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Columbus Acquisition Corp.\nannounced that WISeSat.Space Holdings Corp.\ncompleted its business combination with Columbus on October 1, 2026.\nColumbus shareholders approved the transaction at an extraordinary general meeting on September 30, 2026; the parties\u2019 remaining closing conditions had been sat...",
+      "source": "web",
+      "title": "Columbus Acquisition completes WISeSat merger - COLA",
+      "url": "https://www.stocktitan.net/sec-filings/COLA/8-k-columbus-acquisition-corp-cayman-islands-reports-material-event-4130b202028d.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ASP Isotopes Inc.\nreported that ENDRA Life Sciences filed a Form S-4 registration statement on October 2, 2026, relating to the proposed merger under the June 25, 2026 Agreement and Plan of Merger.\nUnder the proposed structure, Kruger Merger Sub LLC, an ENDRA subsidiary, would merge into Noble Afric...",
+      "source": "web",
+      "title": "ASP Isotopes: ENDRA submits proposed merger prospectus",
+      "url": "https://www.stocktitan.net/sec-filings/ASPI/8-k-asp-isotopes-inc-reports-material-event-96feb0e539ae.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Aureus Greenway Holdings (PUSA) completed merger and listing change completing its merger with Autonomous Power Corporation effective October 1, 2026, and renaming to Powerus Corporation with common shares now trading on Nasdaq under the ticker **PUSA**.",
+      "source": "web",
+      "title": "Stock Market News for October 2, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-02/"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/legal/transactional/schneider-electric-buy-ptc-226-billion-all-cash-deal-2026-10-05/",
+    "https://www.stocktitan.net/sec-filings/2026-10-02/?page=8",
+    "https://www.stocktitan.net/sec-filings/2026-10-02/?page=5",
+    "https://www.stocktitan.net/sec-filings/2026-10-02/",
+    "https://www.stocktitan.net/sec-filings/SPKL/425-spark-i-acquisition-corp-business-combination-communication-e79f3517fa38.html",
+    "https://www.stocktitan.net/sec-filings/2026-10-02/?page=9",
+    "https://www.stocktitan.net/sec-filings/SSTI/schedule-13d-soundthinking-inc-major-shareholder-acquisition-5-7f481c6cc7db.html",
+    "https://www.thespecialsituationreport.com/p/the-special-situation-report-234",
+    "https://finance.yahoo.com/markets/stocks/articles/stocktwits-m-watch-paramount-warner-073129199.html",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html",
+    "https://www.stocktitan.net/sec-filings/SPKL/8-k-spark-i-acquisition-corp-reports-material-event-b11dcd8b1a3e.html",
+    "https://www.investing.com/news/sec-filings/roblox-corp-completes-",
+    "https://www.stocktitan.net/sec-filings/COLA/8-k-columbus-acquisition-corp-cayman-islands-reports-material-event-4130b202028d.html",
+    "https://www.stocktitan.net/sec-filings/ASPI/8-k-asp-isotopes-inc-reports-material-event-96feb0e539ae.html",
+    "https://www.stocktitan.net/news/2026-10-02/"
+  ],
+  "usage": {
+    "input_tokens": 752,
+    "output_tokens": 1072,
+    "cost_usd": 0.03234
+  }
+}

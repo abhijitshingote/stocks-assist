@@ -1,0 +1,167 @@
+{
+  "name": "a_legal_ip",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Legal, IP, regulatory.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nPatent suits and ITC investigations (named parties, products at risk of import bans), antitrust cases, major court rulings, SEC/DOJ/FTC enforcement, foreign regulator probes of US companies (China SAMR/SASAC/MOFCOM, EU) \u2014 named companies.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **FSLR** / JA Solar / Corning [Specialty Materials & IP Licensing]\n- First Solar filed a patent-infringement lawsuit on October 2 against JA Solar Technology, JA Solar International, JA Solar Vietnam, JA Solar Industrial and American Panel Solutions, a Corning subsidiary, in the U.S. District Court for the District of Delaware; the complaint alleges infringement of U.S. Patent No. 9,130,074 concerning TOPCon crystalline-silicon solar-cell manufacturing methods. The case was pending as of October 5 at 12:20 ET; no import-ban order was reported. (NewsQuawk, Oct. 5 10:16 ET; Now.Solar, Oct. 4 02:00 ET)\n\n## **NVDA** / Greg Lui [AI Compute]\n- California businessman Greg Lui was charged by U.S. prosecutors with conspiracy, smuggling and money laundering over allegations that he routed servers containing more than $300 million of Nvidia AI chips to China through Malaysia and Singapore using false documentation; the criminal case was reported on October 2, with no conviction reported by October 5 at 12:20 ET. [report] (NewsQuawk citing Bloomberg, Oct. 5 10:16 ET)\n\n## **ANTHROPIC**, **OPENAI**, METR [AI Infrastructure]\n- The Federal Trade Commission opened an industry-wide probe into Anthropic, OpenAI and other AI laboratories over potential consumer harms from AI agents; an FTC official said the agency planned formal information demands and compelled executive testimony, including from Anthropic, OpenAI and METR. The investigation was active as of October 5 at 12:20 ET. (The Business Standard citing Reuters, Oct. 5 08:50 ET)\n\n## Crypto firms / OCC [Crypto]\n- The Independent Community Bankers of America sued the Office of the Comptroller of the Currency on October 2 in the U.S. District Court for the District of Columbia, alleging that the OCC exceeded its authority by issuing a rule and guidance allowing cryptocurrency companies to apply for limited national trust-bank charters; the suit sought revocation of the rule and related guidance. (Reuters, Oct. 2 08:21 ET)\n\n## **UTHR** / **LQDA** [Pharma]\n- A Delaware federal court ruled on September 30 that Liquidia Technologies induced infringement of United Therapeutics\u2019 U.S. Patent No. 11,826,327 by marketing Yutrepia for pulmonary hypertension associated with interstitial lung disease and found asserted claims 1 and 14 valid; the parties had until October 7 to submit a proposed final judgment, so no FDA-withdrawal order had been entered by October 5 at 12:20 ET. (Mugglehead, Oct. 4 10:57 ET)\n\n## **TRI** / ROSS Intelligence [Software & SaaS]\n- The Third U.S. Circuit Court of Appeals ruled in Thomson Reuters\u2019 favor in its copyright dispute with ROSS Intelligence, and ROSS said on October 2 that it would seek U.S. Supreme Court review; the litigation was unresolved as of October 5 at 12:20 ET. (LawNext, Oct. 2 19:09 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "WASHINGTON, Oct 2 (Reuters) - A trade organization representing community banks sued a US bank regulator Friday, \u200bclaiming that its decision to grant limited bank charters \u200cto cryptocurrency firms exceeds its regulatory authority.\nThe Independent Community Bankers of America, which represents banks ...",
+      "source": "web",
+      "title": "Community banks sue US regulator over crypto firm charters",
+      "url": "https://www.reuters.com/world/community-banks-sue-us-regulator-over-crypto-firm-charters-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "NEW YORK, Oct 2 (Reuters) - US stocks advanced on Friday to close out the trading week after weaker-than-expected jobs data dampened expectations for a rate hike from the Federal Reserve at its policy meeting this month.\nThe Labor Department said nonfarm payrolls increased by 29,000 jobs last month,...",
+      "source": "web",
+      "title": "Equities close higher as softer jobs data quiets rate-hike expectations",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VI0TE?channel=frL012"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "OpenAI said on October 2 that Finances is rolling out to U.S. users of ChatGPT\u2019s Free and Go plans on web, iOS and Android, extending access to its connected-account personal-finance tools.\n...\n## ICBA sues OCC over crypto trust-charter policy, Reuters reports\nReuters reported October 2 that the Ind...",
+      "source": "web",
+      "title": "The Financial Current | Paul Ivinskas | Finance, Banking & Markets",
+      "url": "https://thefinancialcurrent.com/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "US tech giants, often called hyperscalers or the Magnificent Seven, are \u200binvesting hundreds of billions of dollars into rapid expansion and \u200bborrowing has been so high, they are crowding out others , \u2060including even sovereigns, from some debt markets.",
+      "source": "web",
+      "title": "Facing funding barriers, euro zone firms use own cash for AI, ECB blog says",
+      "url": "https://www.reuters.com/legal/transactional/facing-funding-barriers-euro-zone-firms-use-own-cash-ai-ecb-blog-says-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Oct 2 (Reuters) - US stock index futures rose on Friday as \u200bTreasury yields dropped on lower chances of an interest-rate hike this month and oil prices eased, \u200cwhile investors awaited a key jobs report due later in the day.\n...\nChips and megacaps led the gains.\nNvidia (NVDA.O) , opens new tab added ...",
+      "source": "web",
+      "title": "Equities close higher as softer jobs data quiets rate-hike ...",
+      "url": "https://www.reuters.com/business/wall-st-futures-gain-yields-oil-prices-ease-ahead-jobs-report-2026-10-02/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "The petition seeks to overturn a March decision by the US Court of Appeals for the Second Circuit, which held the claims belonged in Argentine courts rather than the United \u200bStates.",
+      "source": "web",
+      "title": "YPF investors ask US Supreme Court to revive $16.1 ...",
+      "url": "https://www.reuters.com/legal/government/ypf-investors-ask-us-supreme-court-revive-161-billion-judgment-against-argentina-2026-10-01/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **S&P 500 (SPX), Nasdaq-100 (NDX)** - Vylor (VYLR) joined the S&P 500 on 1st October following its spin-off from Corteva (CTVA), replacing Corteva.\nTwilio (TWLO) will join the S&P 500 before trading on 6th October, replacing Warner Bros.\nDiscovery (WBD).\nModerna (MRNA) will join the Nasdaq-100 Ind...",
+      "source": "web",
+      "title": "SSNLF seeks higher 2027 HBM4 pricing; CMCSA, DIS ...",
+      "url": "https://www.newsquawk.com/headlines/us-daily-equity-opening-news---vlyr--twlo-to-join-spx-mrna-to-join-ndx-amzn-seeks-offload-and-leaseback-nvda-chips-ssnlf-seeks-higher-2027-hbm4-pricing-cmcsa-dis-to-cut-jobs-nke-slides-after-revenue-missweak-outlook-rtx-wins-usd-24bln-contract"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "USA & Canada Intelligence Brief for October 2: a third carrier and 9,000 sailors head to the Middle East, September hiring falls to 29,000, and seven states sue over the US$810 million pocket rescission.",
+      "source": "web",
+      "title": "USA & Canada Intelligence Brief \u2014 Friday, October 2, 2026",
+      "url": "https://www.riotimesonline.com/usa-canada-intelligence-brief-friday-october-2-2026/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "United Therapeutics wins Yutrepia patent ruling | Mugglehead\n...\n# United Therapeutics Corporation wins Yutrepia PH\u2011ILD patent ruling\nUnited says it believes it is entitled to an order instructing FDA to withdraw Yutrepia's approval; the parties have one week to propose a judgment.\n...\nShares of **U...",
+      "source": "web",
+      "title": "United Therapeutics wins Yutrepia patent ruling",
+      "url": "https://mugglehead.com/united-therapeutics-corporation-yutrepia-ph-ild-patent-ruling/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-01",
+      "place_metadata": null,
+      "snippet": "ORLANDO, Florida, Oct 1 (Reuters) - Wednesday closed the books on an extraordinary quarter.",
+      "source": "web",
+      "title": "COMMENTARY: If a bruising third quarter can't halt Wall Street, what can?",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-q3-roi-column-pix-graphics-2026-10-01/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "FTC opens probe into AI giants including Anthropic and OpenAI | The Business Standard\n...\n## The probe is the first official US enforcement action that delves into rogue AI agents, following a surge in incidents first reported in July that have stoked fears among the public that uncontrolled AI coul...",
+      "source": "web",
+      "title": "FTC opens probe into AI giants including Anthropic and ...",
+      "url": "https://www.tbsnews.net/world/ftc-opens-probe-ai-giants-including-anthropic-and-openai-1559131"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "## ROSS Says It Will Ask Supreme Court to Review 3rd Circuit Ruling for Thomson Reuters in Copyright Case\n...\non October 2, 2026\nFollowing this week\u2019s ruling by the 3rd U.S. Circuit Court of Appeals in favor of Thomson Reuters in its long-running copyright battle against the now-shuttered AI legal r...",
+      "source": "web",
+      "title": "October 2026",
+      "url": "https://www.lawnext.com/2026/10"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "The accord, inked Tuesday, does include measures that AI safety advocates have sought, including calling for 'robust internal controls' to prevent unauthorized hacks as well as partnering with 'independent external auditors.'",
+      "source": "web",
+      "title": "As public fears of AI grow, Trump digs in on voluntary ...",
+      "url": "https://www.reuters.com/legal/litigation/public-fears-ai-grow-trump-digs-voluntary-safeguards-2026-10-03/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Stock Market News for October 2, 2026\n...\nOn October 2, 2026, Freeport-McMoRan provided a Q3 operational update including approximately 830 million pounds of copper production; Rivian reported Q3 production of 19,751 vehicles and reaffirmed 2026 delivery guidance of 65,000\u201370,000 vehicles; Integra...",
+      "source": "web",
+      "title": "Stock Market News for October 2, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-02/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Posted on October 4, 2026 by Now.Solar\nThin-film cadmium telluride (CdTe) solar manufacturer First Solar has filed a patent lawsuit against Chinese solar PV manufacturer JA and some of its subsidiaries, as well as American Panel Solutions (AMPS), a wholly-owned subsidiary of US-based PV manufacturer...",
+      "source": "web",
+      "title": "First Solar files TOPCon patent infringement lawsuit against ...",
+      "url": "https://now.solar/2026/10/04/first-solar-files-topcon-patent-infringement-lawsuit-against-ja-and-corning-subsidiary-pv-tech/"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/world/community-banks-sue-us-regulator-over-crypto-firm-charters-2026-10-02/",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VI0TE?channel=frL012",
+    "https://thefinancialcurrent.com/",
+    "https://www.reuters.com/legal/transactional/facing-funding-barriers-euro-zone-firms-use-own-cash-ai-ecb-blog-says-2026-10-02/",
+    "https://www.reuters.com/business/wall-st-futures-gain-yields-oil-prices-ease-ahead-jobs-report-2026-10-02/",
+    "https://www.reuters.com/legal/government/ypf-investors-ask-us-supreme-court-revive-161-billion-judgment-against-argentina-2026-10-01/",
+    "https://www.newsquawk.com/headlines/us-daily-equity-opening-news---vlyr--twlo-to-join-spx-mrna-to-join-ndx-amzn-seeks-offload-and-leaseback-nvda-chips-ssnlf-seeks-higher-2027-hbm4-pricing-cmcsa-dis-to-cut-jobs-nke-slides-after-revenue-missweak-outlook-rtx-wins-usd-24bln-contract",
+    "https://www.riotimesonline.com/usa-canada-intelligence-brief-friday-october-2-2026/",
+    "https://mugglehead.com/united-therapeutics-corporation-yutrepia-ph-ild-patent-ruling/",
+    "https://www.reuters.com/commentary/reuters-open-interest/global-markets-q3-roi-column-pix-graphics-2026-10-01/",
+    "https://www.tbsnews.net/world/ftc-opens-probe-ai-giants-including-anthropic-and-openai-1559131",
+    "https://www.lawnext.com/2026/10",
+    "https://www.reuters.com/legal/litigation/public-fears-ai-grow-trump-digs-voluntary-safeguards-2026-10-03/",
+    "https://www.stocktitan.net/news/2026-10-02/",
+    "https://now.solar/2026/10/04/first-solar-files-topcon-patent-infringement-lawsuit-against-ja-and-corning-subsidiary-pv-tech/"
+  ],
+  "usage": {
+    "input_tokens": 753,
+    "output_tokens": 687,
+    "cost_usd": 0.02656
+  }
+}

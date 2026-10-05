@@ -1,0 +1,167 @@
+{
+  "name": "a_ai_capex",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: AI capex & cloud.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nHyperscaler capex estimates and commentary (with firm/analyst name), AI cloud and compute deals ($ value, term), data-center projects, delays or cancellations, AI financing (bonds, converts, private credit), OpenAI/Anthropic/xAI funding and compute commitments, GPU cloud pricing.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **AI Infrastructure** \u2014 Hyperscaler capex and financing\n\n- Goldman Sachs estimated AI-related debt issuance reached nearly **$500 billion** in 2026 by early August; about **40%** was issued directly by hyperscalers including Amazon, Microsoft and Alphabet. (R&D World, Oct. 2, 2026, 20:52 ET)\n\n- Alphabet raised its 2026 capital-expenditure outlook in July to **$195 billion\u2013$205 billion**, from **$180 billion\u2013$190 billion**. (R&D World, Oct. 2, 2026, 20:52 ET)\n\n- Amazon\u2019s expected 2026 cash capital expenditure was reported at approximately **$220 billion**, **$20 billion** above its prior plan; the increase was attributed to higher memory prices and expansion of AI data-center infrastructure. (R&D World, Oct. 2, 2026, 20:52 ET)\n\n- Microsoft\u2019s projected 2026 capex was reported at approximately **$175 billion**, down from about **$190 billion** after a shift from finance leases to operating leases; the report said the accounting change did not alter the company\u2019s investment plans. (R&D World, Oct. 2, 2026, 20:52 ET)\n\n- Andreessen Horowitz estimated 2026 capital expenditure by Alphabet, Amazon, Meta, Microsoft and Oracle at approximately **$780 billion**, compared with **$416 billion in 2025**, and forecast more than **$1 trillion annually from 2027**. (Matterfact, Oct. 1, 2026, 21:24 ET)\n\n- Goldman Sachs and other estimates cited in an Oct. 4 analysis put combined 2026 hyperscaler capital expenditure at approximately **$940 billion** and projected more than **$1.3 trillion in 2027**. (IEEE ComSoc Technology Blog, Oct. 4, 2026, 19:01 ET)\n\n- The same analysis cited projected 2026 debt issuance of **$220 billion\u2013$250 billion or more** by Alphabet, Amazon, Meta, Microsoft and Oracle, with total AI-related debt issuance potentially reaching **$570 billion**. (IEEE ComSoc Technology Blog, Oct. 4, 2026, 19:01 ET)\n\n## **AVGO** \u2014 AI Compute / AI financing\n\n- Broadcom agreed to provide Anthropic up to **$42 billion** through convertible notes to help finance Anthropic\u2019s infrastructure spending, according to Anthropic\u2019s IPO prospectus reviewed by Reuters. (Reuters, Oct. 2, 2026; publish time not provided)\n\n- Anthropic committed to a **$125.2 billion, five-year** lease of Broadcom-built TPU capacity; the financing would cover approximately one-third of that commitment. (Reuters, Oct. 2, 2026; publish time not provided)\n\n- The convertible notes could be converted into Anthropic equity over five years; Broadcom could bring in a financing partner, and no notes were expected to be sold before Anthropic completed its IPO. (The Signal, Oct. 2, 2026, 10:06 ET)\n\n- Bloomberg reported that Broadcom\u2019s banking syndicate was assembling approximately **$60 billion** of chip financing for Anthropic and other companies, including **$42 billion** of senior secured debt and **$18 billion** of junior debt led by Blackstone. [report] (R&D World, Oct. 2, 2026, 20:21 ET)\n\n## **Anthropic** \u2014 AI Compute / AI financing\n\n- Anthropic\u2019s IPO prospectus disclosed a **$125.2 billion, five-year** commitment to lease TPU computing capacity from Broadcom. (Reuters, Oct. 2, 2026; publish time not provided)\n\n- Anthropic disclosed a plan to spend approximately **$518 billion** on cloud and computing infrastructure over the next decade. (Artificial Prism, Oct. 3, 2026, 09:10 ET)\n\n- Anthropic had agreed to obtain approximately **3.5 gigawatts** of TPU-based compute through Broadcom beginning in **2027**. (AI Daily Insights, Oct. 2, 2026, updated Oct. 4, 2026, 20:05 ET)\n\n## **OpenAI** \u2014 AI Compute / AI financing\n\n- SoftBank and Nvidia each made a final **$10 billion** payment, completing **$20 billion** of remaining commitments to OpenAI\u2019s March funding round; the payments arrived on **October 1, 2026**. [report] (AI Daily Insights, Oct. 2, 2026, updated Oct. 3, 2026, 00:43 ET)\n\n- OpenAI\u2019s March funding round valued the company at approximately **$852 billion post-money**; Amazon\u2019s **$50 billion** commitment had been completed in July, while SoftBank and Nvidia funded their commitments in stages. [report] (AI Daily Insights, Oct. 2, 2026, updated Oct. 3, 2026, 00:43 ET)\n\n- OpenAI was reported to be discussing a private pre-IPO round of more than **$30 billion** at a valuation above **$1.4 trillion**; the talks were described as early-stage. [rumor][report] (Michael Parekh, Oct. 3, 2026, 11:34 ET)\n\n- Oracle reportedly signed a **$300 billion, five-year** cloud agreement with OpenAI beginning in **2027**, covering approximately **4.5 gigawatts** of computing capacity. [report; direct cause dated September 2025] (R&D World, Oct. 2, 2026, 20:52 ET)\n\n## **TSLA / SpaceX-related AI compute** \u2014 AI Compute\n\n- Anthropic reportedly agreed to pay approximately **$1.25 billion per month** through **May 2029** for compute across xAI\u2019s Colossus 1 and Colossus 2 sites; the reported arrangement involved approximately **220,000 GPUs** and a **90-day termination clause**. [report] (Artificial Prism, Oct. 3, 2026, 14:47 ET)\n\n- Google reportedly secured approximately **110,000 GPUs** from xAI\u2019s Colossus 2 for approximately **$920 million per month** through **June 2029**, with service beginning in **October 2026**. [report] (Artificial Prism, Oct. 3, 2026, 14:47 ET)\n\n- Anthropic was reported to have committed approximately **$84.5 billion** for Nvidia-powered capacity associated with SpaceX and xAI. [report] (Observer, Oct. 1, 2026, updated Oct. 2, 2026, 10:19 ET)\n\n## **AI Infrastructure** \u2014 Data centers and cloud capacity\n\n- Oracle had approximately **$137 billion** of debt and leases, and S&P estimated that about **half of Oracle\u2019s $638 billion backlog** was associated with OpenAI. [report] (R&D World, Oct. 2, 2026, 20:52 ET)\n\n- Microsoft allocated approximately **two-thirds** of its fourth-quarter capex to short-lived assets including CPUs and GPUs, with the remainder directed to data-center infrastructure. (R&D World, Oct. 2, 2026, 20:52 ET)\n\n- Alphabet reported that approximately **60%** of its capital spending was directed to servers and approximately **40%** to data centers and networking equipment. (R&D World, Oct. 2, 2026, 20:52 ET)\n\n## **Memory & Interconnect** \u2014 AI infrastructure supply\n\n- A market analysis citing Nvidia commentary said cloud-company capex could grow by approximately **70% in 2027**, following comparable growth by the four largest cloud companies in 2026. (IEEE ComSoc Technology Blog, Oct. 4, 2026, 19:01 ET)\n\n- The same analysis cited a forecast that cloud capital expenditure could rise by approximately **50% in 2027**, below the approximately **70%** growth scenario attributed to more bullish industry forecasts. (IEEE ComSoc Technology Blog, Oct. 4, 2026, 19:01 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Artificial Intelligence (AI) debt fueled infrastructure buildouts** have become a broad **fixed-income-market supply shock.** The Wall Street Journal reports that 49% of new investment-grade bond issuance year to date in 2026 has been AI-linked\u2014a figure that underscores how the financing of data c...",
+      "source": "web",
+      "title": "AI Debt Wave Implications: Higher interest rates with enormous AI sales required for ROI",
+      "url": "https://techblog.comsoc.org/2026/10/04/ai-debt-wave-implications-higher-interest-rates-with-enormous-ai-sales-required-for-roi/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The chip supplier becomes a lenderAccording to Reuters, citing Anthropic\u2019s IPO prospectus, Broadcom has agreed to lend Anthropic up to **$42 billion** through convertible notes.\nThe money can help pay for Anthropic\u2019s five-year TPU lease commitment worth $125.2 billion.\n...\nIn April, Anthropic said i...",
+      "source": "web",
+      "title": "Trump says he \"might\" take stakes in OpenAI and Anthropic but rules out nationalizing frontier labs \u00b7 AI Daily Insights",
+      "url": "https://www.aidailyinsights.cn/en/2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Broadcom, which co-designs Google\u2019s AI chips, tensor processing units (TPUs), has agreed to lend Anthropic up to $42 billion to help finance its infrastructure spending, Reuters reported, citing Anthropic\u2019s IPO prospectus.\nSeparately, Broadcom\u2019s banking syndicate is assembling $60 billion in chip fi...",
+      "source": "web",
+      "title": "Broadcom lines up $60 billion as suppliers finance the frontier labs' compute - Research & Development World",
+      "url": "https://www.rdworldonline.com/broadcom-lines-up-60-billion-as-suppliers-finance-the-frontier-labs-compute/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "xAI built more capacity than Grok needed.\nIn May 2026, Anthropic signed agreements to pay $1.25 billion a month through May 2029 for compute across both Colossus sites.\nAnthropic's own $65 billion Series H is part of what pays that bill.\n...\nSpaceX's AI segment reported $2.6 billion of revenue in th...",
+      "source": "web",
+      "title": "xAI funding: Every round, investor, and valuation (2026)",
+      "url": "https://www.revenuememo.com/p/xai-funding"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Anthropic's IPO prospectus discloses that Broadcom has agreed to lend it up to $42 billion in convertible notes to finance roughly a third of a $125.2 billion, five-year commitment to lease Broadcom-built TPU capacity \u2014 and the prospectus itself flags the conflict, warning that its chip supplier's s...",
+      "source": "web",
+      "title": "The Signal \u2014 October 2, 2026 \u00b7 Catch-up: Sep 30\u2013Oct 1",
+      "url": "https://buttondown.com/fjgoff/archive/the-signal-october-2-2026-catch-up-sep-30-oct-1/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Artificial Intelligence (AI) debt fueled infrastructure buildouts** have become a broad **fixed-income-market supply shock.** The Wall Street Journal reports that 49% of new investment-grade bond issuance year to date in 2026 has been AI-linked\u2014a figure that underscores how the financing of data c...",
+      "source": "web",
+      "title": "October 2026 - IEEE ComSoc Technology Blog",
+      "url": "https://techblog.comsoc.org/2026/10/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "- **Circular financing.** \"Over $1 trillion\" tracked, plus Broadcom lending up to \"$42 billion\" to its own customer (Bloomberg Intelligence, Oct 1).\n...\n- **Aggregate capex anchor: no new hyperscaler figure.** The a16z \"$780 billion\" (2026, five companies) and \"over a trillion\" from 2027 still stand...",
+      "source": "web",
+      "title": "Micron Says Memory Shortage Worsens Through 2028 but Shares ...",
+      "url": "https://www.matterfact.com/newsletter/2026-10-02-ai-capex-micron-shortage-2028-shares-fall"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Anthropic is funding the Claude Frontier Academy to train 10,000 'frontier deployed engineers' by the end of 2027, starting with staff from Accenture, Morgan Stanley and Novo Nordisk.\n...\nReports say Nvidia and SoftBank finalised a combined $20 billion investment in OpenAI, underscoring how scarce f...",
+      "source": "web",
+      "title": "Daily brief: Saturday 3 October 2026 - Artificial Prism",
+      "url": "https://artificialprism.com/daily/2026-10-03/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "## 2. Broadcom offers up to $42 billion to finance Anthropic\u2019s compute bill\nAccording to Reuters\u2019 review of **Anthropic\u2019s** IPO filing, **Broadcom has agreed to provide up to $42 billion in financing** to support the company\u2019s extraordinary expansion of AI computing capacity.\nThat covers roughly one...",
+      "source": "web",
+      "title": "AI News Roundup \u2014 October 2, 2026 \u00b7 Sopenu Blog",
+      "url": "https://blog.sopenu.com/en/posts/2026-10-02-ai-news/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "OpenAI tops up before 2027 IPO.** OpenAI is close to raising over $30 billion in a private pre-IPO round valued at over $1.4 trillion.\nThat is up from about $850 billion when it raised $122 billion in March.\nThe talks are early, per The Information, with investors leading the demand.\nSam Altman told...",
+      "source": "web",
+      "title": "AI: Anthropic's IPO Go Time, OpenAI's $1.4 Trillion, Gemini 4 ...",
+      "url": "https://michaelparekh.substack.com/p/ai-anthropics-ipo-go-time-openais"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Hyperscalers, the largest cloud computing companies, are borrowing at record levels to build data centers.\nAI-related debt issuance reached nearly $500 billion in 2026 by early August, according to Goldman Sachs.\n...\nBig Tech raised a record $108 billion in debt in 2025, more than three times the av...",
+      "source": "web",
+      "title": "Big tech turns to debt to fund the AI buildout",
+      "url": "https://www.rdworldonline.com/big-tech-turns-to-debt-to-fund-the-ai-buildout/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "The last $20 billion landsAccording to The Information, SoftBank has made the final $10 billion payment on its $30 billion pledge, and Nvidia has also paid its final $10 billion.\nThe combined **$20 billion** arrived on October 1, completing all pledges in OpenAI\u2019s March funding round.\nA big round pa...",
+      "source": "web",
+      "title": "Nvidia and SoftBank each pay their final $10 billion, completing OpenAI's last funding round \u00b7 AI Daily Insights",
+      "url": "https://www.aidailyinsights.cn/en/2026-10-02/4/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Dario Amodei has committed Anthropic to at least $518 billion in computing infrastructure spending over the next decade, in a bet that securing chips and data center capacity now will give Claude room to grow.\n...\nReuters reports that the agreement could result in Anthropic paying up to $84.5 billio...",
+      "source": "web",
+      "title": "Dario Amodei's $518 Billion Anthropic Infrastructure Bet",
+      "url": "https://observer.com/2026/10/dario-amodeis-518-billion-anthropic-infrastructure-bet/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-01",
+      "place_metadata": null,
+      "snippet": "Andreessen Horowitz put this year's big-five capex at about $780 billion.\n...\n**The capex number is $780 billion this year and over $1 trillion from 2027, and the credit bears are getting louder.** a16z: Alphabet, Amazon, Meta, Microsoft and Oracle capex is \"about $780 billion\" in 2026, \"up from $41...",
+      "source": "web",
+      "title": "Anthropic's 518 Billion Dollar Bill Lands as CoreWeave Says...",
+      "url": "https://www.matterfact.com/newsletter/2026-10-01-ai-capex-anthropic-518-billion-coreweave-orders"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Anthropic's prospectus shows revenue jumping twelvefold to about $4.6 billion in 2025, and $11.5 billion in the second quarter of 2026 alone, alongside an operating loss of more than $8 billion last year and plans to spend $518 billion on cloud and computing.\n...\nAMD will pay $8.2 billion in cash fo...",
+      "source": "web",
+      "title": "Weekly roundup: 28 September \u2013 3 October 2026",
+      "url": "https://artificialprism.com/weekly/2026-w40/"
+    }
+  ],
+  "citations": [
+    "https://techblog.comsoc.org/2026/10/04/ai-debt-wave-implications-higher-interest-rates-with-enormous-ai-sales-required-for-roi/",
+    "https://www.aidailyinsights.cn/en/2026-10-02/",
+    "https://www.rdworldonline.com/broadcom-lines-up-60-billion-as-suppliers-finance-the-frontier-labs-compute/",
+    "https://www.revenuememo.com/p/xai-funding",
+    "https://buttondown.com/fjgoff/archive/the-signal-october-2-2026-catch-up-sep-30-oct-1/",
+    "https://techblog.comsoc.org/2026/10/",
+    "https://www.matterfact.com/newsletter/2026-10-02-ai-capex-micron-shortage-2028-shares-fall",
+    "https://artificialprism.com/daily/2026-10-03/",
+    "https://blog.sopenu.com/en/posts/2026-10-02-ai-news/",
+    "https://michaelparekh.substack.com/p/ai-anthropics-ipo-go-time-openais",
+    "https://www.rdworldonline.com/big-tech-turns-to-debt-to-fund-the-ai-buildout/",
+    "https://www.aidailyinsights.cn/en/2026-10-02/4/",
+    "https://observer.com/2026/10/dario-amodeis-518-billion-anthropic-infrastructure-bet/",
+    "https://www.matterfact.com/newsletter/2026-10-01-ai-capex-anthropic-518-billion-coreweave-orders",
+    "https://artificialprism.com/weekly/2026-w40/"
+  ],
+  "usage": {
+    "input_tokens": 757,
+    "output_tokens": 1757,
+    "cost_usd": 0.04263
+  }
+}

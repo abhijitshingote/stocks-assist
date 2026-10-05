@@ -1,0 +1,167 @@
+{
+  "name": "c_MXL",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: MaxLinear, Inc. (MXL).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| MXL | MaxLinear, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +14.99% | +12.9% | 1.5\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why MXL moved. Run several searches: \"why is MaxLinear, Inc. stock down/up\",\n\"MaxLinear, Inc. stock\", \"MXL shares Friday October 2, 2026\", \"MaxLinear, Inc. concerns\", \"MaxLinear, Inc. FDA\",\n\"MaxLinear, Inc. analyst\", \"MaxLinear, Inc. price target\", \"MaxLinear, Inc. deal\", \"MaxLinear, Inc. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"MaxLinear, Inc. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## MaxLinear, Inc. (MXL) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## MaxLinear, Inc. (MXL) `Communications & Networking`\n- MaxLinear closed at **$105.93** on Friday, October 2, up **14.99%** from **$92.12** on October 1; volume was **4,757,799 shares**. (Seeking Alpha, Oct 2; publication time not stated)\n- The October 2 coverage attributed the move to renewed attention on **infrastructure and data-center chips**, including MaxLinear\u2019s optical-networking products used in AI data centers. (Seeking Alpha, Oct 2; publication time not stated)\n- MaxLinear had gained **50.7% during September 2026**; the cited drivers were demand for optical-networking chips linking AI data centers, bullish analyst reports, and a rebound from approximately **$60** summer lows. (Yahoo Finance, Oct 2, 14:27 CT / 15:27 ET)\n- MaxLinear CFO **Steven Litchfield** said on September 9 that optical-chip lead times were **26\u201328 weeks**, customers were scheduling spring 2027 deliveries, and he did not expect pricing to decline materially through the end of 2027. (Yahoo Finance, Oct 2, 14:27 CT / 15:27 ET)\n- MaxLinear\u2019s optical-networking market share was reported at **no more than 7%**, with Litchfield targeting roughly a **threefold increase** over the next **2\u20133 years**. (Yahoo Finance, Oct 2, 14:27 CT / 15:27 ET)\n- StoneX and Stifel had published price targets of **$125** and **$120**, respectively; S&P Global Ratings had issued a positive credit-outlook action on **September 11, 2026**. (Yahoo Finance, Oct 2, 14:27 CT / 15:27 ET)\n- MaxLinear announced its third-quarter 2026 earnings conference call for **October 22, 2026, at 4:30 p.m. ET**. (MaxLinear release carried by StockTitan, Oct 1, 16:35 ET)\n- The company\u2019s latest reported quarter showed **non-GAAP EPS of $0.35 versus $0.33 consensus** and revenue of **$168.85 million versus $164.64 million consensus**, with revenue up **55.2% year over year**; those results were released on July 23, 2026 and are outside the requested window but were cited as background for the October move. (MarketBeat, Oct 2; publication time not stated)\n- MarketBeat reported a consensus **Hold** rating based on **5 Buy, 3 Hold, and 1 Sell** ratings, with an average price target of **$88.64**. (MarketBeat, Oct 2, 12:24 ET)\n- No separate company-specific analyst action, offering, acquisition, lawsuit, FDA action, government measure, customer announcement, competitor catalyst, or Monday, October 5 after-hours/pre-market catalyst was identified in the available search results through **12:20 ET**.",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **MaxLinear shares jumped 13.2%** to approximately $104.27, although trading volume was 78% below the average session volume.\n- Analyst sentiment remains mixed: five analysts rate the stock Buy, three Hold, and one Sell, producing a consensus **Hold** rating and an average price targ...",
+      "source": "web",
+      "title": "MaxLinear (NASDAQ:MXL) Shares Up 13.2% - What's Next?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-maxlinear-nasdaq-mxl-shares-up-132-whats-next-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 2:27 PM CST\n- MXL\n+14.99%\n...\nShares of **MaxLinear** (NASDAQ:MXL) gained 50.7% in September 2026, according to data from S&P Global Market Intelligence.\nThe fabless semiconductor designer is up 549% over the past year as of Oct. 2.\nThree things drove last month's surge.\n...\n...",
+      "source": "web",
+      "title": "Why MaxLinear Stock Gained 50.7% Last Month",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/why-maxlinear-stock-gained-50-202701280.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "MaxLinear climbs 15% amid infrastructure and data-center focus (MXL:NASDAQ)\n...\nMaxLinear (MXL) surges 15% on heavy volume as data-center and infrastructure chips regain attention.\n...\nMaxLinear shares closed on Friday 2nd October at $105.93, up 14.99% in a single session.\nThe volumes exceeded 4.7 m...",
+      "source": "web",
+      "title": "MaxLinear climbs 15% amid infrastructure and data-center ...",
+      "url": "https://ground.news/article/maxlinear-climbs-15-amid-infrastructure-and-data-center-focus-mxl-nasdaq"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**MaxLinear stock** surged **14.99%** on Friday, closing at **$105.93** after touching a session high of $106.54.\nTrading volume reached 4,757,799 shares as the stock extended a clearly bullish daily structure.\n...\n## Key takeaways\n- MXL closed at **$105.93**, up 14.99% from the prior close of $92.1...",
+      "source": "web",
+      "title": "MaxLinear Stock Analysis: 14.99% Surge amid Overbought ...",
+      "url": "https://en.cryptonomist.ch/2026/10/02/maxlinear-stock-closes-up-14-99-at-105-93-flashes-overbought-signals/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "MaxLinear climbs 15% amid infrastructure and data-center focus (MXL:NASDAQ) | Seeking Alpha\n...\nMaxLinear (MXL), a fabless semiconductor designer, rallied just over 15% on Friday, closing at $105.93 after gaining $13.81 on the day.\nThe gain extended a recovery that has built over the past several we...",
+      "source": "web",
+      "title": "MaxLinear climbs 15% amid infrastructure and data-center focus (MXL:NASDAQ)",
+      "url": "https://seekingalpha.com/news/4649973-maxlinear-climbs-15-amid-infrastructure-and-data-center-focus"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "On October 02, 2026, MaxLinear Inc MXL saw its shares jump more than 15%, closing at $105.93 following a $13.81 daily gain.\nThis rally continues a robust upward trend with the stock soaring approximately 87% over the past month amid heightened trading activity.\nMaxLinear's current Price-to-Sales (P/...",
+      "source": "web",
+      "title": "MaxLinear (MXL) Surges Over 15% Amid Strong ...",
+      "url": "https://www.gurufocus.com/news/9108042/maxlinear-mxl-surges-over-15-amid-strong-momentum-and-elevated-valuation"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "\u534a\u5c0e\u9ad4\u80a1 MaxLinear(MXL) \u4eca\u76e4\u4e2d\u80a1\u50f9\u4f86\u5230 101.46 \u7f8e\u5143\uff0c\u6f32\u5e45\u9054 10.14%\uff0c\u5448\u73fe\u5f37\u52e2\u4e0a\u653b\u8d70\u52e2\uff0c\u70ba\u8fd1\u671f\u6ce2\u6bb5\u6f32\u52e2\u518d\u6dfb\u4e00\u7b46\u52d5\u80fd\u3002\u6280\u8853\u9762\u986f\u793a\uff0c\u80a1\u50f9\u81ea 9 \u6708\u4e0a\u65ec\u7d04 59 \u7f8e\u5143\u9644\u8fd1\u4e00\u8def\u9707\u76ea\u8d70\u9ad8\u81f3 10 \u6708 1 \u65e5\u6536\u76e4 92.12 \u7f8e\u5143\uff0c\u4eca\u65e5\u7e8c\u5275\u6ce2\u6bb5\u65b0\u9ad8\u3002\n\u5f9e\u6280\u8853\u6307\u6a19\u89c0\u5bdf\uff0cKD \u503c\u81ea 9 \u6708\u521d K \u503c 21.34\u3001D \u503c 16.11 \u7684\u4f4e\u6a94\u5340\uff0c\u4e00\u8def\u63a8\u5347\u81f3\u8fd1\u671f K \u503c\u7d04 78.45\u3001D \u503c 81.35\uff0c\u9ad8\u6a94\u920d\u5316\n\u610f\u5473\u591a\u982d\u529b\u9053\u5ef6\u7e8c\uff1bMACD \u4e5f\u7531 9 \u6708\u521d DIF \u843d\u5728 -4.697\u3001MACD -3.987 \u7684\u7a7a\u65b9\u5340\uff0c\u9010\u6b65\u7ffb\u63da\u81f3 10 \u6708\u521d DIF 6.145\u3001MACD 4.255\uff0cDI...",
+      "source": "web",
+      "title": "\u301021:53 \u5373\u6642\u65b0\u805e\u3011MaxLinear(MXL) \u76e4\u4e2d\u98c6\u6f32\u903e10\uff05 \u6280\u8853\u6307\u6a19\u7e8c\u5f37\u63a8\u5347\u591a\u982d\u6c23\u52e2",
+      "url": "https://www.cmoney.tw/notes/note-detail.aspx?nid=1278191"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "MaxLinear(MXL) \u76e4\u4e2d\u80a1\u50f9\u4f86\u5230 94.86 \u7f8e\u5143\uff0c\u6f32\u5e45\u7d04 5.04%\uff0c\u986f\u793a\u8cb7\u76e4\u660e\u986f\u7a4d\u6975\u3002\u5f9e\u6280\u8853\u9762\u89c0\u5bdf\uff0c\u80a1\u50f9\u5df2\u7531 9 \u6708\u4e2d\u65ec\u7d04 60 \u7f8e\u5143\u9644\u8fd1\uff0c\u4e00\u8def\u9707\u76ea\u8d70\u9ad8\u81f3 90 \u7f8e\u5143\u4ee5\u4e0a\uff0c\u77ed\u7dda\u6f32\u52e2\u5ef6\u7e8c\u81f3\u4eca\u65e5\u76e4\u4e2d\u3002\n\u6280\u8853\u6307\u6a19\u65b9\u9762\uff0cK \u503c\u81ea 9 \u6708\u521d\u7684 16.45 \u5feb\u901f\u6500\u5347\u81f3 9 \u6708\u4e0b\u65ec\u7d04 80 \u4e0a\u65b9\uff0c\u986f\u793a\u52d5\u80fd\u660e\u986f\u8f49\u5f37\uff1bMACD \u5f9e\u8ca0\u503c\u9010\u6b65\u56de\u5347\u4e26\u5728 9 \u6708 22 \u65e5\u7531\u8ca0\u7ffb\u6b63\uff0cDIF \u6301\u7e8c\u5411\u4e0a\u4e14\u8207 MACD \u7684\u5dee\u8ddd\u7dad\u6301\u6b63\u503c\u5340\u9593\uff0c\u53cd\u6620\u591a\u65b9\u8da8\u52e2\u5ef6\u7e8c\u3002\n\u6b64\u5916\uff0c\u6536\u76e4\u50f9\u5df2\u9577\u671f\u7ad9\u5728\u9031\u7dda\u3001\u6708\u7dda\u8207\u5b63\u7dda\u4e4b\u4e0a\uff0c\u8fd1\u671f\u50f9\u683c\u843d\u5728 90 \u7f8e\u5143\u4e0a\u4e0b\uff0c\u986f\u793a\u591a\u982d\u7d50\u69cb\u5b8c\u6574\uff0c\u6280\u8853\u9762\u5229\u591a\u652f\u6490\u4eca\u65e5\u80a1\u50f9\u7e8c\u6f32\uff0c\u77ed\u7dda\u6295\u8cc7\u4eba\u53ef\u6301\u7e8c\u95dc\u6ce8 90 \u7f8e\u5143\u9644\u8fd1...",
+      "source": "web",
+      "title": "\u301000:18 \u5373\u6642\u65b0\u805e\u3011MaxLinear(MXL) \u5927\u6f32\u903e5%\uff1a\u6280\u8853\u6307\u6a19\u8f49\u5f37",
+      "url": "https://www.cmoney.tw/notes/note-detail.aspx?nid=1277792"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "MaxLinear (MXL) is up 11.7%, or $10.80 to $102.92.",
+      "source": "web",
+      "title": "MaxLinear rises 11.7%",
+      "url": "https://markets.businessinsider.com/news/stocks/maxlinear-rises-11-7-1036594782"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "On October 02, 2026, MaxLinear Inc MXL shares rose 15.0%, currently trading at $105.93.\n...\nAt a GF Value of $20.94, MXL is currently deemed significantly overvalued, reflecting a potential risk for investors.\n...\nAs MXL is currently unprofitable and cash-flow negative, relying on earnings-based val...",
+      "source": "web",
+      "title": "A Look at MaxLinear Inc (MXL) After 15.0% Gain -- GF Value $20.9",
+      "url": "https://www.gurufocus.com/news/9108146/a-look-at-maxlinear-inc-mxl-after-150-gain-gf-value-2094-vs-price-10593"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "MaxLinear (MXL) stock has lost about 30% since 6/30/2026 because of the following key factors:\n**1.\nValuation Overhang and Profit-Taking Following Significant Rally.**\n...\nDespite reporting strong second quarter fiscal year 2026 (Q2 2026) earnings on July 23, 2026, with revenue increasing 55.2% year...",
+      "source": "web",
+      "title": "MaxLinear (MXL)",
+      "url": "https://www.trefis.com/data/companies/MXL"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The fact that demand for AI is insatiable.\nAnd that it\u2019s crowding out investment into other areas of the economy.\nWhat if the ROIC on AI is so high that it can withstand a rising cost of capital?\n...\n- **MaxLinear** $MXL ( \u25b2 14.99% ) soared ahead of its Q3 earnings, which it expects to show revenue ...",
+      "source": "web",
+      "title": "The Week Ahead - October 4th",
+      "url": "https://www.thewallstreetrollup.com/p/the-week-ahead-october-4th"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "\u901a\u8a0a\u6676\u7247\u5ee0 MaxLinear(MXL) \u4eca\u65e5\u80a1\u50f9\u6301\u7e8c\u8d70\u5f37\uff0c\u76e4\u4e2d\u6700\u65b0\u5831\u50f9\u4f86\u5230 96.73 \u7f8e\u5143\uff0c\u6f32\u5e45\u7d04 5.00%\uff0c\u7dad\u6301\u8fd1\u671f\u5f37\u52e2\u591a\u982d\u683c\u5c40\u3002\u76f8\u6bd4 9 \u6708\u5e95\u81f3 10 \u6708\u521d\u7d04 90\uff5e93 \u7f8e\u5143\u5340\u9593\uff0c\u80a1\u50f9\u9032\u4e00\u6b65\u4e0a\u653b\uff0c\u53cd\u6620\u8cb7\u76e4\u52d5\u80fd\u5ef6\u7e8c\u3002\n\u6280\u8853\u9762\u4f86\u770b\uff0c\u65e5\u7dda KD \u6307\u6a19\u81ea 9 \u6708\u521d\u4f4e\u6a94 20 \u4ee5\u4e0b\u4e00\u8def\u6500\u5347\uff0c\u76ee\u524d K \u503c\u5df2\u7dad\u6301\u5728 80 \u5de6\u53f3\u9ad8\u6a94\u5340\uff0c\u986f\u793a\u591a\u65b9\u8da8\u52e2\u7a69\u5065\uff1bMACD \u81ea 9 \u6708\u4e2d\u65ec\u8d77\u7531\u8ca0\u7ffb\u6b63\uff0cDIF \u6301\u7e8c\u9ad8\u65bc MACD\uff0c\u6b63\u503c\u5dee\u5728 10 \u6708 1 \u65e5\u5df2\u9054 1.89\uff0c\u4ee3\u8868\u8da8\u52e2\u504f\u591a\u4e0d\u8b8a\u3002\n\u6b64\u5916\uff0c\u80a1\u50f9\u81ea 9 \u6708\u4e2d\u65ec\u8d77\u9678\u7e8c\u7ad9\u4e0a\u9031\u7dda\u8207\u6708\u7dda\uff0c\u4e26\u660e\u986f\u512a\u65bc\u7d04 74\uff5e78 \u7f8e\u5143\u7684\u5b63\u7dda\u8207\u7d04 46 \u7f8e\u5143\u7684\u5e74\u7dda\uff0c\u5747\u7dda\u5448\u591a\u982d\u6392\u5217\u3002...",
+      "source": "web",
+      "title": "\u301021:31 \u5373\u6642\u65b0\u805e\u3011MaxLinear(MXL) \u76e4\u4e2d\u52c1\u63da\u903e5% \u6280\u8853\u6307\u6a19\u591a\u982d\u683c\u5c40\u5ef6\u7e8c-CMoney \u7814\u7a76\u54e1 | CMoney\u6295\u8cc7\u7db2\u8a8c",
+      "url": "https://cmnews.com.tw/article/cmoneyairesearcher-938ab06d-be65-11f1-880a-74ebdec3534b"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "|11|MXLMaxLinear, Inc.|+14.99%|10/02/2026against the close of 10/01/2026 Session detail $9.61B market cap (today)|Earnings|MaxLinear, Inc.\nAnnounces Conference Call to Review Third Quarter 2026 Financial Results Thursday, Oct. 22, 2026 at 1:30 p.m.\nPacific Time; 4:30 p.m.\nEastern Time 10/01/2026 16:...",
+      "source": "web",
+      "title": "October 2026 Stock Gainers on News, MTD: 100 Moves",
+      "url": "https://www.stocktitan.net/rankings/top-news/gainers/2026-10"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Closed\u00b702/10\nAfter Hours\n105.99+0.06(+0.06%)\n...\nSummarize MXL's latest news\n...\n- Seagate and Arm among market cap stock movers on Friday - Investing.com\n- Oct 02, 2026\n...\n- MaxLinear Q2 revenue rose 55% YoY to $168.8M, beating estimates; non-GAAP EPS of $0.35 topped forecasts, but shares fell 9.5...",
+      "source": "web",
+      "title": "MaxLinear Stock Price Today | NASDAQ: MXL Live",
+      "url": "https://www.investing.com/equities/maxlinear-inc"
+    }
+  ],
+  "citations": [
+    "https://www.marketbeat.com/instant-alerts/price-maxlinear-nasdaq-mxl-shares-up-132-whats-next-2026-10-02/",
+    "https://finance.yahoo.com/markets/stocks/articles/why-maxlinear-stock-gained-50-202701280.html",
+    "https://ground.news/article/maxlinear-climbs-15-amid-infrastructure-and-data-center-focus-mxl-nasdaq",
+    "https://en.cryptonomist.ch/2026/10/02/maxlinear-stock-closes-up-14-99-at-105-93-flashes-overbought-signals/",
+    "https://seekingalpha.com/news/4649973-maxlinear-climbs-15-amid-infrastructure-and-data-center-focus",
+    "https://www.gurufocus.com/news/9108042/maxlinear-mxl-surges-over-15-amid-strong-momentum-and-elevated-valuation",
+    "https://www.cmoney.tw/notes/note-detail.aspx?nid=1278191",
+    "https://www.cmoney.tw/notes/note-detail.aspx?nid=1277792",
+    "https://markets.businessinsider.com/news/stocks/maxlinear-rises-11-7-1036594782",
+    "https://www.gurufocus.com/news/9108146/a-look-at-maxlinear-inc-mxl-after-150-gain-gf-value-2094-vs-price-10593",
+    "https://www.trefis.com/data/companies/MXL",
+    "https://www.thewallstreetrollup.com/p/the-week-ahead-october-4th",
+    "https://cmnews.com.tw/article/cmoneyairesearcher-938ab06d-be65-11f1-880a-74ebdec3534b",
+    "https://www.stocktitan.net/rankings/top-news/gainers/2026-10",
+    "https://www.investing.com/equities/maxlinear-inc"
+  ],
+  "usage": {
+    "input_tokens": 1014,
+    "output_tokens": 654,
+    "cost_usd": 0.02685
+  }
+}

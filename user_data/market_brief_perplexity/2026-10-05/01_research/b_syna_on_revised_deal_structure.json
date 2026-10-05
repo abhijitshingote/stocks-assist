@@ -1,0 +1,167 @@
+{
+  "name": "b_syna_on_revised_deal_structure",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Story: ON\u2013SYNA Revised Deal: Why $5.7B Cash vs Prior $7B Stock & Regulatory Path. Related tickers: ON, SYNA.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nWhy this needs follow-up: ON revised its SYNA acquisition from ~$7B all-stock to $5.7B all-cash at $123/share after a competing third-party offer; the notes give no identity of the competing bidder, no detail on why the price fell while the structure shifted to cash, and no analyst view on ON's balance sheet impact.\n\nANSWER EACH QUESTION (run a separate search for each):\n- Who made the competing third-party offer for Synaptics that prompted ON Semiconductor to revise its acquisition terms to $123 per share cash in October 2026?\n- How does ON Semiconductor plan to finance the $5.7 billion all-cash Synaptics acquisition, and what leverage ratio or credit-rating impact have analysts projected?\n- Which remaining regulatory approvals\u2014beyond US antitrust clearance already obtained\u2014are required before the ON\u2013Synaptics deal closes by mid-2027?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## SYNA / Competing bidder `[M&A]`\n- Synaptics received an **unsolicited, non-binding proposal from an unidentified strategic buyer**, designated **\u201cParty A\u201d** in its SEC filings, on **September 2, 2026**; the bidder\u2019s identity and proposed price had not been disclosed by the October 5, 12:20 ET cutoff. [report] (TheStreet, Oct. 4 22:24 ET)\n- Synaptics\u2019 board determined that Party A\u2019s revised proposal was a **Superior Proposal** under the original agreement, prompting ON Semiconductor and Synaptics to renegotiate; the amended agreement was signed on **October 1, 2026**. (Tech Times, Oct. 2 08:24 ET)\n- ON Semiconductor revised the consideration from the **June 25, 2026 all-stock transaction valued at approximately $7.0 billion** to **$123 per Synaptics share in cash**, valuing the transaction at approximately **$5.7 billion**. (onsemi, Oct. 1 08:00 ET)\n- The revised agreement was unanimously approved by the ON Semiconductor and Synaptics boards and is expected to close by **mid-2027**, subject to shareholder, regulatory and other customary closing conditions. (onsemi, Oct. 1 08:00 ET)\n\n## ON `[Financing / balance sheet]`\n- ON Semiconductor plans to finance the approximately **$5.7 billion** purchase with **cash on hand** and up to **$2.45 billion** of committed senior secured term-loan financing from **Morgan Stanley Senior Funding**, under an October 1 commitment letter. (ON Semiconductor SEC filing, Oct. 1)\n- The amended merger agreement contains **no financing condition**, so ON\u2019s ability to close is not conditioned on obtaining the committed debt financing. (onsemi, Oct. 1 08:00 ET)\n- ON reported approximately **$3.9 billion of cash and short-term investments**, **$5.4 billion of total liquidity** and **$425 million of quarterly free cash flow** in the figures cited in the October 2 market coverage. (247WallSt, Oct. 2)\n- The search results did not identify a published analyst estimate for ON\u2019s post-transaction **leverage ratio** or a specific **credit-rating action** through October 5 at 12:20 ET.\n- Baird analyst **Tristan Gerra** maintained a **Hold** rating on ON and a **$108 price target** after the revised agreement. (IBTimes Australia, Oct. 2)\n\n## SYNA `[Regulatory / closing status]`\n- The **U.S. Federal Trade Commission** had approved the transaction before the October 1 revised-announcement release; the companies said regulators in **other jurisdictions** were still reviewing it. (onsemi, Oct. 1 08:00 ET)\n- The required remaining approvals were described publicly only as **regulatory approvals in other jurisdictions**; the available reports did not name the specific countries or agencies by October 5 at 12:20 ET. (Tech Times, Oct. 2 08:24 ET)\n- Synaptics shareholders still must approve the transaction at a special meeting; the meeting date had not been announced in the available October 2\u20135 coverage. (Tech Times, Oct. 2 08:24 ET)\n- The transaction remained targeted for completion by **mid-2027**, subject to Synaptics shareholder approval, remaining regulatory approvals and other customary conditions. (onsemi, Oct. 1 08:00 ET)\n\n## ON `[Market move / analyst notes]`\n- ON shares rose approximately **6%** on Friday, **October 2, 2026**, after the revised all-cash agreement was announced. (Investopedia, Oct. 2)\n- ON shares were reported **6.5% higher in pre-market trading** on October 2 after the announcement. (Investing.com, Oct. 2)\n- Baird\u2019s **Tristan Gerra** kept ON at **Hold** with a **$108 price target**; no old-to-new rating or price-target change was reported. (IBTimes Australia, Oct. 2)\n- An additional market-data item identified ON\u2019s latest cited analyst view as **Buy** with a **$125 price target**, but it did not identify the firm or provide an action date. (Globe and Mail, Oct. 2)\n\n## SYNA `[Market move]`\n- SYNA shares rose approximately **14%** on Friday, **October 2, 2026**, following the switch from the approximately $7.0 billion all-stock agreement to the **$123-per-share cash** offer. (Investopedia, Oct. 2)\n- SYNA shares rose **more than 14% at the open** on October 2 and traded close to the **$123 cash consideration**. (IBTimes Australia, Oct. 2)\n- The revised cash consideration provides Synaptics shareholders with a fixed **$123 per-share value**, compared with the prior stock-based consideration whose aggregate transaction value had been approximately **$7.0 billion**. (onsemi, Oct. 1 08:00 ET)\n\n## Other affected stocks `[Market scope]`\n- The available October 2\u20135 reports identified **ON** and **SYNA** as the publicly traded stocks with reported price moves tied to the revised transaction; no other named stock was reported with a quantified move in the available coverage. (Investopedia, Oct. 2)",
+  "search_results": [
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "That changed Thursday, October 1, when an unnamed rival's interest pushed the chipmaker into an all-cash deal.\n...\nOnsemi will now pay $123 per Synaptics share, about $5.7 billion in total, according to a press release.\nThe June version carried a $7 billion price tag, paid entirely in onsemi shares....",
+      "source": "web",
+      "title": "27-year-old chip stock gets a rare win as rival bidder steps in",
+      "url": "https://www.thestreet.com/investing/onsemi-synaptics-all-cash-acquisition-deal"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "onsemi (NASDAQ: ON) and Synaptics Incorporated (NASDAQ: SYNA) disclosed an amended merger agreement on October 1, 2026, filed an October 1 8-K with the Securities and Exchange Commission, replacing their original June 25 all-stock deal with a fixed all-cash offer of $123 per share.\n...\nThe amendment...",
+      "source": "web",
+      "title": "Competing Bid Forces onsemi to Rewrite Synaptics Deal",
+      "url": "https://www.techtimes.com/articles/328498/20261002/competing-bid-forces-onsemi-rewrite-synaptics-deal-13b-less-all-cash.htm"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Closing is expected by mid-2027, subject to Synaptics shareholder approval, required regulatory approvals and other customary conditions.\n...\nON Semiconductor Corporation amended its merger agreement to acquire Synaptics for **$123 per share in cash**, an aggregate value of approximately **$5.7 bill...",
+      "source": "web",
+      "title": "ON Semiconductor cuts Synaptics deal to about $5.7B",
+      "url": "https://www.stocktitan.net/sec-filings/ON/8-k-on-semiconductor-corp-reports-material-event-d184ae691923.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Onsemi changed its Synaptics acquisition into a $123-per-share cash offer after the original stock deal lost value and attracted an unsolicited rival proposal.\n...\nThe competing bidder, identified only as \u201cParty A,\u201d forced both companies to reconsider their positions.\n...\nOnsemi and Synaptics signed...",
+      "source": "web",
+      "title": "Onsemi Synaptics Acquisition Turns to Cash After the ...",
+      "url": "https://www.remio.ai/post/onsemi-synaptics-acquisition-turns-to-cash-after-the-original-deal-lost-value"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "On October 1, 2026, onsemi and Synaptics amended their June 25, 2026 merger agreement after Synaptics received an unsolicited competing proposal, restructuring the deal as an all\u2011cash acquisition at $123 per share, valuing Synaptics at about $5.7 billion versus roughly $7 billion under the prior mix...",
+      "source": "web",
+      "title": "onsemi Restructures Synaptics Acquisition into All-Cash Deal",
+      "url": "https://www.theglobeandmail.com/investing/markets/stocks/ON/pressreleases/4937429/onsemi-restructures-synaptics-acquisition-into-all-cash-deal/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On Semiconductor scrapped its stock deal for Synaptics and replaced it with cash, and both stocks surged on the news for reasons that point in opposite directions.\n...\n## Quick Read\n- ON jumps 8% and SYNA surges 14% after On Semiconductor swaps its $7B stock deal for a $5.7B all-cash bid at $123 per...",
+      "source": "web",
+      "title": "On Semiconductor Climbs 8%, Synaptics Surges 14% as ...",
+      "url": "https://247wallst.com/investing/2026/10/02/on-semiconductor-climbs-8-synaptics-surges-14-as-5-7b-cash-bid-replaces-7b-stock-deal/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "## The revised $123-a-share agreement won unanimous support from Synaptics' board after a competing proposal emerged, with completion targeted for mid-2027.\n...\nUnder the amended merger agreement, ON Semiconductor will pay $123 in cash for each Synaptics share, a transaction valued at about $5.7 bil...",
+      "source": "web",
+      "title": "ON Semiconductor Climbs After Replacing Its $7 Billion ...",
+      "url": "https://www.ibtimes.com.au/semiconductor-cash-bid-synaptics-1876199"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Investing.com -- ON Semiconductor stock surged 6.5% in pre-open trading after the company announced a significantly improved acquisition structure for its pending takeover of Synaptics, converting the original all-stock $7 billion deal into an all-cash transaction valued at approximately $5.7 billio...",
+      "source": "web",
+      "title": "Why is ON Semiconductor stock surging today?",
+      "url": "https://uk.investing.com/news/stock-market-news/why-is-on-semiconductor-stock-surging-today-93CH-4892980"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "The revised cash offer of $123 per share follows an unsolicited competing bid.\n...\nonsemi and Synaptics announced on October 1, 2026, that they have amended their June 25, 2026 merger agreement.\nThe change follows an unsolicited competing proposal received from a third party.\nUnder the new terms, on...",
+      "source": "web",
+      "title": "onsemi cuts Synaptics buyout price to $5.7 billion - el fondo",
+      "url": "https://www.el-fondo.com/en/news/onsemi-cuts-synaptics-buyout-price-to-57-billion"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Onsemi and Synaptics Incorporated announced today they have amended their merger agreement originally signed on June 25, 2026.\nThe revision comes after Synaptics received an unsolicited competing proposal from a third party.\n...\nThe revised agreement changes the transaction structur...",
+      "source": "web",
+      "title": "Onsemi revises Synaptics deal to $123/sh all-cash, shares of both soar",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/onsemi-revises-synaptics-deal-123-212227617.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- ON Semiconductor stock surged 6.5% in pre-open trading after the company announced a significantly improved acquisition structure for its pending takeover of Synaptics, converting the original all-stock $7 billion deal into an all-cash transaction valued at approximately $5.7 billio...",
+      "source": "web",
+      "title": "Why is ON Semiconductor stock surging today? By Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/why-is-on-semiconductor-stock-surging-today-93CH-4929107"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "October 01, 2026\n...\nSCOTTSDALE, Ariz. and SAN JOSE, Calif.\n\u2013 Oct. 1, 2026 \u2013 onsemi (NASDAQ: ON) and Synaptics Incorporated (NASDAQ: SYNA) (\"Synaptics\") today announced they have amended their June 25, 2026 merger agreement.\nThe amendment follows an unsolicited competing proposal received from a thi...",
+      "source": "web",
+      "title": "onsemi and Synaptics Announce Revised Merger Agreement",
+      "url": "https://www.onsemi.com/company/newsroom/news-and-insights/onsemi-and-synaptics-announce-revised-merger-agreement"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Bias Comparison\n- On Thursday, onsemi and Synaptics Incorporated announced they amended their June 25, 2026 merger agreement following an unsolicited competing proposal received from a third party.\n- Under the revised agreement, onsemi will acquire Synaptics for $123 per share in cash, totaling appr...",
+      "source": "web",
+      "title": "onsemi and Synaptics Announce Revised Merger Agreement",
+      "url": "https://ground.news/article/onsemi-and-synaptics-announce-revised-merger-agreement"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Shares of Onsemi (ON) surged 6% and Synaptics (SYNA) shares jumped 14% Friday, a day after Onsemi said it will buy Synaptics in an all-cash deal at $123 per share, replacing an all-stock deal announced back in June.\n...\nOnsemi said it revised the proposal after Synaptics received a competing offer.",
+      "source": "web",
+      "title": "Onsemi, Synaptics Stocks Rally on Revised Merger Agreement",
+      "url": "https://www.investopedia.com/market-update-onsemi-synaptics-stocks-rally-on-revised-merger-agreement-12154624"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "## The revised agreement values Synaptics at $123 a share after an unsolicited proposal from an unnamed strategic bidder prompted both companies to renegotiate.\n...\nNEW YORK \u2014 Shares of Synaptics Inc.\njumped more than 14% at the open Friday after onsemi agreed to buy the chipmaker in an all-cash dea...",
+      "source": "web",
+      "title": "Synaptics Stock Soars 14% as Onsemi Switches to $5.7 ...",
+      "url": "https://www.ibtimes.com.au/onsemi-synaptics-5-7-billion-cash-takeover-1876192"
+    }
+  ],
+  "citations": [
+    "https://www.thestreet.com/investing/onsemi-synaptics-all-cash-acquisition-deal",
+    "https://www.techtimes.com/articles/328498/20261002/competing-bid-forces-onsemi-rewrite-synaptics-deal-13b-less-all-cash.htm",
+    "https://www.stocktitan.net/sec-filings/ON/8-k-on-semiconductor-corp-reports-material-event-d184ae691923.html",
+    "https://www.remio.ai/post/onsemi-synaptics-acquisition-turns-to-cash-after-the-original-deal-lost-value",
+    "https://www.theglobeandmail.com/investing/markets/stocks/ON/pressreleases/4937429/onsemi-restructures-synaptics-acquisition-into-all-cash-deal/",
+    "https://247wallst.com/investing/2026/10/02/on-semiconductor-climbs-8-synaptics-surges-14-as-5-7b-cash-bid-replaces-7b-stock-deal/",
+    "https://www.ibtimes.com.au/semiconductor-cash-bid-synaptics-1876199",
+    "https://uk.investing.com/news/stock-market-news/why-is-on-semiconductor-stock-surging-today-93CH-4892980",
+    "https://www.el-fondo.com/en/news/onsemi-cuts-synaptics-buyout-price-to-57-billion",
+    "https://finance.yahoo.com/markets/stocks/articles/onsemi-revises-synaptics-deal-123-212227617.html",
+    "https://www.investing.com/news/stock-market-news/why-is-on-semiconductor-stock-surging-today-93CH-4929107",
+    "https://www.onsemi.com/company/newsroom/news-and-insights/onsemi-and-synaptics-announce-revised-merger-agreement",
+    "https://ground.news/article/onsemi-and-synaptics-announce-revised-merger-agreement",
+    "https://www.investopedia.com/market-update-onsemi-synaptics-stocks-rally-on-revised-merger-agreement-12154624",
+    "https://www.ibtimes.com.au/onsemi-synaptics-5-7-billion-cash-takeover-1876192"
+  ],
+  "usage": {
+    "input_tokens": 786,
+    "output_tokens": 1172,
+    "cost_usd": 0.03394
+  }
+}

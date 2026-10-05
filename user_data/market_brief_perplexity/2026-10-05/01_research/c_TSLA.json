@@ -1,0 +1,167 @@
+{
+  "name": "c_TSLA",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Tesla, Inc. (TSLA).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| TSLA | Tesla, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.65% | -0.4% | 1.6\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## Tesla, Inc. (TSLA) `[Electric Vehicles]`\n- No company-specific catalyst found in window\n\nTASK\nSearch harder for why TSLA moved. Run several searches: \"why is Tesla, Inc. stock down/up\",\n\"Tesla, Inc. stock\", \"TSLA shares Friday October 2, 2026\", \"Tesla, Inc. concerns\", \"Tesla, Inc. FDA\",\n\"Tesla, Inc. analyst\", \"Tesla, Inc. price target\", \"Tesla, Inc. deal\", \"Tesla, Inc. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Tesla, Inc. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Tesla, Inc. (TSLA) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Tesla, Inc. (TSLA) `[Electric Vehicles]`\n- Tesla delivered **486,532 vehicles** worldwide in Q3 2026, versus its company-compiled consensus of **461,974**, while production was **464,391**; the delivery figure was also **2% below** Q3 2025\u2019s **497,099**. (Tesla, Oct 2; CNBC, Oct 2)\n- Tesla shares closed Friday, October 2, at **$370.59**, up **4.65%**, after the delivery report; the stock was reported up approximately **5%** during Friday trading. (MarketBeat, Oct 2; CNBC, Oct 2)\n- **Model 3 and Model Y** deliveries totaled **478,237**, versus Tesla\u2019s internal forecast of **450,712**. (Yahoo Finance, Oct 2)\n- European demand helped offset weaker sales in the **United States and China**; Tesla\u2019s Q3 deliveries were approximately **2% below** the year-earlier period. (New York Post, Oct 2; Yahoo Finance, Oct 2)\n- Tesla installed **13.7 GWh** of energy-storage products in Q3, below the **15.9 GWh** forecast and up from **12.5 GWh** a year earlier. (Yahoo Finance, Oct 2)\n- **Morgan Stanley** maintained its **Hold** rating after the delivery report; **RBC Capital Markets** maintained an **Outperform** rating and described the delivery total as \u201cimpressive.\u201d (CNBC, Oct 2)\n- **Oppenheimer analyst Colin Rusch** said the delivery result could support operating cash flow and gross margins, and identified Full Self-Driving as a potential demand and margin driver. (Investing.com, Oct 2)\n- **Elon Musk** said on Saturday that \u201csomething may come of\u201d discussions between **TSMC** and Tesla/SpaceX\u2019s **Terafab** project; the discussions were reported as involving possible TSMC participation in operating semiconductor factories in Texas. **[report]** (Yahoo Finance, Oct 5 05:48 ET)\n- Tesla shares rose approximately **1% overnight** Sunday after Musk\u2019s comments on the TSMC discussions. (Yahoo Finance, Oct 5 05:48 ET)\n- **Rivian Automotive** shares fell approximately **3%** on Friday despite an in-line quarterly delivery report, while Tesla rose approximately **5%** after exceeding its delivery consensus. (Yahoo Finance, Oct 2)\n- Tesla\u2019s reported **486,532** deliveries exceeded Visible Alpha\u2019s average estimate of **456,896** by approximately **29,636 vehicles**. (Yahoo Finance, Oct 4 19:38 ET)\n- **Roadster** reveal timing was reported as rescheduled for **October 15, 2026**, and Tesla\u2019s Q3 financial results were expected around **October 21, 2026**. (MarketBeat, Oct 2)\n",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Morningstar maintained its $450 fair value estimate, implying a 21% upside from current levels, and forecasts 10% delivery growth this year.\nShares of Tesla, Inc.\n(TSLA) rose 1% overnight late Sunday after CEO Elon Musk confirmed talks with TSMC over his Terafab chipmaking project, while analysts ...",
+      "source": "web",
+      "title": "Tesla Stock Rises Overnight After Musk Says \u2018Something May Come Of\u2019 TSMC Talks On Terafab",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/tesla-stock-rises-overnight-musk-035535379.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Tesla beats Q3 delivery estimates with 486,000 vehicles delivered\n...\n**Tesla **(NASDAQ:TSLA) stock is popping to end this week.\nThe company released its quarterly electric vehicle (EV) delivery results, and investors are impressed.\nTesla shares were up by 5.2% on the news, as of 12:08 p.m.\n...\nTesl...",
+      "source": "web",
+      "title": "Why Tesla Stock Jumped Today",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/why-tesla-stock-jumped-today-163135435.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Wall Street expected Tesla to have a good third quarter.\nThe electric automaker delivered something quite a bit better than that, sending its shares higher in the process.\nTesla delivered 486,532 vehicles worldwide between July and September, according to figures released by the company on October 2...",
+      "source": "web",
+      "title": "Third-Quarter Tesla Sales Are Smashing Wall Street ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/third-quarter-tesla-sales-smashing-200037282.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Tesla beat Wall Street estimates for third-quarter deliveries on Friday, as a demand rebound in Europe offset the loss of US tax incentives and stiffer competition in China.\nShares of the Austin, Texas-based company closed up almost 5% on Friday but are still down 18% so far this year.",
+      "source": "web",
+      "title": "Tesla shares climb 5% after deliveries surprise Wall Street",
+      "url": "https://nypost.com/2026/10/02/business/tesla-shares-climb-5-after-deliveries-surprise-wall-street/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Tesla shares climbed 5% on Friday after the electric vehicle maker reported deliveries for the third quarter that topped analysts\u2019 estimates.\n...\nAnalysts were expecting around 461,100 deliveries, according to StreetAccount\u2019s consensus.\n...\nElon Musk\u2019s automaker is under pressure due to surging comp...",
+      "source": "web",
+      "title": "Tesla (TSLA) Q3 2026 vehicle deliveries and production",
+      "url": "https://www.cnbc.com/2026/10/02/tesla-tsla-q3-2026-vehicle-delivery-production.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Tesla (TSLA) surged 4.5% after the EV maker delivered more vehicles in the third quarter than expected.\n...\nTesla shares are surging after the electric vehicle giant\u2019s deliveries blew past expectations.\nTesla (TSLA) said this morning that it delivered 486,532 vehicles in the third quarter, well abov...",
+      "source": "web",
+      "title": "Nasdaq Hits New High; Dow, S&P 500 Book Weekly Losses",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10022026-12153808"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Tesla delivered more cars than Wall Street expected and its shares jumped 4.65%.\nYet the harder question remains unanswered: can the company earn enough money to justify what investors are paying?\n...\nThe October 2 rally in Tesla shares followed Tesla's Q3 delivery announcement.\nThe company delivere...",
+      "source": "web",
+      "title": "Tesla Stock Price Prediction: Is TSLA Worth Its Premium?",
+      "url": "https://www.indmoney.com/blog/us-stocks/tesla-stock-price-prediction"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "### Quick Read\n- Tesla surged 5% after delivering 486,532 vehicles, beating its own internal consensus of 461,974, while Rivian dropped 3% despite an in-line quarter.\n- Tesla's beat still trailed last year's 497,099 deliveries, keeping its growth trajectory in question ahead of full Q3 financial res...",
+      "source": "web",
+      "title": "Tesla Surges 5% as 486532 Deliveries Top Company ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/tesla-surges-5-486-532-145042966.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Tesla's stock jumped Friday after the electric car maker said its global sales dipped in the third quarter but were higher than expected.\nElon Musk's company sold 486,532 vehicles in the July-September quarter, two percent lower than the year-ago period but above most leading estimates.\nA larger dro...",
+      "source": "web",
+      "title": "Tesla shares jump after global car sales top estimates",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/tesla-shares-jump-global-car-164349492.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Tesla (NASDAQ) shares jumped 5% Friday after the electric vehicle maker reported third-quarter deliveries well above expectations, giving investors a stronger-than-expected update on its core auto business.\nTesla delivered 486,532 vehicles, about 5% above the company-compiled consen...",
+      "source": "web",
+      "title": "Tesla shares jump 5% as Q3 deliveries beat expectations",
+      "url": "https://au.finance.yahoo.com/news/tesla-shares-jump-5-q3-133810372.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Takeaways\n...\n- Street ratings stand at 15 buys, 4 outperforms, 20 holds, 2 underperforms and 2 sells, with a $396 mean target that sits 7% above the close.\n...\nReuters reported that the shares gained 4.7% that day.\n...\nAnalysts rate Tesla stock 15 buys, 4 outperforms, 20 holds, 2 underperfor...",
+      "source": "web",
+      "title": "Tesla Stock Is Down 15% This Year. Is the $396 Street Target Within Reach?",
+      "url": "https://www.tikr.com/blog/tesla-stock-is-down-15-this-year-is-the-396-street-target-within-reach?"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Analyst Andrew Percoco from Morgan Stanley maintained a Hold rating on Tesla and keeping the price target at $400.00.",
+      "source": "web",
+      "title": "Tesla: TSLA Stock Price Quote & News",
+      "url": "https://robinhood.com/us/en/stocks/TSLA/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Tesla shares rose 4.7% to $370.59** after Q3 deliveries reached 486,532 vehicles, surpassing Wall Street expectations of about 461,000.\nHowever, deliveries still declined roughly 2% year over year amid weaker U.S. demand and intensifying competition.\n- Near-term catalysts include t...",
+      "source": "web",
+      "title": "www.marketbeat.com \u00b7 instant-alerts \u00b7 price-teslaTesla (NASDAQ:TSLA) Stock Price Up 4.7% - Still a Buy?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-tesla-nasdaq-tsla-stock-price-up-47-still-a-buy-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "**Tesla delivered 486,532 vehicles between July and September, beating the average forecast from 24 analysts by about 24,600.\nTesla stock rose 5.5% to $373.55 by mid-morning Friday, according to Yahoo Finance.**\nThe factory did not keep pace, however.\nTesla built 464,391 vehicles, so about 22,000 of...",
+      "source": "web",
+      "title": "Tesla Stock Jumps 6% on Delivery Beat",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/tesla-stock-jumps-6-delivery-143224380.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Tesla delivered 486,532 vehicles worldwide in the third quarter, topping Bloomberg analyst estimates of 463,761 and signaling stronger-than-expected sales.\n...\nThe results are a boon for Tesla following a period of declining auto sales and a lagging stock, with competition in the crucial China mar...",
+      "source": "web",
+      "title": "Tesla's EV sales top estimates with auto business ...",
+      "url": "https://www.ttnews.com/articles/tesla-ev-sales-top-estimates"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/tesla-stock-rises-overnight-musk-035535379.html",
+    "https://finance.yahoo.com/markets/stocks/articles/why-tesla-stock-jumped-today-163135435.html",
+    "https://finance.yahoo.com/markets/stocks/articles/third-quarter-tesla-sales-smashing-200037282.html",
+    "https://nypost.com/2026/10/02/business/tesla-shares-climb-5-after-deliveries-surprise-wall-street/",
+    "https://www.cnbc.com/2026/10/02/tesla-tsla-q3-2026-vehicle-delivery-production.html",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10022026-12153808",
+    "https://www.indmoney.com/blog/us-stocks/tesla-stock-price-prediction",
+    "https://finance.yahoo.com/markets/stocks/articles/tesla-surges-5-486-532-145042966.html",
+    "https://finance.yahoo.com/markets/stocks/articles/tesla-shares-jump-global-car-164349492.html",
+    "https://au.finance.yahoo.com/news/tesla-shares-jump-5-q3-133810372.html",
+    "https://www.tikr.com/blog/tesla-stock-is-down-15-this-year-is-the-396-street-target-within-reach?",
+    "https://robinhood.com/us/en/stocks/TSLA/",
+    "https://www.marketbeat.com/instant-alerts/price-tesla-nasdaq-tsla-stock-price-up-47-still-a-buy-2026-10-02/",
+    "https://finance.yahoo.com/markets/stocks/articles/tesla-stock-jumps-6-delivery-143224380.html",
+    "https://www.ttnews.com/articles/tesla-ev-sales-top-estimates"
+  ],
+  "usage": {
+    "input_tokens": 1026,
+    "output_tokens": 623,
+    "cost_usd": 0.02642
+  }
+}

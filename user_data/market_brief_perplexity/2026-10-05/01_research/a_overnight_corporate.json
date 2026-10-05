@@ -1,0 +1,167 @@
+{
+  "name": "a_overnight_corporate",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Overnight & weekend company announcements.\n\nWindow: Friday October 2, 2026 4:00 PM ET (after the close) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nCompany announcements for US stocks >= $2B published after the session close through the cutoff (press releases, 8-Ks, wire reports): buyback authorizations, CEO/CFO departures and appointments, takeover bids, bid rejections, merger terms, FDA approvals and trial readouts, guidance changes, activist letters, major contracts and partnerships. Company, figure, and pre-market move.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **PTC** \u2014 Software & SaaS\n- Schneider Electric agreed to acquire PTC for **$205 per share in cash**, valuing PTC\u2019s equity at approximately **$22.6 billion**; closing is expected in **Q3 2027**. PTC rose approximately **36%\u201337%** in pre-market trading as of **07:21 ET**. (Reuters, Oct 5 07:21 ET; CNBC, Oct 5 07:50 ET)\n\n## **Cerebras Systems** \u2014 AI Compute\n- OpenAI CEO **Sam Altman** described Cerebras as a \u201cclose partner\u201d and said the companies have \u201cdeep engagement pushing on the frontiers of speed\u201d; Cerebras rose **6.6%** in pre-market trading as of **07:21 ET**. **[report]** (Reuters, Oct 5 07:21 ET)\n\n## **TSLA** \u2014 Automotive / Energy\n- Tesla reported **464,391 vehicles produced**, **486,532 vehicles delivered**, and **13.7 GWh** of energy-storage deployments in **Q3 2026**; Model 3/Y deliveries totaled **478,237** and other-model deliveries totaled **8,295**. Tesla said Q3 financial results will be released after the close on **Oct 21, 2026**, followed by a webcast at **17:30 ET**. (Tesla Form 8-K, filed Oct 2 09:04 ET)\n\n## **SYNA / ON** \u2014 Semiconductors\n- ON Semiconductor revised the terms of its proposed acquisition of Synaptics in a transaction valued at approximately **$5.7 billion**; Synaptics rose **14.1%** in Monday trading as of **08:22 ET**. (Yahoo Finance/Zacks, Oct 5 08:22 ET)\n\n## **NKE** \u2014 Retail\n- Nike reported **fiscal Q4 2026 revenue of $11.21 billion**, which was **1.65% below** the Zacks consensus estimate; shares fell **3.6%** as of **08:22 ET**. (Yahoo Finance/Zacks, Oct 5 08:22 ET)\n\n## **NVDA** \u2014 AI Compute\n- Nvidia reached a new all-time intraday high of **$237.87** and was up **1.3%** as of **08:22 ET**. (Yahoo Finance/Zacks, Oct 5 08:22 ET)\n\n## **WFC** \u2014 Banking\n- Morgan Stanley upgraded Wells Fargo from **Equal Weight to Overweight**; shares gained approximately **1%** in pre-market trading as of **07:50 ET**. (CNBC, Oct 5 07:50 ET)\n\n## **DKNG** \u2014 Internet & Platforms\n- Bank of America upgraded DraftKings from **Neutral to Buy** and estimated prediction-market fees of **$400 million in 2027**, with market-making revenue estimated at **$200 million\u2013$400 million**; shares rose more than **5%** in pre-market trading as of **07:50 ET**. (CNBC, Oct 5 07:50 ET)\n\n## **EL** \u2014 Retail\n- Barclays upgraded Est\u00e9e Lauder from **Equal Weight to Overweight**; shares rose **2.8%** as of **07:50 ET**. (CNBC, Oct 5 07:50 ET)\n\n## **ITUB / BBD** \u2014 Banking\n- Itau Unibanco and Banco Bradesco rose more than **13% each** in U.S. pre-market trading after Brazil\u2019s presidential election produced an approximately **2-percentage-point** margin between right-wing candidate **Flavio Bolsonaro** and incumbent **Luiz Inacio Lula da Silva**. (CNBC, Oct 5 07:50 ET)\n\n## **PORT.U** \u2014 SPAC / Calendar\n- Southport Acquisition Corp. II completed an IPO of **21 million units** priced at **$10.00 per unit**, including **1 million units** from a partial overallotment exercise; **$212.1 million** was placed in its trust account. (GlobeNewswire, Oct 2 18:15 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Chip stocks were a drag in premarket trade, with Intel dropping more than 4%, while Micron Technology dipped 0.3%.\nNvidia edged up 0.5%, having touched a record high on Friday.\n...\nAmong other stocks, PTC jumped 37% in premarket trading after France's Schneider Electric agreed to buy the software fi...",
+      "source": "web",
+      "title": "Wall St futures dip as tech stocks take a breather",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Still on deck this week for the current earnings season are Constellation Brands, Levi Strauss, PepsiCo, Delta Air Lines and others.",
+      "source": "web",
+      "title": "Stock futures fall as investors grapple with higher yields ...",
+      "url": "https://www.cnbc.com/2026/10/04/stock-market-today-live-updates.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "U.S. stocks finished Friday higher after a weak September jobs report reinforced signs that the labor market is cooling.\n...\nNvidia Corporation ($**NVDA**) was among the companies helping support the index.\n...\nThe week of October 5 brings a relatively light earnings calendar, but several large U.S....",
+      "source": "web",
+      "title": "The Week That Was, The Week Ahead: Macro and Markets, October 4",
+      "url": "https://markets.businessinsider.com/news/stocks/the-week-that-was-the-week-ahead-macro-and-markets-october-4-1036595570"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "### 6. Next week's first prints: PepsiCo at $2.30 a share, Delta at $1.94, Constellation at $3.55 (Earnings)\n...\nConstellation Brands is expected to earn $3.55 a share after the close on October 6.\nApplied Digital is expected to lose $0.30 a share after the close on October 7, with revenue up 94.0% ...",
+      "source": "web",
+      "title": "October 4, 2026 \u00b7 Finance & Markets Daily Digest | Swil-News",
+      "url": "https://news.supwil.com/en/news/finance/2026-10-04"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Sun, October 4, 2026 at 4:00 AM GMT-5\n...\n*Levi Strauss is slated to report quarterly earnings this week.*\n...\nThird-quarter results start trickling in this week, with Delta, Pepsi and Levi Strauss due to report.\n...\n- Wednesday: Applied Digital (APLD) is set to publish its fiscal first-quarter resu...",
+      "source": "web",
+      "title": "Investors Prep for Earnings Season; Delta, Pepsi Report",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/expect-markets-week-investors-prep-090000033.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Strategy stock traded after-hours at EUR 141.69 at 6:46 p.m.\nCEST on October 2, 2026.\nThe price was down 0.37 percent versus the prior close at Lang & Schwarz.\n...\nStrategy stock traded at an after-hours price of **EUR 141.69** at 6:46 p.m.\n...\nIn a September 28, 2026 Form 8-K, Strategy Inc reported...",
+      "source": "web",
+      "title": "Strategy stock after-hours at EUR 141.69: minus 0.37 ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nachboerse/strategy-stock-after-hours-at-eur-141-69-minus-0-37-percent-versus-prior-close/70217103"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Check out the companies making the biggest moves premarket: Brazilian stocks \u2014 The group rallied after right-wing presidential candidate Flavio Bolsonaro edged out incumbent Luiz Inacio Lula Da Silva by around 2 percentage points in an election held Sunday.\nThe iShares MSCI Brazil ETF (EWZ) surged 1...",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: DraftKings, Itau Unibanco, PTC & more",
+      "url": "https://www.cnbc.com/2026/10/05/stocks-making-the-biggest-moves-premarket-dkng-itub-ptc.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Tesla delivers 486,532 vehicles in Q3 2026 | TSLA 8-K Filing\n...\nTesla, Inc.\nproduced **464,391 vehicles** and delivered **486,532** in the third quarter of 2026, and deployed **13.7 GWh** of energy storage products.\nModel 3/Y accounted for 457,387 production and 478,237 deliveries; other models acc...",
+      "source": "web",
+      "title": "Tesla delivers 486532 vehicles in Q3 2026 | TSLA 8-K Filing",
+      "url": "https://www.stocktitan.net/sec-filings/TSLA/8-k-tesla-inc-reports-material-event-750c0543f755.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "1. Marvell investor day: On Tuesday, Marvell hosts its much-anticipated investor day.\n...\n2. Earnings: While there are no Club names set to report, we will hear from Corona and Modelo brewer Constellation Brands on Tuesday evening; denim maker Levi Strauss on Wednesday evening; soft drink and snack ...",
+      "source": "web",
+      "title": "Here are 3 things we're watching in the stock market in the week ahead",
+      "url": "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Stock Market News for October 4, 2026\n8 news published.\n3 oct 2026 5 oct 2026\n...\n10/04/2026 08:00 PM\nS&P Global Ratings launches Vault Risk Assessment for digital asset markets\n...\n10/04/2026 07:00 PM\nSU : NYSE\nSuncor to divest non-core offshore assets and increase shareholder returns\n...\n10/04/2...",
+      "source": "web",
+      "title": "www.stocktitan.net \u00b7 news \u00b7 2026/10/04Stock Market News for Oct 4, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-04/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- NIKE, Inc.\n(NKE) shares fell 3.6% after the company reported fourth-quarter fiscal 2026 revenues of $11.21 billion, missing the Zacks Consensus Estimate by 1.65%.\n- Synaptics Incorporated (SYNA) shares surged 14.1% after ON Semiconductor (ON) revised its $5.7 billion acquisition terms.\n- Shares of...",
+      "source": "web",
+      "title": "Company News for Oct 5, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 1:44 AM GMT-3\n...\n- AT&T, T-Mobile and Verizon formalized a satellite JV last week to reduce coverage gaps and expand provider options.\n- The JV preserves existing satellite agreements, including AST's relationships with AT&T and Verizon.\n- AST reported over 60 mobile-operato...",
+      "source": "web",
+      "title": "ASTS Stock Edges Up Overnight: Retail Traders Seize On ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/asts-stock-edges-overnight-retail-044457331.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Stocks rise Friday after soft jobs data, Nvidia leads Nasdaq to intraday record\n...\n## The S&P 500 rose 0.2% as traders priced in the September nonfarm payrolls report and a 72% chance the Federal Reserve holds rates, analysts said.\n...\nBias Comparison\n- On Friday, the Dow Jones Industrial Average a...",
+      "source": "web",
+      "title": "Stocks rise Friday after soft jobs data, Nvidia leads Nasdaq ...",
+      "url": "https://ground.news/article/stocks-rise-friday-after-soft-jobs-data-nvidia-leads-nasdaq-to-intraday-record"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Southport Acquisition Corp.\nII Announces Completion of Its Initial Public Offering\n...\n# Southport Acquisition Corp. II Announces Completion of Its Initial Public Offering\n...\nFri, October 2, 2026 at 5:15 PM GMT-3\n...\nGreenwich, CT, Oct. 02, 2026 (GLOBE NEWSWIRE) -- Southport Acquisition Corp.\nII (N...",
+      "source": "web",
+      "title": "Southport Acquisition Corp. II Announces Completion of Its ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/southport-acquisition-corp-ii-announces-201500423.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "# SEC Filings for October 2, 2026\n...\n[8-K] Piermont Valley Acquisition Corp Reports Material Event\ncurrent report",
+      "source": "web",
+      "title": "SEC Filings for Oct 2, 2026",
+      "url": "https://www.stocktitan.net/sec-filings/2026-10-02/?page=5"
+    }
+  ],
+  "citations": [
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012",
+    "https://www.cnbc.com/2026/10/04/stock-market-today-live-updates.html",
+    "https://markets.businessinsider.com/news/stocks/the-week-that-was-the-week-ahead-macro-and-markets-october-4-1036595570",
+    "https://news.supwil.com/en/news/finance/2026-10-04",
+    "https://finance.yahoo.com/markets/stocks/articles/expect-markets-week-investors-prep-090000033.html",
+    "https://www.ad-hoc-news.de/boerse/news/nachboerse/strategy-stock-after-hours-at-eur-141-69-minus-0-37-percent-versus-prior-close/70217103",
+    "https://www.cnbc.com/2026/10/05/stocks-making-the-biggest-moves-premarket-dkng-itub-ptc.html",
+    "https://www.stocktitan.net/sec-filings/TSLA/8-k-tesla-inc-reports-material-event-750c0543f755.html",
+    "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html",
+    "https://www.stocktitan.net/news/2026-10-04/",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html",
+    "https://finance.yahoo.com/markets/stocks/articles/asts-stock-edges-overnight-retail-044457331.html",
+    "https://ground.news/article/stocks-rise-friday-after-soft-jobs-data-nvidia-leads-nasdaq-to-intraday-record",
+    "https://finance.yahoo.com/markets/stocks/articles/southport-acquisition-corp-ii-announces-201500423.html",
+    "https://www.stocktitan.net/sec-filings/2026-10-02/?page=5"
+  ],
+  "usage": {
+    "input_tokens": 772,
+    "output_tokens": 891,
+    "cost_usd": 0.02968
+  }
+}

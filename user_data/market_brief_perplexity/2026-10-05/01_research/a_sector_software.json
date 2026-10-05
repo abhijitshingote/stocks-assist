@@ -1,0 +1,167 @@
+{
+  "name": "a_sector_software",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Company news: software, SaaS, database and cybersecurity.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed software, SaaS, database and cybersecurity companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **PTC** `[Software & SaaS]`\n- Schneider Electric agreed to acquire **PTC** for **$205 per share in cash**, valuing PTC\u2019s equity at approximately **$22.6 billion** and enterprise value at **$23.7 billion**; the offer represents a **42.3% premium** to PTC\u2019s previous closing price, with completion expected in **Q3 2027**. PTC rose **37% in pre-market trading** on October 5. (Reuters, Oct. 5, 06:48 ET)[1][4]\n- Schneider Electric\u2019s agreement confirmed reports published on **October 4** regarding the proposed acquisition. (Reuters, Oct. 5, 06:48 ET)[1]\n\n## Cybersecurity `[Software & SaaS]`\n- **Palo Alto Networks (PANW)**, **CrowdStrike (CRWD)** and **Fortinet (FTNT)** were identified in an October 5 market commentary as listed cybersecurity companies benefiting from increased cyber-defense spending; the cited September 30 closing prices were **$397.31**, **$264.75** and **$178.76**, respectively. The source did not report a new company-specific announcement or October 5 price move for any of the three companies. (Adalytica, Oct. 5, 00:43 ET)[8]\n\n## **IBM** `[Software & SaaS]`\n- An October 2 cybersecurity M&A roundup reported that **IBM** and **Palo Alto Networks** had unveiled new acquisitions, but the available search result did not provide the acquisition targets, transaction values, publication time, or stock moves. (Infosecurity Magazine, Oct. 2, time unavailable)[10]\n\n## **Thales** `[Cybersecurity]`\n- Thales introduced **Luna 8**, a post-quantum-capable hardware security module; **CipherTrust Data Security Posture Management**, an AI-enabled data-security product; and **Sentinel Envelope+**, software protection against AI-powered attacks. It also announced a Google Cloud partnership involving its **AI Security Fabric** for securing AI agents, data and interactions. (DefenseHere, Oct. 2, 05:10 ET)[3]\n\n## **SGS acquisition of Prescient Security** `[Cybersecurity]`\n- SGS completed the acquisition of a **majority stake** in US cybersecurity and compliance company **Prescient Security**, which has more than **350 employees** and **5,000 customers worldwide**. (Prescient Security, Oct. 2, time unavailable)[7]\n\n### Coverage limitation\n- The available search results did not provide sufficient, verifiable details to compile a complete list of all qualifying US-listed software, SaaS, database and cybersecurity company events in the requested window, including many analyst actions, earnings updates, SEC filings and company-specific pre-market moves.",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "European shares edged higher on Monday, recouping some of last week's losses, while French equities came under pressure from fiscal concerns and losses in Schneider Electric following its $22.6 billion acquisition of US software company PTC.",
+      "source": "web",
+      "title": "European shares rise after last week's selloff; French ...",
+      "url": "https://www.reuters.com/markets/europe/european-shares-rise-after-last-weeks-selloff-french-stocks-lag-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Press Releases on October 5, 2026\n...\nAUSTRALIA, October 5, 2026 /\u2068EINPresswire.com\u2069/ -- EZVIZ has officially launched a dedicated smart home security ecosystem for the Australian market, marking one of the brand's most significant regional expansions between 2024 and 2026.\n...\nRAYONG, RAYONG, THA...",
+      "source": "web",
+      "title": "Press Releases on October 5, 2026",
+      "url": "https://www.einpresswire.com/calendar/2026/10/05?page=3"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Thales unveils AI-powered cybersecurity solutions to protect organizations against cyber threats - Defensehere\n# Thales unveils AI-powered cybersecurity solutions to protect organizations against cyber threats\n2 October 2026 - 09:10\nDefense-tech corporation Thales Group introduced new cybersecurity ...",
+      "source": "web",
+      "title": "Thales unveils AI-powered cybersecurity solutions to ...",
+      "url": "https://defensehere.com/en/thales-unveils-ai-powered-cybersecurity-solutions-to-protect-organizations-against-cyber-threats/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - US stock index futures dipped on Monday, as technology stocks eased \u200cfrom record highs, while investors looked for fresh clues on the monetary policy path with Treasury yields and oil prices still elevated.\nChip stocks were a drag in premarket trade, with Intel (INTC.O) , opens new...",
+      "source": "web",
+      "title": "Wall St futures dip as tech stocks take a breather",
+      "url": "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "BlackFog has announced the launch of ADX Vision 2.0, expanding its AI security capabilities to help organizations govern and control the use of generative and agentic AI across the enterprise.",
+      "source": "web",
+      "title": "New infosec products of the week: October 2, 2026 - Help Net Security",
+      "url": "https://www.helpnetsecurity.com/2026/10/02/new-infosec-products-of-the-week-october-2-2026/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Press Releases on October 5, 2026\n106\nPress Releases\n- Published on\n...\n- Published on\n...\n### WIN Semiconductors Welcomes SawStreet LLC to the WIN ALLIANCE Partner Program\nOrlando-based backend specialist gives WIN customers an additional U.S. source for wafer grinding, thinning, dicing, pick-and...",
+      "source": "web",
+      "title": "Press Releases on October 5, 2026",
+      "url": "https://www.einpresswire.com/calendar/2026/10/05"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "SGS acquires Prescient Security in the US, an expert in enterprise cybersecurity and digital compliance\nOctober 2, 2026\n# SGS acquires Prescient Security in the US, an expert in enterprise cybersecurity and digital compliance\n...\n**Nashville, Tennessee \u2013 October 2nd, 2026 ** \u2013 SGS, the world\u2019s leadi...",
+      "source": "web",
+      "title": "SGS acquires Prescient Security in the US, an expert in ...",
+      "url": "https://prescientsecurity.com/resources/blogs/sgs-acquires-prescient-security-in-the-us"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monday, October 5, 2026\n...\nPalo Alto, CrowdStrike Gain on Cyber Defense Spending | Adalytica\n...\n# Palo Alto, CrowdStrike Gain on Cyber Defense Spending\n...\nChina and Russia\u2019s use of AI for hybrid attacks is forcing governments and companies to spend more on cyber defense, and the market is still u...",
+      "source": "web",
+      "title": "Palo Alto, CrowdStrike Gain on Cyber Defense Spending",
+      "url": "https://adalytica.com/news/palo-alto-crowdstrike-cyber-defense-spending-af343dcf"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# News of 10/05/26\n...\n|06:07 AM 10/05/2026 06:07:52 AM UTC-0400| |Super Intelligence Q-App Offsets AI Hell Virus Across CA.gov & African Gov\u2019t (Veterans First for America)|\n...\n|06:04 AM 10/05/2026 06:04:30 AM UTC-0400| |PartnerBridge Launches Strategic Fit to Bring Evidence\u2011Led, Decision-Making to...",
+      "source": "web",
+      "title": "News Archive | Markets Insider",
+      "url": "https://markets.businessinsider.com/news/archive/2026/10/5"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Cybersecurity M&A Roundup: Palo Alto and IBM Unveil New Acquisitions\nNews Feature 2 October 2026",
+      "source": "web",
+      "title": "Cybersecurity M&A Roundup: Palo Alto and IBM Unveil ...",
+      "url": "https://www.infosecurity-magazine.com/news-features/ma-roundup-palo-alto-ibm/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - France's Schneider Electric (SCHN.PA) , opens new tab said on Monday it \u200chad agreed to buy PTC (PTC.O) , opens new tab in an all-cash deal valuing the US software company's equity at around $22.6 billion, confirming reports from Sunday.\nThe $205-per-share offer implies \u200ban enterpri...",
+      "source": "web",
+      "title": "Schneider Electric to buy US software firm PTC in $22.6 ...",
+      "url": "https://www.reuters.com/business/frances-schneider-electric-nears-20-billion-deal-buy-us-software-group-ptc-ft-2026-10-04/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Convergence 2026: Micrologic unveils its Canadian Sovereign Digital Vault, ready to protect the country\u2019s data - Cantech Letter\n# Convergence 2026: Micrologic unveils its Canadian Sovereign Digital Vault, ready to protect the country\u2019s data\nMicrologic\nOctober 2, 2026 at 6:43am ADT \u00b7 4 min read\nQU\u00c9BE...",
+      "source": "web",
+      "title": "www.cantechletter.com \u00b7 newswires \u00b7 convergence-2026Convergence 2026: Micrologic unveils its Canadian Sovereign ...",
+      "url": "https://www.cantechletter.com/newswires/convergence-2026-micrologic-unveils-its-canadian-sovereign-digital-vault-ready-to-protect-the-countrys-data/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Armadin Raises $255.5M Series B\n...\n# Armadin Raises $255.5M Series B\nArmadin raises $255.5 million in a Series B round led by Andreessen Horowitz and Accel to scale its AI-native autonomous security platform.\n...\nUpdated\nOctober 02, 2026\nArmadin Raises $255.5M Series B at $2.5B Valuation\nArmadin, b...",
+      "source": "web",
+      "title": "Armadin Raises $255.5M Series B",
+      "url": "https://www.thesaasnews.com/news/armadin-raises-255-5m-series-b/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Published on\nOctober 5, 2026 - 05:43 GMT\n### Mera Work Expands Partner Ecosystem with New Affiliate Program Through Reditus\nNew program enables consultants, agencies, creators and workforce professionals to earn 30% recurring commission by introducing businesses to Mera Work.\nNEW DELHI, DELHI, IND...",
+      "source": "web",
+      "title": "Companies Press Releases",
+      "url": "https://www.einpresswire.com/channel/companies?ref=email&code=a4gkzSQZVQhBGLyc"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "5 min read Last Updated : Oct 05 2026 | 5:15 PM IST Ahmedabad (Gujarat) [India], October 5: TechD Cybersecurity Limited (NSE: TECHD), a technology-led cybersecurity company, has received the largest single order in its history: a Rs.\n13.08 crore (including GST), three-year technology engagement for ...",
+      "source": "web",
+      "title": "TechD Cybersecurity Wins Record Rs. 13.08 Crore Order; Order Book Stands at Rs. 70 Crore",
+      "url": "https://www.business-standard.com/content/press-releases-ani/techd-cybersecurity-wins-record-rs-13-08-crore-order-order-book-stands-at-rs-70-crore-126100500761_1.html"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/markets/europe/european-shares-rise-after-last-weeks-selloff-french-stocks-lag-2026-10-05/",
+    "https://www.einpresswire.com/calendar/2026/10/05?page=3",
+    "https://defensehere.com/en/thales-unveils-ai-powered-cybersecurity-solutions-to-protect-organizations-against-cyber-threats/",
+    "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/",
+    "https://www.helpnetsecurity.com/2026/10/02/new-infosec-products-of-the-week-october-2-2026/",
+    "https://www.einpresswire.com/calendar/2026/10/05",
+    "https://prescientsecurity.com/resources/blogs/sgs-acquires-prescient-security-in-the-us",
+    "https://adalytica.com/news/palo-alto-crowdstrike-cyber-defense-spending-af343dcf",
+    "https://markets.businessinsider.com/news/archive/2026/10/5",
+    "https://www.infosecurity-magazine.com/news-features/ma-roundup-palo-alto-ibm/",
+    "https://www.reuters.com/business/frances-schneider-electric-nears-20-billion-deal-buy-us-software-group-ptc-ft-2026-10-04/",
+    "https://www.cantechletter.com/newswires/convergence-2026-micrologic-unveils-its-canadian-sovereign-digital-vault-ready-to-protect-the-countrys-data/",
+    "https://www.thesaasnews.com/news/armadin-raises-255-5m-series-b/",
+    "https://www.einpresswire.com/channel/companies?ref=email&code=a4gkzSQZVQhBGLyc",
+    "https://www.business-standard.com/content/press-releases-ani/techd-cybersecurity-wins-record-rs-13-08-crore-order-order-book-stands-at-rs-70-crore-126100500761_1.html"
+  ],
+  "usage": {
+    "input_tokens": 780,
+    "output_tokens": 613,
+    "cost_usd": 0.02554
+  }
+}

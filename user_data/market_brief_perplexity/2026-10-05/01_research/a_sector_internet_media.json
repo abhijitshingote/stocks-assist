@@ -1,0 +1,167 @@
+{
+  "name": "a_sector_internet_media",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Company news: internet, media, gaming and telecom.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed internet, media, gaming and telecom companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **PTC** [Software & SaaS]\n- Schneider Electric agreed to acquire **PTC** in an all-cash transaction valuing PTC\u2019s equity at approximately **$22.6 billion**; PTC shares rose **37% in premarket trading** on Monday, October 5. The Reuters result does not provide the offer price per share or PTC\u2019s prior closing price. [report] (Reuters, Oct. 5, 2026, 07:21 ET)\n\n## **Cerebras Systems** [AI Infrastructure]\n- **Cerebras Systems** shares rose **6.6% in premarket trading** after OpenAI CEO **Sam Altman** described Cerebras as a \u201cclose partner\u201d and said the companies had \u201cdeep engagement\u201d focused on processing speed. [report] (Reuters, Oct. 5, 2026, 07:21 ET)\n\n## **AT&T / T-Mobile US / Verizon Communications** [Wireless & Mobile]\n- **AT&T**, **T-Mobile US**, and **Verizon Communications** launched a joint venture aimed at eliminating wireless dead zones; the available report does not state the venture\u2019s name, ownership percentages, launch date, or financial terms. (The Verge, published Oct. 1, 2026; indexed Oct. 5, 2026)\n\n## Paramount Global / Warner Bros. Discovery** [Media]\n- A market report stated that **Paramount** would become **\u201cSkydance\u201d** after a megamerger with **Warner Bros.** closes; the available result does not provide confirmation of the transaction\u2019s closing, terms, or the relevant publicly traded ticker. (Yahoo Finance, Oct. 2, 2026, 21:52 ET)\n\n## Gaming / Sony Group** [Gaming]\n- **Sony Group** introduced an updated **PS5 Slim** featuring a revised cooling design; the available report does not provide a launch price, release date, or confirmed impact on Sony\u2019s financial guidance. (Headlines Briefing, Oct. 4, 2026, 04:02 ET)\n\n## NVIDIA** [Internet, Media & Gaming \u2014 market move]\n- **NVIDIA** reached an intraday high of **$237.88** on Friday, October 2, and its market capitalization exceeded **$5.7 trillion**. (Yahoo Finance, Oct. 2, 2026, 05:54 ET)\n\n## Netflix** [Internet & Platforms \u2014 market move]\n- **Netflix** reached a new **52-week low of $67.06** on Friday, October 2, which was **0.8% below** its prior July 20 low and approximately half its price one year earlier. (247WallSt, Oct. 2, 2026, 16:00 ET)\n\n## Market / Macro** [Macro]\n- The U.S. added **29,000 jobs in September**, below the cited economist estimate of **90,000**, while the unemployment rate rose to **4.2%**; the report was published Friday, October 2. (Yahoo Finance, Oct. 2, 2026, 18:52 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Updated Fri, October 2, 2026 at 6:52 PM GMT-3\n...\nThe US added just 29,000 jobs in September, short of economists' expectations of 90,000.\nThe unemployment rate ticked up to 4.2%, according to Labor Department data released Friday.\n...\nAfter hours: October 2 at 7:59:59 PM EDT\n...\n## Paramount to bec...",
+      "source": "web",
+      "title": "Stock market today: Dow, S&P 500, Nasdaq rally as Fed ...",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-friday-october-2-dow-sp-500-nasdaq-september-jobs-report-080623878.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The defense and aerospace telecom company secured a $68.1 million follow-on order from Elon Musk\u2019s SpaceX to provide high-frequency telecom technology.",
+      "source": "web",
+      "title": "Tech, Media & Telecom Roundup: Market Talk",
+      "url": "https://www.wsj.com/business/tech-media-telecom-roundup-market-talk-7bcf02cb"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "AT&T, T-Mobile, and Verizon launch joint venture aimed at eliminating dead zones.",
+      "source": "web",
+      "title": "Tech Archive for October 2026 - Page 4",
+      "url": "https://www.theverge.com/archives/tech/2026/10/4"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Nerial, the developer of Reigns, is \u201centering hibernation mode.\u201d",
+      "source": "web",
+      "title": "News Archive for October 2026 - Page 4 | The Verge",
+      "url": "https://www.theverge.com/archives/news/2026/10/4"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - US stock index futures dipped on Monday, as technology stocks eased from record highs, while investors looked for fresh clues on the monetary policy path with Treasury yields and oil prices still elevated.\n...\nThe tech-heavy Nasdaq rose to fresh peaks in the prior session after wea...",
+      "source": "web",
+      "title": "Wall St futures dip as tech stocks take a breather",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Technology: Sunday, October 4, 2026\n...\n# Technology: Sunday, October 4, 2026\n...\nOct 04, 2026\n*Last updated: October 4, 2026, 8:02 AM ET*\n...\nJagex unveiled RuneScape 4, a new MMO built in Unreal Engine, during RuneFest 2026 as part of its long-term franchise expansion.\nSony introduced an updated P...",
+      "source": "web",
+      "title": "headlinesbriefing.substack.com \u00b7 p \u00b7 technologyTechnology: Sunday, October 4, 2026",
+      "url": "https://headlinesbriefing.substack.com/p/technology-sunday-october-4-2026"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Philippine technology, telecommunications and digital-finance stories led the day's captured coverage, from a restored undersea cable and a defaced government website to new device launches and a bank's push into mobile load.\nPolitical and entertainment items also drew heavy newspaper space.\nPublish...",
+      "source": "web",
+      "title": "Tech, telco and finance lead Oct 3 industry talk",
+      "url": "https://media-meter.com/report-library/tech-telco-and-finance-lead-oct-3-industry-talk"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Markets News, Oct. 2, 2026: Indexes Rise Friday After Weak Jobs Report; Nasdaq Hits New High; Dow, S&P 500 Book Weekly Losses\n...\nFri, October 2, 2026 at 7:47 AM GMT-3\n...\n- ^DJI\n+0.49%\n- ^GSPC\n+0.73%\n...\nThe latest monthly employment report said 29,000 jobs were added in September, below economists...",
+      "source": "web",
+      "title": "Nasdaq Hits New High; Dow, S&P 500 Book Weekly Losses",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-2-2026-104753291.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 2, 4:00pm ET - S&P 500+0.73%\n- Dow Jones Industrial Average+0.49%\n- Nasdaq Composite+1.12%\n...\nNineteen stocks cleared fresh 52-week highs this week, and Hewlett Packard Enterprise led the pack by topping its prior peak by 9.2% at $69.33.\nASE Technology, AMC, Moderna and a cluster of security na...",
+      "source": "web",
+      "title": "S&P 500 Closes at 7,722 as Nasdaq Leads a Broad Friday Rally",
+      "url": "https://247wallst.com/cards/money-went-back-into-growth-on-friday-the-nasdaq-s-1-12-ga-gspc-market-bell-01m3z3df0myxj2j89fswzwnegp"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Company News for Oct 2, 2026\n...\n# Company News for Oct 2, 2026\nZacks Equity Research\nFri, October 2, 2026 at 4:20 AM GMT-3\n- ACN\n-6.31%\n- MCK\n+0.38%\n- PRGS\n+0.87%\n- AYI\n+3.17%\n- Accenture plc's (ACN) shares jumped 15.8% after reporting fourth-quarter fiscal 2026 adjusted earnings of $3.29 per share...",
+      "source": "web",
+      "title": "Company News for Oct 2, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-2-2026-072000582.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 4:14 AM GMT-3\n...\n- ^GSPC",
+      "source": "web",
+      "title": "Stock Market News for Oct 2, 2026 - Yahoo Finance",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-oct-2-071400258.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Stock Market Today (Oct. 2, 2026): Dow rises after key jobs report\n...\n# Stock Market Today (Oct. 2, 2026): Dow rises after key jobs report\n...\nFri, October 2, 2026 at 7:54 AM CST\n...\n**Happy Friday.** Stocks were rising, with the Nasdaq reaching an intraday high, as Wall Street digested a key jobs ...",
+      "source": "web",
+      "title": "Stock Market Today (Oct. 2, 2026): S&P 500 rises after key ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-2-135416764.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 6:31 PM GMT-3",
+      "source": "web",
+      "title": "Stock Market Today, Oct. 2: Tesla Rises on Q3 Delivery Beat",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-2-213128258.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 4, 2026 | TechCrunch\n# October 4, 2026",
+      "source": "web",
+      "title": "October 4, 2026 | TechCrunch",
+      "url": "https://techcrunch.com/2026/10/04/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 4:49 PM GMT+3\n...\nGood morning.\nStocks jumped on Friday after the September jobs report missed expectations, with unemployment inching up to 4.2%.\nThe weak labor report raised expectations that the Federal Reserve will keep interest rates unchanged at its policy meeting this ...",
+      "source": "web",
+      "title": "Tech stocks jump after jobs report miss, Treasury yields ease",
+      "url": "https://finance.yahoo.com/markets/article/tech-stocks-jump-after-jobs-report-miss-treasury-yields-ease-alphacheck-134916934.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/live/stock-market-today-friday-october-2-dow-sp-500-nasdaq-september-jobs-report-080623878.html",
+    "https://www.wsj.com/business/tech-media-telecom-roundup-market-talk-7bcf02cb",
+    "https://www.theverge.com/archives/tech/2026/10/4",
+    "https://www.theverge.com/archives/news/2026/10/4",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012",
+    "https://headlinesbriefing.substack.com/p/technology-sunday-october-4-2026",
+    "https://media-meter.com/report-library/tech-telco-and-finance-lead-oct-3-industry-talk",
+    "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-2-2026-104753291.html",
+    "https://247wallst.com/cards/money-went-back-into-growth-on-friday-the-nasdaq-s-1-12-ga-gspc-market-bell-01m3z3df0myxj2j89fswzwnegp",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-2-2026-072000582.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-oct-2-071400258.html?fr=sycsrp_catchall",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-2-135416764.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-2-213128258.html",
+    "https://techcrunch.com/2026/10/04/",
+    "https://finance.yahoo.com/markets/article/tech-stocks-jump-after-jobs-report-miss-treasury-yields-ease-alphacheck-134916934.html"
+  ],
+  "usage": {
+    "input_tokens": 778,
+    "output_tokens": 669,
+    "cost_usd": 0.02637
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "a_sector_industrials",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Company news: industrial, aerospace, defense, autos/EV and transport.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed industrial, aerospace, defense, autos/EV and transport companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **TSLA** \u2014 Autos/EV\n- Tesla reported **486,532 third-quarter deliveries**, versus **461,100** expected by FactSet-polled analysts; shares rose **5%** on October 2. (CNBC, Oct. 2, 2026; publish time not shown)\n\n## **RIVN** \u2014 Autos/EV\n- Rivian reported **third-quarter production of 19,751 vehicles** and **deliveries of 19,248 vehicles**, and reaffirmed **2026 delivery guidance of 65,000\u201370,000 vehicles**; its third-quarter financial results are scheduled for **October 29, 2026**. (StockTitan, Oct. 2, 2026; publish time not shown)\n\n## **ARXS** \u2014 Aerospace/Defense/Industrial\n- RBC upgraded Arxis to **Outperform** from its prior rating; analyst **Ken Herbert** cited the company\u2019s aerospace, defense and industrial-component exposure, and shares rose **4%**. (CNBC, Oct. 2, 2026; publish time not shown)\n\n## **BA / NOC** \u2014 Aerospace/Defense\n- The U.S. Navy selected **Boeing** over **Northrop Grumman** for the **FA-XX sixth-generation carrier-capable combat aircraft** program. (Defense & Aerospace Report, Oct. 4, 2026; publish time not shown)\n\n## **BA** \u2014 Aerospace/Defense\n- The U.S. Air Force awarded Boeing a **$2.4 billion** contract for **22 F-15EX Eagle II fighters**. (Defense & Aerospace Report, Oct. 4, 2026; publish time not shown)\n\n## **RTX** \u2014 Aerospace/Defense\n- The U.S. government awarded Raytheon **$20.7 billion** to increase annual production of **AIM-120 air-to-air missiles to 1,900**. (Defense & Aerospace Report, Oct. 4, 2026; publish time not shown)\n\n## **HON** \u2014 Autos/EV\n- Honda said it developed wireless-charging technology for electric vehicles, including large trucks, while driving and plans to test it on a Japanese highway. (Reuters, Oct. 5, 2026, 02:21 ET)\n\n## **AIR.PA** \u2014 Aerospace\n- Airbus delivered approximately **72 aircraft in September**, compared with **73** in September 2025, according to industry sources; Airbus\u2019s informal full-year delivery target remains approximately **870 aircraft**, defined as **850\u2013890**. (Reuters, Oct. 5, 2026; publish time not shown)\n\n## **VOWG.DE / European autos** \u2014 Autos/EV\n- Electric-vehicle sales in the European Union reached **1.64 million** during January\u2013August 2026, up **45% year over year**, with EVs representing **22%** of the market; Volkswagen was cited as rolling out lower-priced models including an all-electric Polo. (Reuters, Oct. 5, 2026, 01:21 ET)\n\n## **Chinese EV imports / UK autos** \u2014 Autos/EV\n- The United Kingdom was reported to be preparing potential tariffs on Chinese electric-car imports, with a proposed rate that could match the European Union\u2019s **45%** levy; Reuters said it could not independently verify the report. **[rumor] [report]** (Reuters, Oct. 4, 2026, 17:21 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "TOKYO, Oct 5 (Reuters) - Japanese automaker Honda Motor (7267.T) , opens new tab said on Monday it \u200bhas developed technology that \u200ccan wirelessly charge electric vehicles, including large trucks, while being driven, \u200band plans to test the \u200btechnology on a Japanese highway.",
+      "source": "web",
+      "title": "Honda plans highway test of wireless charging for moving ...",
+      "url": "https://www.reuters.com/technology/honda-plans-highway-test-wireless-charging-moving-trucks-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "BERLIN, Oct 5 (Reuters) - Europe's uptake of electric vehicles is gaining momentum, with record sales so far this year driven by a slew of affordable models coming onto the market to bring carmakers in line with EU targets, according to a study.\n\u2022 EV sales across the EU reached record volumes in 202...",
+      "source": "web",
+      "title": "European EV sales hit record in 'pivotal' year for affordable ...",
+      "url": "https://www.reuters.com/business/autos-transportation/european-ev-sales-hit-record-pivotal-year-for-affordable-cars-study-shows-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "WENZHOU, China/TOKYO, Oct 5 (Reuters) - Four years ago, the United States warned that China was poised to unleash a trade superweapon: a state-backed digital dragnet that would rapidly expand across the globe and give Beijing unprecedented insight into the flow of international cargo.\nThe LOGINK pla...",
+      "source": "web",
+      "title": "Insight: The US said China was priming a trade ...",
+      "url": "https://www.reuters.com/business/media-telecom/us-said-china-was-priming-trade-superweapon-then-it-vanished-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**UK-China Trade** - The UK is reportedly preparing plans to impose import tariffs on Chinese EVs to meet a key demand from the EU to ensure it remains part of the Made in Europe local-content rules, The Times reports.\n(The Times)\n...\n**Renault (RNO FP)** - Co.\nCEO tells France Inter radio that they...",
+      "source": "web",
+      "title": "Newsquawk Daily European Equity Opening News - 5th ...",
+      "url": "https://www.newsquawk.com/headlines/newsquawk-daily-european-equity-opening-news---5th-october-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Rivian Automotive (RIVN) released Q3 2026 production and delivery figures reporting production of **19,751** vehicles and deliveries of 19,248 vehicles in Q3 and reaffirming 2026 delivery guidance of 65,000\u201370,000 vehicles; Q3 financial results will be released October 29, 2026.",
+      "source": "web",
+      "title": "Stock Market News for October 2, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Check out some of the companies making the biggest moves midday: Tesla \u2014 Elon Musk \u2019s electric vehicle maker rose 5% after reporting third-quarter deliveries above Street expectations.\nTesla delivered 486,532 vehicles in the latest three-month period versus the 461,100 units expected by analysts pol...",
+      "source": "web",
+      "title": "Stocks making the biggest moves midday: Tesla, Broadcom, Nike, ON Semiconductor & more",
+      "url": "https://www.cnbc.com/2026/10/02/stocks-making-the-biggest-moves-midday-tsla-avgo-nke-on-more-.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Oct 4 (Reuters) - Britain is expected to impose tariffs on Chinese electric cars, The Times reported on Sunday.\nBritish business minister Jonathan Reynolds is drawing up a package of potential tariffs to be imposed on Chinese car imports amid concerns that Beijing is \"dumping\" state-subsidised vehic...",
+      "source": "web",
+      "title": "Britain set to levy tariffs on Chinese electric cars, The Times ...",
+      "url": "https://www.reuters.com/world/uk/britain-expected-impose-tariffs-chinese-electric-cars-times-reports-2026-10-04/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Defense & Aerospace Report Podcast [Oct 04, \u201926 Business Report] - Defense & Aerospace Report\n# Defense & Aerospace Report Podcast [Oct 04, \u201926 Business Report]\n...\nBy admin on October 4, 2026 Monday Business Report, PODCASTS\nOn this week\u2019s Defense & Aerospace Report Business Roundtable, sponsored b...",
+      "source": "web",
+      "title": "Defense & Aerospace Report Podcast [Oct 04, '26 ...",
+      "url": "https://defaeroreport.com/2026/10/04/defense-aerospace-report-podcast-oct-04-26-business-report/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Airbus Delivered Around 72 Aircraft in September\nMonday, 5 October 2026 - 24 Rabi\u2019 Al-Thani 1448 AH\n...\nAirbus delivered around 72 aircraft in September, almost matching 73 a year earlier, industry sources said.\nAirbus declined comment on the provisional delivery total ahead of a monthly industrial ...",
+      "source": "web",
+      "title": "Airbus Delivered Around 72 Aircraft in September",
+      "url": "https://english.aawsat.com/business/5325085-airbus-delivered-around-72-aircraft-september"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The listing prices for used Hybrids (HEVs) & Electric Vehicles (EVs) fell in September on Carfax.com.",
+      "source": "web",
+      "title": "Nutson's Weekly Auto News Wrapup October 4, 2026",
+      "url": "https://www.theautochannel.com/news/2026/10/04/1722937-nutson-s-weekly-auto-news-wrapup-october-4-2026.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Setna iO has acquired a Boeing 757-300 airframe for teardown\u2014its fourth 757 teardown this year.",
+      "source": "web",
+      "title": "MRO Industry Rolling Daily Updates (October 2026)",
+      "url": "https://aviationweek.com/mro/mro-industry-rolling-daily-updates-october-2026"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "General Dynamics stock delivered Q2 2026 revenue of USD 14.09 billion, up 8.1 percent year over year.\nEPS of USD 4.24 exceeded consensus by USD 0.28.\nGeneral Dynamics (US3695501086) stock last traded at USD 330.09 on the NYSE on October 2, 2026 at 4:00 p.m.\nET, down 0.79 percent from the previous cl...",
+      "source": "web",
+      "title": "General Dynamics stock falls 0.79 percent below its yearly high",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/general-dynamics-stock-falls-0-79-percent-below-its-yearly-high/70225295"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "These two companies scoring highest in the Pentagon's commercial drone competition positions them as likely preferred vendors for low-cost military drone procurement at scale.",
+      "source": "web",
+      "title": "Defense Tech Daily \u2014 2026-10-02",
+      "url": "https://buttondown.com/defensetech/archive/defense-tech-daily-2026-10-02/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Stellantis is betting its U.S. sales comeback on Ram trucks as the Jeep brand falters.\nGet all the latest auto industry news in the Executive Briefing.\n...\n**+** Tesla is on course to end two straight years of falling sales after its third-quarter \u200cdeliveries beat Wall Street estimates, triggering a...",
+      "source": "web",
+      "title": "MCG Executive Briefing for October 5, 2026",
+      "url": "https://macsmotorcitygarage.com/mcg-executive-briefing-for-october-5-2026/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Friday, October 2, 2026\n# The INSIDER daily digest -- October 2, 2026",
+      "source": "web",
+      "title": "The INSIDER daily digest -- October 2, 2026",
+      "url": "https://insidedefense.com/insider/insider-daily-digest-october-2-2026"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/technology/honda-plans-highway-test-wireless-charging-moving-trucks-2026-10-05/",
+    "https://www.reuters.com/business/autos-transportation/european-ev-sales-hit-record-pivotal-year-for-affordable-cars-study-shows-2026-10-05/",
+    "https://www.reuters.com/business/media-telecom/us-said-china-was-priming-trade-superweapon-then-it-vanished-2026-10-05/",
+    "https://www.newsquawk.com/headlines/newsquawk-daily-european-equity-opening-news---5th-october-2026",
+    "https://www.stocktitan.net/news/2026-10-02/",
+    "https://www.cnbc.com/2026/10/02/stocks-making-the-biggest-moves-midday-tsla-avgo-nke-on-more-.html",
+    "https://www.reuters.com/world/uk/britain-expected-impose-tariffs-chinese-electric-cars-times-reports-2026-10-04/",
+    "https://defaeroreport.com/2026/10/04/defense-aerospace-report-podcast-oct-04-26-business-report/",
+    "https://english.aawsat.com/business/5325085-airbus-delivered-around-72-aircraft-september",
+    "https://www.theautochannel.com/news/2026/10/04/1722937-nutson-s-weekly-auto-news-wrapup-october-4-2026.html",
+    "https://aviationweek.com/mro/mro-industry-rolling-daily-updates-october-2026",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/general-dynamics-stock-falls-0-79-percent-below-its-yearly-high/70225295",
+    "https://buttondown.com/defensetech/archive/defense-tech-daily-2026-10-02/",
+    "https://macsmotorcitygarage.com/mcg-executive-briefing-for-october-5-2026/",
+    "https://insidedefense.com/insider/insider-daily-digest-october-2-2026"
+  ],
+  "usage": {
+    "input_tokens": 786,
+    "output_tokens": 733,
+    "cost_usd": 0.02735
+  }
+}

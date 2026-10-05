@@ -1,0 +1,167 @@
+{
+  "name": "a_sector_semis",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Company news: semiconductor and semiconductor-equipment.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed semiconductor and semiconductor-equipment companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **QCOM** \u2014 Wireless & Mobile\n- Qualcomm and Arm began a five-day jury trial in Delaware on October 5 over Qualcomm\u2019s allegations that Arm withheld chip-testing tools required under contract and leaked information about Arm\u2019s 2024 license-termination threat; Qualcomm is seeking to stop royalty payments potentially worth billions of dollars for up to five years, while Qualcomm\u2019s agreement with Arm runs through 2033. (Reuters, Oct. 5, 06:20 ET)[1]\n\n## **ARM** \u2014 Specialty Materials & IP Licensing\n- Arm and Qualcomm began a Delaware trial on October 5 concerning Qualcomm\u2019s contract and licensing claims, including whether Arm negotiated in good faith over the next version of its chip technology; Judge Maryellen Noreika is also considering whether Qualcomm can pursue damages under the disputed contract provision. (Reuters, Oct. 5, 06:20 ET)[1]\n\n## **TSM** \u2014 Fab & Foundry\n- Taiwan Semiconductor Manufacturing Co. is in early-stage discussions with Elon Musk over a possible role in the proposed Texas \u201cTerafab\u201d; options reportedly include TSMC owning and operating the plant while SpaceX purchases its chips, or SpaceX holding a majority stake, with no final ownership or operating agreement announced as of October 5. (ANI, Oct. 5, 07:49 ET)[8]\n- Taiwan\u2019s foreign ministry said on October 5 that its minister was visiting Arizona for the opening of a new de facto consulate; the ministry cited TSMC\u2019s planned **$265 billion** Arizona investment as part of Taiwan-U.S. economic and trade cooperation. (Reuters, Oct. 5, 04:20 ET)[2]\n\n## **STM** \u2014 Analog & Mixed-Signal\n- STMicroelectronics announced that it will release third-quarter 2026 results before European markets open on **October 29, 2026**, followed by an analyst and media conference call at **4:30 a.m. ET**. (STMicroelectronics, Oct. 5, 00:20 ET)[9]\n\n## **ASML** \u2014 Chip Equipment\n- A report published October 4 stated that ASML reported second-quarter 2026 sales of **\u20ac9.3 billion**, a **54% gross margin**, and full-year 2026 revenue guidance of **\u20ac43 billion\u2013\u20ac45 billion**, compared with **\u20ac34 billion\u2013\u20ac39 billion** at the start of the year; the information concerns previously announced results and guidance. (MoneyWeek, Oct. 4, 10:41 ET)[10]\n\n## **MU** \u2014 Memory & Interconnect\n- Micron\u2019s reported long-term customer commitments increased to **$32 billion** from **$22 billion** disclosed in June; a union at Micron\u2019s Taoyuan facility began a strike-authorization vote running through Tuesday, with the company stating that negotiations were ongoing. [report] (Ad-hoc-news, Oct. 5, 06:20 ET)[11]\n- D.A. Davidson reportedly raised its Micron price target from **$2,000 to $2,100** while maintaining a **Buy** rating. (Ad-hoc-news, Oct. 5, 06:20 ET)[11]\n\n## **NVDA** \u2014 AI Compute\n- Amazon was reported to be seeking outside investors for a proposed **$8 billion** vehicle that would own Nvidia Grace Blackwell systems installed across more than a dozen U.S. data centers and lease them to Amazon; negotiations were ongoing and no transaction had been completed as of October 5. [report] (UOB Kay Hian, Oct. 5, 05:00 ET)[12]\n\n## Samsung Electronics \u2014 Memory & Interconnect\n- Samsung Electronics was scheduled to release preliminary third-quarter results on **October 8, 2026**; the report cited Micron\u2019s forecast of tighter memory supply in **2027 and 2028** driven by demand for high-bandwidth memory and other AI-infrastructure chips. (Aju Press, Oct. 5, 05:18 ET)[13]\n- Samsung presented plans for a Vietnam memory-test facility in Thai Nguyen covering approximately **265,895 square meters**; equipment installation for the first production line is scheduled for **July 2027**, with operations targeted for the fourth quarter of 2027, while a second line is scheduled to begin equipment installation in **May 2028** and operate in October 2028. (SammyFans, Oct. 5, 05:28 ET)[14]\n\n## TSMC / SpaceX Terafab \u2014 Fab & Foundry\n- Elon Musk confirmed on October 3 that SpaceX\u2019s planned Texas Terafab was holding exploratory talks with TSMC; the first phase is described as requiring **$16.8 billion** of capital expenditure, with initial commercial wafer output targeted for **2028**. [report] (East Asia Brief, Oct. 5, 05:48 ET)[7]",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "WILMINGTON, Delaware, Oct 5 (Reuters) - Chipmaker Qualcomm and chip tech firm Arm Holdings, long at loggerheads, will once again be in court on Monday with Qualcomm accusing Arm of withholding chip testing tools that were due under contract.\nQualcomm also alleges that Arm leaked to the media its 202...",
+      "source": "web",
+      "title": "Qualcomm and Arm head to trial again, potential for huge ...",
+      "url": "https://www.reuters.com/business/media-telecom/qualcomm-arm-head-trial-again-potential-huge-damages-focus-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "TAIPEI, Oct 5 (Reuters) - Taiwanese Foreign Minister Lin Chia-lung is visiting the US state of Arizona for the opening of a new de facto consulate in Phoenix, his office said on Sunday.\n...\n\u2022 Taiwanese chipmaker TSMC is investing $265 billion in Arizona to make semiconductors.\nTaiwan's foreign minis...",
+      "source": "web",
+      "title": "Taiwan foreign minister visits US for opening of new ...",
+      "url": "https://www.reuters.com/world/china/taiwan-foreign-minister-visits-us-opening-new-arizona-office-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "HONG KONG, Oct 5 (Reuters) - Hong Kong stocks edged lower in light trading on Monday, as selling pressure on property developers and financial heavyweights outweighed modest gains in tech shares.\n...\n** Semiconductor and PCB shares led the gain.\nKingboard Laminates surged 9% while Hua Hong Grace Sem...",
+      "source": "web",
+      "title": "Hong Kong stocks edge up as AI shares offset property ...",
+      "url": "https://www.reuters.com/world/asia-pacific/hong-kong-stocks-tick-down-thin-trade-property-financials-drag-2026-10-05/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "E&R Engineering to Launch New Malaysia Plant: Expanding Global Packaging Materials Production and Localized Services\n- - 888-776-0942\n...\n# E&R Engineering to Launch New Malaysia Plant: Expanding Global Packaging Materials Production and Localized Services\n## News provided by\n**E&R Engineering Corp....",
+      "source": "web",
+      "title": "E&R Engineering to Launch New Malaysia Plant",
+      "url": "https://www.prnewswire.com/news-releases/er-engineering-to-launch-new-malaysia-plant-expanding-global-packaging-materials-production-and-localized-services-302897740.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Infineon Opens $1.4 Billion Thailand Plant as Country Ramps Up Semiconductor Push\nMonday, 5 October 2026 - 24 Rabi\u2019 Al-Thani 1448 AH\n...\nGerman chipmaker Infineon Technologies opened a new facility in Thailand on Thursday, as Southeast Asia's second-largest economy pushes to attract investment into ...",
+      "source": "web",
+      "title": "Infineon Opens $1.4 Billion Thailand Plant as Country ...",
+      "url": "https://english.aawsat.com/technology/5324670-infineon-opens-14-billion-thailand-plant-country-ramps-semiconductor-push"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Samsung has given Yongin residents a closer look at its ambitious semiconductor project, offering new details on the scale of the company's planned investment, factories, power infrastructure, and water management.\nThe company presented its vision for the Yongin Advanced System Semiconductor Nationa...",
+      "source": "web",
+      "title": "Samsung reveals massive Yongin semiconductor vision",
+      "url": "https://www.sammyfans.com/2026/10/05/samsung-reveals-massive-yongin-semiconductor-vision/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Korean chip toolmakers target Musk's $16.8 billion Texas fab\nMonday, October 5, 2026\n...\n# Korean chip toolmakers target Musk's $16.8 billion Texas fab\nHanmi Semiconductor and HPSP pursue supply roles in SpaceX and Tesla's planned Grimes County facility as Elon Musk acknowledges foundry talks with T...",
+      "source": "web",
+      "title": "Korean chip toolmakers target Musk's $16.8 billion Texas fab",
+      "url": "https://eastasiabrief.com/semiconductors/korean-chip-toolmakers-target-musk-s-16-8-billion-514"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Taipei [Taiwan], October 5 (ANI): Taiwan Semiconductor Manufacturing Co.\n(TSMC) is in talks over a potential role in Elon Musk's planned Terafab foundry in Texas, with the discussions still at an early stage, according to a news report by Taiwan Plus.\nTSMC Chairman and CEO CC Wei said the timeline f...",
+      "source": "web",
+      "title": "TSMC in Talks with Musk over Potential Role in Texas Terafab, Discussions at Early Stage",
+      "url": "https://www.latestly.com/agency-news/business-news-tsmc-in-talks-with-musk-over-potential-role-in-texas-terafab-discussions-at-early-stage-7632812.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "STMicroelectronics announces timing for third quarter 2026 earnings release and conference call\nSTMicroelectronics (NYSE: STM) will release its third-quarter 2026 earnings on October 29, 2026, before European stock exchanges open for trading.\n...\nGeneva \u2013 October 5, 2026 \u2013 STMicroelectronics (NYSE: ...",
+      "source": "web",
+      "title": "STMicroelectronics sets Oct. 29 Q3 earnings date",
+      "url": "https://www.stocktitan.net/news/STM/st-microelectronics-announces-timing-for-third-quarter-2026-earnings-rturgdii0rcc.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "# How Dutch start-up ASML rose to rule the world\nWhen ASML started out, it struggled to survive in a competitive market with no customers.\nIt has now built an almost unassailable position in the global semiconductor industry\n...\nPublished\n4 October 2026\n...\n**ASML** ** ** **(Amsterdam: ASML)** ** **...",
+      "source": "web",
+      "title": "How Dutch start-up ASML rose to rule the world",
+      "url": "https://moneyweek.com/investments/tech-stocks/how-dutch-start-up-asml-rose-to-rule-the-world"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Micron's $32 Billion Order Book Meets a Taoyuan Strike Vote \u2014 and a Fresh Wave of Price Targets\n...\nMicron's long-term supply commitments hit $32 billion as analysts raise targets, while a Taoyuan union ballots on striking over profit-sharing.\n...\nThe union at Micron's Taoyuan facility launched a st...",
+      "source": "web",
+      "title": "Micron's $32 Billion Order Book Meets a Taoyuan Strike Vote \u2014 and a Fresh Wave of Price Targets",
+      "url": "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/micron-s-32-billion-order-book-meets-a-taoyuan-strike-vote-and-a-fresh-wave-of-price-targets/70231400"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Amazon explores outside funding for AI chips.\n** Amazon (AMZN US) reportedly seeks investors for US$8bn of Nvidia chips.\nReuters, citing the Financial Times on 2 October, said a proposed vehicle would own Grace Blackwell chips across more than a dozen US data centres and lease them to Amazon.\nTa...",
+      "source": "web",
+      "title": "Cooling US Payrolls Ease Fed Hike Concerns | Research",
+      "url": "https://uobkh.com.hk/en/research/wealth-daily-05102026"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SEOUL, October 05 (AJP) - The global semiconductor industry is heading into a busy stretch of October, with Samsung Electronics set to report preliminary earnings this week before a series of major chip events and earnings releases put the strength of the AI-driven boom to another test.\nSamsung is s...",
+      "source": "web",
+      "title": "Samsung earnings kick off key October for chip industry",
+      "url": "https://m.ajupress.com/amp/20261005142622669"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Samsung builds new semiconductor facility in Vietnam\nPublished\n27 seconds ago\non\nOctober 5, 2026\n...\nSamsung is expanding its semiconductor footprint in Vietnam with a new large-scale memory test facility in Thai Nguyen, adding another overseas node to its increasingly diversified chip supply chai...",
+      "source": "web",
+      "title": "AMD wants to do to NVIDIA what Samsung did to Apple",
+      "url": "https://www.sammyfans.com/2026/10/04/amd-wants-to-do-to-nvidia-what-samsung-did-to-apple/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## JEDEC Publishes JESD264, First Industry-Wide Reliability Standard for Silicon Photonics in AI Data Centers\nJEDEC has released JESD264, a common qualification and reliability standard for silicon photonics.\n...\n## Northrop Grumman Unveils FORTITUDE, a Rice-Grain-Sized GaN Chip for Switching and Fi...",
+      "source": "web",
+      "title": "Semiconductor | XenoSpectrum",
+      "url": "https://xenospectrum.com/en/tag/semiconductor/"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/business/media-telecom/qualcomm-arm-head-trial-again-potential-huge-damages-focus-2026-10-05/",
+    "https://www.reuters.com/world/china/taiwan-foreign-minister-visits-us-opening-new-arizona-office-2026-10-05/",
+    "https://www.reuters.com/world/asia-pacific/hong-kong-stocks-tick-down-thin-trade-property-financials-drag-2026-10-05/",
+    "https://www.prnewswire.com/news-releases/er-engineering-to-launch-new-malaysia-plant-expanding-global-packaging-materials-production-and-localized-services-302897740.html",
+    "https://english.aawsat.com/technology/5324670-infineon-opens-14-billion-thailand-plant-country-ramps-semiconductor-push",
+    "https://www.sammyfans.com/2026/10/05/samsung-reveals-massive-yongin-semiconductor-vision/",
+    "https://eastasiabrief.com/semiconductors/korean-chip-toolmakers-target-musk-s-16-8-billion-514",
+    "https://www.latestly.com/agency-news/business-news-tsmc-in-talks-with-musk-over-potential-role-in-texas-terafab-discussions-at-early-stage-7632812.html",
+    "https://www.stocktitan.net/news/STM/st-microelectronics-announces-timing-for-third-quarter-2026-earnings-rturgdii0rcc.html",
+    "https://moneyweek.com/investments/tech-stocks/how-dutch-start-up-asml-rose-to-rule-the-world",
+    "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/micron-s-32-billion-order-book-meets-a-taoyuan-strike-vote-and-a-fresh-wave-of-price-targets/70231400",
+    "https://uobkh.com.hk/en/research/wealth-daily-05102026",
+    "https://m.ajupress.com/amp/20261005142622669",
+    "https://www.sammyfans.com/2026/10/04/amd-wants-to-do-to-nvidia-what-samsung-did-to-apple/",
+    "https://xenospectrum.com/en/tag/semiconductor/"
+  ],
+  "usage": {
+    "input_tokens": 774,
+    "output_tokens": 1044,
+    "cost_usd": 0.03198
+  }
+}

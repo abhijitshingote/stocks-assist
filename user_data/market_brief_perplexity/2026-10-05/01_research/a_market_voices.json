@@ -1,0 +1,167 @@
+{
+  "name": "a_market_voices",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Named investor & analyst calls.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nStock picks and pans by named investors and TV/podcast analysts (CNBC Halftime, Fast Money, Squawk Box, Bloomberg TV \u2014 e.g. Josh Brown, Gene Munster, Dan Ives, Cathie Wood, Michael Burry positions) with the tickers named; research-firm baskets and theses (Citrini, Hunterbrook, short-seller reports) with tickers.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## S&P 500 / Macro [Macro / Calendar]\n- Joachim Klement, research analyst at **Panmure Liberum**, said the firm forecasts the S&P 500 at **5,000 points by end-2027**, more than **35% below** its October 2 close of **7,722.72**; the firm cited higher bond yields and interest rates as risks to the equity bull market. (Reuters, Oct 5 08:30 ET)\n- **Panmure Liberum** said third-quarter earnings and companies\u2019 2027 outlooks will test whether current earnings growth and economic data can be sustained. (Reuters, Oct 5 08:30 ET)\n\n## US Defense Stocks [Macro / Geopolitics]\n- Reuters reported that US defense stocks had declined from all-time highs reached in **early-to-mid-August 2026**, while technical analysis indicated they could be approaching levels at which market participants might seek a turnaround; no named investor or analyst recommendation or ticker-specific rating change was provided. (Reuters, Oct 5 06:21 ET)\n\n## **NVDA**, **TSLA** [AI Compute / Automotive]\n- **Nvidia** and **Tesla** were among the largest positive contributors to the S&P 500\u2019s October 2 advance, according to Reuters; the report did not identify a named investor or analyst stock pick, rating change, or price target. (Reuters, Oct 2 17:01 ET)\n\n## **MSFT** [Software & SaaS]\n- Microsoft shares rose **37.5% from July through September 2026**, their best quarterly performance since **1998**, adding **$1 trillion** to the company\u2019s market capitalization; the available result did not identify a named investor or analyst recommendation. (Bloomberg Intelligence, published Oct 2 08:21 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - Shares in US defense companies have been persistently declining since hitting all-time highs in early-to-mid August, but they could be nearing a point where some market participants look for a turnaround, technical analysis indicates.",
+      "source": "web",
+      "title": "Mapping the Market: Retreating US defense stocks could ...",
+      "url": "https://www.reuters.com/markets/us/global-markets-technicals-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Brokerage Panmure Liberum warned that the equity bull market could be nearing its end, forecasting the S&P 500 will fall more than 35% by end-2027.",
+      "source": "web",
+      "title": "Wall St futures dip as tech stocks take a breather",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - The benchmark S&P 500 will retreat to 5,000 points by the end of 2027, Panmure Liberum said on Monday, warning that the equity bull market could end sooner than many investors expect.\n...\nPanmure's 2027 forecast points to a drop of more than 35% from its last close of 7,722.72.\n\"If...",
+      "source": "web",
+      "title": "Panmure Liberum forecasts S&P 500 falling to 5,000, warns bull run nearing end",
+      "url": "https://www.reuters.com/business/panmure-liberum-forecasts-sp-500-falling-5000-warns-bull-run-nearing-end-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "** Gland \u200bPharma (GLAD.NS) , opens new tab approves $21 million investment in its US arm",
+      "source": "web",
+      "title": "Financials, IT lift Indian shares as oil, Fed fears ease",
+      "url": "https://www.reuters.com/world/india/indian-shares-poised-rebound-fed-hike-fears-oil-prices-ease-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "A lot goes into bond valuations, as survivors of corporate finance classes will be all too aware.",
+      "source": "web",
+      "title": "Tech Can't Shield Stocks From Bonds Forever",
+      "url": "https://www.bloomberg.com/opinion/newsletters/2026-10-05/tech-can-t-shield-stocks-from-the-bond-rout-forever"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "But the \u200bmarket is still treating the Fed's broader hiking cycle as intact even if a pause occurs in October,\" said Tim Waterer, chief market analyst at KCM Trade.",
+      "source": "web",
+      "title": "Gold edges up as October rate hike bets ease, stronger ...",
+      "url": "https://www.reuters.com/world/india/gold-gains-october-fed-rate-hike-prospects-fade-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - Investor morale in the euro zone fell to 2.7 in October, as easing expectations cast doubt on a possible economic upturn, a survey showed on Monday.\n\u2022 The Sentix index for the euro zone fell to 2.7 points in October from 5.1 points in September, compared with an analyst forecast fo...",
+      "source": "web",
+      "title": "Euro zone investor morale falls in October, Sentix survey ...",
+      "url": "https://www.reuters.com/world/europe/euro-zone-investor-morale-falls-october-sentix-survey-shows-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Connecting decision makers to a dynamic network of information, people and ideas, Bloomberg quickly and accurately delivers business and financial information, news and insight around the world",
+      "source": "web",
+      "title": "FTSE 100 Live: UK Assets Benefit as Europe Concerns Grow",
+      "url": "https://www.bloomberg.com/news/live-blog/2026-10-05/ftse-100-live-pound-bonds-gilts-pmi-data-euro-hormuz-oil-prices-what-s-moving-uk-markets-right-now-markets-today"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - Shares of India's HDFC Bank (HDBK.NS) , opens new tab \u200brose 1% to \u200c728.3 rupees on Monday, as investors welcomed \u200bthe appointment of \u200bAnup Bagchi, the first \u2060external candidate to \u200blead the institution.",
+      "source": "web",
+      "title": "India's HDFC Bank falls as investors weigh impact of ...",
+      "url": "https://www.reuters.com/world/india/indias-hdfc-bank-rises-after-ceo-appointment-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\"Bloomberg: The Asia Trade\" brings you everything you need to know to get ahead as the trading day begins in Asia.",
+      "source": "web",
+      "title": "Watch Brazil Election Heads to Runoff, Bessent Downplays Concerns on Yields, AI",
+      "url": "https://www.bloomberg.com/news/videos/2026-10-05/the-asia-trade-10-5-2026-video"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The latest Top News, from leading exponents of , Stock Market, BlockChain, New Economy Accredited Sources.",
+      "source": "web",
+      "title": "Bloomberg This Weekend 10/4/2026",
+      "url": "https://www.bloomberg.com/news/videos/2026-10-04/bloomberg-this-weekend-10-4-2026-video"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Microsoft Corp.'s shares jumped 37.5% from July through September, their best quarterly showing since 1998, adding $1 trillion to the company's market capitalization.",
+      "source": "web",
+      "title": "Bloomberg Intelligence Podcast",
+      "url": "https://www.bloomberg.com/podcasts/series/bloomberg-intelligence"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Megacap stocks helped lead the advance, with Nvidia and Tesla among the biggest boosts to the S&P 500.",
+      "source": "web",
+      "title": "Equities close higher as softer jobs data quiets rate-hike expectations",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VI0TE?channel=frL012"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Asian shares were mostly lower and European bourses bracing for a weaker open, with pan-region stock futures down 0.1%.\nNasdaq futures, however, rallied 0.4%.",
+      "source": "web",
+      "title": "Morning Bid: Can Treasuries rally for a second day?",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VI09U?channel=FBi345"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-01",
+      "place_metadata": null,
+      "snippet": "Strategists at Goldman Sachs reckon market breadth is the narrowest since 2000.",
+      "source": "web",
+      "title": "COMMENTARY: If a bruising third quarter can't halt Wall Street, what can?",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-q3-roi-column-pix-graphics-2026-10-01/"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/markets/us/global-markets-technicals-2026-10-05/",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012",
+    "https://www.reuters.com/business/panmure-liberum-forecasts-sp-500-falling-5000-warns-bull-run-nearing-end-2026-10-05/",
+    "https://www.reuters.com/world/india/indian-shares-poised-rebound-fed-hike-fears-oil-prices-ease-2026-10-05/",
+    "https://www.bloomberg.com/opinion/newsletters/2026-10-05/tech-can-t-shield-stocks-from-the-bond-rout-forever",
+    "https://www.reuters.com/world/india/gold-gains-october-fed-rate-hike-prospects-fade-2026-10-05/",
+    "https://www.reuters.com/world/europe/euro-zone-investor-morale-falls-october-sentix-survey-shows-2026-10-05/",
+    "https://www.bloomberg.com/news/live-blog/2026-10-05/ftse-100-live-pound-bonds-gilts-pmi-data-euro-hormuz-oil-prices-what-s-moving-uk-markets-right-now-markets-today",
+    "https://www.reuters.com/world/india/indias-hdfc-bank-rises-after-ceo-appointment-2026-10-05/",
+    "https://www.bloomberg.com/news/videos/2026-10-05/the-asia-trade-10-5-2026-video",
+    "https://www.bloomberg.com/news/videos/2026-10-04/bloomberg-this-weekend-10-4-2026-video",
+    "https://www.bloomberg.com/podcasts/series/bloomberg-intelligence",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VI0TE?channel=frL012",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VI09U?channel=FBi345",
+    "https://www.reuters.com/commentary/reuters-open-interest/global-markets-q3-roi-column-pix-graphics-2026-10-01/"
+  ],
+  "usage": {
+    "input_tokens": 775,
+    "output_tokens": 390,
+    "cost_usd": 0.02218
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "tickers_09",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| INFY | Infosys Limited | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | -2.73% | +5.1% | 1.1\u00d7 | gapper 2026-10-01 |\n| SNPS | Synopsys, Inc. | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | -0.13% | +15.1% | 1.3\u00d7 | gapper 2026-10-01 |\n| TBCH | Turtle Beach Corporation | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +9.38% | +9.8% | 4.2\u00d7 | volume_spike 2026-10-02 |\n| LIF | Life360, Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +6.95% | +4.9% | 1.5\u00d7 | gapper 2026-10-02 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Infosys Limited (INFY) `[Software & SaaS]`\n- Infosys shares were reported down more than 1% on Monday, October 5, as Indian IT stocks traded ahead of the sector\u2019s earnings season; the report gave no new Infosys-specific corporate announcement for the session (Upstox, Oct 5, 00:22 ET).[1]\n- Accenture reported fourth-quarter revenue of **$18.68 billion** versus an analyst estimate of **$18.03 billion** and forecast fiscal-year revenue growth of **3%\u20136%**; the update put Infosys and other Indian IT exporters in focus when Indian markets reopened on October 5 (Economic Times, Oct 5, time not stated).[2]\n- Infosys\u2019s Monday move was reported as a decline despite Accenture\u2019s outlook; one market report cited Infosys down **1.79%**, while the verified tape records a **2.73%** decline for the session (Univest, Oct 5, 03:58 ET).[3]\n- Infosys had announced on October 1 a collaboration with **Columbia University** to establish the **Infosys Topaz\u2013Columbia University Enterprise AI Center**, focused on generative and agentic AI applications; the announcement was outside the requested October 2\u20135 news window but was reported as relevant background (Stock Titan, Oct 1, time not stated).[4]\n- Infosys\u2019s next reported catalyst is its **Q2 FY27 results on October 23, 2026**; the same report cited an existing analyst view that the company could reduce the upper end of its **1.5%\u20133%** revenue-growth guidance range to **2.5%** (Univest, Oct 5, 03:58 ET).[3]",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Infosys was down over 1% at \u20b91,023.10 on the NSE, while Coforge was up 0.29%.",
+      "source": "web",
+      "title": "TCS, Infosys, Wipro in focus ahead of Q2 earnings",
+      "url": "https://upstox.com/news/market-news/stocks/infosys-tcs-coforge-in-focus-as-nifty-it-slips-investors-await-earnings-season-tcs-results/article-201254/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "### Stock Market Live Updates: TCS, Infosys, Persistent Systems, IT stocks rise up to 4% after Accenture Q4 outlook beats estimates\nShares of Infosys, TCS, Wipro, Tech Mahindra, HCLTech and other Indian IT companies gained up to 4% after Accenture forecast full-year revenue growth above Street expec...",
+      "source": "web",
+      "title": "Sensex Today | Nifty 50 | Stock Market Live Updates",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/live-blog/bse-sensex-today-nifty50-stock-market-live-updates-gift-nifty-hdfc-bank-infosys-share-price-05-october-2026/liveblog/134683675.cms"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Infosys (INFY) share price opens at \u20b91,050.00, up from \u20b91,035.00 previous close, as positive global cues on US jobs data provide an early lift, although FII selling and crude oil prices remain concerns. LTP at \u20b91,026.55 with a -0.82% move.\n...\nInfosys (INFY) is poised for a largely positive openi...",
+      "source": "web",
+      "title": "Infosys Opening Bell Updates: Global Cues Lift INFY Despite FII Selling | LatestLY",
+      "url": "https://www.latestly.com/business/infosys-opening-bell-updates-global-cues-lift-infy-despite-fii-selling-7632834.html/amp"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Indian IT stocks including TCS and Infosys are in focus following Accenture's strong Q4 results and above-estimate revenue guidance.\nWhile the outlook signals potential recovery in discretionary technology spending, analysts warn that Indian IT firms may still report their weakest Q2 growth in three...",
+      "source": "web",
+      "title": "TCS, Infosys and other IT stocks in focus after Accenture Q4 revenue, outlook beat estimates",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/tcs-infosys-and-other-it-stocks-in-focus-after-accenture-q4-revenue-outlook-beat-estimates/articleshow/134684693.cms"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Infosys Partners with Columbia University to Launch Enterprise AI Research Center\n**Monday, 5 October 2026** NSE & BSE filings, as they land\n...\nInfosys has entered into a strategic research collaboration with Columbia University to accelerate enterprise-scale artificial intelligence innovation.\nThe...",
+      "source": "web",
+      "title": "Infosys Partners with Columbia University to Launch ...",
+      "url": "https://news.alfafinder.com/news/infosys-columbia-university-enterprise-ai-center-partnership/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The Rs 1,000 strike put options on Infosys Ltd attracted 5,870 contracts on 5 October 2026, signalling notable activity just three weeks before the 27 October expiry.\nWith the stock trading at Rs 1,036.70, this put strike sits approximately 3.5% out-of-the-money, suggesting a nuanced interpretation ...",
+      "source": "web",
+      "title": "Rs 1,000 Puts Draw 5,870 Contracts on Infosys Ltd Ahead of 27 Oct Expiry",
+      "url": "https://www.marketsmojo.com/news/stocks-in-action/infosys-sees-heavy-put-option-activity-ahead-of-october-expiry-4214354"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Infosys Ltd.\n(INFY) jumped +4.1% to \u20b91,035.00 with 4 signals firing.\nHere is what the exchange data shows.\nInfosys shares rose 4.11% on Thursday to close at \u20b91,035, finishing the session at the day's high while the Nifty slipped 0.88%.\nThe stock opened 1.6% above the previous close of \u20b9994.10 and ne...",
+      "source": "web",
+      "title": "strota.in \u203a newsroom \u203a 2026/10/02INFY jumped +4.1% on long buildup in futures | Strota Newsroom",
+      "url": "https://strota.in/newsroom/2026-10-02/infy"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Infosys (INFY) announced a collaboration with Columbia University to develop artificial intelligence applications and support their use by enterprises.",
+      "source": "web",
+      "title": "Infosys, Columbia launch enterprise AI research center",
+      "url": "https://www.stocktitan.net/news/INFY/infosys-and-columbia-university-launch-strategic-collaboration-qs9bjer1tn6c.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Accenture Q4 revenue $18.7 bn (+7% LC), bookings $22.2 bn, FY27 guidance 3% to 6% (organic about 0.75% to 3.75%).\n...\nAccenture Q4 results were strong, with revenue of $18.7 billion, up 7% in local currency and above its guidance range, new bookings of $22.2 billion and an FY27 growth outlook of 3% ...",
+      "source": "web",
+      "title": "Accenture Q4 Results: Impact on Indian IT Stocks Decoded",
+      "url": "https://univest.in/blogs/accenture-q4-results-impact-on-indian-it-stocks"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Infosys Ltd closed the week ending 2 October 2026 with a 3.40% gain, rising from Rs.1,000.95 to Rs.1,035.00, outperforming the Sensex which declined 3.20% over the same period.\nDespite a challenging market environment marked by persistent bearish trends and sector pressures, the stock demonstrated n...",
+      "source": "web",
+      "title": "Infosys Ltd Gains 3.40%: 6 Key Factors Driving the Week ...",
+      "url": "https://www.marketsmojo.com/news/stocks-in-action/infosys-ltd-gains-340-6-key-factors-driving-the-weeks-resilience-4213048"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Infosys Ltd (INFY), a stalwart in the Computers - Software & Consulting sector, witnessed significant trading activity on 5 October 2026, with a total traded volume exceeding 44 lakh shares and a turnover surpassing \u20b9458 crores.\nDespite this high-value trading, the stock closed marginally lower at \u20b9...",
+      "source": "web",
+      "title": "Infosys Ltd Sees High-Value Trading Amid Mixed Market Signals",
+      "url": "https://www.marketsmojo.com/news/stocks-in-action/infosys-ltd-sees-high-value-trading-amid-mixed-market-signals-4214253"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Stocks to Watch:** 5 \u0905\u0915\u094d\u091f\u0942\u092c\u0930 \u0915\u094b \u0936\u0947\u092f\u0930 \u092c\u093e\u091c\u093e\u0930 \u092e\u0947\u0902 \u0915\u0908 \u0915\u0902\u092a\u0928\u093f\u092f\u094b\u0902 \u0915\u0947 \u0936\u0947\u092f\u0930 \u0916\u092c\u0930\u094b\u0902 \u0915\u0947 \u0906\u0927\u093e\u0930 \u092a\u0930 \u092b\u094b\u0915\u0938 \u092e\u0947\u0902 \u0930\u0939 \u0938\u0915\u0924\u0947 \u0939\u0948\u0902\u0964 \u0907\u0928\u092e\u0947\u0902 HDFC Bank, Hindustan Zinc, Infosys, Wipro, ICICI Prudential Life Insurance, UCO Bank, Aurobindo Pharma, NMDC, Bajaj Finance \u0914\u0930 Canara Bank \u0938\u092e\u0947\u0924 \u0915\u0908 \u0915\u0902\u092a\u0928\u093f\u092f\u093e\u0902 \u0936\u093e\u092e\u093f\u0932 \u0939\u0948\u0902\u0964\n...\n1 \u0905\u0915\u094d\u091f\u0942\u092c\u0930 \u0915\u094b In...",
+      "source": "web",
+      "title": "Stocks to Watch: HDFC Bank \u092e\u0947\u0902 \u0928\u090f MD-CEO \u0915\u0940 \u0928\u093f\u092f\u0941\u0915\u094d\u0924\u093f, Infosys-Wipro \u0915\u0947 ADR \u0909\u091b\u0932\u0947, \u0907\u0928 \u0936\u0947\u092f\u0930\u094b\u0902 \u092a\u0930 \u091f\u093f\u0915\u0940 \u0928\u091c\u0930",
+      "url": "https://upstox.com/hindi/news/market-news/latest-updates/stocks-to-watch-october-5-hdfc-bank-infosys-wipro-hindustan-zinc-uco-bank-aurobindo-pharma-nmdc/article-201238/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Infosys (INFY)\nInfosys ADR jumped almost 8 per cent in pre-market trade on Oct 1, as its peer company Accenture beat Q4 expectations and provided positive revenue guidance for FY27.\nAccenture's quarterly revenue came in at $18.7 billion, up 7 per cent on a local-currency basis and above expectations...",
+      "source": "web",
+      "title": "5 Stocks to Watch Today: Nykaa, Infosys, DLF & More",
+      "url": "https://hdfcsky.com/news/stocks-to-watch-today-monday-october-5-2026-nykaa-infosys-dlf-bajaj-finance-shyam-metalics-and-energy"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Shares of Indian IT companies rose in US trading on Thursday, with Infosys and Wipro ADRs gaining after Accenture's strong results and a sharp drop in expectations of a Federal Reserve rate hike.\nInfosys ADRs closed 4.1% higher at $1,035, while Wipro gained 0.5% to $159.35.\n...\nThe gains in US-liste...",
+      "source": "web",
+      "title": "Infosys, Wipro ADRs rally as Accenture outlook lifts sentiment, Fed rate hike bets fade",
+      "url": "https://www.fortuneindia.com/markets/infosys-wipro-adrs-rally-as-accenture-outlook-lifts-sentiment-fed-rate-hike-bets-fade/162485"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "#### IT sector Q2 FY27 preview: TCS, Infosys to HCL Tech, Tech M\u2014 Kotak sees muted quarter for Indian IT giants\nBrokerage firm Kotak Institutional Equities believes that demand conditions have neither improved nor deteriorated since the June 2026 quarter and therefore another muted quarter for large...",
+      "source": "web",
+      "title": "IT Stocks Rally: Coforge, Mphasis, TCS, Persistent Systems ...",
+      "url": "https://ground.news/article/it-sector-q2-fy27-preview-tcs-infosys-to-hcl-tech-tech-m-kotak-sees-muted-quarter-for-indian-it-giants"
+    }
+  ],
+  "citations": [
+    "https://upstox.com/news/market-news/stocks/infosys-tcs-coforge-in-focus-as-nifty-it-slips-investors-await-earnings-season-tcs-results/article-201254/",
+    "https://economictimes.indiatimes.com/markets/stocks/live-blog/bse-sensex-today-nifty50-stock-market-live-updates-gift-nifty-hdfc-bank-infosys-share-price-05-october-2026/liveblog/134683675.cms",
+    "https://www.latestly.com/business/infosys-opening-bell-updates-global-cues-lift-infy-despite-fii-selling-7632834.html/amp",
+    "https://economictimes.indiatimes.com/markets/stocks/news/tcs-infosys-and-other-it-stocks-in-focus-after-accenture-q4-revenue-outlook-beat-estimates/articleshow/134684693.cms",
+    "https://news.alfafinder.com/news/infosys-columbia-university-enterprise-ai-center-partnership/",
+    "https://www.marketsmojo.com/news/stocks-in-action/infosys-sees-heavy-put-option-activity-ahead-of-october-expiry-4214354",
+    "https://strota.in/newsroom/2026-10-02/infy",
+    "https://www.stocktitan.net/news/INFY/infosys-and-columbia-university-launch-strategic-collaboration-qs9bjer1tn6c.html",
+    "https://univest.in/blogs/accenture-q4-results-impact-on-indian-it-stocks",
+    "https://www.marketsmojo.com/news/stocks-in-action/infosys-ltd-gains-340-6-key-factors-driving-the-weeks-resilience-4213048",
+    "https://www.marketsmojo.com/news/stocks-in-action/infosys-ltd-sees-high-value-trading-amid-mixed-market-signals-4214253",
+    "https://upstox.com/hindi/news/market-news/latest-updates/stocks-to-watch-october-5-hdfc-bank-infosys-wipro-hindustan-zinc-uco-bank-aurobindo-pharma-nmdc/article-201238/",
+    "https://hdfcsky.com/news/stocks-to-watch-today-monday-october-5-2026-nykaa-infosys-dlf-bajaj-finance-shyam-metalics-and-energy",
+    "https://www.fortuneindia.com/markets/infosys-wipro-adrs-rally-as-accenture-outlook-lifts-sentiment-fed-rate-hike-bets-fade/162485",
+    "https://ground.news/article/it-sector-q2-fy27-preview-tcs-infosys-to-hcl-tech-tech-m-kotak-sees-muted-quarter-for-indian-it-giants"
+  ],
+  "usage": {
+    "input_tokens": 1106,
+    "output_tokens": 385,
+    "cost_usd": 0.02309
+  }
+}

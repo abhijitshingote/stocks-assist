@@ -1,0 +1,167 @@
+{
+  "name": "a_ai_policy",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: AI policy & safety.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nGovernment actions on AI (White House, Congress, EU, UK, China), AI safety statements by named executives, antitrust actions against tech platforms, court rulings affecting tech.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **GOOGL / Chegg / Penske Media** \u2014 Internet & Platforms\n- U.S. District Judge Amit Mehta dismissed antitrust lawsuits filed by Chegg and Penske Media against Google over AI Overviews, ruling that the plaintiffs had alleged an \u201cexpectation\u201d of receiving search traffic rather than an agreement with Google; the cases were **Chegg Inc. v. Google LLC**, No. 25-cv-543, and **Penske Media Corp. v. Google**, No. 25-cv-3192. (Economic Times, Oct. 2, 2026, 03:49 ET)[1]\n- Judge Mehta wrote that the complaints did not establish an antitrust violation and said remedies for economic harm caused by innovation may require legislative action rather than antitrust law. (Economic Times, Oct. 2, 2026, 03:49 ET)[1]\n\n## **SoftBank / SFTBY** \u2014 AI Infrastructure\n- SoftBank Group CEO **Masayoshi Son** said on Oct. 4 that he was concerned about safety risks as AI capabilities increase exponentially and that countries need to build trust to use the technology cooperatively. (Bloomberg, Oct. 4, 2026, 05:32 ET)[2]\n\n## **OpenAI** \u2014 Software & SaaS\n- OpenAI said it fired **three researchers** for mishandling sensitive information and violating company policies; reports cited by the source said at least **two** of the employees worked in safety and alignment. (Asharq Al-Awsat, Oct. 2, 2026, 06:26 ET)[12]\n\n## White House / U.S. Congress \u2014 AI Policy & Safety\n- President **Donald Trump** and **31 AI companies** signed a voluntary \u201cWhite House Accord on Super Intelligence\u201d in which signatories pledged safeguards, internal and external safety audits, independent board-level safety oversight, and regular meetings to establish industry standards. (DC AI Decoded, Oct. 5, 2026, time not specified)[4]\n- The White House announced that **Jay Clayton** would lead a newly created **Super Intelligence Force** while retaining his role as director of national intelligence. (DC AI Decoded, Oct. 5, 2026, time not specified)[4]\n- Senators **Mark Warner**, **Brian Schatz**, and **Andy Kim** sought unanimous consent for the Artificial Intelligence Risk Management and Security Act; **Sen. Ted Cruz** objected. (DC AI Decoded, Oct. 5, 2026, time not specified)[4]\n- Rep. **Lori Trahan** and Rep. **Jay Obernolte** said the White House accord was an important step toward responsible development of advanced AI systems. (DC AI Decoded, Oct. 5, 2026, time not specified)[4]\n- Sen. **Mark Warner** said AI posed both national-security and safety risks and called for a safety protocol. (DC AI Decoded, Oct. 5, 2026, time not specified)[4]\n- Sen. **Amy Klobuchar** said bipartisan safeguards should address AI risks by the end of **2026**. (DC AI Decoded, Oct. 5, 2026, time not specified)[4]\n- Sen. **Raja Krishnamoorthi** called for tighter safeguards on advanced U.S. AI chips and measures to prevent Chinese companies from evading export controls through overseas data centers. (DC AI Decoded, Oct. 5, 2026, time not specified)[4]\n\n## China \u2014 AI Safety\n- Chinese AI company **Moonshot AI** opened an internal investigation after a researcher reported that one of its models could be manipulated to provide instructions for biological-weapons development and assassinations. [report] (Fox News, Oct. 2, 2026, 20:08 ET)[11]",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "# Google wins dismissal of Chegg, Penske Media lawsuits over AI overviews\nJudge Amit Mehta rejected the publishers\u2019 antitrust claims that Google forces them to allow AI Overviews and diverts traffic and revenue from their websites, saying the allegations did not establish an antitrust violation.\n......",
+      "source": "web",
+      "title": "Google wins dismissal of Chegg, Penske Media lawsuits ...",
+      "url": "https://enterpriseai.economictimes.indiatimes.com/amp/news/industry/google-wins-dismissal-of-chegg-penske-media-lawsuits-over-ai-overviews/134634615"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SoftBank\u2019s Masayoshi Son Has Rare Cautionary Note on AI Safety - Bloomberg\n...\n# SoftBank\u2019s Masayoshi Son Has Rare Cautionary Note on AI Safety\n...\nOctober 4, 2026 at 9:32 AM UTC\n...\nSoftBank Group Corp.\nchief Masayoshi Son \u2014 one of AI\u2019s fervent believers \u2014 said that even he\u2019s worried about safety r...",
+      "source": "web",
+      "title": "SoftBank\u2019s Masayoshi Son Has Rare Cautionary Note on AI Safety",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-04/softbank-s-masayoshi-son-has-rare-cautionary-note-on-ai-safety"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- A federal judge has ruled in Google\u2019s favor in separate lawsuits brought by Chegg and Penske Media Corporation over AI Overviews in Search.\n- Judge Amit Mehta noted that the lawsuits weren\u2019t based on a formal agreement with Google, but an \u201cexpectation.\u201d\n...\nEd-tech company Chegg filed an antitrust...",
+      "source": "web",
+      "title": "Publishers receive setback in Google AI Overviews lawsuit",
+      "url": "https://www.androidauthority.com/google-ai-overviews-publisher-lawsuit-win-3718333/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Driving the week in AI federal policy, President Donald Trump and 31 industry leaders signed a \u201cmorally binding\u201d accord in which the companies pledged to voluntarily regulate their own AI models.\nIn addition, Trump announced Jay Clayton will lead a newly-created Super Intelligence Force, while also ...",
+      "source": "web",
+      "title": "October 5: This week in AI federal policy",
+      "url": "https://www.dcaidecoded.com/p/october-5-this-week-in-ai-federal"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "### Thomson Reuters Hit With Antitrust Case Over 'Killer' AI Deal\nA California law firm has accused Thomson Reuters of violating antitrust law when it purchased artificial intelligence research tool Casetext for $650 million and then shuttered the platform to extinguish a rising competitor to its We...",
+      "source": "web",
+      "title": "Competition : Law360 : Legal News & Analysis",
+      "url": "https://www.law360.com/competition?d-header=1"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Judge dismisses antitrust lawsuits over Google AI Overviews\n...\nThe judge ruled that Google's AI Search features may hurt website traffic but ultimately don't violate antitrust law\n...\nGoogle has won a dismissal of two lawsuits alleging that the company\u2019s AI Overviews in Search negatively impact int...",
+      "source": "web",
+      "title": "Judge dismisses antitrust lawsuits over Google AI Overviews",
+      "url": "https://mobilesyrup.com/2026/10/02/judge-dismisses-antitrust-lawsuits-google-ai-overviews/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "SoftBank's Masayoshi Son, one of AI's fervent believers, said even he's worried about safety as machines quickly gain more abilities.\nA former OpenAI employee warned that firms need safeguards similar to those used at nuclear power plants.",
+      "source": "web",
+      "title": "AI Backers Sound the Alarm About Safety",
+      "url": "https://www.bloomberg.com/news/newsletters/2026-10-04/ai-backers-sound-the-alarm-about-safety"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Judge Amit P. Mehta dismissed both amended complaints on September 30, 2026.\n...\nJudge Amit P. Mehta dismissed Chegg and Penske Media\u2019s antitrust cases over Google AI search on September 30, 2026, citing legal pleading defects.\nOn September 30, 2026, U.S. District Judge Amit P. Mehta dismissed amend...",
+      "source": "web",
+      "title": "www.neoteo.com \u203a en \u203a judge-mehta-dismisses-cheggGoogle AI search lawsuits: judge dismisses cases | NeoTeo",
+      "url": "https://www.neoteo.com/en/judge-mehta-dismisses-chegg-and-penske-cases-against-google"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On September 29, 2026, a three-judge Third Circuit\u00a0panel\u00a0affirmed a 2025 lower court decision in *Thomson Reuters\u00a0Enterprise Centre GmbH (TR) and\u00a0West Publishing Corp\u00a0v.",
+      "source": "web",
+      "title": "Third Circuit Rejects Fair Use Defense in Landmark AI ...",
+      "url": "https://www.findlaw.com/legalblogs/third-circuit/third-circuit-rejects-fair-use-defense-in-landmark-ai-legal-research-copyright-case/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Google AI Overviews antitrust suit dismissed: Judge Mehta found no agreement to sell Penske traffic, as SPUR published its AI content tracking standard v1.0.\n- by Luis Rijo\n...\nA federal judge in Washington threw out a publisher's antitrust claim against Google because no contract to deliver traffic...",
+      "source": "web",
+      "title": "Judge Mehta dismisses Penske's Google AI Overviews ...",
+      "url": "https://ppc.land/judge-mehta-dismisses-penskes-google-ai-overviews-antitrust-suit/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "OpenAI has notified more than 100 organizations about unauthorized activity tied to its AI agents, Reuters reported, citing a blog post by the ChatGPT maker.\n...\nApple is taking steps to safeguard how \"Full Disk Access\" works in macOS amid growing security risks posed by rogue AI agents.\nThe company...",
+      "source": "web",
+      "title": "OpenAI warns over 100 organizations about rogue AI ...",
+      "url": "https://www.foxnews.com/live-news/openai-rogue-ai-warning-hugging-face-hack-10-02-26"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ChatGPT-maker OpenAI said Thursday that it has fired three researchers for allegedly mishandling \"sensitive information\" and violating company policies, including work that involved an external organization that evaluates artificial intelligence models.\nThe San Francisco-based AI lab did not confirm...",
+      "source": "web",
+      "title": "OpenAI Says 3 Staffers Fired for Mishandling 'Sensitive' Info",
+      "url": "https://english.aawsat.com/technology/5325110-openai-says-3-staffers-fired-mishandling-sensitive-info"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Google CEO Sundar Pichai made it seem like the company's artificial intelligence model Gemini 3.5 Pro was on track for a successful launch, when in reality, it was delivering \"disappointing training results,\" an investor alleged in a proposed class action filed Friday in California federal court.\n.....",
+      "source": "web",
+      "title": "Class Action : Law360 : Legal News & Analysis",
+      "url": "https://www.law360.com/classaction/news?amp%253Bpage=1691&page=1"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Chegg and Penske Media lose their antitrust cases over AI Overviews\n...\nA US judge dismissed Chegg and Penske's AI Overviews antitrust suits: 'an expectation is not an agreement'.\n...\nOn September 30, 2026, Judge Amit P. Mehta of the US District Court for the District of Columbia dismissed the antit...",
+      "source": "web",
+      "title": "Judge Dismisses AI Overviews Suits: What Publishers Can ...",
+      "url": "https://www.digitalapplied.com/blog/google-ai-overviews-antitrust-suits-dismissed"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Unsealed Third Circuit Opinion Indicates Limits to Fair Use Ruling Against AI Company** \u2013 On Wednesday, September 30, the U.S. Court of Appeals for the Third Circuit unsealed its opinion issued the day before that affirmed the District of Delaware\u2019s summary judgment ruling entered by Circuit Judge...",
+      "source": "web",
+      "title": "U.S. Stays Third in WIPO GII 2026; and Apple Hit With $5.7 ...",
+      "url": "https://ipwatchdog.com/2026/10/02/bites-barks-u-s-stays-third-in-wipo-gii-2026-and-apple-hit-with-5-7-billion-verdict-for-haptic-tech-infringement/"
+    }
+  ],
+  "citations": [
+    "https://enterpriseai.economictimes.indiatimes.com/amp/news/industry/google-wins-dismissal-of-chegg-penske-media-lawsuits-over-ai-overviews/134634615",
+    "https://www.bloomberg.com/news/articles/2026-10-04/softbank-s-masayoshi-son-has-rare-cautionary-note-on-ai-safety",
+    "https://www.androidauthority.com/google-ai-overviews-publisher-lawsuit-win-3718333/",
+    "https://www.dcaidecoded.com/p/october-5-this-week-in-ai-federal",
+    "https://www.law360.com/competition?d-header=1",
+    "https://mobilesyrup.com/2026/10/02/judge-dismisses-antitrust-lawsuits-google-ai-overviews/",
+    "https://www.bloomberg.com/news/newsletters/2026-10-04/ai-backers-sound-the-alarm-about-safety",
+    "https://www.neoteo.com/en/judge-mehta-dismisses-chegg-and-penske-cases-against-google",
+    "https://www.findlaw.com/legalblogs/third-circuit/third-circuit-rejects-fair-use-defense-in-landmark-ai-legal-research-copyright-case/",
+    "https://ppc.land/judge-mehta-dismisses-penskes-google-ai-overviews-antitrust-suit/",
+    "https://www.foxnews.com/live-news/openai-rogue-ai-warning-hugging-face-hack-10-02-26",
+    "https://english.aawsat.com/technology/5325110-openai-says-3-staffers-fired-mishandling-sensitive-info",
+    "https://www.law360.com/classaction/news?amp%253Bpage=1691&page=1",
+    "https://www.digitalapplied.com/blog/google-ai-overviews-antitrust-suits-dismissed",
+    "https://ipwatchdog.com/2026/10/02/bites-barks-u-s-stays-third-in-wipo-gii-2026-and-apple-hit-with-5-7-billion-verdict-for-haptic-tech-infringement/"
+  ],
+  "usage": {
+    "input_tokens": 728,
+    "output_tokens": 830,
+    "cost_usd": 0.02863
+  }
+}

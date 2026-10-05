@@ -1,0 +1,167 @@
+{
+  "name": "a_sector_financials",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Company news: bank, broker, insurer, payments and fintech.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed bank, broker, insurer, payments and fintech companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **FISV** \u2014 Payments / Fintech\n\n- Fiserv launched a digital-asset platform with **Roughrider Coin**, a dollar-backed stablecoin, as its first production use case; the platform supports issuance, custody and settlement, and gives more than **90 North Dakota banks and credit unions** access to tokenized bank-to-bank settlement through Fiserv\u2019s Commercial Center platform. The system uses **Solana**, Fireblocks and VersaBank infrastructure, with reported settlement in approximately **400 milliseconds** rather than overnight ACH. *(Ground News, Oct. 5, 2026 06:07 ET; underlying company announcement dated Oct. 1, 2026)*\n\n## Insurance\n\n- Aon raised **$13.5 billion** through a high-grade bond offering to help fund its planned **$17 billion** all-cash acquisition of USI Insurance Services from KKR and other shareholders; the transaction is expected to close by year-end. *(Insurance Journal, Oct. 5, 2026 07:13 ET)*\n\n## Market / Financial Stocks\n\n- The **S&P 500 Financial Index** fell to its lowest level since **June 12**, while Bank of America declined **1.29%**, Citigroup **1.92%** and PNC Financial **1.80%** in the October 2 session. *(HDFC Securities, Oct. 5, 2026 10:52 ET; market report dated Oct. 2)*\n\n- Robinhood Markets, Coinbase Global, JPMorgan Chase, Berkshire Hathaway and Bank of America were identified as financial stocks to watch for October 4; the report provided no company-specific announcement, filing, earnings update, analyst action or price target change for the window. *(MarketBeat, Oct. 5, 2026 11:27 ET)*",
+  "search_results": [
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The Dow Jones Industrial Average closed at 51,094.96, up 0.33% on the day but down 1.42% for the week, with an RSI14 of 38.1 signaling a weakening trend.",
+      "source": "web",
+      "title": "Nasdaq Hits Fresh Ground on Chip and Software Strength ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/nasdaq-hits-fresh-ground-chip-110000787.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5, 2026\n...\n#### Aon Plc Raises $13.5 billion to Acquire USI\nAon Plc raised $13.5 billion from a high-grade bond offering to help fund its planned acquisition of USI Insurance Services, marking one of the biggest M&A financing deals to come to market in 2026.\n...\nAon agreed to buy USI from K...",
+      "source": "web",
+      "title": "Business Moves",
+      "url": "https://www.insurancejournal.com/magazines/mag-business-moves/2026/10/05/887584.htm"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Mumbai, Oct 2:** US stocks ended Thursday, 1 October, slightly higher after a volatile session in which investors initially pushed equities lower before a retreat in Treasury yields helped the major benchmarks recover.\nThe Dow Jones Industrial Average gained 20.51 points, or 0.04%, to close at 50,...",
+      "source": "web",
+      "title": "Dow Gains 20.51 Points as Treasury Yields Retreat, Lifting US Stocks to Modest Closing Gains",
+      "url": "https://hdfcsky.com/news/dow-gains-20-51-points-as-treasury-yields-retreat-lifting-us-stocks-to-modest-closing-gains-october-2-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "U.S. stocks rise near their record after the latest jobs report calms the rattled bond market - The Columbian\nSunday, October 4 , 2026\n...\nBy STAN CHOE, Associated Press\nPublished: October 2, 2026, 8:58am\n...\nNEW YORK \u2014 Some relief is returning to the rattled U.S. bond market on Friday after the lat...",
+      "source": "web",
+      "title": "U.S. stocks rise near their record after the latest jobs report ...",
+      "url": "https://www.columbian.com/news/2026/oct/02/u-s-stocks-rise-near-their-record-after-the-latest-jobs-report-calms-the-rattled-bond-market/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "NEW YORK \u2014 U.S. stocks climbed near their all-time high on Friday after the latest update on the U.S. job market cooled worries that a potentially hot U.S economy could make inflation much worse.",
+      "source": "web",
+      "title": "US stocks rise near their record after the latest jobs report ...",
+      "url": "https://www.mankatofreepress.com/news/business/world-shares-mixed-after-global-bond-sell-off-deepens-and-ahead-of-us-jobs-data/article_74336cb4-863d-5fae-b66e-fc6df1408c8a.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-09-30",
+      "place_metadata": null,
+      "snippet": "Visa has open-sourced part of its AI-powered cyber defence system after \"humbling\" lessons from vulnerabilities exposed by AI models, as the payments giant braces for autonomous cyberattacks \u200band future quantum-computing threats.\n...\nGoldman Sachs Group is reportedly laying the groundwork for a succ...",
+      "source": "web",
+      "title": "Latest Finance News | Today's Top Headlines",
+      "url": "https://www.reuters.com/business/finance/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Bank stocks tumbled on Thursday, extending losses in recent weeks amid a sharp rise in interest rates.\nThe KBW Nasdaq Bank Index (^BKX), which closely tracks the nation's large banks, tumbled as much as 2.4% before paring some of those losses to trade 0.2% below its Wednesday closing price.\nThe inde...",
+      "source": "web",
+      "title": "Bank stocks extend second-half slump amid sharp interest ...",
+      "url": "https://finance.yahoo.com/markets/stocks/article/bank-stocks-extend-second-half-slump-amid-sharp-interest-rate-rise-185202119.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "FlyDubai copilot lost earlier job over radical views By Investing.com - Oct 03, 2026 ** 2\n...\nGenmab reports trial results for ovarian cancer drug candidate By Investing.com - Oct 03, 2026\nCOPENHAGEN - Genmab A/S (NASDAQ:GMAB) announced results from Part C of its Phase 1/2 RAINFOL-01 trial evaluatin...",
+      "source": "web",
+      "title": "Latest Company News",
+      "url": "https://www.investing.com/news/company-news/meta-q1-"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Robinhood Markets and Coinbase Global** are highlighted as high-volume financial stocks, offering retail investing and cryptocurrency trading infrastructure, respectively.\n- **JPMorgan Chase and Bank of America** are featured major diversified banks serving consumers, businesses, institutional i...",
+      "source": "web",
+      "title": "Financial Stocks To Watch Today - October 4th",
+      "url": "https://www.marketbeat.com/instant-alerts/list-financial-stocks-to-watch-today-october-4th-2026-10-04/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Stock Market News for October 2, 2026\n...\nOn October 2, 2026, Freeport-McMoRan provided a Q3 operational update including approximately 830 million pounds of copper production; Rivian reported Q3 production of 19,751 vehicles and reaffirmed 2026 delivery guidance of 65,000\u201370,000 vehicles; Integra...",
+      "source": "web",
+      "title": "Stock Market News for October 2, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-02/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Oct 5, 2026** 11 updates\n...\n- ### A7 Network \u2014 FinCEN proposed special measure and OFAC designation \u2192\n...\n- ### Fed extends comment deadline for proposed Regulation O changes \u2192\nThe Federal Reserve extended the comment period on its proposed Regulation O modernization from October 5 to November 4,...",
+      "source": "web",
+      "title": "Weekly changes | The Financial Current",
+      "url": "https://thefinancialcurrent.com/weekly-changes"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "First Financial Bancorp announced it will release its third quarter 2026 financial results after market close on October 27, 2026.\nThe company will hold a conference call and webcast on October 28 at 8:30 a.m.\nEastern time to discuss the results.\nFirst Financial Bancorp is a Cincinnati-based bank ho...",
+      "source": "web",
+      "title": "First Financial Bancorp to report Q3 2026 resul... | Pluang",
+      "url": "https://pluang.com/en/news-feed/first-financial-bancorp-umumkan-hasil-keuangan-kuartal-iii-2026"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Solana Chosen for Fiserv\u2019s New Bank Stablecoin Platform\nMonday, October 5, 2026Set Location\n...\n## Fiserv said the system will support issuance, custody and settlement for the coin and serve banks, merchants and corporate clients.\n...\nBias Comparison\n- On Thursday, Fiserv launched its digital asset ...",
+      "source": "web",
+      "title": "Solana Chosen for Fiserv's New Bank Stablecoin Platform",
+      "url": "https://ground.news/article/fiserv-digital-asset-platform-goes-live-with-financial-institution-clients-advancing-stablecoin-powered-banking-and-payments"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Wall Street closed higher on Thursday after a volatile session to start October trading.\n...\nThe Dow Jones Industrial Average (DJI) rose 0.04% to close at 50,926.56.",
+      "source": "web",
+      "title": "Stock Market News for Oct 2, 2026 - Yahoo Finance",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-oct-2-071400258.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 4:20 AM GMT-3\n...\n- Accenture plc's (ACN) shares jumped 15.8% after reporting fourth-quarter fiscal 2026 adjusted earnings of $3.29 per share, surpassing the Zacks Consensus Estimate of $3.19 per share.\n- Shares of Acuity Inc.\n(AYI) fell 3.4% after the company reported fourth...",
+      "source": "web",
+      "title": "Company News for Oct 2, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-2-2026-072000582.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/nasdaq-hits-fresh-ground-chip-110000787.html",
+    "https://www.insurancejournal.com/magazines/mag-business-moves/2026/10/05/887584.htm",
+    "https://hdfcsky.com/news/dow-gains-20-51-points-as-treasury-yields-retreat-lifting-us-stocks-to-modest-closing-gains-october-2-2026",
+    "https://www.columbian.com/news/2026/oct/02/u-s-stocks-rise-near-their-record-after-the-latest-jobs-report-calms-the-rattled-bond-market/",
+    "https://www.mankatofreepress.com/news/business/world-shares-mixed-after-global-bond-sell-off-deepens-and-ahead-of-us-jobs-data/article_74336cb4-863d-5fae-b66e-fc6df1408c8a.html",
+    "https://www.reuters.com/business/finance/",
+    "https://finance.yahoo.com/markets/stocks/article/bank-stocks-extend-second-half-slump-amid-sharp-interest-rate-rise-185202119.html",
+    "https://www.investing.com/news/company-news/meta-q1-",
+    "https://www.marketbeat.com/instant-alerts/list-financial-stocks-to-watch-today-october-4th-2026-10-04/",
+    "https://www.stocktitan.net/news/2026-10-02/",
+    "https://thefinancialcurrent.com/weekly-changes",
+    "https://pluang.com/en/news-feed/first-financial-bancorp-umumkan-hasil-keuangan-kuartal-iii-2026",
+    "https://ground.news/article/fiserv-digital-asset-platform-goes-live-with-financial-institution-clients-advancing-stablecoin-powered-banking-and-payments",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-oct-2-071400258.html?fr=sycsrp_catchall",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-2-2026-072000582.html"
+  ],
+  "usage": {
+    "input_tokens": 784,
+    "output_tokens": 385,
+    "cost_usd": 0.02213
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "a_movers_premarket",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: After-hours & pre-market movers.\n\nWindow: Friday October 2, 2026 4:00 PM ET (after the close) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nUS stocks >= $1B moving after hours on the session date and pre-market on the brief date: % move, time quoted, and catalyst (earnings, offerings, M&A, guidance, rating changes, withdrawn deals).\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **PTC** `[Software & SaaS]`\n- **PTC** shares rose approximately **36% pre-market** on Monday, October 5, after Schneider Electric agreed to acquire the company for **$205 per share** in cash, valuing PTC\u2019s equity at more than **$22 billion**; the transaction is expected to close by **Q3 2027**. (CNBC, Oct. 5, 2026, latest update 11:50 ET)\n- The offer implies an enterprise value of approximately **$23.7 billion** and a **42.3% premium** to PTC\u2019s Friday closing price. (TradingKey, Oct. 5, 2026, 04:26 ET)\n\n## **SYNA / ON** `[Semiconductors]`\n- **Synaptics (SYNA)** shares rose **14.1%** after ON Semiconductor revised the terms of its acquisition of Synaptics; the transaction value was reduced from **$7 billion to $5.7 billion**. **ON Semiconductor (ON)** shares rose approximately **7%** in the same report. (CNBC, Oct. 2, 2026, latest update Oct. 3, 2026, 14:42 ET; Yahoo Finance, Oct. 5, 2026, 04:22 ET)\n\n## **ITUB / BBD** `[Financials]`\n- U.S.-listed shares of **Ita\u00fa Unibanco (ITUB)** and **Banco Bradesco (BBD)** rose more than **13% each** pre-market after right-wing presidential candidate Fl\u00e1vio Bolsonaro edged incumbent Luiz In\u00e1cio Lula da Silva by approximately **2 percentage points** in Brazil\u2019s Sunday election. (CNBC, Oct. 5, 2026, latest update 11:50 ET)\n\n## **EWZ** `[Macro / Geopolitics]`\n- The **iShares MSCI Brazil ETF (EWZ)** rose **12%** pre-market after Brazil\u2019s Sunday presidential election produced an approximately **2-point lead** for Fl\u00e1vio Bolsonaro over Luiz In\u00e1cio Lula da Silva. (CNBC, Oct. 5, 2026, latest update 11:50 ET)\n\n## **WFC** `[Financials]`\n- **Wells Fargo (WFC)** rose **1%** pre-market after Morgan Stanley upgraded the stock from **Equal Weight to Overweight**; analyst Manan Gosalia cited expected normalization in balance-sheet growth and reduced funding pressure. (CNBC, Oct. 5, 2026, latest update 11:50 ET)\n\n## **DKNG** `[Internet & Platforms]`\n- **DraftKings (DKNG)** rose more than **5%** pre-market after Bank of America upgraded the stock from **Neutral to Buy**; analyst Julie Hoover estimated prediction markets could generate **$400 million in fees in 2027** and **$200 million to $400 million** in market-making revenue. (CNBC, Oct. 5, 2026, latest update 11:50 ET)\n\n## **EL** `[Retail]`\n- **Est\u00e9e Lauder (EL)** rose **2.8%** after Barclays upgraded the stock from **Equal Weight to Overweight**. (CNBC, Oct. 5, 2026, latest update 11:50 ET)\n\n## **QCOM** `[Wireless & Mobile]`\n- **Qualcomm (QCOM)** rose approximately **2.9%** pre-market after Huawei agreed to a multi-year patent-license deal with Qualcomm covering **artificial intelligence, 5G, computing, and networking technologies**. (TradingKey, Oct. 5, 2026, 04:26 ET)\n\n## **Cerebras** `[AI Compute]`\n- **Cerebras Systems** shares rose approximately **6.2%** pre-market after OpenAI CEO Sam Altman described Cerebras as a \u201cclose partner.\u201d (TradingKey, Oct. 5, 2026, 04:26 ET)\n\n## **CWH** `[Retail]`\n- **Camping World (CWH)** said on October 5 that it expected full-year 2026 adjusted EBITDA to be **below $230 million**, versus prior guidance of **$230 million\u2013$270 million**; the company also announced additional headcount reductions expected to generate at least **$50 million in annualized savings**. (StockTitan/SEC filing, Oct. 5, 2026, 07:20 ET; latest update 07:23 ET)\n\n## **TER** `[AI Infrastructure]`\n- **Teradyne (TER)** rose **8.0%** in Monday pre-market trading following commentary on **AI data-center demand** and **hard-disk-drive supply**. (Yahoo Finance, Oct. 5, 2026, 06:07 ET; latest update 06:20 ET)\n\n## **HPE** `[AI Infrastructure]`\n- **Hewlett Packard Enterprise (HPE)** rose **7.36%** pre-market after analysts raised price targets following a networking event and a reported **Helios AI order**. (Yahoo Finance, Oct. 5, 2026, 06:07 ET; latest update 06:20 ET)\n\n## **WDC / STX** `[Memory & Interconnect]`\n- **Western Digital (WDC)** fell **10.22%** and **Seagate Technology (STX)** fell **10.21%** pre-market after Toshiba outlined plans to nearly **double AI data-center hard-disk-drive capacity**. (Yahoo Finance, Oct. 5, 2026, 06:07 ET; latest update 06:20 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Check out the companies making the biggest moves premarket: Brazilian stocks \u2014 The group rallied after right-wing presidential candidate Flavio Bolsonaro edged out incumbent Luiz Inacio Lula Da Silva by around 2 percentage points in an election held Sunday.\nThe iShares MSCI Brazil ETF (EWZ) surged 1...",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: DraftKings, Itau Unibanco, PTC & more",
+      "url": "https://www.cnbc.com/2026/10/05/stocks-making-the-biggest-moves-premarket-dkng-itub-ptc.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "ON Semiconductor , Synaptics \u2014 Shares for Synaptics and ON Semiconductor jumped over 14% and 7% respectively following reports that ON Semiconductor will acquire Synaptics for $123 per share in cash.\nThe transaction is now valued at $5.7 billion from the prior agreement of $7 billion.",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: Nike, ON ...",
+      "url": "https://www.cnbc.com/2026/10/02/stocks-making-the-biggest-moves-premarket-nike-on-semiconductor-synaptics-vylor-more.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Premarket Movers | PTC Surges 34%; Cerebras Jumps 6%; Crypto Stocks Rally; Qualcomm Gains 3%; TSMC Rise 1%\n...\nTigerOct 5, 2026 8:08 AM\n...\nPTC Inc shares surged 34.1% in premarket trading.\nFrance's Schneider Electric said on Monday it \u200chad agreed to buy PTC in an all-cash deal valuing the US softwa...",
+      "source": "web",
+      "title": "Premarket Movers | PTC Surges 34%; Cerebras Jumps 6%; Crypto Stocks Rally; Qualcomm Gains 3%; TSMC Rise 1%",
+      "url": "https://www.tradingkey.com/news/stocks/262199753-tiger"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The London Stock Exchange site carried a Reuters New York dispatch, datelined October 2 and timestamped 14:00 on October 4.\nThrough Friday the S&P 500 was up nearly 13% in 2026 and about 1% below its mid-August record.\n...\nConstellation Brands is expected to earn $3.55 a share after the close on Oct...",
+      "source": "web",
+      "title": "October 4, 2026 \u00b7 Finance & Markets Daily Digest | Swil-News",
+      "url": "https://news.supwil.com/en/news/finance/2026-10-04"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The relatively slow week comes as we await the start of third-quarter earnings season and leave behind conference season.\n...\n2. Earnings: While there are no Club names set to report, we will hear from Corona and Modelo brewer Constellation Brands on Tuesday evening; denim maker Levi Strauss on Wedn...",
+      "source": "web",
+      "title": "Here are 3 things we're watching in the stock market in the week ahead",
+      "url": "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 12:07 AM CST\n...\n- NIKE, Inc.\n(NKE) shares fell 3.6% after the company reported fourth-quarter fiscal 2026 revenues of $11.21 billion, missing the Zacks Consensus Estimate by 1.65%.\n- Synaptics Incorporated (SYNA) shares surged 14.1% after ON Semiconductor (ON) revised its $5...",
+      "source": "web",
+      "title": "Company News for Oct 5, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "European Equity pre-Market Summary \u2013 5th October 2026: European bourses set for a mildly firmer open; Schneider Electric slips after acquiring PTC for USD 23.7bln | Newsquawk\n...\n## M&A\n- **BT Group (BT/A LN):** Co. has reportedly reached a deal to acquire TalkTalk's PXC and its consumer broadband o...",
+      "source": "web",
+      "title": "European Equity pre-Market Summary \u2013 5th October 2026",
+      "url": "https://www.newsquawk.com/headlines/european-equity-pre-market-summary--5th-october-2026-"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Integra LifeSciences Holdings Corporation (Nasdaq: IART) ** Integra LifeSciences provided preliminary third quarter results and updated full-year 2026 guidance, citing continued impact from a July flooding event at its Cincinnati facility.",
+      "source": "web",
+      "title": "Nasdaq Hits Fresh Ground on Chip and Software Strength ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/nasdaq-hits-fresh-ground-chip-110000787.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Global markets entered October 4 with politics, regulation and corporate positioning driving the day\u2019s narrative more than any single broad asset move.\n...\nOn the company side, **CNBC** reported that Berkshire Hathaway bought additional Lennar shares, although the pace of purchases slowed.",
+      "source": "web",
+      "title": "www.marketpro.live \u203a global-markets-daily-briefGlobal Markets Daily Brief \u2014 October 04, 2026 | MarketPro",
+      "url": "https://www.marketpro.live/global-markets-daily-brief-october-04-2026.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The US reported the addition of just 29,000 jobs in September, well below market estimates.\n...\nWall Street stock markets rose on eased concerns about higher borrowing costs.",
+      "source": "web",
+      "title": "Weekend Buzz: 3-4 October 2026 - City News Service",
+      "url": "https://www.citynewsservice.cn/articles/china-biz-buzz/daily-buzz/weekend-buzz-3-4-october-2026-env0lq3m"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fiscal fourth-quarter revenue hit $54.23 billion and adjusted earnings landed at $33.42 a share, both above the bar, with a first-quarter guide near $61.5 billion.",
+      "source": "web",
+      "title": "PepsiCo's Grocery-Aisle Test at a 52-Week Low",
+      "url": "https://moneymorning.com/2026/10/05/monday-market-pulse-october-5-2026"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Welcome to our live ASX coverage for Monday, October 5.\nExpect a high volume of posts pre-market and more periodic updates throughout the day.\n...\nIngenia opens books to Warburg Pincus\n[9:19 am] Ingenia has agreed to grant Warburg Pincus initial due diligence on its $5.25 cash per security proposal,...",
+      "source": "web",
+      "title": "ASX 200 Live Today - Monday, 5th October",
+      "url": "https://www.marketindex.com.au/news/asx-200-live-today-monday-5th-october"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "US markets ended higher on Friday, with the Nasdaq Composite Index reaching a new intraday high.\nThe Australian market equally made some gains on Friday to flatten its performance to-slightly positive last week (quite the achievement given the October 1 shellacking).\nASX200 futures are pointing to a...",
+      "source": "web",
+      "title": "The Monday Report - 05 October 2026",
+      "url": "https://fnarena.com/2026/10/05/the-monday-report-05-october-2026/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On October 5, 2026, Camping World Holdings, Inc.\n(the 'Company') announced that, reflecting the operating trends and other factors described below, the Company now expects full-year 2026 Adjusted EBITDA to be below the low end of its previously communicated guidance range of $230 million to $270 mil...",
+      "source": "web",
+      "title": "Camping World sees 2026 adjusted EBITDA below $230M",
+      "url": "https://www.stocktitan.net/sec-filings/CWH/8-k-camping-world-holdings-inc-reports-material-event-6d663414fc87.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 2:07 AM CST\n...\nUS stock futures are pointing higher this morning, with E-mini S&P 500 contracts up about 0.7%, as investors weigh cooler job growth against hotter manufacturing and price signals.\n...\n## Top Movers\n- **Teradyne (TER)** jumped 8.00% after upbeat commentary on ...",
+      "source": "web",
+      "title": "US Stock Market Today: S&P 500 Futures Climb On Cooling Jobs And Firm Factory Data",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/us-stock-market-today-p-080710902.html"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/2026/10/05/stocks-making-the-biggest-moves-premarket-dkng-itub-ptc.html",
+    "https://www.cnbc.com/2026/10/02/stocks-making-the-biggest-moves-premarket-nike-on-semiconductor-synaptics-vylor-more.html",
+    "https://www.tradingkey.com/news/stocks/262199753-tiger",
+    "https://news.supwil.com/en/news/finance/2026-10-04",
+    "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html",
+    "https://www.newsquawk.com/headlines/european-equity-pre-market-summary--5th-october-2026-",
+    "https://finance.yahoo.com/markets/stocks/articles/nasdaq-hits-fresh-ground-chip-110000787.html",
+    "https://www.marketpro.live/global-markets-daily-brief-october-04-2026.html",
+    "https://www.citynewsservice.cn/articles/china-biz-buzz/daily-buzz/weekend-buzz-3-4-october-2026-env0lq3m",
+    "https://moneymorning.com/2026/10/05/monday-market-pulse-october-5-2026",
+    "https://www.marketindex.com.au/news/asx-200-live-today-monday-5th-october",
+    "https://fnarena.com/2026/10/05/the-monday-report-05-october-2026/",
+    "https://www.stocktitan.net/sec-filings/CWH/8-k-camping-world-holdings-inc-reports-material-event-6d663414fc87.html",
+    "https://finance.yahoo.com/markets/stocks/articles/us-stock-market-today-p-080710902.html"
+  ],
+  "usage": {
+    "input_tokens": 740,
+    "output_tokens": 1225,
+    "cost_usd": 0.0346
+  }
+}

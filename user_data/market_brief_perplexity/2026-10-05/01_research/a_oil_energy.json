@@ -1,0 +1,167 @@
+{
+  "name": "a_oil_energy",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Oil & energy.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nWTI and Brent (settle, % change, contract month), natural gas, gasoline and diesel prices (AAA/EIA), EIA inventory data, OPEC+ actions, energy policy (export bans, SPR), energy-stock analyst actions, energy M&A (acquirer, target, $ value), activist stakes in energy companies.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## WTI and Brent \u2014 Oil Prices `[Energy]`\n- **WTI** November 2026 futures settled at **$89.34 per barrel**, down **$3.53**, or **3.8%**, on Friday, October 2; the contract month was not specified in the cited report. (Reuters, Oct 2, 2026, 07:29 ET)\n- **Brent** December 2026 futures were quoted at **$99.74 per barrel**, down **$2.57**, or **2.51%**, at **06:35 ET** on October 2; the contract month was not specified in the cited report. (Reuters, Oct 2, 2026, 06:35 ET)\n- **Brent** crude futures traded at **$101.59 per barrel**, down **$0.66**, or **0.65%**, at **10:40 PM ET** on October 4; **WTI** traded at **$90.12**, down **$0.95**, or **1.03%**. Contract months were not specified. (Reuters, Oct 4, 2026, 06:20 PM ET)\n- **Brent** crude futures traded at **$101.59 per barrel**, down **$0.72**, or **0.71%**, at **02:34 AM ET** on October 5; **WTI** traded at **$90.05**, down **$1.05**, or **1.2%**. Contract months were not specified. (Reuters, Oct 5, 2026, 02:34 AM ET)\n\n## Natural Gas `[Energy]`\n- U.S. working natural-gas inventories were forecast at **3,969 billion cubic feet** on October 31, 2026, **5% above** the 2021\u20132025 five-year average and **1% above** October 2025. (EIA, Oct 1, 2026; updated Oct 3, 2026)\n\n## OPEC+ `[Energy]`\n- Saudi Arabia, Russia, Iraq, Kuwait, Kazakhstan, Algeria and Oman agreed on October 4 to keep **November 2026 oil-production targets unchanged** from September levels. (Reuters, Oct 4, 2026, 10:05 AM ET)\n- The seven OPEC+ members produced approximately **25 million barrels per day in August**, up **630,000 barrels per day** from July and approximately **5 million barrels per day below** their combined February pre-conflict level. (Reuters, Oct 4, 2026, 10:05 AM ET)\n- OPEC+ still had approximately **2 million barrels per day of production cuts** covering most members; its next seven-member meeting was scheduled for **November 1, 2026**. (Reuters, Oct 4, 2026, 10:05 AM ET)\n- November production targets were listed as **10.478 million barrels per day for Saudi Arabia**, **9.949 million for Russia**, **4.431 million for Iraq**, **2.676 million for Kuwait**, **1.628 million for Kazakhstan**, **1.007 million for Algeria**, and **841,000 for Oman**. (OPEC+ statement reported by Investing.com, Oct 4, 2026, 05:41 AM ET)\n\n## G7 Emergency Energy Reserves and Export Policy `[Macro / Commodities / Geopolitics]`\n- G7 countries agreed on October 2 to release up to **100 million barrels of diesel and crude from emergency reserves** and pledged to refrain from energy-export restrictions after pressure from U.S. President Donald Trump. (Reuters, Oct 5, 2026, 06:20 AM ET)\n\n## Energy Supply and Geopolitics `[Macro / Commodities / Geopolitics]`\n- Rising Middle East crude exports and the planned G7 reserve release were reported as increasing available supply while Gulf energy-infrastructure risks continued amid the U.S.-Israeli war against Iran. (Reuters, Oct 5, 2026, 06:20 AM ET)\n- European gasoil futures fell approximately **5%** on October 2 after reports of additional diesel and crude-stock releases. (Reuters, Oct 2, 2026, 07:29 AM ET)",
+  "search_results": [
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "LONDON/MOSCOW, Oct 4 (Reuters) - OPEC+ agreed to keep oil production \u200ctargets steady for November at a meeting on Sunday, the producer group said, in line with expectations that further output policy adjustments are unlikely until next year.\nSeven core members of the group comprising the Organizatio...",
+      "source": "web",
+      "title": "OPEC+ agrees to keep November oil output targets steady",
+      "url": "https://www.reuters.com/business/energy/opec-agrees-principle-keep-november-oil-output-targets-steady-sources-say-2026-10-04/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "LONDON, Oct 2 (Reuters) - Oil prices fell more than 2% and European gasoil futures dropped about \u200c5% on Friday after reports of talks on additional diesel and crude stock releases , easing concerns over tight global energy supplies.\nBrent fell $2.57, or 2.51%, to $99.74 a barrel at 1035 GMT.\nWest Te...",
+      "source": "web",
+      "title": "Oil settles lower after Europe agrees to tap diesel reserves",
+      "url": "https://www.reuters.com/business/energy/oil-rises-slightly-market-weighs-mixed-supply-signals-2026-10-02/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "NEW DELHI/SINGAPORE, Oct 5 (Reuters) - Oil prices edged lower on Monday as rising \u200bMiddle East crude exports and a release of oil stocks by the Group of Seven \u200cnations boosted supplies, offsetting concerns about further damage to Gulf oil infrastructure amid the US-Israeli war on Iran.\nBrent crude f...",
+      "source": "web",
+      "title": "Oil falls as Middle East crude exports rise, G7 to release ...",
+      "url": "https://www.reuters.com/business/energy/oil-climbs-after-yemeni-houthis-attack-saudi-aramco-sites-2026-10-04/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oil prices split as Brent tops $102, Murban hits $110 per barrel on Oct. 5, 2026\n...\nOil prices showed mixed movements in early Tokyo trading on Monday, October 5, with Brent crude and Murban rising while West Texas Intermediate (WTI) and natural gas edged lower, according to Trading Economics taken...",
+      "source": "web",
+      "title": "Oil prices split as Brent tops $102, Murban hits $110 per ...",
+      "url": "https://gulfnews.com/amp/story/world%2Famericas%2F17gix0n-oil-prices-rise-brent-above-103-1.500698305"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Vienna, 4 October, (Brussels Morning Newspaper) \u2013** OPEC+ oil output targets will remain unchanged for November after seven leading members of the producer alliance agreed to maintain September\u2019s required production levels, extending the group\u2019s pause as it monitors global supply conditions and en...",
+      "source": "web",
+      "title": "OPEC+ Oil Output Holds Firm in Key November Move",
+      "url": "https://brusselsmorning.com/opec-oil-output-november-targets/104705/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oil prices split as Brent tops $102, Murban hits $110 per barrel on Oct. 5, 2026\n...\nOil prices showed mixed movements in early Tokyo trading on Monday, October 5, with Brent crude and Murban rising while West Texas Intermediate (WTI) and natural gas edged lower, according to Trading Economics taken...",
+      "source": "web",
+      "title": "Oil prices split as Brent tops $102, Murban hits $110 per ...",
+      "url": "https://gulfnews.com/world/americas/oil-prices-split-as-brent-tops-102-murban-hits-110-per-barrel-on-oct-5-2026-1.500698305"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "We forecast U.S. working natural gas inventories will total 3,969 billion cubic feet (Bcf) on October 31, 2026, 5% above the previous five-year average (2021\u20132025) and 1% above October 2025 levels.",
+      "source": "web",
+      "title": "Short-Term Energy Outlook: Natural Gas",
+      "url": "https://www.eia.gov/outlooks/steo/report/natgas.php?eType=EmailBlastContent&eId=b71581b2-d2bb-413d-9be7-f722086b0d89"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**OPEC+ countries agreed not to change their oil production targets in November.\nThe decision was made by seven key members of the group\u2014Saudi Arabia, Russia, Iraq, Kuwait, Algeria, Kazakhstan, and Oman.\n...\nOn Sunday, October 4, OPEC+ countries agreed to leave oil production targets for November un...",
+      "source": "web",
+      "title": "OPEC+ decided not to increase oil production in November",
+      "url": "https://ua.news/en/world/opek-virishiv-ne-zbilshuvati-vidobutok-nafti-u-listopadi"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oil prices fell on Monday, October 5, as rising oil exports from the Middle East and the release of oil reserves by G7 countries increased supply, offsetting concerns about further damage to oil infrastructure in the Persian Gulf as the U.S.-Israeli war against Iran drags on.\n...\nBrent crude futures...",
+      "source": "web",
+      "title": "Oil prices fall amid rising exports from the Middle East and ...",
+      "url": "https://unn.ua/en/amp/oil-prices-fall-amid-rising-exports-from-the-middle-east-and-the-g7-decision"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "|WTI Crude 89.04 -3.83|Brent 99.10|Nat Gas|Dutch TTF|\n...\nLast price as of Fri, Oct 2, 5:35 AM ET \u00b7 1-day change vs prior settle.\n...\n|WTI Crude|89.04|-4.1% -3.83|+55.1%|+46.3%|+14.7%|\n|Brent|99.10|-3.1% -3.21|+62.9%|+53.6%|+22.0%|\n...\nAnushree Mukherjee \u00b7 Reuters \u00b7 Fri, Oct 2, 2026\nBrent fell about...",
+      "source": "web",
+      "title": "commoditynews.morgandowney.com \u203a news \u203a 2026/10/02Morgan Downey's Commodity News \u00b7 Friday, October 2, 2026",
+      "url": "https://commoditynews.morgandowney.com/news/2026-10-02"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Last updated: October 04, 2026 | 16:28\n...\nThe seven core OPEC+ members will meet online again on November 1, when they are expected to consider production plans for December.Bloomberg\nDubai: OPEC+ agreed on Sunday to keep its oil production targets unchanged for November, as the conflict in the Mid...",
+      "source": "web",
+      "title": "OPEC+ keeps November oil output targets unchanged ...",
+      "url": "https://gulfnews.com/business/energy/opec-keeps-november-oil-output-targets-unchanged-as-supply-remains-disrupted-1.500697967"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "OPEC+ holds November oil production targets steady as supply remains constrained\n...\n- Middle East\n...\nSalma El Wardany and Grant Smith October 04, 2026\n(Bloomberg) \u2013 Major OPEC+ nations agreed to keep oil production quotas unchanged next month, as conflict in the Middle East continues to shutter sw...",
+      "source": "web",
+      "title": "OPEC+ holds November oil production targets steady as supply ...",
+      "url": "https://www.worldoil.com/news/2026/10/4/opec-holds-november-oil-production-targets-steady-as-supply-remains-constrained/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oil prices showed mixed movements in early Tokyo trading on Monday, October 5, with Brent crude and Murban rising while West Texas Intermediate (WTI) and natural gas edged lower, according to OilPrice.com taken at 8:37 am Tokyo time.\nBrent crude was quoted at $102.60 a barrel, up 39 cents, or 0.38%....",
+      "source": "web",
+      "title": "Trump weighs next Iran move as Pezeshkian vows ...",
+      "url": "https://gulfnews.com/world/mena/trump-weighs-next-iran-move-as-pezeshkian-vows-economic-response-1.500697574"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "MOSCOW, October 4.\n/TASS/.\nSeven leading OPEC+ countries adhering to voluntary oil production cuts - Russia, Saudi Arabia, Iraq, Kazakhstan, Kuwait, Oman, and Algeria - have decided to keep their existing oil production quotas unchanged in November, the organization said.\nThus, Russia\u2019s oil producti...",
+      "source": "web",
+      "title": "OPEC+ seven keep November oil production plan ...",
+      "url": "https://tass.com/economy/2197319"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com --\u00a0Seven OPEC+ countries agreed on Sunday to keep required crude oil production for November unchanged from September, the group said in a statement, holding policy steady as the Middle East conflict continues to constrain supply from the Gulf.\nSaudi Arabia, Russia, Iraq, Kuwait, Kazak...",
+      "source": "web",
+      "title": "OPEC+ holds output targets steady as Middle East conflict ...",
+      "url": "https://www.investing.com/news/commodities-news/opec-set-to-hold-november-oil-quotas-steady-as-middle-east-conflict-hits-output-4930914"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/business/energy/opec-agrees-principle-keep-november-oil-output-targets-steady-sources-say-2026-10-04/",
+    "https://www.reuters.com/business/energy/oil-rises-slightly-market-weighs-mixed-supply-signals-2026-10-02/",
+    "https://www.reuters.com/business/energy/oil-climbs-after-yemeni-houthis-attack-saudi-aramco-sites-2026-10-04/",
+    "https://gulfnews.com/amp/story/world%2Famericas%2F17gix0n-oil-prices-rise-brent-above-103-1.500698305",
+    "https://brusselsmorning.com/opec-oil-output-november-targets/104705/",
+    "https://gulfnews.com/world/americas/oil-prices-split-as-brent-tops-102-murban-hits-110-per-barrel-on-oct-5-2026-1.500698305",
+    "https://www.eia.gov/outlooks/steo/report/natgas.php?eType=EmailBlastContent&eId=b71581b2-d2bb-413d-9be7-f722086b0d89",
+    "https://ua.news/en/world/opek-virishiv-ne-zbilshuvati-vidobutok-nafti-u-listopadi",
+    "https://unn.ua/en/amp/oil-prices-fall-amid-rising-exports-from-the-middle-east-and-the-g7-decision",
+    "https://commoditynews.morgandowney.com/news/2026-10-02",
+    "https://gulfnews.com/business/energy/opec-keeps-november-oil-output-targets-unchanged-as-supply-remains-disrupted-1.500697967",
+    "https://www.worldoil.com/news/2026/10/4/opec-holds-november-oil-production-targets-steady-as-supply-remains-constrained/",
+    "https://gulfnews.com/world/mena/trump-weighs-next-iran-move-as-pezeshkian-vows-economic-response-1.500697574",
+    "https://tass.com/economy/2197319",
+    "https://www.investing.com/news/commodities-news/opec-set-to-hold-november-oil-quotas-steady-as-middle-east-conflict-hits-output-4930914"
+  ],
+  "usage": {
+    "input_tokens": 759,
+    "output_tokens": 915,
+    "cost_usd": 0.03
+  }
+}

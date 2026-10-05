@@ -1,0 +1,167 @@
+{
+  "name": "a_consumer_industrials",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Consumer, industrials, financials.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nMaterial company news in retail, restaurants, travel, autos/EV, industrials, defense, space, banks, insurers, gaming \u2014 recalls, investor days, guidance, management quotes with numbers.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **PTC** / Schneider Electric [Industrials / Software]\n- Schneider Electric agreed to acquire **PTC** for **$205 per share in cash**, valuing PTC\u2019s equity at approximately **$22.6 billion** and enterprise value at **$23.7 billion**; the offer represents a **42.3% premium** to PTC\u2019s previous close, with closing expected in **Q3 2027**. (Reuters, Oct. 5, 2026, 02:20 ET)\n- **PTC** rose **37%** in premarket trading on Oct. 5 after the transaction was announced; the deal is to be financed with equity and new debt. (Reuters, Oct. 5, 2026, 06:20 ET)\n\n## **RIVN** [Autos / EV]\n- **Rivian** reported Q3 2026 production of **19,751 vehicles** and reaffirmed 2026 delivery guidance of **65,000\u201370,000 vehicles**. (StockTitan, Oct. 2, 2026; publish time unavailable)\n\n## **TSLA** [Autos / EV]\n- **Tesla** reported Q3 deliveries of **486,532 vehicles**, compared with a consensus estimate of **456,000**. (Investopedia, Oct. 2, 2026, 08:20 ET)\n\n## **FICO** [Financial Services]\n- **Fair Isaac** fell **8%** in premarket trading on Oct. 2 after a report that the Federal Housing Finance Agency planned to require lenders to use credit data from only **two of the three** major credit bureaus for mortgages sold to Fannie Mae and Freddie Mac. The policy report was attributed to Bloomberg. (Yahoo Finance, Oct. 2, 2026; publish time unavailable)\n\n## **Futures / Consumer Discretionary** [Macro / Calendar]\n- At **06:20 ET on Oct. 5**, Dow E-minis were down **101 points**, or **0.20%**; S&P 500 E-minis were down **14.25 points**, or **0.18%**; and Nasdaq 100 E-minis were down **78.25 points**, or **0.25%**. (Reuters, Oct. 5, 2026, 06:20 ET)\n\n## **U.S. Jobs Data** [Macro / Calendar]\n- September nonfarm payrolls increased by **29,000**, below the **90,000** economist estimate; payrolls for the prior two months were also revised sharply lower. The implied probability of at least a **25-basis-point** Fed rate hike at the October meeting declined to **22.7%** from **24.4%** the prior session and **64.2%** one week earlier. (Reuters, Oct. 5, 2026, publish time unavailable)\n\n## **Industrial Software / AI** [Industrials]\n- **PTC** provides software for designing, manufacturing and servicing products; Schneider Electric\u2019s acquisition follows its June agreement to buy privately held AI and industrial-data software provider Cognite. Schneider had raised its annual revenue forecast in July after reporting record first-half results. (Reuters, Oct. 5, 2026, 02:20 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - US stock index futures dipped on Monday, as technology stocks eased \u200cfrom record highs, while investors looked for fresh clues on the monetary policy path with Treasury yields and oil prices still elevated.\nChip stocks were a drag in premarket trade, with Intel (INTC.O) , opens new...",
+      "source": "web",
+      "title": "Wall St futures dip as tech stocks take a breather",
+      "url": "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - France's Schneider Electric (SCHN.PA) , opens new tab said on Monday it \u200chad agreed to buy PTC (PTC.O) , opens new tab in an all-cash deal valuing the US software company's equity at around $22.6 billion, confirming reports from Sunday.\nThe $205-per-share offer implies \u200ban enterpri...",
+      "source": "web",
+      "title": "Schneider Electric to buy US software firm PTC in $22.6 ...",
+      "url": "https://www.reuters.com/business/frances-schneider-electric-nears-20-billion-deal-buy-us-software-group-ptc-ft-2026-10-04/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Published Oct 05, 2026, 02:58 AM\n...\nOct 5 (Reuters) - Global markets are starting to wake up to the reality of borrowing costs at two-decade highs, oil above $100 a barrel and central bank rate hikes, which is heaping pressure on governments, investors and households and eroding some of the AI-driv...",
+      "source": "web",
+      "title": "Take Five: Reality bites By Reuters",
+      "url": "https://www.investing.com/news/economy-news/take-five-reality-bites-4931117"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Cycurion is up 20.7% to $3.21 premarket on 1.98 million shares versus a 20-day average of 212,683 \u2014 about 9 times normal volume.",
+      "source": "web",
+      "title": "Premarket Movers Oct 2, 2026: AMOD, SDEV, AIXI \u2014 StockSetups",
+      "url": "https://stocksetups.com/articles/premarket-stock-movers-2026-10-02"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monday, October 5 \u2014 ISM services, 10:00 a.m.\nET.\nAugust printed 55.4, still expansion.\nA hold above 50 says the economy is limping, not collapsing.\nA sharp drop says Friday\u2019s \u201cbad news is good news\u201d trade was a one-day rental.\nFinal S&P Global services PMI hits at 9:45 a.m.\n...\nOn October 2 the comp...",
+      "source": "web",
+      "title": "A Tick in the Market: Week of October 5\u20139, 2026",
+      "url": "https://www.moomoo.com/community/feed/a-tick-in-the-market-week-of-october-5-9-117377089994757"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "US Stock Market prediction: As the fourth quarter kicks off, the stock market is already on pace for a solid year.\nThe benchmark S&P 500 as of Friday had gained nearly 13 per cent in 2026, and sat about 1 per cent below its mid-August record high.\n...\nU.S. Stock Market indexes were in green in the p...",
+      "source": "web",
+      "title": "US Stock Market prediction for Monday, October 5: S&P 500, Nasdaq, Dow Jones, Russell 2000 investors eye positive trading today, top stocks to watch out",
+      "url": "https://economictimes.indiatimes.com/news/international/us/us-stock-market-prediction-for-monday-october-5-sp-500-nasdaq-dow-jones-russell-2000-investors-eye-positive-trading-today-top-stocks-to-watch-out/articleshow/134683447.cms"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Nike tumbled 9.6% in premarket trading to $31.79 after the athletic footwear and apparel giant reported mixed fiscal first-quarter 2027 results and issued a weaker-than-expected full-year outlook.\nNike reported adjusted earnings of 48 cents per share, topping the 44-cent consensus estimate, but reve...",
+      "source": "web",
+      "title": "Premarket movers: Nike tumbles 10%, Synaptics jumps on ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/premarket-movers-nike-tumbles-10-113756874.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5, 2026 by Reuters\n...\nNEW YORK - US stocks advanced on Friday to close out the trading week after weaker-than-expected jobs data dampened expectations for a rate hike from the Federal Reserve at its policy meeting this month.\nThe Labor Department said nonfarm payrolls increased by 29,000 jo...",
+      "source": "web",
+      "title": "Equities close higher as softer jobs data quiets rate-hike ...",
+      "url": "https://wealthinsights.metrobank.com.ph/news/us-stocks-equities-close-higher-as-softer-jobs-data-quiets-rate-hike-expectations"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "MongoDB plunged 18.5% on Monday and is currently on course to end the week down around 14.7% after President and CEO Chirantan Desai resigned with immediate effect to lead a new AI initiative at Meta Platforms.",
+      "source": "web",
+      "title": "Investing.com\u2019s stocks of the week",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/investing-com-stocks-week-183416661.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On October 2, 2026, Freeport-McMoRan provided a Q3 operational update including approximately 830 million pounds of copper production; Rivian reported Q3 production of 19,751 vehicles and reaffirmed 2026 delivery guidance of 65,000\u201370,000 vehicles; Integra cut full-year 2026 revenue and adjusted EPS...",
+      "source": "web",
+      "title": "Stock Market News for October 2, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Tesla (TSLA) said this morning that it delivered 486,532 vehicles in the third quarter, well above the 456,000 consensus of analysts tracked by Visible Alpha.",
+      "source": "web",
+      "title": "Nasdaq Hits New High; Dow, S&P 500 Book Weekly Losses",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10022026-12153808"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Stock in Fair Isaac Corp.\n(FICO) posted another big swing in premarket trading on Friday, dropping 8% after jumping 11% a day earlier.",
+      "source": "web",
+      "title": "Fair Isaac stock continues to whipsaw, falling 8% in premarket trading",
+      "url": "https://finance.yahoo.com/markets/stocks/article/fair-isaac-stock-continues-to-whipsaw-falling-8-in-premarket-trading-175347281.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "TOKYO - Japanese markets open the week of October 5 with investors focused on Prime Minister Sanae Takaichi\u2019s policy speech, the Bank of Japan\u2019s next rate signal, the yen\u2019s weakness, elevated bond yields and whether the artificial intelligence-led rally in Tokyo stocks can broaden beyond a handful o...",
+      "source": "web",
+      "title": "Japan Markets Face BOJ, Yen and AI Test in First Full ...",
+      "url": "https://newsonjapan.com/article/150947.php"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "> A digest of October 4, 2026 equity indexes, technology and sector leaders, earnings and fundamentals, market sentiment, and institutional flows, with summaries, links, and commentary.\n...\n### 1. Reuters, republished Sunday: the S&P 500 is up nearly 13% this year as a 24-year yield high meets fourt...",
+      "source": "web",
+      "title": "October 4, 2026 \u00b7 Finance & Markets Daily Digest | Swil-News",
+      "url": "https://news.supwil.com/en/news/finance/2026-10-04"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Nike shares fell 6% at the open after tanking 10% in the premarket after the global sportswear apparel giant delivered a mixed first quarter of fiscal 2027 that showed its turnaround timeline is further than expected.\n...\nNvidia popped on Friday, briefly hitting an all-time intraday high.\nShares of ...",
+      "source": "web",
+      "title": "Stock market today: Live updates",
+      "url": "https://www.cnbc.com/amp/2026/10/01/stock-market-today-live-updates-.html"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/",
+    "https://www.reuters.com/business/frances-schneider-electric-nears-20-billion-deal-buy-us-software-group-ptc-ft-2026-10-04/",
+    "https://www.investing.com/news/economy-news/take-five-reality-bites-4931117",
+    "https://stocksetups.com/articles/premarket-stock-movers-2026-10-02",
+    "https://www.moomoo.com/community/feed/a-tick-in-the-market-week-of-october-5-9-117377089994757",
+    "https://economictimes.indiatimes.com/news/international/us/us-stock-market-prediction-for-monday-october-5-sp-500-nasdaq-dow-jones-russell-2000-investors-eye-positive-trading-today-top-stocks-to-watch-out/articleshow/134683447.cms",
+    "https://finance.yahoo.com/markets/stocks/articles/premarket-movers-nike-tumbles-10-113756874.html",
+    "https://wealthinsights.metrobank.com.ph/news/us-stocks-equities-close-higher-as-softer-jobs-data-quiets-rate-hike-expectations",
+    "https://finance.yahoo.com/markets/stocks/articles/investing-com-stocks-week-183416661.html",
+    "https://www.stocktitan.net/news/2026-10-02/",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10022026-12153808",
+    "https://finance.yahoo.com/markets/stocks/article/fair-isaac-stock-continues-to-whipsaw-falling-8-in-premarket-trading-175347281.html",
+    "https://newsonjapan.com/article/150947.php",
+    "https://news.supwil.com/en/news/finance/2026-10-04",
+    "https://www.cnbc.com/amp/2026/10/01/stock-market-today-live-updates-.html"
+  ],
+  "usage": {
+    "input_tokens": 735,
+    "output_tokens": 700,
+    "cost_usd": 0.02671
+  }
+}

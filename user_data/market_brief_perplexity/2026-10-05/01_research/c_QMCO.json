@@ -1,0 +1,167 @@
+{
+  "name": "c_QMCO",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Quantum Corporation (QMCO).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| QMCO | Quantum Corporation | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +8.18% | +8.9% | 1.8\u00d7 | volume_spike 2026-09-24 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why QMCO moved. Run several searches: \"why is Quantum Corporation stock down/up\",\n\"Quantum Corporation stock\", \"QMCO shares Friday October 2, 2026\", \"Quantum Corporation concerns\", \"Quantum Corporation FDA\",\n\"Quantum Corporation analyst\", \"Quantum Corporation price target\", \"Quantum Corporation deal\", \"Quantum Corporation offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Quantum Corporation peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Quantum Corporation (QMCO) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Quantum Corporation (QMCO) `AI Infrastructure`\n- Quantum reported fiscal first-quarter 2027 adjusted EPS of **$0.18**, versus consensus of a **$0.17 loss**, and revenue of **$80.8 million**, versus the **$75.05 million** consensus estimate; the report was cited as recent news in coverage published October 2. (MarketBeat, Oct. 2, 2026; Investing.com, Oct. 2, 2026)\n- Quantum shares closed at **$34.50**, up **8.18%** on October 2, and reached **$34.76**, exceeding the prior 52-week high of **$34.68**. (Yahoo Finance, Oct. 2, 2026; Investing.com, Oct. 2, 2026)\n- Quantum\u2019s fiscal first-quarter 2027 adjusted EPS was also reported as **$0.18**, versus an analyst projection of a **$0.24 loss**, and revenue was reported as **$80.8 million**, versus a **$71.5 million** projection. (Investing.com, Oct. 2, 2026)\n- Four analysts rated Quantum **Buy** and one rated it **Sell**, producing a **Moderate Buy** consensus and an average price target of **$26.50**. (MarketBeat, Oct. 2, 2026)\n- Quantum appointed **James C. Clancy** as chief operating officer; Clancy previously held data-protection and enterprise-storage roles at **Dell and Dell EMC**. (Simply Wall St, Oct. 3, 2026)\n- Quantum\u2019s shares were reported at **$34.50** on October 2, while the cited consensus price target was **$26.50**. (Simply Wall St, Oct. 3, 2026)\n- The available October 2\u20135 coverage reported Monday, October 5 after-hours trading at **$34.60**, up **$0.10**, or **0.29%**, from the October 2 close; no Monday pre-market catalyst was identified in the available results. (Yahoo Finance, Oct. 4, 2026)\n",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Quantum shares opened lower**, falling from the prior close of $31.89 to $30.10 before recovering to $32.15 in active trading.\n- Analyst sentiment is broadly positive: four analysts rate the stock Buy versus one Sell, producing a \u201cModerate Buy\u201d consensus and an average price target of $26.50.\n- ...",
+      "source": "web",
+      "title": "Quantum (NASDAQ:QMCO) Shares Gap Down",
+      "url": "https://www.marketbeat.com/instant-alerts/price-quantum-nasdaq-qmco-shares-gap-down-should-you-sell-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Published Oct 02, 2026, 03:15 PM\n...\nQuantum Corp stock has reached a 52-week high, hitting 34.76 USD, trading just above its 52-week high of 34.68 USD.\nThis milestone reflects a significant upward trend for the company, as its stock has experienced a remarkable 1-year return of 192%.\nEven more stri...",
+      "source": "web",
+      "title": "Quantum Corp stock hits 52-week high at 34.77 USD By Investing.com",
+      "url": "https://www.investing.com/news/company-news/quantum-corp-stock-hits-52week-high-at-3477-usd-93CH-4930332"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "# Quantum Corporation (QMCO)\n34.50 +2.61 (+8.20%)\nAt close: October 2 at 4:00:00 PM EDT\n34.60 +0.10 (+0.29%)",
+      "source": "web",
+      "title": "Quantum Corporation (QMCO) Stock Price, News, Quote & ...",
+      "url": "https://finance.yahoo.com/quote/QMCO/latest-news/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Publicado 02.10.2026, 16:17\n...\nA a\u00e7\u00e3o da Quantum Corp atingiu uma m\u00e1xima de 52 semanas, chegando a US$ 34,76, sendo negociada ligeiramente acima de sua m\u00e1xima anterior de 52 semanas de US$ 34,68.\nEsse marco reflete uma tend\u00eancia de alta significativa para a empresa, cujas a\u00e7\u00f5es registraram um retor...",
+      "source": "web",
+      "title": "A\u00e7\u00e3o da Quantum Corp atinge m\u00e1xima de 52 semanas em US$ 34,77 Por Investing.com",
+      "url": "https://br.investing.com/news/company-news/acao-da-quantum-corp-atinge-maxima-de-52-semanas-em-us-3477-93CH-2082277"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Ver\u00f6ffentlicht am 02.10.2026, 21:18\n...\nDie Aktie der Quantum Corp hat ein 52-Wochen-Hoch erreicht und notierte bei 34,76 USD, knapp \u00fcber dem bisherigen H\u00f6chststand von 34,68 USD.\nDieser Meilenstein spiegelt einen signifikanten Aufw\u00e4rtstrend f\u00fcr das Unternehmen wider, dessen Aktie eine bemerkenswert...",
+      "source": "web",
+      "title": "Quantum Corp-Aktie erreicht neues 52-Wochen-Hoch Von Investing.com",
+      "url": "https://de.investing.com/news/company-news/quantum-corpaktie-erreicht-neues-52wochenhoch-93CH-3688913"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "L\u2019action Quantum Corp a atteint un sommet sur 52 semaines, touchant 34,76 USD, se n\u00e9gociant l\u00e9g\u00e8rement au-dessus de son pr\u00e9c\u00e9dent sommet annuel de 34,68 USD.\nCette \u00e9tape refl\u00e8te une tendance haussi\u00e8re significative pour la soci\u00e9t\u00e9, dont l\u2019action a enregistr\u00e9 un rendement remarquable de 192 % sur un ...",
+      "source": "web",
+      "title": "L\u2019action Quantum Corp atteint un sommet annuel \u00e0 34,77 USD Par Investing.com",
+      "url": "https://fr.investing.com/news/company-news/laction-quantum-corp-atteint-un-sommet-annuel-a-3477-usd-93CH-3619953"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Quantum Corp stock has reached a 52-week high, hitting 34.76 USD, trading just above its 52-week high of 34.68 USD.\nThis milestone reflects a significant upward trend for the company, as its stock has experienced a remarkable 1-year return of 192%.\nEven more striking, the stock has surged 461% over ...",
+      "source": "web",
+      "title": "Quantum Corp stock hits 52-week high at 34.77 USD",
+      "url": "https://ng.investing.com/news/stock-market-news/quantum-corp-stock-hits-52week-high-at-3477-usd-93CH-2720412"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "# Quantum Corporation\n34.50\nUSD\n+2.61\n+8.20%\nOct 02, 16:00 UTC -4\nAfter-Market\n34.70\n+0.20\n+0.58%\n...\nMarket Closed as of Oct 2, 2026\nTechnical OutlookQuantum Corporation moving averages are strongly bullish on the 1D timeframe, but oscillators are showing selling pressure.\nThe trend points higher w...",
+      "source": "web",
+      "title": "Quantum Corporation (QMCO) Technical Analysis \u2013 Signals, Pivots & Indicators",
+      "url": "https://www.fxempire.com/stocks/qmco/technical-analysis"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Akcje Quantum Corp osi\u0105gn\u0119\u0142y 52-tygodniowe maksimum, notuj\u0105c cen\u0119 34,76 $, tu\u017c powy\u017cej poprzedniego szczytu z ostatniego roku wynosz\u0105cego 34,68 $.\nTen kamie\u0144 milowy odzwierciedla znacz\u0105cy trend wzrostowy sp\u00f3\u0142ki, kt\u00f3rej akcje odnotowa\u0142y imponuj\u0105cy zwrot na poziomie 192% w ci\u0105gu roku.\nJeszcze bardziej...",
+      "source": "web",
+      "title": "Akcje Quantum Corp osi\u0105gaj\u0105 52-tygodniowe maksimum ...",
+      "url": "https://pl.investing.com/news/company-news/akcje-quantum-corp-osiagaja-52tygodniowe-maksimum-na-poziomie-3477--93CH-1588039"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "\u05d4\u05ea\u05e4\u05e8\u05e1\u05dd 02.10.2026, 22:18\n...\n\u05de\u05e0\u05d9\u05d9\u05ea Quantum Corp \u05d4\u05d2\u05d9\u05e2\u05d4 \u05dc\u05e9\u05d9\u05d0 \u05e9\u05dc 52 \u05e9\u05d1\u05d5\u05e2\u05d5\u05ea, \u05db\u05e9\u05d4\u05d9\u05d0 \u05e0\u05d5\u05d2\u05e2\u05ea \u05d1\u05e8\u05de\u05d4 \u05e9\u05dc $34.76, \u05d5\u05e0\u05e1\u05d7\u05e8\u05ea \u05de\u05e2\u05d8 \u05de\u05e2\u05dc \u05e9\u05d9\u05d0 52 \u05d4\u05e9\u05d1\u05d5\u05e2\u05d5\u05ea \u05d4\u05e7\u05d5\u05d3\u05dd \u05e9\u05dc $34.68.\n\u05d0\u05d1\u05df \u05d3\u05e8\u05da \u05d6\u05d5 \u05de\u05e9\u05e7\u05e4\u05ea \u05de\u05d2\u05de\u05ea \u05e2\u05dc\u05d9\u05d9\u05d4 \u05de\u05e9\u05de\u05e2\u05d5\u05ea\u05d9\u05ea \u05e2\u05d1\u05d5\u05e8 \u05d4\u05d7\u05d1\u05e8\u05d4, \u05db\u05d0\u05e9\u05e8 \u05d4\u05de\u05e0\u05d9\u05d9\u05d4 \u05e8\u05e9\u05de\u05d4 \u05d4\u05d7\u05d6\u05e8 \u05e9\u05dc 192% \u05d1\u05e9\u05e0\u05d4 \u05d4\u05d0\u05d7\u05e8\u05d5\u05e0\u05d4.\n\u05e2\u05d5\u05d3 \u05d9\u05d5\u05ea\u05e8 \u05de\u05e8\u05e9\u05d9\u05dd, \u05d4\u05de\u05e0\u05d9\u05d9\u05d4 \u05d6\u05d9\u05e0\u05e7\u05d4 \u05d1-461% \u05d1\u05de\u05d4\u05dc\u05da \u05e9\u05e9\u05ea \u05d4\u05d7\u05d5\u05d3\u05e9\u05d9\u05dd \u05d4\u05d0\u05d7\u05e8\u05d5...",
+      "source": "web",
+      "title": "\u05d7\u05d3\u05e9\u05d5\u05ea \u05e2\u05d3\u05db\u05e0\u05d9\u05d5\u05ea \u05e2\u05dc \u05d7\u05d1\u05e8\u05d5\u05ea - Investing.com",
+      "url": "https://il.investing.com/news/company-news/article-93CH-983271"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Published 02/10/2026, 20:16\n...\nQuantum Corp stock has reached a 52-week high, hitting 34.76 USD, trading just above its 52-week high of 34.68 USD.\nThis milestone reflects a significant upward trend for the company, as its stock has experienced a remarkable 1-year return of 192%.\nEven more striking,...",
+      "source": "web",
+      "title": "Quantum Corp stock hits 52-week high at 34.77 USD",
+      "url": "https://uk.investing.com/news/stock-market-news/quantum-corp-stock-hits-52week-high-at-3477-usd-93CH-4894044"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "81\nQMCO Quantum Corporation +193.37%\n$1.36B\n$34.50\n\u2026\nUnited States\nHealthcare",
+      "source": "web",
+      "title": "Best Performing Stocks - 52-Week Gainers (October 2026)",
+      "url": "https://www.stocktitan.net/rankings/stock-gains?page=1&e=0&symbol=EWTX"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "October 03, 2026\nQuantum (QMCO) has drawn fresh attention after appointing James C. Clancy as Chief Operating Officer, a veteran of Dell and Dell EMC with deep experience in data protection and enterprise storage.\nRecent trading has been brisk, with Quantum\u2019s share price up 51.45% over the past 30 d...",
+      "source": "web",
+      "title": "Quantum (QMCO) Gets A Turnaround Test Following COO ...",
+      "url": "https://simplywall.st/stocks/us/tech/nasdaq-qmco/quantum/news/quantum-qmco-gets-a-turnaround-test-following-coo-hire-and-a"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Quantum Corporation (NASDAQ:QMCO) provides data storage, management and protection solutions for organizations that generate and retain large volumes of unstructured data.\nIts customers include businesses, media and entertainment companies, government agencies, research institutions and other organi...",
+      "source": "web",
+      "title": "Quantum (QMCO) Stock Price, News & Analysis",
+      "url": "https://www.marketbeat.com/stocks/NASDAQ/QMCO/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Thu, 1 Oct 26\n...\nQuantum Corporation provides data management solutions for unstructured data in the Americas, Europe, the Middle East, Africa, and the Asia Pacific.\n...\nAnalysts raised their fair value estimate for Quantum to $26.50 from $24, citing recent price target increases on the stock and f...",
+      "source": "web",
+      "title": "Quantum (NasdaqGM:QMCO) Stock Price - Simply Wall St",
+      "url": "https://simplywall.st/stock/NasdaqGM/QMCO?bpId=4772670&link_type=cta_other_fv_estimates"
+    }
+  ],
+  "citations": [
+    "https://www.marketbeat.com/instant-alerts/price-quantum-nasdaq-qmco-shares-gap-down-should-you-sell-2026-10-02/",
+    "https://www.investing.com/news/company-news/quantum-corp-stock-hits-52week-high-at-3477-usd-93CH-4930332",
+    "https://finance.yahoo.com/quote/QMCO/latest-news/",
+    "https://br.investing.com/news/company-news/acao-da-quantum-corp-atinge-maxima-de-52-semanas-em-us-3477-93CH-2082277",
+    "https://de.investing.com/news/company-news/quantum-corpaktie-erreicht-neues-52wochenhoch-93CH-3688913",
+    "https://fr.investing.com/news/company-news/laction-quantum-corp-atteint-un-sommet-annuel-a-3477-usd-93CH-3619953",
+    "https://ng.investing.com/news/stock-market-news/quantum-corp-stock-hits-52week-high-at-3477-usd-93CH-2720412",
+    "https://www.fxempire.com/stocks/qmco/technical-analysis",
+    "https://pl.investing.com/news/company-news/akcje-quantum-corp-osiagaja-52tygodniowe-maksimum-na-poziomie-3477--93CH-1588039",
+    "https://il.investing.com/news/company-news/article-93CH-983271",
+    "https://uk.investing.com/news/stock-market-news/quantum-corp-stock-hits-52week-high-at-3477-usd-93CH-4894044",
+    "https://www.stocktitan.net/rankings/stock-gains?page=1&e=0&symbol=EWTX",
+    "https://simplywall.st/stocks/us/tech/nasdaq-qmco/quantum/news/quantum-qmco-gets-a-turnaround-test-following-coo-hire-and-a",
+    "https://www.marketbeat.com/stocks/NASDAQ/QMCO/",
+    "https://simplywall.st/stock/NasdaqGM/QMCO?bpId=4772670&link_type=cta_other_fv_estimates"
+  ],
+  "usage": {
+    "input_tokens": 997,
+    "output_tokens": 458,
+    "cost_usd": 0.02386
+  }
+}

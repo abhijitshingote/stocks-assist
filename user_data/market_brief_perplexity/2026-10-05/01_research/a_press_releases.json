@@ -1,0 +1,167 @@
+{
+  "name": "a_press_releases",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Press releases: deals & contracts.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nPress releases (BusinessWire, PR Newswire, GlobeNewswire, company IR) from US-listed companies >= $1B and large foreign ADRs: acquisitions and take-privates (price per share, CVRs), contract awards >= $100M, final investment decisions, JV awards, licensing and exchange/index agreements, dealer or asset purchases. One bullet per company with the $ figure and stock move.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **ON** / **SYNA** \u2014 Semiconductors [Acquisition]\n\n- ON Semiconductor amended its agreement to acquire **Synaptics** for **$123 per SYNA share in cash**, valuing the transaction at approximately **$5.7 billion**, replacing the prior all-stock structure valued at roughly $7 billion; U.S. antitrust clearance had been obtained, with closing expected by mid-2027 subject to Synaptics shareholder approval and remaining regulatory approvals. **ON rose approximately 8% and SYNA rose approximately 14%** in Friday morning trading. (Yahoo Finance, Oct. 2, 10:27 ET; Advfn, Oct. 2, 06:22 ET)\n\n## **CVE** / Athabasca Oil \u2014 Energy [Acquisition]\n\n- **Cenovus Energy** announced an agreement to acquire **Athabasca Oil Corporation**; the available search results identify the transaction and its publication at **06:00 ET on October 5**, but do not provide the purchase price, per-share consideration, closing conditions, or stock moves before the **12:20 ET** cutoff. (Business Insider, Oct. 5, 06:00 ET)\n\n## **MAT** \u2014 Retail [Acquisition rumor]\n\n- **Authentic Brands Group** was reported to have approached **Mattel** regarding a potential takeover valued at approximately **$6 billion or more**, with discussions involving an offer above **$20 per share**; the available result does not provide a confirmed Mattel agreement or a stock move within the cutoff window. [rumor] (Reuters, as summarized by The Special Situation Report, Oct. 4)\n\n",
+  "search_results": [
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "ENERGY SERVICES OF AMERICA ANNOUNCES AGREEMENT TO ACQUIRE FAMCO, INC.\n| Press Releases | timesargus.com\n- Contact: 802-479-0191\n- - ** Updated: October 4, 2026 @ 5:48 am\nSunday, October 4, 2026\nAdvertorial\n# ENERGY SERVICES OF AMERICA ANNOUNCES AGREEMENT TO ACQUIRE FAMCO, INC.\n- By Energy Services o...",
+      "source": "web",
+      "title": "ENERGY SERVICES OF AMERICA ANNOUNCES ...",
+      "url": "https://www.timesargus.com/online_features/press_releases/energy-services-of-america-announces-agreement-to-acquire-famco-inc/article_9e649569-fb4b-5644-afb0-f19fcee21d02.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "### Update on Developing M&A\n- **111 (YI):** The Board has established a special committee, comprising three independent directors, Chairman Jian Sun, Nee Chuan Teo, and Jun Luo, to consider and evaluate the non-binding offer from co-founders, as well as other potential strategic alternatives the co...",
+      "source": "web",
+      "title": "The Special Situation Report #234: October 4 Roundup",
+      "url": "https://www.thespecialsituationreport.com/p/the-special-situation-report-234"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Stock Market News for October 4, 2026\n8 news published.\n3 oct 2026 5 oct 2026\n...\nORCL : NYSE\nOracle Announces $10 Million Partnership with the Nashville Symphony\npartnership\n...\nCSL and Alentis announce global partnership to develop and commercialise lixudebart for rare kidney and liver diseases",
+      "source": "web",
+      "title": "www.stocktitan.net \u00b7 news \u00b7 2026/10/04Stock Market News for Oct 4, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-04/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 9:27 AM CST\n...\n**What happened: ** Synaptics (SYNA) stock jumped 14% on Friday, while ON Semiconductor (ON) stock jumped 5%.\n**What's behind the move: ** The chipmakers revised the terms of ON's purchase of Synaptics, helping lift shares of both companies.\nUnder the amended\u00a0...",
+      "source": "web",
+      "title": "ON Semiconductor, Synaptics stocks jump on revised ...",
+      "url": "https://finance.yahoo.com/markets/article/on-semiconductor-synaptics-stocks-jump-on-revised-merger-deal-152416209.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Aura Minerals (AUGO) signed definitive agreement to acquire Newco to insource mining fleet operations at Apoena, Almas and Borborema for an enterprise value of R$612 million (about **$118 million**) with up to R$250 million cash and the remainder in assumed lease financing and contingent payments.\n....",
+      "source": "web",
+      "title": "Stock Market News for October 2, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-02/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "### WIN Semiconductors Welcomes SawStreet LLC to the WIN ALLIANCE Partner Program\nOrlando-based backend specialist gives WIN customers an additional U.S. source for wafer grinding, thinning, dicing, pick-and-place and die inspection\n...\n### SGS advances Digital Trust strategy with Prescient Security...",
+      "source": "web",
+      "title": "Press Releases on October 5, 2026",
+      "url": "https://www.einpresswire.com/calendar/2026/10/05"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 12:07 AM CST\n...\n- Synaptics Incorporated (SYNA) shares surged 14.1% after ON Semiconductor (ON) revised its $5.7 billion acquisition terms.",
+      "source": "web",
+      "title": "Company News for Oct 5, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Each of the company logos represented herein are trademarks of Microsoft Corporation; Dow Jones & Company; Nasdaq, Inc.; Forbes Media, LLC; Investor's Business Daily, Inc.; and Morningstar, Inc.\n...\nNYSE and AMEX data is at least 20 minutes delayed.",
+      "source": "web",
+      "title": "Company News for Oct 2, 2026",
+      "url": "https://www.zacks.com/stock/news/2999281/company-news-for-oct-2-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Synaptics Shares Rise 13.8% After Merger Terms Revised to $123-Per-Share Cash Offer\n...\nOctober 02 2026 6:22AM\n...\nSynaptics (NASDAQ:SYNA) shares rose 13.8% in pre-market trading after ON Semiconductor (NASDAQ:ON) and Synaptics amended their merger agreement to convert the proposed transaction fr...",
+      "source": "web",
+      "title": "Synaptics Shares Rise 13.8% After Merger Terms Revised to $123-Per-Share Cash Offer",
+      "url": "https://investorshub.advfn.com/market-news/article/37379/synaptics-shares-rise-13-8-after-merger-terms-revised-to-123-per-share-cash-offer"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "# SEC Filings for October 2, 2026\n...\nNo funds were used to acquire Hegro's stake in GOWell Energy Technology (GOW).",
+      "source": "web",
+      "title": "Today's SEC Filings - Latest 10-K, 10-Q, 8-K Forms",
+      "url": "https://www.stocktitan.net/sec-filings/2026-10-02/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "RST CTI Assistant, RST Cloud's AI-powered threat intelligence advisor, is now available as a bot inside Microsoft Teams.\n...\nShibui Labs announces a free Steam demo for Eternal Blade, an open-world souls-like RPG adapted from its original manga series.\n...\nThe U.S. Army Corps of Engineers\u2019 (USACE) S...",
+      "source": "web",
+      "title": "Press Releases on October 5, 2026",
+      "url": "https://www.einpresswire.com/calendar/2026/10/05?page=4"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "InterContinental Hotels Group PLC Announces Transaction in Own Shares - October 05\n...\nRETRANSMISSION: Advanced Gold Signs MOU to Acquire Corcoran Silver Gold Property with Historical Inferred Silver Resource\nacquisition penny stock\n...\ne.l.f.\nExpands Into Fragrance and Body Care Categories with Lau...",
+      "source": "web",
+      "title": "NYSE, NASDAQ & OTC Headlines - News",
+      "url": "https://www.stocktitan.net/news/2026-10-05/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "WISeSat.Space Shares Open Trading On October 2 Following Merger With Columbus Acquisition Corp\n- Headlines **\n- WISeSat.Space Shares Open Trading On October 2 Following Merger With Columbus Acquisition Corp\n# WISeSat.Space Shares Open Trading On October 2 Following Merger With Columbus Acquisition C...",
+      "source": "web",
+      "title": "WISeSat.Space Shares Open Trading On October 2 Following Merger With Columbus Acquisition Corp",
+      "url": "https://www.moomoo.com/news/post/1000556872/wisesatspace-shares-open-trading-on-october-2-following-merger-with"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On Semiconductor scrapped its stock deal for Synaptics and replaced it with cash, and both stocks surged on the news for reasons that point in opposite directions.\n...\nPublished October 2, 2026, 9:13am ET \u00b7 3 min read\n...\n## Quick Read\n- ON jumps 8% and SYNA surges 14% after On Semiconductor swaps i...",
+      "source": "web",
+      "title": "On Semiconductor Climbs 8%, Synaptics Surges 14% as $5.7B Cash Bid Replaces $7B Stock Deal",
+      "url": "https://247wallst.com/investing/2026/10/02/on-semiconductor-climbs-8-synaptics-surges-14-as-5-7b-cash-bid-replaces-7b-stock-deal/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "|06:00 AM 10/05/2026 06:00:00 AM UTC-0400| |Athabasca Oil Announces Agreement to be Acquired by Cenovus Energy|\n|06:00 AM 10/05/2026 06:00:00 AM UTC-0400| |Cenovus announces agreement to acquire Athabasca Oil Corporation|",
+      "source": "web",
+      "title": "News Archive | Markets Insider",
+      "url": "https://markets.businessinsider.com/news/archive/2026/10/5"
+    }
+  ],
+  "citations": [
+    "https://www.timesargus.com/online_features/press_releases/energy-services-of-america-announces-agreement-to-acquire-famco-inc/article_9e649569-fb4b-5644-afb0-f19fcee21d02.html",
+    "https://www.thespecialsituationreport.com/p/the-special-situation-report-234",
+    "https://www.stocktitan.net/news/2026-10-04/",
+    "https://finance.yahoo.com/markets/article/on-semiconductor-synaptics-stocks-jump-on-revised-merger-deal-152416209.html",
+    "https://www.stocktitan.net/news/2026-10-02/",
+    "https://www.einpresswire.com/calendar/2026/10/05",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html",
+    "https://www.zacks.com/stock/news/2999281/company-news-for-oct-2-2026",
+    "https://investorshub.advfn.com/market-news/article/37379/synaptics-shares-rise-13-8-after-merger-terms-revised-to-123-per-share-cash-offer",
+    "https://www.stocktitan.net/sec-filings/2026-10-02/",
+    "https://www.einpresswire.com/calendar/2026/10/05?page=4",
+    "https://www.stocktitan.net/news/2026-10-05/",
+    "https://www.moomoo.com/news/post/1000556872/wisesatspace-shares-open-trading-on-october-2-following-merger-with",
+    "https://247wallst.com/investing/2026/10/02/on-semiconductor-climbs-8-synaptics-surges-14-as-5-7b-cash-bid-replaces-7b-stock-deal/",
+    "https://markets.businessinsider.com/news/archive/2026/10/5"
+  ],
+  "usage": {
+    "input_tokens": 779,
+    "output_tokens": 350,
+    "cost_usd": 0.02159
+  }
+}

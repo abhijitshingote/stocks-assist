@@ -1,0 +1,167 @@
+{
+  "name": "tickers_12",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| PLTR | Palantir Technologies Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.68% | -0.5% | 0.8\u00d7 | both 2026-08-04 |\n| MPC | Marathon Petroleum Corporation | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +0.52% | +7.3% | 0.6\u00d7 | \u2014 |\n| VLO | Valero Energy Corporation | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.53% | +4.9% | 0.6\u00d7 | gapper 2026-01-05 |\n| PS | Pershing Square Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -0.85% | -6.0% | 0.2\u00d7 | volume_spike 2026-09-18 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Palantir Technologies Inc. (PLTR) `[AI Infrastructure]`\n- Palantir named Armada its first **Certified Modular Data Center Partner**, combining Palantir\u2019s Sovereign AI Operating System with Armada\u2019s Galleon modular data centers, Armada Platform, and Sovereign AI Grid; financial terms, purchase commitments, customer count, and revenue-sharing terms were not disclosed. (Business Wire, Oct. 1, 22:00 ET; Yahoo Finance, Oct. 2, 08:13 ET)[1][4][5]\n- The Armada partnership was reported as supporting deployment of open-weight AI models on customer-controlled infrastructure in months rather than through multiyear infrastructure projects; Palantir shares were cited as nearly **1% higher in early Friday trading** before closing at **$188.75**, down **0.68%** on Oct. 2. (Yahoo Finance, Oct. 2, 08:13 ET; Ad-Hoc-News, Oct. 4)[5][6]\n- Palantir\u2019s second-quarter 2026 revenue was **$1.935 billion**, up **92.83%** year over year, and EPS was **$0.41** versus a **$0.28 consensus estimate**; U.S. commercial revenue was **$764 million**, up **149%** year over year. (24/7 Wall St., Oct. 2, 08:45 ET; Ad-Hoc-News, Oct. 4)[6][15]\n- Management\u2019s previously issued third-quarter 2026 revenue guidance was approximately **$2.16 billion\u2013$2.164 billion**, while full-year 2026 revenue guidance was **$8.150 billion\u2013$8.158 billion**; Palantir had not confirmed its third-quarter earnings date, while Benzinga listed **Nov. 2**. (24/7 Wall St., Oct. 2, 08:45 ET; Yahoo Finance, Oct. 2, 08:22 ET)[1][8][15]\n- UBS maintained a **Buy** rating and raised its price target from **$220 to $250** on **Sept. 15, 2026**, outside the requested window but directly relevant to the stock\u2019s valuation context. (CNBC, reported Oct. 2)[8]\n- ARK Invest sold **20,805 Palantir shares** on Thursday, comprising **14,970 shares** through ARKQ and **5,835 shares** through ARKX; the reported value was approximately **$3.95 million** based on a **$190.40** closing price. (Benzinga, Oct. 2)[14]\n\n## Marathon Petroleum Corporation (MPC) `[Energy]`\n- No company-specific catalyst found in window.\n\n## Valero Energy Corporation (VLO) `[Energy]`\n- No company-specific catalyst found in window.\n\n## Pershing Square Inc. (PS) `[Asset Management]`\n- No company-specific catalyst found in window.",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Palantir Stock Rose 60% in Q3.\nHere\u2019s Why It Still Trades at Roughly Half Its Year-Start Earnings Multiple\n...\nAs of October 2, Wall Street expects **Palantir Technologies (** PLTR:NASDAQ**)** to generate about $8.2 billion in 2026 revenue.\nThat is roughly 31% above the consensus on December 31, 202...",
+      "source": "web",
+      "title": "Palantir Stock Rose 60% in Q3. Here's Why It Still Trades at ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/palantir-stock-rose-60-q3-151806420.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Palantir Technologies (PLTR) is back in focus after announcing a partnership with Armada to offer sovereign AI capabilities on modular data centers built in the U.S. and allied countries.\nThe joint setup combines Palantir's Sovereign AI Operating System with Armada's Galleon data centers and control...",
+      "source": "web",
+      "title": "Palantir Technologies (PLTR) Teams With Armada On ...",
+      "url": "https://simplywall.st/stocks/us/software/nasdaq-pltr/palantir-technologies/news/palantir-technologies-pltr-teams-with-armada-on-sovereign-ai"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Palantir Stocks Gain 1.82% as Armada Becomes Modular Data-Center Partner\n...\nPalantir Technologies (NASDAQ:PLTR), the defense and enterprise-AI software company, named Armada its first certified modular data-center partner, with shares up approximately 1.82% to $193.505 at 11.05am ET on October 2.\nT...",
+      "source": "web",
+      "title": "Palantir Stocks Gain 1.82% as Armada Becomes Modular ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/palantir-stocks-gain-1-82-171915457.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "As of Oct 2, 2026, 8:00:13 PM Delayed Price Closed\n...\n### Palantir Is the Ideal AI Software for Governments and Enterprises\nMichael Hodel Oct 1, 2026\n...\n- ### Palantir Partners With Armada for Sovereign AI Data Centers\nGlobal News Select Oct 1, 2026, 10:45:00 PM\n- ### Palantir and Armada Partner t...",
+      "source": "web",
+      "title": "Palantir Technologies Inc Ordinary Shares - Class A (PLTR)",
+      "url": "https://www.morningstar.com/stocks/xnas/pltr/quote"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 9:13 AM GMT-3\n...\nPalantir Technologies (PLTR) is expanding its sovereign AI offering beyond software by teaming up with Armada on modular computing infrastructure.\nThe deal names Armada as Palantir's first Certified Modular Data Center Partner.\nIts Galleon data centers will ...",
+      "source": "web",
+      "title": "Palantir Shares Climb After New AI Infrastructure Deal With ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/palantir-shares-climb-ai-infrastructure-121342181.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Palantir stock closed at USD 188.75 on October 2, 2026, down 0.68 percent.\nQ2 revenue reached USD 1.935 billion, while analysts see a USD 195.33 target.\n...\nPalantir Technologies (ISIN US69608A1088) closed at USD 188.75 on Nasdaq on October 2, 2026, down 0.68 percent from USD 190.04.\nThe company ann...",
+      "source": "web",
+      "title": "Palantir stock gets a sovereign AI infrastructure deal",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/palantir-stock-gets-a-sovereign-ai-infrastructure-deal/70225578"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "03:59:59 PM EDT 10/2/2026 BTT\n...\nOn Thursday 10/01/2026 the closing price of the Palantir share was $190.05 on BTT.\nCompared to the opening price on Thursday 10/01/2026 on BTT of $193.13, this is a drop of 1.62%.\nPalantir's market capitalization is $450.84 B by 2.30 B shares outstanding.\n...\nPalant...",
+      "source": "web",
+      "title": "Palantir Stock Price | PLTR Stock Quote, News, and History",
+      "url": "https://markets.businessinsider.com/stocks/pltr-stock"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Q2 revenue hit USD 1.94 billion, up 92.80 percent.\nPalantir stock costs EUR 170.61 on October 2, 2026 versus EUR 168.54, plus 1.23 percent.\n...\nUBS raised its Palantir Technologies price target from USD 220 to USD 250 on September 15, 2026, while maintaining a Buy rating, according to CNBC.\nPalantir...",
+      "source": "web",
+      "title": "UBS raises target for Palantir stock from USD 220 to USD 250",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/ubs-raises-target-for-palantir-stock-from-usd-220-to-usd-250/70216109"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Defender Capital increased its Palantir stake by 3.3%** in the third quarter, bringing its holdings to 319,757 shares valued at approximately $59.8 million.\nPalantir now represents 18.8% of the firm\u2019s portfolio, while institutional investors collectively own 45.65% of the stock.\n- Palantir repor...",
+      "source": "web",
+      "title": "Palantir Technologies Inc. $PLTR Stock Acquired by ...",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-palantir-technologies-inc-pltr-stock-acquired-by-defender-capital-llc-2026-10-01/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Anthropic is reportedly adopting a founder-control voting structure modeled on Palantir's, granting its CEO and co-founders 50.1% of voting power ahead of a possible IPO.\n- Palantir's model-agnostic AIP platform, supporting multiple AI providers rather than one proprietary model, is increasingly b...",
+      "source": "web",
+      "title": "Everyone in AI Is Quietly Copying Palantir's Playbook",
+      "url": "https://www.marketbeat.com/articles/everyone-in-ai-is-quietly-copying-palantirs-playbook/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-09-16",
+      "place_metadata": null,
+      "snippet": "### Palantir\u2019s stock is slumping. Why bond yields and Google may be to blame.\n...\nET by Christine Ji",
+      "source": "web",
+      "title": "Palantir Technologies Inc. Stock Quote (U.S. - PLTR",
+      "url": "https://www.marketwatch.com/investing/stock/pltr"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Sep 30, 2026\n...\nOct 1, 2026",
+      "source": "web",
+      "title": "Palantir, Armada Partner on Sovereign AI Infrastructure",
+      "url": "https://www.stocktitan.net/news/PLTR/palantir-and-armada-partner-to-accelerate-sovereign-ai-h3x1onwjq9vl.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 9:45 AM GMT-3\n...\n### Quick Read\n- Palantir (PLTR) earned a BUY rating with a $202 price target after Q2 revenue surged 93% and EPS of $0.41 crushed the $0.28 estimate for a ninth straight beat.\n...\nOur 24/7 Wall St. price target for **Palantir Technologies** (NASDAQ:PLTR) is...",
+      "source": "web",
+      "title": "Palantir's Growth Could Justify a Much Higher Stock Price",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/palantir-growth-could-justify-much-124523031.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Cathie Wood**-led Ark Invest trimmed its position in **Palantir Technologies Inc.** PLTR on Thursday, as the artificial intelligence software company\u2019s stock continued to attract investor attention after a strong third quarter.\n...\nARK Invest sold 14,970 Palantir shares through its **ARK Autonomou...",
+      "source": "web",
+      "title": "Peter Thiel Says US AI Demand Is Booming, but Cathie ...",
+      "url": "https://www.tradingview.com/news/benzinga:b7d424813094b:0-peter-thiel-says-us-ai-demand-is-booming-but-cathie-wood-is-trimming-palantir-here-s-how-much-ark-invest-sold/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Palantir just posted its ninth consecutive earnings beat and revenue growth that left Wall Street scrambling to revise its models upward, yet the stock still sits 9% below its peak.\n...\nPublished October 2, 2026, 8:45am ET \u00b7 3 min read\n...\n- Palantir (PLTR) earned a BUY rating with a $202 price targ...",
+      "source": "web",
+      "title": "Palantir\u2019s Growth Could Justify a Much Higher Stock Price",
+      "url": "https://247wallst.com/investing/2026/10/02/palantirs-growth-could-justify-a-much-higher-stock-price/"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/palantir-stock-rose-60-q3-151806420.html",
+    "https://simplywall.st/stocks/us/software/nasdaq-pltr/palantir-technologies/news/palantir-technologies-pltr-teams-with-armada-on-sovereign-ai",
+    "https://finance.yahoo.com/markets/stocks/articles/palantir-stocks-gain-1-82-171915457.html",
+    "https://www.morningstar.com/stocks/xnas/pltr/quote",
+    "https://finance.yahoo.com/technology/ai/articles/palantir-shares-climb-ai-infrastructure-121342181.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/palantir-stock-gets-a-sovereign-ai-infrastructure-deal/70225578",
+    "https://markets.businessinsider.com/stocks/pltr-stock",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/ubs-raises-target-for-palantir-stock-from-usd-220-to-usd-250/70216109",
+    "https://www.marketbeat.com/instant-alerts/filing-palantir-technologies-inc-pltr-stock-acquired-by-defender-capital-llc-2026-10-01/",
+    "https://www.marketbeat.com/articles/everyone-in-ai-is-quietly-copying-palantirs-playbook/",
+    "https://www.marketwatch.com/investing/stock/pltr",
+    "https://www.stocktitan.net/news/PLTR/palantir-and-armada-partner-to-accelerate-sovereign-ai-h3x1onwjq9vl.html",
+    "https://finance.yahoo.com/markets/stocks/articles/palantir-growth-could-justify-much-124523031.html",
+    "https://www.tradingview.com/news/benzinga:b7d424813094b:0-peter-thiel-says-us-ai-demand-is-booming-but-cathie-wood-is-trimming-palantir-here-s-how-much-ark-invest-sold/",
+    "https://247wallst.com/investing/2026/10/02/palantirs-growth-could-justify-a-much-higher-stock-price/"
+  ],
+  "usage": {
+    "input_tokens": 1085,
+    "output_tokens": 649,
+    "cost_usd": 0.02699
+  }
+}

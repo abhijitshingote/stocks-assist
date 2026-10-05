@@ -1,0 +1,167 @@
+{
+  "name": "tickers_10",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| EPAM | EPAM Systems, Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -5.30% | +0.1% | 0.9\u00d7 | gapper 2026-10-01 |\n| GLOB | Globant S.A. | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -5.08% | +1.7% | 0.8\u00d7 | gapper 2026-10-01 |\n| CRWD | CrowdStrike Holdings, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +1.48% | +7.1% | 0.5\u00d7 | gapper 2026-08-27 |\n| AMD | Advanced Micro Devices, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +2.95% | +0.5% | 0.8\u00d7 | gapper 2026-07-30 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## EPAM Systems, Inc. (EPAM) `[Software & SaaS]`\n- EPAM shares fell **5.30% on Friday, October 2**, according to the verified tape; a contemporaneous market report said the decline occurred in **low-volume trading** and was not linked to a new EPAM announcement. (MarketBeat, Oct. 2, 2026)\n- EPAM announced on **October 2 at 4:00 p.m. ET** that it will release third-quarter 2026 results before a conference call on **Thursday, November 5, 2026, at 8:00 a.m. ET**. (EPAM Investor Relations/PR Newswire, Oct. 2, 2026)\n- EPAM\u2019s latest reported quarter had adjusted EPS of **$3.38 versus $3.16 consensus** and revenue of **$1.41 billion**, up **4.6% year over year**; the figures were released before the October 2\u20135 window and are cited as the company\u2019s latest operating reference. (MarketBeat, Oct. 2, 2026)\n- EPAM\u2019s previously issued fiscal-2026 adjusted EPS guidance was **$13.08\u2013$13.24**, with third-quarter guidance of **$3.38\u2013$3.46**. (MarketBeat, Oct. 2, 2026)\n- No company-specific after-hours or pre-market catalyst dated between Friday\u2019s close and **Monday, October 5, 2026, 12:20 p.m. ET** was identified in the available search results.\n- EPAM was cited as part of a broader IT-services read-through following a larger consulting peer\u2019s quarterly report on **October 1, 2026**, but the available report did not identify the peer by name or provide verified figures for a direct October 2 catalyst. (Moomoo/Quiver Quantitative, Oct. 2, 2026)",
+  "search_results": [
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "EPAM Systems stock fell 5.30 percent on October 2\n...\nEPAM Systems stock remains tied to adjusted Q2 EPS of USD 3.38 reported on August 6, 2026.\nThe Hold consensus target is USD 116.47.\n...\nEPAM Systems stock (ISIN US29414B1044) was last at USD 108.29 on the NYSE on October 2, 2026 at 4:00 p.m.\nET, ...",
+      "source": "web",
+      "title": "EPAM Systems stock fell 5.30 percent on October 2",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/epam-systems-stock-fell-5-30-percent-on-october-2/70223922"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 2, 2026\n...\n## Key Points\n- **EPAM Systems shares fell 4.5%** to about $109.24 in low-volume trading, near the company\u2019s 50-day moving average and below its average analyst price target of $116.47.\n- Analysts have recently lowered price targets, although sentiment remains mixed: six rate the...",
+      "source": "web",
+      "title": "EPAM Systems (NYSE:EPAM) Stock Price Down 4.5% - Time to Sell?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-epam-systems-nyse-epam-stock-price-down-45-time-to-sell-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "EPAM Systems stock was at EUR 96.45 after-hours at 10:16 p.m.\nCEST on October 2, 2026, minus 5.35 percent versus the prior close at Lang & Schwarz.\nEPAM also reported recognition in Spain.\n...\nEPAM Systems stock was at **EUR 96.45** after-hours at 10:16 p.m.\nCEST on October 2, 2026, a change of **mi...",
+      "source": "web",
+      "title": "EPAM Systems stock after-hours at EUR 96.45: minus 5.35 ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nachboerse/epam-systems-stock-after-hours-at-eur-96-45-minus-5-35-percent-versus-prior-close/70218320"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "EPAM Systems stock costs EUR 96.43 in weekend trading on October 4, 2026.\nEPAM will discuss third-quarter results on November 5.\n...\nOn October 2, 2026, EPAM Systems announced that it will discuss its third-quarter 2026 financial results on November 5, 2026.\nAt 6:34 p.m.\nCEST on October 4, 2026, EPA...",
+      "source": "web",
+      "title": "EPAM Systems announces November earnings date as EPAM Systems stock costs EUR 96.43",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/epam-systems-announces-november-earnings-date-as-epam-systems-stock-costs-eur-96-43/70227128"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "EPAM Announces Date for Third Quarter Earnings Release and Conference Call\n...\n## EPAM will issue results before the call, which will be webcast live and replayed for investors and analysts.\n...\nBias Comparison\n- On November 5, 2026, EPAM Systems will host a conference call at 8:00 a.m.\nET to discus...",
+      "source": "web",
+      "title": "EPAM Announces Date for Third Quarter Earnings Release ...",
+      "url": "https://ground.news/article/epam-announces-date-for-third-quarter-earnings-release-and-conference-call_591bb9"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Quiver Quantitative \u00b7 Oct 2 05:20 ** EPAM -5.30%\nEPAM Systems (EPAM) is up 5.5% today.\nHere is some analysis on what might have caused this price movement.\nAnalysis: The move appears to be driven mainly by a sector-wide rally rather than a new EPAM-specific announcement.\nA larger IT services peer po...",
+      "source": "web",
+      "title": "EPAM Rises as Strong IT Services Read-through Lifts the ...",
+      "url": "https://www.moomoo.com/news/post/1000543065/epam-rises-as-strong-it-services-read-through-lifts-the"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "A 5.5% sector-driven surge two sessions ago reversed into a 4.5% decline the next day, with neither move traced to any EPAM announcement.",
+      "source": "web",
+      "title": "EPAM Systems Beats Four Straight, Sector Noise Masks",
+      "url": "https://www.basisreport.com/news/epam-systems-beats-four-straight-sector-noise"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "EPAM shares rose 7% to $115.89 in premarket trading on Thursday after multi-year lows.\nThe increase in buyer interest was driven by a combination of several factors: pressure from activist investors, improved fundamental performance, and a historically low valuation of the company, writes Dev.by.\nEP...",
+      "source": "web",
+      "title": "EPAM shares unexpectedly rose",
+      "url": "https://nashaniva.com/en/405888"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "EPAM Announces Date for Third Quarter Earnings Release and Conference Call\nOctober 2 at 4:00 PM | prnewswire.com\n...\nSuccessfully Delivers Cloud Infrastructure And Applications For EuroCTP B.V.'s European Union's First Equities Consolidated Tape\n...\n## Company Calendar\n...\n- **Next Earnings (Estimat...",
+      "source": "web",
+      "title": "EPAM Systems (EPAM) Stock Price, News & Analysis",
+      "url": "https://www.marketbeat.com/stocks/NYSE/EPAM/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "EPAM Systems, Inc.\n- EPAM Announces Date for Third Quarter Earnings Release and Conference Call\n...\nDate\nOctober 2, 2026\nNEWTOWN, Pa., Oct. 2, 2026 /PRNewswire/ -- EPAM Systems, Inc.\n(NYSE: EPAM), a leading digital transformation services and product engineering company, will host a conference call ...",
+      "source": "web",
+      "title": "EPAM Announces Date for Third Quarter Earnings Release ...",
+      "url": "https://investors.epam.com/news/news-details/2026/EPAM-Announces-Date-for-Third-Quarter-Earnings-Release-and-Conference-Call/default.aspx"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# What HUGO BOSS\u2019s Award-Winning Strategy Reveals About the Future of Customer Loyalty\n## In the News\nOctober 5, 2026\nEMarketer\n**What HUGO BOSS\u2019s Award-Winning Strategy Reveals About the Future of Customer Loyalty**\n...\nPartnering with AI marketing agency\u00a0Empathy Lab by EPAM, the fashion brand is o...",
+      "source": "web",
+      "title": "What HUGO BOSS's Award-Winning Strategy Reveals ...",
+      "url": "https://www.epam.com/about/newsroom/in-the-news/2026/what-hugo-bosss-award-winning-strategy-reveals-about-the-future-of-customer-loyalty"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "$107.98\n-$0.38 -0.35%\n# EPAM Systems to report Q3 2026 earnings on Nov 5 with live webcast\n...\n02 Oct 2026\n...\nEPAM Systems, a leader in digital transformation and AI engineering, will announce its third quarter 2026 financial results on November 5, 2026.\nThe company will host a live conference call...",
+      "source": "web",
+      "title": "EPAM Systems to report Q3 2026 earnings on Nov ... | Pluang",
+      "url": "https://pluang.com/en/news-feed/epam-umumkan-tanggal-rilis-laporan-keuangan-kuartal-tiga-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "EPAM Systems (EPAM) will discuss its third quarter 2026 financial results on a conference call on November 5, 2026.\n...\n**EPAM Systems (EPAM)** will discuss its third quarter 2026 financial results on a conference call on November 5, 2026.\nThe call starts at **8:00 a.m.\nET**, with the results releas...",
+      "source": "web",
+      "title": "EPAM Sets Nov. 5 Date for Q3 2026 Earnings Call",
+      "url": "https://www.stocktitan.net/news/EPAM/epam-announces-date-for-third-quarter-earnings-release-and-kf1su5t6mphe.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "EPAM-Systems-Aktie kostet am 01.10.2026 106,38 Euro nach 95,57 Euro.\nUmsatz plus 4,60 Prozent auf 1,41 Milliarden USD im zweiten Quartal 2026.\n...\nEPAM Systems meldete am 30.09.2026 ein Top-Ranking: EPAM NEORIS wurde in Spanien als f\u00fchrender IT-Sourcing-Anbieter f\u00fcr den Einsatz von k\u00fcnstlicher Intel...",
+      "source": "web",
+      "title": "EPAM Systems meldet Top-Ranking: EPAM-Systems-Aktie legt 11,31 Prozent zu",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/epam-systems-meldet-top-ranking-epam-systems-aktie-legt-11-31-prozent-zu/70211045"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u0e1b\u0e23\u0e31\u0e1a\u0e1b\u0e23\u0e38\u0e07\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14: \u20662026-10-05 05:11:40\u2069.\n...\nEPAM SYSTEMS, INC.\n(EPAM) \u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e07\u0e32\u0e19\u0e43\u0e19\u0e20\u0e32\u0e04\u0e2a\u0e48\u0e27\u0e19 SERVICES-COMPUTER PROGRAMMING SERVICES \u0e41\u0e25\u0e30\u0e25\u0e34\u0e2a\u0e15\u0e4c\u0e41\u0e25\u0e49\u0e27\u0e1a\u0e19 NYSE.\n\u0e1b\u0e31\u0e08\u0e08\u0e38\u0e1a\u0e31\u0e19\u0e2b\u0e38\u0e49\u0e19\u0e21\u0e35\u0e23\u0e32\u0e04\u0e32\u0e2d\u0e22\u0e39\u0e48\u0e17\u0e35\u0e48 $108.22 \u0e42\u0e14\u0e22\u0e21\u0e35\u0e21\u0e39\u0e25\u0e04\u0e48\u0e32\u0e15\u0e25\u0e32\u0e14 $5.59B \u0e41\u0e25\u0e30\u0e2d\u0e31\u0e15\u0e23\u0e32\u0e2a\u0e48\u0e27\u0e19\u0e23\u0e32\u0e04\u0e32\u0e15\u0e48\u0e2d\u0e01\u0e33\u0e44\u0e23 13.91.\n...\nEPAM SYSTEMS, INC.\n(EPAM) \u0e1b\u0e34\u0e14\u0e04\u0e23\u0e31\u0e49\u0e07\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14\u0e17\u0e35\u0e48 $114.35 \u0e13 2026-1...",
+      "source": "web",
+      "title": "\u0e23\u0e32\u0e04\u0e32 EPAM \u0e27\u0e31\u0e19\u0e19\u0e35\u0e49: \u0e23\u0e32\u0e04\u0e32\u0e2b\u0e38\u0e49\u0e19 EPAM SYSTEMS, INC., \u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e23\u0e32\u0e04\u0e32 \u0e41\u0e25\u0e30\u0e01\u0e23\u0e32\u0e1f | MEXC",
+      "url": "https://www.mexc.com/th-TH/stocks/epam"
+    }
+  ],
+  "citations": [
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/epam-systems-stock-fell-5-30-percent-on-october-2/70223922",
+    "https://www.marketbeat.com/instant-alerts/price-epam-systems-nyse-epam-stock-price-down-45-time-to-sell-2026-10-02/",
+    "https://www.ad-hoc-news.de/boerse/news/nachboerse/epam-systems-stock-after-hours-at-eur-96-45-minus-5-35-percent-versus-prior-close/70218320",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/epam-systems-announces-november-earnings-date-as-epam-systems-stock-costs-eur-96-43/70227128",
+    "https://ground.news/article/epam-announces-date-for-third-quarter-earnings-release-and-conference-call_591bb9",
+    "https://www.moomoo.com/news/post/1000543065/epam-rises-as-strong-it-services-read-through-lifts-the",
+    "https://www.basisreport.com/news/epam-systems-beats-four-straight-sector-noise",
+    "https://nashaniva.com/en/405888",
+    "https://www.marketbeat.com/stocks/NYSE/EPAM/",
+    "https://investors.epam.com/news/news-details/2026/EPAM-Announces-Date-for-Third-Quarter-Earnings-Release-and-Conference-Call/default.aspx",
+    "https://www.epam.com/about/newsroom/in-the-news/2026/what-hugo-bosss-award-winning-strategy-reveals-about-the-future-of-customer-loyalty",
+    "https://pluang.com/en/news-feed/epam-umumkan-tanggal-rilis-laporan-keuangan-kuartal-tiga-2026",
+    "https://www.stocktitan.net/news/EPAM/epam-announces-date-for-third-quarter-earnings-release-and-kf1su5t6mphe.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/epam-systems-meldet-top-ranking-epam-systems-aktie-legt-11-31-prozent-zu/70211045",
+    "https://www.mexc.com/th-TH/stocks/epam"
+  ],
+  "usage": {
+    "input_tokens": 1106,
+    "output_tokens": 410,
+    "cost_usd": 0.02347
+  }
+}

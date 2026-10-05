@@ -1,0 +1,167 @@
+{
+  "name": "b_avgo_anthropic_financing_web",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Story: AVGO\u2013Anthropic $60B Financing: Terms, Partners & Read-Throughs. Related tickers: AVGO, NVDA, GOOGL, TSM.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nWhy this needs follow-up: Multiple sources cite different numbers ($42B senior vs $60B total vs $18B Blackstone junior) for the Broadcom\u2013Anthropic deal, the notes are unconfirmed pre-IPO, and the read-through to NVDA, TSM, and other TPU/GPU suppliers is unquantified.\n\nANSWER EACH QUESTION (run a separate search for each):\n- What are the confirmed terms of Broadcom's $42 billion senior secured convertible note facility for Anthropic as disclosed in Anthropic's IPO prospectus filed October 2026?\n- Which financial institutions joined Blackstone in the reported $18 billion junior debt tranche of Broadcom's Anthropic chip-financing syndicate in October 2026?\n- Which semiconductor suppliers\u2014beyond Broadcom TPUs\u2014are named in Anthropic's IPO prospectus as vendors for its $518 billion ten-year infrastructure commitment?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## AVGO [Anthropic financing]\n\n- Anthropic\u2019s October 2026 IPO prospectus disclosed that Broadcom agreed to provide **up to $42 billion** through **convertible notes** to finance Anthropic\u2019s infrastructure spending, primarily obligations tied to TPU computing capacity. The facility could fund approximately one-third of Anthropic\u2019s **$125.2 billion five-year TPU lease commitment**. (Reuters, Oct. 1, 2026; publication time not shown)\n\n- The prospectus disclosed that Broadcom may **designate a financing partner**, and that notes issued under the facility could be converted into **Anthropic equity**. (Reuters, Oct. 1, 2026; publication time not shown)\n\n- Anthropic said it **did not expect any notes to be sold before completion of its IPO**. (Reuters, Oct. 1, 2026; publication time not shown)\n\n- The prospectus, as reported by Reuters, did **not disclose a conversion price, maturity date, or whether interest would be paid in cash or added to principal**. (Reuters, Oct. 1, 2026; publication time not shown)\n\n- Anthropic deposited cash into a **restricted account for Broadcom\u2019s benefit in April 2026** and could be required to contribute additional amounts under specified circumstances. (Reuters, Oct. 1, 2026; publication time not shown)\n\n- The filing warned that specified payment or performance defaults could make a substantial portion of Anthropic\u2019s lease obligations **immediately due** and could restrict Anthropic\u2019s ability to draw on the $42 billion facility to fund those obligations. (Reuters, Oct. 1, 2026; publication time not shown)\n\n- A separate reported financing package was described as **$60 billion total**, comprising a **$42 billion Class A senior-secured tranche** and an **$18 billion Class B junior tranche**; the package had not been publicly announced by the time of the report. [report] (Bloomberg, Oct. 2, 2026, 07:34 ET)\n\n## Blackstone / financing syndicate [Report]\n\n- **Blackstone** was reported to be leading an **$18 billion Class B junior-debt tranche** and committing **$9 billion from various funds**, with the remaining $9 billion intended for syndication. [report] (Bloomberg, Oct. 2, 2026, 07:34 ET)\n\n- **Bank of America, Citigroup, and Morgan Stanley** were reported to be preparing syndication letters for the **$42 billion Class A senior-secured tranche**. [report] (Bloomberg, Oct. 2, 2026, 07:34 ET)\n\n- The available reports did **not identify additional financial institutions** that had joined Blackstone in the reported $18 billion junior tranche as of the **October 5, 2026, 12:20 ET** cutoff. [report] (Bloomberg, Oct. 2, 2026, 07:34 ET)\n\n## GOOGL [TPU supply and infrastructure]\n\n- Anthropic\u2019s prospectus-related reporting said Anthropic had committed **$125.2 billion over five years** for TPU computing capacity supplied through a Broadcom\u2013Google arrangement, with supply expected to come online in **2027**. (Reuters, Oct. 1, 2026; publication time not shown)\n\n- Broadcom designs Google\u2019s TPUs, and Google was reported to provide TPU capacity to Anthropic under the arrangement. (Reuters, Oct. 1, 2026; publication time not shown)\n\n- Anthropic\u2019s reported ten-year infrastructure commitments included at least **$111.1 billion with Google**. (Prospectus summary reported Oct. 2, 2026; publication time not shown)\n\n## Semiconductor suppliers named in the prospectus [Infrastructure vendors]\n\n- The available search results identify **Broadcom** as the semiconductor supplier associated with Anthropic\u2019s **$125.2 billion TPU-capacity commitment** and identify **Google** as the TPU-capacity provider. (Reuters, Oct. 1, 2026; publication time not shown)\n\n- The available search results do **not name semiconductor suppliers beyond Broadcom and Google** in Anthropic\u2019s prospectus disclosures concerning the reported **$518 billion ten-year infrastructure commitment** as of the cutoff.\n\n- The reported infrastructure commitments included at least **$161.2 billion in Broadcom-related equipment leases**, but the available results do not establish that the full amount represents semiconductor purchases. (Prospectus summary reported Oct. 2, 2026; publication time not shown)\n\n## AMZN, MSFT, xAI [Infrastructure counterparties]\n\n- Anthropic\u2019s reported ten-year infrastructure commitments included at least **$110 billion with Amazon**, **$31.4 billion with Microsoft**, and up to **$84.5 billion with xAI**; the xAI arrangement was reportedly terminable on **90 days\u2019 notice**. (Prospectus summary reported Oct. 2, 2026; publication time not shown)\n\n- The reported infrastructure commitment total was **at least $518 billion over ten years**, with approximately **80% described as non-cancelable or payable regardless of usage**. (Prospectus summary reported Oct. 2, 2026; publication time not shown)\n\n## NVDA [Read-through]\n\n- The available in-window reports did **not provide a quantified stock move, analyst rating change, price-target change, or named analyst note for NVDA** tied to the Broadcom\u2013Anthropic financing story before the cutoff.\n\n## TSM [Read-through]\n\n- The available in-window reports did **not provide a quantified stock move, analyst rating change, price-target change, or named analyst note for TSM** tied to the Broadcom\u2013Anthropic financing story before the cutoff.\n\n## AVGO, GOOGL, NVDA, TSM [Market data and analyst actions]\n\n- The available search results did **not contain verified October 2 regular-session or October 5 pre-market/intraday price moves** for AVGO, GOOGL, NVDA, or TSM through **12:20 ET on October 5, 2026**.\n\n- The available search results did **not identify a named analyst, firm, rating change, or price-target change** for AVGO, GOOGL, NVDA, or TSM in the specified window.",
+  "search_results": [
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "The company's relationship with \u200cAnthropic spans compute supply, equipment leasing and financing -- giving the semiconductor company a central role in Anthropic's infrastructure buildout.\n...\nAs part of that complex relationship, revealed in the IPO filing, \u200bBroadcom has agreed to lend Anthropic up ...",
+      "source": "web",
+      "title": "EXCLUSIVE: Broadcom to lend\u00a0Anthropic up to $42 billion to lease its chips, filing says",
+      "url": "https://www.reuters.com/business/broadcom-lend-anthropic-up-42-billion-lease-its-chips-filing-says-2026-10-01/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "[NEW YORK] Broadcom\u2019s Wall Street syndicate is starting to gather US$60 billion of fresh artificial intelligence chip financing to benefit Anthropic and other companies, according to people with knowledge of the matter.\nBanks involved in the massive debt package, including Bank of America, Citigroup...",
+      "source": "web",
+      "title": "Broadcom amassing US$60 billion to fund chips for Anthropic",
+      "url": "https://www.businesstimes.com.sg/startups-tech/technology/broadcom-amassing-us60-billion-fund-chips-anthropic-sources"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Bank of America, Citigroup, and Morgan Stanley are syndicating a $42 billion senior tranche that matches, dollar for dollar, the loan Broadcom disclosed in Anthropic's own IPO filing -- plus an $18 billion junior tranche led by Blackstone.\n...\nBroadcom's Wall Street lenders began syndicating $60 bil...",
+      "source": "web",
+      "title": "Broadcom's banks start raising the $60 billion that will actually fund ...",
+      "url": "https://rtfclmgzn.com/article/broadcom-60-billion-debt-anthropic-chip-financing-syndication"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Broadcom has agreed to lend Anthropic up to $42 billion to help finance the AI company's infrastructure spending, according to the company's IPO prospectus as reported by Reuters.\nThe convertible notes are sized to cover approximately one-third of the $125.2 billion Anthropic has pledged under a fiv...",
+      "source": "web",
+      "title": "Broadcom offering Anthropic $42 billion loan for AI chip ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/broadcom-offering-anthropic-42-billion-124100129.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "(Bloomberg) -- Broadcom Inc.'s Wall Street syndicate are starting to gather $60 billion of fresh AI chip financing to benefit Anthropic PBC and other companies, according to people with knowledge of the matter.\n...\nBanks involved in the massive debt package are poised to send out syndication letters...",
+      "source": "web",
+      "title": "Broadcom Starts Amassing $60 Billion to Fund Chips for Anthropic",
+      "url": "https://finance.yahoo.com/technology/ai/articles/broadcom-starts-amassing-60-billion-041233805.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Broadcom is assembling $60 billion in debt financing to help Anthropic and other companies access AI chips and infrastructure, according to Bloomberg.\nFor the deal, banks are readying syndication letters covering a $42 billion Class A senior-secured tranche, while Blackstone leads an $18 billion Cla...",
+      "source": "web",
+      "title": "Broadcom raises $60 billion in debt to fund Anthropic AI chips",
+      "url": "https://finance.yahoo.com/technology/ai/articles/broadcom-raises-60-billion-debt-113047288.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Broadcom agreed to lend Anthropic up to $42 billion in convertible notes for its TPU lease obligations, the IPO prospectus shows.\n...\nBroadcom has agreed to lend Anthropic up to $42 billion through convertible notes, Anthropic's IPO prospectus obtained by Reuters shows.\nThe notes could convert into ...",
+      "source": "web",
+      "title": "www.implicator.ai \u203a broadcom-agrees-to-lend-anthropic-up-toBroadcom to Lend Anthropic Up to $42B for TPU Chip Leases",
+      "url": "https://www.implicator.ai/broadcom-agrees-to-lend-anthropic-up-to-42-billion-to-lease-chips-it-helps-design/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Oct. 2, 2026, 11:34 AM UTC\n...\nBroadcom Inc.\u2019s Wall Street syndicate is starting to gather $60 billion of fresh AI chip financing to benefit Anthropic PBC and other companies, according to people with knowledge of the matter.\nBanks involved in the massive debt package are poised to send out syndicat...",
+      "source": "web",
+      "title": "Blackstone, Banks Amass $60 Billion for Broadcom\u2019s AI Chip Deal",
+      "url": "https://news.bloomberglaw.com/ip-law/broadcom-starts-amassing-60-billion-to-fund-chips-for-anthropic"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- Blackstone is leading the $18B junior tranche, committing $9B itself and syndicating the rest, according to Bloomberg.\n- Anthropic's IPO filing showed a $42B Broadcom loan tied to its TPU lease commitments, per Reuters.\n...\nBroadcom's (AVGO) Wall Street syndicate has reportedly started gathering $...",
+      "source": "web",
+      "title": "Broadcom Reportedly Lines Up $60B AI Chip Financing As ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/broadcom-reportedly-lines-60b-ai-120456635.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "## The package includes a $42 billion senior-secured tranche that could finance Anthropic's leasing of Broadcom chips.\n...\nBanks working for Broadcom have begun raising $60 billion in debt to finance AI chips for Anthropic and other companies, Bloomberg News reported, citing people familiar with the...",
+      "source": "web",
+      "title": "Broadcom Banks Seek $60B To Finance AI Chips - Dataconomy",
+      "url": "https://dataconomy.com/2026/10/02/broadcom-anthropic-60-billion-usd-ai-chip-debt/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Broadcom agreed to provide Anthropic with up to $42 billion in financing tied to leased compute infrastructure, according to the AI lab\u2019s IPO filing.\n- The facility is linked to Anthropic\u2019s five-year $125.2 billion lease commitment for TPU computing capacity that begins providing next-generation a...",
+      "source": "web",
+      "title": "Broadcom Lines Up $42B in Chip Financing for Anthropic",
+      "url": "https://www.tradingpedia.com/2026/10/01/broadcom-lines-up-42b-in-chip-financing-for-anthropic/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Broadcom Inc (NASDAQ:AVGO, XETRA:1YD) has agreed to provide Anthropic (Unlisted (US):ANTHRO) with up to $42 billion in financing tied to its AI infrastructure buildout, according to the Claude developer's IPO prospectus seen by Reuters.\nThe facility could cover roughly one-third of Anthropic's $125....",
+      "source": "web",
+      "title": "Broadcom to provide Anthropic with up to $42 billion in ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/broadcom-anthropic-42-billion-financing-155500402.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Anthropic's IPO filing reveals Broadcom has agreed to lend the AI lab up to $42 billion in convertible notes, covering roughly a third of its $125.2 billion five-year TPU lease commitment.\n...\nBroadcom has agreed to lend Anthropic as much as $42 billion through convertible notes, according to Reuter...",
+      "source": "web",
+      "title": "Broadcom Agreed to Lend Anthropic Up to $42 Billion Ahead of Its IPO - Startup Fortune",
+      "url": "https://startupfortune.com/broadcom-agreed-to-lend-anthropic-up-to-42-billion-ahead-of-its-ipo/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Anthropic's IPO prospectus discloses that Broadcom has agreed to lend the AI lab up to $42 billion to help finance its infrastructure spending, according to Reuters' review of the filing, reported Oct. 1, 2026.\nThe debt instruments tied to the facility could convert into Anthropic shares, deepening ...",
+      "source": "web",
+      "title": "Anthropic IPO Filing Shows Broadcom Agreed to Lend It ...",
+      "url": "https://tradersagency.com/blog/anthropic-ipo-filing-shows-broadcom-agreed-to-lend-it-up-to-dollar42-billion-for-chip-leases"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Anthropic's IPO prospectus discloses a convertible note facility of up to 42 billion dollars from Broadcom, covering roughly a third of its 125.2 billion dollar five-year TPU lease commitment.\n...\nBroadcom has agreed to lend Anthropic up to **$42 billion**, Reuters reported on October 1 after review...",
+      "source": "web",
+      "title": "Broadcom to Lend Anthropic Up to $42 Billion for TPU Chip Leases",
+      "url": "https://letsdatascience.com/blog/broadcom-will-lend-anthropic-42-billion-to-lease-broadcoms-own-chips"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/business/broadcom-lend-anthropic-up-42-billion-lease-its-chips-filing-says-2026-10-01/",
+    "https://www.businesstimes.com.sg/startups-tech/technology/broadcom-amassing-us60-billion-fund-chips-anthropic-sources",
+    "https://rtfclmgzn.com/article/broadcom-60-billion-debt-anthropic-chip-financing-syndication",
+    "https://finance.yahoo.com/technology/ai/articles/broadcom-offering-anthropic-42-billion-124100129.html",
+    "https://finance.yahoo.com/technology/ai/articles/broadcom-starts-amassing-60-billion-041233805.html",
+    "https://finance.yahoo.com/technology/ai/articles/broadcom-raises-60-billion-debt-113047288.html",
+    "https://www.implicator.ai/broadcom-agrees-to-lend-anthropic-up-to-42-billion-to-lease-chips-it-helps-design/",
+    "https://news.bloomberglaw.com/ip-law/broadcom-starts-amassing-60-billion-to-fund-chips-for-anthropic",
+    "https://finance.yahoo.com/technology/ai/articles/broadcom-reportedly-lines-60b-ai-120456635.html",
+    "https://dataconomy.com/2026/10/02/broadcom-anthropic-60-billion-usd-ai-chip-debt/",
+    "https://www.tradingpedia.com/2026/10/01/broadcom-lines-up-42b-in-chip-financing-for-anthropic/",
+    "https://finance.yahoo.com/technology/ai/articles/broadcom-anthropic-42-billion-financing-155500402.html",
+    "https://startupfortune.com/broadcom-agreed-to-lend-anthropic-up-to-42-billion-ahead-of-its-ipo/",
+    "https://tradersagency.com/blog/anthropic-ipo-filing-shows-broadcom-agreed-to-lend-it-up-to-dollar42-billion-for-chip-leases",
+    "https://letsdatascience.com/blog/broadcom-will-lend-anthropic-42-billion-to-lease-broadcoms-own-chips"
+  ],
+  "usage": {
+    "input_tokens": 784,
+    "output_tokens": 1352,
+    "cost_usd": 0.03663
+  }
+}

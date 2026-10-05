@@ -1,0 +1,167 @@
+{
+  "name": "tickers_02",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| TXN | Texas Instruments Incorporated | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.44% | +5.7% | 0.8\u00d7 | \u2014 |\n| FCX | Freeport-McMoRan Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.98% | -0.4% | 1.1\u00d7 | \u2014 |\n| DELL | Dell Technologies Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.84% | -0.1% | 0.6\u00d7 | \u2014 |\n| AVGO | Broadcom Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.35% | +0.7% | 1.0\u00d7 | \u2014 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Texas Instruments Incorporated (TXN) `[Analog & Mixed-Signal]`\n- Texas Instruments shares gained 4.44% on Friday, October 2, 2026, closing at $293.80; the available reporting did not identify a new company-specific announcement published during the October 2\u20135 window as the direct catalyst (MarketBeat, Oct. 2, 2026).\n- Texas Instruments scheduled its third-quarter 2026 earnings webcast for October 21, 2026, at 4:30 p.m. ET; CEO Haviv Ilan and CFO Julie Knecht are scheduled to discuss results (Texas Instruments, Oct. 1, 2026).\n- Texas Instruments\u2019 second-quarter 2026 revenue was $5.46 billion, net income was $1.98 billion, and diluted EPS was $2.14; the company\u2019s previously issued third-quarter revenue guidance was $5.65 billion\u2013$6.15 billion (Texas Instruments, Sep. 17, 2026).\n- Texas Instruments announced on September 17, 2026, that its quarterly dividend would rise from $1.42 to $1.52 per share, with payment scheduled for November 10, 2026, to shareholders of record on October 30, 2026 (Texas Instruments, Sep. 17, 2026).\n\n## Freeport-McMoRan Inc. (FCX) `[Specialty Materials]`\n- Freeport-McMoRan reported approximately **830 million pounds of copper** and **230,000 ounces of gold** produced in the third quarter of 2026, both approximately in line with expectations; it forecast third-quarter copper sales of approximately **750 million pounds** and gold sales of approximately **100,000 ounces** (Freeport-McMoRan via Business Wire, Oct. 2, 2026).\n- Freeport-McMoRan said approximately **60,000 ounces of refined gold sales** shifted from the third quarter to the fourth quarter because of sales timing at PT Freeport Indonesia (Freeport-McMoRan via Business Wire, Oct. 2, 2026).\n- Grasberg Block Cave mill throughput averaged approximately **140,000 metric tons of ore per day**, or about **67% of normalized rates**, during the third quarter; Freeport said the operation is expected to reach approximately **80% of capacity by mid-2027** (Northern Miner, Oct. 2, 2026).\n- Freeport-McMoRan shares rose as much as **4%** on Friday after the company said third-quarter copper production and sales were expected to meet guidance (Bloomberg, Oct. 2, 2026).\n- Freeport-McMoRan\u2019s third-quarter 2026 earnings release and conference call were scheduled for **October 27, 2026**, before the market open (Freeport-McMoRan, Oct. 2, 2026).\n- Freeport-McMoRan shares closed at **$72.04** on October 2, 2026, up 3.98% from $69.28; the verified tape supplied for this brief is authoritative for the session move (MarketBeat, Oct. 2, 2026).\n\n## Dell Technologies Inc. (DELL) `[AI Infrastructure]`\n- Dell Technologies shares gained **3.84%** on Friday, October 2, 2026; the available search results did not identify a company-specific catalyst published during the October 2\u20135 window.\n- No earnings release, SEC filing, contract announcement, analyst action, or after-hours or premarket catalyst for Dell Technologies was identified in the available results through **12:20 p.m. ET on October 5, 2026**.\n\n## Broadcom Inc. (AVGO) `[AI Compute]`\n- Broadcom shares gained **3.35%** on Friday, October 2, 2026; the available search results did not identify a company-specific catalyst published during the October 2\u20135 window.\n- No earnings release, SEC filing, contract announcement, analyst action, or after-hours or premarket catalyst for Broadcom was identified in the available results through **12:20 p.m. ET on October 5, 2026**.",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Texas Instruments lifted its dividend to USD 1.52 per share.\nTexas Instruments stock costs EUR 259.48 on October 5, 2026 after EUR 261.18.\n...\nTexas Instruments stock was trading at EUR 259.48 at Lang & Schwarz on October 5, 2026 at 11:59 a.m.\nCEST, down 0.65 percent from the prior close of EUR 261....",
+      "source": "web",
+      "title": "Texas Instruments raises dividend and Texas Instruments stock costs EUR 259.48",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/texas-instruments-raises-dividend-and-texas-instruments-stock-costs-eur-259-48/70231980"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Freeport-McMoRan stock closed at USD 72.04 on October 2, 2026, while RBC Capital lifted its target to USD 85.\nQ2 revenue reached USD 7.03 billion.\n...\nFreeport-McMoRan stock (ISIN US35671D8570) closed at USD 72.04 on the NYSE on October 2, 2026, up 3.98 percent from USD 69.28.\nThe move followed the ...",
+      "source": "web",
+      "title": "Freeport-McMoRan stock gains 3.98 percent after Q3 update",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/freeport-mcmoran-stock-gains-3-98-percent-after-q3-update/70221724"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Freeport-McMoRan (NYSE: FCX) averaged nearly two-thirds of normal milling rates at its Grasberg copper-gold complex in Indonesia during the third quarter, a year after a mudslide killed seven workers and shut the operation.\nThe company expects near-full production by the end next year.\n...\nFreeport ...",
+      "source": "web",
+      "title": "Freeport's Grasberg copper mill reaches 67% after last ...",
+      "url": "https://www.northernminer.com/news/freeports-grasberg-copper-mill-reaches-67-after-last-years-mudslide/1003895414/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Freeport-McMoRan shares rose 4%** to about $72.07, reaching an intraday high of $73.07, amid generally positive analyst sentiment.\nThe stock carries a consensus \u201cModerate Buy\u201d rating and an average price target of $72.87, with BMO raising its target to $85.\n- The company exceeded q...",
+      "source": "web",
+      "title": "Freeport-McMoRan (NYSE:FCX) Shares Climb 4% - Here's ...",
+      "url": "https://www.marketbeat.com/instant-alerts/price-freeport-mcmoran-nyse-fcx-shares-climb-4-heres-why-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monday, October 5, 2026\n...\n***Freeport-McMoRan (NYSE: FCX)* ** produced roughly 830 million pounds of copper in the third quarter of 2026, in line with expectations as its Grasberg operation in Indonesia continues to recover from last year\u2019s mud rush.\n...\nCopper sales are expected to land near the ...",
+      "source": "web",
+      "title": "Freeport Holds Copper Output Steady as Grasberg ...",
+      "url": "https://thedeepdive.ca/freeport-holds-copper-output-steady-as-grasberg-recovery-continues/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "- Freeport-McMoRan (FCX) shares rose as much as 4% after the miner said that its third-quarter copper production and sales results are expected to meet guidance.",
+      "source": "web",
+      "title": "Stock Movers: Nike, Seagate, Freeport-McMoRan",
+      "url": "https://www.bloomberg.com/news/audio/2026-10-02/stock-movers-nike-seagate-freeport-mcmoran-podcast"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "The Chairman, Richard Adkerson, made the biggest insider sale in the last 12 months.\nThat single transaction was for US$16m worth of shares at a price of US$62.80 each.\n...\nOver the last three months, we've seen significant insider selling at Freeport-McMoRan.\nIn total, insiders dumped US$2.1m worth...",
+      "source": "web",
+      "title": "Freeport-McMoRan Insiders Sold US$35m Of Shares Suggesting Hesitancy",
+      "url": "https://www.moomoo.com/news/post/1000560685/freeport-mcmoran-insiders-sold-us-35m-of-shares-suggesting-hesitancy"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Second-quarter revenue hit USD 7.03 billion versus USD 6.62 billion estimates.\nFreeport-McMoRan stock costs EUR 62.43 on October 2, 2026 versus EUR 61.65.\n...\nFreeport-McMoRan (ISIN US35671D8570) received a higher BMO Capital Markets price target of USD 85.00, up from USD 78.00, according to MarketB...",
+      "source": "web",
+      "title": "BMO raises target for Freeport-McMoRan stock from USD 78 to USD 85",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/bmo-raises-target-for-freeport-mcmoran-stock-from-usd-78-to-usd-85/70215916"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 9:34 AM GMT-3\n...\n- Western Digital Corporation",
+      "source": "web",
+      "title": "Freeport-McMoRan Reports Q3 Copper, Gold Production",
+      "url": "https://finance.yahoo.com/markets/commodities/articles/freeport-mcmoran-reports-q3-copper-123439635.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Texas Instruments stock heads toward a Q3 call after Q2 revenue reached USD 5.46 billion.\nA 7 percent dividend lift sets the quarterly payout at USD 1.52.\n...\nTexas Instruments (ISIN US8825081040) stock gained 4.44 percent to USD 293.80 on Nasdaq on October 2, 2026, at the official 4:00 p.m.\nET clos...",
+      "source": "web",
+      "title": "Texas Instruments stock gained 4.44 percent on October 2",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/texas-instruments-stock-gained-4-44-percent-on-october-2/70221850"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Die Freeport-McMoRan-Aktie kostet am 03.10.2026 im Wochenendhandel 64,04 Euro nach 64,02 Euro Xetra-Schluss vom 02.10.2026.\n...\nFreeport-McMoRan ver\u00f6ffentlichte am 02.10.2026 ein Update zu den Betriebsergebnissen des dritten Quartals.\nFreeport-McMoRan meldete dabei eine erwartete konsolidierte Kupfe...",
+      "source": "web",
+      "title": "Freeport-McMoRan-Aktie notiert bei 64,04 Euro und Freeport meldet Produktionsupdate",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/freeport-mcmoran-aktie-notiert-bei-64-04-euro-und-freeport-meldet-produktionsupdate/70220337"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "SAFFORD \u2014 Freeport-McMoRan said its U.S. mining operations ran below plan during the third quarter because of localized flooding, power outages and strong winds, though the Phoenix-based copper producer said companywide copper and gold production remained roughly in line with expectations.",
+      "source": "web",
+      "title": "Freeport says U.S. mining rates fell in third quarter",
+      "url": "https://www.eacourier.com/news/mining/freeport-says-u-s-mining-rates-fell-in-third-quarter/article_279bb197-3a93-4d27-acaa-1804f55d0d0c.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "PHOENIX (dpa-AFX) - Friday, Freeport-McMoRan Inc.\n(FCX) announced its third-quarter 2026 operating results.\nDuring the quarter, consolidated copper production of approximately 830 million pounds was in line with expectations.\nMeanwhile, consolidated gold production of approximately 230 thousand ounc...",
+      "source": "web",
+      "title": "www.finanznachrichten.de \u00b7 nachrichten-2026-10 \u00b7 69742929Freeport-McMoRan Reports Q3 Consolidated Production And Sales Of...",
+      "url": "https://www.finanznachrichten.de/nachrichten-2026-10/69742929-freeport-mcmoran-reports-q3-consolidated-production-and-sales-of-copper-and-gold-020.htm"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "On October 02, 2026, Freeport-McMoRan Inc (NYSE: FCX) saw its shares increase by 3.3% in early trading following the release of its Q3 copper and gold production figures, which met company expectations.\n...\nFreeport-McMoRan reported Q3 copper production of 830 million pounds, aligning with market ex...",
+      "source": "web",
+      "title": "Freeport-McMoRan (FCX) Shares Rise 3.3% on Q3 Copper Production",
+      "url": "https://www.gurufocus.com/news/9107705/freeportmcmoran-fcx-shares-rise-33-on-q3-copper-production-report"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Freeport-McMoRan stock was at EUR 63.80 after-hours at 8:50 p.m.\nCEST on October 2, 2026, according to Lang & Schwarz.\nThe company reported third-quarter production updates.\n...\nFreeport-McMoRan stock was at **EUR 63.80** after-hours at 8:50 p.m.\nCEST on October 2, 2026, up **3.49 percent** versus t...",
+      "source": "web",
+      "title": "Freeport-McMoRan stock after-hours at EUR 63.80",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nachboerse/freeport-mcmoran-stock-after-hours-at-eur-63-80-plus-3-49-percent-after-the-xetra-close/70217901"
+    }
+  ],
+  "citations": [
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/texas-instruments-raises-dividend-and-texas-instruments-stock-costs-eur-259-48/70231980",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/freeport-mcmoran-stock-gains-3-98-percent-after-q3-update/70221724",
+    "https://www.northernminer.com/news/freeports-grasberg-copper-mill-reaches-67-after-last-years-mudslide/1003895414/",
+    "https://www.marketbeat.com/instant-alerts/price-freeport-mcmoran-nyse-fcx-shares-climb-4-heres-why-2026-10-02/",
+    "https://thedeepdive.ca/freeport-holds-copper-output-steady-as-grasberg-recovery-continues/",
+    "https://www.bloomberg.com/news/audio/2026-10-02/stock-movers-nike-seagate-freeport-mcmoran-podcast",
+    "https://www.moomoo.com/news/post/1000560685/freeport-mcmoran-insiders-sold-us-35m-of-shares-suggesting-hesitancy",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/bmo-raises-target-for-freeport-mcmoran-stock-from-usd-78-to-usd-85/70215916",
+    "https://finance.yahoo.com/markets/commodities/articles/freeport-mcmoran-reports-q3-copper-123439635.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/texas-instruments-stock-gained-4-44-percent-on-october-2/70221850",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/freeport-mcmoran-aktie-notiert-bei-64-04-euro-und-freeport-meldet-produktionsupdate/70220337",
+    "https://www.eacourier.com/news/mining/freeport-says-u-s-mining-rates-fell-in-third-quarter/article_279bb197-3a93-4d27-acaa-1804f55d0d0c.html",
+    "https://www.finanznachrichten.de/nachrichten-2026-10/69742929-freeport-mcmoran-reports-q3-consolidated-production-and-sales-of-copper-and-gold-020.htm",
+    "https://www.gurufocus.com/news/9107705/freeportmcmoran-fcx-shares-rise-33-on-q3-copper-production-report",
+    "https://www.ad-hoc-news.de/boerse/news/nachboerse/freeport-mcmoran-stock-after-hours-at-eur-63-80-plus-3-49-percent-after-the-xetra-close/70217901"
+  ],
+  "usage": {
+    "input_tokens": 1063,
+    "output_tokens": 898,
+    "cost_usd": 0.03066
+  }
+}

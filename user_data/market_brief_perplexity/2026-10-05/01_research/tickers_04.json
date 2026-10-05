@@ -1,0 +1,167 @@
+{
+  "name": "tickers_04",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| HPE | Hewlett Packard Enterprise Company | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +7.36% | +10.2% | 1.4\u00d7 | \u2014 |\n| STM | STMicroelectronics N.V. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +7.03% | +10.3% | 1.9\u00d7 | \u2014 |\n| MTSI | MACOM Technology Solutions Holdings, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +6.62% | +12.6% | 1.0\u00d7 | \u2014 |\n| ON | ON Semiconductor Corporation | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +6.01% | +10.0% | 1.9\u00d7 | \u2014 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Hewlett Packard Enterprise Company (HPE) `[AI Infrastructure]`\n- HPE shares rose **7.36% on October 2** after investor-day disclosures, analyst price-target increases, and a broader technology-sector rally; the investor day included a **$1.2 billion order from Vultr** for Helios AI server racks powered by AMD chips and deployed at Vultr\u2019s U.S. data centers. (Yahoo Finance, Oct. 2 18:34 GMT-5)\n- HPE raised its fiscal-2027 networking-revenue growth outlook to **high-teens to low-20%**, from **14%-17%** previously; it projected data-center networking revenue growth in the **low- to mid-50% range annually through fiscal 2029** and networking operating margins in the **mid- to high-20% range**. (Yahoo Finance, Oct. 2 18:34 GMT-5)\n- HPE reported fiscal third-quarter 2026 revenue of **$12.21 billion** and non-GAAP EPS of **$1.11**, versus consensus EPS of **$0.95**; fiscal-fourth-quarter guidance was **$13.9-$14.8 billion** of revenue and **$1.20-$1.30** of non-GAAP EPS. (Yahoo Finance, Oct. 2 11:30 GMT-3)\n- HPE raised fiscal-2026 revenue-growth guidance to **34%-37%** and non-GAAP EPS guidance to **$3.75-$3.85**. (Yahoo Finance, Oct. 2 11:30 GMT-3)\n- **Daiwa Securities Group** upgraded HPE from **Neutral to Outperform** and set a **$75** price target on October 2. (MarketBeat, Oct. 2; publication time not stated)\n- **Citigroup** raised its HPE price target to **$92 from $76** while maintaining a **Buy** rating. (Yahoo Finance, Oct. 2 18:34 GMT-5)\n- The September U.S. employment report showed **29,000** nonfarm payroll additions versus an **84,000** consensus estimate; the unemployment rate was **4.2% versus 4.1% expected**, contributing to the broader equity-market move cited in coverage. (Yahoo Finance, Oct. 2 18:34 GMT-5)\n\n## STMicroelectronics N.V. (STM) `[Analog & Mixed-Signal]`\n- STMicroelectronics shares rose **7.03% on October 2**; coverage linked the move to semiconductor-sector and AI-demand gains rather than to a new company-specific operating announcement. (Ad-hoc-news.de, Oct. 3; publication time not stated)\n- STMicroelectronics reported second-quarter 2026 revenue of **$3.49 billion**, versus **$3.46 billion** expected, and adjusted EPS of **$0.31**, versus **$0.26** expected; revenue increased **26% year over year** and gross margin was **34.8%**. (MarketBeat, Oct. 2; publication time not stated)\n- Management\u2019s prior third-quarter 2026 revenue outlook was **$3.70 billion at the midpoint**, representing **6.2% sequential growth** and **16.2% year-over-year growth**. (Ad-hoc-news.de, Oct. 3; publication time not stated)\n- STMicroelectronics announced that it will release third-quarter 2026 results before European trading opens on **October 29, 2026**, followed by a conference call at **4:30 a.m. ET**. (Business Insider, Oct. 5 06:41 ET)\n- **UBS** maintained a **Buy** rating and an **\u20ac80** price target in the analyst information cited in the October 3 coverage. (Ad-hoc-news.de, Oct. 3; publication time not stated)\n\n## MACOM Technology Solutions Holdings, Inc. (MTSI) `[Optical & Photonics]`\n- MACOM shares rose **6.62% on October 2**; the available coverage cited no new October 2 company release, filing, contract, or analyst action as the immediate catalyst. (MarketBeat, Oct. 2; publication time not stated)\n- MACOM\u2019s latest reported quarter, released on **August 6**, showed EPS of **$1.40** versus consensus of **$1.35** and revenue of **$342.24 million** versus consensus of **$336.08 million**; revenue increased **35.8% year over year**. (MarketBeat, Oct. 2; publication time not stated)\n- **BMO** had a recent price target of **$335**, while **Needham** had a recent price target of **$410**; the cited consensus rating was **Moderate Buy** with an average price target of **$341.25**. (MarketBeat, Oct. 2; publication time not stated)\n\n## ON Semiconductor Corporation (ON) `[Power & Wide-Bandgap]`\n- No company-specific catalyst found in window.",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Hewlett Packard Enterprise's (HPE) investor day this week was a resounding success as far as Wall Street is concerned.\n...\nThe server and networking equipment maker's stock was the biggest gainer in the S&P 500 (^GSPC), per AlphaSpace data.\nIt hit back-to-back record highs on Wednesday and Thursday,...",
+      "source": "web",
+      "title": "Hewlett Packard Enterprise stock had a week for the books",
+      "url": "https://finance.yahoo.com/markets/stocks/article/hewlett-packard-enterprise-stock-had-a-week-for-the-books-181213887.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Q2 revenue was USD 3.49 billion and gross margin was 34.80 percent.\nSTMicroelectronics stock costs EUR 50.75 on October 5, 2026 after EUR 50.81.\n...\nSTMicroelectronics (NL0000226223) was trading at EUR 50.75 at Lang & Schwarz on October 5, 2026 at 9:08 a.m.\nCEST, minus 0.12 percent versus the prior ...",
+      "source": "web",
+      "title": "STMicroelectronics sets October 29 results date. Seven ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/stmicroelectronics-sets-october-29-results-date-seven-analysts-rate-stmicroelectronics-stock-buy/70230686"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 6:34 PM GMT-5\n...\nShares of enterprise technology company Hewlett Packard Enterprise (NYSE:HPE) jumped 7.8% in the afternoon session after momentum from its networking investor day carried into the session, amplified by Wall Street price-target increases and a cooler-than-exp...",
+      "source": "web",
+      "title": "Why Hewlett Packard Enterprise (HPE) Stock Is Up Today",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/why-hewlett-packard-enterprise-hpe-233403556.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Silverleafe Capital Partners** acquired 20,852 STMicroelectronics shares worth approximately $1.11 million in the third quarter.\n...\n- Analyst sentiment is generally positive, with seven Buy ratings and five Holds, producing a consensus rating of **Moderate Buy** and an average pri...",
+      "source": "web",
+      "title": "Silverleafe Capital Partners LLC Makes New $1.11 Million Investment in STMicroelectronics N.V. $STM",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-silverleafe-capital-partners-llc-makes-new-111-million-investment-in-stmicroelectronics-nv-stm-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Semiconductor manufacturer STMicroelectronics is displaying one of the best performances on the Paris index this Friday, in a CAC 40 up more than 1%.\nThe rebound extends an upward momentum begun two weeks ago, bringing the monthly gain to nearly 15%, while the stock had still lost more than 22% over...",
+      "source": "web",
+      "title": "STMicroelectronics stock among the strongest gainers on ...",
+      "url": "https://www.ideal-investisseur.fr/en/stock-news/stmicroelectronics-stock-among-the-strongest-gainers-on-the-cac-40-15-over-one-month/26322.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Hewlett Packard Enterprise stock followed a USD 1.2 billion Vultr AI order on October 2, 2026.\n...\nHewlett Packard Enterprise stock (ISIN US42824C1099) gained 7.45 percent to USD 69.39 on the NYSE on October 2, 2026, after the company highlighted a USD 1.2 billion AI infrastructure order and stronge...",
+      "source": "web",
+      "title": "Hewlett Packard Enterprise stock gained 7.45 percent on ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/hewlett-packard-enterprise-stock-gained-7-45-percent-on-ai-order/70228329"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "19 stocks hit new 52-week highs this week\n- HPEHewlett Packard Enterprise$69.33+9.2%\n...\nNineteen stocks cleared fresh 52-week highs this week, and Hewlett Packard Enterprise led the pack by topping its prior peak by 9.2% at $69.33.\n...\nHewlett Packard Enterprise was the standout of the week, finish...",
+      "source": "web",
+      "title": "Hewlett Packard Enterprise leads 19 stocks to new 52- ...",
+      "url": "https://247wallst.com/cards/nineteen-stocks-cleared-fresh-52-week-highs-this-week-and-h-hpe-price-extreme-01m411bg7m47nrkd73xxk9e5r9"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "STMicroelectronics stock posted a EUR 50.34 close on October 2 after Q2 revenue reached USD 3.49 billion.\n...\nSTMicroelectronics (ISIN NL0000226223) closed at EUR 50.34 on Euronext Paris on October 2, up 6.54 percent from EUR 47.25.\nThe next scheduled earnings date is October 29, 2026, according to ...",
+      "source": "web",
+      "title": "STMicroelectronics stock gained 6.54 percent on October 2",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/stmicroelectronics-stock-gained-6-54-percent-on-october-2/70227672"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "1. September nonfarm payrolls rise 29,000 v 90,000 expected; unemployment rate rises 4.2% (4.1% exp.).\n...\nHPE CFO discusses $1.2B deal with Vultr to deploy AMD Helios AI racks\n...\nFri, October 2, 2026 at 11:30 AM GMT-3\n...\n+7.36%\n...\nIt has been about a month since the last earnings report for Hewl...",
+      "source": "web",
+      "title": "Hewlett Packard Enterprise (HPE) Up 18.6% Since Last Earnings Report: Can It Continue?",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/hewlett-packard-enterprise-hpe-18-143003312.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Geneva \u2013 October 5, 2026 \u2013 STMicroelectronics (NYSE: STM), a global semiconductor leader serving customers across the spectrum of electronics applications, announced that it will release third quarter 2026 earnings before the opening of trading on the European Stock Exchanges on October 29, 2026.\n.....",
+      "source": "web",
+      "title": "STMicroelectronics announces timing for third quarter 2026 earnings release and conference call",
+      "url": "https://markets.businessinsider.com/news/stocks/stmicroelectronics-announces-timing-for-third-quarter-2026-earnings-release-and-conference-call-1036596041"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **MACOM shares jumped 7.5%** to roughly $324.31, although trading volume was about 80% below the average daily level.\n- Analyst sentiment remains favorable, with a consensus **\u201cModerate Buy\u201d** rating and an average price target of $341.25; recent targets include $335 from BMO and $41...",
+      "source": "web",
+      "title": "MACOM Technology Solutions (NASDAQ:MTSI) Shares Up ...",
+      "url": "https://www.marketbeat.com/instant-alerts/price-macom-technology-solutions-nasdaq-mtsi-shares-up-75-whats-next-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Confluence Investment Management** initiated a position in STMicroelectronics during the third quarter, purchasing 24,998 shares valued at approximately $1.33 million.\n...\n- Analyst sentiment is moderately bullish: seven analysts rate STM a Buy and five rate it Hold, with an averag...",
+      "source": "web",
+      "title": "Confluence Investment Management LLC Purchases New Holdings in STMicroelectronics N.V. $STM",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-confluence-investment-management-llc-purchases-new-holdings-in-stmicroelectronics-nv-stm-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **HPE shares rose 7.5%** after Daiwa Securities upgraded the stock to \u201coutperform\u201d and set a $75 price target.\n...\n- Analyst sentiment is broadly positive, with a \u201cModerate Buy\u201d consensus and an average price target of $72.06, although some firms remain cautious.\n...\nHewlett Packard Enterprise Com...",
+      "source": "web",
+      "title": "Hewlett Packard Enterprise (NYSE:HPE) Shares Up 7.5% ...",
+      "url": "https://www.marketbeat.com/instant-alerts/price-hewlett-packard-enterprise-nyse-hpe-shares-up-75-after-analyst-upgrade-2026-10-02/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "STMicroelectronics stock closed at EUR 50.34 on October 2 after a 6.54 percent gain.\nQ2 revenue rose 26 percent year over year, while UBS kept an EUR 80 target.\n...\nSTMicroelectronics (NL0000226223) closed at EUR 50.34 on Euronext Paris on October 2, 2026, up 6.54 percent for the session.\n...\nSTMicr...",
+      "source": "web",
+      "title": "STMicroelectronics stock rises 6.54 percent on AI demand",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/stmicroelectronics-stock-rises-6-54-percent-on-ai-demand/70221629"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Shares of **Hewlett Packard Enterprise** (NYSE:HPE) rose 22.3% in September 2026, according to data from S&P Global Market Intelligence.\nIt started with a blowout earnings report on Sept. 2. On the tail end, HPE recorded a $1.2 billion order for a new AI server rack.\n...\nHPE's fiscal third-quarter r...",
+      "source": "web",
+      "title": "How HPE Stock Gained 22.3% in September",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/hpe-stock-gained-22-3-022301016.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/article/hewlett-packard-enterprise-stock-had-a-week-for-the-books-181213887.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/stmicroelectronics-sets-october-29-results-date-seven-analysts-rate-stmicroelectronics-stock-buy/70230686",
+    "https://finance.yahoo.com/markets/stocks/articles/why-hewlett-packard-enterprise-hpe-233403556.html",
+    "https://www.marketbeat.com/instant-alerts/filing-silverleafe-capital-partners-llc-makes-new-111-million-investment-in-stmicroelectronics-nv-stm-2026-10-02/",
+    "https://www.ideal-investisseur.fr/en/stock-news/stmicroelectronics-stock-among-the-strongest-gainers-on-the-cac-40-15-over-one-month/26322.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/hewlett-packard-enterprise-stock-gained-7-45-percent-on-ai-order/70228329",
+    "https://247wallst.com/cards/nineteen-stocks-cleared-fresh-52-week-highs-this-week-and-h-hpe-price-extreme-01m411bg7m47nrkd73xxk9e5r9",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/stmicroelectronics-stock-gained-6-54-percent-on-october-2/70227672",
+    "https://finance.yahoo.com/markets/stocks/articles/hewlett-packard-enterprise-hpe-18-143003312.html",
+    "https://markets.businessinsider.com/news/stocks/stmicroelectronics-announces-timing-for-third-quarter-2026-earnings-release-and-conference-call-1036596041",
+    "https://www.marketbeat.com/instant-alerts/price-macom-technology-solutions-nasdaq-mtsi-shares-up-75-whats-next-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/filing-confluence-investment-management-llc-purchases-new-holdings-in-stmicroelectronics-nv-stm-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/price-hewlett-packard-enterprise-nyse-hpe-shares-up-75-after-analyst-upgrade-2026-10-02/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/stmicroelectronics-stock-rises-6-54-percent-on-ai-demand/70221629",
+    "https://finance.yahoo.com/markets/stocks/articles/hpe-stock-gained-22-3-022301016.html"
+  ],
+  "usage": {
+    "input_tokens": 1066,
+    "output_tokens": 1079,
+    "cost_usd": 0.03338
+  }
+}

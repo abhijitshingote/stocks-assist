@@ -1,0 +1,167 @@
+{
+  "name": "tickers_06",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| SDEV | Stablecoin Development Corp. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +104.37% | +402.0% | 5.8\u00d7 | \u2014 |\n| XRPN | Armada Acquisition Corp. II | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +68.25% | +272.6% | 10.3\u00d7 | \u2014 |\n| NNBR | NN, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +24.24% | +22.9% | 6.0\u00d7 | \u2014 |\n| MXL | MaxLinear, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +14.99% | +12.9% | 1.5\u00d7 | \u2014 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Stablecoin Development Corp. (SDEV) `[Digital Assets]`\n- SDEV rose **104.37%** to the verified October 2 close of **$7.48**, with approximately **137.6 million shares** traded; a specific October 2 company announcement was not identified (Financial Modeling Prep, Oct. 2; exchange tape).\n- A September **S-3/A** filing disclosed that SDEV held approximately **2.315 billion SKY tokens** as of September 13, representing about **10% of SKY\u2019s total supply**, with nearly all tokens staked in the Sky Protocol; this was cited as the company-specific explanation for the stock\u2019s October 2 move (Gate News, Oct. 5 02:00 ET; filing date: September 2026).\n- SDEV reported on September 29 that, after inquiries concerning unusual trading activity, it was unaware of material nonpublic information, a pending transaction, or another undisclosed business development explaining the trading (Business Insider, Oct. 2 19:51 ET; SEC report dated September 29).\n- SDEV was reported at **$11.52**, up **51.68%**, in premarket trading at **06:34 ET** on October 5; this reading was before the 12:20 ET cutoff (Yahoo Finance, Oct. 5 06:34 ET).\n- SKY, the token held by SDEV, was reported to have risen from approximately **$0.80 to above $0.90** during the same period in which SDEV advanced from approximately **$0.84 on September 17 to $7.48 on October 2** (TokenPost, Oct. 4 21:41 ET).\n",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Stablecoin Development Corporat\n11.52 +51.68%\nNYSE American - Nasdaq Real Time Price \u2022 USD\n# Stablecoin Development Corporat (SDEV)\n7.48 +3.82 (+104.37%)\nAt close: October 2 at 4:00:00 p.m.\nEDT\n11.52 +3.93 (+51.68%)\nPre-Market: 6:34:05 a.m.\nEDT\n...\nStablecoin Development Corporat\u2019s ISS Governance Qu...",
+      "source": "web",
+      "title": "Stablecoin Development Corporat (SDEV)",
+      "url": "https://ca.finance.yahoo.com/quote/SDEV/profile/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SDEV Stock Surges Over 700% in 15 Days to $7.48, Company Holds 2.315B SKY | Gate US\nNewsFlashSDEV Stock Surges Over 700% in 15 Days to $7.48, Company Holds 2.315B SKY\n# SDEV Stock Surges Over 700% in 15 Days to $7.48, Company Holds 2.315B SKY\nGateNews\n2026-10-05 02:00:42\nSKY4.05%\nAccording to MSX.CO...",
+      "source": "web",
+      "title": "SDEV Stock Surges Over 700% in 15 Days to $7.48, Company ...",
+      "url": "https://www.gate.com/en-us/news/detail/sdev-stock-surges-over-700-in-15-days-to-748-company-holds-2315b-sky-17891029"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SDEV Stock Surges 700% as SKY Treasury Holdings Revealed | Phemex News\nSign Up to 15,000 USDT in Rewards\n1. SKY Treasury Firm SDEV Surges Over 700% in 15 Days to $7.48\n# SKY Treasury Firm SDEV Surges Over 700% in 15 Days to $7.48\n...\nStablecoin Development Corporation (SDEV), a SKY treasury company,...",
+      "source": "web",
+      "title": "SDEV Stock Surges 700% as SKY Treasury Holdings ...",
+      "url": "https://phemex.com/news/article/sky-treasury-firm-sdev-surges-over-700-in-15-days-to-748-98776"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Stablecoin Development Corporation Common Stock (NYSE:SDEV) Stock Quote\n# Stablecoin Development Corporation Common Stock (NY: SDEV )\n7.480 +3.820 (+104.37%) Official Closing Price Updated: 8:00 PM EDT, Oct 2, 2026 Add to My Watchlist\n...\n|Volume|153,283,942|\n|--|--|\n|Open|5.060|\n|Bid (Size)|7.710 (...",
+      "source": "web",
+      "title": "Stablecoin Development Corporation Common Stock ...",
+      "url": "https://markets.financialcontent.com/lightport.lightport1/quote?Symbol=321:2684764"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SKY treasury company SDEV stock surges over 700% in 15 days, now at $7.48 | PANews English\n...\n# SKY treasury company SDEV stock surges over 700% in 15 days, now at $7.48\n...\nPANews reported on October 5 that market data shows the stock of SKY treasury company Stablecoin Development Corporation (SDE...",
+      "source": "web",
+      "title": "SKY treasury company SDEV stock surges over 700% in 15 days, now at $7.48",
+      "url": "https://panews.io/articles/01a109cd-d442-74a6-8244-f07cfe6da8c1"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SDEV stock surges over 700% in 15 days, closing at $7.48 | KuCoin\n# SDEV stock surges over 700% in 15 days, closing at $7.48\n...\nRelease Time: 2026/10/05 02:23:39\nSKY\n$0.09585-0.71%\n...\nSDEV stock surged over 700% in 15 days, closing at $7.48 on October 2.\nThe price rose from $0.84 on September 17, ...",
+      "source": "web",
+      "title": "SDEV stock surges over 700% in 15 days, closing at $7.48",
+      "url": "https://www.kucoin.com/news/flash/sdev-stock-surges-over-700-in-15-days-closing-at-7-48"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Morning Market Movers: AMOD, SDEV, NXL, RZAI See Big Swings\n...\n# Morning Market Movers: AMOD, SDEV, NXL, RZAI See Big Swings\n10/2/2026 9:17 AM ET\nAt 9:10 a.m.\nET on Friday, premarket trading is seeing notable activity in several stocks, with early price movements signaling potential opportunities b...",
+      "source": "web",
+      "title": "Morning Market Movers: AMOD, SDEV, NXL, RZAI See Big Swings",
+      "url": "https://www.rttnews.com/amp/3696182/morning-market-movers-amod-sdev-nxl-rzai-see-big-swings.aspx"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Stablecoin Development Corp (SDEV) Stock \u2014 Veridion Score: 65 \u00b7 5 of 6 factors measured \u2014 Veridion Markets\nNYSE MKT LLC \u00b7 SDEV\n+104.37% \u00b7 +$3.82 \u00b7 Vol 153.3M\nMarket closed \u00b7 last close 4:00 PM ET \u00b7 price as of 20:00:00 ET\n# Stablecoin Development Corp\nPharmaceuticals\n$7.48\n...\nVeridion Score\nBETAMED...",
+      "source": "web",
+      "title": "Stablecoin Development Corp (SDEV) Stock - Veridion Markets",
+      "url": "https://www.veridionmarkets.com/stocks/SDEV"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-01",
+      "place_metadata": null,
+      "snippet": "Stablecoin Development Corporat\n3.3593 +30.15%\n...\nNYSE American - Nasdaq Real Time Price \u2022 USD\n# Stablecoin Development Corporat (SDEV)\n2.5900 -0.6800 (-20.80%)\nAl cierre: 30 de septiembre a las 4:00:00 p.m.\nEDT\n3.3593 +0.7783 (+30.15%)\nPreapertura: 8:00:02 a.m.\nEDT",
+      "source": "web",
+      "title": "\u00daltimas noticias y titulares de acciones de Stablecoin Development Corporat (SDEV) - Yahoo Finanzas",
+      "url": "https://es-us.finanzas.yahoo.com/quote/SDEV/news/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "**Stablecoin Development: Multiday Run Meets Giant Digital-Asset Treasury **\n**Stablecoin Development (NYSEAMERICAN:SDEV) ** is in the midst of a multiday run, as traders pile into a company that reinvented itself around digital assets.\nThe company formally changed its name from NovaBay Pharmaceutic...",
+      "source": "web",
+      "title": "These High-Voltage Stocks Are Suddenly Impossible to Ignore",
+      "url": "https://markets.businessinsider.com/news/stocks/these-high-voltage-stocks-are-suddenly-impossible-to-ignore-1036593935"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 05, 2026 at 06:00 AM EDT\n...\nCALGARY, Alberta, Oct. 05, 2026 (GLOBE NEWSWIRE) -- Cenovus Energy Inc.\n(TSX: CVE) (NYSE: CVE) today announced that it has entered into a definitive arrangement agreement to acquire Athabasca Oil Corporation (TSX: ATH) (\u201cAthabasca\u201d) in a cash and stock transactio...",
+      "source": "web",
+      "title": "FinancialContent - Cenovus announces agreement to acquire ...",
+      "url": "https://markets.financialcontent.com/stocks/article/gnwcq-2026-10-5-cenovus-announces-agreement-to-acquire-athabasca-oil-corporation?Language=english%252F1000"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "PANews 10\uc6d4 5\uc77c \uc18c\uc2dd, \uc2dc\uc138 \ub370\uc774\ud130\uc5d0 \ub530\ub974\uba74 SKY \uc7ac\ubb34\ud68c\uc0ac Stablecoin Development Corporation(SDEV)\uc758 \uc8fc\uac00\uac00 9\uc6d4 17\uc77c \uc885\uac00 0.84\ub2ec\ub7ec\uc5d0\uc11c 10\uc6d4 2\uc77c \uc885\uac00 7.48\ub2ec\ub7ec\ub85c \uc0c1\uc2b9\ud558\uba70 15\uc77c \ub9cc\uc5d0 700% \uc774\uc0c1 \uae09\ub4f1\ud588\uace0, 10\uc6d4 2\uc77c \ud558\ub8e8\uc5d0\ub9cc \uc57d 104% \uc0c1\uc2b9\ud588\ub2e4.\n\uc774 \ud68c\uc0ac\uac00 9\uc6d4 \uc81c\ucd9c\ud55c S-3/A \uc11c\ub958\uc5d0 \ub530\ub974\uba74 9\uc6d4 13\uc77c \uae30\uc900 \uc57d 23\uc5b5 1500\ub9cc \uac1c\uc758 SKY\ub97c \ubcf4\uc720\ud558\uace0 \uc788\uc73c\uba70, \uc774\ub294 \ucd1d \uacf5\uae09\ub7c9\uc758 \uc57d 10%\uc5d0 \ud574\ub2f9\ud55c\ub2e4.",
+      "source": "web",
+      "title": "SKY \uc7ac\ubb34\ud68c\uc0ac SDEV \uc8fc\uac00 15\uc77c \ub9cc\uc5d0 700% \uc774\uc0c1 \uae09\ub4f1, \ud604\uc7ac 7.48\ub2ec\ub7ec",
+      "url": "https://www.panewslab.com/ko/articles/01a109cd-d442-74a6-8244-f07cfe6da8c1"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SDEV Shares Gained More Than 700% Over 15 Days as SKY Holdings Reached 2.315 Billion | TokenPost\n...\n# SDEV Shares Gained More Than 700% Over 15 Days as SKY Holdings Reached 2.315 Billion\nThe company held about 10% of SKY\u2019s total supply as of Sept. 13, with nearly all of its tokens staked in the Sky...",
+      "source": "web",
+      "title": "SDEV Shares Gained More Than 700% Over 15 Days as SKY Holdings Reached 2.315 Billion | TokenPost",
+      "url": "https://www.tokenpost.com/news/investing/26719"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Latest News about Stablecoin Development Corporation Common Stock (NYSE:SDEV) | Stablecoin Development Corporation Common Stock (NYSE:SDEV) News\n# Stablecoin Development Corporation Common Stock (NY: SDEV )\n7.480 UNCHANGED Delayed Quote Updated: 8:00 PM EDT, Oct 2, 2026 Add to My Watchlist\n...\nFrida...",
+      "source": "web",
+      "title": "Stablecoin Development Corporation Common Stock (NY:SDEV)",
+      "url": "https://markets.financialcontent.com/lightport.lightport1/quote/news?Symbol=NY:SDEV"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "FMPTop Stock Gainers: Stablecoin Development, Armada Acquisition, and Other Market\u2026\n- Stablecoin Development Corp.\n(AMEX: SDEV) experienced a significant surge, trading above its 50-day moving average, though a specific catalyst was not identified.\n...\nOn October 2, 2026, top listed gainers posted s...",
+      "source": "web",
+      "title": "Top Stock Gainers on October 2, 2026 | FMP",
+      "url": "https://site.financialmodelingprep.com/market-news/top-stock-gainers-october-2-2026"
+    }
+  ],
+  "citations": [
+    "https://ca.finance.yahoo.com/quote/SDEV/profile/",
+    "https://www.gate.com/en-us/news/detail/sdev-stock-surges-over-700-in-15-days-to-748-company-holds-2315b-sky-17891029",
+    "https://phemex.com/news/article/sky-treasury-firm-sdev-surges-over-700-in-15-days-to-748-98776",
+    "https://markets.financialcontent.com/lightport.lightport1/quote?Symbol=321:2684764",
+    "https://panews.io/articles/01a109cd-d442-74a6-8244-f07cfe6da8c1",
+    "https://www.kucoin.com/news/flash/sdev-stock-surges-over-700-in-15-days-closing-at-7-48",
+    "https://www.rttnews.com/amp/3696182/morning-market-movers-amod-sdev-nxl-rzai-see-big-swings.aspx",
+    "https://www.veridionmarkets.com/stocks/SDEV",
+    "https://es-us.finanzas.yahoo.com/quote/SDEV/news/",
+    "https://markets.businessinsider.com/news/stocks/these-high-voltage-stocks-are-suddenly-impossible-to-ignore-1036593935",
+    "https://markets.financialcontent.com/stocks/article/gnwcq-2026-10-5-cenovus-announces-agreement-to-acquire-athabasca-oil-corporation?Language=english%252F1000",
+    "https://www.panewslab.com/ko/articles/01a109cd-d442-74a6-8244-f07cfe6da8c1",
+    "https://www.tokenpost.com/news/investing/26719",
+    "https://markets.financialcontent.com/lightport.lightport1/quote/news?Symbol=NY:SDEV",
+    "https://site.financialmodelingprep.com/market-news/top-stock-gainers-october-2-2026"
+  ],
+  "usage": {
+    "input_tokens": 1072,
+    "output_tokens": 360,
+    "cost_usd": 0.02262
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "b_toshiba_hdd_capacity_stx_wdc",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Story: Toshiba HDD Capacity Doubling: STX/WDC \u221210%\u2014Scope and Timeline. Related tickers: STX, WDC, TER, IMOS.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nWhy this needs follow-up: STX and WDC each fell ~10% on a Nikkei report of Toshiba doubling AI data-center HDD capacity with a $380M Philippines investment, but no details on timeline, customer commitments, or whether TER's +8% gain is causally linked to HDD test demand are in the notes.\n\nANSWER EACH QUESTION (run a separate search for each):\n- What capacity expansion timeline and customer commitments did the Nikkei October 2 2026 report specify for Toshiba's planned doubling of AI data-center hard-disk-drive production in the Philippines?\n- Did Seagate or Western Digital management or any sell-side analyst comment on the competitive threat from Toshiba's HDD expansion in the October 2\u20135 2026 window?\n- Is Teradyne's 8% gain on October 2 2026 linked by analysts to HDD test-equipment demand from Toshiba's Philippine expansion or to a separate AI memory-test catalyst?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Toshiba HDD expansion `[Scope and timeline]`\n- Toshiba plans to invest approximately **\u00a560 billion ($380 million)** in its Philippines facilities to **double production capacity for AI-data-center HDDs by fiscal 2027**, measured against fiscal 2025 capacity; the investment is its first major HDD-related investment in about five years. (Nikkei, Oct. 2, 2026; Investing.com, Oct. 2, 2026)\n- The new production lines are designed for HDDs with **up to 40% higher per-drive capacity**; Toshiba plans **30TB-class drives in 2027**, mass production of **65TB-class drives around 2030**, and eventually **100TB-class products**. (Nikkei, Oct. 2, 2026; Tom\u2019s Hardware, Oct. 2, 2026)\n- Toshiba is targeting an increase in its HDD market share measured by storage capacity from **just over 10% to approximately 30% over the medium term**. (Nikkei, Oct. 2, 2026)\n- Toshiba\u2019s Philippine expansion is centered on its **Laguna Technopark** facility and includes additional lines for nearline HDD assembly; some equipment is already installed and first drives from the expanded lines have reportedly begun shipping. [report] (Tom\u2019s Hardware, Oct. 2, 2026; HWBusters, Oct. 3, 2026)\n- The reports specify a **fiscal-2027 completion target**, but do not give an exact completion month, production-unit target, or named customer contracts. (Nikkei, Oct. 2, 2026; AI Weekly, Oct. 4, 2026)\n- The reported plan does not identify named cloud or AI-data-center customers, customer volume commitments, or customer contract dates; a separate report said the added factory could be relevant to buyers negotiating contracts for **2029 or 2031** shipments. [report] (AI Weekly, Oct. 4, 2026; FinanceFeeds, Oct. 3, 2026)\n- Toshiba\u2019s production-line expansion is expected to support drives with increased storage density, while additional investment is planned for **65TB-class production in 2030** and later **100TB-class drives**. (Nikkei, Oct. 2, 2026; Investing.com, Oct. 2, 2026)\n\n## STX \u2014 Seagate Technology `[Stock move and analyst comments]`\n- **STX fell 13% on Oct. 2, 2026**, according to one market report; another report cited an approximately **10%** decline, while a separate price report cited a **14.6%** close. (Investing.com, Oct. 2, 2026; FinanceFeeds, Oct. 3, 2026; Startup Fortune, Oct. 3, 2026)\n- **Citi analyst Asiya Merchant** said Toshiba\u2019s expansion may have a limited effect on global HDD supply because Toshiba relies on outside suppliers for key components including **media and recording heads**; those suppliers would also need to expand capacity. (Investing.com, Oct. 2, 2026)\n- **Morgan Stanley** said the HDD supply-demand gap through **2028** remains wider than the capacity addition implied by Toshiba\u2019s plan and characterized the selloff as a buying opportunity; the available report excerpt does not state a rating or price target. [report] (Gate, Oct. 3, 2026)\n- **Rosenblatt** described Toshiba\u2019s plan as an attempt to reclaim market share rather than immediately reach the **30%** target, while identifying potential contract risk for supply agreements extending into **2029\u20132031**; the available report excerpt does not state a rating or price target. [report] (Gate, Oct. 3, 2026)\n- Citi, Morgan Stanley, and Rosenblatt are the named firms commenting in the available Oct. 2\u20135 reports; no specific STX rating change or price-target change is stated in those reports. (Investing.com, Oct. 2, 2026; Gate, Oct. 3, 2026)\n\n## WDC \u2014 Western Digital `[Stock move and analyst comments]`\n- **WDC fell 12% on Oct. 2, 2026**, according to one market report; other reports cited declines of approximately **7%**, **10%**, and **13.5%**. (Investing.com, Oct. 2, 2026; Investing.com, Oct. 2, 2026; FinanceFeeds, Oct. 3, 2026; Startup Fortune, Oct. 3, 2026)\n- **Citi analyst Asiya Merchant** said the effect of Toshiba\u2019s expansion on global HDD availability could be limited because Toshiba does not produce all key components internally and depends on external suppliers for media and heads. (Investing.com, Oct. 2, 2026)\n- **Morgan Stanley** said capacity additions from Toshiba would not close the HDD supply-demand gap through **2028** and viewed the selloff as a buying opportunity; the available report excerpt does not state a rating or price target. [report] (Gate, Oct. 3, 2026)\n- **Rosenblatt** said Toshiba\u2019s plan represented a medium-term share-recapture effort and flagged supply-contract risk in **2029\u20132031**; the available report excerpt does not state a rating or price target. [report] (Gate, Oct. 3, 2026)\n- No named Seagate or Western Digital executive comment, specific WDC rating change, or WDC price-target change is stated in the available Oct. 2\u20135 reports. (Investing.com, Oct. 2, 2026; Gate, Oct. 3, 2026)\n\n## TER \u2014 Teradyne `[Catalyst attribution]`\n- **TER rose 8% on Oct. 2, 2026**, according to the premise of the market brief, but the available reports do not link that move to Toshiba\u2019s Philippines HDD expansion.\n- The available reports do not identify a named analyst, rating, price target, or dated research note attributing TER\u2019s Oct. 2 gain to HDD test-equipment demand from Toshiba.\n- The available reports also do not provide a named analyst attribution linking TER\u2019s gain to a separate AI-memory-test catalyst.\n\n## IMOS \u2014 ChipMOS Technologies `[Related ticker]`\n- No Oct. 2\u20135, 2026 report in the available results gives **IMOS** a stock move, analyst note, rating, price target, or causal connection to Toshiba\u2019s Philippines HDD expansion.",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Analysts pushed back Friday on concerns that Toshiba's planned expansion of hard disk drive production could materially ease the global HDD supply shortage, arguing that the investment is unlikely to significantly change the industry's supply-demand balance.\n...\nToshiba plans to inv...",
+      "source": "web",
+      "title": "Analysts say Toshiba HDD expansion may not ease global supply shortage",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/analysts-toshiba-hdd-expansion-may-164512754.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Investing.com-- Japanese technology group Toshiba (TYO:6588) plans to double production capacity for hard disk drives (HDDs) used in artificial intelligence data centres by fiscal 2027, as the AI boom drives demand for high-capacity storage, Nikkei reported on Friday.\nThe company will invest about 6...",
+      "source": "web",
+      "title": "Toshiba to double hard disk output capacity amid AI data centre demand - Nikkei",
+      "url": "https://uk.finance.yahoo.com/news/toshiba-double-hard-disk-output-060009684.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "According to a report by Nikkei Asia on October 2, 2026, Toshiba intends to increase hard-disk capacity for AI data centers by 100% within the fiscal year 2027 compared to 2025 levels, backed by an investment of approximately 60 billion yen (about $380 million) in the Philippines, marking its first ...",
+      "source": "web",
+      "title": "Seagate and Western Digital Drop 10.2% on Toshiba's \u00a560 Billion HDD Plan",
+      "url": "https://financefeeds.com/seagate-western-digital-drop-10-2-percent-toshiba-60-billion-yen-hdd/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "According to Nikkei, the Japanese technology group plans to double production capacity for hard disk drives used in AI data centers within fiscal 2027.\nToshiba will invest roughly JPY 60 billion (US$380 million) to expand its facilities in the Philippines.",
+      "source": "web",
+      "title": "[News] Toshiba to Double AI Data Center HDD Capacity by FY2027 With $380M Expansion as AI Storage Demand Surges",
+      "url": "https://www.trendforce.com/news/2026/10/02/news-toshiba-to-double-ai-data-center-hdd-capacity-by-fy2027-with-380m-expansion-as-ai-storage-demand-surges/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Toshiba plans to double its production capacity for AI data center hard disk drives within the fiscal year ending March 2028, according to a report from Nikkei on Friday.\nThe company will invest approximately 60 billion yen, or about $380 million, to expand its Philippines facility....",
+      "source": "web",
+      "title": "Toshiba plans to double AI data center hard drive ...",
+      "url": "https://www.investing.com/news/stock-market-news/toshiba-plans-to-double-ai-data-center-hard-drive-production-evercore-comments-93CH-4930219"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Toshiba reiterates plans to release 30TB-class HDDs, double HDD production capacity in Philippines in in 2027.\n...\nToshiba has spent approximately \u00a560 billion ($380 million) to expand its hard drive assembly capacity in the Philippines, doubling its production capacity for nearline HDDs in fiscal 20...",
+      "source": "web",
+      "title": "Toshiba to double HDD production capacity amid devastating ...",
+      "url": "https://www.tomshardware.com/pc-components/hdds/toshiba-to-double-hdd-production-capacity-as-30tb-class-loom-65tb-100tb-drives-on-the-roadmap-for-2030-and-beyond"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Toshiba plans to double hard-disk drive capacity for AI data centers within fiscal 2027, targeting market share growth from 10% to 30% medium-term.\n- Analysts described the drop as a supply-timing issue, noting Toshiba lacks manufacturing capacity for media and heads, so the supply gap through 202...",
+      "source": "web",
+      "title": "www.gate.com \u00b7 news \u00b7 detailSeagate and Western Digital Stocks Drop 10.2% on Toshiba's \u00a560...",
+      "url": "https://www.gate.com/news/detail/seagate-and-western-digital-stocks-drop-102-on-toshibas-60-billion-hdd-plan-24725362"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Toshiba HDD production is set to double by fiscal 2027, measured against fiscal 2025, according to a report from Nikkei Asia.\nThe company is spending roughly \u00a560 billion, about $380 million, on new lines at its plant in the Philippines.\nSome of that equipment is already installed, and the first driv...",
+      "source": "web",
+      "title": "Toshiba HDD Production Set to Double by 2027 as AI Data ...",
+      "url": "https://hwbusters.com/news/toshiba-hdd-production-set-to-double-by-2027-as-ai-data-centers-buy-every-drive-it-makes/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Toshiba's Nikkei-reported plan to invest $380 million doubling HDD capacity in the Philippines and grab 30% market share sent Seagate and Western Digital shares tumbling on October 2.\nMorgan Stanley, Citi and Rosenblatt all called the selloff overdone, arguing the AI storage shortage isn't closing a...",
+      "source": "web",
+      "title": "Toshiba's $380 Million Hard Drive Bet Wipes Billions Off Seagate and Western Digital - Startup Fortune",
+      "url": "https://startupfortune.com/toshibas-380-million-hard-drive-bet-wipes-billions-off-seagate-and-western-digital/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- Toshiba aims to lift its HDD share by storage capacity from just over 10% to 30% over the medium term, according to Nikkei.\n...\nWestern Digital (WDC) and Seagate Technology (STX) shares came under pressure on Friday after reports that Toshiba plans a major expansion of hard disk drive production f...",
+      "source": "web",
+      "title": "WDC, STX Stocks Slide Up To 10% \u2014 What\u2019s The Toshiba Connection?",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/wdc-stx-stocks-slide-10-134048401.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "## Key Takeaways\n...\n- Toshiba plans to double hard-disk drive production capacity for AI data centers by fiscal 2027, targeting 30% market share.\n...\nSeagate and Western Digital stocks fell sharply on October 2 after a Nikkei Asia report stated Toshiba plans to invest approximately \u00a560 billion, or ...",
+      "source": "web",
+      "title": "www.gate.com \u00b7 news \u00b7 detailSeagate Falls 14.6% and Western Digital 13.5% After Toshiba ...",
+      "url": "https://www.gate.com/news/detail/STX/seagate-falls-146-and-western-digital-135-after-toshiba-hdd-expansion-24716267"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Seagate Technology (NASDAQ) shares fell 11% on Friday, while Western Digital (NASDAQ) dropped 7%, after a report that Toshiba plans to significantly expand its hard disk drive production capacity to meet growing demand from AI data centers.\nAccording to Nikkei, Toshiba plans to inve...",
+      "source": "web",
+      "title": "Seagate and Western Digital shares fall on Toshiba HDD expansion",
+      "url": "https://au.finance.yahoo.com/news/seagate-western-digital-shares-fall-122009784.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Toshiba has begun shipping nearline hard drives from an expanded production line in the Philippines, with a target to nearly double its subsidiary\u2019s annual storage-capacity output by fiscal 2027 versus fiscal 2025.\n...\nToshiba confirmed the first shipment and expansion in its October 2 announcement....",
+      "source": "web",
+      "title": "Toshiba Expands Philippines Nearline HDD Production, Targets ...",
+      "url": "https://windowsforum.com/news/toshiba-expands-philippines-nearline-hdd-production-targets-double-storage-capacity-by-2027.447009/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- Toshiba will invest about \u00a560 billion ($380 million) to double AI-focused HDD production capacity by fiscal 2027, its first major HDD push in roughly five years.\n...\nToshiba will invest about \u00a560 billion, roughly $380 million, to double production capacity for the hard-disk drives that AI data cen...",
+      "source": "web",
+      "title": "Toshiba to double AI data-center HDD output in \u00a560bn plan | AI Weekly",
+      "url": "https://aiweekly.co/alerts/toshiba-to-double-ai-data-center-hdd-output-in-60bn-plan"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Quick Read\n- Toshiba doubling HDD output sent Seagate down 10% and Western Digital down 7%, threatening the tight supply both CEOs credited for pricing leverage.\n...\nDemand from artificial intelligence (AI) data centers turned Seagate and Western Digital into two of the year\u2019s standout technology...",
+      "source": "web",
+      "title": "Seagate Tumbles 10%, Western Digital Drops 7% as ...",
+      "url": "https://247wallst.com/investing/2026/10/02/seagate-tumbles-10-western-digital-drops-7-as-toshiba-moves-to-double-hard-disk-output/"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/analysts-toshiba-hdd-expansion-may-164512754.html",
+    "https://uk.finance.yahoo.com/news/toshiba-double-hard-disk-output-060009684.html",
+    "https://financefeeds.com/seagate-western-digital-drop-10-2-percent-toshiba-60-billion-yen-hdd/",
+    "https://www.trendforce.com/news/2026/10/02/news-toshiba-to-double-ai-data-center-hdd-capacity-by-fy2027-with-380m-expansion-as-ai-storage-demand-surges/",
+    "https://www.investing.com/news/stock-market-news/toshiba-plans-to-double-ai-data-center-hard-drive-production-evercore-comments-93CH-4930219",
+    "https://www.tomshardware.com/pc-components/hdds/toshiba-to-double-hdd-production-capacity-as-30tb-class-loom-65tb-100tb-drives-on-the-roadmap-for-2030-and-beyond",
+    "https://www.gate.com/news/detail/seagate-and-western-digital-stocks-drop-102-on-toshibas-60-billion-hdd-plan-24725362",
+    "https://hwbusters.com/news/toshiba-hdd-production-set-to-double-by-2027-as-ai-data-centers-buy-every-drive-it-makes/",
+    "https://startupfortune.com/toshibas-380-million-hard-drive-bet-wipes-billions-off-seagate-and-western-digital/",
+    "https://finance.yahoo.com/markets/stocks/articles/wdc-stx-stocks-slide-10-134048401.html",
+    "https://www.gate.com/news/detail/STX/seagate-falls-146-and-western-digital-135-after-toshiba-hdd-expansion-24716267",
+    "https://au.finance.yahoo.com/news/seagate-western-digital-shares-fall-122009784.html",
+    "https://windowsforum.com/news/toshiba-expands-philippines-nearline-hdd-production-targets-double-storage-capacity-by-2027.447009/",
+    "https://aiweekly.co/alerts/toshiba-to-double-ai-data-center-hdd-output-in-60bn-plan",
+    "https://247wallst.com/investing/2026/10/02/seagate-tumbles-10-western-digital-drops-7-as-toshiba-moves-to-double-hard-disk-output/"
+  ],
+  "usage": {
+    "input_tokens": 796,
+    "output_tokens": 1419,
+    "cost_usd": 0.03767
+  }
+}

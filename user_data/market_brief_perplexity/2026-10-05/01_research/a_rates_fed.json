@@ -1,0 +1,167 @@
+{
+  "name": "a_rates_fed",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Rates & Fed.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\n2-yr, 10-yr, 30-yr Treasury yields (level, bp change); Treasury auction results (high yield, bid-to-cover, tail); CME FedWatch probabilities for the next FOMC; every Fed official who spoke, with verbatim quotes.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Rates & Fed `[Macro]`\n\n- The **2-year Treasury yield** was **4.797%**, down **2 bp**, at approximately **08:16 ET on Monday, October 5**. (CNBC, Oct 5 08:16 ET)\n- The **10-year Treasury yield** was **5.255%**, down **more than 1 bp**, at approximately **08:16 ET on Monday, October 5**. (CNBC, Oct 5 08:16 ET)\n- The **30-year Treasury yield** was **5.614%**, down **1 bp**, at approximately **08:16 ET on Monday, October 5**. (CNBC, Oct 5 08:16 ET)\n- On Friday, October 2, the **2-year yield** closed at **4.718%**, down **6.86 bp**; the **10-year yield** closed at **5.178%**, down **5.6 bp**; and the **30-year yield** closed at **5.5704%**, down **3.26 bp**. (Reuters, Oct 2; republished Oct 4 19:00 ET)\n- The **2s10s spread** was approximately **+46 bp** on Friday, October 2. (Reuters, Oct 2; republished Oct 4 19:00 ET)\n- CME FedWatch indicated an approximately **82% probability that the Fed would leave rates unchanged** at its next meeting as of Monday morning, October 5. (CNBC, Oct 5 08:16 ET)\n- Chicago Fed President **Austan Goolsbee** said on Friday, October 2: \u201cThere is plenty of room for anything to be on the table,\u201d when asked whether the Fed should raise rates or pause in October. (Reuters, Oct 2)\n- Goolsbee also said: \u201cLet\u2019s see if we can get some evidence put together that suggests we\u2019re headed back to 2% inflation.\u201d (Reuters, Oct 2)\n- New York Fed President **John Williams** said: \u201cGiven the policy decision we made at our September meeting, there is no urgent need to act and we have time to gather more information.\u201d (Reuters, published Oct 5)\n- Williams said the Fed could wait for more data while still expecting **one additional rate increase before year-end**. (Reuters, published Oct 5)\n- Fed Vice Chair **Philip Jefferson** said: \u201cMy colleagues and I will need to come to our own judgment, which may take more time.\u201d (Reuters, published Oct 5)\n- Jefferson said future policy adjustments should be determined by \u201ccarefully examining trends in the data, the evolving outlook, and the balance\u2026\u201d (Reuters, published Oct 5)\n- Dallas Fed President **Lorie Logan** said rates may need to rise by an additional **50 bp or more**. (Saxo Bank, Oct 5 10:18 ET)\n- Fed Vice Chair for Supervision **Michelle Bowman** signaled that there was **no urgent need for further rate action**. (Saxo Bank, Oct 5 10:18 ET)\n- The next FOMC meeting was scheduled for **October 27\u201328**, with the policy announcement due at **14:00 ET on Wednesday, October 28**. (OpenBook Analytics, Oct 2 18:54 ET)\n\n## Treasury Auctions `[Macro]`\n\n- The available October 2 auction result was for **Japan\u2019s Treasury discount bills**, not a U.S. Treasury auction: **\u00a511,710.50 billion** in competitive bids were submitted against **\u00a52,698.48 billion** accepted, with a lowest accepted yield of **1.2875%**. (Japan Ministry of Finance, Oct 2)\n- No U.S. Treasury coupon-auction result with a high yield, bid-to-cover ratio, and tail was identified in the available search results for the October 2\u2013October 5 12:20 ET window.",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "U.S. Treasury yields inched lower on Monday after a sharp selloff the week prior, as investors look ahead to the minutes from the Federal Reserve's latest meeting.\nThe benchmark 10-year Treasury was down over one basis point to 5.255%, and the 30-year Treasury bond also declined one basis point to 5...",
+      "source": "web",
+      "title": "Treasury yields inch lower as investors pare back Fed rate hike bets",
+      "url": "https://www.cnbc.com/2026/10/05/treasury-yields-bonds-fed-rates.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fed's Williams sees no urgency for next rate hike\nMonday, October 5, 2026Set Location\n...\n## Williams said the Fed can wait for more data and still expects one more hike this year, while traders cut October odds to about 50%, Reuters said.\n...\nBias Comparison\n- On Tuesday, Federal Reserve Bank of Ne...",
+      "source": "web",
+      "title": "Fed's Williams sees no urgency for next rate hike",
+      "url": "https://ground.news/article/feds-williams-sees-no-urgency-for-next-rate-hike_cf0c88"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Long-term Treasury yields are near their highest in two decades, and the causes do not look temporary.",
+      "source": "web",
+      "title": "What will Washington do next if US bond yields keep rising?",
+      "url": "https://www.reuters.com/business/what-will-washington-do-next-if-us-bond-yields-keep-rising-2026-10-05/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fed's Goolsbee says rate hike and pause both 'on the table' | Business | The Daily News\nOctober 5, 2026\n...\nOct 2 (Reuters) - Chicago Federal Reserve President Austan Goolsbee said on Friday on Fox Business Network's The Big Money show that he feels that the latest jobs data show the labor market is...",
+      "source": "web",
+      "title": "Fed's Goolsbee says rate hike and pause both 'on the table'",
+      "url": "https://www.galvnews.com/news_reuters/business/feds-goolsbee-says-rate-hike-and-pause-both-on-the-table/article_c0078cb0-d2a0-5b91-97cb-1bfca390de6f.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fed\u2019s Jefferson Urges Patience on Rates; Kashkari Sees More Hikes Ahead\nMonday, October 5, 2026Set Location\n...\nBias Comparison\n- Federal Reserve Vice Chair Philip Jefferson and New York President John Williams indicated on Thursday that officials need more time to assess economic data before decidi...",
+      "source": "web",
+      "title": "Fed's Jefferson Urges Patience on Rates; Kashkari Sees ...",
+      "url": "https://ground.news/article/feds-jefferson-urges-patience-on-rates-kashkari-sees-more-hikes-ahead_543d9e"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "U.S. Bond Yields Surge Above 5% as Rate-Hike Expectations Rise\nMonday, October 5, 2026Set Location\n...\n# U.S. Bond Yields Surge Above 5% as Rate-Hike Expectations Rise\n## Fed hike odds climbed as 10-year Treasury yields topped 5% and weak auction demand signaled higher borrowing costs, traders said....",
+      "source": "web",
+      "title": "U.S. Bond Yields Surge Above 5% as Rate-Hike ...",
+      "url": "https://ground.news/article/us-bond-yields-surge-above-5-as-rate-hike-expectations-rise_a85db3"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Auction Result of Treasury Discount Bills on October 2, 2026: Ministry of Finance\n# Auction Result of Treasury Discount Bills on October 2, 2026\n**Auction Result of Treasury Discount Bills on October 2, 2026**\n|Issue Number|Auction Date|Issue Date|Maturity Date|Amounts of Competitive Bids (billion y...",
+      "source": "web",
+      "title": "Auction Result of Treasury Discount Bills on October 2, 2026 : Ministry of Finance",
+      "url": "https://www.mof.go.jp/english/policy/jgbs/auction/calendar/etbill/etbillresul/eresul20261002.htm"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fed\u2019s Jefferson Says Central Bank \u2018May Take More Time\u2019 Before Hiking Rates Again\nMonday, October 5, 2026Set Location\n...\n## Jefferson said future policy changes should depend on incoming data as traders priced a 77% chance of unchanged rates in October, according to Polymarket.\n...\nBias Comparison\n-...",
+      "source": "web",
+      "title": "Fed's Jefferson Says Central Bank 'May Take More Time' ...",
+      "url": "https://ground.news/article/feds-jefferson-says-central-bank-may-take-more-time-before-hiking-rates-again"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fed\u2019s Jefferson Urges Patience on Rates; Kashkari Sees More Hikes Ahead\nMonday, October 5, 2026Set Location\n...\nBias Comparison\n- Federal Reserve Vice Chair Philip Jefferson and New York President John Williams indicated on Thursday that officials need more time to assess economic data before decidi...",
+      "source": "web",
+      "title": "Fed's Jefferson urges patience on rates; Kashkari sees ...",
+      "url": "https://ground.news/article/feds-jefferson-urges-patience-on-rates-kashkari-sees-more-hikes-ahead"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Monday 05 Oct 2026\n...\n(Oct 2): US Treasury yields lost ground on Friday after the nonfarm payrolls report showed that the economy added fewer-than-expected jobs in September.\n...\nAfter the report, traders were pricing in a roughly 82% probability that rates would be unchanged at this month's meetin...",
+      "source": "web",
+      "title": "US yields fall as jobs growth slows in September",
+      "url": "https://theedgemalaysia.com/node/820398"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-01",
+      "place_metadata": null,
+      "snippet": "|10-Year Treasury Yield|5.29|+0.57%|+11.37%|yield, %|\n|2-Year Treasury Yield|4.88|-0.20%|+12.44%|yield, %|\n|30-Year Treasury Yield|5.64|+0.89%|+7.43%|yield, %|",
+      "source": "web",
+      "title": "Treasury Yields & Bond Market \u2014 Monthly Report October 2026",
+      "url": "https://stockmarketwatch.com/bonds/reports/october-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "|10/01/2026|N/A|N/A|N/A|3.89|3.96|3.92|3.99|3.98|4.06|4.00|4.10|4.08|4.19|4.13|4.28|4.24|4.44|N/A|N/A|N/A|N/A|N/A|N/A|N/A|",
+      "source": "web",
+      "title": "Daily Treasury Rates | U.S. Department of the ...",
+      "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_bill_rates&field_tdr_date_value=2026"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Treasury yields stay elevated across the curve\n...\nFed Speak: Fed Vice Chair Bowman signalled no urgent need for further rate action, joining a growing chorus of officials favouring a pause.\nDallas Fed President Logan, however, maintained that rates need to rise an additional 50bp or more.\nFed minut...",
+      "source": "web",
+      "title": "Asia Market Quick Take \u2013 5 October, 2026",
+      "url": "https://www.home.saxo/en-sg/content/articles/macro/asia-market-quick-take--5-october-2026-05102026"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Quick Read\n- Goldman Sachs' Mike Mitchell reported Fed Chair Warsh signaled higher long yields could replace rate hikes, triggering a long-bond selloff.\n...\nThis time the 10-year Treasury yield ticked higher anyway and closed at 5.28% on October 2.\nIn recent sessions, it briefly reached 5.34%, it...",
+      "source": "web",
+      "title": "Global Bond Selloff Pushes U.S. Treasury Yields to 24- ...",
+      "url": "https://247wallst.com/investing/2026/10/03/global-bond-selloff-pushes-u-s-treasury-yields-to-24-year-highs/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "The 10-year Treasury yield \u2014 the benchmark that effectively sets the discount rate on every American share a British investor holds \u2014 opened the week at 5.23%, its highest since 2007, and by Thursday morning had reached 5.33%, a level last seen in 2002.\n...\nTraders read a softer jobs market as reduc...",
+      "source": "web",
+      "title": "US market week: Treasury yields at 24-year high",
+      "url": "https://www.openbookanalytics.com/news/insights/us-stock-market-weekly-recap-2026-10-02"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/2026/10/05/treasury-yields-bonds-fed-rates.html",
+    "https://ground.news/article/feds-williams-sees-no-urgency-for-next-rate-hike_cf0c88",
+    "https://www.reuters.com/business/what-will-washington-do-next-if-us-bond-yields-keep-rising-2026-10-05/",
+    "https://www.galvnews.com/news_reuters/business/feds-goolsbee-says-rate-hike-and-pause-both-on-the-table/article_c0078cb0-d2a0-5b91-97cb-1bfca390de6f.html",
+    "https://ground.news/article/feds-jefferson-urges-patience-on-rates-kashkari-sees-more-hikes-ahead_543d9e",
+    "https://ground.news/article/us-bond-yields-surge-above-5-as-rate-hike-expectations-rise_a85db3",
+    "https://www.mof.go.jp/english/policy/jgbs/auction/calendar/etbill/etbillresul/eresul20261002.htm",
+    "https://ground.news/article/feds-jefferson-says-central-bank-may-take-more-time-before-hiking-rates-again",
+    "https://ground.news/article/feds-jefferson-urges-patience-on-rates-kashkari-sees-more-hikes-ahead",
+    "https://theedgemalaysia.com/node/820398",
+    "https://stockmarketwatch.com/bonds/reports/october-2026",
+    "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_bill_rates&field_tdr_date_value=2026",
+    "https://www.home.saxo/en-sg/content/articles/macro/asia-market-quick-take--5-october-2026-05102026",
+    "https://247wallst.com/investing/2026/10/03/global-bond-selloff-pushes-u-s-treasury-yields-to-24-year-highs/",
+    "https://www.openbookanalytics.com/news/insights/us-stock-market-weekly-recap-2026-10-02"
+  ],
+  "usage": {
+    "input_tokens": 749,
+    "output_tokens": 840,
+    "cost_usd": 0.02885
+  }
+}

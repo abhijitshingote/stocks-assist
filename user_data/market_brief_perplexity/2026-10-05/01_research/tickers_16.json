@@ -1,0 +1,167 @@
+{
+  "name": "tickers_16",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| GRAL | GRAIL Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +8.07% | +12.9% | 0.5\u00d7 | gapper 2026-09-24 |\n| ASST | Strive, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -0.27% | +2.0% | 1.3\u00d7 | volume_spike 2026-08-24 |\n| SDGR | Schr\u00f6dinger, Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -0.49% | +5.1% | 0.9\u00d7 | both 2026-09-17 |\n| FWDI | Forward Industries, Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +4.21% | -3.1% | 1.2\u00d7 | gapper 2026-09-18 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## GRAIL Inc. (GRAL) `[Pharma]`\n- A U.S. Food and Drug Administration advisory panel endorsed GRAIL\u2019s Galleri blood test technology, which is designed to screen for 50 cancers from one blood sample; the FDA still must issue a final decision. (The Daily Upside, Oct. 5, 2026 08:22 ET)\n- UBS maintained a **Buy** rating and raised its price target from **$105 to $175** after the FDA panel event; UBS projected FDA approval in early 2027 and eventual Centers for Medicare & Medicaid Services reimbursement. (Business Insider, Oct. 2, 2026 09:45 ET)\n- Twelve analysts had a consensus **Hold** rating, comprising **5 Buy, 6 Hold, and 1 Sell** ratings, with an average price target of **$93.60**. (MarketBeat, Oct. 2, 2026 08:22 ET)\n- GRAIL\u2019s latest reported quarter showed an adjusted loss of **$2.56 per share** versus a **$2.66** consensus loss and revenue of **$44.69 million** versus **$42.39 million** consensus. (MarketBeat, Oct. 2, 2026 08:22 ET)\n- The Galleri test\u2019s reimbursement outlook remains dependent on FDA approval and subsequent Medicare and private-insurance coverage decisions. (The Daily Upside, Oct. 5, 2026 08:22 ET)\n\n## Strive, Inc. (ASST) `[Financial Services / Bitcoin Treasury]`\n- Strive\u2019s Bitcoin holdings exceeded **27,000 BTC** after the company purchased **1,107 BTC for approximately $94.5 million**, according to reports published before the window; no new company-specific transaction was identified in the October 2\u2013October 5 window. (Ground News, Oct. 2, 2026 07:06 ET)\n- B. Riley had raised its price target from **$26 to $33** and retained a **Buy** rating in a September 22 research note; Benchmark had reaffirmed **Buy** on August 20. (MarketBeat, Oct. 2, 2026 08:22 ET)\n- Seven analysts had a consensus **Moderate Buy** rating, with **5 Buy, 1 Hold, and 1 Sell** rating and an average price target of **$29.80**. (MarketBeat, Oct. 2, 2026 08:22 ET)\n- Strive reported a latest-quarter adjusted loss of **$3.65 per share** versus a **$0.95** consensus loss and revenue of **$2.94 million** versus **$3.02 million** consensus. (MarketBeat, Oct. 2, 2026 08:22 ET)\n- Investors purchased **50,286 call-option contracts** on October 2, compared with typical volume of **34,081 contracts**, a **48%** increase. (MarketBeat, Oct. 2, 2026 04:02 ET)\n- Strive officer Arshia Sarkhani filed a proposed sale of **5,634 Class A shares** with an approximate value of **$176,537.45** and an approximate sale date of October 2. (Stock Titan, Oct. 2, 2026 12:05 ET)\n- Strive officer Benjamin B. Pham filed a proposed sale of **4,209 Class A shares** valued at approximately **$131,886.07**, including shares to cover taxes on a vested equity award. (Stock Titan, Oct. 2, 2026 12:18 ET)\n- Strive\u2019s Series A perpetual preferred security traded ex-dividend on October 5, with a dividend of **$0.0516 per share** payable October 6 to shareholders of record October 5. (Moomoo, Oct. 2, 2026 06:00 ET)\n\n## Schr\u00f6dinger, Inc. (SDGR) `[Software & SaaS / Life Sciences]`\n- No company-specific catalyst found in window.\n\n## Forward Industries, Inc. (FWDI) `[Specialty Materials & Consumer Products]`\n- No company-specific catalyst found in window.",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5, 2026\n...\nShares of biotech firm Grail jumped more than 11% last week after a US Food and Drug Administration advisory panel endorsed its groundbreaking blood test technology that is capable of screening for dozens of different cancers.\n...\nGrail\u2019s testing mechanism, dubbed the Galleri, ca...",
+      "source": "web",
+      "title": "Grail Jumps as Cancer Test Nears Market",
+      "url": "https://www.thedailyupside.com/industries/healthcare/grail-jumps-as-cancer-test-nears-market/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "# Strive (ASST) Stock Price, News & Analysis\n**$30.03** ** -0.08\u00a0(-0.27%)**\nClosing price 10/2/2026 04:00 PM Eastern\n...\n**$30.10** ** +0.06\u00a0(+0.22%)**\nAs of 10/2/2026 07:59 PM Eastern\n...\nStrive, Inc. is a financial services company operating under the Strive brand.\n...\nStrive (ASST) Rebounds Sharp...",
+      "source": "web",
+      "title": "Strive (ASST) Stock Price, News & Analysis",
+      "url": "https://www.marketbeat.com/stocks/NASDAQ/ASST/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Michael Saylor's Strategy buys $143M worth of bitcoin\n...\nFri, October 2, 2026 at 4:06 AM GMT-3\n...\nStrive has rebounded sharply on the market this year, and the scale of that move now puts a spotlight on whether the stock price still lines up with the company's book value.\n- The share price is up 7...",
+      "source": "web",
+      "title": "Strive (ASST) Stock Looks Stretched Despite Its 74% ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/strive-asst-stock-looks-stretched-070626645.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "# GRAIL, Inc. (GRAL)\n143.26 +10.70 (+8.07%)\nAt close: October 2 at 4:00:01 PM EDT\n143.43 +0.17 (+0.12%)\nAfter hours: October 2 at 7:59:49 PM EDT\n...\nDate Oct 2, 2026 Analyst UBS Rating Action Maintains Rating Buy Price Action Raises Price Target 105 -> 175\n...\n### Why GRAIL (GRAL) Is Up 12.9% After ...",
+      "source": "web",
+      "title": "GRAIL, Inc. (GRAL) Stock Price, News, Quote & History",
+      "url": "https://finance.yahoo.com/quote/GRAL/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "STRIVE INC PERP PFD SER A VAR RATE To Go Ex-Dividend On October 5th, 2026 With 0.0516 USD Dividend Per Share\n...\nOctober 1st (Eastern Time) - $STRIVE INC PERP PFD SER A VAR RATE (SATA.US)$ is trading ex-dividend on October 5th, 2026.\nShareholders of record on October 5th, 2026 will receive 0.0516 US...",
+      "source": "web",
+      "title": "STRIVE INC PERP PFD SER A VAR RATE To Go Ex- ...",
+      "url": "https://www.moomoo.com/news/post/1000533506/strive-inc-perp-pfd-ser-a-var-rate-to-go"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "GRAIL, Inc.\n(NASDAQ:GRAL) Receives Consensus Rating of \"Hold\" from Analysts\n...\nOctober 2, 2026\n...\n- **Analysts rate GRAIL \u201cHold\u201d overall:** Of 12 analysts, six recommend holding, five recommend buying, and one recommends selling.\nThe average 12-month price target is $93.60.\n- **GRAIL reported bett...",
+      "source": "web",
+      "title": "GRAIL, Inc. (NASDAQ:GRAL) Receives Consensus Rating ...",
+      "url": "https://www.marketbeat.com/instant-alerts/consensus-grail-inc-nasdaq-gral-receives-consensus-rating-of-hold-from-analysts-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Strive, Inc.\n(ASST) officer Arshia Sarkhani reported that **5,634 Class A shares are to be sold**, with an approximate sale date of October 2, 2026 and an aggregate market value of **$176,537.45**.\nThe shares were acquired from the issuer through restricted stock vesting on October 1, 2026, as compe...",
+      "source": "web",
+      "title": "Strive officer proposes sale of 5634 shares | ASST SEC Filing",
+      "url": "https://www.stocktitan.net/sec-filings/ASST/144-strive-inc-sec-filing-c93b1c0dd788.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "41,041 Shares in Strive, Inc.\n$ASST Bought by Corient Private Wealth LP\n...\n# 41,041 Shares in Strive, Inc. $ASST Bought by Corient Private Wealth LP\n...\nOctober 2, 2026\n...\n- **Corient Private Wealth LP** initiated a 41,041-share position in Strive, valued at approximately $448,000.\nOther instituti...",
+      "source": "web",
+      "title": "41,041 Shares in Strive, Inc. $ASST Bought by Corient Private Wealth LP",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-41041-shares-in-strive-inc-asst-bought-by-corient-private-wealth-lp-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "# Grail price target raised to $175 from $105 at UBS\n...\nOct. 2, 2026, 09:45 AM\nUBS raised the firm\u2019s price target on Grail (GRAL) to $175 from $105 and keeps a Buy rating on the shares.\nFollowing the FDA panel and Centers for Medicare and Medicaid Services checks, the firm has increased conviction ...",
+      "source": "web",
+      "title": "Grail price target raised to $175 from $105 at UBS",
+      "url": "https://markets.businessinsider.com/news/stocks/grail-price-target-raised-to-175-from-105-at-ubs-1036594738"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Strive, Inc.\n...\nOctober 2, 2026\n...\n## Key Points\n- **Wall Street\u2019s consensus rating on Strive is \u201cModerate Buy\u201d**: five of seven analysts recommend buying the stock, with an average 12-month price target of $29.80.\n- Recent analyst actions were generally positive, including B.\nRiley raising its ta...",
+      "source": "web",
+      "title": "Strive, Inc. (NASDAQ:ASST) Stock Now Rated \"Moderate ...",
+      "url": "https://www.marketbeat.com/instant-alerts/consensus-strive-inc-nasdaq-asst-stock-now-rated-moderate-buy-by-wall-street-brokerages-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Strive stock ended Thursday\u2019s session at **$30.11**, up 2.38% from the prior close of $29.41.\nThe daily chart shows price above all major moving averages.\n...\nStrive\u2019s bitcoin treasury strategy remains part of the backdrop.\nA Yahoo Finance report published Monday, September 28, said Strive crossed 2...",
+      "source": "web",
+      "title": "Strive stock closes at $30.11, up 2.38% as RSI flashes ...",
+      "url": "https://cryptonews.net/news/analytics/33529353/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 2, 2026\n...\n- **Unusual options activity:** Investors purchased 50,286 call options on Strive, 48% above the typical volume of 34,081 contracts.\n- **Stock performance and fundamentals:** ASST rose 0.8% to $30.34, but its latest quarterly loss of $3.65 per share was substantially worse than a...",
+      "source": "web",
+      "title": "Traders Buy High Volume of Call Options on Strive ...",
+      "url": "https://www.marketbeat.com/instant-alerts/options-traders-buy-high-volume-of-call-options-on-strive-nasdaq-asst-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Strive, Inc.\nofficer Benjamin B. Pham reported a proposed sale of **4,209 Class A shares**, with an aggregate market value of **$131,886.07** and an approximate sale date of October 2, 2026, through Fidelity Brokerage Services LLC on Nasdaq.\nThe shares are listed as compensation from restricted stoc...",
+      "source": "web",
+      "title": "A $132K share sale proposed by a Strive (Nasdaq: ASST) officer includes shares to cover award taxes.",
+      "url": "https://www.stocktitan.net/sec-filings/ASST/144-strive-inc-sec-filing-6c36b03eee6d.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "# Grail Is Maintained at Buy by UBS\n...\n**(19:23 GMT) ** Grail Price Target Raised to $175.00/Share From $105.00 by UBS",
+      "source": "web",
+      "title": "News by Dow Jones Newswires on TradingView, 2026-10-02",
+      "url": "https://www.tradingview.com/news/DJN_DN20261002005508:0/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Strive stock ended Thursday\u2019s session at $30.11 , up 2.38% from the prior close of $29.41.\nThe daily chart shows price above all major moving averages.\n...\nThe Strive shares (NASDAQ: ASST) closed on Thursday 1 October at $30.11, up 2.38%.\nThe stock fluctuated between $30.80 and $29.18, with 4.53 mil...",
+      "source": "web",
+      "title": "Strive Stock Closes at $30.11, up 2.38% as RSI Flashes Overbought Signal",
+      "url": "https://ground.news/article/strive-actions-technical-analysis-of-the-title-on-the-rise-with-bitcoin"
+    }
+  ],
+  "citations": [
+    "https://www.thedailyupside.com/industries/healthcare/grail-jumps-as-cancer-test-nears-market/",
+    "https://www.marketbeat.com/stocks/NASDAQ/ASST/",
+    "https://finance.yahoo.com/markets/stocks/articles/strive-asst-stock-looks-stretched-070626645.html",
+    "https://finance.yahoo.com/quote/GRAL/",
+    "https://www.moomoo.com/news/post/1000533506/strive-inc-perp-pfd-ser-a-var-rate-to-go",
+    "https://www.marketbeat.com/instant-alerts/consensus-grail-inc-nasdaq-gral-receives-consensus-rating-of-hold-from-analysts-2026-10-02/",
+    "https://www.stocktitan.net/sec-filings/ASST/144-strive-inc-sec-filing-c93b1c0dd788.html",
+    "https://www.marketbeat.com/instant-alerts/filing-41041-shares-in-strive-inc-asst-bought-by-corient-private-wealth-lp-2026-10-02/",
+    "https://markets.businessinsider.com/news/stocks/grail-price-target-raised-to-175-from-105-at-ubs-1036594738",
+    "https://www.marketbeat.com/instant-alerts/consensus-strive-inc-nasdaq-asst-stock-now-rated-moderate-buy-by-wall-street-brokerages-2026-10-02/",
+    "https://cryptonews.net/news/analytics/33529353/",
+    "https://www.marketbeat.com/instant-alerts/options-traders-buy-high-volume-of-call-options-on-strive-nasdaq-asst-2026-10-02/",
+    "https://www.stocktitan.net/sec-filings/ASST/144-strive-inc-sec-filing-6c36b03eee6d.html",
+    "https://www.tradingview.com/news/DJN_DN20261002005508:0/",
+    "https://ground.news/article/strive-actions-technical-analysis-of-the-title-on-the-rise-with-bitcoin"
+  ],
+  "usage": {
+    "input_tokens": 1107,
+    "output_tokens": 900,
+    "cost_usd": 0.03082
+  }
+}

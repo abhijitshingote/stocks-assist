@@ -1,0 +1,167 @@
+{
+  "name": "tickers_05",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| MPWR | Monolithic Power Systems, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +5.79% | +5.3% | 0.9\u00d7 | \u2014 |\n| COHR | Coherent, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +5.59% | +13.9% | 1.2\u00d7 | \u2014 |\n| NTAP | NetApp, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +5.22% | +12.5% | 2.1\u00d7 | \u2014 |\n| TECK | Teck Resources Limited | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +5.12% | +3.8% | 1.4\u00d7 | \u2014 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Monolithic Power Systems, Inc. (MPWR) `[Power & Wide-Bandgap]`\n- U.S. September nonfarm payrolls increased by **29,000**, versus **84,000** expected, and the unemployment rate rose to **4.2%**; the report was cited as a factor behind a broad rally in semiconductor and rate-sensitive growth stocks on Friday, October 2. (Yahoo Finance, Oct 2, 2026 22:22 ET)[1]\n- No fresh MPWR earnings release or SEC filing was identified on October 2; coverage attributed the move primarily to the broader semiconductor rally and investor focus on AI data-center demand. (Quiver Quantitative, Oct 2, 2026 12:20 ET)[4]\n- MPWR\u2019s long-term manufacturing agreement with **GlobalFoundries** is intended to expand **300mm wafer capacity in Singapore**, with volume production targeted for **early 2027**. (Quiver Quantitative, Oct 2, 2026 12:20 ET)[4]\n- **Wall Street Zen** upgraded MPWR from **Hold** to **Buy** on Saturday, October 3; MarketBeat reported a consensus **Moderate Buy** rating and an average price target of **$1,731.42**. (MarketBeat, Oct 3, 2026; indexed Oct 5 08:03 ET)[2]\n- **TD Cowen analyst Joshua Buchalter** reiterated a **Buy** rating and a **$1,850** price target; the cited latest quarterly results included **$980.64 million** in revenue and **$257.3 million** in net profit. (Investing.com, Oct 5, 2026 05:12 ET)[6]\n- CEO **Michael Hsing** sold **30,000 shares** on September 28 for approximately **$40.35 million** under a pre-arranged Rule 10b5-1 plan; the filing was reported during the window but the transaction predates it. (Investing.com, Oct 1, 2026; indexed Oct 5 06:48 ET)[7]\n- MPWR traded at **\u20ac1,280.50**, up **5.63%** versus the prior close, at **23:00 CEST on October 2**, equivalent to **17:00 ET**. (Ad-hoc-News, Oct 2, 2026 17:32 ET)[3]",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 7:22 PM GMT-3\n...\nA number of stocks jumped in the morning session after weaker-than-expected U.S. employment data cooled Treasury yields, easing interest rate pressure.\nThe Bureau of Labor Statistics reported that nonfarm payrolls increased by 29,000 in September, falling sh...",
+      "source": "web",
+      "title": "Impinj, Power Integrations, Kulicke and Soffa, Microchip Technology, and Monolithic Power Systems Shares Are Soaring, What You Need To Know",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/impinj-power-integrations-kulicke-soffa-222203436.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Wall Street Zen upgraded Monolithic Power Systems to \u201cbuy\u201d from \u201chold.\u201d** Other analysts are also largely bullish, with a consensus \u201cModerate Buy\u201d rating and an average price target of $1,731.42.\n...\nMonolithic Power Systems (NASDAQ:MPWR - Get Free Report) was upgraded by investmen...",
+      "source": "web",
+      "title": "Monolithic Power Systems (NASDAQ:MPWR) Stock Rating Upgraded by Wall Street Zen",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-monolithic-power-systems-nasdaq-mpwr-stock-rating-upgraded-by-wall-street-zen-2026-10-03/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Monolithic Power stock was at EUR 1,280.50 in after-hours trading at 11:00 p.m.\nCEST on October 2, 2026, up 5.63 percent versus the Lang & Schwarz prior close.\n...\nMonolithic Power Systems stock was at **EUR 1,280.50** in after-hours trading at 11:00 p.m.\nCEST on October 2, 2026, according to Lang &...",
+      "source": "web",
+      "title": "Monolithic Power stock after-hours at EUR ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nachboerse/monolithic-power-stock-after-hours-at-eur-1-280-50-plus-5-63-percent-versus-prior-close/70218595"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Posted: 2 days, 17 hours ago / Oct. 2, 2026 4:20 p.m.\nUTC\nMonolithic Power Systems (MPWR) is up 6.9% today.\n...\n**Analysis:** The move appears tied mainly to a broader rebound in semiconductor shares as investors rotated back into AI-linked chip names after a softer U.S. jobs reading helped ease som...",
+      "source": "web",
+      "title": "Monolithic Power Systems Jumps as Chip Stocks Rally and Capacity Expansion Theme Stays in Focus | MPWR Stock News",
+      "url": "https://www.quiverquant.com/news/Monolithic+Power+Systems+Jumps+as+Chip+Stocks+Rally+and+Capacity+Expansion+Theme+Stays+in+Focus"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monolithic Power Systems Inc Stock (MPWR) Moved Up by 5.25% on Oct 2: What Investors Need To Know\n...\n*\ue688* View all comments\uff080\uff09\n\u2022 Monolithic Power Systems shares rose due to artificial intelligence data center infrastructure demand.\n\u2022 A new Singapore manufacturing partnership with GlobalFoundries exp...",
+      "source": "web",
+      "title": "Monolithic Power Systems Inc Stock (MPWR) Moved Up by 5.25% on Oct 2: What Investors Need To Know",
+      "url": "https://www.tradingkey.com/news/market-movers/262198370-market-movers-mpwr-20261002"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "In a report released yesterday, Joshua Buchalter from TD Cowen reiterated a Buy rating on Monolithic Power, with a price target of $1,850.00.\n...\nCurrently, the analyst consensus on Monolithic Power is a Strong Buy with an average price target of $1,837.11.\n...\nBased on Monolithic Power\u2019s latest ear...",
+      "source": "web",
+      "title": "Monolithic Power (MPWR) Receives a Rating Update from a Top Analyst",
+      "url": "https://markets.businessinsider.com/news/stocks/monolithic-power-mpwr-receives-a-rating-update-from-a-top-analyst-1036596475"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monolithic Power Systems (NASDAQ:MPWR) CEO Michael Hsing disposed of company common stock worth approximately $40.3 million on September 28, 2026, according to a recent SEC filing.",
+      "source": "web",
+      "title": "Monolithic Power Systems CEO Hsing sells $40.3m in stock By Investing.com",
+      "url": "https://www.investing.com/news/insider-trading-news/monolithic-power-systems-ceo-hsing-sells-403m-in-stock-93CH-4926194"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Monolithic Power Systems Inc(MPWR)\u80a1\u796810\u67082\u65e5\u76d8\u4e2d\u4e0a\u6da85.25%\uff1a\u80cc\u540e\u63a8\u624b\u66dd\u5149\n...\n\u2022 \u53d7\u4eba\u5de5\u667a\u80fd\u6570\u636e\u4e2d\u5fc3\u57fa\u7840\u8bbe\u65bd\u9700\u6c42\u63a8\u52a8\uff0c\u82af\u6e90\u7cfb\u7edf\u80a1\u4ef7\u4e0a\u6da8\u3002\n\u2022 \u4e0e\u683c\u82af\u5728\u65b0\u52a0\u5761\u5efa\u7acb\u7684\u65b0\u5236\u9020\u5408\u4f5c\u6269\u5927\u4e86300\u6beb\u7c73\u6676\u5706\u4ea7\u80fd\u3002\n\u2022 \u516c\u53f8\u516c\u5e03\u5168\u5e74\u8425\u6536\u4e3a27.9\u4ebf\u7f8e\u5143\uff0c\u51c0\u5229\u6da6\u4e3a6.2148\u4ebf\u7f8e\u5143\u3002\nMonolithic Power Systems Inc (MPWR) \u76d8\u4e2d\u4e0a\u6da85.25%, \u6240\u5c5e\u884c\u4e1a\u79d1\u6280\u8bbe\u5907\u4e0a\u6da81.60% ,\u516c\u53f8\u6da8\u5e45\u8dd1\u8d62\u884c\u4e1a\u6da8\u5e45\uff0c\u884c\u4e1a\u6210\u4ea4\u989d\u524d\u4e09\u80a1\u7968 \u82f1\u4f1f\u8fbe (NVDA) \u4e0a\u6da8 1.65%\uff1b\u7f8e\u5149\u79d1\u6280 (MU) \u4e0b\u8dcc 1.52%\uff1b\u897f\u90e8\u6570\u636e (WDC) \u4e0b\u8dcc 11.10...",
+      "source": "web",
+      "title": "Monolithic Power Systems Inc(MPWR)\u80a1\u796810\u67082\u65e5\u76d8\u4e2d ...",
+      "url": "https://www.tradingkey.com/zh-hans/news/market-movers/262198382-market-movers-mpwr-20261002"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "On October 02, 2026, Monolithic Power Systems Inc MPWR shares rose 5.8%, reaching a current price of $1439.73.\nThe stock has seen significant movement in its 52-week range, with a high of $1714.09 and a low of $833.18.\nGF Value\u2122 verdict: The current price is $1439.73, which is 10.8% above the GF Val...",
+      "source": "web",
+      "title": "A Look at Monolithic Power Systems Inc (MPWR) After 5.8% Gain --",
+      "url": "https://www.gurufocus.com/news/9108104/a-look-at-monolithic-power-systems-inc-mpwr-after-58-gain-gf-value-129966-vs-price-143973"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Monolithic Power Systems CEO Hsing Michael sold 30,000 shares of common stock on 09/28/2026 in open market transactions.\nThe shares were disposed at prices ranging from $1,323.31 to $1,356.94, generating a total market value of approximately $40.35 million.\nThe transaction is completed.Following the...",
+      "source": "web",
+      "title": "Monolithic Power Systems | 4: Statement of changes in beneficial ownership of securities-Officer Hsing Michael",
+      "url": "https://www.moomoo.com/news/notice/1000483418/statement-of-changes-in-beneficial-ownership-of-securities-officer-hsing"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Monolithic Power Systems is one of the purest plays on AI-related capital spending in this screen, because its power management chips sit inside the very servers, data centers, and high-performance systems that cloud and AI providers are pouring money into.\nMonolithic Power Systems generates about U...",
+      "source": "web",
+      "title": "3 AI Infrastructure Stocks Retail Investors Are Watching As ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/3-ai-infrastructure-stocks-retail-001208035.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "olithic Power, Inc (MP) saw a rise of 5.41% fueled by renewed confidence following its impressive quarterly earnings and strong revenue driven by heightened demand for AI-related semiconductors.\n...\nMonolithic Power Systems announced earnings per of $.50 surpassing consensus projections, along with ...",
+      "source": "web",
+      "title": "MPWR climbs around 5.5% after beating earnings ...",
+      "url": "https://tradersunion.com/news/stocks/show/3638168-monolithic-power-surges-5-41percent-today/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Monolithic Power Systems (NASDAQ:MPWR) CEO Michael Hsing disposed of company common stock worth approximately $40.3 million on September 28, 2026, according to a recent SEC filing.\nThe transactions were executed under a pre-arranged Rule 10b5-1 trading plan, which allows insiders to set up a predete...",
+      "source": "web",
+      "title": "Monolithic Power Systems CEO Hsing sells $40.3m in stock",
+      "url": "https://ca.investing.com/news/stock-market-news/monolithic-power-systems-ceo-hsing-sells-403m-in-stock-93CH-4861048"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Monolithic Power Systems advanced sharply during the New York trading session on local time, climbing 6.10% to close at $1,444.02.\nThe semiconductor firm gained $83.05 amid mounting retail interest in artificial intelligence infrastructure and ongoing momentum across data center power solutions.\nMon...",
+      "source": "web",
+      "title": "Monolithic Power Systems Jumps Over Six Percent on AI Momentum",
+      "url": "https://news.jkn.co.kr/editions/english/post/1005777"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Monolithic Power Systems(MPWR.US) Officer Sells US$40.35 Million in Common Stock\n...\n$Monolithic Power Systems (MPWR.US)$ Officer Hsing Michael sold 30,000 shares of common stock on Sep 28, 2026 at an average price of $1,344.97 for a total value of $40.35 million.",
+      "source": "web",
+      "title": "Monolithic Power Systems(MPWR.US) Officer Sells ...",
+      "url": "https://www.moomoo.com/news/post/1000483474/monolithic-power-systems-mpwrus-officer-sells-us-40-35-million"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/impinj-power-integrations-kulicke-soffa-222203436.html",
+    "https://www.marketbeat.com/instant-alerts/analyst-monolithic-power-systems-nasdaq-mpwr-stock-rating-upgraded-by-wall-street-zen-2026-10-03/",
+    "https://www.ad-hoc-news.de/boerse/news/nachboerse/monolithic-power-stock-after-hours-at-eur-1-280-50-plus-5-63-percent-versus-prior-close/70218595",
+    "https://www.quiverquant.com/news/Monolithic+Power+Systems+Jumps+as+Chip+Stocks+Rally+and+Capacity+Expansion+Theme+Stays+in+Focus",
+    "https://www.tradingkey.com/news/market-movers/262198370-market-movers-mpwr-20261002",
+    "https://markets.businessinsider.com/news/stocks/monolithic-power-mpwr-receives-a-rating-update-from-a-top-analyst-1036596475",
+    "https://www.investing.com/news/insider-trading-news/monolithic-power-systems-ceo-hsing-sells-403m-in-stock-93CH-4926194",
+    "https://www.tradingkey.com/zh-hans/news/market-movers/262198382-market-movers-mpwr-20261002",
+    "https://www.gurufocus.com/news/9108104/a-look-at-monolithic-power-systems-inc-mpwr-after-58-gain-gf-value-129966-vs-price-143973",
+    "https://www.moomoo.com/news/notice/1000483418/statement-of-changes-in-beneficial-ownership-of-securities-officer-hsing",
+    "https://finance.yahoo.com/technology/ai/articles/3-ai-infrastructure-stocks-retail-001208035.html",
+    "https://tradersunion.com/news/stocks/show/3638168-monolithic-power-surges-5-41percent-today/",
+    "https://ca.investing.com/news/stock-market-news/monolithic-power-systems-ceo-hsing-sells-403m-in-stock-93CH-4861048",
+    "https://news.jkn.co.kr/editions/english/post/1005777",
+    "https://www.moomoo.com/news/post/1000483474/monolithic-power-systems-mpwrus-officer-sells-us-40-35-million"
+  ],
+  "usage": {
+    "input_tokens": 1065,
+    "output_tokens": 524,
+    "cost_usd": 0.02506
+  }
+}

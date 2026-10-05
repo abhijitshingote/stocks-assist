@@ -1,0 +1,167 @@
+{
+  "name": "a_overnight_policy",
+  "kind": "channel",
+  "group": "macro",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Overnight & weekend policy.\n\nWindow: Friday October 2, 2026 4:00 PM ET (after the close) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nStatements and actions since the session close by the President, Treasury Secretary, Commerce, USTR, Energy Secretary, Fed officials, and foreign leaders (China, Iran, Russia, EU): Sunday TV interviews, weekend summits, executive orders, scheduled White House meetings or announcements for the coming days, AI regulation remarks. Verbatim quotes with names and dates.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## AI Regulation / **NVDA**, **META**, **GOOGL**, **MSFT**, **OPENAI** [AI Compute \u00b7 Internet & Platforms \u00b7 Software & SaaS]\n\n- President Donald Trump announced on October 4 that he appointed National Intelligence Director Jay Clayton, Federal Trade Commission Chairman Andrew Ferguson, Office of Personnel Management Director Scott Kupor, and Pentagon research and technology official Emil Michael to lead a federal \u201cSuper Intelligence Force\u201d coordinating government engagement with AI companies, consumers, public-interest groups, critical-infrastructure providers, and religious organizations; the force will report to Trump and White House Chief of Staff Susie Wiles. [report] (Reuters, Oct. 4; updated Oct. 5 00:03 ET)\n- Trump said the task force would \u201censure that America continues to lead the World in Super Intelligence,\u201d which he described as potentially larger than the Industrial Revolution and the internet. (AP, Oct. 4; updated Oct. 5 05:25 ET)\n- Trump\u2019s October 4 announcement followed a September 29 White House meeting with AI executives from Nvidia, SpaceX, OpenAI, Anthropic, Meta, and Alphabet\u2019s Google, at which participating companies signed a voluntary accord calling for robust internal controls and independent external audits. (Reuters, Oct. 4; updated Oct. 5 00:03 ET)\n- Treasury Secretary Scott Bessent told Axios that AI companies should police themselves and criticized warnings about existential AI risks; when asked about calls from AI executives for regulation, Bessent said, \u201cWell, then they should slow down.\u201d (Axios, Oct. 3; updated Oct. 4 20:03 ET)\n- Bessent said the United States and China planned a bilateral AI-notification system intended to share warnings about serious incidents and reduce uncertainty; he said the Treasury Department and Chinese Vice Premier He Lifeng had agreed to create a \u201cU.S.-China AI dialogue.\u201d (Axios, Oct. 3; updated Oct. 4 20:03 ET)\n\n## **XLE**, **VLO**, **MPC**, **PSX** / Europe Diesel Reserves [Energy]\n\n- President Donald Trump said on October 2 that European countries had agreed to release diesel reserves after EU governments discussed a French proposal for Europe to release 50 million barrels of diesel and for International Energy Agency members to release 50 million barrels of crude oil. [report] (Reuters, Oct. 2 11:13 ET)\n- Reuters reported that the United States had urged France and Germany to release emergency diesel inventories and had sought releases totaling 100 million barrels within 20 days; the discussions followed US consideration of a diesel-export ban amid fuel-price disruptions linked to the Iran war. [report] (Reuters, Oct. 2 11:13 ET)\n- The Group of Seven agreed to release 100 million barrels of crude oil and fuel from emergency reserves, according to a trade publication report dated October 3; the report said the agreement reduced the immediate risk of a European and Mexican supply disruption. [report] (Washington Trade & Tariff, Oct. 3; updated Oct. 5 07:47 ET)\n\n## Russia Sanctions / **XLE**, **OXY**, **LNG** [Macro / Geopolitics / Energy]\n\n- US Energy Secretary Chris Wright said the administration had not ruled out imposing secondary sanctions on Russia\u2019s trade partners by October 18 under the Lindsey O. Graham Sanctioning Russia and Iran Act; when asked whether President Trump would impose tariffs or sanctions by that date, Wright said Trump \u201cleaves every decision till the end\u201d and would evaluate the trade-offs. (CBS News interview, reported Oct. 5 03:11 ET)\n- Wright said the administration was examining \u201cevery leverage\u201d available to end the Ukraine conflict and lower prices for Americans. (CBS News interview, reported Oct. 5 03:11 ET)\n\n## China Trade Policy / **BABA**, **PDD**, **JD**, **XPEV** [Macro / Geopolitics]\n\n- China\u2019s Commerce Ministry said on October 4 that the Group of 20 trade ministers\u2019 meeting had exposed divisions over US-backed trade proposals; the ministry said the meeting\u2019s joint statement opposed weaponization of food through coercive trade practices but did not reach consensus on forced labor in supply chains or excess industrial capacity. (China Commerce Ministry, reported Oct. 5 04:04 ET)\n- China\u2019s Commerce Ministry said the G20 meeting moved away from a US proposal to revise most-favored-nation trade rules. (China Commerce Ministry, reported Oct. 5 04:04 ET)\n\n## Iran Conflict / Diesel Supply [Macro / Commodities / Geopolitics]\n\n- Reuters reported on October 2 that Washington was sending additional warships and troops to the region, while Iranian officials were preparing a \u201cbroad and forceful response\u201d; Reuters said diplomatic efforts were continuing. [report] (Reuters, Oct. 2 07:29 ET)\n- A report published October 4 said President Trump was considering resuming major combat operations in Iran after negotiations stalled; the report attributed the information to Axios and said senior cabinet members had met at Camp David to discuss next steps. [report] (Asharq Al-Awsat, Oct. 4; updated Oct. 5 05:51 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "WASHINGTON \u2013 President Donald Trump named National Intelligence Director Jay Clayton and three others to lead a \"super intelligence force\" tasked with protecting American interests when it comes to artificial intelligence.\nIn an Oct. 4 Truth Social post, the president said the force will be led by C...",
+      "source": "web",
+      "title": "Trump names top aides to 'super intelligence' AI force. What to know",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_MT1USDAYNETN92089693007?channel=xsp076"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "President Donald Trump announced Sunday the creation of a new federal \"Super Intelligence Force\" tasked with coordinating the government\u2019s efforts to keep the United States at the forefront of rapidly developing artificial intelligence technology.\nThe new force, known as SIF, will coordinate federal...",
+      "source": "web",
+      "title": "Trump launching 'Super Intelligence Force' to ensure American dominance",
+      "url": "https://www.foxnews.com/politics/trump-launching-super-intelligence-force-ensure-american-dominance"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "BRUSSELS, Oct 2 (Reuters) - European countries \u200bhave agreed to release diesel stocks, US President Donald Trump said on Friday, after the White House pressured governments to do so, in a bid \u200cto cool surging fuel prices linked to the Iran war.\n...\nTrump's statement followed talks on Friday among EU ...",
+      "source": "web",
+      "title": "EXCLUSIVE: Europe agrees to release diesel stocks, Trump says",
+      "url": "https://www.reuters.com/business/energy/europe-discussing-plan-diesel-stock-releases-after-us-pressure-source-says-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Moving further east, the conflict between the US and Iran may be heating up yet again.\nWashington is sending additional warships and troops to the region, according to a Wall Street Journal report, raising expectations that large-scale military strikes could resume after the US midterm elections \u200cin...",
+      "source": "web",
+      "title": "COMMENTARY: Morning Bid: Yield to worst",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-02/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "WASHINGTON, DC: President Donald Trump announced a new federal \u201cSuper Intelligence Force\u201d on Truth Social Sunday, October 4, five days after urging leading AI companies to rely on \u201cself-policing.\u201d\nThe force will coordinate the federal government\u2019s engagement with AI companies, consumers, public inte...",
+      "source": "web",
+      "title": "\u2018Bigger than the Industrial Revolution\u2019: Trump unveils new \u2018Super Intelligence Force\u2019",
+      "url": "https://news.meaww.com/bigger-than-the-industrial-revolution-trump-unveils-new-super-intelligence-force"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The US administration doesn\u2019t rule out that a decision to impose secondary sanctions on Russia\u2019s trade partners would be made by October 18, US Energy Secretary Chris Wright said in an interview with CBS News, APA reports.\nWhen asked whether President Trump is going to put tariffs on Russia\u2019s trade ...",
+      "source": "web",
+      "title": "US doesn't rule out imposing secondary sanctions on ...",
+      "url": "https://en.apa.az/america/us-doesnt-rule-out-imposing-secondary-sanctions-on-russias-trade-partners-by-oct-18-528105"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Leaders from the intelligence community, the Pentagon, the Federal Trade Commission and the Office of Personnel Management will serve on the task force.\n...\nPresident Donald Trump speaks alongside Elon Musk and other tech CEOs and administration officials after a meeting on artificial intelligence o...",
+      "source": "web",
+      "title": "Trump launches 'Super Intelligence Force' after calls for AI ...",
+      "url": "https://www.washingtonpost.com/politics/2026/10/04/trump-launches-super-intelligence-force-after-calls-ai-slowdown/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "China said the meeting of Group of 20 trade ministers last week showed deep divisions over several US-backed trade proposals, and Beijing defended its role in preserving global multilateralism.\nThe meeting ended with a joint statement denouncing the weaponization of food through coercive trade pract...",
+      "source": "web",
+      "title": "Daily Buzz: 5 October 2026 - City News Service",
+      "url": "https://www.citynewsservice.cn/articles/china-biz-buzz/daily-buzz/daily-buzz-5-october-2026-bmebxgvm"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "President Donald Trump on Sunday tapped Jay Clayton, his director of national intelligence, to lead a new government task force on artificial intelligence.\nTrump is calling it the \u201cSuper Intelligence Force,\u201d because he has tried to rebrand AI as \u201csuper intelligence.\u201d\nThe announcement comes after Tru...",
+      "source": "web",
+      "title": "Trump names national intelligence director Jay Clayton to ...",
+      "url": "https://abcnews.com/Technology/wireStory/trump-names-national-intelligence-director-jay-clayton-lead-136985346"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "By Reuters October 04, 2026 05:59 (EAT)\n...\nUS President Donald Trump spent Tuesday showcasing his administration\u2019s approach to AI \u2014 touting the US government\u2019s new AI chatbot, dining with tech titans at the White House, and announcing a voluntary agreement with those \u200bexecutives that he said would ...",
+      "source": "web",
+      "title": "As public fears of AI grow, Trump digs in on voluntary safeguards",
+      "url": "https://citizen.digital/article/as-public-fears-of-ai-grow-trump-digs-in-on-voluntary-safeguards-n391371"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "LONDON, Oct 2 (Reuters Breakingviews) - The US wants \u200bEU states to free some of the bloc's 39 \u200cmln metric tons of the fuel to curb high prices.\nEnergy risks, and Washington's role in the Iran war, are good \u200breasons not to.\nBut Europe has been slow \u200bon releases, and giving some ground may help avoid ...",
+      "source": "web",
+      "title": "Breakingviews - COMMENTARY: Europe's least-bad diesel plan: release more of it",
+      "url": "https://www.reuters.com/commentary/breakingviews/europes-least-bad-diesel-plan-release-more-it-2026-10-02/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "President Donald Trump stepped back from threatening a U.S. diesel export ban Friday after the Group of Seven agreed to release 100 million barrels of crude oil and fuel from emergency reserves.\nThe agreement reduces the immediate risk of a supply disruption for Europe and Mexico, while shifting att...",
+      "source": "web",
+      "title": "Vol 46 No. 40, October 5, 2026 - Washington Trade & Tariff ...",
+      "url": "https://www.wttlonline.com/stories/vol-46-no-40-october-5-2026,15766"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "U.S. Treasury Secretary Scott Bessent criticized prominent artificial intelligence figures\u2019 warnings about existential risks posed by the technology as alarmist and unhelpful, calling on the industry to police itself and produce solutions.\n...\nPresident Donald Trump almost immediately rejected such ...",
+      "source": "web",
+      "title": "Bessent says AI industry must own its risks and find solutions",
+      "url": "https://www.union-bulletin.com/news/national/bessent-says-ai-industry-must-own-its-risks-and-find-solutions/article_8d6d9910-f937-54e0-b728-4c166b28e51e.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "With negotiations stalled, US President Donald Trump is considering resuming major combat operations in Iran.\nTrump's top cabinet members met secretly at the presidential retreat at Camp David \u2060to discuss next \u2060steps in the Iran war, Axios reported on Friday.\n...\nTehran has blockaded commercial ship...",
+      "source": "web",
+      "title": "Trump Mulling to Resume Major Combat Operations in Iran",
+      "url": "https://english.aawsat.com/world/5325633-trump-mulling-resume-major-combat-operations-iran"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "EU nations will meet Friday, aiming to develop a unified response to soaring diesel prices, a day after the US called on its European allies to release strategic reserves \"immediately\" to stem the crisis.\n...\nWashington is piling on pressure to get European help with fuel costs, with US President Do...",
+      "source": "web",
+      "title": "EU Nations to Hold Emergency Meeting on Soaring Diesel ...",
+      "url": "https://english.aawsat.com/business/5325022-eu-nations-hold-emergency-meeting-soaring-diesel-prices-amid-us-pressure"
+    }
+  ],
+  "citations": [
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_MT1USDAYNETN92089693007?channel=xsp076",
+    "https://www.foxnews.com/politics/trump-launching-super-intelligence-force-ensure-american-dominance",
+    "https://www.reuters.com/business/energy/europe-discussing-plan-diesel-stock-releases-after-us-pressure-source-says-2026-10-02/",
+    "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-02/",
+    "https://news.meaww.com/bigger-than-the-industrial-revolution-trump-unveils-new-super-intelligence-force",
+    "https://en.apa.az/america/us-doesnt-rule-out-imposing-secondary-sanctions-on-russias-trade-partners-by-oct-18-528105",
+    "https://www.washingtonpost.com/politics/2026/10/04/trump-launches-super-intelligence-force-after-calls-ai-slowdown/",
+    "https://www.citynewsservice.cn/articles/china-biz-buzz/daily-buzz/daily-buzz-5-october-2026-bmebxgvm",
+    "https://abcnews.com/Technology/wireStory/trump-names-national-intelligence-director-jay-clayton-lead-136985346",
+    "https://citizen.digital/article/as-public-fears-of-ai-grow-trump-digs-in-on-voluntary-safeguards-n391371",
+    "https://www.reuters.com/commentary/breakingviews/europes-least-bad-diesel-plan-release-more-it-2026-10-02/",
+    "https://www.wttlonline.com/stories/vol-46-no-40-october-5-2026,15766",
+    "https://www.union-bulletin.com/news/national/bessent-says-ai-industry-must-own-its-risks-and-find-solutions/article_8d6d9910-f937-54e0-b728-4c166b28e51e.html",
+    "https://english.aawsat.com/world/5325633-trump-mulling-resume-major-combat-operations-iran",
+    "https://english.aawsat.com/business/5325022-eu-nations-hold-emergency-meeting-soaring-diesel-prices-amid-us-pressure"
+  ],
+  "usage": {
+    "input_tokens": 763,
+    "output_tokens": 1115,
+    "cost_usd": 0.03301
+  }
+}

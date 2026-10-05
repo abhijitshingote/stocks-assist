@@ -1,0 +1,167 @@
+{
+  "name": "a_calendar_events",
+  "kind": "channel",
+  "group": "calendar",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Macro & event calendar.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEconomic releases (time, consensus, prior), Fed speakers (time), Treasury auctions, investor/analyst days, FDA PDUFA dates, conferences, options expiry, index rebalances, lockup expiries from the brief date through the next 5 NYSE sessions.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Macro / Calendar\n- **S&P Global Services PMI**, September final, was scheduled for **09:45 ET on Monday, October 5**; consensus was **58.7** versus **58.7** prior. (FXEmpire, Oct. 5, 06:59 ET)[15]\n- **S&P Global Composite PMI**, September final, was scheduled for **09:45 ET on Monday, October 5**; consensus was **58.4** versus **56.0** prior. (KuCoin, Oct. 5, 10:23 ET)[13]\n- **ISM Services PMI**, September, was scheduled for **10:00 ET on Monday, October 5**; published calendar estimates ranged from **55.1 to 55.7**, versus **55.4** prior. (LiveTradingNews, Oct. 5, 09:21 ET)[1] (CMC Markets, Oct. 2, 18:06 ET)[9]\n- ISM Services subindices scheduled for **10:00 ET on October 5** included business activity, employment, new orders and prices; prior readings were **61.7**, **47.8**, **60.9** and **72.6**, respectively. (Dow Jones Newswires, Oct. 2, 12:56 ET)[7] (KuCoin, Oct. 3, 06:23 ET)[13]\n- **Employment Trends Index**, September, was scheduled for **10:00 ET on October 5**; the prior reading was **108.53**, with no consensus listed in the cited calendar. (Dow Jones Newswires, Oct. 2, 12:56 ET)[7]\n- The **Federal Open Market Committee minutes** from the **September 15\u201316 meeting** were scheduled for release at **14:00 ET on Wednesday, October 7**. (Schwab Network, Oct. 4, 19:47 ET)[4]\n- **Consumer Credit**, August, was scheduled for **15:00 ET on Wednesday, October 7**. (CNBC, Oct. 2, 14:35 ET)[5]\n- **Initial jobless claims** for the week ending October 2 were scheduled for **08:30 ET on Thursday, October 8**. (CNBC, Oct. 2, 14:35 ET)[5]\n- **Wholesale inventories**, August, were scheduled for **10:00 ET on Thursday, October 8**. (CNBC, Oct. 2, 14:35 ET)[5]\n- Preliminary **University of Michigan consumer sentiment**, October, was scheduled for **10:00 ET on Friday, October 9**. (CNBC, Oct. 2, 14:35 ET)[5]\n\n## Macro / Federal Reserve\n- **Dallas Fed President Lorie Logan** was scheduled to speak at **18:00 ET on Monday, October 5**; an additional Logan appearance was listed at **23:00 ET**. (Schwab Network, Oct. 4, 19:47 ET)[4] (Trading Economics, Oct. 4, 15:08 ET)[2]\n- **Federal Reserve Governor Michelle Bowman** was scheduled to speak at **14:45 ET** during the week of October 5. (Trading Economics, Oct. 4, 15:08 ET)[2]\n- **Federal Reserve Bank of New York President John Williams** was scheduled to speak at **13:05 ET** during the week of October 5. (Trading Economics, Oct. 4, 15:08 ET)[2]\n- **Federal Reserve Governor Michelle Bowman** and **Federal Reserve Governor Christopher Waller** were identified as scheduled speakers for Tuesday, October 6 and Thursday, October 8, respectively. (LiveTradingNews, Oct. 5, 09:21 ET)[1]\n\n## Macro / Treasury\n- The U.S. Treasury was scheduled to auction **3- and 6-month bills at 11:30 ET on Monday, October 5**. (Schwab Network, Oct. 4, 19:47 ET)[4]\n- A **$58 billion 3-year Treasury note auction** was scheduled for **13:00 ET on Tuesday, October 6**. (LiveTradingNews, Oct. 5, 09:21 ET)[1]\n- A **$39 billion 10-year Treasury note auction** was scheduled for **13:00 ET on Wednesday, October 7**. (Moomoo, Oct. 3, 05:47 ET)[10]\n- Three Treasury auctions were scheduled during the week of October 5\u20139. (Moomoo, Oct. 3, 05:47 ET)[10]\n\n## Retail / **STZ**\n- **Constellation Brands** was scheduled to report quarterly results on **Tuesday, October 6**. (CNBC, Oct. 2, 14:35 ET)[5]\n\n## Consumer Staples / **PEP**\n- **PepsiCo** was scheduled to report quarterly results on **Thursday, October 8**. (CMC Markets, Oct. 2, 18:06 ET)[9]\n\n## Airlines / **DAL**\n- **Delta Air Lines** was scheduled to report third-quarter results on **Friday, October 9**. (CMC Markets, Oct. 2, 18:06 ET)[9]\n\n## Macro / Calendar\n- The cited October 5\u20139 calendars listed **no major U.S. company results for Monday, October 5**. (CMC Markets, Oct. 2, 18:06 ET)[9]\n- The cited calendar listed **no options-expiry, index-rebalance, lockup-expiry, investor-day, conference, or FDA PDUFA item** with a specific date in the October 5\u20139 window.",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "CME FedWatch put the odds of a hold at the 27 to 28 October meeting at 83.9 percent as of 2 October, up from 35.8 percent on 25 September, per Kiplinger.\n...\n## The calendar: dated catalysts, 5 to 9 October 2026\n|Date|Time (ET)|Event|Consensus|Prior|Source|\n|--|--|--|--|--|--|\n|Mon 5 Oct|10:00|ISM s...",
+      "source": "web",
+      "title": "Weekly Market Outlook: a hiking Fed, a stalling job market, Anthropic's IPO clock and the AI leaders",
+      "url": "https://www.livetradingnews.com/weekly-market-outlook-fed-minutes-anthropic-and-openai-ipos-gold-bitcoin-fx"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "In the US, the FOMC minutes, ISM Services PMI, and preliminary University of Michigan Consumer Sentiment data will be closely watched for further clues on the economic outlook and the Fed\u2019s policy path.\n...\nIn the US, several Federal Reserve officials are also due to speak, while earnings from Pepsi...",
+      "source": "web",
+      "title": "Week Ahead - Oct 5th",
+      "url": "https://tradingeconomics.com/calendar?article=29373&g=top&importance=2&startdate=2026-10-02"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "August PCE inflation was softer than expected, with core PCE rising 3.0% year-on-year, reducing near-term expectations for another Fed rate hike.\nMarkets subsequently reduced the probability of an October hike to around the high 40% from above 70% earlier in the week.\n...\n## Major Economic Calendar ...",
+      "source": "web",
+      "title": "Wall Street Opens October Higher as Oil Tops $100 and ...",
+      "url": "https://www.investing.com/analysis/wall-street-opens-october-higher-as-oil-tops-100-and-bond-yields-hit-23year-high-200688847"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "FOMC minutes come out at 2:00 PM ET on Wednesday, Oct. 7. The minutes will shed light on the Sept. 15-16 discussions preceding the Sept. 16 FOMC decision to raise the federal funds rate target range by 25 basis points.\n...\n## Economic Data for Week of Oct. 5, 2026\n**Monday, October 5**\n- 09:45 AM: S...",
+      "source": "web",
+      "title": "Week Ahead: FOMC Minutes Kick Off Final Quarter of 2026",
+      "url": "https://schwabnetwork.com/articles/week-ahead-fomc-minutes-kick-off-final-quarter-of-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "With little on the calendar next week before the start of third quarter earnings season, investors will likely remain under the thrall of the two forces buffeting the current market: higher oil prices and higher yields.\n...\nOn Friday, stocks rallied as yields retreated, following a surprisingly weak...",
+      "source": "web",
+      "title": "Stock market next week: Outlook for Oct. 5-9, 2026",
+      "url": "https://www.cnbc.com/2026/10/02/stock-market-next-week-outlook-for-oct-5-9-2026-.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "US Jobs Miss: September non-farm payrolls came in at just 29,000, well below the 84,000 consensus estimate.\nPrior months were revised down by a combined 60,000.\nThe unemployment rate ticked up to 4.2% from 4.1%, materially reducing the probability of a Fed rate hike at the October meeting to 20%.\n.....",
+      "source": "web",
+      "title": "Market Quick Take Weak euro in focus - 05 October 2026",
+      "url": "https://www.home.saxo/content/articles/macro/market-quick-take--weak-euro-in-focus---05-october-2026-05102026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Monday, October 5, 2026 Exp Prev\nET/GMT\n0945/1345 Sep US Services PMI\nPMI, Services 56.5\n1000/1400 Sep Employment Trends Index\nETI 108.53\nETI, Y/Y%\n1000/1400 Sep ISM Report On Business Services PMI\nServices PMI 55.4\nBusiness Activity Idx 61.7\nPrices Idx 72.6\nEmployment Idx 47.8",
+      "source": "web",
+      "title": "News by Dow Jones Newswires on TradingView, 2026-10-02",
+      "url": "https://www.tradingview.com/news/DJN_DN20261002002014:0/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Monday 5th October\n** ***09:45 ET** * **US S&P Services PMI September Final\n...\nConfirmation of strong services growth would reinforce evidence that the US economy entered the end of Q3 with considerable momentum, potentially supporting cyclical and consumer-sensitive equities.\nHowever, further up...",
+      "source": "web",
+      "title": "Week Ahead: Economic Indicators 5th \u2013 9th October (US)",
+      "url": "https://features.financialjuice.com/2026/10/02/week-ahead-economic-indicators-5th-9th-october-us/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "It looks set to be a relatively quiet week for economic data and earnings before earnings season gathers pace the following week.\nBefore that though, PepsiCo\u2019s results will offer an early preview, while the ISM services reading for September should kickstart the week with a broader check-up on the h...",
+      "source": "web",
+      "title": "The Week Ahead: US ISM services, Fed minutes, PepsiCo ...",
+      "url": "https://www.cmcmarkets.com/en-ie/news-and-analysis/the-week-ahead-us-ism-services-fed-minutes-pepsico-earnings"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ISM services Monday.\nFOMC minutes Wednesday.\nThree Treasury auctions.\n...\nContext that still matters: on September 16 the Fed, under Chair Kevin Warsh, hiked 25 basis points to 3.75%\u20134.00%, the first increase in three years, and the dots leaned toward one more hike by year-end.\nFriday\u2019s payrolls mad...",
+      "source": "web",
+      "title": "A Tick in the Market: Week of October 5\u20139, 2026",
+      "url": "https://www.moomoo.com/community/feed/a-tick-in-the-market-week-of-october-5-9-117377089994757"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "|01:20 PM|US|NY Fed Bill Purchases 4 to 12 months|$1.946 billion| | | |\n...\n|02:00 PM|US|ISM Services PMISEP|55.4|55.7|55| |\n|02:00 PM|US|ISM Services Business ActivitySEP|61.7|61.5| | |\n...\n|03:30 PM|US|3-Month Bill Auction|4.110%|4.1999%| | |\n|03:30 PM|US|6-Month Bill Auction|4.285%| | | |\n...\n|01...",
+      "source": "web",
+      "title": "Economic Calendar",
+      "url": "https://tradingeconomics.com/calendar"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "That cut the odds of an October Fed hike from around 70% to the low 20s, so a hold is now the base case.\n...\n** With October hike odds in the low 20s, today's ISM services survey and the FOMC minutes later this week will show how much appetite remains for tightening.\n...\n## Economic calendar\n|GMT|GS...",
+      "source": "web",
+      "title": "Daily Report \u2013 October 5, 2026 - Amber Markets Limited",
+      "url": "https://ambermarkets.com/daily-report/oct-5th-2026/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\ud83d\udd39 Monday, October 5\n\ud83d\udd39 9:45 AM ET (7:15 PM IST) \u2014 S&P Global Composite PMI, September Final: Estimate 58.4; Previous 56.0.\n\ud83d\udd39 9:45 AM ET (7:15 PM IST) \u2014 S&P Global Services PMI, September Final: Estimate 58.7; Previous 56.5.\n\ud83d\udd39 10:00 AM ET (7:30 PM IST) \u2014 Employment Trends Index, September: Estimate N/...",
+      "source": "web",
+      "title": "U.S. Stock Market \u2014 #Economic Calendar | October 5\u20139, 2026 A",
+      "url": "https://www.kucoin.com/news/insight/SPX/6ac1847d38a264000792716d"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "- ##### U.S. Stocks Give Back Ground After Early Surge But Still Close Mostly Higher\nOctober 02, 2026 16:16 ET\nStocks gave back some ground after an early surge but continued to turn in a strong performance throughout the trading session on Friday.\nThe major averages all moved to the upside, adding ...",
+      "source": "web",
+      "title": "Economic Calendar",
+      "url": "https://www.rttnews.com/corpinfo/economiccalendar.aspx?PageNum=2&date=02-Oct-2026"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points:\n- Fed minutes, Treasury auctions and consumer sentiment will test whether Friday\u2019s yield retreat can hold.\n...\n**Monday, October 5**\n**Earnings Before the Open**\nNo reports scheduled.\n**Economic Releases**\n13:45 GMT: Final Services PMI, forecast 58.7 (prior 58.7).\n14:00 GMT: ISM Servi...",
+      "source": "web",
+      "title": "The Week Ahead: Fed Minutes and Bond Yields Test ...",
+      "url": "https://www.fxempire.com/forecasts/article/the-week-ahead-fed-minutes-and-bond-yields-test-the-fourth-quarter-stock-rally-1635019"
+    }
+  ],
+  "citations": [
+    "https://www.livetradingnews.com/weekly-market-outlook-fed-minutes-anthropic-and-openai-ipos-gold-bitcoin-fx",
+    "https://tradingeconomics.com/calendar?article=29373&g=top&importance=2&startdate=2026-10-02",
+    "https://www.investing.com/analysis/wall-street-opens-october-higher-as-oil-tops-100-and-bond-yields-hit-23year-high-200688847",
+    "https://schwabnetwork.com/articles/week-ahead-fomc-minutes-kick-off-final-quarter-of-2026",
+    "https://www.cnbc.com/2026/10/02/stock-market-next-week-outlook-for-oct-5-9-2026-.html",
+    "https://www.home.saxo/content/articles/macro/market-quick-take--weak-euro-in-focus---05-october-2026-05102026",
+    "https://www.tradingview.com/news/DJN_DN20261002002014:0/",
+    "https://features.financialjuice.com/2026/10/02/week-ahead-economic-indicators-5th-9th-october-us/",
+    "https://www.cmcmarkets.com/en-ie/news-and-analysis/the-week-ahead-us-ism-services-fed-minutes-pepsico-earnings",
+    "https://www.moomoo.com/community/feed/a-tick-in-the-market-week-of-october-5-9-117377089994757",
+    "https://tradingeconomics.com/calendar",
+    "https://ambermarkets.com/daily-report/oct-5th-2026/",
+    "https://www.kucoin.com/news/insight/SPX/6ac1847d38a264000792716d",
+    "https://www.rttnews.com/corpinfo/economiccalendar.aspx?PageNum=2&date=02-Oct-2026",
+    "https://www.fxempire.com/forecasts/article/the-week-ahead-fed-minutes-and-bond-yields-test-the-fourth-quarter-stock-rally-1635019"
+  ],
+  "usage": {
+    "input_tokens": 751,
+    "output_tokens": 1268,
+    "cost_usd": 0.03527
+  }
+}

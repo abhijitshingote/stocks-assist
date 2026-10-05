@@ -1,0 +1,167 @@
+{
+  "name": "a_fed_policy_context",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Fed policy & inflation context.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nThe most recent FOMC decision (date, bp change, vote) and the Fed chair's latest statements on inflation and rates (verbatim quotes); latest CPI, core CPI, PCE prints; named economists and investors (e.g. El-Erian, Dimon, Summers, bank chief economists) commenting on the yield move or inflation in the window, with quotes; CEOs quoted on inflation or consumer demand.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Fed Policy [Macro / Calendar]\n\n- The most recent FOMC decision was a **25-basis-point rate increase** at the September 2026 meeting; all **11 voting FOMC members** supported the increase. The policy rate was raised to combat inflation above the Fed\u2019s 2% target.[9][12] (Yahoo Finance, Oct. 1; Newsquawk, Oct. 2)\n- The September FOMC\u2019s updated projections showed **one additional 25-basis-point increase in 2026**, followed by unchanged rates through 2027; Chair Warsh did not submit projections.[12] (Newsquawk, Oct. 2)\n- New York Fed President **John Williams** said there was **\u201cno need for urgency\u201d** regarding another October rate increase.[1] (Reuters, Oct. 2, 11:29 ET)\n- Minneapolis Fed President **Neel Kashkari** said, **\u201cInflation is still too high,\u201d** after the August PCE release; he said inflation was running at approximately 3%.[9][15] (Yahoo Finance, Oct. 1; Ground News, Oct. 5, 06:15 ET)\n- Mohamed El-Erian said the September employment report would **\u201cput the Fed definitely on hold for October.\u201d**[8] (Yahoo Finance, Oct. 2, 09:46 ET)\n- The September employment report showed **29,000 jobs added**, versus economists\u2019 expectations for **90,000**, and unemployment of **4.2%**; market-implied odds of an October hike fell to approximately **16%\u201322%**, depending on the reading and time of publication.[6][8] (Yahoo Finance, Oct. 2, 09:46 ET; Yahoo Finance, Oct. 2, 13:04 ET)\n\n## Inflation [Macro / Calendar]\n\n- August headline **PCE inflation was 3.4% year over year**, while **core PCE inflation was 3.0% year over year**.[9] (Yahoo Finance, Oct. 1)\n- August core PCE increased **0.2% month over month**, down from **0.4%** previously and below the **0.3% consensus**; the year-over-year rate was **3.0%**, below the **3.3% forecast**.[12] (Newsquawk, Oct. 2)\n- August headline CPI increased **3.4% year over year**, according to reporting on the latest inflation data; the release was described as below expectations, with July\u2019s figure revised downward.[1][3] (Reuters, Oct. 2, 11:29 ET; CNBC TV18, Oct. 2)\n- The September CPI report was scheduled for **October 14, 2026** and was identified as the next key inflation release for the October policy decision.[12] (Newsquawk, Oct. 2)\n- No September CPI, core CPI, or September PCE reading was available within the specified window ending **October 5, 2026 at 12:20 ET**.[12] (Newsquawk, Oct. 2)\n\n## Treasury Yields and Inflation Commentary [Macro / Commodities]\n\n- The 10-year Treasury yield reached **5.34%**, its highest level since **2002**, before declining after the weak September employment report; it later settled near **5.18%**.[1][11] (Reuters, Oct. 2, 11:29 ET; Yahoo Finance, Oct. 2, 19:00 ET)\n- The 30-year Treasury yield declined to approximately **5.57%**, while the 2-year yield fell to approximately **4.73%** after the employment report.[11] (Yahoo Finance, Oct. 2, 19:00 ET)\n- HSBC chief Asia economist **Fred Neumann** said, **\u201cuntil monetary tightening is delivered, bond markets will demand a premium for longer-term borrowing.\u201d**[5] (CNBC TV18, Oct. 2)\n- Pepperstone head of research **Chris Weston** said, **\u201cWith the Fed now myopically focused on inflation and price pressures, a hot wages print could prove particularly influential for US rates, Treasuries and the USD.\u201d**[3] (CNBC TV18, Oct. 2)\n- El-Erian said the weak employment report would produce a **\u201cretracement in yields for now,\u201d** while describing a **\u201cfundamental issue\u201d** involving the imbalance between borrowers and providers of capital.[14] (Yahoo Finance, Oct. 2)\n- El-Erian also wrote that the weak employment report would **\u201creinforce the impact of recent Fedspeak in calming expectations about an October rate hike.\u201d**[13] (Morningstar, Oct. 2)\n\n## Investors and Market Commentators [Macro / Commodities]\n\n- Allianz chief economic adviser **Mohamed El-Erian** said the weak September jobs report would make an October hike unlikely and said the report would put the Fed **\u201cdefinitely on hold for October.\u201d**[6][8] (Yahoo Finance, Oct. 2)\n- El-Erian described the IMF statement that bond markets were **\u201ccontinuing to function in an orderly manner\u201d** as **\u201chighly unusual\u2014and risks raising more questions than it answers.\u201d**[7] (Yahoo Finance, Oct. 2)\n- The market-implied probability of an October Fed hold rose to approximately **77%\u201384%** after the employment report, while the implied probability of a hike fell to approximately **16%\u201322%**.[4][6][11] (CNBC, Oct. 2; Yahoo Finance, Oct. 2)\n\n## Employment and Policy Calendar [Macro / Calendar]\n\n- The September employment report recorded **29,000 payroll gains**, **4.2% unemployment**, and an economist consensus of **90,000 payroll gains**.[8] (Yahoo Finance, Oct. 2)\n- The FOMC minutes from the September meeting were scheduled for release on **Wednesday, October 7, 2026**.[12] (Newsquawk, Oct. 2)",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "\u200cThe benchmark 10-year US Treasury yield hit a 24-year high of 5.34% on Thursday, after rising more than 80 basis points in the third quarter.\n...\nThe 2-year US Treasury yield edged lower midweek after New York Federal Reserve President John Williams on Tuesday said there was \" no need for urgency\" ...",
+      "source": "web",
+      "title": "COMMENTARY: Morning Bid: Yield to worst",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "It's probably not much of a surprise that Treasury yields hit 24-year highs of 5.34% on the first trading day of October after their steepest quarterly rise in \u200b32 years.\n...\nThat's why markets are still expecting a second rate \u200brise from the Fed by the end of the year, even as the probability for O...",
+      "source": "web",
+      "title": "Morning Bid: Can Treasuries rally for a second day?",
+      "url": "https://www.reuters.com/5f374b32b07b/markets/europe/global-markets-view-europe-2026-10-02"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Investors were reeling from a steep global bond sell-off on Thursday that sent yields on benchmark US 10-year Treasuries to 5.344%, their highest since 2002, ahead of a US jobs report that could influence the near-term policy outlook.\n...\nData on Wednesday showed US consumer prices rose less than ex...",
+      "source": "web",
+      "title": "Dollar gains for third week as US Treasury yield hits highest since 2002",
+      "url": "https://www.cnbctv18.com/world/dollar-gains-for-third-week-as-us-treasury-yield-hits-highest-since-2002-20003493.htm"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Treasury yields rose on Friday, after initially falling following an unexpectedly weak September jobs report likely put the brakes on a Federal Reserve rate hike in October.\nThe benchmark 10-year Treasury yield rose almost 5 basis points to 5.281%.\n...\nThe 30-year Treasury yield added 2 basis points...",
+      "source": "web",
+      "title": "Treasury yields inch higher as investors await key jobs report",
+      "url": "https://www.cnbc.com/amp/2026/10/02/treasury-yields-bonds-nonfarm-payrolls.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The US 10-year Treasury yield, a yardstick for global borrowing costs and asset prices, earlier \u200brose to 5.34%, its highest since 2002, after posting its biggest quarterly rise in yields this century for the three months ending in September.\n...\nMarkets are responding to years of above-target inflat...",
+      "source": "web",
+      "title": "Global bond sell-off lifts US 10-year yield to highest level since 2002",
+      "url": "https://www.cnbctv18.com/world/global-bond-sell-off-lifts-us-10-year-yield-to-highest-level-since-2002-20003483.htm"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The jobs report 'definitely' puts the Fed on hold for October: Mohamed El-Erian explains\n...\nInvesting.com -- Wall Street's focus on Friday was on the September nonfarm payrolls report which showed significantly weaker-than-expected job growth, prompting traders to pare their expectations of a Feder...",
+      "source": "web",
+      "title": "Reaction roundup: Experts, analysts weigh in on ...",
+      "url": "https://finance.yahoo.com/economy/policy/articles/reaction-roundup-experts-analysts-weigh-170953490.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Mohamed El-Erian, chief economic adviser at Allianz, said on Thursday that the International Monetary Fund's comments about how bond markets are functioning raise more questions than provide reassurance.\nIn a post on X, El-Erian said the IMF's statement that bond markets are \"continuing to function ...",
+      "source": "web",
+      "title": "Bond Markets Functioning In An 'Orderly' Manner? El-Erian ...",
+      "url": "https://finance.yahoo.com/markets/articles/bond-markets-functioning-orderly-manner-044402307.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Treasury yields initially fell following the jobs report, but then rose again.\nThe 10-year Treasury (^TNX) moved to 5.28% while the 30-year yield (^TYX) hovered near 5.63%.\n...\nThe US added just 29,000 jobs in September, short of economists' expectations of 90,000.\nThe unemployment rate ticked up to...",
+      "source": "web",
+      "title": "Stock market today: Dow, S&P 500, Nasdaq rally as Fed ...",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-friday-october-2-dow-sp-500-nasdaq-september-jobs-report-080623878.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Federal Reserve Bank of Minneapolis President Neel Kashkari said Wednesday that inflation remains \"too high,\" after the the Bureau of Economic Analysis (BEA) released data showing that annual inflation remained above the central bank's 2 percent target in August.\n\"Inflation is still too high,\" Kashk...",
+      "source": "web",
+      "title": "Fed's Kashkari says inflation 'still too high' despite lower ...",
+      "url": "https://finance.yahoo.com/economy/policy/articles/fed-kashkari-says-inflation-still-155804269.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The latest softer-than-expected inflation data, along with opposition from at least \u2060two top policymakers to another rate hike in October, have strengthened investor bets that the US Federal Reserve will keep rates on hold \u200blater this month.\nTraders currently see about a \u200c22% chance of a US rate hik...",
+      "source": "web",
+      "title": "Gold slips before U.S. payrolls data, set for second weekly ...",
+      "url": "https://www.cnbc.com/amp/2026/10/02/gold-slips-before-us-payrolls-data-set-for-second-weekly-loss.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Treasury yields fell Friday after a weaker-than-expected September jobs report made a Federal Reserve rate increase at its October meeting less likely.\n...\nThe benchmark 10-year Treasury yield shed nearly 6 basis points, settling at 5.18%.\nThe 30-year yield eased 3 basis points to 5.57%, and the 2-y...",
+      "source": "web",
+      "title": "Treasury yields fall after weak September jobs report",
+      "url": "https://finance.yahoo.com/economy/policy/articles/treasury-yields-fall-weak-september-131517954.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**FOMC MINUTES (WED)**: The upcoming minutes will provide an account of the September meeting, where the Fed unanimously opted to hike rates by 25bps.\nThe statement saw only minor changes, noting the hike would help return inflation to target in a timelier manner, while reiterating the Fed's commitm...",
+      "source": "web",
+      "title": "Week in Focus 4-9th October 2026: FOMC Minutes, US ...",
+      "url": "https://www.newsquawk.com/headlines/week-in-focus-4-9th-october-2026-fomc-minutes-us-ism-services-pmi-opec-canadian-jobs-and-ecb-minutes"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Stock futures jumped and Treasury yields pulled back sharply from multidecade highs after weak U.S. jobs data encouraged expectations the Federal Reserve won't raise rates later this month.\n...\nThe cooler-than-forecast print prompted a sharp uptick in expectations the Fed won't hike in October, with...",
+      "source": "web",
+      "title": "Stocks Jump, Yields Fall as Weak Jobs Print Cools Fed Outlook \u2014 Update",
+      "url": "https://www.morningstar.com/news/dow-jones/202610023512/stocks-jump-yields-fall-as-weak-jobs-print-cools-fed-outlook-update"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Allianz chief economic adviser and Wharton School professor, Mohamed El-Erian, sits down with The 8:30 hosts to share his thoughts on how the latest batch of economic data could influence bond markets (^TYX, ^TNX, ^FVX).\n...\nAnd this print is going is going to mean that it's you're going to see quit...",
+      "source": "web",
+      "title": "There's a fundamental 'imbalance' in the bond market: El-Erian",
+      "url": "https://finance.yahoo.com/video/theres-fundamental-imbalance-bond-market-150000261.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## He said the latest inflation data did not change his view and that another increase could depend on how the economy performs.\n...\nBias Comparison\n- On Wednesday, Minneapolis Federal Reserve President Neel Kashkari said inflation remains \"still too high,\" signaling the central bank may raise inter...",
+      "source": "web",
+      "title": "Fed's Kashkari says inflation is 'still too high' even after ...",
+      "url": "https://ground.news/article/feds-kashkari-says-inflation-is-still-too-high-even-after-softer-than-expected-pce-data"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-02/",
+    "https://www.reuters.com/5f374b32b07b/markets/europe/global-markets-view-europe-2026-10-02",
+    "https://www.cnbctv18.com/world/dollar-gains-for-third-week-as-us-treasury-yield-hits-highest-since-2002-20003493.htm",
+    "https://www.cnbc.com/amp/2026/10/02/treasury-yields-bonds-nonfarm-payrolls.html",
+    "https://www.cnbctv18.com/world/global-bond-sell-off-lifts-us-10-year-yield-to-highest-level-since-2002-20003483.htm",
+    "https://finance.yahoo.com/economy/policy/articles/reaction-roundup-experts-analysts-weigh-170953490.html",
+    "https://finance.yahoo.com/markets/articles/bond-markets-functioning-orderly-manner-044402307.html",
+    "https://finance.yahoo.com/markets/live/stock-market-today-friday-october-2-dow-sp-500-nasdaq-september-jobs-report-080623878.html",
+    "https://finance.yahoo.com/economy/policy/articles/fed-kashkari-says-inflation-still-155804269.html",
+    "https://www.cnbc.com/amp/2026/10/02/gold-slips-before-us-payrolls-data-set-for-second-weekly-loss.html",
+    "https://finance.yahoo.com/economy/policy/articles/treasury-yields-fall-weak-september-131517954.html",
+    "https://www.newsquawk.com/headlines/week-in-focus-4-9th-october-2026-fomc-minutes-us-ism-services-pmi-opec-canadian-jobs-and-ecb-minutes",
+    "https://www.morningstar.com/news/dow-jones/202610023512/stocks-jump-yields-fall-as-weak-jobs-print-cools-fed-outlook-update",
+    "https://finance.yahoo.com/video/theres-fundamental-imbalance-bond-market-150000261.html",
+    "https://ground.news/article/feds-kashkari-says-inflation-is-still-too-high-even-after-softer-than-expected-pce-data"
+  ],
+  "usage": {
+    "input_tokens": 777,
+    "output_tokens": 1325,
+    "cost_usd": 0.03621
+  }
+}

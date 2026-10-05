@@ -1,0 +1,167 @@
+{
+  "name": "c_XRPN",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Armada Acquisition Corp. II (XRPN).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| XRPN | Armada Acquisition Corp. II | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +68.25% | +272.6% | 10.3\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why XRPN moved. Run several searches: \"why is Armada Acquisition Corp. II stock down/up\",\n\"Armada Acquisition Corp. II stock\", \"XRPN shares Friday October 2, 2026\", \"Armada Acquisition Corp. II concerns\", \"Armada Acquisition Corp. II FDA\",\n\"Armada Acquisition Corp. II analyst\", \"Armada Acquisition Corp. II price target\", \"Armada Acquisition Corp. II deal\", \"Armada Acquisition Corp. II offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Armada Acquisition Corp. II peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Armada Acquisition Corp. II (XRPN) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Armada Acquisition Corp. II (XRPN) `Digital Assets / SPAC`\n\n- Shareholders approved Armada II\u2019s business combination with **Evernorth Holdings** at a September 30, 2026 extraordinary meeting; the transaction is expected to close on **October 7**, subject to remaining closing conditions, with Nasdaq trading under **XRPN** expected to begin on **October 8**. (Evernorth/Armada II, Oct 1 08:00 ET).[10]\n\n- The transaction and related private placements raised **more than $1 billion**, including approximately **$300 million** in expected gross cash proceeds; Evernorth expects to hold approximately **473 million XRP** at closing. (Financial Modeling Prep, Oct 3 12:14 ET).[14]\n\n- XRP was reported near **$1.54**, up **2.8%**, implying a value of approximately **$727 million** for Evernorth\u2019s expected 473 million XRP treasury. (Yahoo Finance, Oct 2 05:09 ET).[1]\n\n- The reported Friday, October 2 regular-session move was **+68.25%**, closing at **$39.42** on approximately **9.1 million shares**. (Financial Modeling Prep, Oct 3 12:14 ET).[14]\n\n- A market recap listed XRPN among October 2\u2019s top gainers at **+68.2%**; the same recap identified shareholder approval of the Evernorth combination as the relevant event. (The Desperate Trader, Oct 3 06:59 ET).[5]\n\n- XRPN traded between **$10.10 and $48.59** on October 2, with a reported **4.65 million shares** traded and a price of **$45.52 at 16:39 ET**; this reading conflicts with the verified tape\u2019s **$39.42** close, so the verified tape is used for the regular-session close. (MEXC, Oct 2 12:39 ET).[7]\n\n- Evernorth\u2019s planned treasury is tied to XRP price volatility; reported transaction risks include delayed or failed closing, failure to meet listing standards, changes in laws and regulations, and difficulty executing the strategy. (Yahoo Finance, Oct 2 05:09 ET).[1]\n\n- A market report described XRPN as rising from **$23.43** at Thursday\u2019s close and opening Friday near **$28**, while noting that the expected October 7 closing and October 8 listing were prospective and subject to conditions. [report] (BitFinance, Oct 2; publication time not stated).[4]\n\n- No specific company analyst rating change, price-target revision, FDA action, lawsuit verdict, new offering, or broker note published between October 2 and October 5 at 12:20 ET was identified in the gathered results.\n\n- No separately reported after-hours or Monday, October 5 pre-market catalyst was identified; the available reports continued to attribute the move to the approved Evernorth transaction, its expected closing on October 7, the October 8 XRPN listing, and the planned 473 million XRP treasury.[1][13]",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Shareholder Approval Moves Evernorth Closer to XRP Treasury Launch\n...\nFri, October 2, 2026 at 3:09 AM CST\n- XRP-USD\n+0.97%\n- XRPN\n+68.25%\nIn Ripple news, Armada Acquisition Corp.\nII shareholders approved the SPAC's merger with Evernorth at a September 30 meeting.\nThe Ripple-backed XRP treasury co...",
+      "source": "web",
+      "title": "Shareholder Approval Moves Evernorth Closer to XRP ...",
+      "url": "https://finance.yahoo.com/markets/crypto/articles/shareholder-approval-moves-evernorth-closer-090928268.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 9:00 AM GMT-3\n- XRP-USD\n+0.85%\n- XRPN\n+68.25%\n### Quick Read\n- Evernorth lists on Nasdaq October 8 holding 473 million XRP worth ~$720 million, but the listing won't create new demand since Ripple and partners already contributed those tokens.\n...\nEvernorth, a company backed ...",
+      "source": "web",
+      "title": "Evernorth Lists on October 8 With 473 Million XRP and More Than $1 Billion Behind It. What Does That Do to XRP?",
+      "url": "https://finance.yahoo.com/markets/crypto/articles/evernorth-lists-october-8-473-120021098.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "II (NASDAQ: AACI) is a special purpose acquisition company, or SPAC.\nThe company was formed to identify and complete a business combination with an operating business, such as a merger, share exchange, asset acquisition, reorganization or similar transaction.\n...\nII has received a consensus rating o...",
+      "source": "web",
+      "title": "Armada Acquisition Corp. II (AACI) Stock Price, News & ...",
+      "url": "https://www.marketbeat.com/stocks/NASDAQ/AACI/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Evernorth** is the Ripple-backed XRP treasury company going public by merging with a blank-check shell called Armada Acquisition Corp.\nII.\nThat shell already trades under the ticker XRPN, and this week it woke up.\nEarly in the week, XRPN jumped roughly 25% intraday to around $13.24 from a $10.58 c...",
+      "source": "web",
+      "title": "The XRP Stock That Doubled Before It Listed",
+      "url": "https://bitfinance.substack.com/p/evernorth-xrpn-xrp-treasury-nasdaq"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "$XRPN+108%\nArmada Acquisition Corp.\nII Class A Ordinary Shares\nFirst alerted at $25.51 at 05:12 AM ET, then ran to a high of $53.00.\n...\nClass A Common Stock+198.3%2$SDEVStablecoin Development Corporation+104.4%3$XRPNArmada Acquisition Corp.\nII Class A Ordinary Shares+68.2%4$AIXIXIAO-I Corporation A...",
+      "source": "web",
+      "title": "Stock Market Recap October 2, 2026: AMOD +198.3%, Top Movers ...",
+      "url": "https://thedesperatetrader.com/recap/2026-10-02"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u2013 XRPN +7.0% (shareholders approved the proposed business combination with Evernorth)",
+      "source": "web",
+      "title": "Doug's Daily Diary \u2014 Friday, October 2, 2026 | TheStreet Pro",
+      "url": "https://pro.thestreet.com/dougs-daily-diary/2026-10-02"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Armada Acquisition Corp.\nII (XRPN) operates in the BLANK CHECKS sector and is listed on NASDAQ.\n...\nArmada Acquisition Corp.\nII (XRPN) is currently trading at $45.52 as of 2026-10-02 16:39:00, up 94.29% ($22.09) from the previous close of $23.43\nDuring today's regular trading session, XRPN has trade...",
+      "source": "web",
+      "title": "XRPN Price Today: Armada Acquisition Corp. II Stock Price, Quote & Chart | MEXC",
+      "url": "https://www.mexc.com/en-NG/stocks/xrpn"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "- Evernorth shareholders approved the Armada Acquisition Corp.\nII merger, with XRPN set to begin trading on Nasdaq on October 8.\n...\nU.S. labor market data came in weak: Non-Farm Payrolls rose by just 29,000, against expectations of $84,000\u2013$90,000, while unemployment climbed to 4.2%.\n...\nThis finan...",
+      "source": "web",
+      "title": "Biggest USD Stablecoin Returns to Bitcoin After 12 Years: Main Crypto News This Morning",
+      "url": "https://www.tradingview.com/news/u_today:26262dc35094b:0-biggest-usd-stablecoin-returns-to-bitcoin-after-12-years-main-crypto-news-this-morning/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "$25.03\n+6.83% today\n...\nHow it compares with the rest of its sector is one of its highest-scoring factors; short-term momentum score is near the top of its range; and price trend is one of its highest-scoring factors.\n...\nAs of 2 October 2026, Armada Acquisition Corp.\nII Class A Ordinary Shares (XRP...",
+      "source": "web",
+      "title": "XRPN \u00b7 71/100 \u00b7 STRONG SETUP",
+      "url": "https://tapeline.io/t/XRPN"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Oct 01, 2026, 08:00 ET\n- Armada II shareholders approved the business combination with Evernorth at the extraordinary general meeting on September 30, 2026\n...\n- Business combination expected to close October 7, 2026, with trading on Nasdaq under the ticker \"XRPN\" expected to begin October 8, 2026\nS...",
+      "source": "web",
+      "title": "Shareholders Approve Evernorth Business Combination",
+      "url": "https://www.prnewswire.com/news-releases/shareholders-approve-evernorth-business-combination-transaction-and-related-private-placements-have-raised-over-1-billion-nasdaq-trading-under-xrpn-expected-to-begin-on-october-8-302895260.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Monday - October 5**\n- **Volatility watch - ** Astera Labs ALAB and Lumentum LITE have seen options volatility increase over the last week.\nThe most overbought stocks per their 14-day Relative Strength Index include Armada Acquisition Corp.\nII XRPN, Kodiak Sciences KOD, and Pacific Bio PACB.",
+      "source": "web",
+      "title": "Catalyst Watch: Microsoft event, FOMC talk, and the finish line for Paramount-Warner Bros.",
+      "url": "https://www.tradingview.com/news/seekingalpha:19e0b11b4094b:0-catalyst-watch-microsoft-event-fomc-talk-and-the-finish-line-for-paramount-warner-bros/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Armada Acquisition Corp II (XRPN) won shareholder approval for its combination with Evernorth Holdings Inc.\non October 2, 2026; no redemption dollar figure was provided.\n...\nARMADA ACQUISITION CORP II (XRPN) * Deal Approved with **Evernorth Holdings Inc.**\n...\nYESTERDAY\u2019S TOP SPAC GAINERS\n|Company|T...",
+      "source": "web",
+      "title": "SPAC Market Update October 2, 2026: XRPN-Evernorth ...",
+      "url": "https://www.boardroomalpha.com/research/spac-market-update-october-2-2026-xrpn-mssaf"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Armada Acquisition Corp.\nII (XRPN) is up 79.8% today.\n...\n**Analysis:** The most likely driver is shareholder approval of Armada II\u2019s business combination with Evernorth, a deal that would turn the company into an XRP-focused treasury vehicle.\nThe sharp move also appears tied to speculative buying a...",
+      "source": "web",
+      "title": "XRPN surges as Evernorth SPAC merger clears ...",
+      "url": "https://www.quiverquant.com/news/XRPN+surges+as+Evernorth+SPAC+merger+clears+shareholder+vote"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "- Armada Acquisition Corp.\nII (NASDAQ: XRPN) jumped after shareholder approval of its merger with Evernorth, with the transaction nearing completion.\n...\nArmada Acquisition Corp.\nII (NASDAQ: XRPN) jumped 68.2% to $39.42 on about 9.1 million shares.\nShareholders approved its combination with Evernort...",
+      "source": "web",
+      "title": "Top Stock Gainers on October 2, 2026 | FMP",
+      "url": "https://site.financialmodelingprep.com/market-news/top-stock-gainers-october-2-2026"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Evernorth, an XRP treasury company, expects to finalize its merger on October 7, involving around 473 million XRP worth approximately $719 million, with trading set to commence on Nasdaq as XRPN on October 8.",
+      "source": "web",
+      "title": "We Asked AI Which Coin Will Finish October on Top",
+      "url": "https://finance.yahoo.com/markets/crypto/articles/asked-ai-coin-finish-october-013804414.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/crypto/articles/shareholder-approval-moves-evernorth-closer-090928268.html",
+    "https://finance.yahoo.com/markets/crypto/articles/evernorth-lists-october-8-473-120021098.html",
+    "https://www.marketbeat.com/stocks/NASDAQ/AACI/",
+    "https://bitfinance.substack.com/p/evernorth-xrpn-xrp-treasury-nasdaq",
+    "https://thedesperatetrader.com/recap/2026-10-02",
+    "https://pro.thestreet.com/dougs-daily-diary/2026-10-02",
+    "https://www.mexc.com/en-NG/stocks/xrpn",
+    "https://www.tradingview.com/news/u_today:26262dc35094b:0-biggest-usd-stablecoin-returns-to-bitcoin-after-12-years-main-crypto-news-this-morning/",
+    "https://tapeline.io/t/XRPN",
+    "https://www.prnewswire.com/news-releases/shareholders-approve-evernorth-business-combination-transaction-and-related-private-placements-have-raised-over-1-billion-nasdaq-trading-under-xrpn-expected-to-begin-on-october-8-302895260.html",
+    "https://www.tradingview.com/news/seekingalpha:19e0b11b4094b:0-catalyst-watch-microsoft-event-fomc-talk-and-the-finish-line-for-paramount-warner-bros/",
+    "https://www.boardroomalpha.com/research/spac-market-update-october-2-2026-xrpn-mssaf",
+    "https://www.quiverquant.com/news/XRPN+surges+as+Evernorth+SPAC+merger+clears+shareholder+vote",
+    "https://site.financialmodelingprep.com/market-news/top-stock-gainers-october-2-2026",
+    "https://finance.yahoo.com/markets/crypto/articles/asked-ai-coin-finish-october-013804414.html"
+  ],
+  "usage": {
+    "input_tokens": 1026,
+    "output_tokens": 665,
+    "cost_usd": 0.02705
+  }
+}

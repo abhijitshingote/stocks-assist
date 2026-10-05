@@ -1,0 +1,167 @@
+{
+  "name": "a_geopolitics_trade",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Geopolitics & trade.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nUS-China relations (summits, trade truce, tariffs, export controls, chip rules, restrictions on foreign-made products or components \u2014 with the US stocks that benefit or lose), Iran / Middle East / Strait of Hormuz, Russia-Ukraine, sanctions \u2014 named officials, dates, terms, deadlines; latest status as of the cutoff.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **BA** / **GE** / **HON** \u2014 US\u2013China aerospace trade [Macro / Geopolitics]\n\n- The US Commerce Department slowed approvals for aircraft-part exports to China in recent weeks, limited approvals mainly to state-owned COMAC, and considered restricting aviation hydraulic-fluid shipments; China requested several years of spare parts for 200 Boeing jets purchased in spring 2026. The reported negotiations on rare earths and other economic disputes are scheduled to run through **January 10, 2027**. [report] (Reuters, Oct. 5, 2026, 04:56 ET)\n\n- The reported export-licensing slowdown affects US aerospace suppliers including **Boeing (BA)**, **GE Aerospace (GE)** and **Honeywell (HON)**; the report identified the restrictions as leverage in US\u2013China trade negotiations. [report] (Reuters, Oct. 5, 2026, 04:56 ET)\n\n## US\u2013China tariff truce [Macro / Geopolitics]\n\n- The US and China extended their trade truce for **two months through January 10, 2027**, according to China\u2019s Commerce Ministry. (Reuters, Sep. 28, 2026; republished Oct. 5, 2026, 02:03 ET)\n\n- The countries agreed to reduce tariffs on approximately **\u20ac53 billion of goods imported from each other**; the US list included Chinese small appliances, tableware, linens, toys and holiday decorations, while China\u2019s list included US agricultural products, seafood, wood products, cosmetics and medical devices. (Reuters, Sep. 27, 2026; republished Oct. 5, 2026, 02:03 ET)\n\n## Iran / Strait of Hormuz [Macro / Commodities / Geopolitics]\n\n- The Strait of Hormuz was reported as effectively closed amid the Iran conflict and attacks on shipping; the waterway had carried approximately **18 million barrels per day** before the conflict, while the seven-day moving average was reported at **18.5 million barrels per day on October 1**. (Reuters, Oct. 5, 2026, publication time not stated)\n\n- Middle East crude exports exceeded pre-war levels on **September 24 and September 27\u201329**, reaching **19.5 million to 22.5 million barrels per day**, according to provisional Kpler shipping data; LNG shipments through Hormuz reached their highest monthly level since February in September. (Reuters, Oct. 5, 2026, publication time not stated)\n\n- Iranian Foreign Minister **Abbas Araghchi** said on Sunday, October 4, that Tehran\u2019s proposal could restore security in the Strait of Hormuz within **seven days** if accepted; Iran also demanded sanctions relief, release of frozen funds, an end to hostilities and an end to the US naval blockade. (Reuters, Oct. 5, 2026, publication time not stated)\n\n- Iran\u2019s oil minister **Mohsen Paknejad** resigned on Sunday, October 4, and acting minister **Hamid Bovard** took over as Iranian crude exports were reported to be constrained by the US blockade and sanctions scrutiny. (Reuters, Oct. 5, 2026, publication time not stated)\n\n- Iran\u2019s crude production was reported at approximately **1.8 million barrels per day**, about half its pre-war output, while Iranian crude cargoes had not crossed the US blockade line toward China since mid-July and no new crude had been loaded at Iranian terminals since mid-August. [report] (Iran International, Oct. 5, 2026, 05:12 ET)\n\n- The US Treasury\u2019s sanctions announced on **October 1** targeted Iran\u2019s largest automakers, including **Iran Khodro Company** and **SAIPA**, as well as the Islamic Republic of Iran Railway Company, Raja Passenger Trains Company and Railway Transportation Company. (Arab News, Oct. 5, 2026, 02:50 ET)\n\n- The October 1 sanctions also covered foreign suppliers to Iran\u2019s automotive and rail sectors under the Treasury\u2019s **\u201cOperation Economic Outcast,\u201d** announced August 24. (Arab News, Oct. 5, 2026, 02:50 ET)\n\n## **XOM** / **CVX** \u2014 Middle East oil-supply risk [Energy]\n\n- Iranian oil exports were reported as \u201cvirtually zero\u201d because of the US naval blockade, while Middle East crude volumes through the Strait of Hormuz were reported at approximately **14.19 million barrels per day** over the latest seven-day period, compared with a pre-war level of approximately **17.13 million barrels per day**. (Chosun, Oct. 5, 2026, 03:17 ET)\n\n- Iran-backed Houthi militants were reported to have attacked shipping in the Red Sea, while Eritrea\u2019s approximately **1,000-kilometer coastline** was described as an alternative shipping corridor to Hormuz. (Reuters, Oct. 5, 2026, 02:20 ET)\n\n## Russia sanctions [Macro / Geopolitics]\n\n- US Energy Secretary **Chris Wright** said on October 4 that President **Donald Trump** had until **October 18** to decide whether to impose tariffs on major buyers of Russian energy, specifically identifying **China and India**. [report] (CBS News interview cited by NV, Oct. 5, 2026, 06:20 ET)\n\n- The reported proposed tariffs would be authorized under the **Lindsey Graham Act**, signed by President Trump on **September 18, 2026**, which permits tariffs of up to **100%** on countries continuing to buy Russian energy and expands restrictions on Russia\u2019s military, financial and energy sectors, foreign suppliers and \u201cshadow fleet\u201d vessels. [report] (NV, Oct. 5, 2026, 06:20 ET)\n\n- Ukraine was reported to be preparing a list of Russian companies, vessels and individuals for potential sanctions under the Graham Act for presentation to the Trump administration and Congress during the week of October 5. [report] (Ground News, Oct. 5, 2026, 07:09 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "This small country of fewer than 4 million people has nonetheless acquired new geopolitical significance this year, during the Iran war, owing to its 1,000 km coastline along the Red Sea shipping route between the Mediterranean and Asia.\nThe route has proved a critical alternative to the Strait of H...",
+      "source": "web",
+      "title": "As Iran war smolders, shunned Eritrea looks to come in ...",
+      "url": "https://www.reuters.com/world/iran-war-smolders-shunned-eritrea-looks-come-cold-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Iran\u2019s oil minister Mohsen Paknejad resigned Sunday, leaving acting minister Hamid Bovard with crude exports choked by a US blockade and scrutiny of intermediaries used to sell sanctioned oil, raising questions over what he can change.\n...\nIran International reported, citing Kpler and TankerTrackers...",
+      "source": "web",
+      "title": "www.iranintl.com \u203a en \u203a 202610052871Yemeni forces attack Houthi positions near Bab el-Mandeb ...",
+      "url": "https://www.iranintl.com/en/202610052871"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "UpdateThe US on Thursday announced fresh sanctions targeting Iran\u2019s largest automakers, as well as major rail, manufacturing and metals companies, as Washington seeks to exert maximum pressure in its war against the country.\n...\nWASHINGTON: The Trump administration on Thursday imposed fresh sanction...",
+      "source": "web",
+      "title": "US sanctions target Iran's auto, rail sectors after blockade ...",
+      "url": "https://www.arabnews.com/middle-east/us-sanctions-target-irans-auto-rail-sectors-after-blockade-chokes-shipping-lanes-3004141"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "US slows aircraft-part exports to China as Trump seeks leverage in trade negotiations: Reuters\n...\n## Commerce has slowed licensing for airplane parts and considered new limits on COMAC shipments, as Washington uses aerospace supply chains to gain leverage in talks.\n...\nBias Comparison\n- The Commerc...",
+      "source": "web",
+      "title": "US slows aircraft-part exports to China as Trump seeks ...",
+      "url": "https://ground.news/article/exclusive-us-slows-aircraft-part-exports-to-china-as-trump-seeks-leverage-in-trade-negotiations-sources-say"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "BEIJING (Reuters) - China and the United States (US) have agreed to cut tariffs imposed on\u00a0\u20ac53\u00a0billion worth of goods imported from each other, on an array of products ranging from US corn to cosmetics, and from Chinese household appliances to toys.\nUnder the US-China Board of Trade, both countries ...",
+      "source": "web",
+      "title": "China, US Agree Tariff Cuts on $60bn of Goods Including ...",
+      "url": "https://chronicle.lu/category/international/63650-china-us-agree-tariff-cuts-on-60bn-of-goods-including-agriculture-household-items"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Trump is postponing a decision on imposing sanctions against buyers of Russian energy resources until the last minute, U.S. Energy Secretary Chris Wright said (Photo: REUTERS/Kevin Lamarque)\nU.S. President Donald Trump continues to analyze the possibility of imposing sanctions on buyers of Russian e...",
+      "source": "web",
+      "title": "Is Donald Trump Ready to Impose 'Hellish Sanctions' Against ...",
+      "url": "https://english.nv.ua/nation/is-donald-trump-ready-to-impose-hellish-sanctions-against-russia-u-s-energy-secretary-talks-50647196.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The Trump administration imposed sanctions on Iran's rail and auto sectors and their foreign suppliers, the Treasury Department said on Thursday, widening its wartime economic campaign to isolate Tehran.\nThe sanctions are part of the department's \"Operation Economic Outcast,\" announced August 24, wh...",
+      "source": "web",
+      "title": "US Sanctions Target Iran's Auto, Rail Sectors as Blockade ...",
+      "url": "https://english.aawsat.com/world/5324980-us-sanctions-target-iran%E2%80%99s-auto-rail-sectors-blockade-chokes-ship-lanes"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Washington has signalled that a potential agreement could involve sanctions relief and the release of frozen Iranian funds if Iran makes concrete progress on its nuclear programme.\n...\nThe two sides also remain divided over Iran\u2019s proposal for reopening the Strait of Hormuz.\n...\nMiddle East crude oi...",
+      "source": "web",
+      "title": "Iran warns enemies of 'much stronger' response if military ...",
+      "url": "https://timesofindia.indiatimes.com/world/middle-east/iran-war-live-updates-us-israel-iran-strait-of-hormuz-trump-latest-news/liveblog/134679592.cms"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Iran has warned that the Strait of Hormuz will remain shut until the conditions it laid out in an interim agreement in June are met, according to Nournews.\nTraffic has effectively come to a standstill with attacks in the vicinity of the waterway reported over the weekend.\n...\n\u201cThe position of the Is...",
+      "source": "web",
+      "title": "Iran war live: Prices rise after Trump says he has offered Iran \u2018nothing\u2019",
+      "url": "https://www.independent.co.uk/news/world/middle-east/iran-us-war-live-trump-peace-talks-oil-prices-b3058718.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Iran has warned that the Strait of Hormuz will remain shut until the conditions it laid out in an interim agreement in June are met, according to Nournews.\nTraffic has effectively come to a standstill with attacks in the vicinity of the waterway reported over the weekend.\n...\n\u201cThe position of the Is...",
+      "source": "web",
+      "title": "Iran-US war live: Tehran threatens to keep Hormuz shut until US meets conditions",
+      "url": "https://www.independent.co.uk/news/world/middle-east/iran-us-war-live-trump-threats-peace-talks-oil-prices-b3060533.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Bias Comparison\n- Ukraine will present the Trump administration and Congress this week with a wish list of Russian companies, vessels, and individuals for sanctions under the Graham Sanctioning Russia and Iran Act, which President Donald Trump signed in Sept.",
+      "source": "web",
+      "title": "Ukraine to present 'wish list' for new Russia sanctions under Graham ...",
+      "url": "https://ground.news/article/ukraine-to-present-wish-list-for-new-russia-sanctions-under-graham-law_52a0f0"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "More importantly, Iran's crude oil exports are currently \"virtually zero, 0\" due to the U.S. naval blockade.\n...\nHowever, on the 5th, Reuters reported, \"The average daily crude oil volume passing through the Strait of Hormuz over the past week reached approximately 14.19 million barrels, which is 80...",
+      "source": "web",
+      "title": "Middle East Oil Exports Exceed Pre-War Levels",
+      "url": "https://www.chosun.com/english/world-en/2026/10/05/VYB5ACQERJHIVNF4JWBAK4DZDA/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Middle East crude oil exports rose above pre-war levels on four days in the final week of September despite continuing attacks on vessels passing through the Strait of Hormuz, Reuters reported, citing shipping data.\nExports exceeded pre-war levels on Sept. 24 and Sept. 27-29, reaching between 19.5 m...",
+      "source": "web",
+      "title": "Middle East crude exports exceed pre-war levels despite ...",
+      "url": "https://www.iranintl.com/en/202610050916"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "U.S. Central Command began enforcing a blockade against maritime traffic entering or leaving Iranian ports on 13 April 2026.\n...\nNew Iranian maritime oil exports through Hormuz were reduced to exceptionally low levels after the blockade resumed, depriving Iran of a substantial source of fresh foreig...",
+      "source": "web",
+      "title": "Iran Currency Collapse: U.S. Sanctions, Naval Blockade, ...",
+      "url": "https://www.diplomacyandlaw.com/post/iran-currency-collapse"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The main point of contention remains Iran\u2019s attempt to blockade the Strait of Hormuz, a vital conduit for Gulf oil and gas where a UK maritime agency reported on Sunday another tanker was struck by an unknown projectile.\n...\n\u201cThere is no military solution, nor any solution based on new sanctions,\u201d h...",
+      "source": "web",
+      "title": "Iran tells US there is no military solution to Middle East war",
+      "url": "https://www.arabnews.com/middle-east/iran-tells-us-there-is-no-military-solution-to-middle-east-war-3004630"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/world/iran-war-smolders-shunned-eritrea-looks-come-cold-2026-10-05/",
+    "https://www.iranintl.com/en/202610052871",
+    "https://www.arabnews.com/middle-east/us-sanctions-target-irans-auto-rail-sectors-after-blockade-chokes-shipping-lanes-3004141",
+    "https://ground.news/article/exclusive-us-slows-aircraft-part-exports-to-china-as-trump-seeks-leverage-in-trade-negotiations-sources-say",
+    "https://chronicle.lu/category/international/63650-china-us-agree-tariff-cuts-on-60bn-of-goods-including-agriculture-household-items",
+    "https://english.nv.ua/nation/is-donald-trump-ready-to-impose-hellish-sanctions-against-russia-u-s-energy-secretary-talks-50647196.html",
+    "https://english.aawsat.com/world/5324980-us-sanctions-target-iran%E2%80%99s-auto-rail-sectors-blockade-chokes-ship-lanes",
+    "https://timesofindia.indiatimes.com/world/middle-east/iran-war-live-updates-us-israel-iran-strait-of-hormuz-trump-latest-news/liveblog/134679592.cms",
+    "https://www.independent.co.uk/news/world/middle-east/iran-us-war-live-trump-peace-talks-oil-prices-b3058718.html",
+    "https://www.independent.co.uk/news/world/middle-east/iran-us-war-live-trump-threats-peace-talks-oil-prices-b3060533.html",
+    "https://ground.news/article/ukraine-to-present-wish-list-for-new-russia-sanctions-under-graham-law_52a0f0",
+    "https://www.chosun.com/english/world-en/2026/10/05/VYB5ACQERJHIVNF4JWBAK4DZDA/",
+    "https://www.iranintl.com/en/202610050916",
+    "https://www.diplomacyandlaw.com/post/iran-currency-collapse",
+    "https://www.arabnews.com/middle-east/iran-tells-us-there-is-no-military-solution-to-middle-east-war-3004630"
+  ],
+  "usage": {
+    "input_tokens": 762,
+    "output_tokens": 1307,
+    "cost_usd": 0.03589
+  }
+}

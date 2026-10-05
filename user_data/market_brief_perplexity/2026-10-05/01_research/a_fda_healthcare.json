@@ -1,0 +1,167 @@
+{
+  "name": "a_fda_healthcare",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: FDA & healthcare.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nFDA approvals, CRLs, advisory panel votes, PDUFA outcomes, trial readouts, pharma licensing deals ($ upfront/milestones), drug pricing policy, diagnostics news.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **LLY** [Pharma]\n- The FDA expanded Jaypirca (pirtobrutinib) on October 2, 2026, for adults with previously untreated chronic lymphocytic leukemia or small lymphocytic lymphoma without a known 17p deletion; the approval was based on the 282-patient BRUIN CLL-313 trial. (Eli Lilly press release, Oct 2, 15:05 ET)[1]\n\n## **NVO** [Pharma]\n- Novo Nordisk said on October 2, 2026, that the FDA review of denecimig for hemophilia A would extend beyond the company\u2019s expected third-quarter decision because remediation at a manufacturing site was still underway; Novo said it had not received a new FDA decision date and continued to target a U.S. launch in the first half of 2027. (Yahoo Finance, Oct 2; latest update Oct 4, 10:13 ET)[11]\n\n## **MRK / ESALY** [Pharma]\n- The FDA had approved Merck\u2019s Welireg (belzutifan) plus Eisai\u2019s Lenvima (lenvatinib) on September 24, 2026, for adults with advanced renal cell carcinoma with a clear-cell component after a PD-1 or PD-L1 inhibitor; the approval was cited in an October 2 healthcare regulatory roundup. (Optum Rx, Oct 2, 19:44 ET)[5]\n\n## **ABBV** [Pharma]\n- The FDA had approved AbbVie\u2019s Juvmo (tavapadon) on September 28, 2026, for Parkinson\u2019s disease in adults; the approval was cited in an October 2 regulatory roundup. (Optum Rx, Oct 2, 19:44 ET)[5]\n\n## **LLY** [Pharma]\n- The FDA had approved Olumiant (baricitinib) on September 25, 2026, for severe alopecia areata in adults and patients aged 12 years and older; the approval was cited in an October 2 regulatory roundup. (Optum Rx, Oct 2, 19:44 ET)[5]\n\n## **MRVI / INZY** [Pharma]\n- The FDA had approved Atebrioz (zilurgisertib), developed by Mirum Pharmaceuticals and Incyte, on September 25, 2026, to reduce new heterotopic ossification in adults and pediatric patients aged 12 years and older with fibrodysplasia ossificans progressiva. (Optum Rx, Oct 2, 19:44 ET)[5]\n- In the 63-patient phase 2 PROGRESS study, new heterotopic ossification volume decreased by 3.2 cm\u00b3 with zilurgisertib versus a 24.6 cm\u00b3 increase with placebo through week 24. (Contemporary Pediatrics, Oct 2; latest update Oct 4, 22:19 ET)[13]\n\n## **EDSA / Edwards Lifesciences** [Diagnostics / Medical Devices]\n- The FDA approved the AUTUS Size-Adjustable Valve on October 1, 2026, through the premarket-approval pathway for pediatric patients with congenital pulmonary valve disease; Edwards Lifesciences holds the approval for the device developed by Autus Valve Technologies. (Nova Pharma News, Oct 4, 16:19 ET)[12]\n- The pivotal study enrolled 62 children at 12 U.S. sites; implantation succeeded in all patients, and among the first 60 patients at six months there were no deaths, strokes, or treated clot-related events. (Contemporary Pediatrics, Oct 2; latest update Oct 4, 22:19 ET)[13]\n\n## **NVIV** [Pharma]\n- Invivyd said its investigational COVID-19 monoclonal antibody was safe and tolerable in a phase 3 randomized clinical trial; the October 2 report did not provide efficacy data, patient count, or statistical results. (KFF Health News, Oct 2, 2026)[6]\n\n## **BHVN / SK Biopharmaceuticals** [Pharma]\n- SK Biopharmaceuticals licensed Biohaven\u2019s Kv7 ion-channel platform and opakalim in an August 2026 transaction valued at up to $795 million; the deal was cited on October 2 in connection with an FDA-requested pause in new enrollment in one opakalim phase 3 trial. (PharmaVoice, Oct 2, 09:33 ET)[15]\n- The FDA requested that Biohaven pause new enrollment while the company addressed questions about a metabolite observed in rodent studies; the pause could delay a key opakalim readout. (PharmaVoice, Oct 2, 09:33 ET)[15]\n\n## **DBVT** [Pharma]\n- DBV Technologies submitted a Biologics License Application to the FDA for the Viaskin peanut patch in children aged 4 to 7 years and requested priority review; the filing was supported by the phase 3 VITESSE trial of 654 children at 86 sites. (Contemporary Pediatrics, Oct 2; latest update Oct 5, 02:19 ET)[13]\n- In VITESSE, 46.6% of treated children versus 14.8% receiving placebo met the 12-month responder criterion, and approximately 83% versus 48% increased their peanut-tolerance threshold. (Contemporary Pediatrics, Oct 2; latest update Oct 5, 02:19 ET)[13]\n\n## FDA / Diagnostics [Diagnostics]\n- The FDA\u2019s Molecular and Clinical Genetics Devices Panel voted 10\u20130 on safety, 6\u20134 on effectiveness, and 7\u20132 with one abstention on the benefit-risk profile of GRAIL\u2019s Galleri multi-cancer blood test on September 23, 2026; the FDA\u2019s PMA decision was expected in the following months. (MedDevice Startups, Oct 4; latest update Oct 5, 03:11 ET)[10]\n\n## **MDT** [Medical Devices]\n- FDA granted Medtronic\u2019s IN.PACT BTK paclitaxel-coated balloon Breakthrough Device designation on October 1, 2026, for below-the-knee peripheral artery disease; the report stated that no drug-coated balloon was approved for that U.S. indication at that time. (MedDevice Startups, Oct 4; latest update Oct 5, 03:11 ET)[10]",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "FDA has approved Eli Lilly\u2019s Jaypirca (pirtobrutinib) for treating adult patients with previously untreated chronic lymphocytic leukemia (CLL) or small lymphocytic lymphoma (SLL) with no known 17p deletion.\nApproval was based on data from the BRUIN CLL-313 (NCT05023980) trial in 282 patients with pr...",
+      "source": "web",
+      "title": "FDA Webview",
+      "url": "https://www.fdaweb.com/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "This section contains releases regarding the Food and Drug Administration\u2019s consideration of new products, drugs, therapies and treatments.\n...\n### Oct 02, 2026, 15:05 ET Lilly's Jaypirca (pirtobrutinib), the first-and-only approved non-covalent BTK inhibitor, receives expanded indication from U.S. ...",
+      "source": "web",
+      "title": "FDA Approval News and Press Releases ...",
+      "url": "https://www.prnewswire.com/news-releases/health-latest-news/fda-approval-list/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "# Pharma Friday \u2013 Oct. 2, 2026\n...\n## FDA Approves First Treatment for MCT8 Deficiency\nOn Sept. 28, the U.S. Food and Drug Administration (FDA) approved Emcitate (tiratricol) tablets for oral suspension to treat peripheral thyrotoxicosis (excess thyroid hormone levels in the blood that causes sympto...",
+      "source": "web",
+      "title": "endocrinenews.endocrine.org \u203a pharma-friday-oct-2-2026Pharma Friday - Oct. 2, 2026 - Endocrine News",
+      "url": "https://endocrinenews.endocrine.org/pharma-friday-oct-2-2026/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Maharashtra's Food and Drug Administration (FDA) has cancelled the drug sale and distribution licences of Cipla Pharma & Life Sciences Ltd's Warehouse No. A at Vadki in Pune, following fresh proceedings over violations involving the prescription drug Reactin Plus Tablets and irregularities found dur...",
+      "source": "web",
+      "title": "Maharashtra FDA cancels Cipla's Pune warehouse licences over Reactin Plus packaging claims",
+      "url": "https://economictimes.indiatimes.com/industry/healthcare/biotech/pharmaceuticals/maharashtra-fda-cancels-cipla-warehouse-licences-over-drug-violations/articleshow/134641214.cms"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "### Atebrioz\u2122 (zilurgisertib) \u2013 New orphan drug approval Atebrioz\u2122 (zilurgisertib) \u2013 New orphan drug approval\nSeptember 25, 2026 - The FDA announced the approval of Mirum Pharmaceuticals and Incyte\u2019s Atebrioz (zilurgisertib), to reduce the volume of total new heterotopic ossification in adults and p...",
+      "source": "web",
+      "title": "RxNews - October 2, 2026",
+      "url": "https://business.optum.com/en/support/professionalrx-resources/rx-news-100226.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "US biopharmaceutical company Invivyd said this week that its investigational monoclonal antibody (mAB) for COVID-19 was found to be safe and tolerable in a phase 3 randomized clinical trial.",
+      "source": "web",
+      "title": "Friday, October 2, 2026",
+      "url": "https://kffhealthnews.org/morning-briefing/friday-october-2-2026/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "### EP. 3: FDA Grants Fast Track Designation to TRE-515 for KRAS G12C NSCLC",
+      "source": "web",
+      "title": "October 2026 Brief | FDA Briefs",
+      "url": "https://www.targetedonc.com/fda-briefs/october-2026-brief"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "- On September 30, 2026, the Food and Drug Administration (FDA) released a notice entitled, *Advisory Committee; Antimicrobial Drugs Advisory Committee; Renewal*.",
+      "source": "web",
+      "title": "Health Care Week in Review | October 2, 2026",
+      "url": "https://www.alston.com/en/insights/publications/2026/10/health-care-week-in-review-october-2-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "The recent FDA approval of the first gene therapy for Sanfilippo syndrome type A establishes a critical regulatory precedent for developers targeting rare pediatric neurodegenerative conditions",
+      "source": "web",
+      "title": "The Pharma & Biotech Brief \u2014 Friday, October 02, 2026",
+      "url": "https://tetmo.com/pharma-biotech-brief/the-pharma-biotech-brief-friday-october-02-2026/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "CDRH picked BD, Epitel, Prapela, Current Health and Skribe Medical as the first READI-Home participants on October 1.\n...\n### Medtronic takes a Breakthrough designation into below-the-knee drug-coated balloons\nFDA granted Breakthrough Device designation on October 1 to Medtronic's IN.PACT BTK, a pac...",
+      "source": "web",
+      "title": "Regulatory | MedDevice Startups",
+      "url": "https://meddevicestartups.com/regulatory"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Danish drugmaker Novo Nordisk (NVO) said on Friday that U.S. approval of its haemophilia A drug denecimig will slip past the third quarter because fixes at a manufacturing site are still underway.\nThe FDA has told Novo that its review of the biologics license application is still underway and has no...",
+      "source": "web",
+      "title": "Novo Nordisk Holds Its 2026 Outlook As FDA Review Of ...",
+      "url": "https://finance.yahoo.com/healthcare/articles/novo-nordisk-holds-2026-outlook-235759930.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "AUTUS Valve FDA Approval: Grows to 22 mm\nSunday, October 4, 2026\n...\nOn 1 October 2026, the FDA approved the AUTUS Size-Adjustable Valve, a surgical pulmonary valve for children with congenital pulmonary valve disease.\nEdwards Lifesciences said the valve can be implanted near 13 millimeters and late...",
+      "source": "web",
+      "title": "AUTUS Valve FDA Approval: Grows to 22 mm - novapharmanews.com",
+      "url": "https://novapharmanews.com/us/news/autus-valve-fda-expands-to-22mm"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "### 1.) FDA approves tiratricol as first treatment for peripheral thyrotoxicosis in MCT8 deficiency\nThe FDA approved tiratricol (Emcitate), an oral liquid T3 analogue, as the first therapy for peripheral thyrotoxicosis in patients with MCT8 deficiency, also known as Allan-Herndon-Dudley syndrome.\n.....",
+      "source": "web",
+      "title": "Contemporary Pediatrics week in review: September 28-October 2, 2026 | Contemporary Pediatrics",
+      "url": "https://www.contemporarypediatrics.com/view/contemporary-pediatrics-week-in-review-september-28-october-2-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "*Healthcare Podcast Weekly Digest for the week of September 28 to October 2, 2026.\n...\n- Lilly plans to file for FDA approval in **Q1 2027**.\n...\nuniQure's one-time gene therapy, AMT-130, slowed Huntington's disease progression by **75% at three years**.\nAt **four years** that fell to **44%** at the...",
+      "source": "web",
+      "title": "Lilly Floods EASD With Obesity Data as Employers Push ...",
+      "url": "https://www.matterfact.com/newsletter/2026-10-02-healthcare-digest-lilly-easd-employer-glp1-revolt"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Published Oct. 2, 2026\n...\nThere\u2019s a lot riding on Biohaven\u2019s epilepsy drug opakalim.\nAfter clinical setbacks in CNS indications including depression and spinal muscular atrophy, Biohaven was thrown a financial lifeline in August when it secured a major cash infusion from SK Biopharmaceuticals \u2013 the...",
+      "source": "web",
+      "title": "Roche's AI lab; Biohaven's pivotal pause",
+      "url": "https://www.pharmavoice.com/news/roches-ai-lab-biohavens-pivotal-pause/832002/"
+    }
+  ],
+  "citations": [
+    "https://www.fdaweb.com/",
+    "https://www.prnewswire.com/news-releases/health-latest-news/fda-approval-list/",
+    "https://endocrinenews.endocrine.org/pharma-friday-oct-2-2026/",
+    "https://economictimes.indiatimes.com/industry/healthcare/biotech/pharmaceuticals/maharashtra-fda-cancels-cipla-warehouse-licences-over-drug-violations/articleshow/134641214.cms",
+    "https://business.optum.com/en/support/professionalrx-resources/rx-news-100226.html",
+    "https://kffhealthnews.org/morning-briefing/friday-october-2-2026/",
+    "https://www.targetedonc.com/fda-briefs/october-2026-brief",
+    "https://www.alston.com/en/insights/publications/2026/10/health-care-week-in-review-october-2-2026",
+    "https://tetmo.com/pharma-biotech-brief/the-pharma-biotech-brief-friday-october-02-2026/",
+    "https://meddevicestartups.com/regulatory",
+    "https://finance.yahoo.com/healthcare/articles/novo-nordisk-holds-2026-outlook-235759930.html",
+    "https://novapharmanews.com/us/news/autus-valve-fda-expands-to-22mm",
+    "https://www.contemporarypediatrics.com/view/contemporary-pediatrics-week-in-review-september-28-october-2-2026",
+    "https://www.matterfact.com/newsletter/2026-10-02-healthcare-digest-lilly-easd-employer-glp1-revolt",
+    "https://www.pharmavoice.com/news/roches-ai-lab-biohavens-pivotal-pause/832002/"
+  ],
+  "usage": {
+    "input_tokens": 729,
+    "output_tokens": 1379,
+    "cost_usd": 0.03687
+  }
+}

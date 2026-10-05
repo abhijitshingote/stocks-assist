@@ -1,0 +1,167 @@
+{
+  "name": "tickers_11",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| INTC | Intel Corp. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.56% | -3.0% | 0.8\u00d7 | gapper 2026-09-21 |\n| NET | Cloudflare, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -0.55% | +0.0% | 0.9\u00d7 | both 2026-01-27 |\n| META | Meta Platforms, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +0.30% | -3.1% | 0.5\u00d7 | gapper 2026-07-01 |\n| MRVL | Marvell Technology, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +1.57% | +4.0% | 0.9\u00d7 | gapper 2026-08-19 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Intel Corp. (INTC) `[Semiconductors]`\n- Intel shares closed at **$119.33 on October 2, 2026**, down **0.56%** from $120.00; the session range was $118.96\u2013$126.00. (Ad-hoc-news.de, Oct 4 18:45 ET)\n- A Yahoo Finance report attributed October 2 intraday interest to Intel\u2019s **High-NA EUV** program entering production on selected layers of Panther Lake processors; ASML\u2019s September 8 update said more than **1 million wafers** had been processed across testing, research, and production. (Yahoo Finance, Oct 2; updated Oct 4 18:16 ET)\n- Intel\u2019s latest reported quarter included **$16.13 billion revenue**, up **25.42%** year over year, and **$0.42 non-GAAP EPS** versus a reported **$0.2175 consensus**; Q3 2026 earnings were scheduled for **October 22, 2026**. (Ad-hoc-news.de, Oct 4 18:45 ET)\n- Data Center and AI revenue was reported at **$6.26 billion**, up **59%** year over year, while Intel Foundry revenue was **$5.76 billion**, up **31%**. (Ad-hoc-news.de, Oct 4 18:45 ET)\n- Intel Foundry reported a **$2.1 billion quarterly loss** on **$293 million external revenue**, and CFO David Zinsner said the end-2027 breakeven target could move to **2028**. (Yahoo Finance, Oct 2 08:02 ET)\n- Intel was reported to be in talks with **SK hynix** about producing memory chips in the United States.[report] (Ad-hoc-news.de, Oct 2 15:22 ET)\n- Intel traded at **\u20ac106.48** in European after-hours trading at **15:12 ET on October 2**, down **0.08%** from the prior \u20ac106.57 quote. (Ad-hoc-news.de, Oct 2 15:39 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Intel Stocks Gain 2.1% as High-NA Enters Production\n...\nIntel, the processor manufacturer and contract-foundry contender (NASDAQ:INTC), advanced its High-NA chipmaking program, while shares traded at $121.76, up nearly 1.5%, around 12:53 p.m.\nET on October 2.\nIts September update with ASML showed th...",
+      "source": "web",
+      "title": "Intel Stocks Gain 2.1% as High-NA Enters Production",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/intel-stocks-gain-2-1-195535139.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Intel stock posted USD 16.13 billion in Q2 revenue, up 25.42 percent year over year.\nIts USD 119.33 close sat below a USD 142.35 52-week high.\n...\nIntel stock (ISIN US4581401001) closed at USD 119.33 on Nasdaq on October 2, 2026, down 0.56 percent from the previous close of USD 120.00.\nThe next comp...",
+      "source": "web",
+      "title": "Intel stock heads into October 22 earnings with Q2 growth",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/intel-stock-heads-into-october-22-earnings-with-q2-growth/70226716"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "# Intel Sold Stock at $95. It Now Trades at $120. Who Won?\n...\nFri, October 2, 2026 at 5:02 AM CST\n...\n-0.56%\n...\n- On TIKR's cash-from-operations-minus-capex measure, Intel generated about $4.45 billion of free cash flow in the June quarter, its best in the eight-quarter view.\n- Weighted diluted sh...",
+      "source": "web",
+      "title": "Intel Sold Stock at $95. It Now Trades at $120. Who Won?",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/intel-sold-stock-95-now-110226484.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Intel\u2019s regular-session close was $119.33.\n...\nThe stock closed at **$119.33 on October 2**, leaving it roughly 8% below the lower edge of the $128.75-$130.75 area.\n...\nAccording to Intel\u2019s official second-quarter release, published July 23, revenue rose 25% year over year to $16.1 billion.\n...\nAfte...",
+      "source": "web",
+      "title": "Intel stock outlook: A failed rebound raises questions for traders and shareholders",
+      "url": "https://investinglive.com/stocks/intel-stock-outlook-a-failed-rebound-raises-questions-for-traders-and-shareholders/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Intel Stocks Gain 2.1% as High-NA Enters Production",
+      "source": "web",
+      "title": "INL0 Stock Price and Chart \u2014 HAN:INL0 \u2014 TradingView",
+      "url": "https://www.tradingview.com/symbols/HAN-INL0/?solution=43000699498"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Intel stock spiked 14% intraday to $123.82 on October 2, leading a broad rally in AMD, Arm and Qualcomm as investors bet that agentic AI apps like Meta's Muse will drive CPU demand that GPU-focused chip plays can't capture.\n...\nIntel stock added $15.22 a share intraday on October 2: the company's bi...",
+      "source": "web",
+      "title": "Intel stock jumps 14% as Meta's Muse AI agent flips the ...",
+      "url": "https://startupfortune.com/intel-stock-jumps-14-as-metas-muse-ai-agent-flips-the-chip-trade/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Intel's second-quarter revenue rose 25.42 percent year over year.\nIntel stock costs EUR 108.96 on October 2, 2026 versus EUR 106.57 prior close.\n...\nIntel is in talks with South Korean chipmaker SK Hynix about producing memory chips in the United States, while Intel stock was trading at EUR 108.96 a...",
+      "source": "web",
+      "title": "Intel is in talks with SK Hynix. Intel stock gains 2.24 percent",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/intel-is-in-talks-with-sk-hynix-intel-stock-gains-2-24-percent/70215555"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "> Intel shares reversed a rally to $126 on October 2, closing at $119.33, just $0.37 above the session low.\nThe stock underperformed the broader technology benchmark RSPT over the past week, and traders are now watching whether support near $117\u2013$118 holds or a deeper slide toward $110\u2013$112.50 devel...",
+      "source": "web",
+      "title": "Intel stock reverses after failed rebound to $126, closes at...",
+      "url": "https://primexbt.com/news/intel-stock-reverses-after-failed-rebound-to-126-closes-at-119-33/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Intel's Data Center and AI revenue jumped 59% year over year to $6.3 billion in Q2, while CEO Lip-Bu Tan says the company can fill only half of existing CPU demand, forcing three price hikes in 2026.\n...\n*Intel shares are up more than 200% year-to-date in 2026.\n...\nNow its stock has climbed more tha...",
+      "source": "web",
+      "title": "Intel Stock Has More Than Doubled This Year as AI Chip Demand Explodes - Startup Fortune",
+      "url": "https://startupfortune.com/intel-stock-has-more-than-doubled-this-year-as-ai-chip-demand-explodes/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Intel Corporation (NASDAQ:INTC) showed powerful operational execution during the second quarter, delivering total revenue of $16.1 billion, which represents a 25% increase compared to the same period in the prior year.\nIntel said the results exceeded its financial guidance, with non-GAAP diluted ear...",
+      "source": "web",
+      "title": "Jim Cramer Views Intel (INTC) As A Winning Turnaround ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/jim-cramer-views-intel-intc-201026810.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Intel stock was at EUR 106.48 after-hours at 9:12 p.m.\nCEST on October 2, 2026, down 0.08 percent versus the Lang & Schwarz prior close.\nIntel Foundry highlighted High NA EUV progress.\n...\nIntel stock was at **EUR 106.48** in after-hours trading at 9:12 p.m.\nCEST on October 2, 2026, according to Lan...",
+      "source": "web",
+      "title": "Intel stock after-hours at EUR 106.48: minus 0.08 percent",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nachboerse/intel-stock-after-hours-at-eur-106-48-minus-0-08-percent/70218044"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Intel Corp.\n(NASDAQ:**INTC**) continues executing its AI-driven turnaround, backed by strong demand across CPUs, ASICs, advanced packaging, and its foundry network.\nStrategic moves include Nvidia partnership, SoftBank's $2 billion investment, and progress on 18A process technology, reinforcing Intel...",
+      "source": "web",
+      "title": "Intel (INTC) Data Center Comeback: Real Recovery or Just ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/intel-intc-data-center-comeback-195750952.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n...\n- Wall Street\u2019s consensus rating remains **\u201cHold,\u201d** with one Strong Buy, 20 Buy, 26 Hold and three Sell ratings; the average price target is $108.49.\n- Intel reported quarterly EPS of $0.42 and revenue of $16.13 billion, beating estimates, while its stock faces execution and valua...",
+      "source": "web",
+      "title": "CX Institutional Acquires 4,939 Shares of Intel Corporation $INTC",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-cx-institutional-acquires-4939-shares-of-intel-corporation-intc-2026-10-03/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "- Intel trades at $119.23 premarket, down 0.83%, after a 3.7% gain to close at $120.23 on Wednesday.\n- Q2 revenue rose 25% to $16.1 billion, with non-GAAP gross margin of 41.8%, up 12.1 points.\n...\nIntel (NASDAQ: INTC) is trading at $119.23 in premarket action Thursday, down $1.00, or 0.83%, on 3.14...",
+      "source": "web",
+      "title": "Intel ($119) Tests $114 Support as 41.8% Margins and 14A ...",
+      "url": "https://www.tradingnews.com/news/intel-119-usd-test-113-usd-support-as-41-percent-margin-and-14a-hopes-drive-upside"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "NEW YORK \u2014 Shares of Intel Corporation advanced more than 3 percent on October 2, 2026, local time, closing at $123.65.\nThe semiconductor pioneer posted a solid single-day gain of $3.65 ( 3.04%) without an immediate company-specific catalyst, tracking broader market resilience.\nIntel Corporation (IN...",
+      "source": "web",
+      "title": "Intel Advances Over Three Percent as Semiconductor Gains Broaden",
+      "url": "https://news.jkn.co.kr/editions/english/post/1005799"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/intel-stocks-gain-2-1-195535139.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/intel-stock-heads-into-october-22-earnings-with-q2-growth/70226716",
+    "https://finance.yahoo.com/markets/stocks/articles/intel-sold-stock-95-now-110226484.html",
+    "https://investinglive.com/stocks/intel-stock-outlook-a-failed-rebound-raises-questions-for-traders-and-shareholders/",
+    "https://www.tradingview.com/symbols/HAN-INL0/?solution=43000699498",
+    "https://startupfortune.com/intel-stock-jumps-14-as-metas-muse-ai-agent-flips-the-chip-trade/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/intel-is-in-talks-with-sk-hynix-intel-stock-gains-2-24-percent/70215555",
+    "https://primexbt.com/news/intel-stock-reverses-after-failed-rebound-to-126-closes-at-119-33/",
+    "https://startupfortune.com/intel-stock-has-more-than-doubled-this-year-as-ai-chip-demand-explodes/",
+    "https://finance.yahoo.com/markets/stocks/articles/jim-cramer-views-intel-intc-201026810.html",
+    "https://www.ad-hoc-news.de/boerse/news/nachboerse/intel-stock-after-hours-at-eur-106-48-minus-0-08-percent/70218044",
+    "https://finance.yahoo.com/markets/stocks/articles/intel-intc-data-center-comeback-195750952.html",
+    "https://www.marketbeat.com/instant-alerts/filing-cx-institutional-acquires-4939-shares-of-intel-corporation-intc-2026-10-03/",
+    "https://www.tradingnews.com/news/intel-119-usd-test-113-usd-support-as-41-percent-margin-and-14a-hopes-drive-upside",
+    "https://news.jkn.co.kr/editions/english/post/1005799"
+  ],
+  "usage": {
+    "input_tokens": 1092,
+    "output_tokens": 462,
+    "cost_usd": 0.02421
+  }
+}

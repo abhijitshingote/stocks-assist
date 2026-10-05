@@ -1,0 +1,167 @@
+{
+  "name": "c_MRVL",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Marvell Technology, Inc. (MRVL).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| MRVL | Marvell Technology, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | +1.57% | +4.0% | 0.9\u00d7 | gapper 2026-08-19 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why MRVL moved. Run several searches: \"why is Marvell Technology, Inc. stock down/up\",\n\"Marvell Technology, Inc. stock\", \"MRVL shares Friday October 2, 2026\", \"Marvell Technology, Inc. concerns\", \"Marvell Technology, Inc. FDA\",\n\"Marvell Technology, Inc. analyst\", \"Marvell Technology, Inc. price target\", \"Marvell Technology, Inc. deal\", \"Marvell Technology, Inc. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Marvell Technology, Inc. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Marvell Technology, Inc. (MRVL) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Marvell Technology, Inc. (MRVL) `[AI Compute]`\n- MRVL closed at **$272.29**, up **1.57%** on Friday, October 2, 2026. The broader semiconductor move followed September nonfarm payrolls of **29,000** versus **84,000** expected and an unemployment rate of **4.2%**, which lowered Treasury yields and supported high-multiple growth stocks; KLA rose **7.98%**, Semtech **7.96%**, AMD **4.18%**, and Marvell **5.92%** in the session, according to the cited market report. (Yahoo Finance, Oct. 2, 21:22 ET)\n- Marvell\u2019s **October 6, 2026 Investor Day** was identified as the near-term catalyst, with management expected to present its long-term strategy, growth opportunities, and AI data-center infrastructure roadmap. (Yahoo Finance, Oct. 2, 11:35 ET; ad-hoc-news, Oct. 4, 10:34 ET)\n- Piper Sandler analyst **David O\u2019Connor** reiterated **Buy** and a **$270** price target before Investor Day; he forecast fiscal-2031 revenue of **$45 billion** and EPS of approximately **$19**, and said investors may be underestimating Marvell\u2019s \u201cXPU Attach\u201d opportunity. (Business Insider, Oct. 4, 23:52 ET)\n- Morgan Stanley analyst **Joseph Moore** raised his price target to **$268 from $246** while maintaining **Hold**, citing expected scale-up connectivity opportunities and the Google agreement; valuation was listed as a concern. (Business Insider, Oct. 4, 23:52 ET)\n- Marvell\u2019s fiscal second-quarter 2027 revenue was **$2.7393 billion**, up **36.5% year over year**, and adjusted EPS was **$0.94**; data-center revenue represented **79%** of quarterly revenue. (ad-hoc-news, Oct. 4, 10:34 ET; Yahoo Finance, Oct. 2, 13:31 ET)\n- Management\u2019s fiscal-third-quarter 2027 revenue guidance was **$3.15 billion, plus or minus 5%**; fiscal-2027 revenue was reported as expected to reach **$12 billion**, compared with **$8.19 billion** in fiscal 2026. (Yahoo Finance, Oct. 2, 13:31 ET; Yahoo Finance, Oct. 2, 11:35 ET)\n- A July agreement with **Alphabet/Google** covers custom accelerators, storage controllers, network-interface controllers, and memory controllers; Piper Sandler described the opportunity as a **$120 billion** Google deal involving TPU-attach sockets. (Yahoo Finance, Oct. 2, 11:35 ET; Business Insider, Oct. 4, 23:52 ET)\n- Marvell presented what it called the industry\u2019s first **2-nanometer optical-interconnect demonstrations** at **ECOC 2026** and expanded its collaboration with **AT&S** for advanced IC-substrate manufacturing capacity for future AI and cloud products. (Yahoo Finance, Oct. 2, 22:06 ET)\n- MRVL options volume reached **152,000 contracts**, with a **0.53 put/call ratio** versus a typical **0.62**; implied volatility was approximately **62.08**, and the expected daily move was **$10.66**. (Business Insider, Oct. 4, 11:08 ET)\n- Marvell\u2019s principal identified risks included approximately **90\u00d7 trailing earnings** valuation, concentration in hyperscaler and data-center spending, potential AI-capital-spending reductions, and dependence on **Taiwan Semiconductor Manufacturing** and other Asian suppliers. (MarketBeat, Oct. 2, 02:49 ET; Yahoo Finance, Oct. 2, 13:31 ET)\n",
+  "search_results": [
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 9:22 PM GMT-3\n...\n+1.57%\n...\nA number of stocks jumped in the afternoon session after weaker-than-expected U.S. employment data cooled Treasury yields, easing interest rate pressure.\nThe Bureau of Labor Statistics reported that nonfarm payrolls increased by 29,000 in Septembe...",
+      "source": "web",
+      "title": "Analog Devices, AMD, KLA Corporation, Lam Research, and Marvell Technology Stocks Trade Up, What You Need To Know",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/analog-devices-amd-kla-corporation-002203155.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Marvell\u2019s AI growth outlook is strong:** A Google agreement could expand its custom AI-chip business, while data-center revenue reached 79% of fiscal second-quarter 2027 sales and quarterly revenue rose 36.5% year over year.\n- **Analysts remain broadly bullish:** Marvell has a \u201cMod...",
+      "source": "web",
+      "title": "Marvell Technology (NASDAQ:MRVL) Shares Up 1.6%",
+      "url": "https://www.marketbeat.com/instant-alerts/price-marvell-technology-nasdaq-mrvl-shares-up-16-should-you-buy-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n...\n- Marvell reported strong momentum, including 36.5% year-over-year revenue growth and earnings that topped estimates.\nAnalysts remain broadly bullish, with a consensus \u201cModerate Buy\u201d rating and a $272 price target, driven by demand for custom AI chips and data-center infrastructure...",
+      "source": "web",
+      "title": "6154 Shares in Marvell Technology, Inc. $MRVL Acquired ...",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-6154-shares-in-marvell-technology-inc-mrvl-acquired-by-miller-global-investments-llc-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Marvell reported quarterly revenue of $2.74 billion, up 36.5% year over year, and earnings of $0.94 per share, narrowly exceeding analyst expectations.\n...\n- Shares rose 1.6% to $272.29, but the stock\u2019s roughly **90-times earnings valuation** presents a key risk.\n...\nShares of Marvell Technology s...",
+      "source": "web",
+      "title": "Silverleafe Capital Partners LLC Makes New $3.93 Million ...",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-silverleafe-capital-partners-llc-makes-new-393-million-investment-in-marvell-technology-inc-mrvl-2026-10-02/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "+1.57%\n...\n### Quick Read\n...\n- Marvell's pivot to AI data center chips, including a custom chip deal with Alphabet's Google, drove fiscal 2026 revenue up 42% to $8.19 billion.\n...\nAt the October 2, 2026 close of $272.29, that stake is worth about $22,400.70.\n...\nFor much of the decade, Marvell sold...",
+      "source": "web",
+      "title": "A $1000 Bet on Marvell in 2016 Crushed the Market ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/1-000-bet-marvell-2016-131540402.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 8:35 AM GMT-3\n- MRVL\n+1.57%\n...\nThe data center boom has been good for **Marvell Technology** (NASDAQ: MRVL).\nRevenue has accelerated over the past few years and rose 36% year over year in the most recent quarter.\nNow, Marvell's newest custom chip deals with the biggest cloud...",
+      "source": "web",
+      "title": "Marvell's Custom AI Silicon Deals With Hyperscalers Could ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/marvells-custom-ai-silicon-deals-113500909.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 7:06 PM GMT-3\n- MRVL\n+1.57%\n...\n- Marvell Technology (NasdaqGS:MRVL) presented what it calls the industry's first 2nm optical interconnect demonstrations at ECOC 2026.\n- The company highlighted 2nm optical technologies aimed at AI and cloud data center connectivity during the...",
+      "source": "web",
+      "title": "Marvell Technology (MRVL) Showcases 2nm Optical Links ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/marvell-technology-mrvl-showcases-2nm-220627807.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Marvell Technology (ISIN US5738741041) stock closed at USD 272.29 on Nasdaq on October 2, 2026, gaining 1.57 percent from the prior session.\nThe immediate catalyst is the company's Investor Day on October 6, 2026, where management will discuss strategy, growth opportunities and AI data center infras...",
+      "source": "web",
+      "title": "Marvell Technology stock gained 1.57 percent before Investor Day",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/marvell-technology-stock-gained-1-57-percent-before-investor-day/70223730"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 10:31 AM GMT-3\n- MRVL\n+1.57%\n...\nMarvell Technology (MRVL) grew its sales 37% from a year earlier in fiscal Q2 2027.\nManagement has raised its sales forecast for fiscal 2027 and fiscal 2028.\n...\nThose customers are the large companies building AI data centers, and yes, they c...",
+      "source": "web",
+      "title": "Should You Be Worried About Marvell Stock?",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/worried-marvell-stock-133112654.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "## Citigroup reiterated a buy rating and $275 target, saying Marvell\u2019s AI data-center opportunities and raised revenue outlook support further gains.",
+      "source": "web",
+      "title": "Marvell Technology (NASDAQ:MRVL) Stock Price Up 4.5%",
+      "url": "https://ground.news/article/marvell-technology-nasdaq-mrvl-stock-price-up-45-should-you-buy_1083a5"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Marvell Technology (ISIN US5738741041) was trading at EUR 245.18 at Lang & Schwarz on October 2, 2026 at 2:31 p.m.\nCEST, plus 2.87 percent versus the prior close of EUR 238.33.\nOn September 22, 2026, AT&S announced an expanded collaboration with Marvell to increase advanced IC substrate capacity for...",
+      "source": "web",
+      "title": "Marvell expands AT&S deal. Marvell Technology stock ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/marvell-expands-at-und-s-deal-marvell-technology-stock-gains-2-87-percent/70215619"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Cboe data shows mixed options sentiment in Marvell (MRVL), with shares up $4.42, or 1.65%, near $272.50.\nOptions volume running well above average with 152k contracts traded and calls leading puts for a put/call ratio of 0.53, compared to a typical level near 0.62.\nImplied volatility (IV30) dropped ...",
+      "source": "web",
+      "title": "Cboe data shows mixed options sentiment in Marvell with shares up 1.65%",
+      "url": "https://markets.businessinsider.com/news/stocks/cboe-data-shows-mixed-options-sentiment-in-marvell-with-shares-up-1-65-1036595055"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "### Marvell Technology, Inc. engages in the design, development, and sale of integrated circuits. Its products include data processing units, security solutions, automotive, coherent DSP, DCI optical modules, ethernet controllers, ethernet PHYs, ethernet switches, linear driver, PAM DSP, transimpeda...",
+      "source": "web",
+      "title": "Marvell Technology: MRVL Stock Price Quote & News",
+      "url": "https://robinhood.com/us/en/stocks/MRVL/?source=search"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "The -10.0% change in MRVL stock from 6/30/2026 to 10/1/2026 was primarily driven by a -12.3% change in the company's P/E Multiple.",
+      "source": "web",
+      "title": "Marvell Technology (MRVL)",
+      "url": "https://www.trefis.com/data/companies/MRVL"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Piper Sandler analyst David O\u2019Connor reiterated a Buy rating on Marvell Technology (MRVL) stock with a price target of $270, ahead of the semiconductor company\u2019s Investor Day on October 6.\nThe analyst said that he is bullish heading into the key event and thinks that it could strengthen investor con...",
+      "source": "web",
+      "title": "Marvell Stock (MRVL) Forecast \u2013 Piper Sandler Is Bullish Ahead of Oct. 6 Investor Day",
+      "url": "https://markets.businessinsider.com/news/stocks/marvell-stock-mrvl-forecast-piper-sandler-is-bullish-ahead-of-oct-6-investor-day-1036595434"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/analog-devices-amd-kla-corporation-002203155.html",
+    "https://www.marketbeat.com/instant-alerts/price-marvell-technology-nasdaq-mrvl-shares-up-16-should-you-buy-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/filing-6154-shares-in-marvell-technology-inc-mrvl-acquired-by-miller-global-investments-llc-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/filing-silverleafe-capital-partners-llc-makes-new-393-million-investment-in-marvell-technology-inc-mrvl-2026-10-02/",
+    "https://finance.yahoo.com/markets/stocks/articles/1-000-bet-marvell-2016-131540402.html",
+    "https://finance.yahoo.com/technology/ai/articles/marvells-custom-ai-silicon-deals-113500909.html",
+    "https://finance.yahoo.com/technology/ai/articles/marvell-technology-mrvl-showcases-2nm-220627807.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/marvell-technology-stock-gained-1-57-percent-before-investor-day/70223730",
+    "https://finance.yahoo.com/markets/stocks/articles/worried-marvell-stock-133112654.html",
+    "https://ground.news/article/marvell-technology-nasdaq-mrvl-stock-price-up-45-should-you-buy_1083a5",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/marvell-expands-at-und-s-deal-marvell-technology-stock-gains-2-87-percent/70215619",
+    "https://markets.businessinsider.com/news/stocks/cboe-data-shows-mixed-options-sentiment-in-marvell-with-shares-up-1-65-1036595055",
+    "https://robinhood.com/us/en/stocks/MRVL/?source=search",
+    "https://www.trefis.com/data/companies/MRVL",
+    "https://markets.businessinsider.com/news/stocks/marvell-stock-mrvl-forecast-piper-sandler-is-bullish-ahead-of-oct-6-investor-day-1036595434"
+  ],
+  "usage": {
+    "input_tokens": 1032,
+    "output_tokens": 828,
+    "cost_usd": 0.02952
+  }
+}

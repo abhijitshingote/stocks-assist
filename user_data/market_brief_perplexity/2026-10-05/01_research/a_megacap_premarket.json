@@ -1,0 +1,167 @@
+{
+  "name": "a_megacap_premarket",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Mega-cap pre-market.\n\nWindow: Friday October 2, 2026 4:00 PM ET (after the close) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nNVDA, AAPL, MSFT, GOOGL, AMZN, META, TSLA, AVGO, AMD, MU, ORCL, NFLX: each one's pre-market % move on the brief date and any news since the session close (announcements, executive interviews and quotes, product events, analyst notes), and the reason reporters give for each move \u2014 including analyst warnings on the company or its sector (capex returns, valuation) and product controversies (privacy, safety, regulatory complaints).\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **NVDA** \u2014 AI Compute\n- NVIDIA rose **0.5% in pre-market trading** on Monday, October 5, after reaching a record high on Friday; the report did not identify a new company-specific announcement as the cause. (Reuters, Oct. 5, 2026, 07:21 ET)\n- NVIDIA closed Friday, October 2, at **$233.95**, up **1.34%**, after reaching an intraday record of **$237.55**. (LiveTradingNews, Oct. 5, 2026, 05:21 ET)\n- Schwab strategist **Kevin Gordon** said a shortfall in a mega-cap company\u2019s AI capital spending could disrupt the market, while noting that valuation and public pushback against AI were risks. (Yahoo Finance, Oct. 5, 2026, 01:33 ET)\n\n## **MU** \u2014 Memory & Interconnect\n- Micron fell **0.3% in pre-market trading** on Monday, October 5; Reuters grouped the move with weakness in semiconductor shares. (Reuters, Oct. 5, 2026, 07:21 ET)\n- Schwab strategist **Kevin Gordon** said a reduction in AI capital-spending budgets could disrupt earnings across AI-related companies. (Yahoo Finance, Oct. 5, 2026, 01:33 ET)\n\n## **TSLA** \u2014 Semiconductors / Automotive & Energy\n- Tesla rose **4.65% on Friday, October 2**, making it one of the largest mega-cap contributors to the S&P 500\u2019s gain; the available report attributed the broader market move to weaker-than-expected jobs data reducing near-term Federal Reserve rate-hike expectations. (Saxo Bank, Oct. 5, 2026, 04:20 ET)\n- Tesla\u2019s Friday gain was also reported as **4.7%** in Reuters coverage of the prior session. (Reuters, Oct. 5, 2026, 03:10 ET)\n\n## **AVGO** \u2014 Communications & Networking\n- Broadcom rose **3.35% on Friday, October 2**, according to a market recap; the recap attributed the broader technology-sector advance to weaker-than-expected payroll data and lower near-term rate-hike expectations. (Saxo Bank, Oct. 5, 2026, 04:20 ET)\n\n## **AMD** \u2014 AI Compute\n- AMD rose **2.95% on Friday, October 2**, as semiconductor stocks led the session\u2019s advance; the available report did not identify a new AMD-specific announcement during the stated window. (Saxo Bank, Oct. 5, 2026, 04:20 ET)\n- Schwab strategist **Kevin Gordon** warned that a single mega-cap AI-capex miss or reduced spending budget could disrupt earnings across the AI complex. (Yahoo Finance, Oct. 5, 2026, 01:33 ET)\n\n## **GOOGL** \u2014 Internet & Platforms\n- Alphabet rose **1.56% on Friday, October 2**; the available market recap linked the broader move to weaker-than-expected payroll data and reduced expectations for a near-term Fed rate hike. (Saxo Bank, Oct. 5, 2026, 04:20 ET)\n- Alphabet was reported to own approximately **14% of Anthropic**, whose reported IPO roadshow targeted a possible October Nasdaq listing and a potential raise of up to **$100 billion** at a valuation near **$2 trillion**; the report marked the information as sourced reporting rather than a company announcement. [report] (Alpha Briefing, Oct. 4, 2026, 15:00 ET)\n\n## **META** \u2014 Internet & Platforms\n- Meta rose **0.30% on Friday, October 2**, according to a market recap; the available report did not identify a Meta-specific announcement during the window. (Saxo Bank, Oct. 5, 2026, 04:20 ET)\n- Schwab strategist **Kevin Gordon** said a shortfall in a mega-cap company\u2019s AI capital spending could disrupt the AI-driven market and cited valuation concerns and public pushback against AI. (Yahoo Finance, Oct. 5, 2026, 01:33 ET)\n\n## Macro / AI Capital Spending\n- Schwab strategist **Kevin Gordon** said the S&P 500 was **1% below its high**, while the average S&P 500 stock had experienced a **14% peak-to-trough drawdown** since early August. (Yahoo Finance, Oct. 5, 2026, 01:33 ET)\n- Gordon said the market had become dependent on a small number of AI-related spending budgets and described the period as \u201cCapEx season\u201d; he warned that one spending miss accompanied by reduced budgets could disrupt earnings. (Yahoo Finance, Oct. 5, 2026, 01:33 ET)\n- AllianceBernstein equities head **Nelson Yu** said the key issue for the upcoming earnings season was whether hyperscalers revised capital-expenditure plans. (Economic Times, Oct. 5, 2026, 03:19 ET)\n- The Nasdaq 100 gained **1.00% on Friday, October 2**, reaching a record close, while the Philadelphia Semiconductor Index rose **2.4%** and the technology sector gained **1.01%**. (Saxo Bank, Oct. 5, 2026, 04:20 ET)\n- The probability of at least a **25-basis-point** Federal Reserve rate increase at the end of October fell to **22.7%** from **24.4%** in the prior session and **64.2%** one week earlier, according to CME FedWatch data cited by Reuters. (Reuters, Oct. 5, 2026, 03:10 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - US stock index futures dipped on Monday, as technology stocks eased from record highs, while investors looked for fresh clues on the monetary policy path with Treasury yields and oil prices still elevated.\nChip stocks were a drag in premarket trade, with Intel dropping more than 4%...",
+      "source": "web",
+      "title": "Wall St futures dip as tech stocks take a breather",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 12:07 AM CST\n...\n- NVDA\n+1.34%\n...\n- Shares of NVIDIA Corporation (NVDA) rose 1.3% after hitting a new all-time intraday high of $237.87.",
+      "source": "web",
+      "title": "Company News for Oct 5, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Schwab Strategist Warns a Single Mega-Cap Capex Miss Could Disrupt the AI-Driven Market\n...\nMon, October 5, 2026 at 12:55 AM GMT-3\n...\n**Schwab's Kevin Gordon says the S&P 500 sits 1% below its high, yet the average stock had a 14% drawdown.\nHe says AI stocks carry the index, so one capex miss, a sh...",
+      "source": "web",
+      "title": "Schwab Strategist Warns a Single Mega-Cap Capex Miss Could Disrupt the AI-Driven Market",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/schwab-strategist-warns-single-mega-035500875.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "DraftKings \u2014 Shares for the digital sports entertainment and gaming company popped over 5% after a Bank of America upgrade to buy from neutral.",
+      "source": "web",
+      "title": "Stocks making the biggest moves premarket: DraftKings, Itau Unibanco, PTC & more",
+      "url": "https://www.cnbc.com/2026/10/05/stocks-making-the-biggest-moves-premarket-dkng-itub-ptc.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "US: Wall Street rallied on Friday, with the soft payrolls print cited as paring near-term Fed hike expectations.\nThe S&P 500 rose 0.73% to 7,722.72 , the Nasdaq 100 gained 1.00% to 30,807.93 for a fresh record close , the Dow added 0.49% to 51,182.11 and the Russell 2000 0.94% to 2,832.89.\nBreadth w...",
+      "source": "web",
+      "title": "Market Quick Take Weak euro in focus - 05 October 2026",
+      "url": "https://www.home.saxo/content/articles/macro/market-quick-take--weak-euro-in-focus---05-october-2026-05102026"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Somewhere behind all of it, Anthropic's IPO roadshow is underway, with reports pointing to an October Nasdaq listing that would rank among the largest in US history.\n...\nAll prices are Friday, October 2 closes, pulled live this weekend.\n...\n## 1. $GOOGL \u2014 Alphabet\n**Friday close:** $343.50 | **52-we...",
+      "source": "web",
+      "title": "Top 10 Stocks We're Watching This Week \u2014 Earnings Eve Edition",
+      "url": "https://www.alphabriefing.com/top-10-stocks-were-watching-week-of-october-5-2026/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5, 2026 by Reuters\n...\nNEW YORK - US stocks advanced on Friday to close out the trading week after weaker-than-expected jobs data dampened expectations for a rate hike from the Federal Reserve at its policy meeting this month.\n...\nThe weaker-than-anticipated data pulled down expectations for...",
+      "source": "web",
+      "title": "Equities close higher as softer jobs data quiets rate-hike ...",
+      "url": "https://wealthinsights.metrobank.com.ph/news/us-stocks-equities-close-higher-as-softer-jobs-data-quiets-rate-hike-expectations"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On Friday 2 October 2026 Nvidia (NASDAQ: NVDA) hit an intraday record of $237.55, per Yahoo Finance.\nIts intraday market value reached $5.7 trillion, per the same report.\nIt closed at $233.95 on 2 October 2026, up 1.34 percent, per Google Finance.\n...\nThe AI tape was soft the day of the delay.\nOn 28...",
+      "source": "web",
+      "title": "Weekly Market Outlook: a hiking Fed, a stalling job market, Anthropic's IPO clock and the AI leaders",
+      "url": "https://www.livetradingnews.com/weekly-market-outlook-fed-minutes-anthropic-and-openai-ipos-gold-bitcoin-fx"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# AI Mania Keeps Tech Rally Alive Even as Yields Hit 24-Year Highs\n...\nPublished Oct 4, 2026\n...\n- On Friday, the Nasdaq 100 notched a fresh all-time high and has climbed 22% year to date, while the S&P 500 sits less than 1% below its August peak.\n...\n- Tech EPS is projected to jump more than 65% in...",
+      "source": "web",
+      "title": "AI Frenzy Propels Tech Stocks Despite Soaring Yields",
+      "url": "https://www.briefs.co/news/ai-mania-keeps-tech-rally-alive-even-as-yields-hit-24-year-h/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**Investing.com** \u2014 Markets just shrugged off September\u2019s reputation as the worst month of the year.\nInstead of a seasonal pullback, institutional capital rotated into fresh breakout plays as tech giants and infrastructure leaders revised their capex budget skyward.\n...\nThe model exited NetApp to lo...",
+      "source": "web",
+      "title": "+106%, +38%, +37%, see which stocks are in and out of ...",
+      "url": "https://za.investing.com/news/stock-market-news/106-38-37-see-which-stocks-are-in-and-out-of-our-aipicks-for-october-4487689"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Here Are Wednesday's Biggest Analyst Calls: Nvidia, SpaceX, Apple, Tesla, Target, Amazon, Microsoft & More\nSunday, October 4, 2026Set Location\n...\n## Citigroup and Wells Fargo cut several names as Bernstein and Deutsche Bank started new coverage on semiconductor and networking stocks.",
+      "source": "web",
+      "title": "Here Are Wednesday's Biggest Analyst Calls: Nvidia ...",
+      "url": "https://ground.news/article/here-are-wednesdays-biggest-analyst-calls-nvidia-spacex-apple-tesla-target-amazon-microsoft-and-more"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Promising Technology Stocks To Follow Now - October 4th\nSunday, October 4, 2026Set Location\n...\nNVIDIA, Micron Technology, Sandisk, Advanced Micro Devices, Seagate Technology, Intel, and Apple are the seven Technology stocks to watch today, according to MarketBeat's stock screener tool.\n...\nMarketBe...",
+      "source": "web",
+      "title": "Promising Technology Stocks To Follow Now - October 4th",
+      "url": "https://ground.news/article/promising-technology-stocks-to-follow-now-october-4th"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "U.S. Stock Market indexes were in green in the pre-market trading ahead of Monday's regular working hours at Wall Street.\n...\nInvestors head into a part of the calendar that tends to be upbeat for US stocks, but that seasonal strength is under threat from a number of challenges, including a surge in...",
+      "source": "web",
+      "title": "US Stock Market prediction for Monday, October 5: S&P 500, Nasdaq, Dow Jones, Russell 2000 investors eye positive trading today, top stocks to watch out",
+      "url": "https://economictimes.indiatimes.com/news/international/us/us-stock-market-prediction-for-monday-october-5-sp-500-nasdaq-dow-jones-russell-2000-investors-eye-positive-trading-today-top-stocks-to-watch-out/articleshow/134683447.cms"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Week of September 28\u2013October 2, 2026 | Investment agenda for October 5\u20139, 2026**\n...\nAxios reported OpenAI\u2019s annualized revenue run rate is approaching **$70 billion**, up more than 70% since the beginning of Q3, with business revenue more than doubling since July.\nReuters subsequently reported th...",
+      "source": "web",
+      "title": "StreetSignal Weekly",
+      "url": "https://streetsignal.substack.com/p/streetsignal-weekly-588"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Focus on 'new-era' technology stocks to avoid overvalued mega-caps and navigate potential volatility leading into mid-term elections.\n...\n***Bottom-line: * ** as I've noticed several times this past month; when S&P index rises but **more stocks hit new 52-week lows than new highs**, it reveals a fra...",
+      "source": "web",
+      "title": "Market Commentary For Monday, Oct. 5, 2026 - TalkMarkets",
+      "url": "https://talkmarkets.com/article/market-commentary-for-monday-oct-5-2026"
+    }
+  ],
+  "citations": [
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL13F?channel=frL012",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html",
+    "https://finance.yahoo.com/markets/stocks/articles/schwab-strategist-warns-single-mega-035500875.html",
+    "https://www.cnbc.com/2026/10/05/stocks-making-the-biggest-moves-premarket-dkng-itub-ptc.html",
+    "https://www.home.saxo/content/articles/macro/market-quick-take--weak-euro-in-focus---05-october-2026-05102026",
+    "https://www.alphabriefing.com/top-10-stocks-were-watching-week-of-october-5-2026/",
+    "https://wealthinsights.metrobank.com.ph/news/us-stocks-equities-close-higher-as-softer-jobs-data-quiets-rate-hike-expectations",
+    "https://www.livetradingnews.com/weekly-market-outlook-fed-minutes-anthropic-and-openai-ipos-gold-bitcoin-fx",
+    "https://www.briefs.co/news/ai-mania-keeps-tech-rally-alive-even-as-yields-hit-24-year-h/",
+    "https://za.investing.com/news/stock-market-news/106-38-37-see-which-stocks-are-in-and-out-of-our-aipicks-for-october-4487689",
+    "https://ground.news/article/here-are-wednesdays-biggest-analyst-calls-nvidia-spacex-apple-tesla-target-amazon-microsoft-and-more",
+    "https://ground.news/article/promising-technology-stocks-to-follow-now-october-4th",
+    "https://economictimes.indiatimes.com/news/international/us/us-stock-market-prediction-for-monday-october-5-sp-500-nasdaq-dow-jones-russell-2000-investors-eye-positive-trading-today-top-stocks-to-watch-out/articleshow/134683447.cms",
+    "https://streetsignal.substack.com/p/streetsignal-weekly-588",
+    "https://talkmarkets.com/article/market-commentary-for-monday-oct-5-2026"
+  ],
+  "usage": {
+    "input_tokens": 796,
+    "output_tokens": 1236,
+    "cost_usd": 0.03493
+  }
+}

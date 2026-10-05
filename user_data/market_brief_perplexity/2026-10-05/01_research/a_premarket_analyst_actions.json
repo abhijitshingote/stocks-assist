@@ -1,0 +1,167 @@
+{
+  "name": "a_premarket_analyst_actions",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Brief-date analyst actions.\n\nWindow: Friday October 2, 2026 4:00 PM ET (after the close) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nUpgrades, downgrades, initiations and PT changes published on the brief date before the open (and over the weekend if the brief date is a Monday): firm, rating old \u2192 new, PT old \u2192 new, thesis, and the stock's pre-market move.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **ABT** \u2014 Pharma\n- Rothschild & Co Redburn upgraded Abbott Laboratories from **Neutral \u2192 Buy** and raised its price target from **$119 \u2192 $127**; the cited thesis was not specified in the available report. No qualifying pre-market move was reported. (Yahoo Finance, Oct. 2, 2026; publication time not provided)\n\n## **ABNB** \u2014 Internet & Platforms\n- KeyBanc upgraded Airbnb from **Sector Weight \u2192 Overweight** with a **$191** price target; the prior target was not reported. No qualifying pre-market move was reported. (Yahoo Finance, Oct. 2, 2026; publication time not provided)\n\n## **ASTS** \u2014 Communications & Networking\n- B. Riley downgraded AST SpaceMobile from **Buy \u2192 Neutral** and cut its price target from **$85 \u2192 $65**; the firm described the risk/reward as balanced at current share levels. No qualifying pre-market move was reported. (Yahoo Finance, Oct. 2, 2026; publication time not provided)\n\n## **CBRS** \u2014 AI Infrastructure\n- Freedom Capital upgraded Cerebras Systems from **Hold \u2192 Buy** with a **$209** price target; the prior target was not reported. No qualifying pre-market move was reported. (Yahoo Finance, Oct. 2, 2026; publication time not provided)\n\n## **CBOE** \u2014 Financials\n- Goldman Sachs upgraded Cboe Global Markets from **Sell \u2192 Neutral** and lowered its price target from **$304 \u2192 $300**; the thesis was not specified in the available report. No qualifying pre-market move was reported. (Business Insider, Oct. 2, 2026; publication time not provided)\n\n## **DDOG** \u2014 Software & SaaS\n- FBN Securities initiated coverage of Datadog with an **Outperform** rating and a **$325** price target. No qualifying pre-market move was reported. (Business Insider, Oct. 2, 2026; publication time not provided)\n\n## **EIX** \u2014 Energy\n- Jefferies downgraded Edison International from **Hold \u2192 Underperform** and cut its price target from **$53 \u2192 $42**; the thesis was not specified in the available report. No qualifying pre-market move was reported. (Yahoo Finance, Oct. 2, 2026; publication time not provided)\n\n## **FPS** \u2014 Power & Wide-Bandgap\n- Bernstein initiated coverage of Forgent Power Solutions with an **Outperform** rating; a firm-specific price target was not reported in the available source. Consensus target data cited in the report was **$61.54 mean** and **$61.20 median** as of September 15, 2026. No qualifying pre-market move was reported. (Fintel, Oct. 3, 2026; publication time not provided)\n\n## **HPE** \u2014 AI Infrastructure\n- Daiwa upgraded Hewlett Packard Enterprise from **Neutral \u2192 Outperform** and raised its price target from **$65 \u2192 $75**, citing the company\u2019s networking event. No qualifying pre-market move was reported. (Business Insider, Oct. 2, 2026; publication time not provided)\n\n## **HOOD** \u2014 Internet & Platforms\n- Wells Fargo initiated coverage of Robinhood Markets with an **Equal Weight** rating; the firm-specific price target was not reported. No qualifying pre-market move was reported. (Fintel, Oct. 3, 2026; publication time not provided)\n\n## **MNDY** \u2014 Software & SaaS\n- Wall Street Zen upgraded monday.com from **Hold \u2192 Buy**; the cited consensus rating was **Moderate Buy** with an average price target of **$111.70**. A Wall Street Zen price target and pre-market move were not reported. (MarketBeat, Oct. 5, 2026; publication time not provided)\n\n## **NKE** \u2014 Retail\n- Williams Trading downgraded Nike from **Buy \u2192 Hold** and cut its price target from **$42 \u2192 $30**. No qualifying pre-market move was reported. (Business Insider, Oct. 2, 2026; publication time not provided)\n- BTIG cut Nike\u2019s price target from **$55 \u2192 $50** while maintaining **Buy**; a separate report said Nike fell from a **$35.15 close \u2192 $32.55 open** on October 2. (MarketBeat, Oct. 2, 2026; publication time not provided)\n- Robert W. Baird cut Nike\u2019s price target from **$44 \u2192 $36** and assigned **Neutral**; Bank of America reiterated **Underperform** and cut its price objective from **$30 \u2192 $24**. (MarketBeat, Oct. 2, 2026; publication time not provided)\n\n## **NOC** \u2014 Aerospace & Defense\n- RBC Capital downgraded Northrop Grumman from **Outperform \u2192 Sector Perform** and cut its price target from **$640 \u2192 $525**; the thesis was not specified in the available report. No qualifying pre-market move was reported. (Yahoo Finance, Oct. 2, 2026; publication time not provided)\n\n## **ONTO** \u2014 Chip Equipment\n- RBC initiated coverage of Onto Innovation with an **Outperform** rating and a **$400** price target. No qualifying pre-market move was reported. (Business Insider, Oct. 2, 2026; publication time not provided)\n\n## **PEP** \u2014 Retail\n- UBS lowered PepsiCo\u2019s price target from **$159 \u2192 $145** while maintaining **Buy**; the thesis was not specified in the available report. No qualifying pre-market move was reported. (TheStreet Pro, Oct. 2, 2026; publication time not provided)\n\n## **PS** \u2014 Financials\n- Wells Fargo transferred coverage of Pershing Square and downgraded the stock from **Equal Weight \u2192 Underweight** while raising its price target from **$36 \u2192 $41**. No qualifying pre-market move was reported. (Business Insider, Oct. 2, 2026; publication time not provided)\n\n## **SAIL** \u2014 Software & SaaS\n- KeyBanc initiated coverage of SailPoint with a **Sector Weight** rating and no price target. No qualifying pre-market move was reported. (Business Insider, Oct. 2, 2026; publication time not provided)\n\n## **SYNA** \u2014 Semiconductors\n- Wells Fargo downgraded Synaptics from **Overweight \u2192 Equal Weight** and cut its price target from **$140 \u2192 $123**, following the amended merger agreement with onsemi after a competing third-party offer. No qualifying pre-market move was reported. (Business Insider, Oct. 2, 2026; publication time not provided)\n\n## **VEON** \u2014 Communications & Networking\n- Cantor Fitzgerald initiated coverage of VEON with an **Overweight** rating and a **$112** price target. No qualifying pre-market move was reported. (Business Insider, Oct. 2, 2026; publication time not provided)",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- RBC slashed Northrop Grumman's target to $525 from $640, while Jefferies cut Edison International to Underperform with a $42 target.\n...\n## Upgrades:\n- **Abbott Laboratories** (NYSE: ABT) was upgraded to Buy from Neutral at Rothschild & Co Redburn, which bumped the target price for the healthcare ...",
+      "source": "web",
+      "title": "Here Are Friday's Top Wall Street Analyst Research Calls",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/friday-top-wall-street-analyst-115957422.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "After receiving shareholder approval for its sale to Kirin Holdings Co. in a deal valued at $2.5-billion, TD Cowen\u2019s Cheryl Zhang downgraded **Jamieson Wellness Inc.\n**(JWEL-T) to \u201csell\u201d from \u201chold\u201d previously, recommending that investors tender their shares to the cash offer.\n...\nAs such, we are ch...",
+      "source": "web",
+      "title": "Friday's analyst upgrades and downgrades",
+      "url": "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-fridays-analyst-upgrades-and-downgrades-320/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- KeyBanc upgraded **Airbnb **(ABNB) to Overweight from Sector Weight with a $191 price target.\n...\n- Daiwa upgraded **HPE **(HPE) to Outperform from Neutral with a price target of $75, up from $65, following the \u201cbullish\u201d networking event.\n...\n- Rothschild & Co Redburn upgraded **Abbott **(ABT) to ...",
+      "source": "web",
+      "title": "Nike downgraded, Airbnb upgraded: Wall Street\u2019s top analyst calls",
+      "url": "https://markets.businessinsider.com/news/stocks/nike-downgraded-airbnb-upgraded-wall-street-s-top-analyst-calls-1036594731"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Analyst notes from Sep 29 to Oct 2, 2026 lean cautious and valuation-driven.\nThe notes reviewed were mostly downgrades after big rallies or on slowing growth.\nUpgrades mostly went to beaten-down names.\nAnalysts weren\u2019t broadly bearish.\nThey were repricing winners and hunting for val...",
+      "source": "web",
+      "title": "downgrades hit rally winners, upgrades favor beaten-down ...",
+      "url": "https://www.investing.com/news/stock-market-news/weekly-analyst-review-downgrades-hit-rally-winners-upgrades-favor-beatendown-names-93CH-4930232"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "UBS analyst Peter Grom lowered the firm\u2019s price target on PepsiCo (PEP) to $145 from $159 and keeps a Buy rating on the shares.",
+      "source": "web",
+      "title": "Doug's Daily Diary \u2014 Friday, October 2, 2026 | TheStreet Pro",
+      "url": "https://pro.thestreet.com/dougs-daily-diary/2026-10-02"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Analyst notes from Sep 29 to Oct 2, 2026 lean cautious and valuation-driven.\nThe notes reviewed were mostly downgrades after big rallies or on slowing growth.\nUpgrades mostly went to beaten-down names.\nAnalysts weren\u2019t broadly bearish.\nThey were repricing winners and hunting for val...",
+      "source": "web",
+      "title": "Weekly analyst review: downgrades hit rally winners, upgrades favor beaten-down names By Investing.com",
+      "url": "https://uk.investing.com/news/stock-market-news/weekly-analyst-review-downgrades-hit-rally-winners-upgrades-favor-beatendown-names-93CH-4894007"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Nike Inc., a global leader in athletic footwear, apparel, and equipment, has received an upgrade to a 'Buy' rating from Freedom Broker.\nThis marks a significant shift in sentiment towards the stock after previously being rated as 'Sell'.\nThe downgrade of the price target from $54 to $51 reflects a c...",
+      "source": "web",
+      "title": "guavy.com \u203a wire \u203a stocksNike Upgraded to Buy as Analyst Sees Potential in Undervalued ...",
+      "url": "https://guavy.com/wire/stocks/nike-upgraded-to-buy-as-analyst-sees-potential-in-undervalued-stock-7YF3vMyZ8Hpbfb20ZK8HC5"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Analyst notes from Sep 29 to Oct 2, 2026 lean cautious and valuation-driven.\nThe notes reviewed were mostly downgrades after big rallies or on slowing growth.\nUpgrades mostly went to beaten-down names.\nAnalysts weren\u2019t broadly bearish.\nThey were repricing winners and hunting for val...",
+      "source": "web",
+      "title": "Weekly analyst review: downgrades hit rally winners, upgrades favor beaten-down names By Investing.com",
+      "url": "https://in.investing.com/news/stock-market-news/weekly-analyst-review-downgrades-hit-rally-winners-upgrades-favor-beatendown-names-93CH-5617178"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Wall Street Zen upgraded monday.com** from \u201chold\u201d to \u201cbuy,\u201d while the broader analyst consensus remains \u201cModerate Buy\u201d with an average price target of $111.70.\n...\nmonday.com (NASDAQ:MNDY - Get Free Report) was upgraded by research analysts at Wall Street Zen from a \"hold\" rating to a \"buy\" rati...",
+      "source": "web",
+      "title": "Wall Street Zen Upgrades monday.com (NASDAQ:MNDY) ...",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-wall-street-zen-upgrades-mondaycom-nasdaq-mndy-to-buy-2026-10-05/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com - Freedom Broker upgraded Nike (NYSE:NKE) to Buy from Sell on Wednesday and lowered its price target to $51 from $54.\n...\nInvesting.com - Jefferies lowered its price target on Huntsman Corp.\n(NYSE:HUN) to $11 from $16 while maintaining a Buy rating on the stock.\n...\nInvesting.com - BNP...",
+      "source": "web",
+      "title": "Stock Analyst Ratings: Upgrades and Downgrades",
+      "url": "https://www.investing.com/news/analyst-ratings/bmo-capital-raises-mongodb-stock-price-target-to-360-on-ai-growth-93CH-4692801-0"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **NIKE shares gapped down** from a $35.15 close to a $32.55 open after BTIG cut its price target from $55 to $50, although it maintained a buy rating.\n...\nNIKE, Inc.\n(NYSE:NKE - Get Free Report)'s share price gapped down prior to trading on Friday after BTIG Research lowered their price target on ...",
+      "source": "web",
+      "title": "NIKE (NYSE:NKE) Shares Gap Down on Analyst Downgrade",
+      "url": "https://www.marketbeat.com/instant-alerts/price-nike-nyse-nke-shares-gap-down-on-analyst-downgrade-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "EC was just upgraded to a Zen Rating of B, a Buy recommendation.",
+      "source": "web",
+      "title": "Hot or Not, Stock Market Edition: 10/02/2026",
+      "url": "https://www.wallstreetzen.com/news/hot-or-not-stock-market-edition-10-02-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Fintel reports that on October 2, 2026, Wells Fargo initiated coverage of Robinhood Markets (NASDAQGS:HOOD) (BATS-CHIXE:1HOODM) with a **Equal-Weight** recommendation.\n...\nSeparate from Wells Fargo's initiation, the current consensus target mean for the stock was $132.78 as of September 15, 2026, re...",
+      "source": "web",
+      "title": "Wells Fargo Initiates Coverage of Robinhood Markets at Equal-Weight",
+      "url": "https://fintel.io/news/wells-fargo-initiates-coverage-of-robinhood-markets-at-equal-weight-374"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fintel reports that on October 2, 2026, Bernstein initiated coverage of Forgent Power Solutions (NYSE:FPS) (DB:9FS) with a **Outperform** recommendation.\n...\nSeparately, consensus target data from September 15, 2026, showed a current consensus target mean of $61.54 and a median of $61.20, representi...",
+      "source": "web",
+      "title": "Bernstein Initiates Coverage of Forgent Power Solutions at ...",
+      "url": "https://fintel.io/news/bernstein-initiates-coverage-of-forgent-power-solutions-at-outperform-688"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Goldman Sachs refreshed its list of top stock picks for October, adding five buy-rated names to its roster.\nThe five new additions to the firm\u2019s so-called \u201cU.S. Conviction List \u2014 Director\u2019s Cut\u201d are Amazon , Burlington Stores , Huntington Ingalls , Johnson Controls and Occidental Petroleum . The inv...",
+      "source": "web",
+      "title": "Goldman Sachs' list of top picks for October",
+      "url": "https://www.cnbc.com/2026/10/02/goldman-sachs-list-of-top-picks-for-october.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/friday-top-wall-street-analyst-115957422.html",
+    "https://www.theglobeandmail.com/investing/markets/inside-the-market/article-fridays-analyst-upgrades-and-downgrades-320/",
+    "https://markets.businessinsider.com/news/stocks/nike-downgraded-airbnb-upgraded-wall-street-s-top-analyst-calls-1036594731",
+    "https://www.investing.com/news/stock-market-news/weekly-analyst-review-downgrades-hit-rally-winners-upgrades-favor-beatendown-names-93CH-4930232",
+    "https://pro.thestreet.com/dougs-daily-diary/2026-10-02",
+    "https://uk.investing.com/news/stock-market-news/weekly-analyst-review-downgrades-hit-rally-winners-upgrades-favor-beatendown-names-93CH-4894007",
+    "https://guavy.com/wire/stocks/nike-upgraded-to-buy-as-analyst-sees-potential-in-undervalued-stock-7YF3vMyZ8Hpbfb20ZK8HC5",
+    "https://in.investing.com/news/stock-market-news/weekly-analyst-review-downgrades-hit-rally-winners-upgrades-favor-beatendown-names-93CH-5617178",
+    "https://www.marketbeat.com/instant-alerts/analyst-wall-street-zen-upgrades-mondaycom-nasdaq-mndy-to-buy-2026-10-05/",
+    "https://www.investing.com/news/analyst-ratings/bmo-capital-raises-mongodb-stock-price-target-to-360-on-ai-growth-93CH-4692801-0",
+    "https://www.marketbeat.com/instant-alerts/price-nike-nyse-nke-shares-gap-down-on-analyst-downgrade-2026-10-02/",
+    "https://www.wallstreetzen.com/news/hot-or-not-stock-market-edition-10-02-2026",
+    "https://fintel.io/news/wells-fargo-initiates-coverage-of-robinhood-markets-at-equal-weight-374",
+    "https://fintel.io/news/bernstein-initiates-coverage-of-forgent-power-solutions-at-outperform-688",
+    "https://www.cnbc.com/2026/10/02/goldman-sachs-list-of-top-picks-for-october.html"
+  ],
+  "usage": {
+    "input_tokens": 746,
+    "output_tokens": 1498,
+    "cost_usd": 0.03871
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "a_sector_hardware_networking",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Company news: IT hardware, networking, data-center and power-equipment.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed IT hardware, networking, data-center and power-equipment companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **APLD** \u2014 AI Infrastructure\n- Applied Digital announced on October 2 that the second phase of Building 2 at its Polaris Forge 1 campus reached \u201cReady for Service,\u201d adding **75 MW** of critical IT load across three 25-MW data halls; Building 2 reached **150 MW**, and fully operational critical IT load at the campus reached **250 MW** (GlobeNewswire, Oct. 2; reported Oct. 4).  \n- Applied Digital\u2019s Nasdaq-listed shares were reported in connection with the announcement, but the available source did not provide a verified October 5 price or percentage move as of 12:20 ET (source information available by Oct. 4).\n\n## **HPE** \u2014 AI Infrastructure / Communications & Networking\n- Hewlett Packard Enterprise received a reported **$1.2 billion** order from Vultr for AMD Helios AI servers; the deployment was described as the first commercial use of HPE\u2019s Helios racks, combining AMD processors, HPE compute, liquid cooling and HPE Networking hardware (Yahoo Finance, Oct. 2, 18:09 ET; report updated Oct. 4).  \n- At an October 5 Networking Investor Day, HPE said cumulative fiscal-2026 AI-networking orders were expected to exceed **$3 billion**, projected fiscal-2027 networking-revenue growth in the **high-teens to low-20% range**, and projected data-center-networking revenue to grow at approximately **50% CAGR through fiscal 2029** (source report, Oct. 5, before 12:20 ET).  \n- HPE reportedly raised its expected Juniper Networks integration synergies to **$800 million**; the available source did not specify the prior estimate or provide a verified October 5 stock move by 12:20 ET (source report, Oct. 5, before 12:20 ET).\n\n## **AVGO** \u2014 Semiconductors / AI Infrastructure\n- A filing disclosed that Broadcom agreed to provide Anthropic with up to **$42 billion** in convertible-note financing for infrastructure spending tied to Anthropic\u2019s five-year commitment to lease **$125.2 billion** of TPU computing capacity; the disclosure also identified Broadcom\u2019s combined roles as hardware supplier, equipment lessor and financier (Reuters report, Oct. 5, before 12:20 ET; agreement dated Oct. 1).  \n- The report said the potential financing would cover approximately **one-third** of Anthropic\u2019s TPU-lease commitment; the available source did not provide a verified October 5 stock move by 12:20 ET (Reuters report, Oct. 5, before 12:20 ET).\n\n## **MTSI** \u2014 Optical & Photonics\n- MACOM Technology Solutions was reported to have launched a **3.2-terabit optical chipset** for AI-data-center interconnects; the available report also said BMO Capital upgraded MACOM to **Outperform**, but did not state the prior rating or a price target change (TradingKey, Oct. 2; source updated Oct. 5).  \n- MACOM shares rose **7.48%** on October 2, according to the available market report (TradingKey, Oct. 2).\n\n## LS Electric \u2014 Power & Wide-Bandgap\n- LS Electric announced a **$133.41 million** contract, equivalent to **180 billion won**, to supply **345-kV ultra-high-voltage transformers** for a North American hyperscale AI-data-center project; the announcement was dated October 1 and reported during the requested window (Yonhap, Oct. 5, before 12:20 ET).  \n- LS Electric is not identified in the available results as a US-listed company, so its eligibility under the US-listing requirement could not be independently verified from the gathered material (Yonhap, Oct. 5).\n\n## **EFXT** \u2014 AI Infrastructure / Power Equipment\n- Enerflex announced an approximately **450-MW** natural-gas-fired power-generation equipment project for a North American data-center developer, with deliveries scheduled for **2027\u20132028** and approximately **$15 million** of 2026 capital spending; the announcement was dated October 1, outside the stated publication window, and was only surfaced in window-period coverage (GlobeNewswire, Oct. 1; source report available Oct. 5).  \n- The available result identified Enerflex\u2019s US ticker as **EFXT**, but did not provide a verified October 2\u20135 share-price move (source report, Oct. 5).\n\n## Data-center sector \u2014 Macro / Calendar\n- Goldman Sachs raised its **2026 year-end US data-center-capacity forecast by 5 GW to 64 GW**, cut its 2027 forecast by **5 GW to 90 GW**, and forecast US data-center power demand growth of **38%**, equal to **12 GW in 2026** and **17 GW in 2027** (Reuters, Oct. 5, 09:06 ET).  \n- Reuters reported that a June Reuters/Ipsos poll found **14%** of respondents supported a data center being built in their community for technology-company AI projects (Reuters, Oct. 5, 09:06 ET).",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - Rising political opposition to US data centers has limited near-term impact on their rapid expansion, Goldman Sachs said, with its growth outlook through 2027 remaining largely intact.\nGoldman raised its 2026 year-end US data center capacity forecast by 5 gigawatts(GW) to 64 GW, wh...",
+      "source": "web",
+      "title": "Goldman sees US data center growth intact despite opposition",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL0LH?channel=frL012"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Optical Interconnect Startup CScale Emerges From Stealth Following Investment From Nvidia and Intel\nMonday, October 5, 2026Set Location\n...\n## The funding lifts CScale\u2019s total to $188 million as it develops optical links that let thousands of AI accelerators work as one system.\n...\n#### CScale raise...",
+      "source": "web",
+      "title": "Optical Interconnect Startup CScale Emerges From Stealth ...",
+      "url": "https://ground.news/article/nvidia-backed-cscale-emerges-from-stealth-with-145m-to-build-optical-interconnects-for-gigawatt-scale-ai-tech-startups"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "LS Electric Wins $133 Mil.\nTransformer Deal in US\nMonday, October 5, 2026Set Location\n...\n# LS Electric Wins $133 Mil. Transformer Deal in US\n...\nLS Electric Co., a Korean electrical equipment maker, said Thursday it has secured a 180 billion-won ($133 million) contract to supply ultra-high-v...####...",
+      "source": "web",
+      "title": "LS Electric Wins $133 Mil. Transformer Deal in US",
+      "url": "https://ground.news/article/ls-electric-to-supply-ultra-high-voltage-transformers-to-us-data-centers-worth-180-billion-won"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Data Center & PowerOctober 4, 2026\n## Applied Digital brings another 75 megawatts online\nDelivered capacity advances a major AI campus.\nCustomer utilization and cash generation remain separate tests.\n...\n## Lumos completes acquisition of ALLO\u2019s Joplin network\n...\n## Greenlight commits more than $20 ...",
+      "source": "web",
+      "title": "Industry News | Premia Advisors",
+      "url": "https://premiaadvisors.com/industry-news"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Enerflex Ltd.\nAnnounces Contract Award for Large-Scale Data Center Development\nMonday, October 5, 2026Set Location\n...\n# Enerflex Ltd. Announces Contract Award for Large-Scale Data Center Development\n## The contract expands Enerflex\u2019s engineered systems business and includes about $15 million in 202...",
+      "source": "web",
+      "title": "Enerflex Ltd. Announces Contract Award for Large-Scale ...",
+      "url": "https://ground.news/article/enerflex-ltd-announces-contract-award-for-large-scale-data-center-development"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Hewlett Packard Enterprise (HPE) Lands First $1.2 Billion Helios AI Server Order\n...\nHPE CFO discusses $1.2B deal with Vultr to deploy AMD Helios AI racks\n...\nFri, October 2, 2026 at 6:09 PM GMT-3\n...\n- Hewlett Packard Enterprise (NYSE:HPE) received a US$1.2b order from Vultr for its new AMD Helios ...",
+      "source": "web",
+      "title": "Hewlett Packard Enterprise (HPE) Lands First $1.2 Billion Helios AI Server Order",
+      "url": "https://finance.yahoo.com/technology/ai/articles/hewlett-packard-enterprise-hpe-lands-210920336.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u2022 BMO Capital upgraded MACOM to Outperform, driving positive Wall Street sentiment.\n\u2022 MACOM launched a 3.2-terabit optical chipset for AI data center interconnects.\n\u2022 Annual revenue reached $967.26 million alongside a net loss of $54.21 million.\nMACOM Technology Solutions Holdings Inc (MTSI) moved u...",
+      "source": "web",
+      "title": "MACOM Technology Solutions Holdings Inc Stock (MTSI) Moved Up by 7.48% on Oct 2: Facts Behind the Movement",
+      "url": "https://www.tradingkey.com/news/market-movers/262198438-market-movers-mtsi-20261002"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\"Deeply Flawed\": Biggest US Grid Scraps Emergency Data Center Power Auction One Day After FERC Smackdown\nMonday, October 5, 2026Set Location",
+      "source": "web",
+      "title": "\"Deeply Flawed\": Biggest US Grid Scraps Emergency Data Center Power Auction One Day After FERC Smackdown",
+      "url": "https://ground.news/article/deeply-flawed-biggest-us-grid-scraps-emergency-data-center-power-auction-one-day-after-ferc-smackdown"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Applied Digital Brings an Additional 75 MW of AI Infrastructure Online at Polaris Forge 1 | Business | hastingstribune.com\nSunday, October 4, 2026\n...\n# Applied Digital Brings an Additional 75 MW of AI Infrastructure Online at Polaris Forge 1\n...\nDALLAS, Oct. 02, 2026 (GLOBE NEWSWIRE) -- Applied Dig...",
+      "source": "web",
+      "title": "Applied Digital Brings an Additional 75 MW of AI Infrastructure ...",
+      "url": "https://www.hastingstribune.com/ap/business/applied-digital-brings-an-additional-75-mw-of-ai-infrastructure-online-at-polaris-forge-1/article_122bcc7f-45b8-5193-922c-817ca7fc8972.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Global spending on data centers could reach $31.6 trillion through 2050 under a new baseline projection, turning the artificial-intelligence buildout into one of history\u2019s largest capital programs before the industry has demonstrated revenue or productivity gains on a comparable scale.\nThe estimate,...",
+      "source": "web",
+      "title": "AI Data-Center Buildout Could Cost $31.6 Trillion by 2050",
+      "url": "https://www.theamericanquorum.com/ai-data-center-buildout-31-6-trillion-2050/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Hewlett Packard Enterprise Raises AI Networking Outlook, Targets $800M in Juniper Synergies\nMonday, October 5, 2026Set Location\n...\nHewlett Packard Enterprise (NYSE:HPE) outlined an expanded growth strategy for its networking segment, citing AI-driven demand, progress integrating Juniper Networks an...",
+      "source": "web",
+      "title": "Hewlett Packard Enterprise Raises AI Networking Outlook ...",
+      "url": "https://ground.news/article/hpe-to-outline-networking-priorities-for-long-term-value-creation"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Amazon to invest $1B into data center communities amid backlash against data center rollouts\nMonday, October 5, 2026Set Location\n...\n## The company will fund education, job training and infrastructure while publishing annual energy and water use and ending nondisclosure agreements with government ag...",
+      "source": "web",
+      "title": "Amazon to invest $1B into data center communities amid ...",
+      "url": "https://ground.news/article/amazon-to-invest-1b-into-data-center-communities-amid-backlash-against-data-center-rollouts_c1bde6"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On August 26, Trump signed an executive order banning foreign-made transformers, high-voltage circuit breakers and other grid equipment linked to China and 23 other countries.\n...\nLegrand, a French electrical and digital building infrastructure group, bought Kratos Industries, a Colorado-based switc...",
+      "source": "web",
+      "title": "US bans Chinese data center gear as Beijing grounds its ...",
+      "url": "https://asiatimes.com/2026/10/us-bans-chinese-data-center-gear-as-beijing-grounds-its-ai-talent/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "0 filings published.\n...\n- Form 8-K: Current reports for material events",
+      "source": "web",
+      "title": "SEC Filings for Oct 4, 2026 - 10-K, 10-Q, 8-K Forms",
+      "url": "https://www.stocktitan.net/sec-filings/2026-10-04/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Broadcom to lend Anthropic up to $42 billion to lease its chips, filing says\nMonday, October 5, 2026Set Location\n...\n# Broadcom to lend Anthropic up to $42 billion to lease its chips, filing says\n## The convertible notes could cover about one-third of Anthropic\u2019s $125.2 billion TPU lease commitment,...",
+      "source": "web",
+      "title": "Broadcom to lend Anthropic up to $42 billion to lease its ...",
+      "url": "https://ground.news/article/broadcom-to-lend-anthropic-up-to-42-billion-to-lease-its-chips-filing-says_4ddebb"
+    }
+  ],
+  "citations": [
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VL0LH?channel=frL012",
+    "https://ground.news/article/nvidia-backed-cscale-emerges-from-stealth-with-145m-to-build-optical-interconnects-for-gigawatt-scale-ai-tech-startups",
+    "https://ground.news/article/ls-electric-to-supply-ultra-high-voltage-transformers-to-us-data-centers-worth-180-billion-won",
+    "https://premiaadvisors.com/industry-news",
+    "https://ground.news/article/enerflex-ltd-announces-contract-award-for-large-scale-data-center-development",
+    "https://finance.yahoo.com/technology/ai/articles/hewlett-packard-enterprise-hpe-lands-210920336.html",
+    "https://www.tradingkey.com/news/market-movers/262198438-market-movers-mtsi-20261002",
+    "https://ground.news/article/deeply-flawed-biggest-us-grid-scraps-emergency-data-center-power-auction-one-day-after-ferc-smackdown",
+    "https://www.hastingstribune.com/ap/business/applied-digital-brings-an-additional-75-mw-of-ai-infrastructure-online-at-polaris-forge-1/article_122bcc7f-45b8-5193-922c-817ca7fc8972.html",
+    "https://www.theamericanquorum.com/ai-data-center-buildout-31-6-trillion-2050/",
+    "https://ground.news/article/hpe-to-outline-networking-priorities-for-long-term-value-creation",
+    "https://ground.news/article/amazon-to-invest-1b-into-data-center-communities-amid-backlash-against-data-center-rollouts_c1bde6",
+    "https://asiatimes.com/2026/10/us-bans-chinese-data-center-gear-as-beijing-grounds-its-ai-talent/",
+    "https://www.stocktitan.net/sec-filings/2026-10-04/",
+    "https://ground.news/article/broadcom-to-lend-anthropic-up-to-42-billion-to-lease-its-chips-filing-says_4ddebb"
+  ],
+  "usage": {
+    "input_tokens": 786,
+    "output_tokens": 1099,
+    "cost_usd": 0.03284
+  }
+}

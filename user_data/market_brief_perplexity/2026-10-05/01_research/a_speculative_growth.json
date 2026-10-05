@@ -1,0 +1,167 @@
+{
+  "name": "a_speculative_growth",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Quantum, space, nuclear, robotics.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nQuantum computing (IonQ, Rigetti, D-Wave, Quantum Computing Inc, Infleqtion, IBM, Google), space (SpaceX, Rocket Lab, AST SpaceMobile), nuclear/SMR, eVTOL, robotics/humanoids, drones: technical milestones with figures, contracts, offerings, analyst actions, conferences, and each stock's move including sympathy moves.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **QBTS** \u2014 Quantum Computing\n- D-Wave Quantum opened a beta program for a gate-model quantum simulator on October 1, providing early access to BBVA, FirstQFM, Florida Atlantic University, and the J\u00fclich Supercomputing Centre; the simulator supports up to 21 qubits in ideal and hardware-emulation modes and is programmable through Ocean SDK, Quantum Circuit Description Language, and Qiskit. [report] (Ground News, Oct. 4; Startup Fortune, Oct. 4)\n- D-Wave\u2019s simulator uses dual-rail superconducting technology and is intended to support error-aware quantum programming; the company said its first dual-rail gate-model machine is planned for later in 2026. [report] (Quantum Zeitgeist, Oct. 5)\n\n## Quantum Computing\n- IBM and Harvard demonstrated learning SYK Hamiltonians with polynomial scaling, while Quantinuum reported that adiabatic evolution outperformed the fast Fourier transform for larger materials simulations. (Quantum Zeitgeist, Oct. 5)\n- New Mexico\u2019s Roadrunner Quantum Lab opened in Albuquerque with 12 initial company and national-laboratory tenants, including IonQ, Diraq, and Sandia; the facility has 35,000 square feet and $450 million in state backing. (Quantum Zeitgeist, Oct. 5)\n- QUDORA Technologies began a \u20ac122 million project involving seven German research institutions and industry partners to develop a 1,000-qubit fault-tolerant quantum computer. (Quantum Zeitgeist, Oct. 5)\n\n## **IONQ** \u2014 Quantum Computing\n- Bank of America initiated coverage of IonQ with a **Buy** rating and a **$60** price target; the report was cited during the October 2\u20135 window, although the underlying initiation was reported earlier. (Business Insider, Oct. 4)\n\n## **RGTI** \u2014 Quantum Computing\n- Rigetti closed at **$15.25** on Friday, October 2. (Live Trading News, Oct. 5)\n\n## **QBTS** \u2014 Quantum Computing\n- D-Wave closed at **$15.77** on Friday, October 2. (Live Trading News, Oct. 5)\n\n## **ASTS** \u2014 Wireless & Mobile\n- AST SpaceMobile shares closed at **$58.45** on Friday, October 2, up **2%** for the session; the stock was reported approximately **1% higher overnight** late Sunday into Monday after T-Mobile removed \u201cwith Starlink\u201d from its consumer satellite-service branding. [rumor] (Yahoo Finance, Oct. 5, 01:44 ET)\n- The reported T-Mobile branding change involved removal of \u201cwith Starlink\u201d from the T-Satellite logo and introductory website language; the item was attributed to PCMag and was not presented as a change to AST SpaceMobile\u2019s carrier agreements. [report] (Yahoo Finance, Oct. 5, 01:44 ET)\n- AST SpaceMobile\u2019s existing agreements with AT&T and Verizon were reported as preserved under a formalized joint venture involving AT&T, T-Mobile, and Verizon; the venture is intended to pool spectrum resources and expand satellite coverage. (Yahoo Finance, Oct. 5, 01:44 ET)\n\n## **RKLB** \u2014 Space\n- Rocket Lab signed a 20-mission Electron launch agreement with Japanese Earth-observation company Synspective covering **2028\u20132031**; the agreement was described as Rocket Lab\u2019s largest commercial Electron contract and increased Synspective\u2019s total bookings to **47 missions**. [report] (Ground News, Oct. 5)\n- The Synspective agreement was reported to increase Rocket Lab\u2019s contracted backlog above **$2.3 billion** and Electron backlog above **100 launches**. [report] (Startup Fortune, Oct. 2)\n- NASA\u2019s Mars Telecommunications Network contract award to Blue Origin was reported as paused, with Rocket Lab\u2019s formal protest to the Government Accountability Office still unresolved. [report] (Advanced Television, Oct. 5, 10:00 ET)\n- Rocket Lab\u2019s Neutron maiden-flight timing was reported as uncertain, with the 2026 launch window narrowing and a potential slip into 2027; the company had not officially announced a delay. [report] (Advanced Television, Oct. 5, 10:00 ET)\n\n## Space\n- SpaceX reportedly completed three launches and four booster landings in under 13 hours, carrying four astronauts, 130 commercial payloads, and a classified intelligence satellite. [report] (Ground News, Oct. 5, 07:06 ET)\n- SpaceX\u2019s reported Friday share price was **$158.96**, up **7.35%** for the session; SpaceX is not a publicly listed U.S. equity ticker in the cited report. [report] (Ground News, Oct. 5, 07:06 ET)\n- The reported SpaceX launch activity included NASA\u2019s Crew-13 mission, a Google satellite deployment, and a classified National Reconnaissance Office payload. [report] (Ground News, Oct. 5, 07:06 ET)\n\n## Quantum Computing\n- Friday, October 2 closing prices cited for the broader quantum group were **$15.25** for Rigetti and **$15.77** for D-Wave; the available results did not provide a complete, consistently sourced October 2\u20135 price set for IonQ, Quantum Computing Inc., IBM, or Google. (Live Trading News, Oct. 5)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5, 2026 by Quantum Computing Technology\n...\nIBM and Harvard showed they could learn SYK Hamiltonians with polynomial scaling, while Quantinuum found that adiabatic evolution beat the FFT for larger materials simulations.\nThis pragmatic turn is visible in infrastructure investments, including...",
+      "source": "web",
+      "title": "Quantum Zeitgeist Digest October 2026",
+      "url": "https://quantumzeitgeist.com/quantum-zeitgeist-digest-october-3/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Rocket Report: SpaceX completes launch triple-header; Rocket Lab nets big contract\nMonday, October 5, 2026Set Location\n...\n## The launches carried four astronauts, 130 commercial payloads and a classified intelligence satellite, while SpaceX said recovered boosters totaled four.\n...\nSpaceX completed...",
+      "source": "web",
+      "title": "Rocket Report: SpaceX completes launch triple-header; Rocket Lab nets big contract",
+      "url": "https://ground.news/article/rocket-report-spacex-completes-launch-triple-header-rocket-lab-nets-big-contract"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ASTS Stock Edges Up Overnight: Retail Traders Seize On T-Mobile Dropping Starlink Name From Satellite Page\n...\n# ASTS Stock Edges Up Overnight: Retail Traders Seize On T-Mobile Dropping Starlink Name From Satellite Page\n...\nMon, October 5, 2026 at 1:44 AM GMT-3\n...\n- AT&T, T-Mobile and Verizon forma...",
+      "source": "web",
+      "title": "ASTS Stock Edges Up Overnight: Retail Traders Seize On ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/asts-stock-edges-overnight-retail-044457331.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "On 2 October 2026 Rigetti (NASDAQ: RGTI) closed at $15.25, D-Wave (NASDAQ: QBTS) at $15.77 and Quantinuum (NASDAQ: QNT) at $46.08, per Google Finance.\nD-Wave opened a gate-model simulator beta on 1 October, per SiliconANGLE.\nIBM (NYSE: IBM) won approval on 29 September for a $2.5 billion next-genera...",
+      "source": "web",
+      "title": "Weekly Market Outlook: a hiking Fed, a stalling job market, Anthropic's IPO clock and the AI leaders",
+      "url": "https://www.livetradingnews.com/weekly-market-outlook-fed-minutes-anthropic-and-openai-ipos-gold-bitcoin-fx"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**Google Rolls Out Gemini 4 Argon, Its Most Advanced AI Model**",
+      "source": "web",
+      "title": "IQT Sunday Edition",
+      "url": "https://www.insidequantumtechnology.com/news-archive/iqt-sunday-edition-6/amp/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "OPTX ...\ngiven small float; low-cap size and key new 'SpaceForce/ millitary' contracts; I'd expect Syntec Optics to be double digits, soon enough.",
+      "source": "web",
+      "title": "myemail.constantcontact.com \u00b7 Gene-Inger-s-DailyGene Inger's Daily Briefing - for October 5, 2026",
+      "url": "https://myemail.constantcontact.com/Gene-Inger-s-Daily-Briefing---for-October-5--2026.html?soid=1104387531293&aid=pYb6e4JG64k"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5, 2026\nThe Jeff Bezos-backed Blue Origin rocket, which had received a contract on September 1st from NASA, has reportedly seen the contract paused by NASA for its Mars telecommunications orbiter project.\nThe contract has neither been reassigned or confirmed but Rocket Lab had objected to th...",
+      "source": "web",
+      "title": "Latest News",
+      "url": "https://www.advanced-television.com/2026/10/05/nasa-blue-origin-mars-rocket-deal-in-doubt/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "AST SpaceMobile and Rocket Lab Keep Winning Deals While Their Stocks Keep Falling - Startup Fortune\n...\nRocket Lab signed its biggest customer ever and AST SpaceMobile deepened its AT&T and Verizon ties, yet both stocks are down sharply from their 2026 highs.\nNeutron delays, a satellite loss, diluti...",
+      "source": "web",
+      "title": "AST SpaceMobile and Rocket Lab Keep Winning Deals While Their Stocks Keep Falling - Startup Fortune",
+      "url": "https://startupfortune.com/ast-spacemobile-and-rocket-lab-keep-winning-deals-while-their-stocks-keep-falling/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "D-Wave Quantum Inc.\n...\nBank of America initiated coverage of IonQ with a Buy rating and a $60 price target.",
+      "source": "web",
+      "title": "Why Did IONQ Stock Fall Just 0.5% While Other Quantum Stocks Sank?",
+      "url": "https://markets.businessinsider.com/news/stocks/why-did-ionq-stock-fall-just-0-5-while-other-quantum-stocks-sank-1036595652"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**IonQ** (NYSE: IONQ), **D-Wave Quantum** (NASDAQ: QBTS), and **Rigetti Computing** (NASDAQ: RGTI) could provide outsize returns to those who get in before quantum computing becomes a much bigger story on Wall Street.\n...\nIn fact, the company has announced quantum computing deals with companies such...",
+      "source": "web",
+      "title": "3 Millionaire-Maker Quantum Computing Stocks Wall ...",
+      "url": "https://finance.yahoo.com/technology/articles/3-millionaire-maker-quantum-computing-120400760.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Announces Dirac-3S, Scaling to Nearly 10,000 Variables",
+      "source": "web",
+      "title": "Quantum Computing Inc. (QUBT) latest stock news and ...",
+      "url": "https://uk.finance.yahoo.com/quote/QUBT/news/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u0410\u043a\u0446\u0438\u0438 IonQ (NYSE:IONQ) \u0432 \u0441\u0435\u043d\u0442\u044f\u0431\u0440\u0435 2026 \u0433\u043e\u0434\u0430 \u043f\u043e\u0434\u0441\u043a\u043e\u0447\u0438\u043b\u0438 \u043d\u0430 11,6%, \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0432 \u0440\u043e\u0441\u0442 \u043f\u043e\u0441\u043b\u0435 \u0430\u0432\u0433\u0443\u0441\u0442\u043e\u0432\u0441\u043a\u0438\u0445 +7,9%.\n...\n\u0412 \u043a\u043e\u043d\u0446\u0435 \u0441\u0435\u043d\u0442\u044f\u0431\u0440\u044f \u0430\u043a\u0446\u0438\u0438 IonQ \u0440\u0435\u0437\u043a\u043e \u0432\u044b\u0440\u043e\u0441\u043b\u0438 \u043f\u043e\u0441\u043b\u0435 \u0442\u043e\u0433\u043e, \u043a\u0430\u043a Bank of America \u043d\u0430\u0447\u0430\u043b \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u0447\u0435\u0441\u043a\u043e\u0435 \u043f\u043e\u043a\u0440\u044b\u0442\u0438\u0435.\n\u0411\u0430\u043d\u043a \u043f\u0440\u0438\u0441\u0432\u043e\u0438\u043b \u0430\u043a\u0446\u0438\u044f\u043c \u0440\u0435\u0439\u0442\u0438\u043d\u0433 \u00ab\u041f\u043e\u043a\u0443\u043f\u0430\u0442\u044c\u00bb \u0438 \u0446\u0435\u043b\u0435\u0432\u0443\u044e \u0446\u0435\u043d\u0443 $60.",
+      "source": "web",
+      "title": "\u0410\u043a\u0446\u0438\u0438 IonQ \u0432\u044b\u0440\u043e\u0441\u043b\u0438 \u043d\u0430 11,6% \u0432 \u0441\u0435\u043d\u0442\u044f\u0431\u0440\u0435 \u0431\u043b\u0430\u0433\u043e\u0434\u0430\u0440\u044f ...",
+      "url": "https://techora.ru/news/aktsii-ionq-vyrosli-na-11-6-2026-10-02"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- AST SpaceMobile shipped three more BlueBird satellites toward Cape Canaveral on Sept. 30, with production now advancing through BlueBird 50 of its planned 45-satellite constellation.\n- A securities fraud class-action lawsuit alleging misleading statements about capital needs adds to ...",
+      "source": "web",
+      "title": "AST SpaceMobile's BlueBird Progress Comes With ...",
+      "url": "https://www.marketbeat.com/articles/ast-spacemobiles-bluebird-progress-comes-with-several-risks-still-unresolved/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "D-Wave Quantum (QBTS) launches a gate-model simulator beta, giving early access for error-aware programming and quantum app development.\n...\nD-Wave Quantum launched a beta gate-model quantum simulator on October 1, 2026, giving partners including BBVA and J\u00fclich Supercomputing Centre early access to...",
+      "source": "web",
+      "title": "D-Wave Launches Gate-Model Simulator Beta Program, Advancing Error-Aware Programming Capabilities",
+      "url": "https://ground.news/article/d-wave-opens-quantum-computing-gate-model-simulator-beta-program"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "D-Wave Quantum launched a beta gate-model quantum simulator on October 1, 2026, giving partners including BBVA and J\u00fclich Supercomputing Centre early access to error-aware programming tools built on its dual-rail qubit.\nThe move follows D-Wave's $550 million acquisition of Yale spinout Quantum Circu...",
+      "source": "web",
+      "title": "D-Wave Launches a Gate-Model Quantum Simulator Beta ...",
+      "url": "https://startupfortune.com/d-wave-launches-a-gate-model-quantum-simulator-beta-challenging-ibm-and-ionq/"
+    }
+  ],
+  "citations": [
+    "https://quantumzeitgeist.com/quantum-zeitgeist-digest-october-3/",
+    "https://ground.news/article/rocket-report-spacex-completes-launch-triple-header-rocket-lab-nets-big-contract",
+    "https://finance.yahoo.com/markets/stocks/articles/asts-stock-edges-overnight-retail-044457331.html",
+    "https://www.livetradingnews.com/weekly-market-outlook-fed-minutes-anthropic-and-openai-ipos-gold-bitcoin-fx",
+    "https://www.insidequantumtechnology.com/news-archive/iqt-sunday-edition-6/amp/",
+    "https://myemail.constantcontact.com/Gene-Inger-s-Daily-Briefing---for-October-5--2026.html?soid=1104387531293&aid=pYb6e4JG64k",
+    "https://www.advanced-television.com/2026/10/05/nasa-blue-origin-mars-rocket-deal-in-doubt/",
+    "https://startupfortune.com/ast-spacemobile-and-rocket-lab-keep-winning-deals-while-their-stocks-keep-falling/",
+    "https://markets.businessinsider.com/news/stocks/why-did-ionq-stock-fall-just-0-5-while-other-quantum-stocks-sank-1036595652",
+    "https://finance.yahoo.com/technology/articles/3-millionaire-maker-quantum-computing-120400760.html",
+    "https://uk.finance.yahoo.com/quote/QUBT/news/",
+    "https://techora.ru/news/aktsii-ionq-vyrosli-na-11-6-2026-10-02",
+    "https://www.marketbeat.com/articles/ast-spacemobiles-bluebird-progress-comes-with-several-risks-still-unresolved/",
+    "https://ground.news/article/d-wave-opens-quantum-computing-gate-model-simulator-beta-program",
+    "https://startupfortune.com/d-wave-launches-a-gate-model-quantum-simulator-beta-challenging-ibm-and-ionq/"
+  ],
+  "usage": {
+    "input_tokens": 774,
+    "output_tokens": 1166,
+    "cost_usd": 0.03381
+  }
+}

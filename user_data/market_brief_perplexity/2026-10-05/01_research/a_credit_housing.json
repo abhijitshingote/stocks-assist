@@ -1,0 +1,167 @@
+{
+  "name": "a_credit_housing",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Credit & housing.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nHigh-yield and CCC bond yields, credit spreads, leveraged-loan and private-credit stress, named credit strategists (e.g. Apollo's Torsten Slok) with quotes; mortgage rates (Freddie Mac, MBA, MND), housing data, and the rate impact on REITs, homebuilders and mortgage lenders with stock moves.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Credit markets [Macro]\n- Global corporate-bond spreads widened by approximately **5 basis points** through Thursday, October 1, putting risk premiums at their highest level in six months; the report attributed the move to higher bond yields, inflation concerns and record borrowing (Bloomberg, Oct. 2 03:37 ET).[7]\n- **High-yield credit** was reported at approximately **7.6%**, while **CCC-rated credit** was approximately **15%** and **private credit** approximately **8.3%**; the figures were attributed to Apollo chief economist **Torsten Slok** (Gokhshtein, Oct. 2; publication time unavailable).[1]\n- **CCC spreads** were reported at **1,007 basis points** over Treasuries, up from **860 basis points** at the start of September; the source said the level was the highest since the March 2023 banking crisis (Unbiased Headlines, Oct. 1; outside the requested window, cited only as direct background).[13]\n- Apollo chief economist **Torsten Slok** said Treasury yields near **5%** and CCC credit near **15%** had ended the period in which investors accepted low yields for income; the quotation was published in an article dated October 2 (Gokhshtein, Oct. 2; publication time unavailable).[1]\n\n## **FICO**, **TRU**, **EFX** [Credit reporting]\n- **Fair Isaac (FICO)** fell **6.6%**, **TransUnion (TRU)** fell **2.4%**, and **Equifax (EFX)** fell **3.4%** in premarket trading after a Bloomberg report said the Federal Housing Finance Agency was considering requiring mortgage lenders selling loans to Fannie Mae and Freddie Mac to use data from **two credit bureaus instead of three** [report]; FHFA Director **Bill Pulte** could announce the change as soon as October 12 (Reuters market item republished by Bitget, Oct. 2; publication time unavailable).[4]\n- The same report said FICO, TransUnion and Equifax had declined **60.9%**, **27.5%** and **35.6%**, respectively, year to date through the prior trading-day close (Bloomberg report cited by Bitget, Oct. 2; publication time unavailable).[4]\n\n## Mortgage rates [Housing]\n- The average **30-year fixed mortgage rate** reached **7.28%** on October 1, a three-year high, after rising **62 basis points in five weeks** (Realtor.com, Oct. 5 11:04 ET).[2]\n- On October 5, the average conforming **30-year fixed rate** was **7.456%**, up from **7.361%** one week earlier; the average **15-year fixed rate** was **6.613%**, up from **6.599%** (Fortune, Oct. 5 07:10 ET).[3]\n- The October 5 average **30-year jumbo mortgage rate** was **7.644%**, compared with **7.415%** one week earlier; the average FHA rate was **6.821%**, VA rate **6.912%**, and USDA rate **6.962%** (Fortune, Oct. 5 07:10 ET).[3]\n- The October 5 mortgage-rate figures were sourced to **Mortgage Research Center**; Freddie Mac\u2019s next weekly Primary Mortgage Market Survey release was scheduled for Thursday, October 8 (Fortune, Oct. 5 07:10 ET; Realtor.com, Oct. 5 11:04 ET).[2][3]\n\n## Real estate equities [REITs / Housing]\n- The **State Street Real Estate Select Sector SPDR ETF (XLRE)** declined **1.5%** in the week ended October 2, while office REITs declined **4.7%**, health-care REITs gained **0.6%**, and mortgage REIT **Annaly Capital Management (NLY)** declined **10%** (Citybiz, Oct. 5 09:52 ET).[5]\n- **Howard Hughes Holdings (HHH)** gained **3.8%**, while **Outfront Media (OUT)** also gained **3.8%**, during the week ended October 2 (Citybiz, Oct. 5 09:52 ET).[5]\n- The October 5 report attributed the real-estate-sector moves to higher Treasury yields, higher mortgage rates and increased borrowing costs for property acquisitions, development and refinancing (Citybiz, Oct. 5 09:52 ET).[5]\n\n## Treasury rates and rate-sensitive housing [Macro / Housing]\n- The 10-year Treasury yield rose to **5.262%** on October 2 after trading as low as **5.157%** following the September employment report; the yield was up **2.82 basis points** at the cited reading (Economic Times, Oct. 2 12:21 ET).[11]\n- The September employment report showed **29,000** jobs added, versus an expected **84,000**, while unemployment was **4.2%** versus an expected **4.1%**; futures pricing implied a **23%** probability of an October Federal Reserve rate increase, down from **28%** before the report (Yahoo Finance, Oct. 2; publication time unavailable).[15]\n- A market report said utilities, real estate and homebuilders weakened as the 10-year Treasury yield reached **5.34%** and the 30-year yield reached **5.69%**; those yield readings were reported as the highest since 2002 for the 30-year bond and the highest in 24 years for the 10-year bond (Philstar, Oct. 5 08:23 ET).[8]",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Chief economist Torsten Slok says fixed-income yields have finally become attractive, with 10-year Treasuries near 5 percent and CCC credit at 15 percent, ending the low-rate era that forced risk-taking for income.\n...\nMoney market funds now offer 3.5 percent.\nThe 10-year Treasury yield sits near 5....",
+      "source": "web",
+      "title": "Apollo's Slok: 5% Treasuries End Decade of Yield Famine",
+      "url": "https://gokhshtein.com/news/2026-10-02-apollos-slok-5-treasuries-end-decade-of-yield-famine"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5, 2026\n...\nSenior economist **Hannah Jones** will be covering our Weekly Housing Data release on Thursday, showing the latest trends in listing activity and prices.\nThen on Friday, Hannah will publish the September Hottest Housing Markets report, showing which areas of the U.S. still have f...",
+      "source": "web",
+      "title": "Housing Week Ahead: Hottest Markets and Mortgage Rates",
+      "url": "https://www.realtor.com/news/trends/weekly-housing-video-data-reports-october-5-2026/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The average interest rate for a 30-year, fixed-rate conforming mortgage loan in the U.S. is 7.456%, down from the day before, according to data from Mortgage Research Center.\nMeanwhile, the average rate for a 15-year, fixed-rate conforming mortgage loan is 6.613%, down for the same time period.\nComp...",
+      "source": "web",
+      "title": "Mortgage rates today, Oct. 5, 2026",
+      "url": "https://fortune.com/article/current-mortgage-rates-10-05-2026/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "October 2 - ** Shares of US credit reporting companies fall in premarket trading\n** According to Bloomberg, the US Federal Housing Finance Agency plans to ease mortgage loan credit data requirements for Fannie Mae (FNMA.PK) and Freddie Mac (FMCC.PK)\n** Fannie Mae and Freddie Mac are two mortgage fin...",
+      "source": "web",
+      "title": "BUZZ-FHFA may ease mortgage data requirements, US ...",
+      "url": "https://www.bitget.com/amp/news/detail/12560605903823"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Real Estate Stocks Slide as Mortgage Rates Reach 7.28%; Howard Hughes Bucks Decline | citybiz\n...\nOctober 5, 2026\nReal estate stocks fell during the week ended Oct. 2 as rising borrowing costs pressured housing and mortgage-related companies, with **office landlords** and **mortgage REITs** among th...",
+      "source": "web",
+      "title": "Real Estate Stocks Slide as Mortgage Rates Reach 7.28%",
+      "url": "https://www.citybiz.co/article/913602/real-estate-stocks-slide-as-mortgage-rates-reach-7-28-howard-hughes-bucks-decline/?abkw=citybizwashington"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "According to the Mortgage Research Center, the current average interest rate for a 30-year fixed mortgage stands at 7.46%.\nIn comparison, the average rate for 15 mortgage is6.%, and for a 30-year jumbo mortgage, it is 7.64%.\n...\nThe present average interest rate for 30, fixed mortgage is7.46%, refle...",
+      "source": "web",
+      "title": "Mortgage Rates Today: October 5, 2026",
+      "url": "https://www.forbes.com/advisor/mortgages/mortgage-rates-10-05-26/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "# Credit Markets Sputter as Spreads Widen Most Since March\n...\nOctober 2, 2026 at 3:37 AM UTC\n...\nCredit markets are showing signs of caution, as surging bond yields, growing inflation fears, and record borrowings make high-grade company debt seem like less of a bastion of safety.\nSpreads on global ...",
+      "source": "web",
+      "title": "Credit Markets Sputter as Spreads Widen Most Since March",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-02/global-credit-market-starts-to-sputter-as-jumbo-deals-drag"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Higher bond yields have hit the most rate-sensitive parts of the market.\nThe 10-year US Treasury yield surged to 5.34 percent last Thursday, its highest level in 24 years.\nThe 30-year yield also climbed to 5.69 percent, its highest level since 2002.\nUtilities, real estate and home builders have weak...",
+      "source": "web",
+      "title": "www.philstar.com \u00b7 business \u00b7 2026/10/05Market\u2019s narrowing breadth - Philstar.com",
+      "url": "https://www.philstar.com/business/2026/10/05/2560912/markets-narrowing-breadth"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "# Stocks remain under the thrall of higher yields and higher oil. Here\u2019s what\u2019s ahead\n...\nWith little on the calendar next week before the start of third quarter earnings season, investors will likely remain under the thrall of the two forces buffeting the current market: higher oil prices and highe...",
+      "source": "web",
+      "title": "Stock market next week: Outlook for Oct. 5-9, 2026",
+      "url": "https://www.cnbc.com/2026/10/02/stock-market-next-week-outlook-for-oct-5-9-2026-.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "CNBC Markets Now provides a look at the day\u2019s market moves with commentary and analysis from Michael Santoli, CNBC Senior Markets Commentator.",
+      "source": "web",
+      "title": "CNBC Markets Now: October 2, 2026",
+      "url": "https://www.cnbc.com/video/2026/10/02/cnbc-markets-now-october-2-2026.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "US Treasury yields reversed their earlier declines on Friday as investors digested September's weaker-than-expected jobs report, which reduced bets for Federal Reserve interest rate hikes.\nThe yield on benchmark US 10-year notes rose 2.82 basis points to 5.262% after falling earlier to 5.1570%, whic...",
+      "source": "web",
+      "title": "Live: Nasdaq rises 1% after softer jobs data eases rate hike ...",
+      "url": "https://economictimes.com/markets/us-stocks/wall-street-guide/dow-jones-us-stock-market-live-updates-nasdaq-sp-500-iran-israel-war-hormuz-talks-brent-crude-oil-inflation-treasury-bond-yields-fed-rate-hike-earnings-forecast-jobs-nike-nvidia-amd-moderna-ai-chip-stock-price-news-2-october-2026/liveblog/134639271.cms"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Higher bond yields pose multiple problems for the market.\nThey make corporate financing more expensive (a funding issue); debt-reliant purchases more expensive (a consumer demand issue); and future earnings worth less in present value terms (a valuation issue).\n...\nWeek ahead Monday, Oct. 5 S & P Gl...",
+      "source": "web",
+      "title": "Here are 3 things we're watching in the stock market in the week ahead",
+      "url": "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-01",
+      "place_metadata": null,
+      "snippet": "**CCC-rated junk bond spreads blew past 1,000 basis points over Treasuries this week, a level last seen when Silicon Valley Bank and Credit Suisse collapsed in March 2023.\nThe pain is concentrated in heavily leveraged, private-equity-backed borrowers from the 2021-2022 cheap-money vintage that now f...",
+      "source": "web",
+      "title": "Riskiest US Corporate Bonds Hit Distressed Levels Not Seen Since 2023 Banking Crisis",
+      "url": "https://unbiasedheadlines.com/article/riskiest-us-corporate-bonds-hit-distressed-levels-not-seen-since-2023-banking-crisis"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Oct 2nd, 2026\n...\nGet a jump start on the US trading day with Dani Burger on \"Bloomberg Open Interest.\"\nA big jobs miss rattles markets as credit investors turn cautious.",
+      "source": "web",
+      "title": "Watch September Jobs Miss Shocks Markets",
+      "url": "https://www.bloomberg.com/news/videos/2026-10-02/open-interest-10-2-2026-video"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Major stock indexes ended higher Friday, with the Nasdaq touching a record high, after the U.S. added fewer jobs than expected in September.\nThe Dow Jones Industrial Average and S&P 500 finished lower for the week.\nThe Nasdaq Composite, meanwhile, logged a third straight weekly gain.\nThe Nasdaq ende...",
+      "source": "web",
+      "title": "Nasdaq Hits New High; Dow, S&P 500 Book Weekly Losses",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-2-2026-104753291.html"
+    }
+  ],
+  "citations": [
+    "https://gokhshtein.com/news/2026-10-02-apollos-slok-5-treasuries-end-decade-of-yield-famine",
+    "https://www.realtor.com/news/trends/weekly-housing-video-data-reports-october-5-2026/",
+    "https://fortune.com/article/current-mortgage-rates-10-05-2026/",
+    "https://www.bitget.com/amp/news/detail/12560605903823",
+    "https://www.citybiz.co/article/913602/real-estate-stocks-slide-as-mortgage-rates-reach-7-28-howard-hughes-bucks-decline/?abkw=citybizwashington",
+    "https://www.forbes.com/advisor/mortgages/mortgage-rates-10-05-26/",
+    "https://www.bloomberg.com/news/articles/2026-10-02/global-credit-market-starts-to-sputter-as-jumbo-deals-drag",
+    "https://www.philstar.com/business/2026/10/05/2560912/markets-narrowing-breadth",
+    "https://www.cnbc.com/2026/10/02/stock-market-next-week-outlook-for-oct-5-9-2026-.html",
+    "https://www.cnbc.com/video/2026/10/02/cnbc-markets-now-october-2-2026.html",
+    "https://economictimes.com/markets/us-stocks/wall-street-guide/dow-jones-us-stock-market-live-updates-nasdaq-sp-500-iran-israel-war-hormuz-talks-brent-crude-oil-inflation-treasury-bond-yields-fed-rate-hike-earnings-forecast-jobs-nike-nvidia-amd-moderna-ai-chip-stock-price-news-2-october-2026/liveblog/134639271.cms",
+    "https://www.cnbc.com/investingclub/2026/10/04/here-are-3-things-were-watching-in-the-stock-market-in-the-week-ahead.html",
+    "https://unbiasedheadlines.com/article/riskiest-us-corporate-bonds-hit-distressed-levels-not-seen-since-2023-banking-crisis",
+    "https://www.bloomberg.com/news/videos/2026-10-02/open-interest-10-2-2026-video",
+    "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-2-2026-104753291.html"
+  ],
+  "usage": {
+    "input_tokens": 764,
+    "output_tokens": 1256,
+    "cost_usd": 0.03513
+  }
+}

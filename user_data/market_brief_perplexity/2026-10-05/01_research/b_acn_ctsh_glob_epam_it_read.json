@@ -1,0 +1,167 @@
+{
+  "name": "b_acn_ctsh_glob_epam_it_read",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Story: ACN \u22126% / CTSH \u22124% / GLOB \u22125% / EPAM \u22125%: IT-Services Selloff Catalyst. Related tickers: ACN, CTSH, GLOB, EPAM, INFY.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nWhy this needs follow-up: Four IT-services stocks all dropped 3\u20136% on the same session; the notes vaguely cite Accenture Q4 results as a read-through but give no detail on what in the print spooked the group or which firms issued follow-on downgrades.\n\nANSWER EACH QUESTION (run a separate search for each):\n- What were Accenture's fiscal Q4 2026 revenue, bookings, and fiscal 2027 guidance figures reported on October 1 2026, and which segments missed or beat consensus?\n- Did any sell-side analysts downgrade or cut price targets on Cognizant, EPAM, Globant, or Infosys on October 2 2026 citing Accenture's results?\n- What specific commentary did Accenture management give on AI-driven demand displacement of traditional IT-services headcount on the October 1 2026 earnings call?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Accenture [Earnings]\n\n- Accenture reported fiscal Q4 2026 revenue of **$18.68 billion**, up **6% in U.S. dollars** and **7% in local currency**, versus consensus of **$18.03 billion**; adjusted EPS was **$3.29** versus consensus of **$3.18\u2013$3.19**. (Accenture release, Oct. 1; CNBC, Oct. 1)\n- Q4 new bookings were **$22.17 billion**, up **4% in U.S. dollars** and **5% in local currency**, with a **1.2 book-to-bill ratio**. (Accenture release, Oct. 1)\n- Q4 managed-services bookings were **$12.77\u2013$12.8 billion**, with a **1.4 book-to-bill ratio**; consulting bookings were **$9.40 billion**. (Accenture release, Oct. 1)\n- Q4 consulting revenue was **$9.28 billion**, up **6%** in U.S. dollars; managed-services revenue was **$9.40 billion**, up **7%**. (Accenture release, Oct. 1)\n- Accenture\u2019s Q4 revenue exceeded its prior guidance range of **$17.75 billion to $18.40 billion**. (Accenture release, Oct. 1)\n- For fiscal 2027, Accenture guided to **3%\u20136% revenue growth in local currency**, **GAAP diluted EPS of $14.39\u2013$14.81**, and at least **$9.5 billion** of cash returned to shareholders. (Accenture release, Oct. 1)\n- Fiscal Q1 2027 revenue guidance was **$18.95 billion\u2013$19.60 billion**, equivalent to **2%\u20136% local-currency growth** and approximately **1% negative foreign-exchange impact**. (Accenture release, Oct. 1)\n- Fiscal 2027 guidance included an expected **2%\u20132.5% contribution from acquisitions**. (MarketBeat, Oct. 1)\n- Accenture reported growth across all three geographic markets and all five industry groups; **Communications, Media & Technology** led industry growth at **10%\u201311%**, while Products revenue was approximately **$5.6 billion**, Financial Services approximately **$3.5 billion**, Health & Public Service approximately **$3.9 billion**, and Resources approximately **$2.5 billion**. (Accenture release, Oct. 1; Investing.com, Oct. 1)\n- The available reports identify no Q4 segment that missed consensus; the published data show an overall revenue and EPS beat, but do not provide a complete analyst-consensus table for each Accenture industry group or service line. (CNBC, Oct. 1; Accenture release, Oct. 1)\n\n## Accenture [AI demand and headcount commentary]\n\n- Accenture said it had nearly **110,000 AI and data professionals** at fiscal year-end 2026, exceeding its prior three-year goal of expanding that workforce from **40,000 to 80,000**. (Accenture earnings-call transcript, Oct. 2)\n- More than **400 clients** initiated advanced AI projects during fiscal 2026, including nearly **100 clients in Q4**. (MarketBeat, Oct. 1)\n- Management said clients were moving from AI experimentation toward implementation work involving **digital cores, data foundations, and enterprise AI stacks**. (MarketBeat, Oct. 1)\n- Accenture said AI-related productivity gains were **deflationary**, but were being offset by increased project scope and new categories of work. (Yahoo Finance earnings-call summary, Oct. 1)\n- Management said revenue per person increased in fiscal 2026 and attributed part of that increase to AI-driven productivity. (Yahoo Finance earnings-call summary, Oct. 1)\n- Accenture said it expected to hire in every market during fiscal 2027, but at a **lower rate than fiscal 2026**, partly because of AI-driven internal productivity gains. (Yahoo Finance earnings-call summary, Oct. 1)\n- Management said it expected to continue hiring entry-level workers while the nature of entry-level work changed. (Yahoo Finance earnings-call highlights, Oct. 1)\n- The available reporting does not provide a quantified estimate of traditional IT-services headcount displaced by AI, nor does it identify a specific number of jobs eliminated because of AI. (Accenture earnings-call transcript, Oct. 2)\n\n## Cognizant [Analyst actions]\n\n- No dated October 2, 2026 analyst downgrade or price-target reduction for **Cognizant (CTSH)** citing Accenture\u2019s results is identified in the available search results through **12:20 ET on October 5, 2026**.\n\n## EPAM [Analyst actions]\n\n- No dated October 2, 2026 analyst downgrade or price-target reduction for **EPAM Systems (EPAM)** citing Accenture\u2019s results is identified in the available search results through **12:20 ET on October 5, 2026**.\n\n## Globant [Analyst actions]\n\n- No dated October 2, 2026 analyst downgrade or price-target reduction for **Globant (GLOB)** citing Accenture\u2019s results is identified in the available search results through **12:20 ET on October 5, 2026**.\n\n## Infosys [Analyst actions]\n\n- No dated October 2, 2026 analyst downgrade or price-target reduction for **Infosys (INFY)** citing Accenture\u2019s results is identified in the available search results through **12:20 ET on October 5, 2026**.\n\n## Related stocks [Reported moves]\n\n- The supplied story identified **ACN down 6%**, **CTSH down 4%**, **GLOB down 5%**, and **EPAM down 5%** on October 5, 2026; the available search results do not provide independently time-stamped price records for those moves by 12:20 ET. (User-supplied market note, Oct. 5)\n- **Infosys (INFY)** was listed as a related ticker, but no percentage move or time-stamped October 5 price was provided in the available search results. (User-supplied market note, Oct. 5)",
+  "search_results": [
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "## Accenture delivers fourth-quarter revenue above the high end of the company\u2019s guided range, with broad-based growth across all geographic markets, industry groups and types of work, and strong EPS, free cash flow and profitability growth\nNEW YORK; October 1, 2026 \u2014 Accenture (NYSE: ACN) reported ...",
+      "source": "web",
+      "title": "Accenture Reports Fourth-Quarter and Full-Year Fiscal ...",
+      "url": "https://newsroom.accenture.com/news/2026/accenture-reports-fourth-quarter-and-full-year-fiscal-2026-results"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "- New bookings of $22.2 billion, an increase of 4% in U.S. dollars and 5% in local currency for the quarter, and $84.5 billion for the year\n- Revenues of $18.7 billion for the quarter, an increase of 6% in U.S. dollars and 7% in local currency; and $74.2 billion for the year, an increase of $4.5 bil...",
+      "source": "web",
+      "title": "Accenture Reports Fourth-Quarter and Full-Year Fiscal 2026 ...",
+      "url": "https://markets.ft.com/data/announce/detail?dockey=600-202610010639BIZWIRE_USPRX____20261001_BW220695-1"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Accenture reported fourth-quarter revenue of $18.68 billion on Thursday, a 6% increase from a year earlier that came in above the company's guided range of $17.75 billion to $18.40 billion.\n...\nThat same analyst consensus had estimated revenue of $18.03 billion, according to The Wall Street Journal....",
+      "source": "web",
+      "title": "Accenture Q4 FY2026 earnings beat revenue and profit estimates",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/accenture-q4-fy2026-earnings-beat-132206684.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Accenture PLC (NYSE:ACN) reported fourth-quarter revenue and earnings above analyst estimates on Thursday and forecast fiscal 2027 revenue growth of 3% to 6% in local currency, sending its shares up more than 18%.\nRevenue rose 6% from a year earlier to $18.7 billion, compared with estimates of $18.0...",
+      "source": "web",
+      "title": "Accenture shares soar on fourth-quarter estimates, fiscal ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/accenture-shares-soar-fourth-quarter-151100410.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- Management attributed the Q4 revenue beat to faster mobilization on new contracts, an uptick in small deal volume, and overdelivery in the federal business segment.\n...\n- Accenture exceeded its three-year goal by reaching 110,000 AI and data professionals, positioning the firm to capture demand as...",
+      "source": "web",
+      "title": "Accenture plc Q4 2026 Earnings Call Summary",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/accenture-plc-q4-2026-earnings-204510855.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Accenture reported a fourth-quarter revenue of $18.68 billion, up 6 percent in US dollar terms and above the company\u2019s guidance range of $17.75 billion-$18.40 billion.\n...\nFor the quarter ended August 31, Accenture's new bookings rose 4 percent in US dollar terms to $22.17 billion.\nManaged services ...",
+      "source": "web",
+      "title": "Accenture beats Q4 revenue guidance, raises margin outlook",
+      "url": "https://www.moneycontrol.com/news/business/information-technology/accenture-beats-q4-revenue-guidance-raises-margin-outlook-14042958.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Investing.com -- Accenture (NYSE:ACN) reported fourth-quarter results that exceeded analyst expectations on both earnings and revenue, sending shares up around 18% premarket as the company provided fiscal 2027 guidance that met investor expectations.\n...\nThe consulting and technology services firm p...",
+      "source": "web",
+      "title": "Accenture shares jump on earnings beat and upbeat ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/accenture-shares-jump-earnings-beat-111811478.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Accenture exceeded fourth-quarter expectations**, reporting $18.7 billion in revenue, up 7% in local currency, with bookings of $22.2 billion and a 1.2 book-to-bill ratio.\n...\n- **AI remains a strategic growth driver**: Accenture expanded its AI and data workforce to nearly 110,000 professionals...",
+      "source": "web",
+      "title": "What Accenture (ACN) Said on Its Q4 Earnings Call",
+      "url": "https://www.marketbeat.com/instant-alerts/transcript-what-accenture-acn-said-on-its-q4-earnings-call-2026-10-01/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The professional services giant reported quarterly revenue of $18.7 billion, up 7% in local currency, alongside adjusted earnings per share of $3.29 that beat analyst estimates by $0.10.\n...\nWith new bookings of $22.2 billion and a book-to-bill ratio of 1.2, the company demonstrated strong momentum ...",
+      "source": "web",
+      "title": "Accenture Q4 FY26 slides: AI partnerships drive 7% growth ...",
+      "url": "https://www.investing.com/news/company-news/accenture-q4-fy26-slides-ai-partnerships-drive-7-growth-shares-surge-93CH-4927617"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "## Accenture reported fourth-quarter revenue of $18.7 billion, up 6% year-on-year, beating the high end of its guidance. Operating margin expanded sharply, while the company expects revenue growth of 3-6% in local currency in fiscal 2027.\n...\nNew bookings stood at $22.2 billion in the fourth quarter...",
+      "source": "web",
+      "title": "Accenture Q4 revenue grows 6%, margin expands as IT giant beats ...",
+      "url": "https://www.cnbctv18.com/market/accenture-q4-revenue-grows-6-pc-margin-expands-as-it-giant-beats-guidance-20003206.htm"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Revenue** -- $18.68 billion for the fourth quarter, representing 7% growth in local currency driven by broad-based demand across all markets, industries, and both types of work.\n- **New Bookings** -- $22.17 billion for the quarter, reflecting a 5% increase in local currency and an overall book-t...",
+      "source": "web",
+      "title": "Accenture (ACN) Q4 2026 Earnings Call Transcript",
+      "url": "https://www.theglobeandmail.com/investing/markets/markets-news/Motley%20Fool/4920074/accenture-acn-q4-2026-earnings-call-transcript/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The professional services giant reported quarterly revenue of $18.7 billion, up 7% in local currency, alongside adjusted earnings per share of $3.29 that beat analyst estimates by $0.10.\n...\nWith new bookings of $22.2 billion and a book-to-bill ratio of 1.2, the company demonstrated strong momentum ...",
+      "source": "web",
+      "title": "Accenture Q4 FY26 slides: AI partnerships drive 7% growth, shares surge By Investing.com",
+      "url": "https://ca.investing.com/news/stock-market-news/accenture-q4-fy26-slides-ai-partnerships-drive-7-growth-shares-surge-93CH-4862320"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Accenture reported fourth-quarter revenue of $18.68 billion on Thursday, a 6% increase from a year earlier, as the consulting firm's stock posted its largest single-day gain on record.\n...\nThe quarter ending August 31 delivered $3.29 in diluted earnings per share, clearing the consensus estimates of...",
+      "source": "web",
+      "title": "Accenture Q4 2026 earnings beat sends stock up 22%",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/accenture-q4-2026-earnings-beat-172435987.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Accenture plc (ACN) reported fourth-quarter and full-year fiscal 2026 revenue of **$18.68 billion** and **$74.18 billion**, respectively.\n...\nNew bookings were $22.17 billion for the quarter and $84.54 billion for the year.",
+      "source": "web",
+      "title": "Accenture Q4 revenue beats guidance at $18.7B - ACN",
+      "url": "https://www.stocktitan.net/sec-filings/ACN/8-k-accenture-plc-reports-material-event-9596db9c148e.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- **Q4 Revenue:** $18.7 billion, up 6% in USD and 7% in local currency, above the top end of guided range.\n...\n- **Q4 Bookings:** $22.2 billion, up 4% in USD and 5% in local currency; book-to-bill of 1.2.\n...\n- **Q4 Managed Services Bookings:** Record $12.8 billion with a book-to-bill of 1.4.\n...\n- ...",
+      "source": "web",
+      "title": "Accenture PLC (ACN) (Q4 2026) Earnings Call Highlights",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/accenture-plc-acn-q4-2026-190037577.html"
+    }
+  ],
+  "citations": [
+    "https://newsroom.accenture.com/news/2026/accenture-reports-fourth-quarter-and-full-year-fiscal-2026-results",
+    "https://markets.ft.com/data/announce/detail?dockey=600-202610010639BIZWIRE_USPRX____20261001_BW220695-1",
+    "https://finance.yahoo.com/markets/stocks/articles/accenture-q4-fy2026-earnings-beat-132206684.html",
+    "https://finance.yahoo.com/markets/stocks/articles/accenture-shares-soar-fourth-quarter-151100410.html",
+    "https://finance.yahoo.com/markets/stocks/articles/accenture-plc-q4-2026-earnings-204510855.html",
+    "https://www.moneycontrol.com/news/business/information-technology/accenture-beats-q4-revenue-guidance-raises-margin-outlook-14042958.html",
+    "https://finance.yahoo.com/markets/stocks/articles/accenture-shares-jump-earnings-beat-111811478.html",
+    "https://www.marketbeat.com/instant-alerts/transcript-what-accenture-acn-said-on-its-q4-earnings-call-2026-10-01/",
+    "https://www.investing.com/news/company-news/accenture-q4-fy26-slides-ai-partnerships-drive-7-growth-shares-surge-93CH-4927617",
+    "https://www.cnbctv18.com/market/accenture-q4-revenue-grows-6-pc-margin-expands-as-it-giant-beats-guidance-20003206.htm",
+    "https://www.theglobeandmail.com/investing/markets/markets-news/Motley%20Fool/4920074/accenture-acn-q4-2026-earnings-call-transcript/",
+    "https://ca.investing.com/news/stock-market-news/accenture-q4-fy26-slides-ai-partnerships-drive-7-growth-shares-surge-93CH-4862320",
+    "https://finance.yahoo.com/markets/stocks/articles/accenture-q4-2026-earnings-beat-172435987.html",
+    "https://www.stocktitan.net/sec-filings/ACN/8-k-accenture-plc-reports-material-event-9596db9c148e.html",
+    "https://finance.yahoo.com/markets/stocks/articles/accenture-plc-acn-q4-2026-190037577.html"
+  ],
+  "usage": {
+    "input_tokens": 800,
+    "output_tokens": 1366,
+    "cost_usd": 0.03689
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "c_NNBR",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: NN, Inc. (NNBR).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| NNBR | NN, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +24.24% | +22.9% | 6.0\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why NNBR moved. Run several searches: \"why is NN, Inc. stock down/up\",\n\"NN, Inc. stock\", \"NNBR shares Friday October 2, 2026\", \"NN, Inc. concerns\", \"NN, Inc. FDA\",\n\"NN, Inc. analyst\", \"NN, Inc. price target\", \"NN, Inc. deal\", \"NN, Inc. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"NN, Inc. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## NN, Inc. (NNBR) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## NN, Inc. (NNBR) `Specialty Manufacturing`\n- NN, Inc. announced a **$50 million net PIPE financing** on Friday, October 2, 2026, with closing expected on or about October 5, subject to customary conditions. (GlobeNewswire via Yahoo Finance, Oct. 2, 08:00 ET)\n- The financing covers **16.1 million common shares or pre-funded warrants** priced at **$3.30 per share** or **$3.29 per warrant**. (NN, Inc. release via StockTitan, Oct. 2, 08:00 ET)\n- NN said most proceeds would redeem and eliminate its remaining **Series D Preferred Stock** held by funds managed by **Morgan Stanley Tactical Value**. (Investing.com, Oct. 2, 08:06 ET)\n- The remaining proceeds are allocated to **capital expenditures for new equipment** and **working capital** supporting higher sales. (Investing.com, Oct. 2, 08:06 ET)\n- CEO **Harold Bevis** said the next step is refinancing NN\u2019s high-cost term loan, with the company targeting a **multi-million-dollar reduction in cash interest expense**. (MarketChameleon, Oct. 2, time not stated)\n- NN reported **third-quarter 2026 sales at their highest level in eight years**, approximately **$130 million of annual new business secured over the prior 12 months**, and more than **200 programs won during 2026**. (Investing.com, Oct. 2, 08:06 ET)\n- NN said it is preparing to enter the **cable-assemblies** market through a new plant startup in **Mexico**. (Investing.com, Oct. 2, 08:06 ET)\n- NNBR closed Friday, October 2, at **$4.51**, up **24.24%** from **$3.63**; the reported intraday range was **$3.67\u2013$4.79**. (Ad-hoc-news.de, Oct. 5, 06:24 ET)\n- NNBR was reported at **$4.55 in post-market trading at 22:06 ET on October 2**, representing a **25.23%** increase from the $3.63 regular-session close. (MEXC, Oct. 2, 22:09 ET)\n- On Friday, October 2, NNBR was also identified among industrial stocks rising after September U.S. payrolls increased by **29,000 versus an 84,000 consensus estimate**, while unemployment rose to **4.2%**; NNBR was reported up **8.1%** in that broader market move. (Yahoo Finance, Oct. 2, publication time not stated)\n- NN\u2019s September 22, 2026 sales guidance was reported at **$470 million\u2013$490 million**, raised from **$460 million\u2013$480 million**. (Ad-hoc-news.de, Oct. 5, 06:24 ET)\n- NN\u2019s second-quarter 2026 results were reported as **$0.11 EPS versus a $0.06 analyst estimate** and **$128.74 million revenue versus a $116.09 million estimate**. (MarketBeat, Oct. 3, publication time not stated)\n- A five-analyst consensus was reported as **Hold**, comprising **2 Buy, 2 Hold, and 1 Sell** ratings, with an average price target of **$5.67**. (MarketBeat, Sept. 27, outside the requested window; included only as direct context for the October 2 move)",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 9:00 AM GMT-3\n- NNBR\n+24.24%\n...\n*Capital will be used to eliminate all of its preferred stock and to support business growth*\nCHARLOTTE, N.C., Oct. 02, 2026 (GLOBE NEWSWIRE) -- NN, Inc.\n(\"NN\" or the \"Company\") (NASDAQ: NNBR), a global leader in precision manufacturing, today...",
+      "source": "web",
+      "title": "NN, Inc. Announces $50 Million Net Private Placement of ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/nn-inc-announces-50-million-120000961.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "NN stock closed at USD 4.51 on October 2 after a USD 50 million financing announcement.\nUpdated guidance targets USD 470 million to USD 490 million in 2026 sales.\n...\nNN stock (ISIN US6293371067) closed at USD 4.51 on Nasdaq on October 2, 2026, up 24.24 percent from the previous close of USD 3.63.\nT...",
+      "source": "web",
+      "title": "NN stock gains 24.24 percent after USD 50 million PIPE ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/nn-stock-gains-24-24-percent-after-usd-50-million-pipe-deal-request/70232111"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "NN plans to refinance its high-cost Term Loan and believes it can achieve a multi-million dollar cash interest reduction.\n...\n**NN (NASDAQ: NNBR)** signed a private-placement agreement expected to generate approximately **$50 million in net proceeds** from 10 investors.\nClosing is expected on or abo...",
+      "source": "web",
+      "title": "NN, Inc. Agrees to ~$50M Net Private Placement",
+      "url": "https://www.stocktitan.net/news/NNBR/nn-inc-announces-50-million-net-private-placement-of-common-stock-gzeo1epy4qkk.html"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "NN stock reached USD 4.51 on October 2, 2026, while NN announced a USD 50 million private placement.\n...\nNN, Inc.\n(ISIN US6293371067) closed at USD 4.51 on Nasdaq on October 2, 2026, up 24.24 percent from USD 3.63.\nThe move followed NN's announcement of a USD 50 million private placement, making bal...",
+      "source": "web",
+      "title": "NN stock gained 24.24 percent after a USD 50 million PIPE ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/nn-stock-gained-24-24-percent-after-a-usd-50-million-pipe-deal/70228138"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "### NN, Inc. engages in the design and manufacture high-precision components and assemblies primarily for the electrical, automotive, general industrial, aerospace and defense, and medical markets. It operates through the Mobile Solutions and Power Solutions segments. Show more",
+      "source": "web",
+      "title": "NN: NNBR Stock Price Quote & News",
+      "url": "https://robinhood.com/us/en/stocks/NNBR/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "NN, Inc.\n(NASDAQ: NNBR) traded at **$4.09** as of **11:35 AM**, up **$0.46** (**12.67%**) during market hours, after the company announced a **$50 million net** private investment in public equity (PIPE).\nThe financing is expected to close on or about **October 5, 2026**, subject to customary closin...",
+      "source": "web",
+      "title": "NN, Inc. jumps as $50M PIPE targets Series D preferred elimination...",
+      "url": "https://marketchameleon.com/articles/b/2026/10/2/nnbr-50m-pipe-series-d-preferred-redemption-term-loan-refinance"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "NN Shares Rise After Launching $50 Million Private Placement; Says Q3 Sales Highest in 8 Years\n...\nNN (NNBR) shares were up 27% in Friday trading after the company launched a private investment in pu",
+      "source": "web",
+      "title": "NN Shares Rise After Launching $50 Million Private Placement ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/nn-shares-rise-launching-50-185911968.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "A number of stocks jumped in the morning session after weaker-than-expected U.S. employment data cooled Treasury yields, easing borrowing-cost pressure across the sector.\nThe Bureau of Labor Statistics reported that nonfarm payrolls rose by 29,000 in September, falling far short of the 84,000 projec...",
+      "source": "web",
+      "title": "EVgo, Advanced Energy, NN, Blink Charging, and Ameresco Shares Are Soaring, What You Need To Know",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/evgo-advanced-energy-nn-blink-231003737.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Published Oct 02, 2026, 08:06 a.m.\n...\nNNBR+24.24%\nCHARLOTTE, N.C. - NN, Inc.\n(NASDAQ:NNBR) announced today it has entered into a securities purchase agreement for a private investment in public equity financing expected to generate net proceeds of approximately $50 million after fees and expenses.\n...",
+      "source": "web",
+      "title": "NN Inc. raises $50 million through private equity financing",
+      "url": "https://ca.investing.com/news/stock-market-news/nn-inc-raises-50-million-through-private-equity-financing-93CH-4863971"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "\u53d1\u5e03\u65f6\u95f4 2026\u5e7410\u670802\u65e5 20:05\n...\nNNBR+24.24%\n\u5317\u5361\u7f57\u6765\u7eb3\u5dde\u590f\u6d1b\u7279\u2014\u2014NN, Inc.\uff08\u7eb3\u65af\u8fbe\u514b\u80a1\u7968\u4ee3\u7801\uff1aNNBR\uff09\u4eca\u65e5\u5ba3\u5e03\uff0c\u516c\u53f8\u5df2\u7b7e\u7f72\u4e00\u9879\u8bc1\u5238\u8d2d\u4e70\u534f\u8bae\uff0c\u62df\u901a\u8fc7\u79c1\u52df\u80a1\u6743\u878d\u8d44\uff08PIPE\uff09\u65b9\u5f0f\u7b79\u96c6\u8d44\u91d1\uff0c\u6263\u9664\u76f8\u5173\u8d39\u7528\u540e\u9884\u8ba1\u51c0\u6536\u76ca\u7ea6\u4e3a5,000\u4e07\u7f8e\u5143\u3002\n...\nNN\u5c06\u628a\u6240\u7b79\u8d44\u91d1\u7684\u5927\u90e8\u5206\u7528\u4e8e\u8d4e\u56de\u7531\u6469\u6839\u58eb\u4e39\u5229\u6218\u672f\u4ef7\u503c\uff08Morgan Stanley Tactical Value\uff09\u65d7\u4e0b\u6295\u8d44\u57fa\u91d1\u6301\u6709\u7684\u5269\u4f59D\u7cfb\u5217\u4f18\u5148\u80a1\u3002\u8be5\u4f18\u5148\u80a1\u5b89\u6392\u5efa\u7acb\u4e8e\u4e94\u5e74\u591a\u524d\u3002\u516c\u53f8\u8868\u793a\uff0c\u6b64\u6b21\u884c\u52a8\u5b8c\u6210\u540e\uff0c\u5c06\u5728\u8fc7\u53bb\u4e09\u4e2a\u6708\u5185\u5f7b\u5e95\u6d88\u9664\u6240\u6709\u5177\u6709\u7a00\u91ca\u6548\u5e94\u7684\u80a1\u6743\u8bc1\u5238\u3002\n\u5269\u4f59\u8d44\u91d1\u5c06\u7528\u4e8e\u652f\u6301\u4e1a\u52a1\u589e\u957f\u4e0e\u6269\u5f20\uff0c\u5305\u62ec\u91c7\u8d2d\u65b0\u8bbe\u5907\u7684\u8d44\u672c\u652f\u51fa...",
+      "source": "web",
+      "title": "NN Inc.\u901a\u8fc7\u79c1\u52df\u80a1\u6743\u878d\u8d44\u7b79\u96c65,000\u4e07\u7f8e\u5143 \u63d0\u4f9b\u8005 Investing.com",
+      "url": "https://cn.investing.com/news/company-news/article-93CH-3593152"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "- NN (NNBR) on Friday said it has entered into a securities purchase agreement for a private investment in public equity financing that is expected to result in net proceeds of about $50 million.",
+      "source": "web",
+      "title": "NN announces $50M net private placement of common ...",
+      "url": "https://seekingalpha.com/news/4649799-nn-announces-50m-net-private-placement-of-common-stock-pre-funded-warrants"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Bank of America** purchased 226,507 shares of NN, Inc.\nin the second quarter, valued at approximately $813,000.\nInstitutional investors collectively owned 53.92% of the company, with several other funds also building positions.\n- NN reported second-quarter earnings of $0.11 per share and revenue...",
+      "source": "web",
+      "title": "Bank of America Corp DE Buys New Position in NN, Inc. $NNBR",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-bank-of-america-corp-de-buys-new-position-in-nn-inc-nnbr-2026-10-03/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "NN Inc.\n(NNBR) opera no setor de METALWORKG MACHINERY & EQUIPMENT e est\u00e1 listado(a) na NASDAQ.\n...\nNN Inc.\n(NNBR) est\u00e1 sendo negociado(a) a $4.55 no p\u00f3s-mercado, em 2026-10-02 22:06:00, sobe 25.23% ($0.92) em rela\u00e7\u00e3o ao fechamento da sess\u00e3o regular de $3.63.\n...\nNos \u00faltimos sete dias, NN Inc.\n(NNBR)...",
+      "source": "web",
+      "title": "Pre\u00e7o do(a) NNBR hoje: Cota\u00e7\u00e3o, valor e gr\u00e1fico do(a) NN Inc. | MEXC",
+      "url": "https://www.mexc.com/pt-PT/stocks/nnbr"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Despite a 23% gain in **NN, Inc.'s** (NASDAQ:NNBR) stock price this week, shareholders shouldn't let up.\nThe fact that insiders chose to dispose of US$3.9m worth of stock in the past 12 months even though prices were relatively low could be indicative of some anticipated weakness.\n...\nSo it's clear ...",
+      "source": "web",
+      "title": "NN Insiders Made A Wise Decision By Selling US$3.9m ...",
+      "url": "https://simplywall.st/stocks/us/capital-goods/nasdaq-nnbr/nn/news/nn-insiders-made-a-wise-decision-by-selling-us39m-worth-of-s"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "CHARLOTTE, N.C. - NN, Inc.\n(NASDAQ:NNBR) a annonc\u00e9 aujourd\u2019hui avoir conclu un accord d\u2019achat de titres dans le cadre d\u2019un investissement priv\u00e9 en financement public, devant g\u00e9n\u00e9rer un produit net d\u2019environ 50 millions $ apr\u00e8s frais et d\u00e9penses.\nLa transaction devrait \u00eatre finalis\u00e9e aux alentours de...",
+      "source": "web",
+      "title": "NN Inc. l\u00e8ve 50 millions $ gr\u00e2ce \u00e0 un financement en capital-investissement Par Investing.com",
+      "url": "https://fr.investing.com/news/company-news/nn-inc-leve-50-millions--grace-a-un-financement-en-capitalinvestissement-93CH-3619423"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/nn-inc-announces-50-million-120000961.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/nn-stock-gains-24-24-percent-after-usd-50-million-pipe-deal-request/70232111",
+    "https://www.stocktitan.net/news/NNBR/nn-inc-announces-50-million-net-private-placement-of-common-stock-gzeo1epy4qkk.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/nn-stock-gained-24-24-percent-after-a-usd-50-million-pipe-deal/70228138",
+    "https://robinhood.com/us/en/stocks/NNBR/",
+    "https://marketchameleon.com/articles/b/2026/10/2/nnbr-50m-pipe-series-d-preferred-redemption-term-loan-refinance",
+    "https://finance.yahoo.com/markets/stocks/articles/nn-shares-rise-launching-50-185911968.html?fr=sycsrp_catchall",
+    "https://finance.yahoo.com/markets/stocks/articles/evgo-advanced-energy-nn-blink-231003737.html",
+    "https://ca.investing.com/news/stock-market-news/nn-inc-raises-50-million-through-private-equity-financing-93CH-4863971",
+    "https://cn.investing.com/news/company-news/article-93CH-3593152",
+    "https://seekingalpha.com/news/4649799-nn-announces-50m-net-private-placement-of-common-stock-pre-funded-warrants",
+    "https://www.marketbeat.com/instant-alerts/filing-bank-of-america-corp-de-buys-new-position-in-nn-inc-nnbr-2026-10-03/",
+    "https://www.mexc.com/pt-PT/stocks/nnbr",
+    "https://simplywall.st/stocks/us/capital-goods/nasdaq-nnbr/nn/news/nn-insiders-made-a-wise-decision-by-selling-us39m-worth-of-s",
+    "https://fr.investing.com/news/company-news/nn-inc-leve-50-millions--grace-a-un-financement-en-capitalinvestissement-93CH-3619423"
+  ],
+  "usage": {
+    "input_tokens": 1002,
+    "output_tokens": 768,
+    "cost_usd": 0.02853
+  }
+}

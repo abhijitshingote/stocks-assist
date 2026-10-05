@@ -1,0 +1,167 @@
+{
+  "name": "tickers_13",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| P | Everpure, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +4.48% | +11.2% | 0.5\u00d7 | both 2026-05-11 |\n| MSTR | Strategy Inc | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -0.31% | +0.9% | 1.2\u00d7 | gapper 2026-09-21 |\n| NTRA | Natera, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +0.46% | -0.5% | 1.1\u00d7 | gapper 2026-08-07 |\n| OKTA | Okta, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -0.54% | +8.3% | 0.5\u00d7 | both 2026-08-27 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Everpure, Inc. (P) `[AI Infrastructure]`\n- Everpure shares closed at **$140.14**, up **4.48%** on Friday, October 2, extending a six-session winning streak; the stock was reported at **$140.55**, up **0.29%**, at **19:49 ET** in after-hours trading on October 2 (Yahoo Finance, Oct. 2 19:49 ET).\n- A market commentary attributed the October 2 move partly to continued reaction to Everpure\u2019s **September 23 analyst meeting**, where the company reaffirmed fiscal 2027 revenue guidance of **$5.03 billion\u2013$5.07 billion** and non-GAAP operating income guidance of **$940 million\u2013$960 million** (Quiver Quantitative, Oct. 2 18:31 ET).\n- Everpure introduced preliminary fiscal 2028 revenue guidance of **$7.0 billion\u2013$7.3 billion** and non-GAAP operating income of **$1.7 billion\u2013$1.9 billion** at the September 23 meeting; the outlook represented expected revenue growth of **39%\u201345%** and operating-income growth of **80%\u2013100%** (Quiver Quantitative, Oct. 2 18:31 ET).\n- Piper Sandler raised its price target to **$162** from **$133** and maintained **Overweight**; Needham raised its target to **$150** from **$140** and maintained **Buy**; Northland raised its target to **$128** (Investing.com, Oct. 1 21:12 ET).\n- BofA Securities raised its price target to **$180** from **$150**, Citigroup to **$160** from **$130**, and Morgan Stanley to **$137** from **$119** following the September 23 analyst meeting (Finanzen100, Oct. 2 02:22 ET).\n- Everpure officer **Mona Chu** filed a Form 144 covering a proposed sale of **2,852 shares** with an aggregate market value of **$399,853.25** and an approximate sale date of **October 2** (SEC filing via Stock Titan, Oct. 2; publication time not reported).\n- No Monday, October 5 company-specific announcement, filing, analyst action, or pre-market price reading before **12:20 ET** was identified in the gathered results; a 10:22 ET article discussed Everpure\u2019s previously announced Data Primacy tools and cited the verified **4.48%** October 2 gain (Simply Wall St, Oct. 5 10:22 ET).",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Shares of Everpure (P) have closed higher in each of the last 7 sessions, a cumulative gain of 27.8%.\nThat added about $10.2 billion to the company's market value, which now stands at about $46.7 billion.\nThe stock closed at $140.14 on Friday, October 2.\n...\nReturns for P and the S&P 500 over the st...",
+      "source": "web",
+      "title": "7 Green Days In A Row: Everpure Stock Is Up 28%",
+      "url": "https://www.trefis.com/stock/p/articles/617514/7-green-days-in-a-row-everpure-stock-is-up-28/2026-10-05"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "# Everpure Inc.\nP \u2022 U.S.: NYSE\n$138.894.763.55%\nReal-time|Oct 2, 2026 9:54 a.m.\nEDT\n...\nProvides flash-based storage solutions",
+      "source": "web",
+      "title": "Everpure Inc. (P) Stock Price Today - The Wall Street Journal",
+      "url": "https://www.wsj.com/market-data/stock/p"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Posted: 2 days, 17 hours ago / Oct. 2, 2026 6:31 p.m.\nUTC\nEverpure (P) is up 4.5% today.\nHere is some analysis on what might have caused this price movement.\n**Analysis:** The most likely driver is continued bullish follow-through from Everpure\u2019s September 23, 2026 analyst meeting, where management ...",
+      "source": "web",
+      "title": "Why Everpure (P) Stock Is Up Today",
+      "url": "https://www.quiverquant.com/news/Why+Everpure+(P)+Stock+Is+Up+Today"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "The listed shares were acquired from Everpure on September 20, 2026, as performance shares and restricted stock.\n...\nEverpure, Inc.\nofficer Mona Chu, who signed as Mona King Yuet Chu, reported a **proposed sale of 2,852 common shares** through Morgan Stanley Smith Barney LLC.\nThe reported aggregate ...",
+      "source": "web",
+      "title": "Everpure officer Mona Chu proposes $400K share sale",
+      "url": "https://www.stocktitan.net/sec-filings/P/144-everpure-inc-sec-filing-ce63dc17366e.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "# Everpure, Inc. (P)\n140.14 +6.01 (+4.48%)\nAt close: 2 October at 16:02:00 GMT-4\n140.55 +0.41 (+0.29%)\nAfter hours: 2 October at 19:49:16 GMT-4\n...\n- ### Everpure (P) Stock Looks Below Fair Value Despite Its 4x Run\n...\n- ### Everpure (P) Unveils AI Data Platform Upgrades With Faster Inference And Pr...",
+      "source": "web",
+      "title": "Everpure, Inc. (P) stock price, news, quote and history",
+      "url": "https://uk.finance.yahoo.com/quote/P/latest-news/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Everpure consensus price target raised by 14.07% to 128,12 \u20ac\n...\nThe average one-year price target for Everpure (XTRA:6PU) has been revised to 128,12 \u20ac / share.\nThis is an increase of 14.07% from the prior estimate of 112,31 \u20ac dated September 13, 2026.\n...\nThe latest targets range from a low of 70,7...",
+      "source": "web",
+      "title": "Everpure consensus price target raised by 14.07% to 128 ...",
+      "url": "https://fintel.io/news/everpure-consensus-price-target-raised-by-1407-to-128-12-378"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "\uc5d0\ubc84\ud4e8\uc5b4(Everpure Inc) \uc8fc\uac00, 133.42\ub2ec\ub7ec\ub85c \uc0ac\uc0c1 \ucd5c\uace0\uce58 \uacbd\uc2e0 By Investing.com\n- +106%, +38%, +37%...\uc785\ub825: 2026\ub144 10\uc6d4 02\uc77c \uc624\uc804 01:12\n...\nInvesting.com \u2014 Everpure Inc \uc8fc\uac00\ub294 133.42\ub2ec\ub7ec\ub85c \uc0ac\uc0c1 \ucd5c\uace0\uce58\ub97c \uae30\ub85d\ud558\uba70 \ud68c\uc0ac\uc5d0 \uc911\uc694\ud55c \uc774\uc815\ud45c\ub97c \uc138\uc6e0\uc2b5\ub2c8\ub2e4.\n\ud604\uc7ac \uc8fc\uac00\ub294 133.49\ub2ec\ub7ec\ub85c, 52\uc8fc \ucd5c\uace0\uac00\ubcf4\ub2e4 \ubd88\uacfc 1% \ub0ae\uc740 \uc218\uc900\uc5d0\uc11c \uac70\ub798\ub418\uace0 \uc788\uc2b5\ub2c8\ub2e4.\n\uc9c0\ub09c 1\ub144 \ub3d9\uc548 \uc8fc\uac00\ub294 50.87%\ub098 \ud06c\uac8c \uc0c1\uc2b9\ud558\uc5ec \ud22c\uc790\uc790\ub4e4\uc758 \uac15\ud55c \uc2e0\ub8b0\uc640 \uae0d\uc815\uc801\uc778 \uc2dc\uc7a5 \uc131\uacfc\ub97c \ubc18\uc601\ud588\uc2b5...",
+      "source": "web",
+      "title": "\uc5d0\ubc84\ud4e8\uc5b4(Everpure Inc) \uc8fc\uac00, 133.42\ub2ec\ub7ec\ub85c \uc0ac\uc0c1 \ucd5c\uace0\uce58 \uacbd\uc2e0",
+      "url": "https://kr.investing.com/news/company-news/article-93CH-2113760"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "On October 02, 2026, Everpure Inc P shares rose 4.5% to a current price of $140.14.\nOver the past year, the stock has shown a notable performance, with a 52-week range between $56.78 and $135.68.\nGF Value\u2122 verdict: Current price is $140.14, compared to GF Value of $81.94, indicating the stock is 71....",
+      "source": "web",
+      "title": "A Look at Everpure Inc (P) After 4.5% Gain -- GF Value $81.94 vs",
+      "url": "https://www.gurufocus.com/news/9108109/a-look-at-everpure-inc-p-after-45-gain-gf-value-8194-vs-price-14014"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Everpure Stock Climbs 22% On A 6-Day Winning Streak | Trefis\n# Everpure Stock Climbs 22% On A 6-Day Winning Streak\nOctober 2nd, 2026 \u00b7 by Trefis Team\nSPYYTD+13.5%QQQYTD+22.3%\n...\nShares of Everpure (P) have closed higher in each of the last 6 sessions, a cumulative gain of 22.3%.\nThat added about $8...",
+      "source": "web",
+      "title": "Everpure Stock Climbs 22% On A 6-Day Winning Streak",
+      "url": "https://www.trefis.com/stock/p/articles/617389/everpure-stock-climbs-22-on-a-6-day-winning-streak/2026-10-02"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "PepsiCo closed Friday at $125.89, up a touch on the day and finishing near its 52-week low of $125.16.",
+      "source": "web",
+      "title": "PepsiCo's Grocery-Aisle Test at a 52-Week Low",
+      "url": "https://moneymorning.com/2026/10/05/monday-market-pulse-october-5-2026"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5, 2026 | 12:00am\n...\nMANILA, Philippines \u2014 The local stock market is expected to remain volatile this week, with higher inflation expectations seen weighing on equities.",
+      "source": "web",
+      "title": "Market volatile ahead of inflation report",
+      "url": "https://www.philstar.com/business/2026/10/05/2560911/market-volatile-ahead-inflation-report"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Everpure (P) is back in focus after unveiling a fresh round of Data Primacy tools that plug AI agents directly into live enterprise data, while tightening privacy controls and storage efficiency.\nThe fresh Data Primacy tools arrive on the heels of Everpure's fiscal 2028 revenue outlook and appear to...",
+      "source": "web",
+      "title": "Everpure (P) Data Primacy Push Tests The Case For More ...",
+      "url": "https://simplywall.st/stocks/us/tech/nyse-p/everpure/news/everpure-p-data-primacy-push-tests-the-case-for-more-upside"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "|P|Everpure|Technology Hardware, Storage & Peripherals|$41.99B|$140.14|+4.48%|+11.22%|+51.62%|+103.07%|\u2191 1.37|\u2191 1.78|",
+      "source": "web",
+      "title": "Daily PA Wrap",
+      "url": "https://www.market-wrap.com/daily-wrap/2026-10-02/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "\u0410\u043a\u0446\u0438\u0438 Everpure \u0432\u0437\u043b\u0435\u0442\u0435\u043b\u0438 \u0431\u043e\u043b\u0435\u0435 \u0447\u0435\u043c \u043d\u0430 40%, \u0441\u0442\u0430\u0432 \u043d\u0435\u043e\u0436\u0438\u0434\u0430\u043d\u043d\u044b\u043c \u043f\u043e\u0431\u0435\u0434\u0438\u0442\u0435\u043b\u0435\u043c S&P 500\n...\n\u0410\u043a\u0446\u0438\u0438 Everpure Inc.\n(\u0431\u044b\u0432\u0448\u0430\u044f Pure Storage) \u0432\u0437\u043b\u0435\u0442\u0435\u043b\u0438 \u0431\u043e\u043b\u0435\u0435 \u0447\u0435\u043c \u043d\u0430 40% \u0432 \u0441\u0435\u043d\u0442\u044f\u0431\u0440\u0435, \u0441\u0442\u0430\u0432 \u043d\u0435\u043e\u0436\u0438\u0434\u0430\u043d\u043d\u044b\u043c \u043b\u0438\u0434\u0435\u0440\u043e\u043c S&P 500.\n\u0420\u043e\u0441\u0442 \u0432\u044b\u0437\u0432\u0430\u043b\u0438 \u043e\u043f\u0442\u0438\u043c\u0438\u0441\u0442\u0438\u0447\u043d\u044b\u0439 \u0434\u043e\u043b\u0433\u043e\u0441\u0440\u043e\u0447\u043d\u044b\u0439 \u043f\u0440\u043e\u0433\u043d\u043e\u0437, \u0432\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435 \u0432 \u0438\u043d\u0434\u0435\u043a\u0441 \u0438 \u0441\u0438\u043b\u044c\u043d\u044b\u0435 \u043a\u0432\u0430\u0440\u0442\u0430\u043b\u044c\u043d\u044b\u0435 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u044b.\n....",
+      "source": "web",
+      "title": "\u0410\u043a\u0446\u0438\u0438 Everpure \u0432\u0437\u043b\u0435\u0442\u0435\u043b\u0438 \u0431\u043e\u043b\u0435\u0435 \u0447\u0435\u043c \u043d\u0430 40%, \u0441\u0442\u0430\u0432 \u043d\u0435\u043e\u0436\u0438\u0434\u0430\u043d\u043d\u044b\u043c \u043f\u043e\u0431\u0435\u0434\u0438\u0442\u0435\u043b\u0435\u043c S&P 500",
+      "url": "https://streetalpha.ru/news/aktsii-everpure-vzleteli-bolee-chem-na-2026-10-01"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Die Aufnahme in den S&P 500 und der Boom bei KI-Daten steigern die Nachfrage nach Everpure.\n...\nFreitag, 02.10.2026, 08:22\nEverpure gewinnt im September mehr als 40 Prozent und schl\u00e4gt damit alle anderen S&P-500-Titel.\nAnalysten halten selbst die neuen Wachstumsziele f\u00fcr konservativ.\n...\nEverpure ha...",
+      "source": "web",
+      "title": "40 Prozent in einem Monat: Eine Aktie schl\u00e4gt gesamten S&P 500",
+      "url": "https://www.finanzen100.de/news/aktien/40-prozent-in-einem-monat-eine-aktie-schlaegt-gesamten-s-p-500_8a28a1b0-de21-4887-a076-17cb9985ddfb.html"
+    }
+  ],
+  "citations": [
+    "https://www.trefis.com/stock/p/articles/617514/7-green-days-in-a-row-everpure-stock-is-up-28/2026-10-05",
+    "https://www.wsj.com/market-data/stock/p",
+    "https://www.quiverquant.com/news/Why+Everpure+(P)+Stock+Is+Up+Today",
+    "https://www.stocktitan.net/sec-filings/P/144-everpure-inc-sec-filing-ce63dc17366e.html",
+    "https://uk.finance.yahoo.com/quote/P/latest-news/",
+    "https://fintel.io/news/everpure-consensus-price-target-raised-by-1407-to-128-12-378",
+    "https://kr.investing.com/news/company-news/article-93CH-2113760",
+    "https://www.gurufocus.com/news/9108109/a-look-at-everpure-inc-p-after-45-gain-gf-value-8194-vs-price-14014",
+    "https://www.trefis.com/stock/p/articles/617389/everpure-stock-climbs-22-on-a-6-day-winning-streak/2026-10-02",
+    "https://moneymorning.com/2026/10/05/monday-market-pulse-october-5-2026",
+    "https://www.philstar.com/business/2026/10/05/2560911/market-volatile-ahead-inflation-report",
+    "https://simplywall.st/stocks/us/tech/nyse-p/everpure/news/everpure-p-data-primacy-push-tests-the-case-for-more-upside",
+    "https://www.market-wrap.com/daily-wrap/2026-10-02/",
+    "https://streetalpha.ru/news/aktsii-everpure-vzleteli-bolee-chem-na-2026-10-01",
+    "https://www.finanzen100.de/news/aktien/40-prozent-in-einem-monat-eine-aktie-schlaegt-gesamten-s-p-500_8a28a1b0-de21-4887-a076-17cb9985ddfb.html"
+  ],
+  "usage": {
+    "input_tokens": 1091,
+    "output_tokens": 559,
+    "cost_usd": 0.02566
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "tickers_03",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| KLAC | KLA Corporation | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.27% | +10.1% | 0.8\u00d7 | \u2014 |\n| ASML | ASML Holding N.V. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +3.25% | +7.1% | 0.9\u00d7 | \u2014 |\n| TER | Teradyne, Inc. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +8.00% | +12.7% | 1.3\u00d7 | \u2014 |\n| JBS | Jbs N.V. | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +7.46% | +0.9% | 1.3\u00d7 | \u2014 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## KLA Corporation (KLAC) `[Chip Equipment]`\n- KLA shares closed October 2 at **$206.89**, up **3.27%**; the available report did not identify a company-specific catalyst for the regular-session move. (Yahoo Finance, Oct 2 16:00 ET).[13]\n- KLA had an overnight quote of **$209.16**, up **1.10%**, at **20:00 ET on October 2**; no company-specific pre-market catalyst was identified in the available results. (Yahoo Finance, Oct 5 00:02 ET).[13]\n- KLA scheduled its fiscal first-quarter 2027 results for **October 28, 2026, at 5:00 p.m. ET**; results, the shareholder letter, and presentation are to be posted after the market close. (KLA investor-relations calendar, reported Oct 2).[12]\n\n## ASML Holding N.V. (ASML) `[Chip Equipment]`\n- ASML shares closed October 2 at **\u20ac1,661.30**, up approximately **3.2%**; the available report attributed the move to a broader semiconductor-sector recovery, renewed AI appetite, softer oil prices, and weaker-than-expected U.S. payroll data, rather than a new ASML announcement. (Ground News, Oct 5 00:55 ET).[6]\n- A report published October 2 highlighted ASML\u2019s expanded cooperation with **Samsung Electronics** on **High-NA EUV** and larger photomasks; Samsung plans to use High-NA EUV in high-volume DRAM production by **2028** and to help develop a **12-inch photomask platform**. The cooperation was originally announced September 8, outside the requested window. (Yahoo Finance, Oct 2 19:47 ET).[1]\n- ASML reported **\u20ac9.33 billion** in second-quarter 2026 sales, **\u20ac2.92 billion** in net income, and a **54.0% gross margin**; management\u2019s 2026 guidance was **\u20ac43 billion\u2013\u20ac45 billion** of sales and **54%\u201356%** gross margin. These figures were older than the window and were cited as background to the October 2 coverage. (Ad-hoc-news.de, Oct 5 03:39 ET).[2]\n- ASML\u2019s next scheduled earnings release was reported as **October 13, 2026**. (Ad-hoc-news.de, Oct 5 03:39 ET).[2]\n- No new ASML-specific after-hours or pre-market catalyst through **12:20 ET on October 5** was identified in the available results; weekend trading was reported at **\u20ac1,661.30**, unchanged from the October 2 reference close. (Ad-hoc-news.de, Oct 4 12:24 ET).[11]\n\n## Teradyne, Inc. (TER) `[Test & Advanced Packaging]`\n- Teradyne shares closed October 2 at **$449.04**, up **8.00%**; the move followed reported second-quarter adjusted EPS of **$2.47 versus $2.09 consensus** and revenue of **$1.33 billion versus $1.22 billion expected**, with revenue up **103.9% year over year**. (MarketBeat, Oct 2 06:13 ET).[10]\n- Teradyne\u2019s second-quarter **AI memory revenue reached $212 million**, described as a record and the third consecutive quarter above **$200 million**; the company\u2019s latest earnings commentary identified AI demand across Semiconductor Test, Product Test, and Robotics as the principal growth driver cited in the coverage. (Ad-hoc-news.de, Oct 4 14:22 ET).[14]\n- A Monday market report again attributed Teradyne\u2019s **8.00%** October 2 gain to commentary on **AI data-center demand and hard-disk-drive supply**. (Yahoo Finance, Oct 5 06:20 ET).[7]\n- Teradyne\u2019s next scheduled earnings date was reported as **October 27, 2026**, for third-quarter results. (Ad-hoc-news.de, Oct 4 14:22 ET).[14]\n- Teradyne had a reported October 5 intraday range of **$444.54\u2013$446.99** as of **09:22 ET**; the available results did not identify a new company-specific pre-market announcement. (Robinhood, Oct 5 09:22 ET).[3]\n\n## Jbs N.V. (JBS) `[Food & Agriculture]`\n- No company-specific catalyst found in window.",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "ASML Stocks Surge 3.5% as Samsung Pulls High-NA Into DRAM\n...\nFri, October 2, 2026 at 4:47 PM GMT-3\n...\nASML Holding (NASDAQ:ASML), the semiconductor-lithography equipment leader, deepened its Samsung (SSNLF) partnership around High-NA EUV and larger photomasks, while U.S. shares climbed approximate...",
+      "source": "web",
+      "title": "ASML Stocks Surge 3.5% as Samsung Pulls High-NA Into ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/asml-stocks-surge-3-5-194703151.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ASML expands High-NA ties as ASML Holding stock sits 4.76 percent below its 52-week high\n...\nQ2 sales reached EUR 9.33 billion at a 54.00 percent gross margin.\nASML Holding stock costs EUR 1,658.10 on October 5, 2026 after EUR 1,661.30.\n...\nASML expanded High-NA cooperation with Intel Foundry, Samsu...",
+      "source": "web",
+      "title": "ASML expands High-NA ties as ASML Holding stock sits 4.76 percent below its 52-week high",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/asml-expands-high-na-ties-as-asml-holding-stock-sits-4-76-percent-below-its-52-week-high/70231241"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "During the trading session on 2026-10-05, Teradyne(TER) shares reached a daily high of $446.99 and a low of $444.54.\nAt a current price of $446.00, the stock is +0.3% higher than the low and still -0.2% under the high.",
+      "source": "web",
+      "title": "Teradyne: TER Stock Price Quote & News",
+      "url": "https://robinhood.com/us/en/stocks/TER/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "ASML Holding stock rises 2.77 percent ahead of Q3 results\n...\nASML Holding stock trades at EUR 848.20 on October 2, 2026, below its EUR 1,099.12 yearly high.\nQ2 sales reached EUR 9.3 billion and earnings EUR 2.9 billion.\n...\nASML Holding (ISIN NL0010273215) traded at EUR 848.20 on Euronext Amsterdam...",
+      "source": "web",
+      "title": "ASML Holding stock rises 2.77 percent ahead of Q3 results",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/asml-holding-stock-rises-2-77-percent-ahead-of-q3-results/70223623"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ASML Raises 2026 Sales and Margin Outlook | Adalytica\n...\nThe company said July-quarter sales rose to \u20ac9.3 billion and lifted its 2026 outlook to \u20ac43 billion-\u20ac45 billion from \u20ac36 billion-\u20ac40 billion, with gross margin now seen at 54% to 56%.\n...\nThe stock\u2019s rebound to about \u20ac1,867, after a year of s...",
+      "source": "web",
+      "title": "ASML Raises 2026 Sales and Margin Outlook",
+      "url": "https://adalytica.com/news/asml-raises-2026-sales-margin-outlook-3b661a31"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## ASML\u2019s sales rose on AI demand and its EUV monopoly, while Qualcomm posted declining revenue as Apple modem losses and mobile weakness persisted.\n...\n#### ASML Climbs 3.2% to 1,657.80 Euros as Fouquet Flags China Export Risk Ahead of October 14 Earnings\nEuropean semiconductor equipment makers too...",
+      "source": "web",
+      "title": "ASML Holding (ASML) Stock Rises 4% After Samsung ...",
+      "url": "https://ground.news/article/asml-holding-vs-qualcomm-what-revenue-trends-tell-investors-about-these-semiconductor-industry-giants_408f6c"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Teradyne (TER)** jumped 8.00% after upbeat commentary on AI data center demand and HDD supply.",
+      "source": "web",
+      "title": "US Stock Market Today: S&P 500 Futures Climb On Cooling Jobs And Firm Factory Data",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/us-stock-market-today-p-080710902.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "ASML Holding stock was at EUR 1,649.50 after-hours at 5:41 p.m.\nCEST on October 2, 2026, up 2.30 percent versus the prior close at Lang & Schwarz.\nAirbus appointed CEO Christophe Fouquet to its board.\n...\nASML Holding stock was at EUR 1,649.50 in after-hours trading at 5:41 p.m.\nCEST on October 2, 2...",
+      "source": "web",
+      "title": "ASML Holding stock after-hours at EUR 1,649.50: plus 2.30 percent",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nachboerse/asml-holding-stock-after-hours-at-eur-1-649-50-plus-2-30-percent/70216645"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 2, 2026\n...\n- **Teradyne shares jumped 7.7%** to approximately $447.98, substantially above the 50-day and 200-day moving averages.\n- The company reported strong quarterly results, with EPS of $2.47 versus a $2.09 consensus estimate and revenue of $1.33 billion, up 103.9% year over year.\n- A...",
+      "source": "web",
+      "title": "Teradyne (NASDAQ:TER) Shares Up 7.7% - Time to Buy?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-teradyne-nasdaq-ter-shares-up-77-time-to-buy-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Teradyne (NASDAQ:TER) Shares Climb 8% - Time to Buy?\n...\nOctober 2, 2026\n...\n- **Teradyne shares surged 8%** to approximately $449 after the company reported quarterly earnings of $2.47 per share, surpassing estimates of $2.09, while revenue rose 103.9% year over year to $1.33 billion.\n- Analyst sen...",
+      "source": "web",
+      "title": "Teradyne (NASDAQ:TER) Shares Climb 8% - Time to Buy?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-teradyne-nasdaq-ter-shares-climb-8-time-to-buy-2026-10-02/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "ASML Holding stock is EUR 1661.30 in weekend trading on October 4, 2026, matching the Xetra close.\nASML began Eindhoven campus construction on September 8.\n...\nASML Holding began construction of a new Eindhoven campus on September 8, 2026, according to ASML.\nOn October 4, 2026, ASML Holding stock wa...",
+      "source": "web",
+      "title": "ASML Holding begins Eindhoven campus construction and ASML Holding stock costs EUR 1661.30",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/asml-holding-begins-eindhoven-campus-construction-and-asml-holding-stock-costs-eur-1661-30/70227049"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "KLA Corporation stock was at EUR 184.49 in after-hours trading at 6:11 p.m.\nCEST on October 2, 2026, up 3.59 percent versus the Lang & Schwarz prior close.\nKLA set October 28 for fiscal first-quarter results.\n...\nKLA Corporation stock was at **EUR 184.49** in after-hours trading at 6:11 p.m.\nCEST on...",
+      "source": "web",
+      "title": "KLA Corporation stock after-hours at EUR 184.49",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nachboerse/kla-corporation-stock-after-hours-at-eur-184-49-plus-3-59-percent/70216896"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# KLA Corporation (KLAC)\n206.89 +6.56 (+3.27%)\nAt close: October 2 at 4:00:01 PM EDT\n209.16 +2.27 (+1.10%)\nOvernight: 8:00:17 PM EDT\nThis price reflects trading activity during the overnight session on the Blue Ocean ATS, available 8 PM to 4 AM ET, Sunday through Thursday, when regular markets are c...",
+      "source": "web",
+      "title": "KLA Corporation (KLAC)",
+      "url": "https://finance.yahoo.com/quote/KLAC/news/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Teradyne stock gained 8.00 percent on October 2 on AI demand\n...\nTeradyne stock rode USD 1.33 billion in second-quarter revenue to a USD 449.04 close on October 2.\nAI memory revenue reached USD 212 million, with results due October 27.\n...\nTeradyne stock (ISIN US8807701029) closed at USD 449.04 on N...",
+      "source": "web",
+      "title": "Teradyne stock gained 8.00 percent on October 2 on AI ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/teradyne-stock-gained-8-00-percent-on-october-2-on-ai-demand/70227737"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Teradyne (TER)** jumped 8.00% after investors focused on its role in chip testing for AI hardware.\n...\nEngages in the design, development, manufacture, and sale of automated test systems and robotics products in the United States, Asia Pacific, Europe, the Middle East, and Africa.",
+      "source": "web",
+      "title": "US Stock Market Today: S&P 500 Futures Climb As Cooler ...",
+      "url": "https://simplywall.st/stocks/us/tech/nasdaq-wdc/western-digital/news/us-stock-market-today-sp-500-futures-climb-as-cooler-wages-t/amp"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/asml-stocks-surge-3-5-194703151.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/asml-expands-high-na-ties-as-asml-holding-stock-sits-4-76-percent-below-its-52-week-high/70231241",
+    "https://robinhood.com/us/en/stocks/TER/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/asml-holding-stock-rises-2-77-percent-ahead-of-q3-results/70223623",
+    "https://adalytica.com/news/asml-raises-2026-sales-margin-outlook-3b661a31",
+    "https://ground.news/article/asml-holding-vs-qualcomm-what-revenue-trends-tell-investors-about-these-semiconductor-industry-giants_408f6c",
+    "https://finance.yahoo.com/markets/stocks/articles/us-stock-market-today-p-080710902.html",
+    "https://www.ad-hoc-news.de/boerse/news/nachboerse/asml-holding-stock-after-hours-at-eur-1-649-50-plus-2-30-percent/70216645",
+    "https://www.marketbeat.com/instant-alerts/price-teradyne-nasdaq-ter-shares-up-77-time-to-buy-2026-10-02/",
+    "https://www.marketbeat.com/instant-alerts/price-teradyne-nasdaq-ter-shares-climb-8-time-to-buy-2026-10-02/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/asml-holding-begins-eindhoven-campus-construction-and-asml-holding-stock-costs-eur-1661-30/70227049",
+    "https://www.ad-hoc-news.de/boerse/news/nachboerse/kla-corporation-stock-after-hours-at-eur-184-49-plus-3-59-percent/70216896",
+    "https://finance.yahoo.com/quote/KLAC/news/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/teradyne-stock-gained-8-00-percent-on-october-2-on-ai-demand/70227737",
+    "https://simplywall.st/stocks/us/tech/nasdaq-wdc/western-digital/news/us-stock-market-today-sp-500-futures-climb-as-cooler-wages-t/amp"
+  ],
+  "usage": {
+    "input_tokens": 1063,
+    "output_tokens": 986,
+    "cost_usd": 0.03198
+  }
+}

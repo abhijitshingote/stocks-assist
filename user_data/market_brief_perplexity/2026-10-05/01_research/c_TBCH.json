@@ -1,0 +1,167 @@
+{
+  "name": "c_TBCH",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Turtle Beach Corporation (TBCH).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| TBCH | Turtle Beach Corporation | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +9.38% | +9.8% | 4.2\u00d7 | volume_spike 2026-10-02 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why TBCH moved. Run several searches: \"why is Turtle Beach Corporation stock down/up\",\n\"Turtle Beach Corporation stock\", \"TBCH shares Friday October 2, 2026\", \"Turtle Beach Corporation concerns\", \"Turtle Beach Corporation FDA\",\n\"Turtle Beach Corporation analyst\", \"Turtle Beach Corporation price target\", \"Turtle Beach Corporation deal\", \"Turtle Beach Corporation offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Turtle Beach Corporation peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Turtle Beach Corporation (TBCH) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Turtle Beach Corporation (TBCH) `Specialty Consumer Electronics`\n\n- Wall Street Zen upgraded Turtle Beach from **Hold to Buy** in a report published **Saturday, October 3, 2026**; MarketBeat listed a **$16.80 consensus price target**, based on four Buy, one Hold, and two Sell ratings. (MarketBeat, Oct. 3, 2026 08:24 ET)\n- The available report did not identify a new company announcement, product launch, deal, filing, legal action, or regulatory event as the reason for the upgrade. (MarketBeat, Oct. 3, 2026 08:24 ET)\n- Turtle Beach\u2019s Friday, October 2, 2026 session was reported at **$13.99**, while the verified tape records a **9.38%** one-day gain and **4.2\u00d7** 10-day average volume. (MarketBeat, Oct. 3, 2026 08:24 ET; verified tape)\n- A separate market snapshot recorded TBCH at **$13.77**, up **7.66%**, with **396,560 shares** traded at **11:41 ET** on October 2, 2026. (Public.com, Oct. 2, 2026 11:41 ET)\n- Turtle Beach\u2019s latest cited quarterly results were **adjusted EPS of \u2013$0.38 versus \u2013$0.30 consensus** and **revenue of $56.37 million**; those results were released on **August 6, 2026**, outside the requested window. (MarketBeat, Oct. 3, 2026 08:24 ET)\n- No Monday, October 5, 2026 after-hours, overnight, or pre-market TBCH catalyst or price reading before **12:20 ET** was identified in the available search results.",
+  "search_results": [
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Wall Street Zen upgraded Turtle Beach** from \u201chold\u201d to \u201cbuy,\u201d although analyst sentiment remains mixed: four buys, one hold and two sells, with a consensus rating of \u201cHold\u201d and a $16.80 price target.\n- Turtle Beach shares opened at $13.99, compared with a 52-week range of $9.84 to ...",
+      "source": "web",
+      "title": "Turtle Beach (NASDAQ:TBCH) Upgraded at Wall Street Zen",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-turtle-beach-nasdaq-tbch-upgraded-at-wall-street-zen-2026-10-03/"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "32\nTBCH Turtle Beach Corporation +9.38%\n$250.56M\n$13.99\nUnited States\nTechnology",
+      "source": "web",
+      "title": "Best Performing Stocks in October 2026 - Monthly Gainers",
+      "url": "https://www.stocktitan.net/rankings/stock-gains-monthly/2026/october"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "POP, Debuting Limited-Edition Holiday \u201cSpicy Bundt Nice\u201d Collection Inspired by Troms\u00f8, Norway",
+      "source": "web",
+      "title": "NYSE, NASDAQ & OTC Headlines - News",
+      "url": "https://www.stocktitan.net/news/2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "(VEEV) shares fell 3.1% on health emerging as one of the biggest losing sectors in the session.",
+      "source": "web",
+      "title": "Company News for Oct 5, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "TrustBix Inc.\nAnnounces Management Update\npenny stock\n...\nThunder Bridge Capital Partners V, Ltd.\nAnnounces Separate Trading of its Class A Ordinary Shares and Warrants, Commencing October 5, 2026",
+      "source": "web",
+      "title": "Stock Market News for October 2, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "# SEC Filings for October 2, 2026\n2,108 filings published.",
+      "source": "web",
+      "title": "Today's SEC Filings - Latest 10-K, 10-Q, 8-K Forms",
+      "url": "https://www.stocktitan.net/sec-filings/2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 4:20 AM GMT-3\n...\n- Accenture plc's (ACN) shares jumped 15.8% after reporting fourth-quarter fiscal 2026 adjusted earnings of $3.29 per share, surpassing the Zacks Consensus Estimate of $3.19 per share.\n- Shares of Acuity Inc.",
+      "source": "web",
+      "title": "Company News for Oct 2, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-2-2026-072000582.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u201cVideo game stocks\u201d are shares of publicly traded companies involved in developing, publishing, distributing, or supporting video games.\nThey may include game publishers, console and PC hardware makers, online gaming platforms, mobile game companies, and related technology firms, with performance in...",
+      "source": "web",
+      "title": "Promising Video Game Stocks To Watch Now - October 3rd",
+      "url": "https://www.marketbeat.com/instant-alerts/list-promising-video-game-stocks-to-watch-now-october-3rd-2026-10-03/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Dollar Gains on French Debt Woes and U.S. Rate Hike Bets.\nGold Gains as Fed Rate Hike Prospects Fade.",
+      "source": "web",
+      "title": "October 5, 2026 Market LiveCast Brief - SquawkNews",
+      "url": "https://squawknews.com/brief/livecast/2026-10-05"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Market Open: October 2, 2026\n...\nFri, Oct 2 202610:44 AM EDT",
+      "source": "web",
+      "title": "Market Open: October 2, 2026",
+      "url": "https://www.cnbc.com/video/2026/10/02/market-open-october-2-2026.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "|TBCH Turtle Beach Corp|$13.77|+7.66%|228.71M|396.56K|$13.85|$12.69|",
+      "source": "web",
+      "title": "Top Gaining Stocks Today | Biggest Market Movers - Public.com",
+      "url": "https://public.com/markets/top-gainers?sourceScreen=inbox_tab"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "September's nonfarm payrolls report showed U.S. employers added 29,000 jobs, less than expected, while the unemployment rate rose to 4.2%.",
+      "source": "web",
+      "title": "Stock Market Today (Oct. 2, 2026): S&P 500 rises after key ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-2-135416764.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Yes, the market could crash this month; such is always a possibility in any given month, as Jason notes above.",
+      "source": "web",
+      "title": "The Monday Report - 05 October 2026",
+      "url": "https://fnarena.com/2026/10/05/the-monday-report-05-october-2026/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 2:48 PM GMT-3\n...\n- Western Digital Corporation",
+      "source": "web",
+      "title": "Sector Update: Tech Stocks Gain Friday Afternoon",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/sector-tech-stocks-gain-friday-174821071.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "The Pre-Market Rundown 2: October 2, 2026\n...\nFri, Oct 2 20269:06 AM EDT",
+      "source": "web",
+      "title": "The Pre-Market Rundown 2: October 2, 2026",
+      "url": "https://www.cnbc.com/video/2026/10/02/the-pre-market-rundown-2-october-2-2026.html"
+    }
+  ],
+  "citations": [
+    "https://www.marketbeat.com/instant-alerts/analyst-turtle-beach-nasdaq-tbch-upgraded-at-wall-street-zen-2026-10-03/",
+    "https://www.stocktitan.net/rankings/stock-gains-monthly/2026/october",
+    "https://www.stocktitan.net/news/2026-10-05/",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-5-2026-060700896.html",
+    "https://www.stocktitan.net/news/2026-10-02/",
+    "https://www.stocktitan.net/sec-filings/2026-10-02/",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-2-2026-072000582.html",
+    "https://www.marketbeat.com/instant-alerts/list-promising-video-game-stocks-to-watch-now-october-3rd-2026-10-03/",
+    "https://squawknews.com/brief/livecast/2026-10-05",
+    "https://www.cnbc.com/video/2026/10/02/market-open-october-2-2026.html",
+    "https://public.com/markets/top-gainers?sourceScreen=inbox_tab",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-2-135416764.html",
+    "https://fnarena.com/2026/10/05/the-monday-report-05-october-2026/",
+    "https://finance.yahoo.com/markets/stocks/articles/sector-tech-stocks-gain-friday-174821071.html",
+    "https://www.cnbc.com/video/2026/10/02/the-pre-market-rundown-2-october-2-2026.html"
+  ],
+  "usage": {
+    "input_tokens": 1007,
+    "output_tokens": 389,
+    "cost_usd": 0.02286
+  }
+}

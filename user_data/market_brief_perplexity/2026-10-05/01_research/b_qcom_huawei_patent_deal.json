@@ -1,0 +1,167 @@
+{
+  "name": "b_qcom_huawei_patent_deal",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Story: Qualcomm\u2013Huawei Multi-Year Patent License: Terms & Export-Control Implications. Related tickers: QCOM, ARM, MRVL.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nWhy this needs follow-up: QCOM rose ~3% pre-market on a reported multi-year patent deal with Huawei covering AI, 5G and networking, but no financial terms, royalty rates, or US export-control compliance details are provided, and the deal's interaction with the active Qualcomm\u2013ARM Delaware trial is unaddressed.\n\nANSWER EACH QUESTION (run a separate search for each):\n- What royalty rate, upfront payment, and duration were reported for Qualcomm's multi-year patent license with Huawei announced around October 5 2026?\n- Does the Qualcomm\u2013Huawei patent agreement require or has it received US Commerce Department or OFAC review given existing Huawei export restrictions as of October 2026?\n- Did the Qualcomm\u2013Huawei patent deal announcement affect the scope or settlement prospects of the Qualcomm\u2013ARM Delaware jury trial that began October 5 2026?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## QCOM [Patent agreement]\n\n- Huawei and Qualcomm announced a **multi-year, broad patent-license agreement** covering cross-licenses in **5G, compute, AI and networking**, plus Qualcomm\u2019s purchase of certain Huawei U.S. patents in compute, AI and networking; closing is subject to necessary regulatory approvals. (Huawei/Qualcomm joint release, Oct. 5, 2026; AFP, Oct. 5, 2026 11:29 ET)\n- **Royalty rate, upfront payment, total transaction value and exact duration were not disclosed** as of the 12:20 ET cutoff. (Huawei/Qualcomm joint release, Oct. 5, 2026; Reuters, Oct. 5, 2026 06:01 ET)\n- Huawei said the agreement is expected to raise the total value of its patent-licensing agreements to **more than $6.9 billion** after completion; the **$6.9 billion is not the value of the Qualcomm transaction**. (Reuters, Oct. 5, 2026 06:01 ET; Patent Lawyer Magazine, Oct. 5, 2026 11:21 ET)\n- The agreement is Huawei\u2019s **first Qualcomm patent-license deal covering 5G technologies**. (Reuters, Oct. 5, 2026 06:01 ET)\n- Qualcomm agreed to license patents underpinning Huawei\u2019s **LogicFolding** chip-design technology, according to Bloomberg reporting cited by Yahoo Finance. (Yahoo Finance, Oct. 5, 2026 09:34 ET)\n- QCOM rose approximately **2% overnight** before Monday\u2019s open, according to a market report; no exact 12:20 ET price or percentage was reported in the gathered sources. (Yahoo Finance, Oct. 5, 2026 09:34 ET)\n- No analyst firm, rating change or price-target change for QCOM was reported in the gathered results during the specified window.\n\n## Export controls and regulatory review [Regulatory]\n\n- The transaction remains subject to **necessary regulatory approvals** and had not closed by the 12:20 ET cutoff. (Huawei/Qualcomm joint release, Oct. 5, 2026; AFP, Oct. 5, 2026 11:29 ET)\n- Bloomberg reporting cited in the gathered coverage said the transaction is subject to **U.S. Federal Trade Commission review under Hart-Scott-Rodino rules**. (AskTraders, Oct. 5, 2026 11:26 ET; Yahoo Finance, Oct. 5, 2026 09:34 ET)\n- The gathered reports did **not identify Commerce Department or OFAC approval**, an export license, or an OFAC authorization specifically required or obtained for the patent agreement by 12:20 ET. (Yahoo Finance, Oct. 5, 2026 09:34 ET; AFP, Oct. 5, 2026 11:29 ET)\n- The agreement\u2019s stated licensing fields include **5G, compute, AI and networking**, while U.S. export restrictions have limited Huawei\u2019s access to advanced chips and software since **2019**. (Reuters, Oct. 5, 2026 06:01 ET)\n\n## ARM [Delaware trial]\n\n- Qualcomm and Arm\u2019s **five-day Delaware jury trial began October 5, 2026**, concerning Qualcomm\u2019s allegations that Arm withheld chip-testing tools and publicly disclosed its 2024 license-termination threat. (Reuters, Oct. 5, 2026 10:32 ET)\n- Qualcomm is seeking to stop paying Arm royalties potentially worth **billions of dollars for up to five years**; Qualcomm\u2019s Arm agreement runs through **2033**. (Reuters, Oct. 5, 2026 10:32 ET)\n- The Huawei\u2013Qualcomm patent announcement did **not change the reported scope, claims, damages theories or settlement status** of the Qualcomm\u2013Arm Delaware trial by 12:20 ET. (Reuters, Oct. 5, 2026 10:32 ET)\n- No Qualcomm\u2013Arm settlement, settlement offer or trial postponement connected to the Huawei agreement was reported by 12:20 ET. (Reuters, Oct. 5, 2026 10:32 ET)\n- Arm shares were not assigned a specific move, analyst rating change or price-target change in the gathered reports during the specified window.\n\n## MRVL [Related ticker]\n\n- No Marvell Technology (**MRVL**) price move, analyst rating change or price-target change specifically tied to the Qualcomm\u2013Huawei agreement was reported in the gathered results by 12:20 ET. (Reuters, Oct. 5, 2026 06:01 ET; Yahoo Finance, Oct. 5, 2026 09:34 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Multi-year patent agreement between Qualcomm and Huawei, including licensing and acquisition of Huawei patents covering 5G, AI, computing, and networking.\n...\nQualcomm and Huawei Technologies have entered into a multi-year patent agreement that includes 5G, AI, computing and networking, with Huawei ...",
+      "source": "web",
+      "title": "Qualcomm to Compensate Huawei under Latest Multi-Year ...",
+      "url": "https://www.techpolarity.com/article/qualcomm-to-compensate-huawei-under-latest-multi-year-patent-agreement-for-5g-and-ai"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Huawei and Qualcomm on October 5, 2026, jointly announced a multiyear patent license agreement from Shenzhen and San Diego.\nIt covers cross-licenses across 5G, compute, AI and networking, plus Qualcomm's purchase of certain Huawei U.S. patents in those fields.\nThe companies said it is their first pa...",
+      "source": "web",
+      "title": "Huawei, Qualcomm Announce Multiyear 5G, AI Patent Deal",
+      "url": "https://ijr.com/discover/huawei-qualcomm-announce-multiyear-5g-ai-patent-deal-501ac78b"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "(Oct 5): Qualcomm Inc has agreed to license patents underpinning Huawei Technologies Co's novel LogicFolding chipmaking technique, a win for the Chinese company and its push to advance in overseas artificial intelligence (AI) markets.\nThe multiyear deal is part of a cross-licence agreement between t...",
+      "source": "web",
+      "title": "Qualcomm licenses patents on Huawei's LogicFolding chip tech \u2014 Bloomberg",
+      "url": "https://theedgemalaysia.com/node/820574"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Published Mon, Oct 5, 2026 \u00b7 03:21 PM\n- It is Huawei\u2019s first patent licensing deal with Qualcomm that covers 5G technologies.\n...\nCHINA\u2019S Huawei Technologies said on Monday (Oct 5) it had agreed a broad multi-year patent licence deal with Qualcomm covering artificial intelligence, 5G, computing and ...",
+      "source": "web",
+      "title": "Huawei agrees to a multi-year patent licensing deal with ...",
+      "url": "https://www.businesstimes.com.sg/companies-markets/telcos-media-tech/huawei-agrees-multi-year-patent-licensing-deal-qualcomm"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "[Shenzhen, China, October 5, 2026] Huawei and Qualcomm today announced a multi-year, broad patent license agreement that includes cross licenses to the companies\u2019 patent portfolios across a range of technology fields, including 5G, compute, AI, and networking, together with Qualcomm\u2019s purchase of ce...",
+      "source": "web",
+      "title": "Huawei and Qualcomm Announce Broad Patent License Agreement",
+      "url": "https://www.afp.com/en/agency/inside-afp/external-press-releases/huawei-and-qualcomm-announce-broad-patent-license"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u9ad8\u901a\u83b7\u534e\u4e3a\u6676\u7247\u6280\u672f\u4e13\u5229\u6388\u6743 \u53cc\u65b9\u8fbe\u591a\u5e74\u671f\u4ea4\u53c9\u8bb8\u53ef\u534f\u8bae | \u8054\u5408\u65e9\u62a5\n...\n\u7f8e\u56fd\u79d1\u6280\u5de8\u5934\u9ad8\u901a\uff08Qualcomm\uff09\u5df2\u540c\u610f\u83b7\u53d6\u4e2d\u56fd\u79d1\u6280\u5de8\u5934\u534e\u4e3a\u903b\u8f91\u6298\u53e0\u6676\u7247\u5236\u9020\u6280\u672f\u76f8\u5173\u4e13\u5229\u7684\u6388\u6743\u3002\u8fd9\u610f\u5473\u7740\uff0c\u534e\u4e3a\u62d3\u5c55\u6d77\u5916\u4eba\u5de5\u667a\u80fd\uff08AI\uff09\u5e02\u573a\u7684\u8fdb\u7a0b\u53d6\u5f97\u91cd\u8981\u8fdb\u5c55\u3002\n\u5f6d\u535a\u793e\u62a5\u9053\uff0c\u534e\u4e3a\u5b98\u65b9\u661f\u671f\u4e00\uff0810\u67085\u65e5\uff09\u5ba3\u5e03\uff0c\u4e0e\u9ad8\u901a\u8fbe\u6210\u4e00\u9879\u4e3a\u671f\u591a\u5e74\u3001\u8303\u56f4\u5e7f\u6cdb\u7684\u4e13\u5229\u8bb8\u53ef\u534f\u8bae\uff0c\u5185\u5bb9\u5305\u62ec\u53cc\u65b9\u57285G\u3001\u8ba1\u7b97\u3001AI\u548c\u7f51\u7edc\u7b49\u591a\u4e2a\u9886\u57df\u7684\u4e13\u5229\u7ec4\u5408\u4ea4\u53c9\u8bb8\u53ef\uff0c\u4ee5\u53ca\u9ad8\u901a\u5c06\u6536\u8d2d\u534e\u4e3a\u90e8\u5206\u7f8e\u56fd\u4e13\u5229\u3002\n\u636e\u4ecb\u7ecd\uff0c\u8fd9\u9879\u4ea4\u6613\u5c06\u5728\u83b7\u5f97\u5fc5\u8981\u7684\u76d1\u7ba1\u6279\u51c6\u540e\u5b8c\u6210\u3002\u8be5\u534f\u8bae\u4f53\u73b0\u4e86\u4e24\u5bb6\u516c\u53f8\u5bf9\u7b26\u5408\u516c\u5e73\u3001\u5408\u7406\u548c\u975e\u6b67\u89c6\u539f\u5219\u7684\u8bb8\u53ef\u5b9e\u8df5\u7684\u575a\u6301\u3002\n...\n\u5c3d\u7ba1\u53d7\u5230\u7f8e\u56fd\u5148\u8fdb\u6280\u672f\u51fa\u53e3\u9650\u5236\u7684\u63a3\u8098\uff0c\u534e\u4e3a\u53ca\u5176\u5408...",
+      "source": "web",
+      "title": "\u9ad8\u901a\u83b7\u534e\u4e3a\u6676\u7247\u6280\u672f\u4e13\u5229\u6388\u6743\u53cc\u65b9\u8fbe\u591a\u5e74\u671f\u4ea4\u53c9\u8bb8\u53ef\u534f\u8bae",
+      "url": "https://www.zaobao.com.sg/news/china/story20261005-9786802?ref=sidebar-realtime"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Published October 5, 2026\n...\n***Huawei and Qualcomm have agreed to a broad, multi-year patent licensing deal covering 5G, computing, artificial intelligence, and networking technologies, in a significant development for the global standard-essential patent (SEP) licensing landscape.* **\nThe agreeme...",
+      "source": "web",
+      "title": "Huawei and Qualcomm reset 5G patent relationship ...",
+      "url": "https://patentlawyermagazine.com/huawei-and-qualcomm-reset-5g-patent-relationship-with-major-cross-license-deal/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The agreement will allow both Huawei and Qualcomm to cross-license patents across 5G, compute, AI, and networking technologies.\n...\n- The agreement covers technologies like 5G, compute, AI, and networking\n- Qualcomm will acquire certain US-registered Huawei patents\n- Both companies agreed to cross-l...",
+      "source": "web",
+      "title": "Huawei, Qualcomm Announce Multi-Year Patent Licensing ...",
+      "url": "https://www.gadgets360.com/internet/news/huawei-qualcomm-multi-year-patent-licensing-agreement-5g-ai-compute-and-more-12140469/amp"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Home** News 5 Oct 2026, 12:25\n...\nQualcomm and Huawei have agreed a multi-year patent cross-licence, with Qualcomm also buying some Huawei US patents.\nNo financial terms were disclosed, and the deal still needs regulatory approval.\n**Qualcomm (NASDAQ: QCOM) and China\u2019s Huawei announced a multi-year ...",
+      "source": "web",
+      "title": "Qualcomm and Huawei Agree Patent Cross-Licence, With No Terms Disclosed | AskTraders.com",
+      "url": "https://www.asktraders.com/analysis/qualcomm-and-huawei-agree-patent-cross-licence-with-no-terms-disclosed/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u3010\u73af\u7403\u7f51\u79d1\u6280\u62a5\u9053 \u8bb0\u8005 \u5f20\u9633\u3011\u636e\u8def\u900f\u793e10\u67085\u65e5\u62a5\u9053\uff0c\u534e\u4e3a\u6280\u672f\u6709\u9650\u516c\u53f8\u4e8e\u5f53\u65e5\u5ba3\u5e03\u4e0e\u7f8e\u56fd\u9ad8\u901a\u516c\u53f8\u8fbe\u6210\u4e00\u9879\u5e7f\u6cdb\u7684\u591a\u5e74\u671f\u4e13\u5229\u8bb8\u53ef\u534f\u8bae\uff0c\u8986\u76d6\u4eba\u5de5\u667a\u80fd\u30015G\u3001\u8ba1\u7b97\u548c\u7f51\u7edc\u6280\u672f\u9886\u57df\u3002\n\u636e\u6089\uff0c\u8fd9\u662f\u53cc\u65b9\u9996\u6b21\u5c315G\u6280\u672f\u7b7e\u7f72\u4e13\u5229\u8bb8\u53ef\u534f\u8bae\u3002\u4e5f\u662f\u534e\u4e3a\u5386\u5e74\u6765\u7b2c\u4e00\u4efd\u4e0e\u9ad8\u901a\u7b7e\u8ba2\u7684\u6536\u5165\u8f6c\u6b63\u534f\u8bae\u3002\u4e0d\u4ec5\u4f53\u73b0\u4e86\u534e\u4e3a\u57285G\u6807\u51c6\u5fc5\u8981\u4e13\u5229\uff08SEP\uff09\u9886\u57df\u7684\u884c\u4e1a\u9886\u5bfc\u5730\u4f4d\uff0c\u540c\u65f6\u4e5f\u5c55\u73b0\u4e86\u534e\u4e3a\u5728\u8ba1\u7b97\u3001AI\u548c\u7f51\u7edc\u7b49\u524d\u6cbf\u9886\u57df\u7684\u521b\u65b0\u5b9e\u529b\u3002\n\u6839\u636e\u534f\u8bae\uff0c\u9ad8\u901a\u516c\u53f8\u5c06\u6536\u8d2d\u534e\u4e3a\u90e8\u5206\u4e0e\u8ba1\u7b97\u3001\u4eba\u5de5\u667a\u80fd\u548c\u7f51\u7edc\u6280\u672f\u76f8\u5173\u7684\u7f8e\u56fd\u4e13\u5229\u3002\u534e\u4e3a\u65b9\u9762\u8868\u793a\uff0c\u4ea4\u6613\u5b8c\u6210\u540e\uff0c\u516c\u53f8\u4e13\u5229\u8bb8\u53ef\u534f\u8bae\u603b\u989d\u9884\u8ba1\u5c06\u8d85\u8fc769\u4ebf\u7f8e\u5143\u3002",
+      "source": "web",
+      "title": "\u534e\u4e3a\u4e0e\u9ad8\u901a\u7b7e\u7f72\u591a\u5e74\u671f\u4e13\u5229\u8bb8\u53ef\u534f\u8bae \u9996\u6b21\u8986\u76d65G\u6280\u672f",
+      "url": "https://finance.sina.com.cn/roll/2026-10-05/doc-iniueeui6454008.shtml"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "By Thomson Reuters Oct 5, 2026 | 2:01 AM\nOct 5 (Reuters) \u2013 China\u2019s Huawei Technologies said on Monday it had agreed a broad multi-year patent licence \u200bdeal with Qualcomm covering artificial \u200cintelligence, 5G, computing and networking technologies.\n...\n\u2022 The agreement includes Qualcomm\u2019s purchase of ...",
+      "source": "web",
+      "title": "Huawei agrees to a multi-year patent licensing deal with Qualcomm",
+      "url": "https://whtc.com/2026/10/05/huawei-agrees-to-a-multi-year-patent-licensing-deal-with-qualcomm/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Qualcomm is licensing Huawei's patents covering its LogicFolding chip technology.\n- Huawei expects the overall value of its patent licensing agreements to exceed $6.9 billion following the Qualcomm deal, according to Bloomberg.\n...\nQualcomm, Inc.\n(QCOM) shares rose about 2% overnight ahead of Mond...",
+      "source": "web",
+      "title": "QCOM Gains Overnight After Patent Deal With China's ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/qcom-gains-overnight-patent-deal-074054209.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u3010#\u534e\u4e3a\u4e0e\u9ad8\u901a\u8fbe\u6210\u591a\u5e74\u671f\u4e13\u5229\u534f\u8bae# \u8986\u76d65G AI\u7b49\u9886\u57df\u301110\u67085\u65e5\uff0c\u534e\u4e3a\u5b98\u5ba3\u4e0e\u9ad8\u901a\u8fbe\u6210\u591a\u5e74\u671f\u4e13\u5229\u8bb8\u53ef\u534f\u8bae\uff0c\u8986\u76d6 5G\u3001\u8ba1\u7b97\u3001AI\u3001\u7f51\u7edc\u7b49\u591a\u4e2a\u9886\u57df\u3002",
+      "source": "web",
+      "title": "\u534e\u4e3a\u4e0e\u9ad8\u901a\u8fbe\u6210\u591a\u5e74\u671f\u4e13\u5229\u534f\u8bae \u8986\u76d65G AI\u7b49\u9886\u57df",
+      "url": "https://k.sina.com.cn/article_6321540324_m178cb0ce403301idwe.html?from=tech"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "WILMINGTON, Delaware, Oct 5 (Reuters) - Chipmaker Qualcomm and chip tech firm Arm Holdings, long at loggerheads, will once again be in court on Monday with Qualcomm accusing Arm of withholding chip testing tools that were due under contract.\nQualcomm also alleges that Arm leaked to the media its 202...",
+      "source": "web",
+      "title": "Qualcomm and Arm head to trial again, potential for huge damages in focus By Reuters",
+      "url": "https://www.investing.com/news/stock-market-news/qualcomm-and-arm-head-to-trial-again-potential-for-huge-damages-in-focus-4931470"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "10\u67085\u65e5\uff0c\u636e\u534e\u4e3a\u5b98\u7f51\u6d88\u606f\uff0c\u534e\u4e3a\u4e0e\u9ad8\u901a\u5ba3\u5e03\u8fbe\u6210\u4e00\u9879\u4e3a\u671f\u591a\u5e74\u3001\u8303\u56f4\u5e7f\u6cdb\u7684\u4e13\u5229\u8bb8\u53ef\u534f\u8bae\uff0c\u5185\u5bb9\u5305\u62ec\u53cc\u65b9\u57285G\u3001\u8ba1\u7b97\u3001\u4eba\u5de5\u667a\u80fd\u548c\u7f51\u7edc\u7b49\u591a\u4e2a\u9886\u57df\u7684\u4e13\u5229\u7ec4\u5408\u4ea4\u53c9\u8bb8\u53ef\uff0c\u540c\u65f6\u9ad8\u901a\u5c06\u6536\u8d2d\u534e\u4e3a\u5728\u8ba1\u7b97\u3001\u4eba\u5de5\u667a\u80fd\u3001\u7f51\u7edc\u53ca\u5176\u4ed6\u6280\u672f\u9886\u57df\u7684\u90e8\u5206\u7f8e\u56fd\u4e13\u5229\u3002\u8be5\u4ea4\u6613\u5c06\u5728\u83b7\u5f97\u5fc5\u8981\u7684\u76d1\u7ba1\u6279\u51c6\u540e\u5b8c\u6210\u3002",
+      "source": "web",
+      "title": "\u534e\u4e3a\u4e0e\u9ad8\u901a\u5ba3\u5e03\u8fbe\u6210\u5e7f\u6cdb\u4e13\u5229\u8bb8\u53ef\u534f\u8bae",
+      "url": "https://www.66wz.com/wendu/system/2026/10/05/105849934.shtml"
+    }
+  ],
+  "citations": [
+    "https://www.techpolarity.com/article/qualcomm-to-compensate-huawei-under-latest-multi-year-patent-agreement-for-5g-and-ai",
+    "https://ijr.com/discover/huawei-qualcomm-announce-multiyear-5g-ai-patent-deal-501ac78b",
+    "https://theedgemalaysia.com/node/820574",
+    "https://www.businesstimes.com.sg/companies-markets/telcos-media-tech/huawei-agrees-multi-year-patent-licensing-deal-qualcomm",
+    "https://www.afp.com/en/agency/inside-afp/external-press-releases/huawei-and-qualcomm-announce-broad-patent-license",
+    "https://www.zaobao.com.sg/news/china/story20261005-9786802?ref=sidebar-realtime",
+    "https://patentlawyermagazine.com/huawei-and-qualcomm-reset-5g-patent-relationship-with-major-cross-license-deal/",
+    "https://www.gadgets360.com/internet/news/huawei-qualcomm-multi-year-patent-licensing-agreement-5g-ai-compute-and-more-12140469/amp",
+    "https://www.asktraders.com/analysis/qualcomm-and-huawei-agree-patent-cross-licence-with-no-terms-disclosed/",
+    "https://finance.sina.com.cn/roll/2026-10-05/doc-iniueeui6454008.shtml",
+    "https://whtc.com/2026/10/05/huawei-agrees-to-a-multi-year-patent-licensing-deal-with-qualcomm/",
+    "https://finance.yahoo.com/technology/ai/articles/qcom-gains-overnight-patent-deal-074054209.html",
+    "https://k.sina.com.cn/article_6321540324_m178cb0ce403301idwe.html?from=tech",
+    "https://www.investing.com/news/stock-market-news/qualcomm-and-arm-head-to-trial-again-potential-for-huge-damages-in-focus-4931470",
+    "https://www.66wz.com/wendu/system/2026/10/05/105849934.shtml"
+  ],
+  "usage": {
+    "input_tokens": 772,
+    "output_tokens": 1003,
+    "cost_usd": 0.03136
+  }
+}

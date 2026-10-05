@@ -1,0 +1,167 @@
+{
+  "name": "tickers_15",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Monday October 5, 2026.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| SMCI | Super Micro Computer, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +4.22% | +1.0% | 1.2\u00d7 | gapper 2026-08-12 |\n| CYPH | Cypherpunk Technologies Inc. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +3.77% | -26.5% | 0.8\u00d7 | gapper 2026-09-18 |\n| SECZ | Securitize Corp. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -5.46% | -18.6% | 0.7\u00d7 | gapper 2026-09-24 |\n| QMCO | Quantum Corporation | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +8.18% | +8.9% | 1.8\u00d7 | volume_spike 2026-09-24 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Friday October 2, 2026, any after-hours / pre-market move on Monday October 5, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Super Micro Computer, Inc. (SMCI) `[AI Infrastructure]`\n- Super Micro shares closed at **$43.69 on October 2, 2026**, up **4.22%**; a report attributed the move to the company\u2019s shipment of **NVIDIA Vera Rubin NVL72** systems and attention to its AI-server order pipeline (MarketBeat, Oct 2; Yahoo Finance, Oct 3).\n- Supermicro began shipping Vera Rubin NVL72 racks on **September 23, 2026**; each system combines **72 Rubin GPUs**, **36 Vera CPUs**, and direct liquid cooling through the company\u2019s Data Center Building Block Solutions (TradingView/GuruFocus, Oct 2).\n- The company reported more than **$60 billion of fiscal fourth-quarter 2026 orders** and forecast fiscal 2027 revenue of **$65 billion to $72 billion**; its manufacturing network includes the United States, Taiwan, Malaysia, and the Netherlands, with monthly capacity expected to exceed **6,000 racks** (TradingView/GuruFocus, Oct 2).\n- Fiscal fourth-quarter 2026 EPS was **$1.70** versus a **$0.92 consensus estimate**, while revenue was **$11.12 billion**, up **93.2% year over year** and below the **$11.60 billion consensus** (MarketBeat, Oct 2).\n- Super Micro\u2019s fiscal 2026 revenue was reported at **$39.1 billion**, up **78% year over year**, and adjusted EPS at **$3.63**, up **76%** (Ad-hoc-news.de, Oct 3).\n- NetApp announced a strategic collaboration with Super Micro on **September 29, 2026**, pairing Supermicro rack-scale AI systems and liquid cooling with NetApp\u2019s data-management platform for AI factories, enterprise customers, neoclouds, and sovereign-AI projects (Simply Wall St, Oct 4).\n- A California federal judge dismissed a shareholder lawsuit against Super Micro on **October 1, 2026**, according to a report citing Bloomberg Law; the suit alleged that the company misled investors about internal accounting deficiencies (Ad-hoc-news.de, Oct 3).\n- The reported after-hours indication was **\u20ac38.40 at 7:35 p.m. CEST on October 2**, equivalent to **1:35 p.m. ET**, up **3.20%** versus the prior Lang & Schwarz close; no separate Monday, October 5 pre-market catalyst through **12:20 ET** was identified in the gathered results (Ad-hoc-news.de, Oct 2).",
+  "search_results": [
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "**$43.69** ** 0.00\u00a0(0.00%)**\nClosing price 10/2/2026 04:00 PM Eastern\n...\nSuper Micro Computer shipped NVIDIA's Vera Rubin NVL72 liquid-cooled racks, backed by a $60 billion backlog, even as its forward P/E of 10.26 remains low ahead of November earnings.\n...\nSuper Micro Computer, Inc.\n(NASDAQ:SMCI)...",
+      "source": "web",
+      "title": "Super Micro Computer (SMCI) Stock Price, News & Analysis",
+      "url": "https://www.marketbeat.com/stocks/NASDAQ/SMCI/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **SMCI shares rose 4.2%** to $43.69 in midday trading, above the consensus analyst price target of $42.13.\nDespite bullish ratings from some firms, the overall analyst consensus remains \u201cHold,\u201d with targets ranging from $34 to $46.\n- Super Micro reported quarterly EPS of $1.70, beati...",
+      "source": "web",
+      "title": "Super Micro Computer (NASDAQ:SMCI) Shares Climb 4.2%",
+      "url": "https://www.marketbeat.com/instant-alerts/price-super-micro-computer-nasdaq-smci-shares-climb-42-still-a-buy-2026-10-02/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Reviewed by SashaJ\n- In late September 2026, NetApp announced a collaboration with Super Micro Computer to deliver jointly validated AI infrastructure that combines Supermicro\u2019s AI-optimized compute, rack-scale systems, and liquid cooling with NetApp\u2019s unified data management and cyber resilience pl...",
+      "source": "web",
+      "title": "How NetApp Partnership At Supermicro Has Changed Its ...",
+      "url": "https://simplywall.st/stocks/us/tech/nasdaq-smci/super-micro-computer/news/how-netapp-partnership-at-supermicro-has-changed-its-investm"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "## Key Takeaways\n- Super Micro stock has gained 41% since early January to close at $44 on October 2, 2026, but it still sits 17% below its level a year ago.\n- Q4 FY26 non-GAAP EPS of $1.70 beat the $0.96 estimate on a 17.6% gross margin, and new orders topped $60B.\n...\nSuper Micro Computer (SMCI) s...",
+      "source": "web",
+      "title": "SMCI Stock Is Up 41% This Year. Hold or Take Profits?",
+      "url": "https://www.tikr.com/blog/smci-stock-is-up-41-this-year-hold-or-take-profits?"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Super Micro Computer stock closed at USD 43.69 on October 2, 2026, with volume of 42.82 million shares.\nFiscal 2026 revenue reached USD 39.1 billion.\n...\nSuper Micro Computer (ISIN US86800U3023) gained 4.22 percent to USD 43.69 on Nasdaq on October 2, 2026, as investors weighed expanding AI server o...",
+      "source": "web",
+      "title": "Super Micro Computer stock gains 4.22 percent on AI orders",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/super-micro-computer-stock-gains-4-22-percent-on-ai-orders/70221799"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 10:34 PM GMT-3\n...\nShares of server solutions provider Super Micro (NASDAQ:SMCI) jumped 4.3% in the afternoon session after the company began shipping server racks built for NVIDIA's next-generation Vera Rubin AI architecture, according to TipRanks.\nThe start of shipments rei...",
+      "source": "web",
+      "title": "Why Super Micro (SMCI) Stock Is Up Today",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/why-super-micro-smci-stock-013403342.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "As the Nasdaq closed on October 2, it was evident how it compared to Super Micro's earnings report from August 11 and its shipping announcement on September 23.\nSuper Micro Computer finished $4369, 422%, while the fiscal 2027 revenue forecast it had released remained between $65.0 billion and72.\n......",
+      "source": "web",
+      "title": "Super Micro's $65 Billion Guide, HPE's $69.33 Close, and Google's TPU Test",
+      "url": "https://financefeeds.com/super-micro-65-billion-vera-rubin-hpe-google-tpu/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Super Micro Computer stock traded after-hours at EUR 38.40 at 7:35 p.m.\nCEST on October 2, 2026, up 3.20 percent versus the Lang & Schwarz prior close.\n...\nSuper Micro Computer stock traded after-hours at **EUR 38.40** at 7:35 p.m.\nCEST on October 2, 2026.\nThe price was up **3.20 percent** versus th...",
+      "source": "web",
+      "title": "Super Micro Computer stock after-hours at EUR 38.40: plus 3.20 percent versus prior close",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nachboerse/super-micro-computer-stock-after-hours-at-eur-38-40-plus-3-20-percent-versus-prior-close/70217409"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "A California federal judge dismissed a shareholder suit against Super Micro, easing legal pressure as Nvidia rack shipments and a NetApp deal build momentum.\n...\nA California federal judge handed Super Micro Computer a reprieve on Thursday, dismissing a shareholder lawsuit that accused the data-cent...",
+      "source": "web",
+      "title": "Super Micro Clears a Legal Hurdle as Vera Rubin ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/super-micro-clears-a-legal-hurdle-as-vera-rubin-shipments-finally-move-the-needle/70221254"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Shares of Super Micro Computer SMCI climbed about 3% in Friday morning trading as investors focused on the server maker's expanding role in AI data-center deployments, following its latest rollout of Nvidia-powered rack systems.\nSupermicro said it has started shipping Vera Rubin NVL72 systems throug...",
+      "source": "web",
+      "title": "Super Micro Shares Jump as AI Orders Surge",
+      "url": "https://www.tradingview.com/news/gurufocus:9968fb6ff094b:0-super-micro-shares-jump-as-ai-orders-surge/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Summary: SMCI reported Revenue of 11.12B (+93.16%), missing expectations; EPS of 1.70 (+314.63%), beating expectations.\n...\nSuper Micro Computer achieved its all-time high price of $44.52 on Oct 2, 2026.",
+      "source": "web",
+      "title": "Super Micro Computer, Inc. Common Stock (xSMCI) Stock Price Today | Live Chart & Quote",
+      "url": "https://www.okx.com/stock/super-micro-computer,-inc--xsmci"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Super Micro Computer stock gained 4.22 percent on October 2 as AI orders build\n...\nSuper Micro Computer stock was last at USD 43.69 on October 2, 2026, after a 4.22 percent gain.\nQ4 EPS reached USD 1.70 versus USD 0.92 consensus.\n...\nSuper Micro Computer stock was last at USD 43.69 on Nasdaq on Octo...",
+      "source": "web",
+      "title": "Super Micro Computer stock gained 4.22 percent on October 2 as AI orders build",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/super-micro-computer-stock-gained-4-22-percent-on-october-2-as-ai-orders-build/70225557"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Super Micro shares closed at 43.69 USD, up 4.2%, as AI rack shipments, liquid cooling partnerships and a broader tech rally lifted the stock.\n...\nSuper Micro Computer shares climbed 4.2% on Friday, closing at 43.69 USD, as a broad rally across technology and AI hardware names combined with renewed i...",
+      "source": "web",
+      "title": "Super Micro Rides AI Infrastructure Wave as Liquid ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/super-micro-rides-ai-infrastructure-wave-as-liquid-cooling-and-alliances-take-center-stage/70222892"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Super Micro Computer (SMCI) has been in focus after NetApp announced a broad AI infrastructure partnership that pairs Supermicro's rack-scale systems with NetApp's data platform, aimed at large AI factories and complex enterprise deployments.\nRecent trading shows momentum rebuilding in Super Micro C...",
+      "source": "web",
+      "title": "Super Micro Computer (SMCI) Climbed, What Is Behind The Fresh Attention?",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/super-micro-computer-smci-climbed-002042657.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "On October 02, 2026, Super Micro Computer Inc SMCI shares rose 4.2%, reaching a current price of $43.69.\nOver the past 52 weeks, the stock has traded between $19.48 and $58.78.\nGF Value\u2122 estimates fair value at $88.23, indicating a 50.5% upside potential from the current price.\n...\nNotably, insiders...",
+      "source": "web",
+      "title": "Super Micro Computer Inc (SMCI) Stock Up 4.2% and Still Underval",
+      "url": "https://www.gurufocus.com/news/9108119/super-micro-computer-inc-smci-stock-up-42-and-still-undervalued-gf-score-85100"
+    }
+  ],
+  "citations": [
+    "https://www.marketbeat.com/stocks/NASDAQ/SMCI/",
+    "https://www.marketbeat.com/instant-alerts/price-super-micro-computer-nasdaq-smci-shares-climb-42-still-a-buy-2026-10-02/",
+    "https://simplywall.st/stocks/us/tech/nasdaq-smci/super-micro-computer/news/how-netapp-partnership-at-supermicro-has-changed-its-investm",
+    "https://www.tikr.com/blog/smci-stock-is-up-41-this-year-hold-or-take-profits?",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/super-micro-computer-stock-gains-4-22-percent-on-ai-orders/70221799",
+    "https://finance.yahoo.com/markets/stocks/articles/why-super-micro-smci-stock-013403342.html",
+    "https://financefeeds.com/super-micro-65-billion-vera-rubin-hpe-google-tpu/",
+    "https://www.ad-hoc-news.de/boerse/news/nachboerse/super-micro-computer-stock-after-hours-at-eur-38-40-plus-3-20-percent-versus-prior-close/70217409",
+    "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/super-micro-clears-a-legal-hurdle-as-vera-rubin-shipments-finally-move-the-needle/70221254",
+    "https://www.tradingview.com/news/gurufocus:9968fb6ff094b:0-super-micro-shares-jump-as-ai-orders-surge/",
+    "https://www.okx.com/stock/super-micro-computer,-inc--xsmci",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/super-micro-computer-stock-gained-4-22-percent-on-october-2-as-ai-orders-build/70225557",
+    "https://www.ad-hoc-news.de/boerse/news/unternehmensnachrichten/super-micro-rides-ai-infrastructure-wave-as-liquid-cooling-and-alliances-take-center-stage/70222892",
+    "https://finance.yahoo.com/markets/stocks/articles/super-micro-computer-smci-climbed-002042657.html",
+    "https://www.gurufocus.com/news/9108119/super-micro-computer-inc-smci-stock-up-42-and-still-undervalued-gf-score-85100"
+  ],
+  "usage": {
+    "input_tokens": 1105,
+    "output_tokens": 545,
+    "cost_usd": 0.02549
+  }
+}

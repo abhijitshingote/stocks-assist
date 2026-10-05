@@ -1,0 +1,167 @@
+{
+  "name": "a_semis_supply",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Semis & supply chain.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nTSMC / Samsung / SK hynix / Micron / Intel news; wafer and memory (DRAM, NAND, HBM) pricing; chip supply/demand estimates; equipment orders; supply-chain reports (Nikkei, DigiTimes, TrendForce, CLSA); China chip probes and export-control actions.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **MU** / **Samsung Electronics** / **SK hynix** `[Memory & Interconnect]`\n- Counterpoint Research reported second-quarter 2026 DRAM revenue shares of **Samsung 38%**, **SK hynix 25%**, and **Micron 24%**; SK hynix\u2019s share fell from **29%** in the prior quarter while Micron\u2019s rose from **22%**. (SBS, Oct. 2, 2026; publish time not stated)\n- Micron reported fiscal fourth-quarter revenue of **$54.23 billion** and adjusted EPS of **$33.42** for the June\u2013August period. (Seoul Economic Daily, Oct. 3, 2026; publish time not stated)\n- Micron said **more than 75% of fiscal-2027 production volume** had already been secured through sales contracts and that memory and storage supply-demand conditions in **2027 and 2028** would be tighter than in 2026. (SBS, Oct. 2, 2026; publish time not stated)\n- TrendForce forecast fourth-quarter 2026 conventional DRAM contract prices to rise **10%\u201315% quarter over quarter** and NAND flash prices to rise **15%\u201320%**. (Evertiq, Oct. 2, 2026; 15:14 ET)\n- Industry sources reported September average fixed contract prices of **$26** for 8Gb DDR4 DRAM, up **4% month over month**, and **$30.61** for 128Gb 16Gx8 MLC NAND, up **0.44% month over month**. (Seoul Economic Daily, Oct. 3, 2026; publish time not stated)\n- Micron\u2019s fiscal-fourth-quarter gross margin was **86.8%**, versus **84.6%** in the prior quarter. (SBS, Oct. 2, 2026; publish time not stated)\n- Hana Securities estimated quarter-over-quarter DRAM and NAND price increases of **15%** and **18%**, respectively, and projected HBM would account for approximately **15% of Samsung\u2019s DRAM revenue** next year. (Seoul Economic Daily, Oct. 4, 2026; 00:00 ET)\n- Samsung Electronics was scheduled to release preliminary third-quarter results on **Thursday, October 8, 2026**. (Aju Press, Oct. 5, 2026; 01:40 ET)\n\n## **INTC** `[Semiconductors]`\n- Supply-chain sources cited by DigiTimes reported that Intel planned to raise PC processor prices by approximately **10% beginning October 5, 2026**, reportedly the company\u2019s third increase since late 2025. **[report]** (Startup Fortune, Oct. 3, 2026; 04:38 ET)\n- The report did not identify the affected processor families, and Intel had not publicly confirmed the pricing change as of the article\u2019s latest update. **[report]** (Startup Fortune, Oct. 3, 2026; 04:38 ET)\n\n## **TSM** `[Fab & Foundry]`\n- TrendForce reported that TSMC was scheduled to release third-quarter results on **October 15, 2026**. (TrendForce, Oct. 5, 2026; 04:47 ET)\n- TrendForce cited a Central News Agency estimate that TSMC advanced-node prices could rise **5%\u201310%** next year, advanced-packaging prices **10%\u201315%**, and mature-node prices **3%\u20135%**. (TrendForce, Oct. 5, 2026; 04:47 ET)\n- Commercial Times, citing the Culpium newsletter, reported that TSMC was exploring a potential Texas fab partnership connected with Elon Musk\u2019s Terafab project; Musk said the discussions were preliminary. **[rumor][report]** (TrendForce, Oct. 5, 2026; 04:47 ET)\n- TrendForce reported that TSMC A14 pilot production at Baoshan, Hsinchu, could begin as early as **first-quarter 2027**, based on a September Commercial Times report. **[report]** (TrendForce, Oct. 5, 2026; 04:47 ET)\n\n## **Samsung Electronics** `[Fab & Foundry]`\n- Counterpoint Research estimated Samsung Electronics held approximately **4%** of the global foundry market in the second quarter of 2026, ranking second behind TSMC. (Seoul Economic Daily, Oct. 1, 2026; 02:44 ET)\n- Counterpoint Research estimated TSMC\u2019s second-quarter revenue at **$40.2 billion**, representing approximately **42%** of the Foundry 2.0 market. (Seoul Economic Daily, Oct. 1, 2026; 02:44 ET)\n\n## **ASML** `[Chip Equipment]`\n- ASML was expected to report third-quarter results in **mid-October 2026**, according to TrendForce\u2019s semiconductor earnings calendar. (TrendForce, Oct. 5, 2026; 04:47 ET)\n\n## South Korea semiconductor exports `[Macro / Geopolitics]`\n- South Korea\u2019s September 2026 semiconductor exports reached a record level, with shipments reported as **more than triple** the year-earlier level. (Aju Press, Oct. 5, 2026; 01:40 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SEOUL, October 05 (AJP) - The global semiconductor industry is heading into a busy stretch of October, with Samsung Electronics set to report preliminary earnings this week before a series of major chip events and earnings releases put the strength of the AI-driven boom to another test.\nSamsung is s...",
+      "source": "web",
+      "title": "Samsung earnings kick off key October for chip industry | Aju Press",
+      "url": "https://www.ajupress.com/view/20261005142622669"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Ahead of TSMC\u2019s October 15 earnings call, expectations are building as Elon Musk\u2019s confirmation of talks over a potential Terafab partnership adds another layer to the foundry giant\u2019s growth story.\n...\nAfter Intel earlier signaled its involvement in Elon Musk\u2019s Terafab project, TSMC could now be ent...",
+      "source": "web",
+      "title": "[News] TSMC Earnings Preview: Terafab Talks, Price Hikes and A14-Intel Race Lead Five Key Themes",
+      "url": "https://www.trendforce.com/news/2026/10/05/news-tsmc-earnings-preview-terafab-talks-price-hikes-and-a14-intel-race-lead-five-key-themes/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Micron Closes In on SK Hynix for 2nd Place in Q2 DRAM Market\nMonday, October 5, 2026\n...\nMicron, which announced record-high earnings for the second quarter of this year, has closely pursued second-place SK Hynix in the global DRAM market.\nAccording to market research firm Counterpoint Research on O...",
+      "source": "web",
+      "title": "Micron Closes In on SK Hynix for 2nd Place in Q2 DRAM Market",
+      "url": "https://news.sbs.co.kr/english/article.do?news_id=N1008780546"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Memory Chip Shortage Set to Persist Through 2028 as Micron Secures Orders\n...\nThree-quarters of Micron's 2027 production already sold, signalling extended supply constraints that benefit Samsung and SK hynix\n...\nOct 5, 2026\n\u00b7 2 min read\n...\nKEY TAKEAWAYS\n- \u00b7Micron Technology has pre-sold over 75 per...",
+      "source": "web",
+      "title": "Memory Chip Shortage Set to Persist Through 2028 as Micron Secures Orders",
+      "url": "https://www.briefasia.com/en/article/memory-chip-shortage-2028-micron-samsung-sk-hynix"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "SEOUL, South Korea \u2014 South Korean stocks rallied nearly 2% on Thursday, snapping a three-day losing streak and pushing the benchmark KOSPI back toward the 7,000 mark as blockbuster results from U.S. memory chipmaker Micron Technology revived appetite for semiconductor shares.\n...\nThe rally marked a ...",
+      "source": "web",
+      "title": "KOSPI Jumps Nearly 2% Toward 7,000 as Micron Blowout Revives Samsung and SK Hynix, Snapping Losing Streak",
+      "url": "https://www.ibtimes.com.au/south-korea-kospi-rally-micron-chip-results-1876122"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Published 2026.10.04. 13:00:05\n...\nU.S. memory chipmaker Micron Technology has posted earnings and guidance that beat market expectations, reviving optimism toward South Korean chip stocks.\n...\nMicron said on Sept. 30 that revenue for its fiscal fourth quarter, covering June through August, came to ...",
+      "source": "web",
+      "title": "After Micron's Earnings Beat, Eyes Turn to Samsung and SK hynix",
+      "url": "https://en.sedaily.com/finance/2026/10/04/after-microns-earnings-beat-eyes-turn-to-samsung-and-sk"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The deposit lines in suppliers' own balance sheets are the hardest public evidence of an allocation fight, and in mid-2026 they jumped at TSMC, Samsung and Micron at the same time.\n...\n1TSMC's \"temporary receipts from customers\" (payments to retain its capacity) rose from NT$149.7B to NT$234.2B in Q...",
+      "source": "web",
+      "title": "Who is prepaying for AI chips? Bottleneck map, Oct 2026",
+      "url": "https://siliconanalysts.com/analysis/ai-hardware-bottleneck-map-2026-10"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Intel plans to raise PC CPU prices roughly 10% starting October 5, 2026, its third hike since late 2025, as memory costs tied to AI data center demand squeeze margins.\n...\nIntel plans to raise PC processor prices by roughly 10% starting October 5, according to supply chain sources cited by DIGITIMES...",
+      "source": "web",
+      "title": "startupfortune.com \u00b7 intel-will-raise-pc-chipIntel will raise PC chip prices 10% again on October 5, its ...",
+      "url": "https://startupfortune.com/intel-will-raise-pc-chip-prices-10-again-on-october-5-its-third-hike-this-year/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "South Korea\u2019s exports hit a record in September as semiconductors powered shipments to their strongest level yet, underscoring how deeply the AI investment cycle has reached into the country\u2019s industrial base and capital markets.\n...\nSamsung Electronics shares have climbed to 275,250 won after touch...",
+      "source": "web",
+      "title": "South Korea Exports Hit Record on Semiconductor Boom",
+      "url": "https://adalytica.com/news/south-korea-exports-semiconductor-boom-62bf4030"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "NAND revenue rose about 42% on bit growth of about 10% (Futurum Equities Podcast).\n...\nThe market is pricing it as though the shortage will end.\n...\nCombined with weak PC and smartphone demand, \"we could go very quickly from a shortage to a glut.\"\n...\n## What to Watch Next Week and Beyond\n...\n- **TS...",
+      "source": "web",
+      "title": "Micron's Record Quarter and Nvidia's Buyback Reopen the Memory...",
+      "url": "https://www.matterfact.com/newsletter/2026-10-03-semiconductor-briefing-micron-nvidia-memory-debate"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "With AI chip production heavily concentrated at TSMC, a growing number of customers are seeking to spread their orders, helping Samsung Electronics hold onto second place in the global foundry market.\nSamsung Electronics took about 4% of the global foundry market in the second quarter, ranking secon...",
+      "source": "web",
+      "title": "Samsung Holds No. 2 in Foundry Market on AI Chip Demand",
+      "url": "https://en.sedaily.com/finance/2026/10/01/samsung-holds-no-2-in-foundry-market-on-ai-chip-demand"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "At least one contract in those filings specifically identified 32 Asus-built servers equipped with Nvidia's B300 Blackwell chips, a chip class that requires a specific U.S. government license to export to China.\n...\nNvidia told Bloomberg it is investigating the matter with its equipment-manufacturin...",
+      "source": "web",
+      "title": "Nvidia Blackwell Chips Tied to Chinese State Financing - TFTC",
+      "url": "https://www.tftc.io/nvidia-blackwell-chinese-state-financing-export-controls"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "But it sounds to me like there is some plateauing of consumer-grade memory pricing ...\nI don't think memory is getting cheaper in consumer, but maybe prices stop going up again.\nAs opposed to data center pricing.\nMemory is just going to keep going up.\"\n...\n- *Pricing tone softened slightly.* \"A litt...",
+      "source": "web",
+      "title": "Micron Guides to a Tighter 2027 and 2028 as Investors Still ...",
+      "url": "https://www.matterfact.com/newsletter/2026-10-03-hbm-memory-supercycle-micron-2027-2028"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "## Contract prices for conventional DRAM are expected to rise by 10\u201315% QoQ in the fourth quarter of 2026, and NAND flash prices by 15\u201320%, according to TrendForce. AI servers continue to drive the market, while consumer electronics are increasingly struggling to absorb higher costs.\n...\nIn the NAND...",
+      "source": "web",
+      "title": "AI keeps memory prices climbing in Q4 as consumer demand weakens",
+      "url": "https://evertiq.com/news/2026-10-02-ai-keeps-memory-prices-climbing-in-q4-as-consumer-demand-weakens"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "According to industry sources on the 3rd, the average fixed contract price for DDR4 (8Gb 1Gx8), a general-purpose DRAM for PCs, stood at $26 in September, up 4% from the previous month.\n...\nThe average fixed contract price for 128Gb 16Gx8 MLC, used in memory cards and USB drives, was $30.61 in Septe...",
+      "source": "web",
+      "title": "Memory Price Gains Slow Sharply, Raising Peak-Cycle ...",
+      "url": "https://en.sedaily.com/finance/2026/10/03/memory-price-gains-slow-sharply-raising-peak-cycle-questions"
+    }
+  ],
+  "citations": [
+    "https://www.ajupress.com/view/20261005142622669",
+    "https://www.trendforce.com/news/2026/10/05/news-tsmc-earnings-preview-terafab-talks-price-hikes-and-a14-intel-race-lead-five-key-themes/",
+    "https://news.sbs.co.kr/english/article.do?news_id=N1008780546",
+    "https://www.briefasia.com/en/article/memory-chip-shortage-2028-micron-samsung-sk-hynix",
+    "https://www.ibtimes.com.au/south-korea-kospi-rally-micron-chip-results-1876122",
+    "https://en.sedaily.com/finance/2026/10/04/after-microns-earnings-beat-eyes-turn-to-samsung-and-sk",
+    "https://siliconanalysts.com/analysis/ai-hardware-bottleneck-map-2026-10",
+    "https://startupfortune.com/intel-will-raise-pc-chip-prices-10-again-on-october-5-its-third-hike-this-year/",
+    "https://adalytica.com/news/south-korea-exports-semiconductor-boom-62bf4030",
+    "https://www.matterfact.com/newsletter/2026-10-03-semiconductor-briefing-micron-nvidia-memory-debate",
+    "https://en.sedaily.com/finance/2026/10/01/samsung-holds-no-2-in-foundry-market-on-ai-chip-demand",
+    "https://www.tftc.io/nvidia-blackwell-chinese-state-financing-export-controls",
+    "https://www.matterfact.com/newsletter/2026-10-03-hbm-memory-supercycle-micron-2027-2028",
+    "https://evertiq.com/news/2026-10-02-ai-keeps-memory-prices-climbing-in-q4-as-consumer-demand-weakens",
+    "https://en.sedaily.com/finance/2026/10/03/memory-price-gains-slow-sharply-raising-peak-cycle-questions"
+  ],
+  "usage": {
+    "input_tokens": 761,
+    "output_tokens": 1180,
+    "cost_usd": 0.03398
+  }
+}

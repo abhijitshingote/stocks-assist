@@ -1,0 +1,167 @@
+{
+  "name": "a_econ_data",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Economic data.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nEvery US economic release on the session date and the brief date through the cutoff (PMIs, jobless claims, durable goods, housing, GDP, inflation, sentiment): actual vs consensus vs prior, and release time.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **Macro / Calendar**\n\n- **Nonfarm payrolls** increased by **29,000** in September versus **90,000 consensus** and **162,000 prior**; the prior two months were revised down by a combined **60,000**. The release was at **08:30 ET on October 2** (BLS, Oct. 2 08:30 ET; Brown Brothers Harriman, Oct. 4 12:20 ET).[5][3]\n- The **unemployment rate** rose to **4.2%** in September versus **4.1% consensus** and **4.1% prior**; the **labor-force participation rate** was **61.8%** versus **61.4% consensus** and **61.6% prior**. The release was at **08:30 ET on October 2** (BLS, Oct. 2 08:30 ET).[6][10]\n- **Private payrolls** increased by **20,000** in September versus **85,000 consensus** and **127,000 prior**; **government payrolls** increased by **9,000** versus **15,000 consensus** and **35,000 prior** (BLS, Oct. 2 08:30 ET).[5]\n- **Manufacturing payrolls** increased by **9,000** in September versus **10,000 consensus** and **16,000 prior**; average weekly hours were **34.3** versus **34.3 consensus** and **34.4 prior** (BLS, Oct. 2 08:30 ET).[5][10]\n- **Average hourly earnings** increased **0.3% month over month** versus **0.3% consensus** and **0.3% prior**, and increased **3.2% year over year** versus **3.2% consensus** and **3.1% prior** (BLS, Oct. 2 08:30 ET).[5]\n- **Factory orders** increased **0.1% month over month** in August versus **0.1% consensus** and **0.8% prior, revised from 0.9%**; **factory orders excluding transportation** increased **0.3%** versus **0.3% consensus** and **0.7% prior**. The release was at **10:00 ET on October 2** (U.S. Census Bureau, Oct. 2 10:00 ET; RTT News, Oct. 2 10:16 ET).[9][10]\n- **Durable-goods orders** were **0.0% month over month** in August versus **0.0% prior**; durable goods excluding transportation increased **0.3%**, and nondefense capital-goods orders excluding aircraft increased **1.6%** (U.S. Census Bureau, Oct. 2 10:00 ET).[10]\n- **S&P Global final services PMI** for September was scheduled for **09:45 ET on October 5**, with **58.7 consensus** and **58.7 prior**; the available calendar result did not report an actual by the **12:20 ET cutoff** (S&P Global, Oct. 5 09:45 ET).[1]\n- **S&P Global final composite PMI** for September was scheduled for **09:45 ET on October 5**, with **58.4 consensus** and **56.0 prior**; the available calendar result did not report an actual by the **12:20 ET cutoff** (S&P Global, Oct. 5 09:45 ET).[7]\n- **ISM services PMI** for September was scheduled for **10:00 ET on October 5**, with **55.1 consensus** and **55.4 prior**; the available calendar result did not report an actual by the **12:20 ET cutoff** (Institute for Supply Management, Oct. 5 10:00 ET).[1][4]\n- The September **ISM services subindexes** had prior readings of **61.7 for business activity**, **60.9 for new orders**, **47.8 for employment**, and **72.6 for prices**; no actual September readings were available by **12:20 ET on October 5** (Institute for Supply Management, Oct. 5 10:00 ET).[7][8]\n- The **Employment Trends Index** for September was scheduled for **10:00 ET on October 5**, with **108.53 prior**; no actual was available by the **12:20 ET cutoff** (The Conference Board, Oct. 5 10:00 ET).[15]",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Main high-volatility impulses will arrive in the afternoon with the publication of the US ISM Services index (4:00 PM), which will shed light on the pace of policy tightening or easing by the Federal Reserve.\n...\nPrevious: 1.6%.\n- 15:45 USA - Final Services PMI.\nConsensus: 58.7.\nPrevious: 58.7.\n- ...",
+      "source": "web",
+      "title": "Economic Calendar - Key Services PMIs for Europe and the US, and Central Bankers' Decisions",
+      "url": "https://www.xtb.com/int/market-analysis/news-and-research/economic-calendar-key-services-pmis-for-europe-and-the-us-and-central-bankers-decisions"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 3, 2026 | 4:02 AM\nNEW YORK (AP) \u2014 Wall Street has a busy week ahead with a mix of economic updates and details about the Federal Reserve\u2019s decision to raise interest rates at its most recent meeting.\nThe updates include fresh data on the health of the services sector, unemployment and consum...",
+      "source": "web",
+      "title": "Wall Street week ahead: Fed minutes, unemployment data ...",
+      "url": "https://wtop.com/national/2026/10/wall-street-week-ahead-fed-minutes-unemployment-data-consumer-sentiment-update/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "NFP gains in September surprised to the downside at +29k (consensus: +90k), while the prior two months were revised down by a combined -60k.",
+      "source": "web",
+      "title": "Drivers for the Week of October 5, 2026",
+      "url": "https://www.bbh.com/us/en/insights/blog/mind-on-the-markets/Drivers-for-the-Week-of-October-5-2026.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Unemployment rose to 4.2 percent.\nWage growth slowed to 3.0 percent on the year, the lowest since May 2021.\n...\n## The calendar: dated catalysts, 5 to 9 October 2026\n|Date|Time (ET)|Event|Consensus|Prior|Source|\n...\n|Mon 5 Oct|10:00|ISM services PMI, September|55.1|55.4|investingLive|\n...\n- **Monday...",
+      "source": "web",
+      "title": "Weekly Market Outlook: a hiking Fed, a stalling job market, Anthropic's IPO clock and the AI leaders",
+      "url": "https://www.livetradingnews.com/weekly-market-outlook-fed-minutes-anthropic-and-openai-ipos-gold-bitcoin-fx"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "|Indicator|Actual|Prior|Verdict|\n|--|--|--|--|\n|Nonfarm payrolls|90K forecast|162K|Expect a sharp hiring slowdown|\n|Unemployment rate|4.1% forecast|4.1%|Steady, but participation matters|\n|Factory orders|Not confirmed|0.9%|July: +0.9%|\n...\n|12:30|US|U-6 Unemployment Rate|7.7|7.7|\n|12:30|US|Nonfarm P...",
+      "source": "web",
+      "title": "Global Economy Briefing \u2014 October 2, 2026",
+      "url": "https://www.riotimesonline.com/global-economy-briefing-october-2-2026/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "In the US, the FOMC minutes, ISM Services PMI, and preliminary University of Michigan Consumer Sentiment data will be closely watched for further clues on the economic outlook and the Fed\u2019s policy path.\n...\nHowever, softer-than-expected PCE\ninflation and nonfarm payrolls, alongside more dovish remar...",
+      "source": "web",
+      "title": "Week Ahead - Oct 5th",
+      "url": "https://tradingeconomics.com/calendar?article=29373&g=top&importance=2&startdate=2026-10-02"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Scheduled U.S. economic releases on Monday, October 5, 2026, with verified Eastern Time release times and the forecast going into each report.\n...\n- 9:45 AM ET ETS&P Global Composite PMI FinalLowManufacturing \u00b7 Awaiting releaseForecast 58.4Previous 56Actual -\n- 9:45 AM ET ETS&P Global Services PMI F...",
+      "source": "web",
+      "title": "Economic Calendar for Monday, October 5, 2026",
+      "url": "https://terminal.hyperstocks.io/economic-calendar/2026-10-05"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "|ISM N-Mfg New Orders Idx|US|2:00 p.m.\nUTC|Sep|-|-|60.9|-|\n|Employment Trends*|US|2:00 p.m.\nUTC|Sep|-|-|108.53|-|\n|ISM N-Mfg Employment Idx|US|2:00 p.m.\nUTC|Sep|-|-|47.8|-|\n|ISM N-Mfg PMI|US|2:00 p.m.\nUTC|Sep|-|-|55.4|-|",
+      "source": "web",
+      "title": "Economic Calendar - Yahoo Finance",
+      "url": "https://ca.finance.yahoo.com/calendar/economic?day=2026-10-04"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Friday, October 2, 2026\n10:00\nUnited States\nFactory Orders Ex. Transportation M-o-M\nAUG\n0.3 %\n0.7 (R) %\n...\nUnited States\nBaker Hughes - Rig Count\nOCT 02\n598\n599\n...\n- ##### U.S. Factory Orders Inch Up In Line With Estimates In August\nOctober 02, 2026 10:16 ET\nA report released by the Commerce Depar...",
+      "source": "web",
+      "title": "Economic Calendar",
+      "url": "https://www.rttnews.com/corpinfo/economiccalendar.aspx?PageNum=2&date=02-Oct-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "## The September jobs report disappointed versus expectations, providing some relief to the bond market selloff.\nNonfarm payrolls added 29,000 jobs versus 90,000 expected, and the prior two months were revised lower by 60,000 jobs.\n...\nIn the household survey, the unemployment rate ticked up to 4.2%...",
+      "source": "web",
+      "title": "October 2, 2026 Headlines",
+      "url": "https://www.almfirst.com/resources/beyond-the-headlines/october-2-2026-headlines"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "- ##### U.S. Factory Orders Inch Up In Line With Estimates In August\nOctober 02, 2026 10:16 ET\nA report released by the Commerce Department on Friday showed a slight uptick in new orders for U.S. manufactured goods in the month of August.\nThe Commerce Department said factory orders crept up by 0.1 p...",
+      "source": "web",
+      "title": "Economic Calendar - RTT News",
+      "url": "https://www.rttnews.com/corpinfo/economiccalendar.aspx?date=01-Oct-2026"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "## September Jobs Report\nPosted on October 3, 2026 by peter.c.rupert\n...\nThe BLS announced that the labor market was pretty flat in September.\nEmployment rose a lean 29,000 while unemployment rate barely changed, from 4.14% to 4.18%.\nThe flatness spanned almost all major sectors, no big gains or los...",
+      "source": "web",
+      "title": "October 2026",
+      "url": "https://econsnapshot.com/2026/10/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Munoz and Nir expect a relatively quiet US data calendar, with ISM Services likely slipping to 54.0 versus 55.0 consensus, modestly higher Jobless Claims, and a small decline in UMich Sentiment to 47.5.\nThey note September payrolls moderated mainly on seasonal factors, while underlying labor-market ...",
+      "source": "web",
+      "title": "US data week: ISM, labor and sentiment in focus \u2013 TD Securities",
+      "url": "https://www.tradingkey.com/news/economic-indicator/262199416-fxstr"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "United States\nPMI Manufacturing\nSEP F\n55.9\n53.9\n...\nUnited States\nISM Manufacturing New Orders Index\nSEP\n55.3\n53.7\n...\nEconomic News\n- ##### U.S. Factory Orders Inch Up In Line With Estimates In August\nOctober 02, 2026 10:16 ET\nA report released by the Commerce Department on Friday showed a slight u...",
+      "source": "web",
+      "title": "Economic Calendar",
+      "url": "https://www.rttnews.com/corpinfo/economiccalendar.aspx?PageNum=2&date=01-Oct-2026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "All dates are in ET Time.\nFriday, October 2, 2026 Exp Prev\nET/GMT\n0830/1230 Sep U.S. Employment Report\nNon-Farm Payrolls +84K +162K\nUnemployment Rate 4.1% 4.1%\nAvg Hourly Earnings (USD) 37.75\nAvg Hourly Earnings-Net Chg (USD) +0.1\n...\nAvg Hourly Earnings, Y/Y% +3.1% +3.09%\nOverall Workweek 34.4\nOver...",
+      "source": "web",
+      "title": "News by Dow Jones Newswires on TradingView, 2026-10-02",
+      "url": "https://www.tradingview.com/news/DJN_DN20261002002014:0/"
+    }
+  ],
+  "citations": [
+    "https://www.xtb.com/int/market-analysis/news-and-research/economic-calendar-key-services-pmis-for-europe-and-the-us-and-central-bankers-decisions",
+    "https://wtop.com/national/2026/10/wall-street-week-ahead-fed-minutes-unemployment-data-consumer-sentiment-update/",
+    "https://www.bbh.com/us/en/insights/blog/mind-on-the-markets/Drivers-for-the-Week-of-October-5-2026.html",
+    "https://www.livetradingnews.com/weekly-market-outlook-fed-minutes-anthropic-and-openai-ipos-gold-bitcoin-fx",
+    "https://www.riotimesonline.com/global-economy-briefing-october-2-2026/",
+    "https://tradingeconomics.com/calendar?article=29373&g=top&importance=2&startdate=2026-10-02",
+    "https://terminal.hyperstocks.io/economic-calendar/2026-10-05",
+    "https://ca.finance.yahoo.com/calendar/economic?day=2026-10-04",
+    "https://www.rttnews.com/corpinfo/economiccalendar.aspx?PageNum=2&date=02-Oct-2026",
+    "https://www.almfirst.com/resources/beyond-the-headlines/october-2-2026-headlines",
+    "https://www.rttnews.com/corpinfo/economiccalendar.aspx?date=01-Oct-2026",
+    "https://econsnapshot.com/2026/10/",
+    "https://www.tradingkey.com/news/economic-indicator/262199416-fxstr",
+    "https://www.rttnews.com/corpinfo/economiccalendar.aspx?PageNum=2&date=01-Oct-2026",
+    "https://www.tradingview.com/news/DJN_DN20261002002014:0/"
+  ],
+  "usage": {
+    "input_tokens": 735,
+    "output_tokens": 1002,
+    "cost_usd": 0.03124
+  }
+}

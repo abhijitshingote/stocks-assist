@@ -1,0 +1,167 @@
+{
+  "name": "c_WNC",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Wabash National Corporation (WNC).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| WNC | Wabash National Corporation | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +12.68% | +7.8% | 1.7\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why WNC moved. Run several searches: \"why is Wabash National Corporation stock down/up\",\n\"Wabash National Corporation stock\", \"WNC shares Friday October 2, 2026\", \"Wabash National Corporation concerns\", \"Wabash National Corporation FDA\",\n\"Wabash National Corporation analyst\", \"Wabash National Corporation price target\", \"Wabash National Corporation deal\", \"Wabash National Corporation offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Wabash National Corporation peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Wabash National Corporation (WNC) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Wabash National Corporation (WNC) `Transportation Equipment`\n- WNC closed at **$14.04**, up **12.68%** on Friday, October 2, 2026; the quoted after-hours price was **$14.03**, down **0.07%**, at **16:01 ET**. (Yahoo Finance, Oct 2 16:01 ET)[5]\n- A market-mover report attributed WNC\u2019s **6.4%** intraday rise to weaker-than-expected September U.S. employment data: payrolls increased by **29,000** versus the **84,000** consensus, unemployment rose to **4.2%**, and Treasury yields fell after the release. (Yahoo Finance/StockStory, Oct 2 19:46 ET)[2]\n- The same report said lower borrowing costs could reduce financing costs for buyers of heavy equipment, and listed **Avis Budget Group +3.6%**, **Novanta +4.2%**, **FuelCell Energy +6.8%**, and **Nextpower +5.0%** among stocks rising in the session. (Yahoo Finance/StockStory, Oct 2 19:46 ET)[2]\n- WNC\u2019s latest reported quarter showed a **$0.53 loss per share** versus a **$0.56 consensus loss**, and revenue of **$417.24 million** versus a **$402.85 million consensus**; revenue declined **9.1% year over year**. (MarketBeat, Oct 2 2026)[1]\n- Wabash had reported a Q2 2026 backlog of **$956 million**, up **14.0%** from the prior quarter; Q2 revenue was **$417.24 million**, down **9.06% year over year**, with a **$25.30 million operating loss** and **$22.61 million net loss**. (Ad Hoc News, Oct 1 2026; updated Oct 2)[4]\n- Wabash\u2019s Q3 2026 outlook called for revenue of **$440 million\u2013$460 million** and adjusted diluted loss per share of **$0.40\u2013$0.50**. (Ad Hoc News, Oct 1 2026; updated Oct 2)[4]\n- DA Davidson reiterated a **Buy** rating and a **$20.00** price target on September 22, 2026; the reported analyst consensus was **Hold**, with an average target of **$21.67**. (MarketBeat, Oct 2 2026)[1]\n- Wabash declared a quarterly cash dividend of **$0.08 per share**, with an ex-dividend date of **October 8, 2026**. (Yahoo Finance, Oct 3 12:24 ET)[5]\n- On October 5, Wabash announced that its Q3 2026 earnings conference call would be held on **October 29, 2026 at 12:00 ET**; the announcement did not provide new financial results or guidance. (GlobeNewswire, Oct 5 10:58 ET)[11]\n- No company-specific catalyst published within the window was identified beyond the earnings, backlog, dividend, and scheduled-call information above; the clearest reported explanation for the October 2 move was the broader post-employment-report decline in Treasury yields and lower financing-cost expectations. (Yahoo Finance/StockStory, Oct 2 19:46 ET)[2]",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Wabash National shares rose 8.9%** to approximately $13.57 in mid-day trading, although trading volume was 61% below the average session volume.\n- Analyst sentiment remains mixed: the stock has an overall \u201cHold\u201d rating and an average price target of $21.67, with ratings ranging fro...",
+      "source": "web",
+      "title": "Wabash National (NYSE:WNC) Shares Climb 8.9% - Still a Buy?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-wabash-national-nyse-wnc-shares-climb-89-still-a-buy-2026-10-02/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 7:46 PM GMT-3\n...\nA number of stocks jumped in the morning session after weaker-than-expected U.S. employment data cooled Treasury yields, easing borrowing-cost pressure across the sector.\nThe Bureau of Labor Statistics reported that nonfarm payrolls rose by 29,000 in Septemb...",
+      "source": "web",
+      "title": "FuelCell Energy, Nextpower, Wabash, Avis Budget Group, and Novanta Shares Skyrocket, What You Need To Know",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/fuelcell-energy-nextpower-wabash-avis-224603323.html"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "On October 02, 2026, Wabash National Corp WNC shares rose 12.7% to a current price of $14.04.\nThis increase comes amidst a 52-week range of $6.63 to $14.47, showcasing significant volatility in the stock's performance over the past year.\nGF Value\u2122 verdict: Current price of $14.04 is 4.9% overvalued ...",
+      "source": "web",
+      "title": "Is Wabash National Corp (WNC) Overvalued After 12.7% Rally? GF V",
+      "url": "https://www.gurufocus.com/news/9108366/is-wabash-national-corp-wnc-overvalued-after-127-rally-gf-value-says-overvalued"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Wabash National expands backlog.\nWabash National stock stays 11.13 percent below its high\n...\nQ2 revenue fell 9.06 percent to USD 417.24 million.\nWabash National stock costs EUR 11.45 on October 1, 2026 versus EUR 12.40 on September 4.\n...\nWabash National (ISIN US9295661071) expanded its Q2 2026 bac...",
+      "source": "web",
+      "title": "Wabash National expands backlog. Wabash National stock ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/wabash-national-expands-backlog-wabash-national-stock-stays-11-13-percent-below-its-high/70212354"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "# Wabash National Corporation (WNC)\n14.04 +1.58 (+12.68%)\nAt close: October 2 at 4:00:03 p.m.\nEDT\n14.04 -0.01 (-0.07%)\nAfter hours: October 2 at 4:01:12 p.m.\nEDT\nDividend\nWNC announced a cash dividend of $0.08 with an ex-date of Oct. 8, 2026\n...\n- Earnings Date (est.)\nNov 5, 2026\n- Forward Dividend ...",
+      "source": "web",
+      "title": "Wabash National Corporation (WNC) Stock Price, News ...",
+      "url": "https://ca.finance.yahoo.com/quote/WNC/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Wabash National Corporation (WNC)\nNYSE: WNC \u00b7 Real-Time Price \u00b7 USD\n14.04\n+1.58 (12.68%)\nOct 2, 2026, 4:00 PM EDT - Market closed\n...\nWabash National has a market cap or net worth of $571.95 million.\n...\nThe next estimated earnings date is Thursday, October 29, 2026, before market open.\n...\nThe stoc...",
+      "source": "web",
+      "title": "Wabash National (WNC) Statistics & Valuation",
+      "url": "https://stockanalysis.com/stocks/wnc/statistics/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Wabash National Corporation\n14.04 +12.68%\n...\n# Wabash National Corporation (WNC)\n14.04 +1.58 (+12.68%)\nAt close: October 2 at 4:00:03 PM EDT\nDividend WNC announced a cash dividend of $0.08 with an ex-date of Oct. 8, 2026\n...\nEstimate -0.56\nActual -0.53",
+      "source": "web",
+      "title": "Wabash National Corporation (WNC) Analyst Ratings, ...",
+      "url": "https://finance.yahoo.com/quote/WNC/analysis/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "(WOLF): +12.26%\n- Wabash National (WNC): +12.16%",
+      "source": "web",
+      "title": "SpaceX and Seagate among market cap stock movers on ...",
+      "url": "https://ng.investing.com/news/stock-market-news/spacex-and-seagate-among-market-cap-stock-movers-on-friday-93CH-2720373"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "NYSE\n$14.07\n$+1.58\n(+12.68%)\n...\nWabash National Corp.\n(WNC) ist im TRUCK TRAILERS-Sektor t\u00e4tig und auf NYSE Aufgelistet.\nDie Aktie ist derzeit mit $14.07 bewertet, mit einer Marktkapitalisierung von $507.59M und einem KGV von --.\n...\nWabash National Corp.\n(WNC) zuletzt geschlossen bei $12.46 zum St...",
+      "source": "web",
+      "title": "WNC Preis heute: Wabash National Corp. Aktienkurs, Kursangebot & Chart | MEXC",
+      "url": "https://www.mexc.com/de-DE/stocks/wnc"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "15\nWNC Wabash National Corp.\n+12.68%\n$571.95M\n$14.04\nUnited States\nIndustrials",
+      "source": "web",
+      "title": "Best Performing Stocks in October 2026 - Monthly Gainers",
+      "url": "https://www.stocktitan.net/rankings/stock-gains-monthly/2026/october?page=1&e=1"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "LAFAYETTE, Ind., Oct. 05, 2026 (GLOBE NEWSWIRE) -- Wabash (NYSE: WNC) today announced that it will webcast its quarterly earnings conference call to review and discuss its financial results for the third quarter of 2026 on Thursday, October 29, 2026, beginning at 12:00 p.m.\n...\nWabash (NYSE: WNC) co...",
+      "source": "web",
+      "title": "Wabash Schedules Third Quarter 2026 Earnings Conference Call",
+      "url": "https://www.globenewswire.com/news-release/2026/10/05/3374390/10640/en/wabash-schedules-third-quarter-2026-earnings-conference-call.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "|4|WNC|Wabash National|12.7%|66.3%| |",
+      "source": "web",
+      "title": "How Bad Would A Cash Shortfall Be For Tesla Stock?",
+      "url": "https://www.trefis.com/stock/tsla/articles/617444/how-bad-would-a-cash-shortfall-be-for-tesla-stock/2026-10-02"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Wabash National: The Stock Already Prices In Expensive Trailer Market Dynamics (NYSE:WNC) | Seeking Alpha\n...\n## Summary\n- Wabash National Corporation receives a Hold rating, reflecting high risk and sensitivity to tariff rulings and trailer market dynamics.\n- Tariffs on Mexican and Chinese trailers...",
+      "source": "web",
+      "title": "Wabash National: The Stock Already Prices In Expensive ...",
+      "url": "https://seekingalpha.com/article/4951463-wabash-national-the-stock-already-prices-in-expensive-trailer-market-dynamics"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "**\u05d4\u05d5\u05d0 \u05de\u05d1\u05db\u05d9\u05e8\u05d9 \u05d4\u05e2\u05d9\u05ea\u05d5\u05e0\u05d0\u05d9\u05dd \u05d4\u05e4\u05d9\u05e0\u05e0\u05e1\u05d9\u05dd \u05d1\u05e2\u05d5\u05dc\u05dd \u05d5\u05d9\u05e9 \u05dc\u05d5 \u05e2\u05e6\u05d4 \u05de\u05e4\u05ea\u05d9\u05e2\u05d4** 02.10.2026 \u05d4\u05d9\u05dc\u05d4 \u05d5\u05d9\u05e1\u05d1\u05e8\u05d2",
+      "source": "web",
+      "title": "\u05de\u05e0\u05d9\u05d9\u05ea \u05d5\u05d5\u05d0\u05d1\u05d0\u05e9 \u05e0\u05e9\u05d9\u05d5\u05e0\u05dc - \u05e0\u05d9\u05d5-\u05d9\u05d5\u05e8\u05e7 : \u05d7\u05d3\u05e9\u05d5\u05ea - \u05d2\u05dc\u05d5\u05d1\u05e1",
+      "url": "https://www.globes.co.il/portal/instrument.aspx?instrumentid=19699&feeder=1&mode=news"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "|4|WNC|Wabash National|12.7%|66.3%| |",
+      "source": "web",
+      "title": "Can Pricier AI Chip Rentals Accelerate Amazon\u2019s AWS Revenue Growth?",
+      "url": "https://www.trefis.com/stock/amzn/articles/617480/can-pricier-ai-chip-rentals-accelerate-amazons-aws-revenue-growth/2026-10-02"
+    }
+  ],
+  "citations": [
+    "https://www.marketbeat.com/instant-alerts/price-wabash-national-nyse-wnc-shares-climb-89-still-a-buy-2026-10-02/",
+    "https://finance.yahoo.com/markets/stocks/articles/fuelcell-energy-nextpower-wabash-avis-224603323.html",
+    "https://www.gurufocus.com/news/9108366/is-wabash-national-corp-wnc-overvalued-after-127-rally-gf-value-says-overvalued",
+    "https://www.ad-hoc-news.de/boerse/news/nebenwerte/wabash-national-expands-backlog-wabash-national-stock-stays-11-13-percent-below-its-high/70212354",
+    "https://ca.finance.yahoo.com/quote/WNC/",
+    "https://stockanalysis.com/stocks/wnc/statistics/",
+    "https://finance.yahoo.com/quote/WNC/analysis/",
+    "https://ng.investing.com/news/stock-market-news/spacex-and-seagate-among-market-cap-stock-movers-on-friday-93CH-2720373",
+    "https://www.mexc.com/de-DE/stocks/wnc",
+    "https://www.stocktitan.net/rankings/stock-gains-monthly/2026/october?page=1&e=1",
+    "https://www.globenewswire.com/news-release/2026/10/05/3374390/10640/en/wabash-schedules-third-quarter-2026-earnings-conference-call.html",
+    "https://www.trefis.com/stock/tsla/articles/617444/how-bad-would-a-cash-shortfall-be-for-tesla-stock/2026-10-02",
+    "https://seekingalpha.com/article/4951463-wabash-national-the-stock-already-prices-in-expensive-trailer-market-dynamics",
+    "https://www.globes.co.il/portal/instrument.aspx?instrumentid=19699&feeder=1&mode=news",
+    "https://www.trefis.com/stock/amzn/articles/617480/can-pricier-ai-chip-rentals-accelerate-amazons-aws-revenue-growth/2026-10-02"
+  ],
+  "usage": {
+    "input_tokens": 1012,
+    "output_tokens": 746,
+    "cost_usd": 0.02823
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "c_SYNA",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Monday October 5, 2026. Target: Synaptics Incorporated (SYNA).\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| SYNA | Synaptics Incorporated | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +14.08% | +17.9% | 13.0\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n(nothing)\n\nTASK\nSearch harder for why SYNA moved. Run several searches: \"why is Synaptics Incorporated stock down/up\",\n\"Synaptics Incorporated stock\", \"SYNA shares Friday October 2, 2026\", \"Synaptics Incorporated concerns\", \"Synaptics Incorporated FDA\",\n\"Synaptics Incorporated analyst\", \"Synaptics Incorporated price target\", \"Synaptics Incorporated deal\", \"Synaptics Incorporated offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Synaptics Incorporated peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Monday October 5, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Synaptics Incorporated (SYNA) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Synaptics Incorporated (SYNA) `Semiconductors`\n- ON Semiconductor and Synaptics amended their merger agreement on October 1, replacing the original all-stock transaction with an **all-cash acquisition at $123 per SYNA share**, valuing Synaptics at approximately **$5.7 billion** versus roughly $7 billion under the prior structure. The change followed an unsolicited competing proposal for Synaptics.[report] (Yahoo Finance, Oct 2, 2026, 08:27 ET).[1]\n- Synaptics closed October 2 at **$121.10**, up **14.08%**, after closing October 1 at **$106.15**; its weekly gain was **17.9%**. ON Semiconductor rose approximately **6.0%** to **$84.89** on October 2.[1][6] (Insider Monkey, Oct 3, 2026, 23:30 ET; UOB Kay Hian, Oct 5, 2026, 09:00 ET).\n- SYNA traded at **$120.76** in premarket trading on October 2, up **13.8%** from the October 1 close of $106.15.[3] (Yahoo Finance, Oct 2, 2026, 09:22 ET).\n- The revised consideration represents approximately a **16% premium** to Synaptics\u2019 October 1 closing price; the transaction is expected to close by **mid-2027**, subject to Synaptics shareholder approval and remaining regulatory approvals.[1][3] (Yahoo Finance, Oct 2, 2026, 09:22 ET).\n- The revised transaction removes the stock consideration and associated dilution exposure for ON Semiconductor shareholders; ON Semiconductor said the transaction is expected to be immediately accretive to adjusted earnings per share after closing.[2] (Yahoo Finance, Oct 2, 2026, 08:27 ET).\n- The amended agreement retains previously identified annual run-rate synergies of **$200 million** and includes potential revenue synergies and plans to bring part of Synaptics\u2019 production in-house.[8] (RTTNews, Oct 2, 2026, 08:24 ET).\n- The U.S. Federal Trade Commission had cleared the transaction; shareholder approval and other regulatory approvals remained outstanding.[3] (Yahoo Finance, Oct 2, 2026, 09:22 ET).\n- Bank of America analysts said the revised terms could be received more favorably because they remove the dilution overhang while preserving the strategic rationale; they wrote that Synaptics fills key gaps in ON Semiconductor\u2019s portfolio.[1][10] (Yahoo Finance, Oct 2, 2026, 08:27 ET; Investopedia, Oct 2, 2026, 13:27 ET).\n- Rosenblatt Securities raised its Synaptics price target from **$115 to $123** while maintaining a **Neutral** rating.[4][15] (MarketBeat, Oct 2, 2026, 08:24 ET).\n- ON Semiconductor\u2019s acquisition rationale includes combining Synaptics\u2019 chips for **autonomous driving and robotics** with ON Semiconductor\u2019s automotive and data-center semiconductor portfolio.[1] (Yahoo Finance, Oct 2, 2026, 08:27 ET).\n- The revised merger terms were the identified catalyst for the October 2 moves in both companies: SYNA gained **14.08%** and ON gained approximately **6%**.[1][6] (Yahoo Finance, Oct 2, 2026, 08:27 ET; UOB Kay Hian, Oct 5, 2026, 09:00 ET).",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- Onsemi and Synaptics shares gained Friday after a revised merger deal.\n- Analysts at Bank of America said Synaptics \"fills key gaps\" in Onsemi's portfolio.\nOnsemi and Synaptics shares are on the rise after a revised merger deal.\nShares of Onsemi (ON) surged 6% and Synaptics (SYNA) shares jumped 14...",
+      "source": "web",
+      "title": "Onsemi, Synaptics Stocks Rally on Revised Merger ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/onsemi-synaptics-stocks-rally-revised-174652095.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 12:27 PM GMT-3\n...\n**What happened: ** Synaptics (SYNA) stock jumped 14% on Friday, while ON Semiconductor (ON) stock jumped 5%.\n**What's behind the move: ** The chipmakers revised the terms of ON's purchase of Synaptics, helping lift shares of both companies.\nUnder the amend...",
+      "source": "web",
+      "title": "ON Semiconductor, Synaptics stocks jump on revised merger deal",
+      "url": "https://finance.yahoo.com/markets/stocks/article/on-semiconductor-synaptics-stocks-jump-on-revised-merger-deal-152416209.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "Synaptics Shares Rise 13.8% After Merger Terms Revised to $123-Per-Share Cash Offer\n...\nFri, October 2, 2026 at 7:22 AM GMT-3\n...\nSynaptics (NASDAQ:SYNA) shares rose 13.8% in pre-market trading after ON Semiconductor (NASDAQ:ON) and Synaptics amended their merger agreement to convert the proposed tr...",
+      "source": "web",
+      "title": "Synaptics Shares Rise 13.8% After Merger Terms Revised ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/synaptics-shares-rise-13-8-102219134.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Synaptics shares surged** after Rosenblatt Securities raised its price target from $115 to $123, with the stock opening at $121.70 versus a prior close of $106.15.\n- Analyst sentiment remains broadly cautious: Synaptics has a consensus **\u201cHold\u201d rating** and an average price target ...",
+      "source": "web",
+      "title": "Synaptics (NASDAQ:SYNA) Shares Gap Up on Analyst ...",
+      "url": "https://www.marketbeat.com/instant-alerts/price-synaptics-nasdaq-syna-shares-gap-up-on-analyst-upgrade-2026-10-02/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Published October 2, 2026 at 11:30 pm EDT\nSynaptics Inc.\n(NASDAQ:SYNA) extended its winning streak to a fourth straight session on Friday, surging 14.08 percent on Friday to finish at $121.10 apiece, following ON Semiconductor\u2019s decision to switch its acquisition of the former to an all-cash transac...",
+      "source": "web",
+      "title": "Synaptics (SYNA) Soars 14% as ON Semi Sweetens Deal With All-Cash Offer",
+      "url": "https://www.insidermonkey.com/news/synaptics-syna-soars-14-as-on-semi-sweetens-deal-with-all-cash-offer-1847801/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Cash merger terms lift Synaptics and onsemi.\n** Synaptics (SYNA US) rose about 14.1% to US$121.10 in the 2 October US session after the prior day's merger revision; onsemi (ON US) gained about 6.0% to US$84.89.\nThe amended US$123-per-share cash offer values Synaptics equity at US$5.7bn.\nThe edge...",
+      "source": "web",
+      "title": "Cooling US Payrolls Ease Fed Hike Concerns | Research",
+      "url": "https://uobkh.com.hk/en/research/wealth-daily-05102026"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Synaptics (SYNA) stock is pushing higher on Oct. 2 after the technology company announced a revised merger agreement with On Semiconductor (ON).\nUnder the newly restructured terms, On Semiconductor will acquire Synaptics in an all-cash transaction valued at about $5.7 billion, valuing SYNA shares at...",
+      "source": "web",
+      "title": "A $5.7 Billion Reason Why Synaptics Stock Is Up Today",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/5-7-billion-reason-why-185353364.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Synaptics Inc.\n(SYNA) is up 13.53 percent, gaining $14.36 to $120.51 on Friday.\nThe move comes possibly after yesterday's news about how Synaptics and onsemi amended their merger agreement, with onsemi agreeing to acquire Synaptics for $123 per share in cash, valuing the transaction at approximately...",
+      "source": "web",
+      "title": "Synaptics Stock Rises 14%",
+      "url": "https://www.rttnews.com/3696208/synaptics-stock-rises-14.aspx"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "- ON jumps 8% and SYNA surges 14% after On Semiconductor swaps its $7B stock deal for a $5.7B all-cash bid at $123 per share.\n...\nA revised takeover agreement is lifting both the buyer and the target in a chip deal that just got simpler.\n...\nThis follows the company replacing its $7 billion all-stoc...",
+      "source": "web",
+      "title": "On Semiconductor Climbs 8%, Synaptics Surges 14% as $5.7B Cash Bid Replaces $7B Stock Deal",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/semiconductor-climbs-8-synaptics-surges-131302389.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Onsemi, Synaptics Stocks Rally on Revised Merger Agreement\nOctober 02, 2026 01:27 PM EDT\nOnsemi and Synaptics shares are on the rise after a revised merger deal.\nShares of Onsemi (ON) were up 6% in recent trading, while Synaptics (SYNA) shares added 14% after Onsemi said late yesterday that it will ...",
+      "source": "web",
+      "title": "Nasdaq Hits New High; Dow, S&P 500 Book Weekly Losses",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10022026-12153808"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 2:48 PM GMT-3\n...\n- SYNA\n+14.08%",
+      "source": "web",
+      "title": "Sector Update: Tech Stocks Gain Friday Afternoon",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/sector-tech-stocks-gain-friday-174821071.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 10:13 AM GMT-3\n- SYNA\n+14.08%",
+      "source": "web",
+      "title": "Sector Update: Tech Stocks Rise Pre-Bell Friday",
+      "url": "https://finance.yahoo.com/technology/articles/sector-tech-stocks-rise-pre-131302085.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "onsemi (Nasdaq: ON) and Synaptics (Nasdaq: SYNA) rewrote their merger on October 1, 2026.\nThe buyer will pay $123 a share in cash, an aggregate the companies put at about $5.7 billion, instead of the 1.350 onsemi shares it agreed on June 25 to exchange for each Synaptics share.\n...\nThat switch is wh...",
+      "source": "web",
+      "title": "onsemi Buys Synaptics for $123 a Share in a 2026 Cash ...",
+      "url": "https://financefeeds.com/onsemi-buys-synaptics-123-a-share-cash/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "ON Semiconductor (NASDAQ:ON) shares rose 6.5% in pre-market trading after the company amended the terms of its proposed acquisition of Synaptics (NASDAQ:SYNA), replacing the original all-stock structure with an all-cash transaction.\nUnder the revised agreement announced on October 1, ON Semiconducto...",
+      "source": "web",
+      "title": "ON Semiconductor Shares Rise 6.5% After Synaptics ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/semiconductor-shares-rise-6-5-102329266.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- **Rosenblatt Securities raised Synaptics\u2019 price target** from $115 to $123 while maintaining a \u201cneutral\u201d rating, implying approximately 15.9% upside from the cited price.\n- Analyst sentiment remains mixed but centered on \u201cHold\u201d: MarketBeat reports an average rating of \u201cHold\u201d and a consensus target...",
+      "source": "web",
+      "title": "Rosenblatt Securities Issues Positive Forecast for ...",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-rosenblatt-securities-issues-positive-forecast-for-synaptics-nasdaq-syna-stock-price-2026-10-02/"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/onsemi-synaptics-stocks-rally-revised-174652095.html",
+    "https://finance.yahoo.com/markets/stocks/article/on-semiconductor-synaptics-stocks-jump-on-revised-merger-deal-152416209.html",
+    "https://finance.yahoo.com/markets/stocks/articles/synaptics-shares-rise-13-8-102219134.html",
+    "https://www.marketbeat.com/instant-alerts/price-synaptics-nasdaq-syna-shares-gap-up-on-analyst-upgrade-2026-10-02/",
+    "https://www.insidermonkey.com/news/synaptics-syna-soars-14-as-on-semi-sweetens-deal-with-all-cash-offer-1847801/",
+    "https://uobkh.com.hk/en/research/wealth-daily-05102026",
+    "https://finance.yahoo.com/markets/stocks/articles/5-7-billion-reason-why-185353364.html",
+    "https://www.rttnews.com/3696208/synaptics-stock-rises-14.aspx",
+    "https://finance.yahoo.com/markets/stocks/articles/semiconductor-climbs-8-synaptics-surges-131302389.html",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10022026-12153808",
+    "https://finance.yahoo.com/markets/stocks/articles/sector-tech-stocks-gain-friday-174821071.html",
+    "https://finance.yahoo.com/technology/articles/sector-tech-stocks-rise-pre-131302085.html",
+    "https://financefeeds.com/onsemi-buys-synaptics-123-a-share-cash/",
+    "https://finance.yahoo.com/markets/stocks/articles/semiconductor-shares-rise-6-5-102329266.html",
+    "https://www.marketbeat.com/instant-alerts/analyst-rosenblatt-securities-issues-positive-forecast-for-synaptics-nasdaq-syna-stock-price-2026-10-02/"
+  ],
+  "usage": {
+    "input_tokens": 1002,
+    "output_tokens": 795,
+    "cost_usd": 0.02893
+  }
+}

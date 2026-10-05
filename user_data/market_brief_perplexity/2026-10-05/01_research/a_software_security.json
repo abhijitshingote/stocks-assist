@@ -1,0 +1,167 @@
+{
+  "name": "a_software_security",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Software & cybersecurity.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nSaaS and cybersecurity company news, analyst notes and PT changes, AI-agent impact on software seats and pricing, sector ETF (IGV) move and drivers.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **PTC** `[Software & SaaS]`\n- Schneider Electric agreed on October 5 to acquire PTC for **$205 per share** in cash, valuing PTC\u2019s equity at approximately **$22.6 billion** and its enterprise value at **$23.7 billion**; the offer represents a **42.3% premium** to PTC\u2019s October 2 close, with closing expected in **Q3 2027**. (Reuters, Oct 5 06:48 ET)[3]\n- PTC shares rose **37% in pre-market trading** on October 5 after the transaction announcement. (Reuters, Oct 5 06:20 ET)[2]\n\n## **IGV** `[Software & SaaS]`\n- The iShares Expanded Tech-Software Sector ETF (**IGV**) closed at **$108.43**, up **$0.20**, or **0.18%**, on Friday, October 2 at **16:00 ET**. (Yahoo Finance, Oct 2 16:00 ET)[10]\n- IGV was quoted at **$108.47**, up **$0.04**, or **0.04%**, in the latest reported reading. (Yahoo Finance, Oct 2 16:00 ET)[10]\n- IGV had gained **3.9% over the preceding three weeks** as of October 5. (Philstar, Oct 5 08:33 ET)[4]\n- IGV and the semiconductor ETF SOXX were each reported to be up **more than 2% for the week** ending October 2. (Macro4Micro, Oct 5 06:48 ET)[7]\n- The October 5 pre-market software-sector backdrop included lower U.S. equity-index futures, with Dow futures down **101 points**, or **0.2%**, and S&P 500 futures down **14.25 points**, or **0.18%**, at **06:20 ET**. (Reuters, Oct 5 06:20 ET)[2]\n\n## **Software and AI-agent impact** `[Software & SaaS]`\n- A report published October 1 and updated October 2 said IGV opened 2026 near **$106**, fell below **$75** in April\u2014approximately a **30% decline**\u2014and traded near **$105** by mid-September. (Business Insider, Oct 2 13:59 ET)[8]\n- The same report described the 2026 software selloff as driven by concerns that **agentic AI could disrupt traditional enterprise software**, while noting that the ETF had recovered to approximately its early-2026 level by mid-September. (Business Insider, Oct 2 13:59 ET)[8]\n\n## **Palo Alto Networks / CrowdStrike / Fortinet** `[Cybersecurity]`\n- Palo Alto Networks closed at **$397.31** on September 30, CrowdStrike at **$264.75**, and Fortinet at **$178.76**; the October 5 report attributed cybersecurity demand to AI-enabled hybrid attacks involving **China and Russia**. (Adalytica, Oct 5 00:43 ET)[13]\n- The same report listed the 200-day-average comparisons as **$248.23** for Palo Alto Networks, **$152.10** for CrowdStrike, and **$117.60** for Fortinet. (Adalytica, Oct 5 00:43 ET)[13]\n\n## **Software sector breadth and names** `[Software & SaaS]`\n- A market commentary published October 5 said Intuit, Adobe, FactSet, and Salesforce were among the software and SaaS stocks in the lower-performing group for the prior week. (Macro4Micro, Oct 5 06:48 ET)[7]\n- A separate October 5 report said **22.9% of S&P 500 stocks** were above their 50-day moving average. (Philstar, Oct 5 08:33 ET)[4]\n- Rubrik was reported at a market value of approximately **$24.4 billion**, with a **36.0% one-month gain** and a **43.9% one-year gain** as of October 2. (Trefis, Oct 5 07:58 ET)[6]\n\n## **Market / rates backdrop** `[Macro / Calendar]`\n- U.S. stock-index futures declined on October 5 as technology stocks retreated from record levels; at **06:20 ET**, Dow E-minis were down **0.2%** and S&P 500 E-minis were down **0.18%**. (Reuters, Oct 5 06:20 ET)[2]\n- Reuters reported that the prior Friday\u2019s weaker-than-expected U.S. jobs data reduced expectations for a Federal Reserve rate hike at the October meeting; the report did not provide a new software-specific analyst target or rating action. (Reuters, Oct 5 06:20 ET)[2]",
+  "search_results": [
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "European shares edged higher on Monday, recouping some of last week's losses, while French equities came under pressure from fiscal concerns and losses in Schneider Electric following its $22.6 billion acquisition of US software company PTC.\n...\nShares of Schneider Electric dropped 7.2% after the Fr...",
+      "source": "web",
+      "title": "European shares rise after last week's selloff; French ...",
+      "url": "https://www.reuters.com/markets/europe/european-shares-rise-after-last-weeks-selloff-french-stocks-lag-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - US stock index futures dipped on Monday, as technology stocks eased \u200cfrom record highs, while investors looked for fresh clues on the monetary policy path with Treasury yields and oil prices still elevated.\nChip stocks were a drag in premarket trade, with Intel (INTC.O) , opens new...",
+      "source": "web",
+      "title": "Wall St futures dip as tech stocks take a breather",
+      "url": "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/"
+    },
+    {
+      "date": "2026-10-04",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - France's Schneider Electric (SCHN.PA) , opens new tab said on Monday it \u200chad agreed to buy PTC (PTC.O) , opens new tab in an all-cash deal valuing the US software company's equity at around $22.6 billion, confirming reports from Sunday.\nThe $205-per-share offer implies \u200ban enterpri...",
+      "source": "web",
+      "title": "Schneider Electric to buy US software firm PTC in $22.6 ...",
+      "url": "https://www.reuters.com/business/frances-schneider-electric-nears-20-billion-deal-buy-us-software-group-ptc-ft-2026-10-04/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Only 22.9 percent of S&P 500 stocks are trading above their 50-day moving average, a key measure of market trend.\n...\nIn March 2026, breadth deteriorated again during the so-called \u201cSaaSpocalypse,\u201d as investors feared that agentic AI would disrupt traditional software companies.\n...\nWhile most stock...",
+      "source": "web",
+      "title": "Market's narrowing breadth",
+      "url": "https://www.philstar.com/business/2026/10/05/2560912/markets-narrowing-breadth/amp/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - Futures tracking Canada's blue-chip stocks were little changed on Monday after the benchmark index rose in the prior session as a soft US \u200bjobs report cut the odds of an imminent rate hike by \u200cthe US Federal Reserve.\nDecember futures on the S&P/TSX index were flat at 06:26 a.m.\nET ...",
+      "source": "web",
+      "title": "TSX futures flat as investors cut rate hike expectations",
+      "url": "https://www.reuters.com/business/tsx-futures-flat-investors-cut-rate-hike-expectations-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "As of Friday, October 2, there are 6 Mid Cap US and Canada-listed stocks in the Trefis coverage universe trading at their 52-week highs.\nMid Cap here means a market value between $10 billion and $40 billion, the upper figure excluded.\nAt about $24.4 billion in market value, Rubrik (RBRK) is the larg...",
+      "source": "web",
+      "title": "The 52-Week-High List: 6 Mid Cap Names On Friday",
+      "url": "https://www.trefis.com/stock/spy/articles/617506/the-52-week-high-list-6-mid-cap-names-on-friday/2026-10-05"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The tech bellwethers were mixed in what was generally a good week more broadly for tech with the Semiconductor ETF (SOXX) and Software ETF (IGV) north of 2%.\nWe see only 3 of the Mag 7 in positive range on the week with 4 negative including Meta and Apple sitting on the bottom.\n...\nWe see a balanced...",
+      "source": "web",
+      "title": "Market Commentary: Asset Returns 10-4-26",
+      "url": "https://www.macro4micro.com/p/market-commentary-asset-returns-10-bc5"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Seven months later, the panic looks premature.\nThe iShares Expanded Tech-Software Sector ETF (ticker: IGV), a widely watched barometer for the enterprise SaaS industry, tells the story better than any single company's earnings call.\nAfter opening 2026 near $106, the fund cratered to a 52-week low be...",
+      "source": "web",
+      "title": "AI Agents Reshape Enterprise Software Without Obsoleting It",
+      "url": "https://www.businessinsider.com/sc/ai-agents-reshape-enterprise-software-without-obsoleting-it"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Oct 5 (Reuters) - The benchmark S&P 500 will retreat to 5,000 points by the end of 2027, Panmure Liberum said on Monday, warning that the equity bull market could end sooner than many investors expect.",
+      "source": "web",
+      "title": "Panmure Liberum forecasts S&P 500 falling to ...",
+      "url": "https://www.reuters.com/business/panmure-liberum-forecasts-sp-500-falling-5000-warns-bull-run-nearing-end-2026-10-05/"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-03",
+      "place_metadata": null,
+      "snippet": "# iShares Expanded Tech-Software Sector ETF (IGV)\n108.43 +0.20 (+0.18%)\nAt close: October 2 at 4:00:01 p.m.\nEDT\n108.47 +0.04 (+0.04%)\n...\nThe fund generally will invest at least 80% of its assets in the component securities of its underlying index and in investments that have economic characteristic...",
+      "source": "web",
+      "title": "iShares Expanded Tech-Software Sector ETF (IGV)",
+      "url": "https://ca.finance.yahoo.com/quote/IGV/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "iShares Expanded Tech-Software Sector ETF ETF Nachrichten - Investing.com\n...\n# iShares Expanded Tech-Software Sector ETF (IGV)\nNYSE\n|Symbol|B\u00f6rse|W\u00e4hrung|\n...\n|IGV|\u00b7|NYSE|\n|IGV|\u00b7|Mexiko|\n...\n+0,20(+0,18%)\nGeschlossen\u00b702/10\n...\n108,29-0,14(-0,13%)",
+      "source": "web",
+      "title": "iShares Expanded Tech-Software Sector ETF ETF Nachrichten - Investing.com",
+      "url": "https://de.investing.com/etfs/ishares-goldman-sachs-software-news/13"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "October 5 - European shares edged higher on Monday, while French equities slid to a six-month low on fiscal concerns and losses in Schneider Electric after the company acquired US software \u200cfirm PTC.\n...\nAmong individual stocks, \u200bSchneider Electric slumped 9.1% as \u200binvestors weighed the size of its ...",
+      "source": "web",
+      "title": "European shares rise after selloff; French stocks hit 6- ...",
+      "url": "https://finance.yahoo.com/markets/world-indices/articles/european-shares-rise-selloff-french-093258257.html"
+    },
+    {
+      "date": "2026-10-01",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Monday, October 5, 2026\n...\nPalo Alto, CrowdStrike Gain on Cyber Defense Spending | Adalytica\n...\n2. /FX Markets\n...\n# Palo Alto, CrowdStrike Gain on Cyber Defense Spending\n...\nChina and Russia\u2019s use of AI for hybrid attacks is forcing governments and companies to spend more on cyber defense, and th...",
+      "source": "web",
+      "title": "Palo Alto, CrowdStrike Gain on Cyber Defense Spending",
+      "url": "https://adalytica.com/news/palo-alto-crowdstrike-cyber-defense-spending-af343dcf"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-02",
+      "place_metadata": null,
+      "snippet": "Analyst Upgrades and Downgrades for Friday, 10/2\n# Analyst Upgrades and Downgrades for Friday, 10/2\n...\nWall Street analysts frequently update their outlook on companies by issuing upgrades, downgrades, and new price targets.\n...\n## Analyst Upgrades\n|**Stock**|**Ticker**|**Analyst Firm**|**Call**|\n|...",
+      "source": "web",
+      "title": "Analyst Upgrades and Downgrades for Friday, 10/2",
+      "url": "https://dailytradealert.com/2026/10/02/analyst-upgrades-and-downgrades-for-friday-10-2/"
+    },
+    {
+      "date": "2026-10-03",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Soft jobs just handed Wall Street a hall pass, and the bull is already spending it.\nSeptember payrolls landed at 29,000 against an 84,000\u201390,000 whisper.\nUnemployment ticked to 4.2%.\n...\nFriday took the gift: Dow 51,177, S&P 7,723, Nasdaq 27,191, with the Nasdaq tagging an intraday record before yie...",
+      "source": "web",
+      "title": "A Tick in the Market: Week of October 5\u20139, 2026",
+      "url": "https://www.moomoo.com/community/feed/a-tick-in-the-market-week-of-october-5-9-117377089994757"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/markets/europe/european-shares-rise-after-last-weeks-selloff-french-stocks-lag-2026-10-05/",
+    "https://www.reuters.com/world/europe/wall-st-futures-dip-tech-stocks-take-breather-2026-10-05/",
+    "https://www.reuters.com/business/frances-schneider-electric-nears-20-billion-deal-buy-us-software-group-ptc-ft-2026-10-04/",
+    "https://www.philstar.com/business/2026/10/05/2560912/markets-narrowing-breadth/amp/",
+    "https://www.reuters.com/business/tsx-futures-flat-investors-cut-rate-hike-expectations-2026-10-05/",
+    "https://www.trefis.com/stock/spy/articles/617506/the-52-week-high-list-6-mid-cap-names-on-friday/2026-10-05",
+    "https://www.macro4micro.com/p/market-commentary-asset-returns-10-bc5",
+    "https://www.businessinsider.com/sc/ai-agents-reshape-enterprise-software-without-obsoleting-it",
+    "https://www.reuters.com/business/panmure-liberum-forecasts-sp-500-falling-5000-warns-bull-run-nearing-end-2026-10-05/",
+    "https://ca.finance.yahoo.com/quote/IGV/",
+    "https://de.investing.com/etfs/ishares-goldman-sachs-software-news/13",
+    "https://finance.yahoo.com/markets/world-indices/articles/european-shares-rise-selloff-french-093258257.html",
+    "https://adalytica.com/news/palo-alto-crowdstrike-cyber-defense-spending-af343dcf",
+    "https://dailytradealert.com/2026/10/02/analyst-upgrades-and-downgrades-for-friday-10-2/",
+    "https://www.moomoo.com/community/feed/a-tick-in-the-market-week-of-october-5-9-117377089994757"
+  ],
+  "usage": {
+    "input_tokens": 724,
+    "output_tokens": 1071,
+    "cost_usd": 0.03224
+  }
+}

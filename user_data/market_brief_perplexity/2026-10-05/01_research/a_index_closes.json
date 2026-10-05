@@ -1,0 +1,167 @@
+{
+  "name": "a_index_closes",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Monday October 5, 2026. Topic: Index closes & futures.\n\nWindow: Friday October 2, 2026 regular session (9:30-16:00 ET) through Monday October 5, 2026 12:20 ET, including after-hours, overnight and pre-market news. This spans 2 non-trading day(s): news published on those days (e.g. Saturday and Sunday) is in scope and often the most important. Anything published after 12:20 ET on Monday October 5, 2026 is out of scope.\n\nFIND\nS&P 500, Nasdaq Composite, Dow, Russell 2000, PHLX SOX closes (level, % change); S&P sector leaders/laggards; biggest index point contributors; index futures pre-market on the brief date (% change, time quoted).\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Index Closes \u2014 Friday, October 2, 2026 `[Macro / Calendar]`\n\n- **S&P 500** closed at **7,722.72**, up **56.27 points, or 0.73%**. (Reuters, Oct. 2, 15:23 ET)[13]\n- **Nasdaq Composite** closed at **27,190.86**, up **319.27 points, or 1.19%**. (Reuters, Oct. 2, 15:23 ET)[13]\n- **Dow Jones Industrial Average** closed at **51,176.96**, up **250.40 points, or 0.49%**. (Reuters, Oct. 2, 15:23 ET)[13]\n- **Russell 2000** rose **26.27 points, or 0.9%, to 2,832.90**. (Associated Press via Yahoo Finance, Oct. 2; publication time not stated)[2]\n- The **PHLX Semiconductor Index (SOX)** closing level and percentage change were not included in the available search results.\n\n## S&P 500 Sectors `[Macro / Calendar]`\n\n- **Consumer discretionary** led S&P 500 sectors, rising **more than 1%**; **materials** and **information technology** also rose **about 1%**. (Investor\u2019s Business Daily, Oct. 2, 16:39 ET)[1]\n- **Health care** was the only S&P 500 sector to decline; the other **10 sectors** advanced. (Investor\u2019s Business Daily, Oct. 2, 16:39 ET)[1]\n- The **S&P 500 real estate index** gained **0.4%**. (Reuters, Oct. 2, 15:23 ET)[13]\n\n## Index Point Contributors `[Macro / Calendar]`\n\n- **Nvidia** and **Tesla** were identified by Reuters as significant positive contributors to the S&P 500\u2019s advance; individual index-point contributions were not provided in the available results. (Reuters, Oct. 2; publication time not stated)[10]\n- **Cisco** rose nearly **3%**; **Caterpillar**, **Nvidia**, **Alphabet** and **Amazon** each gained **1% or more** within the Dow. (Investor\u2019s Business Daily, Oct. 2, 16:39 ET)[1]\n- **Nike** fell about **3.5%**, making it the leading Dow decliner after forecasting a larger fiscal-year sales decline than analysts expected. (Yahoo Finance, Oct. 2, publication time not stated)[6]\n- **Seagate Technology** and **Western Digital** closed with heavy losses, while **Nvidia** reached a record high. (Investor\u2019s Business Daily, Oct. 2, 16:39 ET)[1]\n\n## Index Futures \u2014 Monday, October 5, 2026 `[Macro / Calendar]`\n\n- At **10:40 p.m. ET on Sunday, October 4**, **Dow futures** were up **0.01%**, **S&P 500 futures** were up **0.08%**, and **Nasdaq-100 futures** were up **0.27%**. (Yahoo Finance, Oct. 5, 00:17 ET)[7]\n- In a pre-market reading published at **07:19 ET**, **S&P futures** were at **7,788.00**, up **10.75 points, or 0.14%**; **Dow futures** were at **51,502.00**, up **25 points, or 0.05%**; **Nasdaq futures** were at **31,181.00**, up **119.25 points, or 0.38%**; and **Russell 2000 futures** were at **2,853.60**, up **2.70 points, or 0.09%**. (Economic Times, Oct. 5, 07:19 ET)[3]",
+  "search_results": [
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Updated 04:39 PM ET 10/02/2026\nChip stocks shined and lifted the Nasdaq composite to record-high territory Friday after a weaker-than-expected September jobs report slashed chances of the Federal Reserve raising interest rates in October.\n**Nvidia** (NVDA) hit a new all-time high, but **Seagate Te...",
+      "source": "web",
+      "title": "Stock Market Today: Nasdaq Leads Charge On Rate Hopes",
+      "url": "https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-september-jobs-report-nike-earnings-tesla-deliveries/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The Russell 2000 index of smaller companies rose 26.27 points, or 0.9%, to 2,832.90.",
+      "source": "web",
+      "title": "How major US stock indexes fared Friday 10/2/2026",
+      "url": "https://finance.yahoo.com/markets/world-indices/articles/major-us-stock-indexes-fared-201721712.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "U.S. Stock Market indexes were in green in the pre-market trading ahead of Monday's regular working hours at Wall Street.\nS&P Futures were up by 7,788.00, 10.75 points or 0.14 per cent, Dow futures jumped 51,502.00, 25.00 points or 0.05 per cent, Nasdaq Futures at 31,181.00, up by 119.25 points, 0.3...",
+      "source": "web",
+      "title": "US Stock Market prediction for Monday, October 5: S&P 500, Nasdaq, Dow Jones, Russell 2000 investors eye positive trading today, top stocks to watch out",
+      "url": "https://economictimes.indiatimes.com/news/international/us/us-stock-market-prediction-for-monday-october-5-sp-500-nasdaq-dow-jones-russell-2000-investors-eye-positive-trading-today-top-stocks-to-watch-out/articleshow/134683447.cms"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 4:14 AM GMT-3\n...\nWall Street closed higher on Thursday after a volatile session to start October trading.\n...\nAll three major stock indexes ended in positive territory.\n...\nThe Dow Jones Industrial Average (DJI) rose 0.04% to close at 50,926.56.\nHowever, 16 components of the...",
+      "source": "web",
+      "title": "Stock Market News for Oct 2, 2026 - Yahoo Finance",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-oct-2-071400258.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "## US index futures: S and P futures is down 0.13 percent, Nasdaq futures is down 0.1 percent, Dow futures is down 0.08 percent\u2026",
+      "source": "web",
+      "title": "October 5, 2026 Market LiveCast Brief - SquawkNews",
+      "url": "https://squawknews.com/brief/livecast/2026-10-05"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Major stock indexes ended higher Friday, with the Nasdaq touching a record high, after the U.S. added fewer jobs than expected in September.\nThe Dow Jones Industrial Average and S&P 500 finished lower for the week.\nThe Nasdaq Composite, meanwhile, logged a third straight weekly gain.\nThe Nasdaq ende...",
+      "source": "web",
+      "title": "Nasdaq Hits New High; Dow, S&P 500 Book Weekly Losses",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-2-2026-104753291.html"
+    },
+    {
+      "date": "2026-10-05",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "Mon, October 5, 2026 at 12:17 AM GMT-3\n...\nAs of 10:40 p.m.\nEDT, Dow futures were up 0.01%, the S&P 500 futures had gained 0.08%, while Nasdaq-100 futures rose 0.27%.\n...\n|**Index**|**Move**|**Close**|\n|--|--|--|\n...\n|S&P 500|0.73%|7,722.72|",
+      "source": "web",
+      "title": "Dow, S&P 500, Nasdaq Futures Rise After Soft Jobs Report As Markets Await Fed Minutes: IBRX, SMCI, VST, SOFI Stocks In Focus",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/dow-p-500-nasdaq-futures-031711832.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "S&P 500 Closes at 7,722 as Nasdaq Leads a Broad Friday Rally | 24/7 Wall St.\n...\nAt close\nS&P 5007,715.60\u22120.18%\nDow Jones51,106.00\u22120.25%\nNasdaq 10030,818.40\u22120.03%\nRussell 20002,828.44\u22120.28%\n...\nU.S. Markets\nOct 2, 4:00pm ET - S&P 500+0.73%\n- Dow Jones Industrial Average+0.49%\n- Nasdaq Composite+1.12...",
+      "source": "web",
+      "title": "S&P 500 Closes at 7,722 as Nasdaq Leads a Broad Friday Rally",
+      "url": "https://247wallst.com/cards/money-went-back-into-growth-on-friday-the-nasdaq-s-1-12-ga-gspc-market-bell-01m3z3df0myxj2j89fswzwnegp"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 8:59 AM GMT-3\n...\n## Pre-Market Stock Futures:\nFutures are trading higher as we head into the first Friday of the fourth quarter of 2026.\nInvestors rode a stock market rollercoaster Thursday as major indices moved back and forth between positive and negative territory through...",
+      "source": "web",
+      "title": "Here Are Friday's Top Wall Street Analyst Research Calls",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/friday-top-wall-street-analyst-115957422.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "NEW YORK \u2013 October 2, 2026 (STL.News) *Stock Market* \u2013 U.S. stocks rallied Friday, with the Nasdaq Composite leading Wall Street higher after a surprisingly weak September employment report substantially reduced expectations that the Federal Reserve will raise interest rates again at its October mee...",
+      "source": "web",
+      "title": "Stock Market Rallies on Friday, Oct. 2, 2026 - STL.News",
+      "url": "https://www.stl.news/stock-market-rallies-on-friday-oct-2-2026/"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "The S&P 500 and Dow rose slightly yesterday to snap three-day losing streaks.\n...\nStock futures are gaining ground Friday morning as investors await the latest jobs report (more on that below).\nFutures tracking the Dow Jones Industrial Average and the S&P 500 were up 0.5% recently, while tech-heavy ...",
+      "source": "web",
+      "title": "5 Things to Know Before the Stock Market Opens on Friday",
+      "url": "https://www.investopedia.com/5-things-to-know-before-the-stock-market-opens-on-friday-october-2-2026-12153811"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "At close\nS&P 5007,715.60\u22120.18%\nDow Jones51,106.00\u22120.25%\nNasdaq 10030,818.40\u22120.03%\nRussell 20002,828.44\u22120.28%\n...\nMIDDAY\nU.S. Markets\nOct 2, 12:00pm ET - S&P 500+0.68%\n- Dow Jones Industrial Average+0.57%\n- Nasdaq Composite+1.11%\nGrowth is back in charge at midday: the Nasdaq's 1.1% gain is running a...",
+      "source": "web",
+      "title": "Tech Takes the Lead With Nasdaq Up 1.1%",
+      "url": "https://247wallst.com/cards/growth-is-back-in-charge-at-midday-the-nasdaq-s-1-1-gain-i-gspc-market-bell-01m3ynp1900vdscj2ej6r7v7jf"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-04",
+      "place_metadata": null,
+      "snippet": "Fri, October 2, 2026 at 3:23 PM EST\n...\nNEW YORK, Oct 2 (Reuters) - US stocks advanced on Friday to close out the trading week after weaker-than-expected jobs data dampened expectations for a rate hike from the Federal Reserve at its policy meeting this month.\n...\nThe weaker-than-anticipated data pu...",
+      "source": "web",
+      "title": "Equities close higher as softer jobs data quiets rate-hike ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/wall-st-futures-gain-yields-093507094.html"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "\u2013 NASDAQ volume 0.5% above its one-month average; Advancers lead decliners by 1.4:1\n...\nOf the 46k private sector net jobs created, it was led again by healthcare/social services which contributed 23k.",
+      "source": "web",
+      "title": "Doug's Daily Diary \u2014 Friday, October 2, 2026 | TheStreet Pro",
+      "url": "https://pro.thestreet.com/dougs-daily-diary/2026-10-02"
+    },
+    {
+      "date": "2026-10-02",
+      "last_updated": "2026-10-05",
+      "place_metadata": null,
+      "snippet": "- Indices opened solidly higher but stalled as yields turned back up.\nGrowth led with the Nasdaq +1.2%, but the Russell 2000 small cap index was still +0.9% (despite the rise in yields), S&P 500 was +0.7% while the Dow Jones Industrial Average lagged +0.5% as did the equal-weighted S&P 500 finishing...",
+      "source": "web",
+      "title": "Bad News Was Good News Friday \u2014 for Stocks, Not Bonds",
+      "url": "https://pro.thestreet.com/market-commentary/bad-news-was-good-news-friday-for-stocks-not-bonds"
+    }
+  ],
+  "citations": [
+    "https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-september-jobs-report-nike-earnings-tesla-deliveries/",
+    "https://finance.yahoo.com/markets/world-indices/articles/major-us-stock-indexes-fared-201721712.html",
+    "https://economictimes.indiatimes.com/news/international/us/us-stock-market-prediction-for-monday-october-5-sp-500-nasdaq-dow-jones-russell-2000-investors-eye-positive-trading-today-top-stocks-to-watch-out/articleshow/134683447.cms",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-oct-2-071400258.html?fr=sycsrp_catchall",
+    "https://squawknews.com/brief/livecast/2026-10-05",
+    "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-2-2026-104753291.html",
+    "https://finance.yahoo.com/markets/stocks/articles/dow-p-500-nasdaq-futures-031711832.html",
+    "https://247wallst.com/cards/money-went-back-into-growth-on-friday-the-nasdaq-s-1-12-ga-gspc-market-bell-01m3z3df0myxj2j89fswzwnegp",
+    "https://finance.yahoo.com/markets/stocks/articles/friday-top-wall-street-analyst-115957422.html",
+    "https://www.stl.news/stock-market-rallies-on-friday-oct-2-2026/",
+    "https://www.investopedia.com/5-things-to-know-before-the-stock-market-opens-on-friday-october-2-2026-12153811",
+    "https://247wallst.com/cards/growth-is-back-in-charge-at-midday-the-nasdaq-s-1-1-gain-i-gspc-market-bell-01m3ynp1900vdscj2ej6r7v7jf",
+    "https://finance.yahoo.com/markets/stocks/articles/wall-st-futures-gain-yields-093507094.html",
+    "https://pro.thestreet.com/dougs-daily-diary/2026-10-02",
+    "https://pro.thestreet.com/market-commentary/bad-news-was-good-news-friday-for-stocks-not-bonds"
+  ],
+  "usage": {
+    "input_tokens": 748,
+    "output_tokens": 870,
+    "cost_usd": 0.02929
+  }
+}
