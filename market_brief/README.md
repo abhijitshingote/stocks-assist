@@ -159,7 +159,7 @@ A/B variant that replaces Benzinga ingest with Perplexity web search. Fully deco
 | Compact: dedupe channel/thread research into a fact ledger (groups macro · corporate · themes); ticker ledger built in code (cap tier, \|move\|, no-catalyst names collapsed) | `02_ledger/*.md` | 3 | Sonnet |
 | Synthesis `synthesis_<model>`: `STEP4_SYSTEM_PROMPT` + `SYNTH_ADDENDUM` (length caps, causal chains, timing) | `02_brief_draft.md` | 1 | Opus (default) · `--synth sonnet\|haiku\|perplexity` |
 | Coverage + revise: Sonnet lists material ledger stories the draft omits → synth model integrates them | `02_coverage.md` | 2 | Sonnet + synth model |
-| Verify: Sonnet fact-checks numbers/weekdays/timestamps vs research + tape + calendar → exact find/replace fixes applied in code (`--no-verify` skips) | `02_verify.json` → `02_brief.md` | 1 | Sonnet |
+| Verify: Sonnet fact-checks numbers/weekdays/timestamps vs research + tape + calendar → exact find/replace fixes applied in code (opt-in `--verify`; off by default since 10/6 A/B: 2 fixes, $0.35) | `02_verify.json` → `02_brief.md` | 1 | Sonnet |
 | Eval (opt-in `--eval`; off for normal/API runs): compare + grade Px brief vs Benzinga brief on a fixed per-date item list | `compare.md`, `eval_items.md`, `compare_nuance.md` | 1–2 | Sonnet |
 
 ~100 calls, ~$4, ~30–35 min. Search filters: `search_domain_filter` = `DOMAIN_DENYLIST` (social, promo, SEO aggregators); `search_after_date_filter` = session − 1d (pre-market probes: session), `search_before_date_filter` = asof + 1d. Filters are day-granular; `--cutoff HH:MM` ET (default now if today, else 09:00) is enforced in prompts. **Backdated runs leak post-cutoff news** (e.g. an evening deal on the brief date) — score live runs.
@@ -178,7 +178,7 @@ docker compose exec backend python -m market_brief.perplexity_brief --asof 2026-
 
 **UI:** `/market-brief-px`, `/m/market-brief-px` — same viewer as Market Brief via `brief_cfg` (`MARKET_BRIEF_PX_CFG` in `frontend/app.py`). API: `/api/market-brief-px/{dates,<date>,<date>/costs,<date>/pdf,generate}`.
 
-**Status:** `status.json` stages `hydrate` → `research` (`detail`: `Phase A: N/M …`, `Planning follow-up threads`, `Phase B/C: N/M …`) → `compact` → `synthesis_<model>` → `coverage` → `revise` → `verify` → `eval` → `done`; `failed` + `error` on exception. All phase A searches failed → run fails; partial failures → `detail` on the complete status.
+**Status:** `status.json` stages `hydrate` → `research` (`detail`: `Phase A: N/M …`, `Planning follow-up threads`, `Phase B/C: N/M …`) → `compact` → `synthesis_<model>` → `coverage` → `revise` → `verify` (opt-in) → `eval` → `done`; `failed` + `error` on exception. All phase A searches failed → run fails; partial failures → `detail` on the complete status.
 
 **Artifacts** (`user_data/market_brief_perplexity/<date>/`): `status.json`, `tape.md`, `source/ticker_universe/`, `01_research/*.md` (facts + source URLs) / `*.json` (job + prompt + raw response), `01b_plan.json`, `02_ledger/`, `02_synth_input.md`, `02_brief_draft.md`, `02_coverage.md`, `02_brief.md`, `run_costs.json` (Perplexity + Anthropic rows), `run.log`, `subprocess.log`, `compare.md`, `eval_items.md`, `compare_nuance.md`. Earlier pipeline versions for A/B: `user_data/market_brief_perplexity_v1/` (3 broad + 12/call), `_v2/` (before coverage/revise + extra probes).
 

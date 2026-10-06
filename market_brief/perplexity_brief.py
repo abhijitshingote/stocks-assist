@@ -809,7 +809,9 @@ def main() -> int:
                    help="Compact research into a fact ledger before synthesis (default: raw)")
     p.add_argument("--no-compact", action="store_true", help=argparse.SUPPRESS)
     p.add_argument("--no-revise", action="store_true", help="Skip coverage audit + revision pass")
-    p.add_argument("--no-verify", action="store_true", help="Skip fact-check pass (02_verify.json)")
+    p.add_argument("--verify", action="store_true",
+                   help="Run fact-check pass after revise (02_verify.json; default off)")
+    p.add_argument("--no-verify", action="store_true", help=argparse.SUPPRESS)
     p.add_argument("--eval", action="store_true",
                    help="After the run, compare vs Benzinga (compare.md) + LLM grading (compare_nuance.md)")
     p.add_argument("--no-date-filter", action="store_true",
@@ -958,7 +960,7 @@ def _run(args: argparse.Namespace, asof: str, cutoff: str, outdir: Path) -> int:
     run_synthesis(asof=asof, cutoff=cutoff, outdir=outdir, overview=overview,
                   tape_block=tape_block, synth=args.synth, channel_ledger=channel_ledger,
                   ticker_ledger=ticker_ledger, pplx=pplx, revise=not args.no_revise,
-                  verify=not args.no_verify)
+                  verify=args.verify)
 
     tracker = pplx.tracker
     compare_path = compare(asof, outdir) if args.eval else None
