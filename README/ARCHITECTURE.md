@@ -161,6 +161,7 @@ Ticker universe from DB screens (`screener_universe.py`: r1d, vol_spike_5d, main
 | `daily_screener_feedback.json` | Judge calibration |
 | `market_brief/<date>/` | Brief artifacts, `run_costs.json` |
 | `market_brief_perplexity/<date>/` | Px brief artifacts: `01_research/` (facts + source URLs), `02_brief.md`, `status.json`, `run_costs.json`, `compare.md` |
+| `market_narratives/<date>/` | Storylines clustered across briefs (`market_brief/narratives.py`): `narratives.json` → `/narratives` |
 
 Frontend and backend both read these paths; keep `OUTPUTS_DIR` constants in sync (`daily_screener/config.py`, `market_brief/config.py`, `backend/app.py`).
 

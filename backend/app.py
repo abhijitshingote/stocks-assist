@@ -6695,6 +6695,55 @@ def market_brief_px_generate():
         return jsonify({'error': err}), 500
     return jsonify({'status': 'started', 'message': 'Market Brief - Px started', 'asof': asof})
 
+# What moved markets: ranked market-impact events across briefs (market_brief/narratives.py: NARRATIVES_DIR).
+NARRATIVES_OUTPUTS_DIR = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'market_narratives'
+)
+
+def _narratives_status():
+    path = os.path.join(NARRATIVES_OUTPUTS_DIR, 'status.json')
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, encoding='utf-8') as f:
+            payload = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+    if payload.get('status') == 'running' and time.time() - os.path.getmtime(path) > 1800:
+        payload['status'] = 'failed'
+        payload['error'] = 'stale running status'
+    return payload
+
+@app.route('/api/narratives', methods=['GET'])
+def narratives_latest():
+    """Latest (or ?run=YYYY-MM-DD) events.json + global run status."""
+    runs = []
+    if os.path.isdir(NARRATIVES_OUTPUTS_DIR):
+        runs = sorted(
+            (name for name in os.listdir(NARRATIVES_OUTPUTS_DIR)
+             if os.path.isfile(os.path.join(NARRATIVES_OUTPUTS_DIR, name, 'events.json'))),
+            reverse=True,
+        )
+    run = request.args.get('run') or (runs[0] if runs else None)
+    data = None
+    if run in runs:
+        with open(os.path.join(NARRATIVES_OUTPUTS_DIR, run, 'events.json'), encoding='utf-8') as f:
+            data = json.load(f)
+    return jsonify({'run': run, 'runs': runs, 'status': _narratives_status(), 'data': data})
+
+@app.route('/api/narratives/generate', methods=['POST'])
+def narratives_generate():
+    """Rebuild what-moved-markets: parse briefs + one Sonnet events call (~$0.30)."""
+    status = _narratives_status()
+    if status and status.get('status') == 'running':
+        return jsonify({'status': 'already_running', 'message': 'Narratives rebuild already running'}), 409
+    err = _start_market_brief_subprocess(
+        ['python', '-m', 'market_brief.narratives'], NARRATIVES_OUTPUTS_DIR, 'narratives'
+    )
+    if err:
+        return jsonify({'error': err}), 500
+    return jsonify({'status': 'started', 'message': 'Narratives rebuild started'})
+
 @app.route('/api/market-brief-losers/<date_str>/costs', methods=['GET'])
 def market_brief_losers_costs(date_str):
     """Return losers brief run status + optional run_costs.json."""

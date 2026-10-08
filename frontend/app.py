@@ -1676,6 +1676,30 @@ def api_market_brief_px_generate():
         return jsonify({'error': 'Failed to start Market Brief - Px'}), status_code
     return jsonify(data), status_code
 
+@app.route('/narratives')
+def narratives_page():
+    """What moved markets — ranked market-impact events across daily briefs."""
+    return render_template('narratives.html')
+
+@app.route('/m/narratives')
+def m_narratives():
+    return render_template('mobile/narratives.html')
+
+@app.route('/api/frontend/narratives', methods=['GET'])
+def api_narratives():
+    run = request.args.get('run')
+    data, status_code = make_backend_request('/api/narratives' + (f'?run={run}' if run else ''))
+    if data is None:
+        return jsonify({'error': 'Failed to fetch narratives'}), status_code
+    return jsonify(data), status_code
+
+@app.route('/api/frontend/narratives/generate', methods=['POST'])
+def api_narratives_generate():
+    data, status_code = make_backend_request('/api/narratives/generate', method='POST', json_data={})
+    if data is None:
+        return jsonify({'error': 'Failed to start narratives rebuild'}), status_code
+    return jsonify(data), status_code
+
 @app.route('/api/frontend/market-brief-losers/generate', methods=['POST'])
 def api_market_brief_losers_generate():
     """Proxy endpoint to start R1D losers brief pipeline."""

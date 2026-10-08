@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-narratives{% endblock %}
+{% block title %}What moved markets - Stocks Assist{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/narratives.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="nv-page" id="nvRoot">
+    {% include "_narratives_body.html" %}
+    <div class="nv-legend">
+        One Sonnet call extracts discrete events from brief one-liners, Top Movers and Narrative Threads.
+        Code adds uncovered Mega-cap moves &ge; 6% with a company-specific catalyst. The three lanes are importance bands; every event is labelled directly.
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/narratives.js') }}"></script>
+<script>Narratives.init({ rootId: 'nvRoot' });</script>
+{% endblock %}

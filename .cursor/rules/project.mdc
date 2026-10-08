@@ -13,6 +13,7 @@ alwaysApply: true
 
 - `main` is golden: never commit, reset or push to it unless asked.
 - Feature branches: cut from current `main`; code only. Never commit `user_data/` (prod auto-backups own it) except on an explicit `*-experiment` branch, which is never merged or deployed.
+- Work only in the existing checkout. Never create Git worktrees, clone/copy the repository into a new directory, or create a separate feature directory unless the user explicitly asks first.
 - Before any commit/push/branch switch: `git diff --stat main...<branch>` — only intended code files, no deletions of `main` files.
 - Never delete branches, tags or force-push unless asked. Keep one branch per purpose; say which branch is for what.
 

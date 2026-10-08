@@ -145,6 +145,22 @@ Channel slug probe: `docker compose exec backend python -m market_brief.discover
 
 ---
 
+## Narratives (`narratives.py`)
+
+Weekly roll-up of persistent storylines across briefs. Reads `02_brief.md` per date (Benzinga if it has Narrative Threads, else Px; last `--window-days` 120), parses `**Title** \`Category\` → new|ongoing` threads + one-liner in code, then **one Sonnet call** groups retitled threads into storylines (key, title, category, impact 1–5, arc, state, thread ids, turning points). Scoring in code: `intensity(date) = min(1.5, Σ max(0.35, 1 − 0.1·(rank−1)))`, `heat = impact/5 × Σ intensity × 0.5^(age/14d)`, `weight = impact/5 × Σ intensity`; status active < 3 briefs since last, fading < 8, else dormant.
+
+~27K in / 11K out ≈ $0.25, ~4 min. Unparseable briefs (old `## TL;DR` format) are skipped.
+
+```bash
+docker compose exec backend python -m market_brief.narratives            # parse + cluster + score
+docker compose exec backend python -m market_brief.narratives --dry-run  # parse + 02_llm_input.md only
+docker compose exec backend python -m market_brief.narratives --rescore  # re-score latest run, no LLM
+```
+
+**Artifacts** (`user_data/market_narratives/<latest brief date>/`): `01_threads.json`, `02_llm_input.md`, `02_llm_response.{txt,json}`, `narratives.json`, `run_costs.json`. Global `user_data/market_narratives/status.json` + `subprocess.log` (UI Rebuild). **UI:** `/narratives`, `/m/narratives`. API: `/api/narratives`, `/api/narratives/generate`, `/api/narratives/prices?run=` (request-time, no LLM: equal-weight basket of the LLM `basket` tickers, else most-mentioned, max 6, from `ohlc` ∪ `index_prices`; % from the close before the first brief's session, plus SPY).
+
+---
+
 ## Market Brief - Px (`perplexity_brief.py`)
 
 A/B variant that replaces Benzinga ingest with Perplexity web search. Fully decoupled from the Benzinga run: own DB screener universe (`screener_universe.py`) + verified tape (`tape.py`: OHLC + index closes), own output root. Search plan + prompts: `px_prompts.py`.

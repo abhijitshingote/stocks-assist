@@ -1,0 +1,17 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'Narratives' %}
+{% block title %}What moved markets — Mobile{% endblock %}
+{% block page_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/narratives.css') }}">
+{% endblock %}
+{% block content %}
+  <div class="utility-body utility-scroll">
+    <div class="nv-page nv-mobile" id="nvRoot">
+      {% include "_narratives_body.html" %}
+    </div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/narratives.js') }}"></script>
+<script>Narratives.init({ rootId: 'nvRoot', mobile: true });</script>
+{% endblock %}

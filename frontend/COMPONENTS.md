@@ -283,6 +283,16 @@ One layout system for all 15 desktop screener pages: shared shell + `screener.cs
 | **Config** | `brief_cfg` (Jinja → JS `BRIEF_CFG`): `pageTitle`, `apiBase`, `showLosers`, `pdfPrefix`, `outputDir`, `runEta`, `stageLabels`, `modelLabels`. Unset = Benzinga brief defaults. Px config: `MARKET_BRIEF_PX_CFG` in `frontend/app.py`. |
 | **Status** | Date list + progress banner read `status.json` (`status`, `stage`, `detail`, `error`) and `run_costs.json` via `<apiBase>/<date>/costs` (3s poll while running) |
 
+### Narratives
+| | |
+|---|---|
+| **File** | `templates/narratives.html` (desktop) + `templates/mobile/narratives.html`; shared body `templates/_narratives_body.html` |
+| **CSS** | `static/css/narratives.css` (`.nv-*`; mobile overrides under `.nv-mobile`) |
+| **JS** | `static/js/narratives.js` — `Narratives.init({ rootId, mobile })`, shared desktop + mobile |
+| **Route** | `/narratives`, `/m/narratives` |
+| **Data** | `/api/frontend/narratives` → backend `/api/narratives` (latest `user_data/market_narratives/<run>/narratives.json` + `status.json`); Rebuild → `/api/frontend/narratives/generate` |
+| **Layout** | Backdrop now (top 6 non-dormant by `heat`, sparkline per brief date) · Out of the headlines (impact ≥ 4, not active, not in backdrop) · Viz switch (`?view=` / `localStorage.nvView`): **Timeline** (row per storyline, dot size = intensity, opacity = decay, turning-point labels), **River** (streamgraph, top 16 by weight, gaussian-smoothed), **Comets** (impact bands, tail first→last, head = weight), **Grid** (row × brief heatmap); filter impact ≥ 3/all, sort heat/total/start (Timeline/Grid) · click → detail arc (dated thread titles + leads) |
+
 ### Market Brief History
 | | |
 |---|---|
@@ -421,6 +431,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Context 2 | `mobile/context2.html` | `/m/context-2` | `[]` |
 | Market Brief | `mobile/market_brief.html` | `/m/market-brief` | `[]` |
 | Market Brief - Px | `mobile/market_brief.html` (`brief_cfg` → `window.BRIEF_CFG`) | `/m/market-brief-px` | `[]` |
+| Narratives | `mobile/narratives.html` | `/m/narratives` | `[]` |
 | Weekly Recap | `mobile/weekly_recap.html` | `/m/weekly-recap` | `[]` |
 | Market News | `mobile/market_news.html` | `/m/market-news` | `['news']` |
 | ETFs | `mobile/etfs.html` | `/m/etfs` | `[]` |
