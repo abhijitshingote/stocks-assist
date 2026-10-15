@@ -64,12 +64,12 @@ const ThemeDiscovery = (() => {
     function renderThemes(d, run) {
       if (!d.themes.length) return '<div class="td-empty">No themes in this run.</div>';
       return d.themes.map((t) => `
-        <section class="td-theme">
-          <div class="td-theme-head">
+        <details class="td-theme">
+          <summary class="td-theme-head">
             <span class="td-theme-name">${esc(t.name)}</span>
             <span class="td-muted">${t.stocks.length} from screeners · ${t.probe_added.length} from probe</span>
             ${themeTags(t, run)}
-          </div>
+          </summary>
           <div class="td-theme-desc">${esc(t.description)}</div>
           ${t.secular ? `<div class="td-theme-sec">${esc(t.secular)}</div>` : ''}
           <div class="td-table-wrap"><table class="td-table">
@@ -78,7 +78,7 @@ const ThemeDiscovery = (() => {
           </table></div>
           ${t.probe_error ? `<div class="td-err">Probe failed: ${esc(t.probe_error)}</div>` : ''}
           ${t.probe_rejected.length ? `<div class="td-sub">Probe names not added: ${t.probe_rejected.map((r) => `${esc(r.ticker)} (${esc(r.reject_reason)})`).join(', ')}</div>` : ''}
-        </section>`).join('') + renderUnconfirmed(d);
+        </details>`).join('') + renderUnconfirmed(d);
     }
 
     function renderQa(d) {

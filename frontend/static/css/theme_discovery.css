@@ -19,7 +19,11 @@
 .td-h { font-size: 13px; font-weight: 600; margin: 12px 0 4px; }
 
 .td-theme { border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); padding: 8px 10px; margin-bottom: 10px; }
-.td-theme-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.td-theme-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; cursor: pointer; list-style: none; }
+.td-theme-head::-webkit-details-marker { display: none; }
+.td-theme-head .td-theme-name::before { content: '▸ '; color: var(--text-muted); }
+.td-theme[open] .td-theme-head .td-theme-name::before { content: '▾ '; }
+.td-theme[open] > .td-theme-head { margin-bottom: 4px; }
 .td-theme-name { font-size: 15px; font-weight: 600; }
 .td-theme-desc { font-size: 13px; margin-top: 3px; }
 .td-theme-sec { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
