@@ -26,6 +26,8 @@ from db_scripts.logger import get_logger, write_summary, flush_logger, format_du
 SCRIPT_NAME = 'market_breadth_update'
 logger = get_logger(SCRIPT_NAME)
 
+MIN_STOCKS_PER_DAY = 1000
+
 # Load environment variables
 load_dotenv()
 
@@ -109,6 +111,8 @@ def compute_and_load_breadth(connection, start_date=None):
         FROM daily_returns
         WHERE dma_50 IS NOT NULL OR dma_200 IS NOT NULL
         GROUP BY date
+        -- ohlc has stray weekend/holiday bars for a handful of tickers; a real session has ~5k+
+        HAVING COUNT(*) >= {MIN_STOCKS_PER_DAY}
     )
     INSERT INTO market_breadth (date, above_50dma, below_50dma, above_200dma, below_200dma, up_4pct, down_4pct, total_stocks, created_at, updated_at)
     SELECT
