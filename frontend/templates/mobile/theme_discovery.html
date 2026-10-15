@@ -1,0 +1,17 @@
+{% extends "mobile/_shell.html" %}
+{% set page_title = 'Theme Discovery' %}
+{% block title %}Theme Discovery — Mobile{% endblock %}
+{% block page_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme_discovery.css') }}">
+{% endblock %}
+{% block content %}
+  <div class="utility-body utility-scroll">
+    <div class="td-page td-mobile" id="tdRoot">
+      {% include "_theme_discovery_body.html" %}
+    </div>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='js/theme_discovery.js') }}"></script>
+<script>ThemeDiscovery.init({ rootId: 'tdRoot', mobile: true });</script>
+{% endblock %}

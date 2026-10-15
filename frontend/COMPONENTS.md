@@ -293,6 +293,16 @@ One layout system for all 15 desktop screener pages: shared shell + `screener.cs
 | **Data** | `/api/frontend/narratives` → backend `/api/narratives` (latest `user_data/market_narratives/<run>/narratives.json` + `status.json`); Rebuild → `/api/frontend/narratives/generate` |
 | **Layout** | Backdrop now (top 6 non-dormant by `heat`, sparkline per brief date) · Out of the headlines (impact ≥ 4, not active, not in backdrop) · Viz switch (`?view=` / `localStorage.nvView`): **Timeline** (row per storyline, dot size = intensity, opacity = decay, turning-point labels), **River** (streamgraph, top 16 by weight, gaussian-smoothed), **Comets** (impact bands, tail first→last, head = weight), **Grid** (row × brief heatmap); filter impact ≥ 3/all, sort heat/total/start (Timeline/Grid) · click → detail arc (dated thread titles + leads) |
 
+### Theme Discovery
+| | |
+|---|---|
+| **File** | `templates/theme_discovery.html` (desktop) + `templates/mobile/theme_discovery.html`; shared body `templates/_theme_discovery_body.html` |
+| **CSS** | `static/css/theme_discovery.css` (`.td-*`; mobile overrides under `.td-mobile`) |
+| **JS** | `static/js/theme_discovery.js` — `ThemeDiscovery.init({ rootId, mobile })`, shared desktop + mobile |
+| **Route** | `/theme-discovery`, `/m/theme-discovery` |
+| **Data** | `/api/frontend/theme-discovery?run=` → backend `/api/theme-discovery` (`user_data/theme_discovery/<run>/themes.json` + `run_summary.json`) |
+| **Layout** | Run select · tabs: **Themes** (card per theme: description, stocks table with `screener` / `probe` badge, cap, 1w/1m/3m, why it belongs) · **QA** (candidates with no theme + reason) · **Funnel** (pick rule, pool and picks per screener list, candidates, industry-limit drops). Mobile puts the why text on its own row |
+
 ### Market Brief History
 | | |
 |---|---|
@@ -432,6 +442,7 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Market Brief | `mobile/market_brief.html` | `/m/market-brief` | `[]` |
 | Market Brief - Px | `mobile/market_brief.html` (`brief_cfg` → `window.BRIEF_CFG`) | `/m/market-brief-px` | `[]` |
 | Narratives | `mobile/narratives.html` | `/m/narratives` | `[]` |
+| Theme Discovery | `mobile/theme_discovery.html` | `/m/theme-discovery` | `[]` |
 | Weekly Recap | `mobile/weekly_recap.html` | `/m/weekly-recap` | `[]` |
 | Market News | `mobile/market_news.html` | `/m/market-news` | `['news']` |
 | ETFs | `mobile/etfs.html` | `/m/etfs` | `[]` |

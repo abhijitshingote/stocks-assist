@@ -1693,6 +1693,23 @@ def api_narratives():
         return jsonify({'error': 'Failed to fetch narratives'}), status_code
     return jsonify(data), status_code
 
+@app.route('/theme-discovery')
+def theme_discovery_page():
+    """Themes found from the weekly screeners, with their stocks."""
+    return render_template('theme_discovery.html')
+
+@app.route('/m/theme-discovery')
+def m_theme_discovery():
+    return render_template('mobile/theme_discovery.html')
+
+@app.route('/api/frontend/theme-discovery', methods=['GET'])
+def api_theme_discovery():
+    run = request.args.get('run')
+    data, status_code = make_backend_request('/api/theme-discovery' + (f'?run={run}' if run else ''))
+    if data is None:
+        return jsonify({'error': 'Failed to fetch theme discovery'}), status_code
+    return jsonify(data), status_code
+
 @app.route('/api/frontend/narratives/generate', methods=['POST'])
 def api_narratives_generate():
     data, status_code = make_backend_request('/api/narratives/generate', method='POST', json_data={})
