@@ -7,7 +7,7 @@ import os
 import time
 from typing import Any
 
-from openai import APIStatusError, OpenAI, RateLimitError
+from openai import APIError, APIStatusError, OpenAI, RateLimitError
 
 from market_brief_losers.cost_tracker import CostTracker
 from market_brief_losers.deepseek_pricing import UsageBreakdown
@@ -18,6 +18,8 @@ SYNTH_MODEL = os.getenv("MARKET_BRIEF_LOSERS_DEEPSEEK_MODEL", "deepseek-v4-pro")
 SYNTH_LOGICAL = SYNTH_MODEL
 BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
 MAX_RETRIES = int(os.getenv("MARKET_BRIEF_API_MAX_RETRIES", "8"))
+# DeepSeek can fail a stream only after its 900s server-side queue timeout, so each attempt may cost ~15 min.
+TRANSIENT_MAX_RETRIES = int(os.getenv("MARKET_BRIEF_LOSERS_TRANSIENT_MAX_RETRIES", "3"))
 
 
 def _client() -> OpenAI:
@@ -60,6 +62,7 @@ def complete(
     ]
 
     last_exc: Exception | None = None
+    transient_failures = 0
     for attempt in range(MAX_RETRIES):
         try:
             if use_stream:
@@ -112,7 +115,39 @@ def complete(
                 )
                 time.sleep(wait)
                 continue
-            raise
+            if (getattr(e, "status_code", None) or 0) < 500:
+                raise
+            last_exc = e
+            transient_failures += 1
+            if transient_failures >= TRANSIENT_MAX_RETRIES:
+                raise
+            wait = min(120.0, 30.0 * transient_failures)
+            logger.warning(
+                "HTTP %s on %s (transient %d/%d), sleeping %.0fs: %s",
+                e.status_code,
+                step,
+                transient_failures,
+                TRANSIENT_MAX_RETRIES,
+                wait,
+                e,
+            )
+            time.sleep(wait)
+        except APIError as e:
+            # In-stream error events (e.g. queue timeout) and connection/timeout errors.
+            last_exc = e
+            transient_failures += 1
+            if transient_failures >= TRANSIENT_MAX_RETRIES:
+                raise
+            wait = min(120.0, 30.0 * transient_failures)
+            logger.warning(
+                "DeepSeek error on %s (transient %d/%d), sleeping %.0fs: %s",
+                step,
+                transient_failures,
+                TRANSIENT_MAX_RETRIES,
+                wait,
+                e,
+            )
+            time.sleep(wait)
 
     raise last_exc or RuntimeError(f"DeepSeek call failed after {MAX_RETRIES} retries: {step}")
 
