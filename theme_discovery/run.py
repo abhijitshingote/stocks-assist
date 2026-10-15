@@ -18,7 +18,7 @@ from daily_screener.utils.perplexity import USAGE
 from market_brief.cost_tracker import CostTracker
 from theme_discovery import config
 from theme_discovery.candidates import build_candidates
-from theme_discovery.stages import run_news, run_probe, run_synthesis
+from theme_discovery.stages import confirm_singles, load_prior_themes, run_news, run_probe, run_synthesis
 
 logger = logging.getLogger("theme_discovery")
 
@@ -50,6 +50,12 @@ def _assemble(cands: dict, news: dict, synth: dict, probes: dict) -> dict:
             "name": t.get("name"),
             "description": t.get("description"),
             "secular": t.get("secular"),
+            "kind": t.get("kind"),
+            "layer": t.get("layer"),
+            "found_in": t.get("found_in"),
+            "previous": t.get("previous"),
+            "first_seen": t.get("first_seen"),
+            "confirm_up": t.get("confirm_up"),
             "stocks": [screener_stock(s) for s in t["stocks"]],
             "probe_added": [{**a, "found_by": "probe"} for a in p.get("added", [])],
             "probe_rejected": p.get("rejected", []),
@@ -68,6 +74,7 @@ def _assemble(cands: dict, news: dict, synth: dict, probes: dict) -> dict:
         "weekly_cycle": cands.get("weekly_cycle"),
         "themes": themes,
         "qa": qa,
+        "unconfirmed": synth.get("unconfirmed", []),
         "funnel": {
             "universe": cands["universe"],
             "lists": cands["lists"],
@@ -120,12 +127,15 @@ def main() -> int:
 
         _status(outdir, status="running", stage="themes")
         if args.from_stage <= 3:
-            synth = run_synthesis(cands["candidates"], news, outdir, tracker)
+            prior = load_prior_themes(date)
+            logger.info("prior themes: %d", len(prior))
+            synth = run_synthesis(cands["candidates"], news, outdir, tracker, prior, date)
         else:
             synth = read_json(outdir / "03_themes.json")
 
         _status(outdir, status="running", stage="probe")
         probes = run_probe(synth["themes"], date, outdir, force=args.force or args.from_stage <= 3)
+        synth = confirm_singles(synth, probes, news)
 
         result = _assemble(cands, news, synth, probes)
         result["date"] = date
@@ -138,6 +148,7 @@ def main() -> int:
             "candidates": len(cands["candidates"]),
             "themes": len(result["themes"]),
             "qa": len(result["qa"]),
+            "unconfirmed": len(result["unconfirmed"]),
             "probe_added": sum(len(t["probe_added"]) for t in result["themes"]),
             "perplexity": px,
             "anthropic_cost_usd": round(tracker.total_cost_usd, 4),

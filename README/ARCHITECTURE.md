@@ -11,7 +11,7 @@ Two LLM pipelines run inside the **backend** container as Python modules (not se
 | `daily_screener/` | Momentum + news + judge shortlist | `user_data/daily_screener/<date>/` |
 | `market_brief/` | Pre-market Benzinga brief | `user_data/market_brief/<date>/` |
 | `market_brief/perplexity_brief.py` | A/B brief: Perplexity search replaces Benzinga (`/market-brief-px`) | `user_data/market_brief_perplexity/<date>/` |
-| `theme_discovery/` | Weekly screeners → news per stock → themes (Opus) → probe per theme (`/theme-discovery`) | `user_data/theme_discovery/<date>/` |
+| `theme_discovery/` | Weekly screeners (mid/large/mega) → news per stock → themes (Opus, 2 passes + prior runs' themes) → probe per theme (`/theme-discovery`) | `user_data/theme_discovery/<date>/` |
 
 ```mermaid
 flowchart TB
@@ -163,7 +163,7 @@ Ticker universe from DB screens (`screener_universe.py`: r1d, vol_spike_5d, main
 | `market_brief/<date>/` | Brief artifacts, `run_costs.json` |
 | `market_brief_perplexity/<date>/` | Px brief artifacts: `01_research/` (facts + source URLs), `02_brief.md`, `status.json`, `run_costs.json`, `compare.md` |
 | `market_narratives/<date>/` | Storylines clustered across briefs (`market_brief/narratives.py`): `narratives.json` → `/narratives` |
-| `theme_discovery/<date>/` | `01_candidates.json`, `02_news/<T>.json`, `03_themes.json`, `04_probe/<theme>.json`, `themes.json` (SoT for `/theme-discovery`), `run_summary.json`, `run_costs.json` |
+| `theme_discovery/<date>/` | `01_candidates.json`, `02_news/<T>.json`, `03_synth_pass{1,2}_*`, `03_themes.json`, `04_probe/<theme>.json`, `themes.json` (SoT for `/theme-discovery`), `run_summary.json`, `run_costs.json` |
 
 Frontend and backend both read these paths; keep `OUTPUTS_DIR` constants in sync (`daily_screener/config.py`, `market_brief/config.py`, `backend/app.py`).
 

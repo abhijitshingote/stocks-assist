@@ -40,6 +40,9 @@
 .td-badge.screener { color: var(--accent-blue); background: color-mix(in srgb, var(--accent-blue) 14%, transparent); }
 .td-badge.probe { color: var(--accent-yellow); background: color-mix(in srgb, var(--accent-yellow) 14%, transparent); }
 .td-badge.listed { color: var(--text-secondary); background: color-mix(in srgb, var(--text-muted) 18%, transparent); }
+.td-badge.new { color: var(--accent-green); background: color-mix(in srgb, var(--accent-green) 14%, transparent); }
+.td-badge.returning { color: var(--accent-blue); background: color-mix(in srgb, var(--accent-blue) 14%, transparent); }
+.td-badge.single, .td-badge.layer { color: var(--text-secondary); background: color-mix(in srgb, var(--text-muted) 18%, transparent); }
 
 .td-mobile .td-theme { padding: 8px; }
 .td-mobile .td-theme-head { flex-direction: column; gap: 2px; }

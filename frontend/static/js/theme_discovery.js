@@ -45,13 +45,30 @@ const ThemeDiscovery = (() => {
 
     const STOCK_HEAD = `<tr><th>Ticker</th><th>Found by</th><th>Cap</th><th class="td-num">1w</th><th class="td-num">1m</th><th class="td-num">3m</th>${mobile ? '' : '<th>Why it belongs</th>'}</tr>`;
 
-    function renderThemes(d) {
+    function themeTags(t, run) {
+      const tags = [];
+      if (t.previous) tags.push(`<span class="td-badge returning">returning · first seen ${esc(t.first_seen)}</span>`);
+      else if (t.first_seen === run) tags.push('<span class="td-badge new">new</span>');
+      if (t.kind === 'single') tags.push(`<span class="td-badge single">1 stock · probe found ${(t.confirm_up || []).length} up</span>`);
+      if (t.kind === 'previous_single') tags.push('<span class="td-badge single">1 stock · known theme</span>');
+      if (t.found_in === 'pass2') tags.push(`<span class="td-badge layer">checklist${t.layer ? `: ${esc(t.layer)}` : ''}</span>`);
+      return tags.join(' ');
+    }
+
+    function renderUnconfirmed(d) {
+      const u = d.unconfirmed || [];
+      if (!u.length) return '';
+      return `<div class="td-sub">One-stock themes not confirmed by probe (stock moved to QA): ${u.map((x) => `${esc(x.name)} (${tick(x.ticker)}, ${x.confirm_up.length} up)`).join(' · ')}</div>`;
+    }
+
+    function renderThemes(d, run) {
       if (!d.themes.length) return '<div class="td-empty">No themes in this run.</div>';
       return d.themes.map((t) => `
         <section class="td-theme">
           <div class="td-theme-head">
             <span class="td-theme-name">${esc(t.name)}</span>
             <span class="td-muted">${t.stocks.length} from screeners · ${t.probe_added.length} from probe</span>
+            ${themeTags(t, run)}
           </div>
           <div class="td-theme-desc">${esc(t.description)}</div>
           ${t.secular ? `<div class="td-theme-sec">${esc(t.secular)}</div>` : ''}
@@ -61,7 +78,7 @@ const ThemeDiscovery = (() => {
           </table></div>
           ${t.probe_error ? `<div class="td-err">Probe failed: ${esc(t.probe_error)}</div>` : ''}
           ${t.probe_rejected.length ? `<div class="td-sub">Probe names not added: ${t.probe_rejected.map((r) => `${esc(r.ticker)} (${esc(r.reject_reason)})`).join(', ')}</div>` : ''}
-        </section>`).join('');
+        </section>`).join('') + renderUnconfirmed(d);
     }
 
     function renderQa(d) {
@@ -88,7 +105,7 @@ const ThemeDiscovery = (() => {
       const f = d.funnel;
       const lists = Object.entries(f.lists).map(([id, l]) => `<tr>
         <td class="td-nowrap">${esc(LIST_LABELS[id] || id)}</td>
-        <td class="td-muted td-nowrap">top ${l.top_n} by ${esc(l.rank_field)}${l.filter ? ` · ${esc(l.filter)}` : ''}</td>
+        <td class="td-muted td-nowrap">top ${l.top_n}${l.per_cap ? ' per cap' : ''} by ${esc(l.rank_field)}${l.filter ? ` · ${esc(l.filter)}` : ''}</td>
         <td class="td-num">${l.pool}</td>
         <td class="td-num">${l.picked.length}</td>
         <td>${l.picked.map(tick).join(' ')}</td>
@@ -103,7 +120,7 @@ const ThemeDiscovery = (() => {
       const dropped = f.dropped.length
         ? `<div class="td-sub">Dropped by the ${f.max_per_industry}-per-industry limit: ${f.dropped.map((x) => esc(x.ticker)).join(', ')}</div>` : '';
       return `
-        <div class="td-sub">Universe: ${esc(f.universe.cap_buckets.join(' + '))} caps from the weekly screeners, excluding ${esc(f.universe.exclude_industries.join(', '))} · ${f.universe.large_mega_rows} stocks · max ${f.max_per_industry} per industry${f.universe.hidden_pass ? ` · ${f.universe.hidden_pass} passes hidden by Weekly Review` : ''}</div>
+        <div class="td-sub">Universe: ${esc(f.universe.cap_buckets.join(' + '))} caps from the weekly screeners, excluding ${esc(f.universe.exclude_industries.join(', '))} · ${f.universe.rows ?? f.universe.large_mega_rows} stocks${f.max_per_industry ? ` · max ${f.max_per_industry} per industry` : ''}${f.universe.hidden_pass ? ` · ${f.universe.hidden_pass} passes hidden by Weekly Review` : ''}</div>
         <div class="td-table-wrap"><table class="td-table">
           <thead><tr><th>Screener</th><th>Pick rule</th><th class="td-num">Pool</th><th class="td-num">Picked</th><th>Tickers</th></tr></thead>
           <tbody>${lists}</tbody>
@@ -138,7 +155,7 @@ const ThemeDiscovery = (() => {
         const n = b.dataset.tab === 'themes' ? d.themes.length : b.dataset.tab === 'qa' ? d.qa.length : d.funnel.candidates.length;
         b.querySelector('.td-count').textContent = n;
       });
-      $('#tdBody').innerHTML = tab === 'themes' ? renderThemes(d) : tab === 'qa' ? renderQa(d) : renderFunnel(d);
+      $('#tdBody').innerHTML = tab === 'themes' ? renderThemes(d, payload.run) : tab === 'qa' ? renderQa(d) : renderFunnel(d);
     }
 
     let current = null;

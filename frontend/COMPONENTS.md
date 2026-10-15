@@ -301,7 +301,7 @@ One layout system for all 15 desktop screener pages: shared shell + `screener.cs
 | **JS** | `static/js/theme_discovery.js` — `ThemeDiscovery.init({ rootId, mobile })`, shared desktop + mobile |
 | **Route** | `/theme-discovery`, `/m/theme-discovery` |
 | **Data** | `/api/frontend/theme-discovery?run=` → backend `/api/theme-discovery` (`user_data/theme_discovery/<run>/themes.json` + `run_summary.json`) |
-| **Layout** | Run select · tabs: **Themes** (card per theme: description, stocks table with `screener` / `probe` badge, cap, 1w/1m/3m, why it belongs) · **QA** (candidates with no theme + reason) · **Funnel** (pick rule, pool and picks per screener list, candidates, industry-limit drops). Mobile puts the why text on its own row |
+| **Layout** | Run select · tabs: **Themes** (card per theme: `new` / `returning · first seen` / `1 stock · probe found N up` / `checklist: <layer>` tags, description, stocks table with `screener` / `probe` badge, cap, 1w/1m/3m, why it belongs; unconfirmed one-stock themes listed at the end) · **QA** (candidates with no theme + reason) · **Funnel** (pick rule, pool and picks per screener list, candidates, industry-limit drops). Mobile puts the why text on its own row |
 
 ### Market Brief History
 | | |

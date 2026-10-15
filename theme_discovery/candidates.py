@@ -50,11 +50,14 @@ def build_candidates() -> dict:
     for list_id, source, field, top_n, extra in config.PICKS:
         pool = [r for r in rows if source in (r.get("sources") or []) and _passes(r, extra)]
         pool.sort(key=lambda r: (r.get(field) is None, -(r.get(field) or 0)))
-        top = pool[:top_n]
+        top = []
+        for cap in config.CAP_BUCKETS:
+            top += [r for r in pool if r.get("cap_bucket") == cap][:top_n]
         lists[list_id] = {
             "source": source,
             "rank_field": field,
             "top_n": top_n,
+            "per_cap": True,
             "filter": extra,
             "pool": len(pool),
             "picked": [r["ticker"] for r in top],
@@ -73,7 +76,7 @@ def build_candidates() -> dict:
         ind = row.get("industry") or "Unknown"
         entry = {k: row.get(k) for k in KEEP_FIELDS}
         entry["picked_by"] = picked_by[t]
-        if per_industry[ind] >= config.MAX_PER_INDUSTRY:
+        if config.MAX_PER_INDUSTRY and per_industry[ind] >= config.MAX_PER_INDUSTRY:
             entry["drop_reason"] = f"industry limit {config.MAX_PER_INDUSTRY}"
             dropped.append(entry)
             continue
@@ -90,7 +93,7 @@ def build_candidates() -> dict:
         "universe": {
             "cap_buckets": list(config.CAP_BUCKETS),
             "exclude_industries": list(config.EXCLUDE_INDUSTRIES),
-            "large_mega_rows": len(rows),
+            "rows": len(rows),
             "hidden_pass": funnel.get("hidden_pass", 0),
         },
         "lists": lists,
