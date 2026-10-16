@@ -1,0 +1,117 @@
+{
+  "name": "tickers_07",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday October 16, 2026.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| KRMN | Karman Holdings Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +12.79% | +7.0% | 1.5\u00d7 | \u2014 |\n| TBCH | Turtle Beach Corporation | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +12.58% | +27.6% | 2.6\u00d7 | \u2014 |\n| APPN | Appian Corporation | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +12.38% | +12.7% | 1.6\u00d7 | \u2014 |\n| KD | Kyndryl Holdings, Inc. | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +12.07% | +10.5% | 1.0\u00d7 | \u2014 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Thursday October 15, 2026, any after-hours / pre-market move on Friday October 16, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Karman Holdings Inc. (KRMN) `Aerospace & Defense`\n- Karman shares advanced nearly 11% on Thursday, October 15, after three consecutive sessions of declines; Seeking Alpha reported the stock at $33.44, up $3.30, at 15:19 ET. (Seeking Alpha, Oct. 15 15:19 ET)[9]\n- No company-specific press release, filing, contract, earnings report, or analyst action published during the window was identified.\n- A TipRanks market item listed a Karman director purchase of approximately $1.0 million and an analyst initiation at Buy tied to the company\u2019s missile-procurement outlook, but the available result did not provide a verifiable publication time within the window. [rumor] (Business Insider/TipRanks, Oct. 15 12:06 ET)[5]\n\n## Turtle Beach Corporation (TBCH) `Consumer Electronics`\n- No company-specific press release, filing, contract, earnings report, or analyst action published during the window was identified.\n- The latest cited analyst action was Zacks Research upgrading Turtle Beach from Strong Sell to Hold on October 6, 2026, outside the requested window. (Ad-hoc-news, Oct. 15; citing Oct. 6 action)[10]\n- The latest cited company outlook was fiscal 2026 revenue guidance of $335 million\u2013$355 million and adjusted EBITDA guidance of $44 million\u2013$48 million, also originating from earlier reporting. (Ad-hoc-news, Oct. 15)[10]\n\n## Appian Corporation (APPN) `Software & SaaS`\n- Appian announced on October 15 that it would release third-quarter 2026 results before the market open on November 5, followed by an 08:30 ET conference call. (GlobeNewswire, Oct. 15; publication time not provided)[1]\n- No new earnings figures, guidance change, contract, filing, or analyst rating action published within the window was identified.\n- Earlier reported quarterly results cited in October 15 coverage were EPS of $0.13 versus an analyst estimate of $0.13 and revenue of $203.26 million versus $193.38 million consensus; quarterly revenue increased 19.1% year over year. (MarketBeat, Oct. 15)[2]\n- Earlier cited analyst actions included Barclays raising its price target from $26 to $30 while retaining Underweight and Zacks Research downgrading the stock from Strong Buy to Hold on October 6; both actions predated the requested window. (MarketBeat, Oct. 15)[2]\n\n## Kyndryl Holdings, Inc. (KD) `IT Services`\n- No company-specific press release, filing, contract, earnings report, analyst action, or related-company catalyst was identified in the available results for October 15\u201316, 2026 through 02:03 ET.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "MCLEAN, Va., Oct. 15, 2026 (GLOBE NEWSWIRE) -- Appian (NASDAQ: APPN) today announced that it will release financial results for the third quarter ended September 30, 2026, before the U.S. financial markets open on Thursday, November 5, 2026.\nThe company will host a conference call and live webcast t...",
+      "source": "web",
+      "title": "Appian To Announce Third Quarter 2026 Financial Results on November 5, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/appian-announce-third-quarter-2026-200500549.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Appian Corporation (NASDAQ:APPN ) traded up 7.6% during trading on Thursday.\nThe stock traded as high as $39.98 and last traded at $41.39. 53,524 shares traded hands during mid-day trading, a decline of 94% from the average daily volume of 942,160 shares.\nThe stock had previously closed at $38.45.\nA...",
+      "source": "web",
+      "title": "Appian (NASDAQ:APPN) Shares Up 7.6% \u2013 Still a Buy?",
+      "url": "https://www.thestockobserver.com/2026/10/15/appian-nasdaqappn-shares-up-7-6-still-a-buy.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Karman Holdings Inc.\n(NYSE:KRMN - Get Free Report) shares traded up 8.3% during mid-day trading on Thursday.\nThe stock traded as high as $32.28 and last traded at $32.6480.\nApproximately 1,089,451 shares changed hands during mid-day trading, a decline of 61% from the average daily volume of 2,798,53...",
+      "source": "web",
+      "title": "Karman (NYSE:KRMN) Shares Up 8.3% - Time to Buy?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-karman-nyse-krmn-shares-up-83-time-to-buy-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, Karman Holdings Inc.\n(NYSE: KRMN) rebounded sharply, with shares climbing nearly 11% to close at $33.44, recovering from three consecutive days of losses.\nThis move outpaced modest gains seen in its aerospace and defense peers, underscoring renewed investor interest despite ongo...",
+      "source": "web",
+      "title": "Karman Holdings (KRMN) Shares Surge Nearly 11% After Three-Day S",
+      "url": "https://www.gurufocus.com/news/9126323/karman-holdings-krmn-shares-surge-nearly-11-after-threeday-slide"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "TipRanks\nOct. 15, 2026, 12:06 PM\nKarman (KRMN) is up 11.2%, or $3.38 to $33.52.\n...\n- Karman Holdings Initiated at Buy as Analyst Sees Multi\u2011Year Growth from Accelerating Missile Procurement Cycle\n- Karman director buys $1.0M in common stock\n- Karman Holdings Highlights Strong Post-IPO Growth Moment...",
+      "source": "web",
+      "title": "Karman rises 11.2%",
+      "url": "https://markets.businessinsider.com/news/stocks/karman-rises-11-2-1036632289"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Appian (NASDAQ:APPN) Shares Climb 7.6% - Here's Why\n...\n# Appian (NASDAQ:APPN) Shares Climb 7.6% - Here's Why\nOctober 15, 2026\n...\n## Key Points\n- **Appian shares jumped 7.6%** to $41.39, despite unusually light trading volume.\nThe stock is up significantly above its 50-day and 200-day moving averag...",
+      "source": "web",
+      "title": "Appian (NASDAQ:APPN) Shares Climb 7.6% - Here's Why",
+      "url": "https://www.marketbeat.com/instant-alerts/price-appian-nasdaq-appn-shares-climb-76-heres-why-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Appian Corporation (NASDAQ: APPN) rose 10.3% to $42.40 by Oct 15, 2026 12:17 PM ET on October 15.\nThe previous regular-session close was $38.45.\nThe quote put the equity value near $3.05 billion.\nThat clears the $500 million eligibility floor, and the unrounded move of 10.273% clears the rule requir...",
+      "source": "web",
+      "title": "Appian Corporation (NASDAQ: APPN) Stock Is Up 10%: The Investment Case",
+      "url": "https://transcriptdaily.com/2026/10/15/appian-corporation-nasdaq-appn-stock-is-up-10-the-investment-case.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Turtle Beach Corporation (NASDAQ:TBCH ) has earned an average rating of 'Hold' from the seven research firms that are currently covering the company, Marketbeat reports.\nOne equities research analyst has rated the stock with a sell recommendation, two have given a hold recommendation and four have a...",
+      "source": "web",
+      "title": "Turtle Beach Corporation (NASDAQ:TBCH) Stock Has Consensus Price Target of $16.80",
+      "url": "https://transcriptdaily.com/2026/10/15/turtle-beach-corporation-nasdaqtbch-stock-has-consensus-price-target-of-16-80.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Karman Holdings rallies 11% after three-session slide (KRMN:NYSE) | Seeking Alpha\n...\n# Karman Holdings rallies 11% after three-session slide\nOct 15, 2026, 3:19 PM ETKarman Holdings Inc.\n...\nKarman Holdings (KRMN) shares advanced nearly 11% on Thursday, rebounding after three straight sessions of lo...",
+      "source": "web",
+      "title": "Karman Holdings rallies 11% after three-session slide (KRMN:NYSE)",
+      "url": "https://seekingalpha.com/news/4653571-karman-holdings-rallies-11-after-three-session-slide?feed_item_type=news"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Zacks upgrades Turtle Beach stock to Hold after Strong Sell\n...\nZacks moved Turtle Beach stock to Hold on October 6, 2026.\nRevenue reached USD 56.37 million and guidance was USD 335 million to USD 355 million.\n...\n- Second-quarter gross margin reached 38.80 percent after tariff refunds.\n- Turtle Bea...",
+      "source": "web",
+      "title": "Zacks upgrades Turtle Beach stock to Hold after Strong Sell",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/zacks-upgrades-turtle-beach-stock-to-hold-after-strong-sell/70329562"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/appian-announce-third-quarter-2026-200500549.html",
+    "https://www.thestockobserver.com/2026/10/15/appian-nasdaqappn-shares-up-7-6-still-a-buy.html",
+    "https://www.marketbeat.com/instant-alerts/price-karman-nyse-krmn-shares-up-83-time-to-buy-2026-10-15/",
+    "https://www.gurufocus.com/news/9126323/karman-holdings-krmn-shares-surge-nearly-11-after-threeday-slide",
+    "https://markets.businessinsider.com/news/stocks/karman-rises-11-2-1036632289",
+    "https://www.marketbeat.com/instant-alerts/price-appian-nasdaq-appn-shares-climb-76-heres-why-2026-10-15/",
+    "https://transcriptdaily.com/2026/10/15/appian-corporation-nasdaq-appn-stock-is-up-10-the-investment-case.html",
+    "https://transcriptdaily.com/2026/10/15/turtle-beach-corporation-nasdaqtbch-stock-has-consensus-price-target-of-16-80.html",
+    "https://seekingalpha.com/news/4653571-karman-holdings-rallies-11-after-three-session-slide?feed_item_type=news",
+    "https://www.ad-hoc-news.de/boerse/news/nebenwerte/zacks-upgrades-turtle-beach-stock-to-hold-after-strong-sell/70329562"
+  ],
+  "usage": {
+    "input_tokens": 1039,
+    "output_tokens": 618,
+    "cost_usd": 0.00762
+  }
+}

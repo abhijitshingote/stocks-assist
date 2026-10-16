@@ -1,0 +1,117 @@
+{
+  "name": "a_sector_internet_media",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Company news: internet, media, gaming and telecom.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed internet, media, gaming and telecom companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **GOOGL** / CNN [Internet & Platforms]\n- Google added CNN, Financial Times, Axios and other publishers to its AI news program, which has more than 400 publications; financial terms were not disclosed. (Reuters, Oct 15 12:08 ET)[2]\n\n## **ORCL** [Internet & Platforms]\n- Five-year credit-default-swap spreads widened 26 basis points overnight to a record 288 basis points, according to S&P Global Market Intelligence. (Reuters, Oct 15; publish time not stated)[1]\n\n## **AMZN** [Internet & Platforms]\n- Five-year credit-default-swap spreads reached record-wide levels, according to LSEG and S&P Global Market Intelligence; no spread figure was provided in the report. (Reuters, Oct 15; publish time not stated)[1]\n\n## **GOOGL** / **META** [Internet & Platforms]\n- Five-year credit-default-swap spreads reached record-wide levels for both companies, according to LSEG and S&P Global Market Intelligence; the report did not provide individual spread figures. (Reuters, Oct 15; publish time not stated)[1]\n\n## **CRWV** [AI Infrastructure]\n- CoreWeave shares fell 6% in premarket trading on Oct. 15 after falling more than 15% on Oct. 14, while its 2032 debt traded at 77 cents on the dollar; five-year CDS spreads exceeded 1,000 basis points. (Reuters, Oct 15; publish time not stated)[1][10]\n\n## **NFLX** [Media & Entertainment]\n- Jefferies initiated coverage at **Buy** with an $85 price target; Netflix shares were up 0.7% in premarket trading. (Yahoo Finance, Oct 15 07:19 ET)[5]\n\n## **ERIC** [Communications & Networking]\n- Ericsson reported third-quarter adjusted operating profit before amortization and restructuring costs of 10.1 billion Swedish kronor versus an analyst forecast of 7.87 billion kronor; organic sales rose 7% to 59.5 billion kronor versus a 55.4 billion-kronor forecast. (Reuters, Oct 15; publish time not stated)[6]\n- Adjusted EBITA margin was 17.0% versus a 14.2% forecast and 28.1% a year earlier; CEO Per Narvinger said component costs were expected to pressure gross margin, while the RAN market was flat. (Reuters, Oct 15; publish time not stated)[6]\n\n## **RELX** [Media & Information Services]\n- RELX rose 2.6% in premarket trading to $37.87 after Bank of America Securities reaffirmed **Buy** and a 4,000-pence price target. (Investing.com, Oct 15 07:44 ET)[10]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "SINGAPORE, Oct 15 (Reuters) - The cost of insuring against US tech defaults has hit record levels in the latest sign of credit stress building in the AI trade, especially for data centres dependent on future revenue.\nThe moves reflect rising investor concern over how quickly massive investments in a...",
+      "source": "web",
+      "title": "Cost of AI default insurance spikes as data centre confidence wobbles",
+      "url": "https://www.reuters.com/business/media-telecom/global-markets-cds-ai-urgent-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# CNN, Axios and other publishers join Google\u2019s AI news program\nBy Thomson Reuters Oct 15, 2026 | 12:08 PM\nOct 15 (Reuters) \u2013 Skydance\u2019s CNN, the Financial Times, Axios and other publishers joined Google\u2019s AI news program to license their content for generative AI features and explore ways to \u200bdrive...",
+      "source": "web",
+      "title": "CNN signs multi-year AI partnership with Google",
+      "url": "https://wiky.com/2026/10/15/cnn-signs-multi-year-ai-partnership-with-google/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "India's Reliance, Airtel rally as Jio Platforms IPO recasts valuations | Reuters\n# India's Reliance, Airtel rally as Jio Platforms IPO recasts valuations\nBy Bharath Rajeswaran and Mridula Kumar\nOctober 15, 20265:48 AM UTCUpdated 52 mins ago\n...\nOct 15 (Reuters) - Reliance Industries (RELI.NS), opens...",
+      "source": "web",
+      "title": "India's Reliance Industries jumps after unit Jio Platforms ...",
+      "url": "https://www.reuters.com/5f374b32b07b/world/india/indias-reliance-industries-jumps-after-unit-jio-platforms-sets-price-band-ipo-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# European shares slip as tech rout offsets earnings support\nOct 15 (Reuters) - European shares inched lower on Thursday as a global rout in AI-related stocks, sparked by fears of increasing borrowing costs, dented risk sentiment, while upbeat corporate updates cushioned losses.\n...\nEricsson advance...",
+      "source": "web",
+      "title": "www.newsbreak.com \u00b7 reuters-555486 \u00b7 4946955812343European shares slip as tech rout offsets earnings support",
+      "url": "https://www.newsbreak.com/reuters-555486/4946955812343-european-shares-fall-as-global-tech-rout-hits-risk-appetite"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Premarket Movers: AAPL Gains On China AI Approval Report \u2014 Why WMT, NFLX Stocks Are Also Rising\n...\n# Premarket Movers: AAPL Gains On China AI Approval Report \u2014 Why WMT, NFLX Stocks Are Also Rising\n...\nThu, October 15, 2026 at 7:19 AM GMT-3 3 min read\n- WMT\n+3.46%\n- AAPL\n+0.50%\n- NFLX\n+0.16%\n- Apple...",
+      "source": "web",
+      "title": "Premarket Movers: AAPL Gains On China AI Approval Report",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/premarket-movers-aapl-gains-china-101903629.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Ericsson braces for component cost hit after third-quarter profit beat\n- Oct 15, 2026\n- Oct 15, 2026 Updated 14 hrs ago\n...\nSTOCKHOLM, Oct 15 (Reuters) - Telecom gear maker Ericsson on Thursday reported a smaller-than-expected drop in third-quarter core profit as efficiency measures helped offset ...",
+      "source": "web",
+      "title": "Ericsson braces for component cost hit after third-quarter ...",
+      "url": "https://lufkindailynews.com/news_reuters/business/ericsson-braces-for-component-cost-hit-after-third-quarter-profit-beat/article_db11c302-fbce-581f-ba27-2815519a02fd.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Ericsson braces for component cost hit after third-quarter profit beat\n- Oct 15, 2026\n- Oct 15, 2026 Updated 14 hrs ago\n...\nSTOCKHOLM, Oct 15 (Reuters) - Telecom gear maker Ericsson on Thursday reported a smaller-than-expected drop in third-quarter core profit as efficiency measures helped offset ...",
+      "source": "web",
+      "title": "Ericsson's third-quarter core profit falls less than expected",
+      "url": "https://lufkindailynews.com/news_reuters/business/ericssons-third-quarter-core-profit-falls-less-than-expected/article_db11c302-fbce-581f-ba27-2815519a02fd.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# AI rout slows as investors buy the dip on tech\nUpdated Oct 15, 2026, 01:54 PM\n...\nNEW YORK, Oct 15 (Reuters) - A market rout centering on the riskiest AI-related borrowers moderated on Thursday, with buyers returning to the tech sector following a weak US open and as a decline in bond yields eased...",
+      "source": "web",
+      "title": "AI rout slows as investors buy the dip on tech By Reuters",
+      "url": "https://www.investing.com/news/economy-news/red-hot-cpi-report-fuels-ai-rout-4949874"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Premarket Movers: DELL Slides After Barclays Downgrade, NOW And GOOGL Rise On Analyst Updates\n## Citi Raises NOW Price Target\nNOW stock gained nearly 1% in premarket trading after Citi raised its price target to $170 from $154 and maintained its 'Buy' rating.",
+      "source": "web",
+      "title": "Premarket Movers: DELL Slides After Barclays Downgrade ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/premarket-movers-dell-slides-barclays-103025351.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Premarket movers: CoreWeave tumbles; Penske Automotive surges\nPublished Oct 15, 2026, 07:44 AM\n...\nCoreWeave fell 6% in premarket trading after plunging more than 15% on Wednesday, as the AI cloud computing company faced mounting investor concerns over its debt-funded expansion.\n...\nRELX gained 2....",
+      "source": "web",
+      "title": "Premarket movers: CoreWeave tumbles; Penske ...",
+      "url": "https://www.investing.com/news/stock-market-news/premarket-movers-chip-stocks-slide-as-inflation-fears-hit-ai-trade-4951419"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/business/media-telecom/global-markets-cds-ai-urgent-2026-10-15/",
+    "https://wiky.com/2026/10/15/cnn-signs-multi-year-ai-partnership-with-google/",
+    "https://www.reuters.com/5f374b32b07b/world/india/indias-reliance-industries-jumps-after-unit-jio-platforms-sets-price-band-ipo-2026-10-15/",
+    "https://www.newsbreak.com/reuters-555486/4946955812343-european-shares-fall-as-global-tech-rout-hits-risk-appetite",
+    "https://finance.yahoo.com/markets/stocks/articles/premarket-movers-aapl-gains-china-101903629.html",
+    "https://lufkindailynews.com/news_reuters/business/ericsson-braces-for-component-cost-hit-after-third-quarter-profit-beat/article_db11c302-fbce-581f-ba27-2815519a02fd.html",
+    "https://lufkindailynews.com/news_reuters/business/ericssons-third-quarter-core-profit-falls-less-than-expected/article_db11c302-fbce-581f-ba27-2815519a02fd.html",
+    "https://www.investing.com/news/economy-news/red-hot-cpi-report-fuels-ai-rout-4949874",
+    "https://finance.yahoo.com/markets/stocks/articles/premarket-movers-dell-slides-barclays-103025351.html",
+    "https://www.investing.com/news/stock-market-news/premarket-movers-chip-stocks-slide-as-inflation-fears-hit-ai-trade-4951419"
+  ],
+  "usage": {
+    "input_tokens": 746,
+    "output_tokens": 617,
+    "cost_usd": 0.0072
+  }
+}

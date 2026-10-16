@@ -1,0 +1,117 @@
+{
+  "name": "b_crwv_debt_spiral_contagion",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Story: CoreWeave Debt Crisis: Credit Contagion to ORCL, DELL, HPE and AI Infrastructure Names. Related tickers: CRWV, ORCL, DELL, HPE, AMZN, MSFT.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nWhy this needs follow-up: CoreWeave's CDS >1,000 bps and bonds at 77 cents drove a sector-wide AI-infrastructure selloff, but the cross-ticker causal links \u2014 especially ORCL (-10% Wednesday), DELL/HPE (-7%), and CRWV's own +4.59% close after being down 8% intraday \u2014 need a single sourced narrative tying credit stress to equity moves.\n\nANSWER EACH QUESTION (run a separate search for each):\n- What specific CoreWeave debt or CDS developments on October 15 2026 caused ORCL, DELL and HPE to sell off, and what was Oracle's CDS spread level on that date?\n- Did any rating agency or credit research firm issue a formal downgrade or warning on CoreWeave, Oracle, or other AI infrastructure borrowers on October 14-15 2026?\n- What did the Gartner report warning that 80% of neocloud providers could fail say specifically, and when was it published relative to October 15 2026 trading?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## CoreWeave Debt and CDS [Credit]\n\n- CoreWeave\u2019s five-year CDS spread rose above 1,100 basis points on October 15, while its 2031 bond yield reached 16% before retreating to approximately 14%; Reuters reported that CoreWeave owed nearly $50 billion. (Reuters, Oct 15; publication time not shown) [3]\n- CNBC reported CoreWeave\u2019s five-year CDS at 1,140 basis points and its 2032 bond yield at 15.77% on October 15. (CNBC, Oct 15 12:01 ET) [7]\n- CoreWeave\u2019s CDS had exceeded 600 basis points on October 14 before rising above 1,000 basis points early October 15. (Reuters, Oct 15 06:39 ET) [2]\n- CoreWeave\u2019s five-year CDS level above 1,000 basis points implied an estimated five-year default probability of approximately 64%, compared with approximately 30% one year earlier. (Reuters, Oct 15; publication time not shown) [3]\n- CoreWeave\u2019s 9.625% unsecured bond due 2032 yielded approximately 14.8% on October 14, versus its 9.625% coupon; Bernstein analyst Madison Rezaei described the yield as a distress-associated level. (Investor\u2019s Business Daily, updated Oct 15; publication time not shown) [1]\n- CoreWeave had approximately $52 billion in debt and lease obligations, while second-quarter net interest expense more than doubled year over year to $640 million. (Investor\u2019s Business Daily, updated Oct 15; publication time not shown) [1]\n- CoreWeave\u2019s overall credit rating was B+ at S&P Global Ratings, according to CNBC\u2019s October 14 report. (CNBC, Oct 14; updated Oct 15; publication time not shown) [9]\n- Oracle\u2019s five-year CDS reached approximately 300 basis points on October 15, after widening approximately 31 basis points during the week. (Reuters, Oct 15; publication time not shown) [3]\n- A separate October 15 report put Oracle\u2019s five-year CDS at a record 288 basis points, up 26 basis points that day. (Gate.com, Oct 15; publication time not shown) [10]\n- Oracle\u2019s 6.25% bond due November 2032 yielded 7.24% on October 14. (CNBC, Oct 14; updated Oct 15; publication time not shown) [9]\n- The reported debt-market stress linked CoreWeave with broader selling in Oracle and other AI-exposed infrastructure companies, but the available reports did not provide a specific October 15 CDS figure for Dell or Hewlett Packard Enterprise. (Reuters, Oct 15; publication time not shown) [2][3]\n\n## Stock Moves [Equities]\n\n- CoreWeave fell 15.5% on October 14 to close at $65.78, then rose 4.59% during the October 15 regular session to close at approximately $68.80. (October 15 market data cited in the requested brief; source publication not shown)\n- Oracle fell approximately 10% on October 14; Reuters described Oracle and CoreWeave as the central equity and credit names in the selloff. (Reuters, Oct 15 06:39 ET) [2]\n- Oracle closed down nearly 9% on October 14 in CNBC\u2019s report. (CNBC, Oct 14; updated Oct 15; publication time not shown) [9]\n- Dell fell approximately 11% on October 14, according to CNBC. (CNBC, Oct 14; updated Oct 15; publication time not shown) [9]\n- Dell and Hewlett Packard Enterprise were each reported in the requested brief as down approximately 7% on October 15; the available search results did not identify a source with an exact close or timestamp for either move.\n- Nebius fell 10% on October 14. (CNBC, Oct 14; updated Oct 15; publication time not shown) [9]\n- Nebius, IREN, Hut 8, Digital Island, Cipher Digital and Applied Digital all retreated on October 14 after the Gartner warning and CoreWeave debt-market deterioration. (Investor\u2019s Business Daily, updated Oct 15; publication time not shown) [1][6]\n- Amazon, Microsoft, Oracle, Dell and Hewlett Packard Enterprise were identified as related AI-infrastructure or financing-exposure names, but the available reports did not provide verified October 15 closing moves for Amazon or Microsoft.\n\n## Rating Actions and Credit Research [Ratings]\n\n- No formal October 14\u201315 downgrade of CoreWeave, Oracle, Dell, Hewlett Packard Enterprise, Amazon or Microsoft was identified in the available reports.\n- S&P Global Ratings\u2019 cited rating for CoreWeave was B+, but the available report did not state that S&P changed the rating on October 14 or 15. (CNBC, Oct 14; updated Oct 15; publication time not shown) [9]\n- Bernstein analyst Madison Rezaei warned that CoreWeave\u2019s unsecured-credit borrowing cost had reached distress-associated levels, citing the approximately 14.8% yield on its 2032 bond. (Investor\u2019s Business Daily, updated Oct 15; publication time not shown) [1]\n- Freedom Capital Markets analyst Paul Meeks described CoreWeave\u2019s balance sheet as \u201crelatively bad\u201d versus neocloud peers because of its borrowing and data-center construction. (CNBC, Oct 14; updated Oct 15; publication time not shown) [9]\n- The available reports did not disclose a named analyst rating or price-target change for CoreWeave, Oracle, Dell, Hewlett Packard Enterprise, Amazon or Microsoft during October 14\u201315.\n\n## Gartner Neocloud Report [Industry Outlook]\n\n- Gartner forecast that more than 80% of neocloud providers would cease independent operations by 2030 because of cost pressure and a lack of differentiated business models. (Investor\u2019s Business Daily, updated Oct 15; publication time not shown) [1][6]\n- Gartner said failure to achieve sustainable return on invested capital on rapidly depreciating assets could produce a wave of asset write-downs. (Investor\u2019s Business Daily, updated Oct 15; publication time not shown) [1]\n- Gartner analyst Will Sommer said AI data-center owners would need cumulative revenue of $8.5 trillion through 2030 to cover announced capital spending, financing costs and a 12% return on invested capital. (Investor\u2019s Business Daily, updated Oct 15; publication time not shown) [1][6]\n- Gartner forecast nearly $1 trillion of AI-infrastructure spending in 2026 and an additional $6 trillion from 2027 through 2030. (Channel NewsAsia, Oct 15; publication time not shown) [4]\n- Gartner estimated that more than $3.5 trillion of AI spending could face impairment if current investment rates continued. (Channel NewsAsia, Oct 15; publication time not shown) [4]\n- Gartner forecast AI-specific infrastructure-as-a-service spending of $174 billion in 2030, up from $66 billion in 2027, against approximately $3.6 trillion of total data-center-owner spending. (CNBC, Oct 15 12:01 ET) [7]\n- Gartner\u2019s warning was published or circulated on Wednesday, October 14, one trading day before the October 15 regular session; reports dated October 15 described it as a Wednesday analysis or news release. (CNBC, Oct 15 12:01 ET; Investor\u2019s Business Daily, updated Oct 15) [1][7]\n- Gartner\u2019s warning and the CoreWeave debt-market deterioration were cited alongside the October 14 selloffs in CoreWeave, Oracle, Dell, Nebius and other neocloud shares. (CNBC, Oct 14; updated Oct 15; publication time not shown) [9]",
+  "search_results": [
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# CoreWeave Plunges On Spike In Borrowing Costs, Gartner AI Outlook\n**CoreWeave** (CRWV) stock plunged Wednesday as shares in other artificial intelligence-focused \"neoclouds\" also sold off after market research firm Gartner predicted an industry shakeout.\nAlso pressuring CoreWeave stock was a spike...",
+      "source": "web",
+      "title": "CoreWeave Plunges On Spike In Borrowing Costs, Gartner AI Outlook",
+      "url": "https://investors.com/news/technology/coreweave-stock-neoclouds-tumble-gartner-financial-forecast/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Morning Bid: CoreWeave unravels\nOctober 15, 202610:39 AM UTCUpdated 2 hours ago\n...\n## COREWEAVE UNRAVELS\nThe latest inflation and rates \u200bjolt relit the fuse on this week\u2019s AI stock selloff, with notable declines in the debt and equity of data center builder CoreWeave as \u2060well as Oracle.\n...\n## CH...",
+      "source": "web",
+      "title": "www.reuters.com \u203a 5f374b32b07b \u203a commentaryMorning Bid: Coreweave unravels | Reuters",
+      "url": "https://www.reuters.com/5f374b32b07b/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# AI credit worries send default insurance to record high\nSINGAPORE/LONDON, Oct 15 (Reuters) - The cost of insuring against tech defaults struck record highs on Thursday, as investors rushed to hedge against the risk of credit stress building in the AI trade, with heavily indebted data centre operat...",
+      "source": "web",
+      "title": "AI credit worries send default insurance to record high",
+      "url": "https://www.investing.com/news/stock-market-news/ai-credit-default-swap-spreads-widen-sharply-4950549"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Oct 15 : Shares of Nvidia-backed CoreWeave steadied on Thursday after a sharp slump, as investors worried about the debt financing behind the artificial intelligence build-out.\nThe loss-making cloud company has about $50 billion in debt and has become a focus of concerns that the data-center boom is...",
+      "source": "web",
+      "title": "CoreWeave's slump puts spotlight on debt behind AI boom",
+      "url": "https://www.channelnewsasia.com/business/coreweaves-slump-puts-spotlight-debt-behind-ai-boom-6462286"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "**CoreWeave** (NASDAQ:CRWV), a specialized AI cloud computing infrastructure provider, closed at $65.78, down 15.46%.\nHigher bond yields and **Gartner**'s neocloud warning pressured the stock.\n...\n## What this means for investors\nOn Wednesday, Oct. 14, CoreWeave's stock crashed after research giant ...",
+      "source": "web",
+      "title": "Stock Market Today, Oct. 14: CoreWeave Plummets on ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-14-214836987.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "**CoreWeave** (CRWV) stock plunged Wednesday as shares in other artificial intelligence-focused \"neoclouds\" also sold off after market research firm Gartner predicted an industry shakeout.\nIn a news release, Gartner forecast that by 2030 \"cost pressure and a lack of a differentiating business model ...",
+      "source": "web",
+      "title": "Why Gartner AI Outlook Sent CoreWeave Stock, Neoclouds Reeling",
+      "url": "https://www.investors.com/news/coreweave-stock-neoclouds-tumble-gartner-financial-forecast/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Published Thu, Oct 15 202612:01 PM EDTUpdated 3 Hours Ago\n...\nCoreWeave equity and debt are trying to find their footing after a tweet-fueled sell-off on Wednesday that saw shares slump 15%.\nOn Thursday, the stock is continuing to slide, off about 3%, while the yield on CoreWeave's 2032 bond is up t...",
+      "source": "web",
+      "title": "What's behind the sell-off in AI neocloud stocks like ... - CNBC",
+      "url": "https://www.cnbc.com/2026/10/15/whats-behind-the-sell-off-in-ai-neocloud-stocks-like-coreweave-and-nebius-.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "- A Gartner study projects that more than 80% of independent specialized cloud providers (neoclouds) will cease independent operations by 2030 due to intense cost pressures.\n...\nAs a result of the widening mismatch between possible future revenues and expenditure, Gartner believes many neocloud oper...",
+      "source": "web",
+      "title": "CRWV, NBIS, IREN Stocks Tumble After Gartner Forecasts 80% Of ...",
+      "url": "https://finance.yahoo.com/technology/ai/articles/crwv-nbis-iren-stocks-tumble-181012372.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "CoreWeave\u2019s stock and bonds were both hit on Wednesday as investor fear grew that some technology companies are borrowing too heavily for the artificial intelligence build-out.\nShares of the so-called neocloud nosedived 15.5%, while yields on its debt jumped higher.\nThe yield to maturity on its 9.62...",
+      "source": "web",
+      "title": "www.cnbc.com \u203a 2026/10/14 \u203a coreweave-stock-bondCoreWeave stock sinks as bond yields surge near 15% - CNBC",
+      "url": "https://www.cnbc.com/2026/10/14/coreweave-stock-bond-yields-ai-debt.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "- CoreWeave's five-year credit default swap spread exceeded 1,000 basis points on October 15, substantially above Oracle and SoftBank.\n...\nCoreWeave's credit default swap spread exceeded 1,000 basis points as concerns about artificial intelligence infrastructure financing spread into corporate credi...",
+      "source": "web",
+      "title": "www.gate.com \u00b7 news \u00b7 detailCoreWeave Default Insurance Exceeds 1,000 Basis Points as AI ...",
+      "url": "https://www.gate.com/news/detail/CRWV/coreweave-default-insurance-exceeds-1000-basis-points-as-ai-debt-markets-24978482"
+    }
+  ],
+  "citations": [
+    "https://investors.com/news/technology/coreweave-stock-neoclouds-tumble-gartner-financial-forecast/",
+    "https://www.reuters.com/5f374b32b07b/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/",
+    "https://www.investing.com/news/stock-market-news/ai-credit-default-swap-spreads-widen-sharply-4950549",
+    "https://www.channelnewsasia.com/business/coreweaves-slump-puts-spotlight-debt-behind-ai-boom-6462286",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-14-214836987.html",
+    "https://www.investors.com/news/coreweave-stock-neoclouds-tumble-gartner-financial-forecast/",
+    "https://www.cnbc.com/2026/10/15/whats-behind-the-sell-off-in-ai-neocloud-stocks-like-coreweave-and-nebius-.html",
+    "https://finance.yahoo.com/technology/ai/articles/crwv-nbis-iren-stocks-tumble-181012372.html",
+    "https://www.cnbc.com/2026/10/14/coreweave-stock-bond-yields-ai-debt.html",
+    "https://www.gate.com/news/detail/CRWV/coreweave-default-insurance-exceeds-1000-basis-points-as-ai-debt-markets-24978482"
+  ],
+  "usage": {
+    "input_tokens": 805,
+    "output_tokens": 1734,
+    "cost_usd": 0.00968
+  }
+}

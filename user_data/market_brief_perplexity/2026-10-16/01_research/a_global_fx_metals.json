@@ -1,0 +1,117 @@
+{
+  "name": "a_global_fx_metals",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Global, FX, metals.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nDXY, USD/JPY, EUR/USD; gold, silver, copper (price, % change); ECB, BoE, BoJ, PBoC actions and quotes; Europe/Asia index moves overnight into the brief date.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **DXY** `[Macro / FX]`\n- The U.S. dollar index fell 0.55% overnight to 101.97 by the Oct. 16 Asian session, after declining from an 18-month high; the latest timestamp before the cutoff was not reported in the available source (Shanghai Metals Market, Oct. 16, publication time not reported).[2]\n- Reuters reported that the dollar declined from an 18-month peak during the Oct. 15 session; the index\u2019s exact closing level and publication time were not provided in the available report (Reuters, Oct. 15, publication time not reported).[1]\n\n## **USD/JPY** `[Macro / FX]`\n- USD/JPY was 157.98, down 0.21%, at the Oct. 15 close; the report did not provide an exact ET timestamp (Reuters, Oct. 15, publication time not reported).[1]\n- USD/JPY was approximately 158.00 during the Oct. 16 Asian session (Saxo, Oct. 16, publication time not reported).[8]\n\n## **EUR/USD** `[Macro / FX]`\n- EUR/USD was $1.122, up 0.57%, at the Oct. 15 close; the report did not provide an exact ET timestamp (Reuters, Oct. 15, publication time not reported).[1]\n- EUR/USD was $1.1214 during early Oct. 16 Asian trading; the quoted Tokyo-time timestamp converts to Thursday Oct. 15 at 21:03 ET, within the window (Bloomberg, Oct. 16, 03:05 publication time; market snapshot at 10:03 Tokyo time).[3]\n\n## Gold `[Macro / Commodities]`\n- Spot gold rose 1.57% to $4,169.48 per ounce during the Oct. 15 regular session; the report did not provide an exact ET timestamp (Reuters, Oct. 15, publication time not reported).[1]\n- COMEX gold rose 2.06% overnight into Oct. 16; the source did not provide a price or exact ET timestamp (Shanghai Metals Market, Oct. 16, publication time not reported).[2]\n- Spot gold traded at $4,155.55 per ounce, down 0.4%, at 05:50 local time in the source; that timestamp is after the 02:03 ET cutoff and is out of scope (ET Now, Oct. 16, publication time not reported).[7]\n\n## Silver `[Macro / Commodities]`\n- COMEX silver rose 3.09% overnight into Oct. 16; the source did not provide a price or exact ET timestamp (Shanghai Metals Market, Oct. 16, publication time not reported).[2]\n- Spot silver was $57.16, down 0.5%, at 05:50 local time in the source; that timestamp is after the 02:03 ET cutoff and is out of scope (ET Now, Oct. 16, publication time not reported).[7]\n\n## Copper `[Macro / Commodities]`\n- LME copper fell 1.25% overnight into Oct. 16; the source did not provide an exact ET timestamp or dollar price for that reading (Shanghai Metals Market, Oct. 16, publication time not reported).[2]\n- Three-month LME copper was $14,347 per metric ton and described as flat during the Oct. 16 Asian session; the source did not provide an exact ET timestamp (Saxo, Oct. 16, publication time not reported).[8]\n\n## Europe `[Macro / Global Equities]`\n- The pan-European STOXX 600 fell 0.16% to 636.73 at 09:01 GMT on Oct. 15, equivalent to 05:01 ET; European regional indexes were mixed at that time (Reuters, Oct. 15, publication time not reported).[4]\n- European stocks finished 0.38% higher on Oct. 15; the report did not provide an exact ET timestamp (Reuters, Oct. 15, publication time not reported).[1]\n\n## Asia `[Macro / Global Equities]`\n- South Korea\u2019s KOSPI plunged almost 8% on Oct. 15, while Japan\u2019s Nikkei 225 fell nearly 5%; the report did not provide exact closing levels or ET timestamps (Reuters, Oct. 15, publication time not reported).[1]\n- The MSCI Asia-Pacific index excluding Japan fell 3.12% on Oct. 15, its largest one-day decline since late July; the report did not provide an exact ET timestamp (Reuters, Oct. 15, publication time not reported).[1]\n- Japan\u2019s Nikkei 225 fell 4.8% to 64,489.06 during Oct. 15 trading; the source did not provide an exact ET timestamp (Yahoo Finance, Oct. 15, publication time not reported).[6]\n- South Korea\u2019s KOSPI rose almost 3% during early Oct. 16 Asian trading after its Oct. 15 decline; the source was published at 03:05 ET, after the 02:03 ET cutoff, so the report is out of scope (Bloomberg, Oct. 16, 03:05 ET).[3]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Global stocks flat as AI and rate fears hit tech\nNEW YORK, Oct 15 (Reuters) - An index of global equity markets ended flat on Thursday as concerns about AI spending and higher interest rates fueled further selling in technology and chip stocks.\n...\nOn Wall Street, the Philadelphia SE Semiconductor...",
+      "source": "web",
+      "title": "Global stocks flat as AI and rate fears hit tech | Business",
+      "url": "https://lufkindailynews.com/news_reuters/business/global-stocks-flat-as-ai-and-rate-fears-hit-tech/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Dollar falls, gold and silver rise together, metals broadly decline, LME copper, LME zinc, and LME nickel lead losses, SHFE tin rebounds [Overnight market]\nOvernight, base metals on the domestic market fell across the board.\nSHFE copper fell 0.71%, SHFE aluminum rose 0.24%, and SHFE lead fell 0.28...",
+      "source": "web",
+      "title": "Dollar falls, gold and silver rise together, metals broadly decline, LME copper, LME zinc, and LME nickel lead losses, SHFE tin rebounds [Overnight market] - Shanghai Metals Market (SMM)",
+      "url": "https://news.metal.com/newscontent/104160284-dollar-falls-gold-and-silver-rise-together-metals-broadly-decline-lme-copper-lme-zinc-and-lme-nickel-lead-losses-shfe-tin-rebounds-overnight-market"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "This content was published on October 16, 2026 - 03:05\n(Bloomberg) \u2014 Asian equities rose as dip buyers stepped in following a chip-stock selloff fueled by concerns about the artificial intelligence trade.\nCrude oil edged lower.\nMSCI Inc.'s Asia Pacific equities gauge climbed 1%, with five shares adv...",
+      "source": "web",
+      "title": "Asian Stocks Rise as Chip Selloff Eases, Oil Slips: Markets Wrap",
+      "url": "https://www.swissinfo.ch/eng/asian-stocks-rise-as-chip-selloff-eases,-oil-slips:-markets-wrap/92225060"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Oct 15 (Reuters) - European shares inched lower on Thursday as a global rout in AI-related stocks, sparked by fears of increasing borrowing costs, dented risk sentiment, while upbeat corporate updates cushioned losses.\nThe pan-European STOXX 600 index dropped 0.16% to 636.73 points by 0901 GMT.\nRegi...",
+      "source": "web",
+      "title": "European shares slip as tech rout offsets earnings support",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VV0SZ?channel=FBi345"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Tech sell-off gathers pace as chipmakers hammered\nLONDON/SINGAPORE, Oct 15 (Reuters) - A sharp selloff in Asian tech stocks sent a chill through global equity markets on Thursday, as crowded bets on data centres and other key AI plays faced a reckoning from high and rising interest rates.\nEuropean...",
+      "source": "web",
+      "title": "Asian markets sell off as AI trades crumble after hot US CPI data - AOL",
+      "url": "https://www.aol.com/articles/asian-markets-sell-off-ai-005123000.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "European markets opened mixed on Thursday morning, while US equity futures fell.\nAsian shares dropped sharply, with South Korean and Japanese indexes sinking as a technology sell-off deepened following a decline in US stocks on hotter-than-expected inflation data.\nGermany's DAX fell 0.13% to 25,272....",
+      "source": "web",
+      "title": "Deepening tech sell-off drags stocks lower as major ...",
+      "url": "https://uk.finance.yahoo.com/news/deepening-tech-sell-off-drags-041902231.html"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "## Gold Price Today, October 16: Spot gold traded at USD 4,155.55 per ounce, while silver slipped to USD 57.16. Hotter-than-expected US CPI and PPI data lifted expectations of a Federal Reserve rate hike in December.\n...\nGold Price Today, October 16: Gold prices traded lower on Friday, with the yell...",
+      "source": "web",
+      "title": "Gold Price Today, October 16: Gold falls 1% this week as inflation fears fuel rate hike bets; silver heads for 6% weekly loss",
+      "url": "https://www.etnownews.com/markets/gold-price-today-october-16-gold-falls-1-this-week-as-inflation-fears-fuel-rate-hike-bets-silver-heads-for-6-weekly-loss-article-156348437"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Asia Market Quick Take \u2013 16 October, 2026\n##### APAC Research\n- **Commodities:\u00a0** Precious metals recover while oil remains elevated\n...\n- **USD ** had its weakest day in over a month on Thursday, with the Bloomberg Dollar Spot Index down 0.3% as AI-related worries sparked a bond rally and drove 1...",
+      "source": "web",
+      "title": "Asia Market Quick Take \u2013 14 October, 2026",
+      "url": "https://www.home.saxo/en-mena/content/articles/macro/asia-market-quick-take-16-october-2026-16102026"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "NEW YORK, Oct 15 (Reuters) - Global equity markets edged lower on Thursday as concerns about AI spending and higher interest rates fueled a continued selloff in technology and chip stocks.\n...\nOn Wall Street, the tech-heavy Nasdaq was down while the Philadelphia SE Semiconductor index was last down ...",
+      "source": "web",
+      "title": "Stocks and dollar slide as tech rout deepens | Business",
+      "url": "https://lufkindailynews.com/news_reuters/business/stocks-and-dollar-slide-as-tech-rout-deepens/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Hewlett Packard, Dell -7%.FX: Dollar slides, biggest fall in six weeks.\nBiggest gainer is Swiss franc, +1%; biggest decliner is Brazilian real, -1.5%.\n...\nUS 10-year yield -10 bps to 5.08%, curve flattens.\nCoreWeave and other AI corporate bonds rise.COMMODITIES/METALS: Oil mixed - Brent flat, WTI +3...",
+      "source": "web",
+      "title": "Global tech rout loses steam",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VV2TV?channel=frL012"
+    }
+  ],
+  "citations": [
+    "https://lufkindailynews.com/news_reuters/business/global-stocks-flat-as-ai-and-rate-fears-hit-tech/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html",
+    "https://news.metal.com/newscontent/104160284-dollar-falls-gold-and-silver-rise-together-metals-broadly-decline-lme-copper-lme-zinc-and-lme-nickel-lead-losses-shfe-tin-rebounds-overnight-market",
+    "https://www.swissinfo.ch/eng/asian-stocks-rise-as-chip-selloff-eases,-oil-slips:-markets-wrap/92225060",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VV0SZ?channel=FBi345",
+    "https://www.aol.com/articles/asian-markets-sell-off-ai-005123000.html",
+    "https://uk.finance.yahoo.com/news/deepening-tech-sell-off-drags-041902231.html",
+    "https://www.etnownews.com/markets/gold-price-today-october-16-gold-falls-1-this-week-as-inflation-fears-fuel-rate-hike-bets-silver-heads-for-6-weekly-loss-article-156348437",
+    "https://www.home.saxo/en-mena/content/articles/macro/asia-market-quick-take-16-october-2026-16102026",
+    "https://lufkindailynews.com/news_reuters/business/stocks-and-dollar-slide-as-tech-rout-deepens/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VV2TV?channel=frL012"
+  ],
+  "usage": {
+    "input_tokens": 711,
+    "output_tokens": 1140,
+    "cost_usd": 0.00827
+  }
+}

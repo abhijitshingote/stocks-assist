@@ -1,0 +1,117 @@
+{
+  "name": "a_semis_supply",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Semis & supply chain.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nTSMC / Samsung / SK hynix / Micron / Intel news; wafer and memory (DRAM, NAND, HBM) pricing; chip supply/demand estimates; equipment orders; supply-chain reports (Nikkei, DigiTimes, TrendForce, CLSA); China chip probes and export-control actions.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **TSM** \u2014 Fab & Foundry\n- TSMC reported third-quarter net profit of NT$763.1 billion, up 69% year over year and above the NT$746.3 billion LSEG SmartEstimate; quarterly revenue was US$46.72 billion, up 50% year over year. (Reuters, Oct. 15; publication time not reported)[1]\n- TSMC guided fourth-quarter revenue to US$52.3 billion\u2013US$54.3 billion, versus US$33.73 billion a year earlier. (Reuters, Oct. 15; publication time not reported)[1]\n- TSMC raised its 2026 full-year revenue-growth outlook to approximately 44%, from more than 40% previously. (Reuters, Oct. 15; publication time not reported)[5]\n- TSMC kept 2026 capital spending guidance at US$60 billion\u2013US$64 billion. (Reuters, Oct. 15; publication time not reported)[1]\n- TSMC said high-performance computing represented 68% of third-quarter revenue, while 3-nanometer and 2-nanometer processes together accounted for 41% of wafer revenue. (Yahoo Finance, Oct. 15 12:29 ET)[3]\n- TSMC reported third-quarter gross margin of 66.4% and guided fourth-quarter gross margin to 65%\u201367%. (Yahoo Finance, Oct. 15 12:26 ET)[6]\n- TSMC said demand for leading-edge technologies was \u201cextremely robust,\u201d but described its 2027 planning outlook as cautious because of macroeconomic uncertainty. (Reuters, Oct. 15; publication time not reported)[1]\n- TSMC said it was discussing participation in Elon Musk\u2019s Terafab project in Texas, with any arrangement requiring TSMC to operate the plant. (Yahoo Finance, Oct. 15 12:29 ET)[2]\n- TSMC\u2019s U.S.-listed shares were reported down more than 2% premarket; Taiwan-listed shares closed down 2% on Oct. 15. (Yahoo Finance, Oct. 15 12:29 ET; publication time not reported)[2][3]\n\n## **005930 / Samsung Electronics** \u2014 Memory & Interconnect\n- Samsung Electronics shares fell more than 10% after TSMC\u2019s results and outlook were reported. (Reuters, Oct. 15; publication time not reported)[1]\n- Samsung Electronics shares were reported down 5.17% at 220,000 won early on Oct. 15. (Yahoo Finance, Oct. 15; publication time not reported)[9]\n\n## **000660 / SK hynix** \u2014 Memory & Interconnect\n- SK hynix shares fell more than 10% after TSMC\u2019s earnings report and 2027 caution. (Reuters, Oct. 15; publication time not reported)[1]\n- SK hynix shares were reported down 11.06% at 1,262,000 won at mid-session on Oct. 15. (Yahoo Finance, Oct. 15; publication time not reported)[9]\n\n## **MU / Memory** \u2014 Memory & Interconnect\n- Micron shares were reported down more than 3% in premarket trading on Oct. 15 amid a broader AI-infrastructure and semiconductor selloff. (Yahoo Finance, Oct. 15; publication time not reported)[7]\n- The available reports did not provide an in-window Micron earnings, pricing, supply, demand, or guidance update.\n\n## **INTC / Intel** \u2014 Fab & Foundry\n- Intel shares were reported down more than 3% in premarket trading on Oct. 15 amid the semiconductor selloff. (Yahoo Finance, Oct. 15; publication time not reported)[7]\n- TSMC already operates an Austin facility, while Intel was identified as a partner with a facility on South MoPac Expressway in connection with the proposed Texas Terafab project. (Yahoo Finance, Oct. 15 12:29 ET)[2]\n- The available reports did not provide an in-window Intel earnings, order, capacity, or export-control update.\n\n## **NVDA / AMD / AVGO** \u2014 AI Compute\n- Nvidia and AMD shares were reported down more than 2% and 3%, respectively, during the Oct. 15 semiconductor selloff; Broadcom also declined. (Yahoo Finance, Oct. 15; publication time not reported)[9]\n- TSMC identified Nvidia, AMD, and Broadcom as customers for advanced processors manufactured on its leading-edge processes. (Yahoo Finance, Oct. 15 12:26 ET)[6]\n\n## **SNDK** \u2014 Memory & Interconnect\n- Sandisk shares were reported down more than 4% in premarket trading on Oct. 15. (Yahoo Finance, Oct. 15; publication time not reported)[7]\n- The available reports did not provide an in-window Sandisk NAND pricing, supply, demand, or guidance update.\n\n## Semiconductors \u2014 Macro / Commodities\n- The U.S. Bureau of Labor Statistics reported September wholesale prices up 1.3% month over month and 6.3% year over year, versus a 5.5% economist projection cited in market coverage. (Yahoo Finance, Oct. 15; publication time not reported)[7]\n- Korea Exchange suspended program trading shortly after the Oct. 15 open after benchmark futures breached the exchange\u2019s trigger. (Yahoo Finance, Oct. 15; publication time not reported)[9]\n- The available search results contained no reportable in-window wafer, DRAM, NAND, HBM pricing, semiconductor-equipment order, China chip-probe, or new export-control action.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# TSMC 'prudent' going into 2027 after posting sixth straight quarter of record profit\nTAIPEI, Oct 15 (Reuters) - TSMC, the world's largest manufacturer of advanced chips, struck a note of caution for 2027 on Thursday due to macroeconomic uncertainties, tempering an otherwise upbeat outlook after re...",
+      "source": "web",
+      "title": "TSMC 'prudent' going into 2027 after posting sixth straight ...",
+      "url": "https://lufkindailynews.com/news_reuters/business/tsmc-reports-sixth-straight-quarter-of-record-profit-thanks-to-ai-boom/article_c70760f3-0b08-55c4-8cd9-306539981e2b.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# World's largest chipmaker explores Texas expansion, talks Terafab role\nThu, October 15, 2026 at 12:29 PM GMT-4 4 min read\n...\nTaiwan Semiconductor Manufacturing Co. is exploring investments in Texas to expand its chip production in the United States, the advanced chipmaker said after posting anoth...",
+      "source": "web",
+      "title": "World's largest contract chipmaker explores Texas ...",
+      "url": "https://finance.yahoo.com/technology/articles/worlds-largest-contract-chipmaker-explores-162956492.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# TSMC Posts a Sixth Straight Record Quarter, and Its Q4 Guide Says the AI Boom Isn\u2019t Slowing. Here\u2019s the Fuller Picture\nTaiwan Semiconductor Manufacturing (TSM:NYSE) posted its sixth straight quarter of record profit on Thursday, October 15, but the more important number came after it.\nNet profit r...",
+      "source": "web",
+      "title": "TSMC Posts a Sixth Straight Record Quarter, and Its Q4 ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/tsmc-posts-sixth-straight-record-091406917.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "China's leading memory manufacturer, **ChangXin Memory Technologies (CXMT), ** announced a major technological breakthrough that boosts its chip density by 30-50%.\n...\nAdditionally, memory stocks have fallen further as Samsung and SK Hynix's massive buyback programs ended.\n...\nPositive earnings and ...",
+      "source": "web",
+      "title": "Memory & Neocloud Panic: Time to Buy?",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/memory-neocloud-panic-time-buy-181200210.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "## AI-driven demand fuels record profits but future growth faces uncertainty\nOctober 15, 20264 min read\n...\n## Reuters\nTaipei \u2014 TSMC, the world\u2019s largest manufacturer of advanced chips, struck a note of caution for 2027 on Thursday due to macroeconomic uncertainties, tempering an otherwise upbeat ou...",
+      "source": "web",
+      "title": "TSMC sees record profit but warns of 2027 caution",
+      "url": "https://www.businessday.co.za/world/international-companies/2026-10-15-tsmc-sees-record-profit-but-warns-of-2027-caution/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "TSMC stock drops despite record profit amid 'extremely robust demand' for AI chips\n...\nTSMC stock sinks 5% despite 6th straight earnings beat\n...\nThu, October 15, 2026 at 12:26 PM GMT-3 2 min read\n...\nTaiwan Semiconductor Manufacturing Company's (TSM) shares fell 2% despite strong quarterly results ...",
+      "source": "web",
+      "title": "TSMC posts record profit amid 'extremely robust demand' ...",
+      "url": "https://finance.yahoo.com/markets/stocks/article/tsmc-posts-record-profit-amid-extremely-robust-demand-for-ai-chips-104536579.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "A number of stocks fell in the morning session after hotter-than-expected inflation data compounded fears that elevated borrowing costs will curb artificial intelligence infrastructure spending.\nThe sell-off followed a Bureau of Labor Statistics release showing September wholesale prices climbed 1.3...",
+      "source": "web",
+      "title": "Lam Research, Lattice Semiconductor, Amkor, Entegris, and MACOM Stocks Trade Down, What You Need To Know",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/formfactor-teradyne-applied-materials-amd-173627052.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Updated / Thursday, 15 Oct 2026 09:51\n...\nTSMC, the world's largest manufacturer of advanced AI chips, said today it expects fourth-quarter revenue to rise by as much as 61% from a year earlier, after posting a sixth consecutive quarter of record earnings as it rides an AI boom.\n...\nShares of South ...",
+      "source": "web",
+      "title": "TSMC posts sixth quarter of record profit in a row",
+      "url": "https://www.rte.ie/news/business/2026/1015/1595446-tsmc-quarterly-results/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "The Korea Exchange suspended program trading shortly after the open on Thursday, October 15, 2026, when benchmark futures breached the exchange's trigger.\n...\nSamsung Electronics fell 5.17% to 220,000 won early Thursday.\nAt mid-session, SK hynix was down 11.06% to 1,262,000 won.\n...\n**Taiwan Semicon...",
+      "source": "web",
+      "title": "Korea's Stock Market Is in Free Fall, and Hot U.S. Inflation ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/korea-stock-market-free-fall-120017923.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "TSMC , the world's biggest chipmaker, reports quarterly results on Thursday.\nIt has already revealed that revenue rose by 50% year on year, and analysts expect a sixth straight quarter of record-breaking profits.\nIn recent weeks two other chipmakers, Samsung Electronics of South Korea and Micron of ...",
+      "source": "web",
+      "title": "Is the AI chip boom about to go bust?",
+      "url": "https://www.economist.com/the-world-in-brief/2026/10/15/40d8097b-ce6c-4d6f-9152-bbeb6269decb"
+    }
+  ],
+  "citations": [
+    "https://lufkindailynews.com/news_reuters/business/tsmc-reports-sixth-straight-quarter-of-record-profit-thanks-to-ai-boom/article_c70760f3-0b08-55c4-8cd9-306539981e2b.html",
+    "https://finance.yahoo.com/technology/articles/worlds-largest-contract-chipmaker-explores-162956492.html",
+    "https://finance.yahoo.com/markets/stocks/articles/tsmc-posts-sixth-straight-record-091406917.html",
+    "https://finance.yahoo.com/markets/stocks/articles/memory-neocloud-panic-time-buy-181200210.html",
+    "https://www.businessday.co.za/world/international-companies/2026-10-15-tsmc-sees-record-profit-but-warns-of-2027-caution/",
+    "https://finance.yahoo.com/markets/stocks/article/tsmc-posts-record-profit-amid-extremely-robust-demand-for-ai-chips-104536579.html",
+    "https://finance.yahoo.com/markets/stocks/articles/formfactor-teradyne-applied-materials-amd-173627052.html",
+    "https://www.rte.ie/news/business/2026/1015/1595446-tsmc-quarterly-results/",
+    "https://finance.yahoo.com/markets/stocks/articles/korea-stock-market-free-fall-120017923.html",
+    "https://www.economist.com/the-world-in-brief/2026/10/15/40d8097b-ce6c-4d6f-9152-bbeb6269decb"
+  ],
+  "usage": {
+    "input_tokens": 729,
+    "output_tokens": 1227,
+    "cost_usd": 0.00835
+  }
+}

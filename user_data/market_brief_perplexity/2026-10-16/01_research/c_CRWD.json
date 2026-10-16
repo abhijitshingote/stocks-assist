@@ -1,0 +1,117 @@
+{
+  "name": "c_CRWD",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Friday October 16, 2026. Target: CrowdStrike Holdings, Inc. (CRWD).\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| CRWD | CrowdStrike Holdings, Inc. | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -3.30% | -7.8% | 1.1\u00d7 | gapper 2026-08-27 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## CrowdStrike Holdings, Inc. (CRWD) `[Cybersecurity Software]`\n- No company-specific catalyst found in window\n\nTASK\nSearch harder for why CRWD moved. Run several searches: \"why is CrowdStrike Holdings, Inc. stock down/up\",\n\"CrowdStrike Holdings, Inc. stock\", \"CRWD shares Thursday October 15, 2026\", \"CrowdStrike Holdings, Inc. concerns\", \"CrowdStrike Holdings, Inc. FDA\",\n\"CrowdStrike Holdings, Inc. analyst\", \"CrowdStrike Holdings, Inc. price target\", \"CrowdStrike Holdings, Inc. deal\", \"CrowdStrike Holdings, Inc. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"CrowdStrike Holdings, Inc. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Friday October 16, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## CrowdStrike Holdings, Inc. (CRWD) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## CrowdStrike Holdings, Inc. (CRWD) `[Software & SaaS]`\n- CrowdStrike shares fell 3.30% on Thursday, October 15, 2026, as cybersecurity stocks retreated amid renewed concerns that AI developers could become competitors to established security vendors; Palo Alto Networks, Zscaler, and Fortinet also declined, while Fortinet fell 3.52% to $184.05. The concern followed reports that OpenAI was in early talks to acquire security startup Trail of Bits, with no announced transaction.[report] (Yahoo Finance, Oct 15; Arabian Post, Oct 15)\n- Semafor reported that Perplexity was \u201cgiving away\u201d an AI sandbox; CrowdStrike was down 3.3% at 13:18 ET on October 15, according to Cboe data.[report] (Business Insider, Oct 15 13:20 ET)\n- Citi analyst Fatima Boolani maintained a Buy rating and raised CrowdStrike\u2019s price target to $295 from $260, citing an improved chief investment officer survey and AI deployment driving additional security investment.[4] (Markets Insider, Oct 15)\n- Citi also raised targets on Palo Alto Networks and Zscaler while maintaining Buy ratings; Wells Fargo cited 10 channel-partner discussions and a reseller survey indicating improved cybersecurity spending heading into 2027.[5] (Yahoo Finance, Oct 15)\n- CrowdStrike\u2019s October 14 close was $252.26, and the stock was quoted at $241.70, down approximately 3.1%, at 11:13 ET on October 15.[2] (Yahoo Finance, Oct 15)\n- CrowdStrike\u2019s August 26 results included quarterly revenue of $1.47 billion, free cash flow of $377.4 million, annual recurring revenue of $5.84 billion, and a $33.2 million GAAP operating loss; the figures were cited in an October 15 valuation discussion.[2] (Yahoo Finance, Oct 15)\n- CrowdStrike President and CEO George Kurtz sold 19,900 shares for approximately $5.15 million in transactions executed October 13\u201314, at prices ranging from $249.11 to $267.51.[10] (Investing.com, Oct 16)\n- The available results report no additional CrowdStrike-specific after-hours or pre-market catalyst through 02:03 ET on October 16, 2026.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Tale of two markets: Our 3 biggest winners and losers over the past five weeks\nWall Street has become increasingly divided since our last CNBC Investing Club Monthly Meeting . The selling in recent days, however, has intensified on worries about the AI trade, making the likes of Micron among our b...",
+      "source": "web",
+      "title": "Our 3 biggest winners and losers over the past five weeks",
+      "url": "https://www.cnbc.com/investingclub/2026/10/15/tale-of-two-markets-our-3-biggest-winners-and-losers-over-the-past-five-weeks.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "CrowdStrike Stocks Fall 3% Although Citi's $295 Target Meets a Cash-Flow Test\n...\n# CrowdStrike Stocks Fall 3% Although Citi's $295 Target Meets a Cash-Flow Test\n- CRWD\n-1.89%\n...\nCloud cybersecurity supplier CrowdStrike (NASDAQ:CRWD) slipped to $241.70, down approximately 3.1%, at 11:13 a.m.\nET on ...",
+      "source": "web",
+      "title": "CrowdStrike Stocks Fall 3% Although Citi's $295 Target ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/crowdstrike-stocks-fall-3-although-190345513.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "CrowdStrike shares down 3.3% as Semafor says Perplexity \u2018giving away\u2019 AI sandbox | Markets Insider\n...\n# CrowdStrike shares down 3.3% as Semafor says Perplexity \u2018giving away\u2019 AI sandbox\nOct. 15, 2026, 01:20 PM\n13:18 EDT CrowdStrike (CRWD) shares down 3.3% as Semafor says Perplexity \u2018giving away\u2019 AI ...",
+      "source": "web",
+      "title": "CrowdStrike shares down 3.3% as Semafor says Perplexity \u2018giving away\u2019 AI sandbox",
+      "url": "https://markets.businessinsider.com/news/stocks/crowdstrike-shares-down-3-3-as-semafor-says-perplexity-giving-away-ai-sandbox-1036632379"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "CrowdStrike price target raised to $295 from $260 at Citi | Markets Insider\n...\n# CrowdStrike price target raised to $295 from $260 at Citi\nCiti analyst Fatima Boolani raised the firm\u2019s price target on CrowdStrike (CRWD) to $295 from $260 and keeps a Buy rating on the shares.\nThe firm says its lates...",
+      "source": "web",
+      "title": "CrowdStrike price target raised to $295 from $260 at Citi",
+      "url": "https://markets.businessinsider.com/news/stocks/crowdstrike-price-target-raised-to-295-from-260-at-citi-1036630916"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "- CRWD\n-3.16%\n...\nCybersecurity stocks are facing a market disconnect.\nOn one hand, you have share prices pulling back from recent highs, but analysts see signs that enterprise spending is gaining momentum.\nOn Thursday, Citi raised its targets on CrowdStrike (CRWD), Palo Alto Networks (PANW) and Zsc...",
+      "source": "web",
+      "title": "Citi Raises CRWD, PANW, ZS Targets On Improving ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/cybersecurity-stocks-retreat-record-highs-120216160.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Cybersecurity shares retreat as AI competition concerns emerge\nUS cybersecurity shares have surrendered part of September\u2019s gains as investors weigh growing demand for artificial intelligence protection against the possibility that AI developers could become competitors to established security com...",
+      "source": "web",
+      "title": "Cybersecurity shares retreat as AI competition concerns ...",
+      "url": "https://thearabianpost.com/cybersecurity-shares-retreat-as-ai-competition-concerns-emerge/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, Citigroup analyst Fatima Boolani maintained a 'Buy' rating on CrowdStrike Holdings CRWD while raising the price target to $295 from the prior target of $260.\nThis adjustment marks a significant increase of 13.46% in the expected valuation for CRWD.\nGF Value\u2122 verdict: CRWD is cur...",
+      "source": "web",
+      "title": "CRWD Maintained by Citigroup -- Price Target Raised to $295",
+      "url": "https://www.gurufocus.com/news/9126301/crwd-maintained-by-citigroup-price-target-raised-to-295"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "During that year, CrowdStrike's revenue grew faster every quarter while the company positioned itself as the platform for securing AI.\n...\nYet sales growth at the company was slowing over the same months, dropping from 28.5% in the quarter ended October 2024 to 19.8% in the quarter ended April 2025....",
+      "source": "web",
+      "title": "What Did CrowdStrike Say Before Its Stock Nearly Doubled?",
+      "url": "https://www.trefis.com/stock/crwd/articles/618857/what-did-crowdstrike-say-before-its-stock-nearly-doubled/2026-10-15"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Investing.com - Freedom Broker raised its price target on CrowdStrike Holdings Inc.\n(NASDAQ:CRWD) to $320 from $260 while maintaining a Buy rating on the stock.\nThe shares currently trade at $252.26, representing a 27% upside to the new target.\nThe upgrade aligns with broader Wall Street sentiment, ...",
+      "source": "web",
+      "title": "Freedom Broker raises CrowdStrike stock price target on platform expansion",
+      "url": "https://www.investing.com/news/analyst-ratings/freedom-broker-raises-crowdstrike-stock-price-target-on-platform-expansion-93CH-4949717"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "George Kurtz, President and CEO of cybersecurity firm CrowdStrike Holdings, Inc.\n(NASDAQ:CRWD), sold a total of 19,900 shares of Class A common stock for approximately $5.15 million.\nThe transactions occurred on October 13 and October 14, 2026, with share prices ranging from $249.11 to $267.51.\nThe ...",
+      "source": "web",
+      "title": "Crowdstrike president and CEO George Kurtz sells $5.15M in stock By Investing.com",
+      "url": "https://uk.investing.com/news/stock-market-news/crowdstrike-president-and-ceo-george-kurtz-sells-515m-in-stock-93CH-4913397"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/investingclub/2026/10/15/tale-of-two-markets-our-3-biggest-winners-and-losers-over-the-past-five-weeks.html",
+    "https://finance.yahoo.com/markets/stocks/articles/crowdstrike-stocks-fall-3-although-190345513.html",
+    "https://markets.businessinsider.com/news/stocks/crowdstrike-shares-down-3-3-as-semafor-says-perplexity-giving-away-ai-sandbox-1036632379",
+    "https://markets.businessinsider.com/news/stocks/crowdstrike-price-target-raised-to-295-from-260-at-citi-1036630916",
+    "https://finance.yahoo.com/markets/stocks/articles/cybersecurity-stocks-retreat-record-highs-120216160.html",
+    "https://thearabianpost.com/cybersecurity-shares-retreat-as-ai-competition-concerns-emerge/",
+    "https://www.gurufocus.com/news/9126301/crwd-maintained-by-citigroup-price-target-raised-to-295",
+    "https://www.trefis.com/stock/crwd/articles/618857/what-did-crowdstrike-say-before-its-stock-nearly-doubled/2026-10-15",
+    "https://www.investing.com/news/analyst-ratings/freedom-broker-raises-crowdstrike-stock-price-target-on-platform-expansion-93CH-4949717",
+    "https://uk.investing.com/news/stock-market-news/crowdstrike-president-and-ceo-george-kurtz-sells-515m-in-stock-93CH-4913397"
+  ],
+  "usage": {
+    "input_tokens": 1032,
+    "output_tokens": 515,
+    "cost_usd": 0.00706
+  }
+}

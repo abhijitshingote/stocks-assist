@@ -1,0 +1,117 @@
+{
+  "name": "a_ai_platforms",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: AI platforms & disruption.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nConsumer and enterprise AI product launches (agents, models, devices), adoption metrics, big-tech event announcements; analyst notes naming stocks that win or lose from these launches (disruption baskets, second-order beneficiaries) with the stock moves.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **AMD** [AI Compute]\n- An Oct. 15 article identified Meta\u2019s Muse AI app and OpenAI\u2019s Dots as consumer AI-agent launches and cited AMD\u2019s CPU, GPU and rack-scale opportunity; BNP Paribas analyst Karl Ackerman had raised AMD\u2019s price target to $960, Citigroup analyst Atif Malik to $800, and Mizuho analysts set a $705 target. The article did not provide contemporaneous AMD stock movement. (Yahoo Finance, Oct. 15 02:50 ET)[1]\n- AMD\u2019s Helios open-rack platform was described as supporting CPU-only and GPU configurations for agentic-AI infrastructure, with availability planned for November; the report also cited an alleged $8.2 billion all-stock acquisition of World Labs. [rumor] (MarketBeat, Oct. 15, publication time unavailable)[2]\n\n## **META** [Internet & Platforms]\n- Meta\u2019s Muse Wonder and Muse Wonder Full models, launched Oct. 12, were described as targeting personal and professional AI agents; Muse Wonder was available to developers through the Model API and Muse Code, while Muse Wonder Full was available to Muse Code subscribers. (Yahoo Finance, Oct. 15 13:16 ET)[3]\n- ARK Invest bought 32,311 Meta shares across two sessions, while analysts debated the earnings impact of Meta\u2019s AI spending; the report did not state a Meta stock move for the Oct. 15 session. (Yahoo Finance, Oct. 15 13:16 ET)[3]\n\n## **NOW** [Software & SaaS]\n- ServiceNow introduced EmployeeWorks on Oct. 15, including ToolSmith for nontechnical employees to build workflow-specific AI agents and AI Passport for permissions, compliance and oversight; the stock was reported up 6.14%. (Yahoo Finance, Oct. 15 17:12 ET)[4]\n\n## **TSM** [Fab & Foundry]\n- Taiwan Semiconductor Manufacturing reported third-quarter net profit of NT$763.06 billion, up 69% year over year and above the NT$731.77 billion FactSet consensus; revenue was NT$1.494 trillion, up 51% year over year. TSMC\u2019s 2026 revenue-growth outlook was \u201cslightly above 40%\u201d before any further update. (Dow Jones, Oct. 15 06:00 ET)[5]\n\n## **ON** [Power & Wide-Bandgap]\n- StoneX initiated onsemi with a Buy rating and a $110 price target; the report cited Wednesday\u2019s closing price of $73.36, implying approximately 50% upside. (TheFly via Yahoo Finance, Oct. 15 10:44 ET)[6]\n- Onsemi reported AI-data-center revenue was projected to more than double in 2026 and 2027 and exceed $2.5 billion annually by 2030; its investor-day plan also called for 12%\u201314% annual revenue growth from 2026 through 2030. (Yahoo Finance, Oct. 15 10:44 ET)[6]\n\n## **NVDA** [AI Compute]\n- KeyBanc reiterated Nvidia at Overweight and identified the company\u2019s CUDA software stack as a barrier to entry in cloud and enterprise AI; no new price target or Oct. 15 stock move was provided in the cited report. (CNBC, Oct. 15, publication time unavailable)[7]\n\n## **QMCO / Quantinuum** [Quantum Computing]\n- Morgan Stanley upgraded Quantinuum to Overweight from Equal Weight and set a $62 price target, described as approximately 88% upside; no stock move was provided in the cited report. (CNBC, Oct. 15, publication time unavailable)[7]\n\n## Honeywell, NVIDIA and Dell [AI Infrastructure]\n- Honeywell Technologies launched Forge Cognition with NVIDIA and Dell Technologies on Oct. 15; the platform combines AI agents and real-time digital twins for facility operations, including equipment monitoring, energy optimization and response coordination. (Ground News, Oct. 15, publication time unavailable)[8]\n- Early pilots were reported to reduce unnecessary facility alerts by up to 90% and energy use by as much as 10%; Honeywell stock was reported down 0.82% to $156.88 in an early trading reference. (Ground News, Oct. 15, publication time unavailable)[8]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Agentic AI Could Push This Trillion-Dollar Chipmaker to New Heights, According to Wall Street Analysts\nThu, October 15, 2026 at 3:20 PM GMT+5:30 5 min read\n...\nAgentic artificial intelligence (AI) has come to consumers.\nAnthropic may have been one of the first AI labs to develop popular AI agents ...",
+      "source": "web",
+      "title": "Agentic AI Could Push This Trillion-Dollar Chipmaker to New Heights, According to Wall Street Analysts",
+      "url": "https://finance.yahoo.com/technology/ai/articles/agentic-ai-could-push-trillion-095000238.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Cathie Wood's ARK Scoops Up Over 32,000 Meta Shares In 2 Days \u2014 Wall Street\u2019s Split Over AI Spending\nMeta finally pushes into frontier AI with its new Muse Wonder AI model\n...\nThu, October 15, 2026 at 10:16 AM GMT-3 4 min read\n...\nCathie Wood-led ARK Invest scooped up 32,311 shares of Meta Platfor...",
+      "source": "web",
+      "title": "Cathie Wood's ARK Scoops Up Over 32000 Meta Shares ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-scoops-over-131613017.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "ServiceNow (NOW) Unveils EmployeeWorks AI Platform\n...\n# ServiceNow (NOW) Unveils EmployeeWorks AI Platform\n...\nThu, October 15, 2026 at 2:12 PM GMT-3 3 min read\n...\n+6.14%\n- ServiceNow (NYSE: NOW) introduced its next-generation EmployeeWorks AI platform, featuring new tools for workplace automation...",
+      "source": "web",
+      "title": "ServiceNow (NOW) Unveils EmployeeWorks AI Platform",
+      "url": "https://finance.yahoo.com/technology/ai/articles/servicenow-now-unveils-employeeworks-ai-171202458.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Meta Platforms stock costs EUR 648.35 on October 15, 2026 before its October 21 results.\n...\nCEST at Lang & Schwarz on October 15, 2026.\n...\nMeta Platforms stock was trading at EUR 648.35 at Lang & Schwarz on October 15, 2026, at 10:00 a.m.\nCEST.\nMeta had launched two new artificial intelligence mod...",
+      "source": "web",
+      "title": "Meta launches Muse Wonder models and Wells Fargo ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/meta-launches-muse-wonder-models-and-wells-fargo-targets-meta-platforms-stock-at-usd-1-000-00/70326692"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Onsemi (ON) received a bullish initiation from StoneX on Thursday, with analyst Gary Mobley assigning a 'Buy' rating and identifying the chipmaker as one of the best ways to play the \"broadening chip cycle strength.\"\nAccording to TheFly, Mobley set a $110 price target on ON stock, implying nearly 50...",
+      "source": "web",
+      "title": "ON Stock Draws Bullish Initiation From StoneX \u2014 Analyst ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-draws-bullish-initiation-stonex-104424180.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Provided by Dow Jones Oct 15, 2026, 6:00:00 AM\n...\nTaiwan Semiconductor Manufacturing Co. posted another record profit as demand for AI infrastructure remained robust, shrugging off market concerns that global investment in the fast-growing sector is nearing its limit.\nThe world's largest contract c...",
+      "source": "web",
+      "title": "AI Demand Extends TSMC's Record Earnings Streak",
+      "url": "https://www.morningstar.com/news/dow-jones/20261015901/ai-demand-extends-tsmcs-record-earnings-streak"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "October 15, 2026\n...\n## Key Points\n- **Sanders Morris Harris LLC increased its AMD stake by 746.5%** in the third quarter, purchasing 31,105 additional shares and bringing its holdings to 35,272 shares valued at approximately $21.6 million.\n...\n- Analyst sentiment remains positive, with a consensus ...",
+      "source": "web",
+      "title": "31,105 Advanced Micro Devices, Inc. $AMD Shares Acquired by Sanders Morris Harris LLC",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-31105-advanced-micro-devices-inc-amd-shares-acquired-by-sanders-morris-harris-llc-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Here are Thursday\u2019s biggest analyst calls: Nvidia, CoreWeave, Walmart, Crocs, CarMax, Regeneron & more\n...\nPiper Sandler initiates HawkEye360 as overweight Piper said the company has a \u201cpowerful intelligence tool.\u201d\n...\nMorgan Stanley upgrades Quantinuum to overweight from equal weight Morgan Stanl...",
+      "source": "web",
+      "title": "Thursday big Wall Street analyst calls like CoreWeave",
+      "url": "https://www.cnbc.com/2026/10/15/thursday-big-wall-street-analyst-calls-like-coreweave.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Honeywell Technologies Launches Forge Cognition AI Platform with NVIDIA\nThursday, October 15, 2026Set Location\n...\n# Honeywell Technologies Launches Forge Cognition AI Platform with NVIDIA\n...\nBengaluru, October 15, 2026: Honeywell Technologies (NASDAQ: HON) has launched Forge Cognition, an agentic ...",
+      "source": "web",
+      "title": "Honeywell Technologies Launches Forge Cognition AI Platform with NVIDIA",
+      "url": "https://ground.news/article/honeywell-technologies-launches-forge-cognition-with-nvidia-and-dell-technologies-advancing-physical-ai-across-buildings-and-industrial-operat"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "October 15, 2026\nAnalog Devices (ADI) just picked up a top Zacks Rank upgrade after earnings estimates moved higher, drawing fresh attention to a stock already linked to AI infrastructure demand and high profile technology partnerships.\nDespite a softer patch in the last week, with a 7 day share pri...",
+      "source": "web",
+      "title": "Is Analog Devices (ADI) Undervalued On Its Analyst ...",
+      "url": "https://simplywall.st/stocks/us/semiconductors/nasdaq-adi/analog-devices/news/is-analog-devices-adi-undervalued-on-its-analyst-upgrade-and"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/technology/ai/articles/agentic-ai-could-push-trillion-095000238.html",
+    "https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-scoops-over-131613017.html",
+    "https://finance.yahoo.com/technology/ai/articles/servicenow-now-unveils-employeeworks-ai-171202458.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/meta-launches-muse-wonder-models-and-wells-fargo-targets-meta-platforms-stock-at-usd-1-000-00/70326692",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-draws-bullish-initiation-stonex-104424180.html",
+    "https://www.morningstar.com/news/dow-jones/20261015901/ai-demand-extends-tsmcs-record-earnings-streak",
+    "https://www.marketbeat.com/instant-alerts/filing-31105-advanced-micro-devices-inc-amd-shares-acquired-by-sanders-morris-harris-llc-2026-10-15/",
+    "https://www.cnbc.com/2026/10/15/thursday-big-wall-street-analyst-calls-like-coreweave.html",
+    "https://ground.news/article/honeywell-technologies-launches-forge-cognition-with-nvidia-and-dell-technologies-advancing-physical-ai-across-buildings-and-industrial-operat",
+    "https://simplywall.st/stocks/us/semiconductors/nasdaq-adi/analog-devices/news/is-analog-devices-adi-undervalued-on-its-analyst-upgrade-and"
+  ],
+  "usage": {
+    "input_tokens": 707,
+    "output_tokens": 931,
+    "cost_usd": 0.00769
+  }
+}

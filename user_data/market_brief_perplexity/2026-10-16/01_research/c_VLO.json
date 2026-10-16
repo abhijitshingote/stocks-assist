@@ -1,0 +1,117 @@
+{
+  "name": "c_VLO",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Friday October 16, 2026. Target: Valero Energy Corporation (VLO).\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| VLO | Valero Energy Corporation | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -4.10% | -1.2% | 0.9\u00d7 | gapper 2026-01-05 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## Valero Energy Corporation (VLO) `[Energy]`\n- No company-specific catalyst found in window\n\nTASK\nSearch harder for why VLO moved. Run several searches: \"why is Valero Energy Corporation stock down/up\",\n\"Valero Energy Corporation stock\", \"VLO shares Thursday October 15, 2026\", \"Valero Energy Corporation concerns\", \"Valero Energy Corporation FDA\",\n\"Valero Energy Corporation analyst\", \"Valero Energy Corporation price target\", \"Valero Energy Corporation deal\", \"Valero Energy Corporation offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Valero Energy Corporation peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Friday October 16, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Valero Energy Corporation (VLO) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Valero Energy Corporation (VLO) `[Energy]`\n- Valero shares closed down 4.10% on Thursday, October 15, 2026; an October 15 report cited profit-taking after a recent rally, technical overbought conditions, and short-term volatility in refining crack spreads, while describing the stock as trading near multi-year highs ahead of its October 22 earnings release (TradingKey, Oct 15, 2026; publish time not stated).\n- Valero\u2019s shares traded as low as $437.02 and were last quoted at $444.445 during Thursday\u2019s session; 2,512,636 shares had traded, 24% below the reported average volume of 3,322,583 shares (The Stock Observer, Oct 15, 2026; publish time not stated).\n- Citigroup analyst Vikram Bagri reportedly maintained a Hold rating while raising Valero\u2019s price target to $485 from $302; the report cited long-term refinery capture trends and wider heavy-crude discounts, while flagging refining-cycle and renewable-diesel risks [report] (Business Insider, Oct 14, 2026, updated Oct 15; publish time not stated).\n- Jefferies lowered its Valero price target to $394 from $401 and kept a Hold rating on October 8, 2026 (The Stock Observer, Oct 15, 2026; publish time not stated).\n- Wells Fargo analyst Sam Margolin maintained a Buy rating and set a $485 price target; Wells Fargo had raised its target from $389 to $485 on October 14, 2026 (Business Insider, Oct 14, 2026, updated Oct 15; publish time not stated).\n- A sector note cited temporary easing in gasoline and diesel crack spreads, commodity-price adjustments, and systematic fund reductions across refining equities; no specific peer moves were reported (TradingKey, Oct 15, 2026; publish time not stated).\n- No after-hours or pre-market catalyst or price move before 02:03 ET on Friday, October 16, 2026 was identified in the available results.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Valero Energy Corporation (NYSE:VLO )'s stock price traded down 3.3% on Thursday.\nThe stock traded as low as $437.02 and last traded at $444.4450.\n2,512,636 shares were traded during mid-day trading, a decline of 24% from the average session volume of 3,322,583 shares.\n...\nVLO has been the topic of ...",
+      "source": "web",
+      "title": "Valero Energy (NYSE:VLO) Shares Down 3.3% \u2013 Time to Sell?",
+      "url": "https://www.thestockobserver.com/2026/10/15/valero-energy-nysevlo-shares-down-3-3-time-to-sell.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Shares of Valero Energy Corporation (NYSE:VLO ) hit a new 52-week high during mid-day trading on Tuesday after Wells Fargo & Company raised their price target on the stock from $389.00 to $485.00.\nWells Fargo & Company currently has an overweight rating on the stock.\n...\nAccording to data from Marke...",
+      "source": "web",
+      "title": "Valero Energy (NYSE:VLO) Hits New 52-Week High on Analyst Upgrade",
+      "url": "https://www.thestockobserver.com/2026/10/15/valero-energy-nysevlo-hits-new-52-week-high-on-analyst-upgrade.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Valero Energy Corp Stock (VLO) Closed Down by 3.41% on Oct 15: Drivers Behind the Movement\n\u2022 Valero shares faced profit-taking and technical overbought conditions ahead of earnings.\n...\n## What is driving Valero Energy Corp (VLO)\u2019s stock price down today?\nValero Energy Corporation experienced down...",
+      "source": "web",
+      "title": "Valero Energy Corp Stock (VLO) Closed Down by 3.41% on Oct 15: Drivers Behind the Movement",
+      "url": "https://www.tradingkey.com/news/market-movers/262219483-market-movers-vlo-20261015"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Refining tailwinds are back in focus for Valero Energy (VLO) after fresh research highlighted tight global capacity, firm fuel demand, and analyst upgrades to the company\u2019s earnings outlook, which together have sharpened investor attention.\nValero Energy\u2019s recent run has been intense, with the share...",
+      "source": "web",
+      "title": "Is Valero Energy (VLO) Undervalued After Analysts Upgraded Its Refining Outlook?",
+      "url": "https://simplywall.st/stocks/us/energy/nyse-vlo/valero-energy/news/is-valero-energy-vlo-undervalued-after-analysts-upgraded-its"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "- VLO\n-3.14%\n...\n## Why Use DuPont?\n**Valero Energy**: This Zacks Rank #1 company is a multinational manufacturer and marketer of petroleum-based and low-carbon liquid transportation fuels and petrochemical products.",
+      "source": "web",
+      "title": "Zacks.com featured highlights include Valero Energy, W.W. Grainger, Expeditors International of Washington, Par Pacific and Casey's General Stores",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/zacks-com-featured-highlights-valero-122500077.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Thu, October 15, 2026 at 1:13 PM GMT-5 3 min read\n- VLO\n-3.42%\n- CL=F\n+2.36%\nValero Energy (VLO) jumped nearly 5% after Citigroup analyst Vikram Bagri sharply lifted his valuation, highlighting long term refinery capture trends and wider heavy crude discounts, while still flagging risks tied to the ...",
+      "source": "web",
+      "title": "Valero Energy (VLO) Jumps On Citi Upgrade, Is The Stock ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/valero-energy-vlo-jumps-citi-181329508.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, Valero Energy Corp VLO shares fell 3.4% to $444.06, reflecting a volatile trading day amid a broader market context.\n...\nGF Value\u2122 verdict indicates the stock is currently 147.7% overvalued, with a fair value estimate of $179.29.\n...\nInsider activity reveals that insiders sold $...",
+      "source": "web",
+      "title": "A Look at Valero Energy Corp (VLO) After 3.4% Decline -- GF Valu",
+      "url": "https://www.gurufocus.com/news/9126543/a-look-at-valero-energy-corp-vlo-after-34-decline-gf-value-17929-vs-price-44406"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Valero Energy (NYSE:VLO) Shares Down 3.3% - Time to Sell?",
+      "source": "web",
+      "title": "Valero Energy (NYSE:VLO) Shares Down 3.3% - Time to Sell?",
+      "url": "https://ground.news/article/valero-energy-nyse-vlo-shares-down-33-time-to-sell"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "Valero Energy (NYSE:VLO ) had its price target lifted by investment analysts at Wells Fargo & Company from $389.00 to $485.00 in a research note issued on Wednesday, Benzinga reports.\nThe firm presently has an 'overweight' rating on the oil and gas company's stock.\nWells Fargo & Company's price obje...",
+      "source": "web",
+      "title": "Valero Energy (NYSE:VLO) Stock Price Expected to Rise, Wells Fargo & Company Analyst Says",
+      "url": "https://www.thecerbatgem.com/2026/10/14/valero-energy-nysevlo-stock-price-expected-to-rise-wells-fargo-company-analyst-says.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Wells Fargo analyst Sam Margolin maintained a Buy rating on Valero Energy today and set a price target of $485.00.\n...\nIn addition to Wells Fargo, Valero Energy also received a Buy from J.P.\nMorgan\u2019s Arun Jayaram in a report issued on October 8.\nHowever, yesterday, Citi maintained a Hold rating on V...",
+      "source": "web",
+      "title": "Valero Energy (VLO) Receives a Rating Update from a Top Analyst",
+      "url": "https://markets.businessinsider.com/news/stocks/valero-energy-vlo-receives-a-rating-update-from-a-top-analyst-1036626527"
+    }
+  ],
+  "citations": [
+    "https://www.thestockobserver.com/2026/10/15/valero-energy-nysevlo-shares-down-3-3-time-to-sell.html",
+    "https://www.thestockobserver.com/2026/10/15/valero-energy-nysevlo-hits-new-52-week-high-on-analyst-upgrade.html",
+    "https://www.tradingkey.com/news/market-movers/262219483-market-movers-vlo-20261015",
+    "https://simplywall.st/stocks/us/energy/nyse-vlo/valero-energy/news/is-valero-energy-vlo-undervalued-after-analysts-upgraded-its",
+    "https://finance.yahoo.com/markets/stocks/articles/zacks-com-featured-highlights-valero-122500077.html",
+    "https://finance.yahoo.com/markets/stocks/articles/valero-energy-vlo-jumps-citi-181329508.html",
+    "https://www.gurufocus.com/news/9126543/a-look-at-valero-energy-corp-vlo-after-34-decline-gf-value-17929-vs-price-44406",
+    "https://ground.news/article/valero-energy-nyse-vlo-shares-down-33-time-to-sell",
+    "https://www.thecerbatgem.com/2026/10/14/valero-energy-nysevlo-stock-price-expected-to-rise-wells-fargo-company-analyst-says.html",
+    "https://markets.businessinsider.com/news/stocks/valero-energy-vlo-receives-a-rating-update-from-a-top-analyst-1036626527"
+  ],
+  "usage": {
+    "input_tokens": 995,
+    "output_tokens": 440,
+    "cost_usd": 0.00651
+  }
+}

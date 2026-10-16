@@ -1,0 +1,117 @@
+{
+  "name": "b_bsp_berkshire_deal_pricing",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Story: Berkshire +$330M into Bending Spoons at Discount: Confirmed Pricing and Valuation. Related tickers: BSP, BRK.A, BRK.B.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nWhy this needs follow-up: BSP rose 3.85% on a reported Berkshire $330M follow-on investment, but the price per share ($33, reportedly ~40% below market) is flagged as rumor/report \u2014 confirming deal price vs. market price and post-deal Berkshire ownership is essential for a sophisticated brief.\n\nANSWER EACH QUESTION (run a separate search for each):\n- Did Berkshire Hathaway or Bending Spoons confirm the October 15 2026 $330 million additional investment price of $33 per share, and what was Bending Spoons' implied post-money valuation?\n- What is Berkshire Hathaway's confirmed total ownership percentage in Bending Spoons after the additional $330 million investment, and was this a private placement or secondary purchase?\n- What Bending Spoons financial metrics \u2014 revenue, EBITDA, or user counts \u2014 were cited by Berkshire or Bending Spoons to justify the October 15 2026 investment valuation?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## BSP [Confirmed deal terms and valuation]\n- Bending Spoons agreed to issue Berkshire Hathaway **10 million new ordinary shares at $33 per share**, totaling **$330 million**, in a **private placement**; the transaction was expected to close in Q4 2026 subject to customary conditions. (CNBC, Oct. 14 10:39 ET, updated Oct. 15 16:01 ET)[1]\n- The **$33 per-share price was confirmed in the securities filing and company disclosure**; it was approximately **13% below BSP\u2019s $37.86 close on Oct. 14** and approximately **38% below the $53.46 close reported after the news**. (CNBC, Oct. 14 10:39 ET, updated Oct. 15 16:01 ET; Yahoo Finance, Oct. 15 12:38 ET)[1][6]\n- The disclosed share issuance and $33 price imply approximately **250 million post-issuance shares** from Berkshire\u2019s reported **4% ownership**, producing an implied post-money equity valuation of approximately **$8.25 billion**. (CNBC, Oct. 14 10:39 ET, updated Oct. 15 16:01 ET)[1]\n- BSP rose **41.20% to $53.46 on Oct. 15**, from **$37.86 on Oct. 14**. (Yahoo Finance, Oct. 15 11:21 ET, updated Oct. 16)[6]\n- BSP was reported at **$54**, approximately **40% above Berkshire\u2019s $33 placement price**. (Investopedia, Oct. 14, updated Oct. 15)[2]\n\n## BRK.A / BRK.B [Ownership and transaction status]\n- Berkshire\u2019s additional **$330 million** investment followed its **$600 million** investment in Bending Spoons\u2019 July 2026 IPO, bringing its disclosed cumulative commitment to approximately **$930 million**. (CNBC, Oct. 14 10:39 ET, updated Oct. 15 16:01 ET)[1]\n- Berkshire\u2019s confirmed post-transaction ownership was **4%** of Bending Spoons. (CNBC, Oct. 14 10:39 ET, updated Oct. 15 16:01 ET)[1]\n- The transaction was a **primary private placement of newly issued shares**, not a secondary purchase from an existing shareholder. (Investopedia, Oct. 14, updated Oct. 15)[2]\n- Berkshire\u2019s **Class B shares fell 0.13% to $526.35** in the reported session. (Yahoo Finance, Oct. 15 12:57 ET)[4]\n- Another report recorded BRK.B at **$526.35, up 1.11%**, creating conflicting reported BRK.B moves in the available coverage. (Yahoo Finance, Oct. 15 11:21 ET, updated Oct. 16)[6]\n\n## Bending Spoons financial metrics [Valuation support]\n- The available company and Berkshire-related reports cited **no specific revenue, EBITDA, or user-count figures** to justify the Oct. 15 investment valuation. (CNBC, Oct. 14 10:39 ET, updated Oct. 15 16:01 ET)[1]\n- A market commentary report cited BSP at approximately **27\u00d7 forward earnings** and **73\u00d7 free cash flow**, but it did not identify those figures as metrics provided by Berkshire or Bending Spoons. (Yahoo Finance, Oct. 15 12:38 ET)[3]\n\n## Analyst notes [BSP]\n- The available report cited an approximately **$46 consensus price target** after the move, approximately **13% below the reported Wednesday close near $53**, but did not provide a named analyst firm or rating. (Yahoo Finance, Oct. 15 12:38 ET)[3]\n- A separate report cited an average analyst target of **$47.67** versus BSP\u2019s **$53.46 close**, but did not provide a named firm or rating change. (Yahoo Finance, Oct. 15 11:21 ET, updated Oct. 16)[6]\n\n## Affected stocks [Latest reported moves]\n- **BSP:** **+41.20% to $53.46** on Oct. 15, following disclosure of Berkshire\u2019s $330 million private placement. (Yahoo Finance, Oct. 15 11:21 ET, updated Oct. 16)[6]\n- **BRK.B:** Reported moves ranged from **-0.13%** to **+1.11%** at the cited publication times; the available reports did not provide a single reconciled latest close. (Yahoo Finance, Oct. 15 12:57 ET; Yahoo Finance, Oct. 15 11:21 ET, updated Oct. 16)[4][6]",
+  "search_results": [
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Berkshire Hathaway makes $330 million investment in Bending Spoons\n...\n# Bending Spoons skyrockets 41% as Berkshire Hathaway makes $330 million investment\nPublished Wed, Oct 14 2026 10:39 AM EDTUpdated Wed, Oct 14 2026 4:01 PM EDT\n...\nKEY POINTS\n- Shares of Bending Spoons skyrocketed after Berkshire...",
+      "source": "web",
+      "title": "Berkshire Hathaway makes $330 million investment in Bending ...",
+      "url": "https://www.cnbc.com/amp/2026/10/14/berkshire-hathaway-investment-bending-spoons.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Bending Spoons Stock Pops 40% as Berkshire Boosts Stake\nPublished October 14, 2026\n...\n### Key Takeaways\n- Bending Spoons shares soared Wednesday after the company revealed Berkshire Hathaway has raised its stake to 4%.\n- Bending Spoons said it would issue 10 million shares at $33 each to Berkshir...",
+      "source": "web",
+      "title": "Bending Spoons Stock Pops 40% as Berkshire Boosts Stake",
+      "url": "https://www.investopedia.com/bending-spoons-stock-skyrockets-as-berkshire-boosts-stake-bsp-brk-12173798"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Berkshire Hathaway Poured Another $330M Into Bending Spoons \u2014 But It Paid a 40% Discount to Today's Market Price\n...\n# Berkshire Hathaway Poured Another $330M Into Bending Spoons \u2014 But It Paid a 40% Discount to Today's Market Price\nThu, October 15, 2026 at 12:38 PM GMT-3 4 min read\n...\nBerkshire Hat...",
+      "source": "web",
+      "title": "Berkshire Hathaway Poured Another $330M Into Bending Spoons \u2014 But It Paid a 40% Discount to Today's Market Price",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/berkshire-hathaway-poured-another-330m-153845904.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Berkshire backs Bending Spoons, sending shares soaring\nThu, October 15, 2026 at 12:57 PM GMT-3 1 min read\n- BSP\n+4.32%\n- BRK-B\n-0.13%\n...\nBending Spoons on Wednesday secured a $330 million investment from existing shareholder Berkshire Hathaway.\n...\n- Its shares also jumped more than 41% on the ne...",
+      "source": "web",
+      "title": "Berkshire backs Bending Spoons, sending shares soaring",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/berkshire-backs-bending-spoons-sending-155707182.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Berkshire Hathaway makes $330 million investment in Bending Spoons\n...\n# Bending Spoons skyrockets 41% as Berkshire Hathaway makes $330 million investment\nPublished Wed, Oct 14 202610:39 AM EDTUpdated Wed, Oct 14 20264:01 PM EDT\n...\nKey Points\n- Shares of Bending Spoons skyrocketed after Berkshire H...",
+      "source": "web",
+      "title": "Berkshire Hathaway makes $330 million investment in Bending \u2026",
+      "url": "https://www.cnbc.com/2026/10/14/berkshire-hathaway-investment-bending-spoons.html?msockid=39e8b405a1ef6b8e0081a3f6a0986a06"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Berkshire Hathaway Just Bet Another $330 Million on One Stock. It Soared 41%\nThu, October 15, 2026 at 11:21 AM GMT-3 5 min read\n...\n### Quick Read\n- Berkshire Hathaway paid $33 per share for BSP in a $330M private placement, but the stock surged 41% to close at $53, which was well above Berkshire'...",
+      "source": "web",
+      "title": "Berkshire Hathaway Just Bet Another $330 Million on One Stock. It Soared 41%",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/berkshire-hathaway-just-bet-another-142112087.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Berkshire Hathaway Plans $330 Million Bending Spoons Investment | TokenPost\nThursday, October 15, 2026\n...\n# Berkshire Hathaway Plans $330 Million Bending Spoons Investment\nThe pending private placement would add 10 million shares at $33 each and raise Berkshire\u2019s stake to about 4%.\n...\nBerkshire Ha...",
+      "source": "web",
+      "title": "Berkshire Hathaway Plans $330 Million Bending Spoons Investment | TokenPost",
+      "url": "https://www.tokenpost.com/news/business/31835"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Berkshire Agrees to $330 Million Bending Spoons Investment - FINCHANNEL\nThursday, October 15, 2026Set Location\n...\n# Berkshire Agrees to $330 Million Bending Spoons Investment - FINCHANNEL\n## The filing lifted Berkshire\u2019s stake to 4% as Bending Spoons shares rose 35.4% on a $330 million purchase.\n.....",
+      "source": "web",
+      "title": "Berkshire Agrees to $330 Million Bending Spoons Investment",
+      "url": "https://ground.news/article/berkshire-hathaway-plans-330-million-bending-spoons-investment"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# American billionaire Warren Buffett's Berkshire Hathaway bets $330 million more on Bending Spoons\nBerkshire Hathaway is adding $330 million to its bet on Bending Spoons, the Milan owner of AOL and Evernote, lifting its stake to 4%.\n...\n## Table of Contents\nBerkshire Hathaway, the conglomerate Amer...",
+      "source": "web",
+      "title": "US billionaire Warren Buffett's Berkshire adds $330m bet",
+      "url": "https://www.billionaires.africa/2026/10/15/american-billionaire-warren-buffetts-berkshire-hathaway-bets-330-million-more-on-bending-spoons/"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Bending Spoons S.p.A.\n(BSP) shares surged 35 percent after a securities filing revealed that Berkshire Hathaway agreed to make an additional $330 million investment in the Italy-based software company.\nUnder the agreement, Bending Spoons will issue 10 million ordinary shares to Berkshire at $33 per ...",
+      "source": "web",
+      "title": "Bending Spoons Shares Surge 35% After Berkshire Hathaway ...",
+      "url": "https://www.rttnews.com/3699051/bending-spoons-shares-surge-35-after-berkshire-hathaway-invests-another-330-mln.aspx"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/amp/2026/10/14/berkshire-hathaway-investment-bending-spoons.html",
+    "https://www.investopedia.com/bending-spoons-stock-skyrockets-as-berkshire-boosts-stake-bsp-brk-12173798",
+    "https://finance.yahoo.com/markets/stocks/articles/berkshire-hathaway-poured-another-330m-153845904.html",
+    "https://finance.yahoo.com/markets/stocks/articles/berkshire-backs-bending-spoons-sending-155707182.html",
+    "https://www.cnbc.com/2026/10/14/berkshire-hathaway-investment-bending-spoons.html?msockid=39e8b405a1ef6b8e0081a3f6a0986a06",
+    "https://finance.yahoo.com/markets/stocks/articles/berkshire-hathaway-just-bet-another-142112087.html",
+    "https://www.tokenpost.com/news/business/31835",
+    "https://ground.news/article/berkshire-hathaway-plans-330-million-bending-spoons-investment",
+    "https://www.billionaires.africa/2026/10/15/american-billionaire-warren-buffetts-berkshire-hathaway-bets-330-million-more-on-bending-spoons/",
+    "https://www.rttnews.com/3699051/bending-spoons-shares-surge-35-after-berkshire-hathaway-invests-another-330-mln.aspx"
+  ],
+  "usage": {
+    "input_tokens": 765,
+    "output_tokens": 1045,
+    "cost_usd": 0.00809
+  }
+}

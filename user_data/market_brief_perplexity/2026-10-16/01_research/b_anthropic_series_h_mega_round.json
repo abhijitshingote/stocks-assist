@@ -1,0 +1,117 @@
+{
+  "name": "b_anthropic_series_h_mega_round",
+  "kind": "thread",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Story: Anthropic $65B Series H at $965B Valuation: Confirmed Terms, GOOGL/AMZN Dilution, MSFT Read-Through. Related tickers: GOOGL, AMZN, MSFT, NVDA.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nWhy this needs follow-up: The Anthropic Series H at $965B valuation with $518B in compute commitments is reported without named lead investors, confirmed closing, or dilution impact on GOOGL/AMZN's ~30% combined stake \u2014 all material facts for AI capex and hyperscaler positioning.\n\nANSWER EACH QUESTION (run a separate search for each):\n- Has Anthropic officially confirmed the $65 billion Series H financing at a $965 billion post-money valuation reported on October 15 2026, and who are the named lead investors?\n- What is the current confirmed ownership percentage of Google and Amazon in Anthropic after the Series H, and how does the $965 billion valuation affect the carrying value on their balance sheets?\n- Has Anthropic confirmed securing all of SpaceX's Colossus 1 capacity of more than 220,000 GPUs, and what are the contract terms and duration?\n\nName every stock affected by this story with its move, analyst notes that name winners and losers\n(firm, rating, PT), exact figures (deal values, estimates, dates), and the latest status as of the\ncutoff. Prefer Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, company releases, filings.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or sub-topic:\n\n## TICKER or Sub-topic `[Category]`\n- fact (source)\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Anthropic [Series H / confirmation]\n\n- Anthropic\u2019s Series H was reported as a **$65 billion financing at a $965 billion post-money valuation**, with a stated closing date of **May 28, 2026**, not October 15, 2026; the available October 15 reports do not show a new official Anthropic release confirming terms during the requested window. [report] (ValueAdd VC, Oct 15, 2026; Gate.com, Oct 15, 2026)\n- Named investors reported for the Series H were **Altimeter Capital, Dragoneer, Greenoaks, Sequoia Capital, Capital Group, Coatue, and D1 Capital Partners**; the available source labels them as co-leads but does not provide an Anthropic filing or company release in the requested window. [report] (ValueAdd VC, Oct 15, 2026)\n- Anthropic was reported to have committed **at least $518 billion over 10 years** to cloud, compute, and infrastructure, with spending involving Google and Amazon; the available report does not identify a confirmed Series H closing document or a complete contract schedule. [report] (Resultsense, Oct 15, 2026)\n\n## GOOGL [Ownership / valuation]\n\n- Alphabet was reported to own **about 14% of Anthropic**, with its stake capped at **15%**; the available source does not provide a confirmed post-Series-H cap-table percentage or an Alphabet filing published during the requested window. [report] (Marcus Today, Oct 15, 2026)\n- A **$965 billion** Anthropic post-money valuation would imply an approximate gross equity value of **$135.1 billion** for a 14% Alphabet stake and **$144.75 billion** for a 15% stake, before accounting for preferred-share terms, dilution, accounting adjustments, or carrying-value rules. [report] (Marcus Today, Oct 15, 2026)\n- No available October 15\u201316 report provides a confirmed Alphabet balance-sheet carrying value for Anthropic or quantifies the Series H dilution effect on Alphabet\u2019s reported investment. (Available sources, Oct 15, 2026)\n\n## AMZN [Ownership / valuation]\n\n- Amazon was reported to own **15%\u201321% of Anthropic on a non-voting basis**, but the available source describes the range as an estimate rather than a confirmed post-Series-H ownership percentage. [report] (Marcus Today, Oct 15, 2026)\n- A **$965 billion** Anthropic post-money valuation would imply an approximate gross equity value of **$144.75 billion\u2013$202.65 billion** for a 15%\u201321% stake, before preferred-share terms, dilution, accounting adjustments, or carrying-value rules. [report] (Marcus Today, Oct 15, 2026)\n- No available October 15\u201316 report provides a confirmed Amazon balance-sheet carrying value for Anthropic or quantifies the Series H dilution effect on Amazon\u2019s reported investment. (Available sources, Oct 15, 2026)\n\n## MSFT [Read-through]\n\n- The available October 15 reports identify **Google and Amazon**, not Microsoft, as Anthropic investors and cloud providers; no specific Microsoft share-price move, analyst rating change, price-target change, or Anthropic-related Microsoft estimate was provided. (Available sources, Oct 15, 2026)\n\n## NVDA [Read-through]\n\n- The available October 15 reports do not provide a specific Nvidia share-price move, analyst rating change, price-target change, or Anthropic-related Nvidia estimate. (Available sources, Oct 15, 2026)\n\n## SpaceX Colossus 1 [Compute capacity]\n\n- Anthropic was reported in May 2026 to have agreed to use the **full computing capacity of SpaceX\u2019s Colossus 1 facility in Memphis**, adding **300 megawatts** of capacity. [report] (Economic Times, Oct 14, 2026)\n- The available report does not confirm Anthropic\u2019s securing of **more than 220,000 GPUs**, and it does not disclose a contract duration, pricing, take-or-pay provision, termination terms, or a company-confirmed Colossus 1 agreement published between October 15, 2026 and 02:03 ET on October 16, 2026. (Available sources, Oct 15, 2026)",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "SF Oct 15, 2026 \u00b7 11:16 PM \u2013 Users OnlineOnline\n...\n# Anthropic pushes toward an IPO while CoreWeave's debt spooks Wall Street\nAnthropic filed a confidential S-1 with the SEC on June 1, and reporting since then points to an October or fourth-quarter 2026 listing led by Goldman Sachs, JPMorgan and Mo...",
+      "source": "web",
+      "title": "Anthropic pushes toward an IPO while CoreWeave's debt spooks Wall Street - Startup Fortune",
+      "url": "https://startupfortune.com/anthropic-pushes-toward-an-ipo-while-coreweaves-debt-spooks-wall-street/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Anthropic Q3 Revenue Surges 45% to Nearly $17bn Ahead of IPO\n**Published** October 15, 2026 4:00 AM PDT\n...\nIn May 2026, Anthropic announced a $65 billion Series H funding round that valued the business at $965 billion after the investment.\nThe financing was intended to support AI research, comput...",
+      "source": "web",
+      "title": "Anthropic Revenue Surges 45% Ahead of IPO",
+      "url": "https://www.ceotodaymagazine.com/2026/10/anthropic-q3-revenue-surges-45-to-nearly-17bn-ahead-of-ipo/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Market Updates 15 October 2026 3 min read Resultsense\n...\n## TL;DR\nThe company is targeting a valuation above $2tn for an IPO now expected after the US midterms in November.\n...\n## What was said and what was not\nIt has committed at least $518bn over ten years to cloud, compute and infrastructure, mu...",
+      "source": "web",
+      "title": "Anthropic tells investors Q3 revenue hit $16.8bn ahead of $2tn IPO",
+      "url": "https://www.resultsense.com/news/2026-10-15-anthropic-q3-revenue-investor-day-ipo/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Anthropic IPO Targets a Valuation Above $2 Trillion; Adjusted Earnings Turn Profitable for the First Time in Q3\n## Key Takeaways\n- Anthropic targeted IPO listing before November 26, 2026 with Morgan Stanley, Goldman Sachs, JPMorgan Chase, and Citigroup as lead underwriters at valuation exceeding $...",
+      "source": "web",
+      "title": "Anthropic IPO targets a valuation of over $2 trillion and ...",
+      "url": "https://www.gate.com/news/detail/MS/anthropic-ipo-targets-a-valuation-above-2-trillion-adjusted-earnings-turn-24964787"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Who really owns what in the AI boom\nNvidia owns pieces of its biggest customers, Amazon and Alphabet together hold roughly 30% of Anthropic, and Microsoft owns about 27% of OpenAI while selling it US$250bn of cloud.\nWe map who holds what, who rents from whom and who makes the chips (as at 15 Octob...",
+      "source": "web",
+      "title": "Who really owns what in the AI boom",
+      "url": "https://marcustoday.com.au/2026/10/who-really-owns-what-in-the-ai-boom/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Early Anthropic Investor Sees IPO Trading Value Reaching $2.4 Trillion\nThe backer expects initial pricing around $1.8 trillion and sees Anthropic\u2019s market value topping SpaceX\u2019s $2.1 trillion first-day close.\n...\nPublished Oct 15, 2026, 3:38 AM EDT\n...\nAn early Anthropic investor expects the artif...",
+      "source": "web",
+      "title": "Early Anthropic Investor Sees IPO Trading Value Reaching $2.4 Trillion | TokenPost",
+      "url": "https://www.tokenpost.com/news/business/32365"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "# Anthropic's IPO Filing Leaves Employee Share Values Uncertain\nThe company has not set an IPO price, share count or listing date.\nIts latest announced private valuation was $965 billion.\n...\nPublished Oct 14, 2026, 11:48 AM EDT\n...\nThe company\u2019s latest announced private valuation was $965 billion a...",
+      "source": "web",
+      "title": "Anthropic's IPO Filing Leaves Employee Share Values Uncertain | TokenPost",
+      "url": "https://www.tokenpost.com/news/business/31928"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Anthropic\u2019s IPO: Inside Its Pitch on AI\u2019s Profits, Risks and Future\nOctober 15, 2026\n...\nAnthropic is expected to pursue an initial public offering (IPO) after the November 2026 US congressional elections, as the AI company targets a valuation above US$2 trillion.Credit: AI-generated illustration ...",
+      "source": "web",
+      "title": "Anthropic\u2019s IPO: Inside Its Pitch on AI\u2019s Profits, Risks and Future",
+      "url": "https://colombiaone.com/2026/10/15/anthropic-ipo-2026-revenue-16-8-billion/"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Biggest round\n$965B\nAnthropic, Series H\nHighest valuation set\n...\nTracked as of October 14, 2026, OpenAI's $122 billion round tops the list, followed by two separate Anthropic rounds eight months apart \u2014 a $30 billion Series G in February and a $65 billion Series H in May \u2014 and xAI's $20 billion Ser...",
+      "source": "web",
+      "title": "2026's Biggest Startup Funding Rounds: OpenAI's $122B ...",
+      "url": "https://valueaddvc.com/blog/biggest-us-startup-funding-rounds-of-2026-tracked-and-ranked"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "# Elon Musk's SpaceX in talks to supply the Pentagon with computing power: Report\n### Synopsis\nAnthropic said in May it had struck a deal to use the full computing power of SpaceX's Colossus 1 facility in Memphis, gaining 300 megawatts of new capacity.",
+      "source": "web",
+      "title": "Elon Musk's SpaceX in talks to supply the Pentagon with computing power: Report - The Economic Times",
+      "url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/elon-musks-spacex-in-talks-to-supply-the-pentagon-with-computing-power-report/articleshow/132473061.cms?from=mdr"
+    }
+  ],
+  "citations": [
+    "https://startupfortune.com/anthropic-pushes-toward-an-ipo-while-coreweaves-debt-spooks-wall-street/",
+    "https://www.ceotodaymagazine.com/2026/10/anthropic-q3-revenue-surges-45-to-nearly-17bn-ahead-of-ipo/",
+    "https://www.resultsense.com/news/2026-10-15-anthropic-q3-revenue-investor-day-ipo/",
+    "https://www.gate.com/news/detail/MS/anthropic-ipo-targets-a-valuation-above-2-trillion-adjusted-earnings-turn-24964787",
+    "https://marcustoday.com.au/2026/10/who-really-owns-what-in-the-ai-boom/",
+    "https://www.tokenpost.com/news/business/32365",
+    "https://www.tokenpost.com/news/business/31928",
+    "https://colombiaone.com/2026/10/15/anthropic-ipo-2026-revenue-16-8-billion/",
+    "https://valueaddvc.com/blog/biggest-us-startup-funding-rounds-of-2026-tracked-and-ranked",
+    "https://economictimes.indiatimes.com/tech/artificial-intelligence/elon-musks-spacex-in-talks-to-supply-the-pentagon-with-computing-power-report/articleshow/132473061.cms?from=mdr"
+  ],
+  "usage": {
+    "input_tokens": 771,
+    "output_tokens": 933,
+    "cost_usd": 0.0072
+  }
+}

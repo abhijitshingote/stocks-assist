@@ -1,0 +1,117 @@
+{
+  "name": "c_BLK",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Friday October 16, 2026. Target: BlackRock, Inc. (BLK).\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| BLK | BlackRock, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.80% | +5.0% | 1.8\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## BlackRock, Inc. (BLK) `[Asset Management]`\n- No company-specific catalyst found in window\n\nTASK\nSearch harder for why BLK moved. Run several searches: \"why is BlackRock, Inc. stock down/up\",\n\"BlackRock, Inc. stock\", \"BLK shares Thursday October 15, 2026\", \"BlackRock, Inc. concerns\", \"BlackRock, Inc. FDA\",\n\"BlackRock, Inc. analyst\", \"BlackRock, Inc. price target\", \"BlackRock, Inc. deal\", \"BlackRock, Inc. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"BlackRock, Inc. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Friday October 16, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## BlackRock, Inc. (BLK) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## BlackRock, Inc. (BLK) `[Asset Management]`\n- BlackRock reported third-quarter 2026 adjusted EPS of $15.93 versus a $14.32 consensus estimate and revenue of $7.75 billion versus $7.42 billion expected; net inflows were $205 billion and assets under management reached $15.5 trillion. (MarketBeat, Oct 15, 2026) [4][7]\n- Keefe, Bruyette & Woods raised its price target to $1,310 from $1,290 and maintained an Outperform rating, citing $175 billion of long-term inflows, 11% organic base-fee growth and a 47.8% operating margin versus its 45.8% estimate. (Investing.com, Oct 15, 2026) [6]\n- Bank of America raised its price target to $1,313 from $1,287 and maintained a Buy rating after increasing its 2026\u20132028 EPS estimates. (Markets Insider, Oct 15, 2026) [2]\n- JPMorgan raised its price target to $1,449 from $1,435 and maintained an Overweight rating after describing the third-quarter result as a \u201cclean beat.\u201d (Markets Insider, Oct 15, 2026) [3]\n- Wells Fargo raised its price target to $1,250 from $1,230 and maintained an Overweight rating, citing base organic fee growth above its third-quarter forecast. (Markets Insider, Oct 15, 2026) [5]\n- Barclays lowered its price target to $1,410 from $1,420 and maintained an Overweight rating, while describing the third-quarter report as strong. (Markets Insider, Oct 15, 2026) [1]\n- BlackRock shares closed Thursday, October 15, at $1,100.40, up $26.61, or 4.80%, according to the verified tape and contemporaneous market coverage. (MarketBeat, Oct 15, 2026) [4]\n- No after-hours or pre-market catalyst was identified in the available results through 02:03 ET on Friday, October 16, 2026.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# BlackRock price target lowered to $1,410 from $1,420 at Barclays\nBarclays analyst Benjamin Budish lowered the firm\u2019s price target on BlackRock (BLK) to $1,410 from $1,420 and keeps an Overweight rating on the shares.\nThe firm views the company\u2019s Q3 report as strong.\nBlackRock\u2019s earnings beat estim...",
+      "source": "web",
+      "title": "BlackRock price target lowered to $1,410 from $1,420 at Barclays",
+      "url": "https://markets.businessinsider.com/news/stocks/blackrock-price-target-lowered-to-1-410-from-1-420-at-barclays-1036630762"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "BlackRock price target raised to $1,313 from $1,287 at BofA | Markets Insider\n...\n# BlackRock price target raised to $1,313 from $1,287 at BofA\nBofA raised the firm\u2019s price target on BlackRock (BLK) to $1,313 from $1,287 and keeps a Buy rating on the shares.\nThe firm increased its 2026, 2027 and 202...",
+      "source": "web",
+      "title": "BlackRock price target raised to $1,313 from $1,287 at BofA",
+      "url": "https://markets.businessinsider.com/news/stocks/blackrock-price-target-raised-to-1-313-from-1-287-at-bofa-1036631241"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "BlackRock price target raised to $1,449 from $1,435 at JPMorgan | Markets Insider\n...\n# BlackRock price target raised to $1,449 from $1,435 at JPMorgan\nJPMorgan analyst Michael Cho raised the firm\u2019s price target on BlackRock (BLK) to $1,449 from $1,435 and keeps an Overweight rating on the shares.\nT...",
+      "source": "web",
+      "title": "BlackRock price target raised to $1,449 from $1,435 at JPMorgan",
+      "url": "https://markets.businessinsider.com/news/stocks/blackrock-price-target-raised-to-1-449-from-1-435-at-jpmorgan-1036631460"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# BlackRock (NYSE:BLK) Price Target Raised to $1,449.00\n## Key Points\n- **JPMorgan raised BlackRock\u2019s price target** to $1,449 from $1,435 and maintained an \u201coverweight\u201d rating, implying 31.68% upside from the prior close.\nAnalysts overall rate the stock \u201cModerate Buy,\u201d with an average target of $1,...",
+      "source": "web",
+      "title": "BlackRock (NYSE:BLK) Price Target Raised to $1,449.00",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-blackrock-nyse-blk-price-target-raised-to-144900-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "BlackRock price target raised to $1,250 from $1,230 at Wells Fargo | Markets Insider\n...\nWells Fargo analyst Daniel Welden raised the firm\u2019s price target on BlackRock (BLK) to $1,250 from $1,230 and keeps an Overweight rating on the shares.\nThe number one KPI, base organic fee growth rate exceeded t...",
+      "source": "web",
+      "title": "BlackRock price target raised to $1,250 from $1,230 at Wells Fargo",
+      "url": "https://markets.businessinsider.com/news/stocks/blackrock-price-target-raised-to-1-250-from-1-230-at-wells-fargo-1036631023"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Investing.com - Keefe, Bruyette & Woods raised its price target on BlackRock stock (NYSE:BLK) to $1,310 from $1,290 while maintaining an Outperform rating on the shares.\nThe firm cited the company\u2019s performance fee-driven beat in the third quarter, noting that core results were also strong.\nLong-ter...",
+      "source": "web",
+      "title": "Keefe Bruyette raises BlackRock stock price target on strong flows By Investing.com",
+      "url": "https://www.investing.com/news/analyst-ratings/keefe-bruyette-raises-blackrock-stock-price-target-on-strong-flows-93CH-4952027"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "First Pacific Financial boosted its stake in shares of BlackRock (NYSE:BLK - Free Report) by 2,823.5% in the third quarter, according to its most recent disclosure with the Securities & Exchange Commission.\nThe firm owned 25,668 shares of the asset manager's stock after purchasing an additional 24,7...",
+      "source": "web",
+      "title": "First Pacific Financial Buys 24,790 Shares of BlackRock $BLK",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-first-pacific-financial-buys-24790-shares-of-blackrock-blk-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "October 15, 2026\nBlackRock stock inched up about 0.7% today, a muted move for a firm that just reported one of its most powerful quarters in recent memory.\nThe share price reaction looks cautious while the Q3 earnings story is anything but, with record revenue of US$7.8b and operating income of US$3...",
+      "source": "web",
+      "title": "BlackRock (BLK) Stock Price Trails Record Margins And ...",
+      "url": "https://simplywall.st/stocks/us/diversified-financials/nyse-blk/blackrock/news/blackrock-blk-stock-price-trails-record-margins-and-fee-pres"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "BlackRock (NYSE:BLK ) had its price target raised by equities research analysts at JPMorgan Chase & Co. from $1,435.00 to $1,449.00 in a research report issued to clients and investors on Thursday, Benzinga reports.\nThe firm currently has an 'overweight' rating on the asset manager's stock.\nJPMorgan...",
+      "source": "web",
+      "title": "JPMorgan Chase & Co. Forecasts Strong Price Appreciation for BlackRock (NYSE:BLK) Stock",
+      "url": "https://transcriptdaily.com/2026/10/15/jpmorgan-chase-co-forecasts-strong-price-appreciation-for-blackrock-nyseblk-stock.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Barclays analyst Benjamin Budish maintained a Buy rating on BlackRock yesterday and set a price target of $1410.00.\nThe company\u2019s shares closed last Wednesday at $1073.79, close to its 52-week high of $1084.22.\n...\nBlackRock has an analyst consensus of Strong Buy, with a price target consensus of $1...",
+      "source": "web",
+      "title": "Analysts Have Conflicting Sentiments on These Financial Companies: BlackRock (BLK), SLM (SLM) and Morgan Stanley (MS)",
+      "url": "https://markets.businessinsider.com/news/stocks/analysts-have-conflicting-sentiments-on-these-financial-companies-blackrock-blk-slm-slm-and-morgan-stanley-ms-1036630679"
+    }
+  ],
+  "citations": [
+    "https://markets.businessinsider.com/news/stocks/blackrock-price-target-lowered-to-1-410-from-1-420-at-barclays-1036630762",
+    "https://markets.businessinsider.com/news/stocks/blackrock-price-target-raised-to-1-313-from-1-287-at-bofa-1036631241",
+    "https://markets.businessinsider.com/news/stocks/blackrock-price-target-raised-to-1-449-from-1-435-at-jpmorgan-1036631460",
+    "https://www.marketbeat.com/instant-alerts/analyst-blackrock-nyse-blk-price-target-raised-to-144900-2026-10-15/",
+    "https://markets.businessinsider.com/news/stocks/blackrock-price-target-raised-to-1-250-from-1-230-at-wells-fargo-1036631023",
+    "https://www.investing.com/news/analyst-ratings/keefe-bruyette-raises-blackrock-stock-price-target-on-strong-flows-93CH-4952027",
+    "https://www.marketbeat.com/instant-alerts/filing-first-pacific-financial-buys-24790-shares-of-blackrock-blk-2026-10-15/",
+    "https://simplywall.st/stocks/us/diversified-financials/nyse-blk/blackrock/news/blackrock-blk-stock-price-trails-record-margins-and-fee-pres",
+    "https://transcriptdaily.com/2026/10/15/jpmorgan-chase-co-forecasts-strong-price-appreciation-for-blackrock-nyseblk-stock.html",
+    "https://markets.businessinsider.com/news/stocks/analysts-have-conflicting-sentiments-on-these-financial-companies-blackrock-blk-slm-slm-and-morgan-stanley-ms-1036630679"
+  ],
+  "usage": {
+    "input_tokens": 1001,
+    "output_tokens": 471,
+    "cost_usd": 0.00704
+  }
+}

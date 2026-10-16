@@ -1,0 +1,117 @@
+{
+  "name": "a_crypto",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Crypto.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nBitcoin and Ether price (level, 24h % change, time quoted); spot ETF flows; SEC/CFTC/Congress crypto actions; tokenization news; crypto-treasury company offerings.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **TRON** `[Crypto]`\n- Nasdaq-listed Tron Inc. filed an at-the-market offering of up to **$200 million** of common stock, with net proceeds intended primarily for additional **TRX** purchases; Clear Street will act as sales agent and may receive a commission of up to **3%**. The filing states that no shares must be sold and that proceeds may also support working capital and general corporate purposes. (Yahoo Finance, Oct. 15 08:36 ET)[1]\n- Tron\u2019s disclosed treasury held **718.9 million TRX**, valued at approximately **$237 million**, after a purchase of **149,369 TRX** at an average price of **$0.3347** on Oct. 15. (Yahoo Finance, Oct. 15 08:36 ET)[1]\n- The proposed offering could create approximately **163.9 million new shares** if the company raises the full $200 million at an assumed **$1.22 per share**. (Yahoo Finance, Oct. 15 08:36 ET)[1]\n- Tron\u2019s existing accumulation program targets approximately **$50,000 of TRX purchases per day for 360 consecutive days**. (Yahoo Finance, Oct. 15 08:36 ET)[1]\n\n## **Evernorth** `[Crypto]`\n- Evernorth plans to deploy its **473 million XRP** treasury, valued at approximately **$648 million**, through initial institutional strategies in the **fourth quarter of 2026**. (The Block, updated Oct. 15; publication time not provided)[3]\n- **Ripple, Kraken, Coinbase, and BitGo** were named as counterparties for Evernorth\u2019s initial XRP treasury strategies. (The Block, updated Oct. 15; publication time not provided)[3]\n- Evernorth said it plans to expand into **lending, credit markets, and on-chain DeFi strategies on the XRP Ledger** as those capabilities become available. (The Block, updated Oct. 15; publication time not provided)[3]\n\n## Bitcoin / Ether `[Crypto]`\n- Bitcoin was quoted at **$82,078.50**, up **0.53% over 24 hours**, in the latest price snapshot available in the retrieved coverage; the source did not provide a precise quote time before the **02:03 ET** cutoff. (The Block, updated Oct. 15; publication time not provided)[3]\n- Ether was quoted at **$2,434.08**, up **1.00% over 24 hours**, in the same latest available snapshot; the source did not provide a precise quote time before the **02:03 ET** cutoff. (The Block, updated Oct. 15; publication time not provided)[3]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Nasdaq-Listed Tron Seeks $200M to Expand TRX Treasury\nThu, October 15, 2026 at 12:36 PM GMT-3 2 min read\n- TRX-USD -0.21%\n- TRON -2.29%\n...\nNasdaq-listed Tron Inc.\n(NASDAQ: $TRON) has filed to sell up to $200 million in common stock, with most of the proceeds expected to fund additional purchases ...",
+      "source": "web",
+      "title": "Nasdaq-Listed Tron Seeks $200M to Expand TRX Treasury",
+      "url": "https://finance.yahoo.com/markets/crypto/articles/nasdaq-listed-tron-seeks-200m-153600435.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Nasdaq-listed Tron sets up $200M ATM share offering to fuel TRX acquisitions\nOctober 15, 2026\nNasdaq-listed Tron (TRON) has filed for a new at-the-market (ATM) share offering allowing it to sell up to $200 million of common stock that will fund an even-larger Tron (TRX) treasury.\nThe deal allows T...",
+      "source": "web",
+      "title": "Nasdaq-listed Tron sets up $200M ATM share offering to fuel TRX acquisitions",
+      "url": "https://lcx.com/en/cryptonews/nasdaq-listed-tron-sets-up-200m-atm-share-offering-to-fuel-trx-acquisitions"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "BTCUSD$82,078.500.53%\nETHUSD$2,434.081.00%\n...\n# Evernorth taps Ripple, Kraken, Coinbase and BitGo to put $648 million XRP treasury to work\nThe company will start with institutional strategies before expanding into lending and credit markets on the XRP Ledger.\n...\n#### Quick Take\nEvernorth plans to ...",
+      "source": "web",
+      "title": "Evernorth taps Ripple, Kraken, Coinbase and BitGo to put $648 ...",
+      "url": "https://www.theblock.co/news/deals/2026-10-14-evernorth-taps-ripple-kraken-coinbase-bitgo-xrp-treasury-work-418503"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Nasdaq-listed Tron Sets up $200M ATM Share Offering for TRX Acquisitions\nThursday, October 15, 2026Set Location\n...\nThe Nasdaq-listed treasury company holds about $237 million in TRX tokens and plans to raise additional capital to fund its purchases, alongside its daily accumulation.\n...\n### 3 Artic...",
+      "source": "web",
+      "title": "Nasdaq-listed Tron Sets up $200M ATM Share Offering for TRX Acquisitions",
+      "url": "https://ground.news/article/nasdaq-listed-tron-sets-up-200m-atm-share-offering-for-trx-acquisitions"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Thursday, October 15, 2026Set Location\n...\nEvernorth has selected Ripple, Kraken, Coinbase, and BitGo to support investment strategies using its 473 million XRP treasury, with initial deployment planned for the fourth quarter of 2026.\n...\n### 13 Articles\n#### Evernorth Shares a Stockpile of $473 Mil...",
+      "source": "web",
+      "title": "Evernorth taps Ripple and three firms for 473 million XRP treasury plans",
+      "url": "https://ground.news/article/7d44591f-b27f-4aa5-aed5-e2947d0f28b4"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Published 15 Oct 2026, 18:02 UTC\n...\nTron filed for an ATM offering up to $200 million to fund TRX purchases.\nPlans daily TRX purchases of about $50,000 for a year.\n...\nTron Inc.\nfiled with the U.S. Securities and Exchange Commission for an at-the-market offering that would allow it to sell up to $2...",
+      "source": "web",
+      "title": "Tron Files $200 Million ATM Share Offering to Buy More ...",
+      "url": "https://newscord.org/article/tron-files-200-million-atm-share-offering-to-buy-more-trx-tokens--Story_20261015_NasdaqlistedTronsetsa53377f0"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Ripple CEO Plans XRP Lending Push as Evernorth Deploys Treasury\n## Ripple CEO Links Lending Plans to Evernorth\nEvernorth announced October 14 that it would start deploying part of its 473 million XRP treasury during the fourth quarter.\nRipple, Kraken, Coinbase and BitGo will support the initial in...",
+      "source": "web",
+      "title": "Ripple CEO Plans XRP Lending Push as Evernorth Deploys Treasury",
+      "url": "https://coincentral.com/ripple-ceo-plans-xrp-lending-push-as-evernorth-deploys-treasury214734-2/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# REX Introduces Leveraged ETF Tracking Bitcoin Treasury Company Strive\nOctober 15, 2026 33 views\nREX Financial has launched ASSX, a new exchange-traded fund providing 2x daily leveraged exposure to Strive, a company that maintains Bitcoin on its corporate balance sheet.\n...\n## Growing Financial Pro...",
+      "source": "web",
+      "title": "REX Introduces Leveraged ETF Tracking Bitcoin Treasury ...",
+      "url": "https://crypto.jobs/news/rex-introduces-leveraged-etf-tracking-bitcoin-treasury-company-strive"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Tron Files $200M ATM to Buy More TRX, and Dilution Is the Catch\nTron Inc filed a $200 million at-the-market offering with Clear Street to buy more TRX.\nThe dilution table in its own prospectus shows who pays for it.\n...\nTron Inc. has filed to sell up to $200 million of its own shares over time, an...",
+      "source": "web",
+      "title": "Tron Inc Files $200M ATM Offering to Buy More TRX: Dilution",
+      "url": "https://www.altcoinbuzz.io/tron-files-200m-atm-to-buy-more-trx-and-dilution-is-the-catch"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "ETH / USD\n+0.35% 2,438.81",
+      "source": "web",
+      "title": "Evernorth Names Ripple, Coinbase, Kraken and BitGo as ...",
+      "url": "https://primexbt.com/news/evernorth-names-ripple-coinbase-kraken-and-bitgo-as-partners-to-deploy-473m-xrp/"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/crypto/articles/nasdaq-listed-tron-seeks-200m-153600435.html",
+    "https://lcx.com/en/cryptonews/nasdaq-listed-tron-sets-up-200m-atm-share-offering-to-fuel-trx-acquisitions",
+    "https://www.theblock.co/news/deals/2026-10-14-evernorth-taps-ripple-kraken-coinbase-bitgo-xrp-treasury-work-418503",
+    "https://ground.news/article/nasdaq-listed-tron-sets-up-200m-atm-share-offering-for-trx-acquisitions",
+    "https://ground.news/article/7d44591f-b27f-4aa5-aed5-e2947d0f28b4",
+    "https://newscord.org/article/tron-files-200-million-atm-share-offering-to-buy-more-trx-tokens--Story_20261015_NasdaqlistedTronsetsa53377f0",
+    "https://coincentral.com/ripple-ceo-plans-xrp-lending-push-as-evernorth-deploys-treasury214734-2/",
+    "https://crypto.jobs/news/rex-introduces-leveraged-etf-tracking-bitcoin-treasury-company-strive",
+    "https://www.altcoinbuzz.io/tron-files-200m-atm-to-buy-more-trx-and-dilution-is-the-catch",
+    "https://primexbt.com/news/evernorth-names-ripple-coinbase-kraken-and-bitgo-as-partners-to-deploy-473m-xrp/"
+  ],
+  "usage": {
+    "input_tokens": 699,
+    "output_tokens": 591,
+    "cost_usd": 0.00642
+  }
+}

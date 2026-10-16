@@ -1,0 +1,117 @@
+{
+  "name": "c_REAX",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Friday October 16, 2026. Target: The Real Brokerage Inc. (REAX).\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| REAX | The Real Brokerage Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +16.90% | -5.8% | 1.3\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## The Real Brokerage Inc. (REAX) `[Real Estate & Brokerage]`\n- No company-specific catalyst found in window\n\nTASK\nSearch harder for why REAX moved. Run several searches: \"why is The Real Brokerage Inc. stock down/up\",\n\"The Real Brokerage Inc. stock\", \"REAX shares Thursday October 15, 2026\", \"The Real Brokerage Inc. concerns\", \"The Real Brokerage Inc. FDA\",\n\"The Real Brokerage Inc. analyst\", \"The Real Brokerage Inc. price target\", \"The Real Brokerage Inc. deal\", \"The Real Brokerage Inc. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"The Real Brokerage Inc. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Friday October 16, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## The Real Brokerage Inc. (REAX) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## The Real Brokerage Inc. (REAX) `[Real Estate & Brokerage]`\n- Citizens JMP initiated coverage with a **Market Outperform** rating and a **$40 price target** on October 14, citing the completed RE/MAX acquisition and the potential for a larger, less-cyclical brokerage platform; the target implied approximately **153% upside** to REAX\u2019s October 12 close of $14.37 (Investing.com, Oct. 15; source published date, time not stated).\n- Citizens projected **$178.9 million** in fiscal-2027 adjusted EBITDA versus **$133.5 million** FactSet consensus, a **34% premium**, and identified acquisition costs plus the pace of revenue and EBITDA benefits as variables to monitor (Investing.com, Oct. 15; source published date, time not stated).\n- The RE/MAX acquisition closed on **August 24, 2026**; the company has cited approximately **$30 million** in expected cost synergies within three years of closing (Ad-hoc-news.de, Oct. 15; source published date, time not stated).\n- The broader Citizens sector initiation said annual residential sales rates were near **multi-decade lows**, affordability remained a problem, and consumer confidence was low; it argued that the hybrid brokerage/franchise model was underappreciated after an average **more-than-40% year-to-date pullback** across four covered names (Business Insider, Oct. 15; source publish time not stated).\n- REAX closed Thursday, October 15, at **$15.99, up 16.90%**, with **848,490 shares** traded, according to the available market-gainer record (MetaCap, Oct. 15; source publish time not stated).\n- The company announced that its RISE 2026 conference will run **October 19\u201321** in Las Vegas and said nearly **2,000 agents** are expected; executives are scheduled to unveil **Leo Pro**, the company\u2019s next-generation artificial-intelligence technology (Business Insider, Oct. 15, updated Oct. 16; source publish time not stated).\n- No Friday, October 16, 2026 after-hours or pre-market price or catalyst was identified in the available results through **02:03 ET**.",
+  "search_results": [
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Real Brokerage initiated with an Outperform at Citizens\nCitizens analyst James McCanless initiated coverage of Real Brokerage (REAX) with an Outperform rating and $40 price target The firm rolled out coverage of the real estate brokerage sector, saying the average over 40% pullback in its four nam...",
+      "source": "web",
+      "title": "Real Brokerage initiated with an Outperform at Citizens",
+      "url": "https://markets.businessinsider.com/news/stocks/real-brokerage-initiated-with-an-outperform-at-citizens-1036626093"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Q2 revenue rose 30 percent to USD 700.6 million.\n...\nThe Real Brokerage (ISIN CA75585H2063) received a USD 40.00 price target from Citizens on October 14, 2026, when the firm initiated coverage with a Market Outperform rating, as Markets Insider reported.\nThe call comes ahead of the company's next s...",
+      "source": "web",
+      "title": "Citizens sets USD 40 target for The Real Brokerage stock",
+      "url": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/citizens-sets-usd-40-target-for-the-real-brokerage-stock/70334035"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "Fintel reports that on October 14, 2026, Citizens initiated coverage of Real REMAX Group (NASDAQCM:REAX) with a Market Outperform recommendation.\nThe company's stock closed at $14.04 on October 13, 2026, which also served as the pre-action close.\nThis closing price represents a one-week price change...",
+      "source": "web",
+      "title": "Citizens Initiates Coverage of Real REMAX Group at Market Outperform",
+      "url": "https://www.nasdaq.com/articles/citizens-initiates-coverage-real-remax-group-market-outperform"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Real REMAX Group (NASDAQ:REAX) Stock Picked Up by Analysts at Citizens Jmp\n...\n# Real REMAX Group (NASDAQ:REAX) Stock Picked Up by Analysts at Citizens Jmp\n## Key Points\n- **Citizens JMP initiated coverage** of Real Brokerage with a \u201cmarket outperform\u201d rating and a $40 price target, implying approxi...",
+      "source": "web",
+      "title": "Real REMAX Group (NASDAQ:REAX) Stock Picked Up by Analysts at Citizens Jmp",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-real-remax-group-nasdaq-reax-stock-picked-up-by-analysts-at-citizens-jmp-2026-10-14/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "The Real Brokerage (REAX) will host RISE 2026 Oct. 19-21 at Virgin Hotels Las Vegas.\nThe company\u2019s fifth annual agent conference will bring together nearly 2,000 agents for three days focused on innovation, community and building the future of real estate.\nThis year\u2019s theme, \u201cThe Future is Real, The...",
+      "source": "web",
+      "title": "Real Brokerage to host RISE 2026",
+      "url": "https://markets.businessinsider.com/news/stocks/real-brokerage-to-host-rise-2026-1036631461"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "|#|Symbol|Company|Sector|Price|Change|% Change|Volume|Market Cap|Trend|\n|--|--|--|--|--|--|--|--|--|--|\n|4|REAX|Real REMAX Group Inc.|Finance|15.99|+2.39|+17.57%|848.49K|$579.78M| |\n| \u2026 | \u2026 | \u2026 | \u2026 | \u2026 | \u2026 | \u2026 | \u2026 | \u2026 | \u2026 |\n|10|REAL|The RealReal Inc.|Consumer Discretionary|10.54|+1.44|+15.82%|5.91M|...",
+      "source": "web",
+      "title": "Top Stock Gainers Today - MetaCap",
+      "url": "https://metacap.si/markets/gainers/"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Investing.com - Citizens initiated coverage on Real Remax Group (NASDAQ:REAX) with a Market Outperform rating and a price target of $40.00 on Monday.\nThe firm\u2019s price target implies 153% potential upside from the company\u2019s October 12, 2026 close of $14.37.\n...\nThe stock is currently trading near its...",
+      "source": "web",
+      "title": "Citizens initiates Real Remax stock rating citing acquisition ...",
+      "url": "https://www.investing.com/news/analyst-ratings/citizens-initiates-real-remax-stock-rating-citing-acquisition-upside-93CH-4948396"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Investing.com - Citizens inici\u00f3 cobertura de Real Remax Group (NASDAQ:REAX) con una calificaci\u00f3n de Supera al Mercado y un precio objetivo de $40.00 el lunes.\nEl precio objetivo de la firma implica un potencial alcista de 153% respecto al cierre del 12/10/2026 de $14.37.\nCitizens estableci\u00f3 su objet...",
+      "source": "web",
+      "title": "Citizens inicia cobertura de Real Remax citando potencial alcista por adquisici\u00f3n Por Investing.com",
+      "url": "https://mx.investing.com/news/analyst-ratings/citizens-inicia-cobertura-de-real-remax-citando-potencial-alcista-por-adquisicion-93CH-3797726"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "Stock analysts at Citizens Jmp initiated coverage on shares of Real REMAX Group (NASDAQ:REAX ) in a report issued on Wednesday, Benzinga reports.\nThe brokerage set a 'market outperform' rating and a $40.00 price target on the stock.\nCitizens Jmp's price target suggests a potential upside of 184.90% ...",
+      "source": "web",
+      "title": "Real REMAX Group (NASDAQ:REAX) Stock Picked Up by Analysts at Citizens Jmp",
+      "url": "https://zolmax.com/investing/real-remax-group-nasdaqreax-stock-picked-up-by-analysts-at-citizens-jmp/12029152.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Investing.com - Citizens initiated coverage on Real Remax Group (NASDAQ:REAX) with a Market Outperform rating and a price target of $40.00 on Monday.\nThe firm\u2019s price target implies 153% potential upside from the company\u2019s October 12, 2026 close of $14.37.\nCitizens set its target below the FactSet c...",
+      "source": "web",
+      "title": "Citizens initiates Real Remax stock rating citing acquisition upside By Investing.com",
+      "url": "https://in.investing.com/news/stock-market-news/citizens-initiates-real-remax-stock-rating-citing-acquisition-upside-93CH-5632224"
+    }
+  ],
+  "citations": [
+    "https://markets.businessinsider.com/news/stocks/real-brokerage-initiated-with-an-outperform-at-citizens-1036626093",
+    "https://www.ad-hoc-news.de/boerse/news/nebenwerte/citizens-sets-usd-40-target-for-the-real-brokerage-stock/70334035",
+    "https://www.nasdaq.com/articles/citizens-initiates-coverage-real-remax-group-market-outperform",
+    "https://www.marketbeat.com/instant-alerts/analyst-real-remax-group-nasdaq-reax-stock-picked-up-by-analysts-at-citizens-jmp-2026-10-14/",
+    "https://markets.businessinsider.com/news/stocks/real-brokerage-to-host-rise-2026-1036631461",
+    "https://metacap.si/markets/gainers/",
+    "https://www.investing.com/news/analyst-ratings/citizens-initiates-real-remax-stock-rating-citing-acquisition-upside-93CH-4948396",
+    "https://mx.investing.com/news/analyst-ratings/citizens-inicia-cobertura-de-real-remax-citando-potencial-alcista-por-adquisicion-93CH-3797726",
+    "https://zolmax.com/investing/real-remax-group-nasdaqreax-stock-picked-up-by-analysts-at-citizens-jmp/12029152.html",
+    "https://in.investing.com/news/stock-market-news/citizens-initiates-real-remax-stock-rating-citing-acquisition-upside-93CH-5632224"
+  ],
+  "usage": {
+    "input_tokens": 1017,
+    "output_tokens": 482,
+    "cost_usd": 0.00737
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "name": "a_sector_semis",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Company news: semiconductor and semiconductor-equipment.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nEvery material company-specific news item for US-listed semiconductor and semiconductor-equipment companies >= $1B in the window, as many as you can find: press releases, 8-K filings, executive changes, activist campaigns, legal settlements, contracts, product launches, guidance, analyst rating/PT changes (firm, old \u2192 new), and the stock move. One bullet per company.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **NVDA** / **AMD** / **AVGO** / **INTC** / **MU** / **SNDK** \u2014 Semiconductors\n- U.S. semiconductor stocks were on track to lose about **$2 trillion** in market value on October 15 after six sessions of selling; the Philadelphia Semiconductor Index was down **3.3%** at the time of the report. The report attributed the decline to increased expectations for higher interest rates and concerns about the cost of AI infrastructure. (Reuters, Oct 15; publish time not stated)[1]\n- **Nvidia (NVDA)** fell about **2%**, **Advanced Micro Devices (AMD)** about **4%**, **Micron (MU)** about **4%**, and **SanDisk (SNDK)** about **6%** in premarket trading on October 15; **Broadcom (AVGO)** and **Intel (INTC)** also declined, with percentage moves not specified. (Yahoo Finance, Oct 15 03:44 ET)[6]\n- **SanDisk (SNDK)** later fell **6%** during the October 15 session, after losing **5%** on October 14. (Yahoo Finance, Oct 15; publish time not stated)[10]\n\n## **TSM** \u2014 Fab & Foundry\n- Taiwan Semiconductor Manufacturing Co. reported third-quarter net profit of **NT$763.1 billion ($23.59 billion)**, up **69% year over year**, and forecast fourth-quarter revenue of up to **$54.3 billion**. The report said the quarterly profit exceeded market forecasts; consensus EPS and revenue figures were not provided. (Reuters, Oct 15; publish time not stated)[2][6]\n- **TSM** fell about **2%** in Asian trading and declined **2%** in the U.S. October 15 session despite the quarterly results. (Reuters, Oct 15; publish time not stated; Yahoo Finance, Oct 15; publish time not stated)[2][10]\n\n## **SOX / Semiconductor sector** \u2014 Macro / Calendar\n- The Philadelphia Semiconductor Index ended October 15 down nearly **1%**, after being down as much as **2%** during the session. (Reuters, Oct 15; publish time not stated)[4]\n- Reuters reported that the six-session selloff had erased approximately **$1.64 trillion** in U.S. semiconductor-stock market value before the additional October 15 decline. (Reuters, Oct 15; publish time not stated)[1]\n- The October 15 selloff was linked in the reports to concerns about AI infrastructure spending, debt financing for data centers, and expectations for additional Federal Reserve interest-rate increases. (Reuters, Oct 15; publish time not stated)[1][3]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Oct 15 (Reuters) - US semiconductor stocks were set to lose $2 trillion in market value on Thursday in the steep selloff since last week, driven by rising bets of an interest-rate hike and concerns over the cost of the AI buildout.\nThe Philadelphia SE Semiconductor index was last down 3.3%, adding t...",
+      "source": "web",
+      "title": "US chip stocks set to wipe out $2 trillion after latest selloff",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VV1WV?channel=frL012"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Tech sell-off gathers pace as chipmakers hammered\nLONDON/SINGAPORE, Oct 15 (Reuters) - A sharp selloff in Asian tech stocks sent a chill through global equity markets on Thursday, as crowded bets on data centres and other key AI plays faced a reckoning from high and rising interest rates.\n...\nSout...",
+      "source": "web",
+      "title": "Tech sell-off gathers pace as chipmakers hammered",
+      "url": "https://lufkindailynews.com/news_reuters/business/tech-sell-off-gathers-pace-as-chipmakers-hammered/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Global stocks edge lower as AI and rate fears hit tech\nNEW YORK, Oct 15 (Reuters) - Global equity markets edged lower on Thursday as concerns about AI spending and higher interest rates fueled a continued selloff in technology and chip stocks.\nInvestors have been unnerved by valuations of companie...",
+      "source": "web",
+      "title": "Stocks and dollar slide as tech rout deepens | Business",
+      "url": "https://lufkindailynews.com/news_reuters/business/stocks-and-dollar-slide-as-tech-rout-deepens/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Global stocks flat as AI and rate fears hit tech\n- By Chibuike Oguh\n...\nNEW YORK, Oct 15 (Reuters) - An index of global equity markets ended flat on Thursday as concerns about AI spending and higher interest rates fueled further selling in technology and chip stocks.\nInvestors have been unnerved b...",
+      "source": "web",
+      "title": "Global stocks flat as AI and rate fears hit tech | Business",
+      "url": "https://lufkindailynews.com/news_reuters/business/global-stocks-flat-as-ai-and-rate-fears-hit-tech/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Tech sell-off gathers pace as chipmakers hammered\nLONDON/SINGAPORE, Oct 15 (Reuters) - A sharp selloff in Asian tech stocks sent a chill through global equity markets on Thursday, as crowded bets on data centres and other key AI plays faced a reckoning from high and rising interest rates.\n...\nSout...",
+      "source": "web",
+      "title": "Tech stocks tumble as data centre debt worries hit AI trades",
+      "url": "https://lufkindailynews.com/news_reuters/business/tech-stocks-tumble-as-data-centre-debt-worries-hit-ai-trades/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Global chip sell-off deepens as South Korean market plunges\nThu, October 15, 2026 at 8:44 AM GMT-5 2 min read\n...\nChip stocks extended losses in on Thursday as a\u00a0global semiconductor sell-off deepened overnight, with South Korea's benchmark KOSPI (^KS11) tanking 7%.\nIn the US, Chip giants Nvidia (...",
+      "source": "web",
+      "title": "Global chip sell-off deepens as South Korean market plunges",
+      "url": "https://finance.yahoo.com/markets/stocks/article/global-chip-sell-off-deepens-as-south-korean-market-plunges-024927049.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# US chip stocks set to wipe out $2 trillion after latest selloff\n##### Reuters\nOct 15 (Reuters) - US semiconductor stocks were \u200bset to lose $2 \u200ctrillion in market value on \u200bThursday in \u200bthe steep selloff since \u2060last week, \u200bdriven by rising \u200bbets of an interest-rate hike and \u200bconcerns over \u200bthe cost...",
+      "source": "web",
+      "title": "www.kitco.com \u00b7 news \u00b7 off-the-wireUS chip stocks set to wipe out $2 trillion after latest selloff",
+      "url": "https://www.kitco.com/news/off-the-wire/2026-10-15/us-chip-stocks-set-wipe-out-2-trillion-after-latest-selloff"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "By Thomson Reuters Oct 15, 2026 | 8:53 AM\nOct 15 (Reuters) \u2013 US semiconductor stocks were \u200bset to \u200close $2 trillion in market value on Thursday \u200cin \u200bthe \u2060steep selloff \u2060since last week, driven by rising bets \u200bof an interest-rate \u2060hike and \u2060concerns over \u200bthe cost \u200bof the AI buildout.\nThe \u200cPhiladelph...",
+      "source": "web",
+      "title": "US chip stocks set to wipe out $2 trillion after latest selloff - KELO-AM",
+      "url": "https://kelo.com/2026/10/15/us-chip-stocks-set-to-wipe-out-2-trillion-after-latest-selloff/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "US chip stocks face $2 trillion loss\n...\n# US chip stocks face $2 trillion loss\nU.S. semiconductor stocks were on track to lose $2 trillion in market value on Oct. 15 as investors sold shares amid growing concerns over higher interest rates and the cost of expanding artificial intelligence infrastru...",
+      "source": "web",
+      "title": "US chip stocks face $2 trillion loss",
+      "url": "https://americanbazaaronline.com/2026/10/15/us-chip-stocks-2-trillion-market-value-loss-490097/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "US stocks recovered on Thursday as Treasury yields tumbled and chip stocks pared losses following an AI-driven sell-off fueled by debt-financing concerns.\n...\nSemiconductor stocks trimmed earlier losses after the KOSPI index (^KS11) declined 7% overnight.\nTaiwan Semiconductor Manufacturing Company (...",
+      "source": "web",
+      "title": "Stock market today: Dow jumps, S&P 500, Nasdaq gain as ...",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-dow-sp-500-rise-nasdaq-trims-losses-as-treasury-yields-sink-153611834.html"
+    }
+  ],
+  "citations": [
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VV1WV?channel=frL012",
+    "https://lufkindailynews.com/news_reuters/business/tech-sell-off-gathers-pace-as-chipmakers-hammered/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html",
+    "https://lufkindailynews.com/news_reuters/business/stocks-and-dollar-slide-as-tech-rout-deepens/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html",
+    "https://lufkindailynews.com/news_reuters/business/global-stocks-flat-as-ai-and-rate-fears-hit-tech/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html",
+    "https://lufkindailynews.com/news_reuters/business/tech-stocks-tumble-as-data-centre-debt-worries-hit-ai-trades/article_2f2bb7c7-c1dc-51e1-af5a-0f6f250e3282.html",
+    "https://finance.yahoo.com/markets/stocks/article/global-chip-sell-off-deepens-as-south-korean-market-plunges-024927049.html",
+    "https://www.kitco.com/news/off-the-wire/2026-10-15/us-chip-stocks-set-wipe-out-2-trillion-after-latest-selloff",
+    "https://kelo.com/2026/10/15/us-chip-stocks-set-to-wipe-out-2-trillion-after-latest-selloff/",
+    "https://americanbazaaronline.com/2026/10/15/us-chip-stocks-2-trillion-market-value-loss-490097/",
+    "https://finance.yahoo.com/markets/live/stock-market-today-dow-sp-500-rise-nasdaq-trims-losses-as-treasury-yields-sink-153611834.html"
+  ],
+  "usage": {
+    "input_tokens": 742,
+    "output_tokens": 590,
+    "cost_usd": 0.00676
+  }
+}

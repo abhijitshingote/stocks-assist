@@ -1,0 +1,117 @@
+{
+  "name": "tickers_02",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday October 16, 2026.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| MAR | Marriott International, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.34% | +7.2% | 1.3\u00d7 | \u2014 |\n| ABNB | Airbnb, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.32% | +6.2% | 1.1\u00d7 | \u2014 |\n| LOW | Lowe's Companies, Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.28% | +4.2% | 1.0\u00d7 | \u2014 |\n| SPGI | S&P Global Inc. | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.27% | +5.5% | 1.0\u00d7 | \u2014 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Thursday October 15, 2026, any after-hours / pre-market move on Friday October 16, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Marriott International, Inc. (MAR) `[Travel & Hospitality]`\n- Marriott shares rose 4.34% to the verified close of $385.71 on October 15, 2026; a same-day report highlighted hotel-expansion plans in Thailand and the Netherlands, including new brands and properties (Yahoo Finance, Oct. 15, 16:10 ET).[9]\n- Erste Group kept a Buy rating and raised its 2026 EPS forecast from $11.73 to $11.75; the report cited Marriott\u2019s adjusted 2026 EPS guidance of $11.64\u2013$11.81 (Erste Group report dated Oct. 8, published Oct. 15).[10]\n- Marriott\u2019s Q3 2026 results are scheduled for November 2, 2026, at approximately 07:00 ET, followed by an earnings call at 08:00 ET (Marriott investor-relations information, published Oct. 15).[10]\n- Marriott reported Q2 2026 revenue of $7.07 billion, net income of $766 million, adjusted diluted EPS of $3.19, and adjusted EBITDA of $1.592 billion; these figures were cited as background to the upcoming Q3 release (company-reported figures, published Oct. 15).[10]\n\n## Airbnb, Inc. (ABNB) `[Internet & Platforms]`\n- Airbnb shares rose 4.32% to the verified close of $174.28 on October 15, 2026; MarketWatch characterized the session as an overall strong market day and said it was Airbnb\u2019s third consecutive gain (MarketWatch, Oct. 15, 16:38 ET).[1]\n- Hedgeye upgraded Airbnb to \u201cBest Idea Long\u201d on October 15, citing business-dynamic improvement, market-share recovery, and the hotel-expansion strategy (GuruFocus, Oct. 15).[2]\n- Airbnb\u2019s Q3 2026 earnings release is scheduled for November 5, 2026 (GuruFocus, Oct. 15).[2]\n- Airbnb officer David C. Bernstein filed a proposed sale of 1,369 Class A shares valued at $230,005.69; SEC EDGAR accepted the Form 144 at 10:27 ET on October 15 (SEC filing summary, Oct. 15, 10:27 ET).[3]\n- Bernstein reiterated an Outperform rating and a $217 price target in an October 12 report; the report estimated Airbnb\u2019s dynamic-pricing tool could add 5%\u20137% to revenue (Ad-hoc-news, Oct. 15).[6]\n- Airbnb reported Q2 2026 revenue of $3.61 billion, up 17% year over year, and net income attributable to common shareholders of $816 million; the figures were cited in the October 15 report as background to the analyst view (Ad-hoc-news, Oct. 15).[6]\n\n## Lowe's Companies, Inc. (LOW) `[Retail]`\n- No company-specific catalyst found in window\n\n## S&P Global Inc. (SPGI) `[Financial Information & Analytics]`\n- No company-specific catalyst found in window",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Airbnb Inc. Cl A stock rises Thursday, outperforms market\n...\nOct. 15, 2026, 4:38 p.m.\nET\n...\n- ABNB\n...\nShares of Airbnb Inc.\nCl A\nABNB\n+4.32%\nrallied 4.32% to $174.28 Thursday, on what proved to be an all-around great trading session for the stock market, with the S&P 500 Index\nSPX\n...\nThis was ...",
+      "source": "web",
+      "title": "Airbnb Inc. Cl A stock rises Thursday, outperforms market",
+      "url": "https://www.marketwatch.com/data-news/airbnb-inc-cl-a-stock-rises-thursday-outperforms-market-583b7503-5638f04e1a2a"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, Hedgeye elevated Airbnb Inc (NASDAQ: ABNB) to its best idea long, highlighting the company's improved business dynamics, market share recovery, and promising hotel expansion strategy as catalysts for further growth.\nGF Value\u2122 indicates Airbnb is approximately 4.8% undervalued, w...",
+      "source": "web",
+      "title": "Hedgeye Upgrades Airbnb (ABNB) to Best Idea Long Citing Growth a",
+      "url": "https://www.gurufocus.com/news/9125569/hedgeye-upgrades-airbnb-abnb-to-best-idea-long-citing-growth-and-market-share-gains"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Airbnb officer proposes $230K Class A share sale\n## Rhea-AI Filing Summary\nofficer David C. Bernstein reported a proposed sale of **1,369 Class A shares**, with an aggregate market value of **$230,005.69** and an approximate sale date of October 15, 2026.\n...\n## FAQ\n### When were the shares listed...",
+      "source": "web",
+      "title": "Airbnb officer proposes $230K Class A share sale - ABNB",
+      "url": "https://www.stocktitan.net/sec-filings/ABNB/144-airbnb-inc-sec-filing-115e42861ca4.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, Airbnb Inc ABNB shares rose 4.3% to $174.28, reflecting a strong performance in the current market environment.\n...\nGF Value\u2122 verdict: Currently priced at $174.28, ABNB is 2.5% undervalued compared to its GF Value\u2122 of $178.72.\n...\nMost notable signal: Insider activity shows that...",
+      "source": "web",
+      "title": "A Look at Airbnb Inc (ABNB) After 4.3% Gain -- GF Value $178.72",
+      "url": "https://www.gurufocus.com/news/9126553/a-look-at-airbnb-inc-abnb-after-43-gain-gf-value-17872-vs-price-17428"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Airbnb, Inc.\n(NASDAQ:ABNB - Get Free Report) insider Nathan Blecharczyk sold 13,615 shares of the business's stock in a transaction on Monday, October 12th.\nThe stock was sold at an average price of $165.18, for a total transaction of $2,248,925.70.\nFollowing the completion of the transaction, the i...",
+      "source": "web",
+      "title": "Insider Selling: Airbnb (NASDAQ:ABNB) Insider Sells $2,248,925.70 in Stock",
+      "url": "https://www.insidertrades.com/alerts/nasdaq-abnb-insider-buying-and-selling-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Bernstein kept a USD 217.00 target on October 12, 2026.\nAirbnb stock was EUR 149.49 at Lang & Schwarz on October 15, 2026 in trading.\n...\n- Bernstein said dynamic pricing could add 5 percent to 7 percent to revenue on October 12, 2026.\n- Airbnb generated USD 3.61 billion in second-quarter 2026 reven...",
+      "source": "web",
+      "title": "Bernstein backs dynamic pricing for Airbnb stock after fall ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/bernstein-backs-dynamic-pricing-for-airbnb-stock-after-fall-update/70327905"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, Marriott International Inc MAR shares rose 3.7% to $385.71, marking a notable increase within a 52-week trading range of $256.76 to $410.98.\nThe stock's recent performance has shown a strong upward trend, with gains of 6.8% over the past week and 14.4% over the last month.\nGF Va...",
+      "source": "web",
+      "title": "Marriott International Inc (MAR) Stock Up 3.7% but GF Value Says",
+      "url": "https://www.gurufocus.com/news/9126554/marriott-international-inc-mar-stock-up-37-but-gf-value-says-overvalued-gf-score-87100"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "VMS Asset Management Limited acquired a new position in Marriott International, Inc.\n(NASDAQ:MAR ) during the 3rd quarter, according to the company in its most recent 13F filing with the Securities and Exchange Commission.\nThe institutional investor acquired 8,230 shares of the company's stock, valu...",
+      "source": "web",
+      "title": "Marriott International, Inc. $MAR Shares Newly Bought by VMS Asset Management Limited",
+      "url": "https://www.thecerbatgem.com/2026/10/15/marriott-international-inc-mar-shares-newly-bought-by-vms-asset-management-limited.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Marriott (MAR) Stock May Be Fully Priced Following Thailand Hotel Expansion\n### U.S. markets closed\n# Marriott (MAR) Stock May Be Fully Priced Following Thailand Hotel Expansion\n...\nThu, October 15, 2026 at 4:10 PM GMT-3 4 min read\n- MAR\n+3.74%\nMarriott International has rewarded shareholders with a...",
+      "source": "web",
+      "title": "Marriott (MAR) Stock May Be Fully Priced Following ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/marriott-mar-stock-may-fully-191049767.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Erste Group lifted its 2026 earnings per share forecast from USD 11.73 to USD 11.75.\nMarriott International stock costs EUR 334.28 on October 15, 2026.\n...\n- Marriott reported USD 7.07 billion in revenue and USD 766.0 million in net income for the second quarter of 2026.\n- Marriott International sto...",
+      "source": "web",
+      "title": "Erste Group raised 2026 forecast to USD 11.75 for Marriott ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/erste-group-raised-2026-forecast-to-usd-11-75-for-marriott-international-stock/70328268"
+    }
+  ],
+  "citations": [
+    "https://www.marketwatch.com/data-news/airbnb-inc-cl-a-stock-rises-thursday-outperforms-market-583b7503-5638f04e1a2a",
+    "https://www.gurufocus.com/news/9125569/hedgeye-upgrades-airbnb-abnb-to-best-idea-long-citing-growth-and-market-share-gains",
+    "https://www.stocktitan.net/sec-filings/ABNB/144-airbnb-inc-sec-filing-115e42861ca4.html",
+    "https://www.gurufocus.com/news/9126553/a-look-at-airbnb-inc-abnb-after-43-gain-gf-value-17872-vs-price-17428",
+    "https://www.insidertrades.com/alerts/nasdaq-abnb-insider-buying-and-selling-2026-10-15/",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/bernstein-backs-dynamic-pricing-for-airbnb-stock-after-fall-update/70327905",
+    "https://www.gurufocus.com/news/9126554/marriott-international-inc-mar-stock-up-37-but-gf-value-says-overvalued-gf-score-87100",
+    "https://www.thecerbatgem.com/2026/10/15/marriott-international-inc-mar-shares-newly-bought-by-vms-asset-management-limited.html",
+    "https://finance.yahoo.com/markets/stocks/articles/marriott-mar-stock-may-fully-191049767.html",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/erste-group-raised-2026-forecast-to-usd-11-75-for-marriott-international-stock/70328268"
+  ],
+  "usage": {
+    "input_tokens": 1030,
+    "output_tokens": 670,
+    "cost_usd": 0.00746
+  }
+}

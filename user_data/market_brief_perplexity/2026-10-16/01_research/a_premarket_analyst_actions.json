@@ -1,0 +1,117 @@
+{
+  "name": "a_premarket_analyst_actions",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Brief-date analyst actions.\n\nWindow: Thursday October 15, 2026 4:00 PM ET (after the close) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nUpgrades, downgrades, initiations and PT changes published on the brief date before the open (and over the weekend if the brief date is a Monday): firm, rating old \u2192 new, PT old \u2192 new, thesis, and the stock's pre-market move.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **BAC** \u2014 Financials\n- Baird upgraded Bank of America to Outperform from Neutral and set a $62 price target; the available result does not report a pre-market move. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n- Citigroup cut its Bank of America price target to $60 from $66 while maintaining Buy; the available result does not report a pre-market move. (Transcript Daily, Oct. 15, 2026)[4]\n\n## **WMT** \u2014 Retail\n- Deutsche Bank upgraded Walmart to Buy from Hold and raised its price target to $136 from $113; Walmart shares were up about 3% in pre-market trading. (Investopedia, Oct. 15, 2026)[2][7]\n\n## **CASY** \u2014 Retail\n- RBC Capital upgraded Casey\u2019s General Stores to Outperform from Sector Perform and cut its price target to $825 from $910; no pre-market move was reported in the available result. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **CROX** \u2014 Retail\n- Barclays upgraded Crocs to Outperform from Sector Perform and raised its price target to $139 from $118; no pre-market move was reported in the available result. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **REGN** \u2014 Pharma\n- UBS assumed coverage of Regeneron Pharmaceuticals with a Neutral rating and a $978 price target, compared with the previously cited $660 target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **ACI** \u2014 Retail\n- Goldman Sachs downgraded Albertsons to Neutral from Buy and set a $13 price target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n- JPMorgan downgraded Albertsons from Overweight to Neutral and set a $14 price target; no pre-market move was reported. (Transcript Daily, Oct. 15, 2026)[3]\n\n## **ALGN** \u2014 Medical Devices\n- Baird downgraded Align Technology to Neutral from Outperform and cut its price target to $162 from $218; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **CRUS** \u2014 Semiconductors\n- KeyBanc downgraded Cirrus Logic to Sector Weight from Overweight without a reported price target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **PYPL** \u2014 Software & SaaS\n- Bank of America downgraded PayPal to Underperform from Neutral and set a $53 price target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n- Bank of America separately initiated PayPal at Underperform without a reported price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **SPOT** \u2014 Internet & Platforms\n- StoneX downgraded Spotify to Hold from Buy without a reported price target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **AU** \u2014 Gold / Commodities\n- Goldman Sachs initiated AngloGold Ashanti at Buy with a $104 price target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **BKH** \u2014 Utilities\n- Jefferies initiated Black Hills at Buy with an $87 price target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **FANG** \u2014 Energy\n- Scotiabank initiated Diamondback Energy at Outperform with a $250 price target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **DVN** \u2014 Energy\n- Scotiabank initiated Devon Energy at Outperform with a $61 price target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **NFLX** \u2014 Internet & Platforms\n- Jefferies assumed coverage of Netflix with a Buy rating and an $85 price target; no pre-market move was reported. (247WallSt, Oct. 15, 2026 08:10 ET)[1]\n\n## **MSFT** \u2014 Software & SaaS\n- UBS raised Microsoft\u2019s price target to $675 from $525 and maintained Buy; no pre-market move was reported. (Yahoo Finance, Oct. 15, 2026)[9]\n- Mizuho raised Microsoft\u2019s price target to $600 from $510 and maintained Outperform; no pre-market move was reported. (Yahoo Finance, Oct. 15, 2026)[9]\n- Citigroup raised Microsoft\u2019s price target to $636 from $600 and maintained Buy; no pre-market move was reported. (Yahoo Finance, Oct. 15, 2026)[9]\n- TD Cowen raised Microsoft\u2019s price target to $625 from $540 and maintained Buy; no pre-market move was reported. (Yahoo Finance, Oct. 15, 2026)[9]\n\n## **PRU** \u2014 Financials\n- JPMorgan cut Prudential Financial\u2019s price target to $127 from $131 and maintained Neutral; no pre-market move was reported. (MarketBeat, Oct. 15, 2026)[5]\n\n## **RTX** \u2014 Aerospace & Defense\n- Sanford C. Bernstein cut RTX\u2019s price target to $214 from $223 and maintained Market Perform; no pre-market move was reported. (MarketBeat, Oct. 15, 2026)[6]\n\n## **BLK** \u2014 Financials\n- JPMorgan raised BlackRock\u2019s price target to $1,449 from $1,435 and maintained Overweight; no pre-market move was reported. (MarketBeat, Oct. 15, 2026)[10]\n\n## **ALNY** \u2014 Pharma\n- UBS initiated Alnylam Pharmaceuticals at Buy with a $354 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **ARQT** \u2014 Pharma\n- Cantor Fitzgerald initiated Arcutis Biotherapeutics at Overweight with a $48 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **ARWR** \u2014 Pharma\n- UBS initiated Arrowhead Pharmaceuticals at Buy with a $109 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **BMRN** \u2014 Pharma\n- UBS initiated BioMarin Pharmaceutical at Buy with an $88 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **CAMP** \u2014 Pharma\n- Needham initiated CAMP4 Therapeutics at Buy with an $8 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **COAG** \u2014 Pharma\n- JPMorgan initiated Hemab Therapeutics at Overweight with a $70 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **DRUG** \u2014 Pharma\n- Wolfe Research initiated Bright Minds Biosciences at Outperform with a $150 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **FIS** \u2014 Software & SaaS\n- Bank of America initiated Fidelity National Information Services at Buy with a $42 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **FISV** \u2014 Software & SaaS\n- Bank of America initiated Fiserv at Underperform with a $48 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **FOUR** \u2014 Software & SaaS\n- Bank of America initiated Shift4 Payments at Neutral with a $42 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **GPN** \u2014 Software & SaaS\n- Bank of America initiated Global Payments at Buy with a $114 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **HRMY** \u2014 Pharma\n- Ladenburg Thalmann initiated Harmony Biosciences at Buy with a $55 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **JKHY** \u2014 Software & SaaS\n- Bank of America initiated Jack Henry & Associates at Neutral with a $165 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **MGEE** \u2014 Utilities\n- JPMorgan initiated MGE Energy at Neutral with a $76 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **MTDR** \u2014 Energy\n- Scotiabank initiated Matador Resources at Sector Perform with a $59 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **MTN** \u2014 Travel & Leisure\n- Citizens JMP initiated Vail Resorts at Market Perform without a reported price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **NWE** \u2014 Utilities\n- Jefferies initiated NorthWestern at Buy with an $85 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **RAPP** \u2014 Pharma\n- Wolfe Research initiated Rapport Therapeutics at Outperform with a $50 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **RARE** \u2014 Pharma\n- UBS initiated Ultragenyx Pharmaceutical at Neutral with a $16 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **SGHT** \u2014 Medical Devices\n- HC Wainwright initiated Sight Sciences at Buy with a $14 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **SPB** \u2014 Consumer Products\n- UBS initiated Spectrum Brands at Buy with a $97 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **SUJA** \u2014 Consumer Products\n- Needham initiated Suja Life at Buy without a reported price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]\n\n## **TOST** \u2014 Software & SaaS\n- Bank of America initiated Toast at Buy with a $40 price target; no pre-market move was reported. (Cerbat Gem, Oct. 15, 2026)[8]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Published October 15, 2026, 8:10am ET \u00b7 4 min read\n## Quick Read\n...\n- Bank of America cut PayPal to Underperform with a $53 target while Goldman Sachs initiated AngloGold Ashanti with a Buy rating at $104.\n...\n**Here are** some of the top Wall Street analyst upgrades, downgrades, and initiations fr...",
+      "source": "web",
+      "title": "Here Are Thursday's Top Wall Street Analyst Research Calls",
+      "url": "https://247wallst.com/investing/2026/10/15/here-are-thursdays-top-wall-street-analyst-research-calls-anglogold-ashanti-bank-of-america-cirrus-logic-crocs-diamondback-energy-devon-energy-netflix-paypal-spotify-technolgy-and/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Markets News, Oct. 15, 2026: Dow Ends Up 550 Points as Investors Rotate Out of Tech Stocks; Wholesale Prices Top Expectations\nShares of Walmart (WMT) were up 2% to around $119 in recent trading, among the biggest gainers in the Dow Jones Industrial Average after Deutsche Bank lifted its rating to ...",
+      "source": "web",
+      "title": "Stock Market Today: Dow Ends Up 550 Points as Investors ...",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10152026-12174789"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Albertsons Companies (NYSE:ACI) was downgraded by analysts at JPMorgan Chase & Co. from an overweight rating to a neutral rating.\nThey currently have $14.00 target price on the stock.\nAlbertsons Companies (NYSE:ACI) was downgraded by analysts at The Goldman Sachs Group, Inc. from a buy rating to a n...",
+      "source": "web",
+      "title": "Analysts' Updated EPS Estimates for October 15th (ACI, ARWR, BAC, BBOX, BEAM, BHF, BLND, BLTE, BRK, BWA)",
+      "url": "https://transcriptdaily.com/2026/10/15/analysts-updated-eps-estimates-for-october-15th-aci-arwr-bac-bbox-beam-bhf-blnd-blte-brk-bwa.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Athabasca Oil (TSE:ATH) was downgraded by analysts at Raymond James Financial, Inc. from an outperform rating to a market perform rating.\nRaymond James Financial, Inc.\ncurrently has C$12.00 target price on the stock, down from their previous target price of C$14.00.\nBank of America (NYSE:BAC) had it...",
+      "source": "web",
+      "title": "Research Analysts' Updated EPS Estimates for October 15th (ATH, BAC, BDT, CRE, JPM, LAC, MS, NOG, ROL, TALO)",
+      "url": "https://transcriptdaily.com/2026/10/15/research-analysts-updated-eps-estimates-for-october-15th-ath-bac-bdt-cre-jpm-lac-ms-nog-rol-talo.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# JPMorgan Chase & Co. Issues Pessimistic Forecast for Prudential Financial (NYSE:PRU) Stock Price\n## Key Points\n- **JPMorgan lowered its Prudential Financial price target** from $131 to $127 while maintaining a \u201cneutral\u201d rating, implying roughly 10.5% upside from the stock\u2019s reported $114.95 price....",
+      "source": "web",
+      "title": "JPMorgan Chase & Co. Issues Pessimistic Forecast for ...",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-jpmorgan-chase-co-issues-pessimistic-forecast-for-prudential-financial-nyse-pru-stock-price-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# RTX (NYSE:RTX) Given New $214.00 Price Target at Sanford C. Bernstein\n## Key Points\n- **Sanford C. Bernstein lowered RTX\u2019s price target** to $214 from $223 while maintaining a \u201cmarket perform\u201d rating, implying approximately 14.8% upside.\nAnalysts overall remain moderately bullish, with a consensus...",
+      "source": "web",
+      "title": "RTX (NYSE:RTX) Given New $214.00 Price Target at ...",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-rtx-nyse-rtx-given-new-21400-price-target-at-sanford-c-bernstein-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Walmart stock moves higher after Deutsche Bank upgrades to Buy, raises price target\n...\n# Walmart stock moves higher after Deutsche Bank upgrades to Buy, raises price target\nIn an ongoing inflationary environment, Walmart (WMT) is poised to win, according to Deutsche Bank analyst Krisztina Katai, wh...",
+      "source": "web",
+      "title": "Walmart stock moves higher after Deutsche Bank upgrades ...",
+      "url": "https://finance.yahoo.com/markets/stocks/article/walmart-stock-moves-higher-after-deutsche-bank-upgrades-stock-to-buy-raises-price-target-134810355.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Research Analysts' new coverage for Thursday, October 15th:\nUBS Group AG assumed coverage on shares of Alnylam Pharmaceuticals (NASDAQ:ALNY).\nThey issued a buy rating and a $354.00 target price on the stock.\nCantor Fitzgerald began coverage on shares of Arcutis Biotherapeutics (NASDAQ:ARQT).\nCantor ...",
+      "source": "web",
+      "title": "Research Analysts' New Coverage for October 15th (ALNY, ARQT, ARWR, BMRN, CAMP, COAG, DRUG, ENIC, FIS, FISV)",
+      "url": "https://www.thecerbatgem.com/2026/10/15/research-analysts-new-coverage-for-october-15th-alny-arqt-arwr-bmrn-camp-coag-drug-enic-fis-fisv.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# MSFT Stock Gets Slew Of Price Target Hikes Ahead Of Earnings \u2013 TD Cowen Sees \u2018Higher Than Normal\u2019 Azure Beat Potential\n- UBS raised its target to $675 from $525, citing Azure and Microsoft 365 fundamentals despite higher growth expectations.\n- Citi analyst Tyler Radke raised the firm's price targe...",
+      "source": "web",
+      "title": "MSFT Stock Gets Slew Of Price Target Hikes Ahead ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/msft-stock-gets-slew-price-151332826.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **JPMorgan raised BlackRock\u2019s price target** to $1,449 from $1,435 and maintained an \u201coverweight\u201d rating, implying 31.68% upside from the prior close.\nAnalysts overall rate the stock \u201cModerate Buy,\u201d with an average target of $1,312.19.\n...\nBlackRock (NYSE:BLK - Get Free Report) had i...",
+      "source": "web",
+      "title": "BlackRock (NYSE:BLK) Price Target Raised to $1,449.00",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-blackrock-nyse-blk-price-target-raised-to-144900-2026-10-15/"
+    }
+  ],
+  "citations": [
+    "https://247wallst.com/investing/2026/10/15/here-are-thursdays-top-wall-street-analyst-research-calls-anglogold-ashanti-bank-of-america-cirrus-logic-crocs-diamondback-energy-devon-energy-netflix-paypal-spotify-technolgy-and/",
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10152026-12174789",
+    "https://transcriptdaily.com/2026/10/15/analysts-updated-eps-estimates-for-october-15th-aci-arwr-bac-bbox-beam-bhf-blnd-blte-brk-bwa.html",
+    "https://transcriptdaily.com/2026/10/15/research-analysts-updated-eps-estimates-for-october-15th-ath-bac-bdt-cre-jpm-lac-ms-nog-rol-talo.html",
+    "https://www.marketbeat.com/instant-alerts/analyst-jpmorgan-chase-co-issues-pessimistic-forecast-for-prudential-financial-nyse-pru-stock-price-2026-10-15/",
+    "https://www.marketbeat.com/instant-alerts/analyst-rtx-nyse-rtx-given-new-21400-price-target-at-sanford-c-bernstein-2026-10-15/",
+    "https://finance.yahoo.com/markets/stocks/article/walmart-stock-moves-higher-after-deutsche-bank-upgrades-stock-to-buy-raises-price-target-134810355.html",
+    "https://www.thecerbatgem.com/2026/10/15/research-analysts-new-coverage-for-october-15th-alny-arqt-arwr-bmrn-camp-coag-drug-enic-fis-fisv.html",
+    "https://finance.yahoo.com/markets/stocks/articles/msft-stock-gets-slew-price-151332826.html",
+    "https://www.marketbeat.com/instant-alerts/analyst-blackrock-nyse-blk-price-target-raised-to-144900-2026-10-15/"
+  ],
+  "usage": {
+    "input_tokens": 714,
+    "output_tokens": 2587,
+    "cost_usd": 0.01212
+  }
+}

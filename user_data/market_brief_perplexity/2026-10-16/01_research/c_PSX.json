@@ -1,0 +1,117 @@
+{
+  "name": "c_PSX",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Friday October 16, 2026. Target: Phillips 66 (PSX).\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| PSX | Phillips 66 | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -2.52% | +1.9% | 0.8\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## Phillips 66 (PSX) `[Energy]`\n- No company-specific catalyst found in window\n\nTASK\nSearch harder for why PSX moved. Run several searches: \"why is Phillips 66 stock down/up\",\n\"Phillips 66 stock\", \"PSX shares Thursday October 15, 2026\", \"Phillips 66 concerns\", \"Phillips 66 FDA\",\n\"Phillips 66 analyst\", \"Phillips 66 price target\", \"Phillips 66 deal\", \"Phillips 66 offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Phillips 66 peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Friday October 16, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Phillips 66 (PSX) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Phillips 66 (PSX) `[Energy]`\n- U.S. gasoline inventories increased by approximately 3.5 million barrels on October 15, 2026, versus expectations for a draw; gasoline futures fell afterward, while a major refining-crack-spread index declined approximately 5.8% that day. (Quiver Quantitative, Oct 15 2026; publish time not stated)[1]\n- Mizuho downgraded Phillips 66 to Neutral from Outperform on October 8, 2026, citing limited remaining upside after the refining-stock rally; its price target was reported at $300. (Quiver Quantitative, Oct 15 2026; publish time not stated)[1][6]\n- Wells Fargo analyst Sam Margolin maintained an Overweight rating and raised the price target to $345 from $335, while citing investor concerns about the duration of crude and refined-product markets and retaining a $70 WTI forecast for 2027. (Markets Insider, Oct 14 2026, updated Oct 15 2026; publish time not stated)[2]\n- Barclays analyst Theresa Chen maintained Equal Weight and raised the price target to $282 from $216 on October 12, 2026. (Ad-Hoc-News, Oct 14 2026; publish time not stated)[3]\n- Phillips 66 disclosed a possible Bayway refinery labor disruption after union employees overwhelmingly authorized a strike ahead of contract expiration; a strike could affect operations and costs. [report] (MarketBeat, Oct 14 2026, updated Oct 15 2026; publish time not stated)[8]\n- Phillips 66\u2019s third-quarter 2026 results are scheduled for October 28, 2026, before a noon-ET webcast. (Ad-Hoc-News, Oct 14 2026; publish time not stated)[3]\n- No company-specific catalyst found in window.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Phillips 66 Falls as Refining Trade Cools\nPhillips 66 (PSX) is down 3.1% today.\nHere is some analysis on what might have caused this price movement.\n**Analysis:** The move appears tied more to a cooling refiner trade than to any new company-specific setback.\nA recent analyst downgrade pointed to l...",
+      "source": "web",
+      "title": "Phillips 66 Falls as Refining Trade Cools | PSX Stock News",
+      "url": "https://www.quiverquant.com/news/Phillips+66+Falls+as+Refining+Trade+Cools"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Phillips 66 price target raised to $345 from $335 at Wells Fargo | Markets Insider\n...\n# Phillips 66 price target raised to $345 from $335 at Wells Fargo\nWells Fargo analyst Sam Margolin raised the firm\u2019s price target on Phillips 66 (PSX) to $345 from $335 and keeps an Overweight rating on the share...",
+      "source": "web",
+      "title": "Phillips 66 price target raised to $345 from $335 at Wells Fargo",
+      "url": "https://markets.businessinsider.com/news/stocks/phillips-66-price-target-raised-to-345-from-335-at-wells-fargo-1036626543"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "Barclays raised its target from USD 216.00 to USD 282.00 on October 12, 2026.\n...\nBarclays analyst Theresa Chen raised the price target from USD 216.00 to USD 282.00 on October 12, 2026, while keeping an Equal Weight rating, as Markets Insider reported.\nThe revised target followed updated midstream ...",
+      "source": "web",
+      "title": "Barclays raises target for Phillips 66 stock",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/barclays-raises-target-for-phillips-66-stock/70322966"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Phillips 66 (PSX) Receives a Rating Update from a Top Analyst\nWells Fargo analyst Sam Margolin maintained a Buy rating on Phillips 66 today and set a price target of $345.00.\n...\nIn addition to Wells Fargo, Phillips 66 also received a Buy from Morgan Stanley\u2019s Joe Laetsch in a report issued on Oct...",
+      "source": "web",
+      "title": "Phillips 66 (PSX) Receives a Rating Update from a Top Analyst",
+      "url": "https://markets.businessinsider.com/news/stocks/phillips-66-psx-receives-a-rating-update-from-a-top-analyst-1036626533"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Why Phillips 66 (PSX) is a Top Momentum Stock for the Long-Term\n...\nOctober 15, 2026\n...\nPSX is a #1 (Strong Buy) on the Zacks Rank, with a VGM Score of A.\nMomentum investors should take note of this Oils-Energy stock.\nPSX has a Momentum Style Score of B, and shares are up 12.3% over the past four...",
+      "source": "web",
+      "title": "Why Phillips 66 (PSX) is a Top Momentum Stock for the Long-Term",
+      "url": "https://www.zacks.com/stock/news/3008437/why-phillips-66-psx-is-a-top-momentum-stock-for-the-long-term?cid=CS-ZC-FT-fundamental_analysis%7Czacks_education_momentum_score-3008437&miRedirects=1"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Barclays analyst Theresa Chen maintained a Hold rating on Phillips 66 on October 9 and set a price target of $282.00.\nThe company\u2019s shares closed last Friday at $278.18.\n...\nThe word on The Street in general, suggests a Moderate Buy analyst consensus rating for Phillips 66 with a $281.27 average pri...",
+      "source": "web",
+      "title": "Analysts Have Conflicting Sentiments on These Energy Companies: Phillips 66 (PSX) and Helmerich & Payne (HP)",
+      "url": "https://www.theglobeandmail.com/investing/markets/markets-news/Tipranks/6435381/analysts-have-conflicting-sentiments-on-these-energy-companies-phillips-66-psx-and-helmerich-payne-hp/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "|#|Ticker|Company Name|1-W Returns|YTD Returns|\n|--|--|--|--|--|\n|9|PSX|Phillips 66|9.5%|135.2%|",
+      "source": "web",
+      "title": "S&P 500 Movers | Winners: UNH, DLTR, MRNA | Losers - Trefis",
+      "url": "https://www.trefis.com/stock/spy/articles/618818/sp-500-movers-winners-unh-dltr-mrna-losers-dell-cien-p/2026-10-15"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "## Key Points\n- **Perpetual Ltd increased its Phillips 66 stake by 71.4%** in the third quarter, adding 4,142 shares to hold 9,947 shares worth approximately $2.54 million.\nInstitutional investors collectively own 76.93% of PSX.\n- Analysts remain broadly positive, with the stock carrying a \u201cModerate...",
+      "source": "web",
+      "title": "Perpetual Ltd Acquires 4,142 Shares of Phillips 66 $PSX",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-perpetual-ltd-acquires-4142-shares-of-phillips-66-psx-2026-10-14/"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "+$4.27 +1.46%\n...\nPhillips 66 reported strong Q2 earnings with EPS of $9.55 and $52 billion in revenue, driven by effective operations and capital allocation focused on debt reduction.\nThe company's vertical integration and emphasis on Canadian crude provide business stability, supporting the highes...",
+      "source": "web",
+      "title": "Phillips 66 posts strong Q2 results, targets $4...",
+      "url": "https://pluang.com/en/news-feed/phillips-66-pilihan-solid-untuk-investor-yang-mencari-prediktabilitas"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "October 14, 2026\n...\n## Key Takeaways\n- PSX expects tight global refining capacity and low fuel inventories to support strong refining margins.\n- High crack spreads could sustain PSX's refining profits potentially through 2027.\n- PSX shares surged 123.7% in a year, while its 2026 earnings estimate w...",
+      "source": "web",
+      "title": "What are the Prospects for Phillips 66's Refining Operations?",
+      "url": "https://www.zacks.com/stock/news/3006671/what-are-the-prospects-for-phillips-66s-refining-operations"
+    }
+  ],
+  "citations": [
+    "https://www.quiverquant.com/news/Phillips+66+Falls+as+Refining+Trade+Cools",
+    "https://markets.businessinsider.com/news/stocks/phillips-66-price-target-raised-to-345-from-335-at-wells-fargo-1036626543",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/barclays-raises-target-for-phillips-66-stock/70322966",
+    "https://markets.businessinsider.com/news/stocks/phillips-66-psx-receives-a-rating-update-from-a-top-analyst-1036626533",
+    "https://www.zacks.com/stock/news/3008437/why-phillips-66-psx-is-a-top-momentum-stock-for-the-long-term?cid=CS-ZC-FT-fundamental_analysis%7Czacks_education_momentum_score-3008437&miRedirects=1",
+    "https://www.theglobeandmail.com/investing/markets/markets-news/Tipranks/6435381/analysts-have-conflicting-sentiments-on-these-energy-companies-phillips-66-psx-and-helmerich-payne-hp/",
+    "https://www.trefis.com/stock/spy/articles/618818/sp-500-movers-winners-unh-dltr-mrna-losers-dell-cien-p/2026-10-15",
+    "https://www.marketbeat.com/instant-alerts/filing-perpetual-ltd-acquires-4142-shares-of-phillips-66-psx-2026-10-14/",
+    "https://pluang.com/en/news-feed/phillips-66-pilihan-solid-untuk-investor-yang-mencari-prediktabilitas",
+    "https://www.zacks.com/stock/news/3006671/what-are-the-prospects-for-phillips-66s-refining-operations"
+  ],
+  "usage": {
+    "input_tokens": 982,
+    "output_tokens": 409,
+    "cost_usd": 0.00676
+  }
+}

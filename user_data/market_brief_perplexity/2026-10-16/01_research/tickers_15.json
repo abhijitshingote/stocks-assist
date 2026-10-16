@@ -1,0 +1,117 @@
+{
+  "name": "tickers_15",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday October 16, 2026.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ILMN | Illumina, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +1.75% | +4.5% | 0.8\u00d7 | both 2025-10-31 |\n| MSTR | Strategy Inc | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +5.04% | -1.4% | 1.1\u00d7 | gapper 2026-09-21 |\n| XP | XP Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -0.94% | -0.7% | 0.7\u00d7 | both 2026-10-05 |\n| GRAL | GRAIL Inc. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -0.58% | +5.1% | 0.5\u00d7 | gapper 2026-09-24 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Thursday October 15, 2026, any after-hours / pre-market move on Friday October 16, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Illumina, Inc. (ILMN) `[Pharma]`\n- No company-specific catalyst found in window.\n- Weil Company Inc. disclosed a 17.5% reduction in its Illumina stake during the third quarter; the filing was reported on October 15, 2026 (The Stock Observer, Oct 15; publish time not available).\n- Ninety One North America disclosed a new position of 16,418 shares valued at approximately $4.493 million, while Ninety One UK disclosed a third-quarter purchase of 1,356,397 shares; both disclosures were reported on October 15, 2026 (MarketBeat; The Cerbat Gem, Oct 15; publish times not available).\n\n## Strategy Inc (MSTR) `[AI Infrastructure]`\n- Strategy shares rose 5.04% on Thursday, October 15, 2026; no company earnings release or filing in the available results directly explained the session move.\n- MSCI approved new rules on Thursday, October 15 that could exclude companies classified as non-operating businesses; Strategy was identified as a potential exclusion, with MSCI\u2019s affected-company list scheduled for November 11 and the rules taking effect after November 30 [report] (Yahoo Finance, Oct 15 20:08 ET).\n- JPMorgan estimated that a potential MSCI exclusion could put approximately $2.8 billion of passive fund flows at risk (Investing.com, Oct 15; publish time not available).\n- Strategy purchased 250 BTC for approximately $21.5 million during October 5\u201311, 2026, its smallest weekly acquisition of 2026, while directing $192.4 million toward repurchasing STRC preferred shares (Investing.com, Oct 15; publish time not available).\n- Michael Saylor said on October 13, 2026 that Bitcoin had bottomed and would return above $100,000; the comments were reported during the October 15 window (Simply Wall St, Oct 15; publish time not available).\n- No confirmed after-hours or pre-market Strategy price was available in the search results through 02:03 ET on October 16, 2026.\n\n## XP Inc. (XP) `[Financial Services]`\n- No company-specific catalyst found in window.\n\n## GRAIL Inc. (GRAL) `[Pharma]`\n- No company-specific catalyst found in window.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Why is Strategy stock sliding today?\nInvesting.com -- Strategy Inc stock is sliding 2.2% in pre-open trading today, dragged down by a broader market selloff as cryptocurrency and blockchain-related stocks fell after Bitcoin slid to its lowest level in about a week.\n...\nThe stock was also pressured...",
+      "source": "web",
+      "title": "Why is Strategy stock sliding today?",
+      "url": "https://www.investing.com/news/stock-market-news/why-is-strategy-stock-sliding-today-93CH-4951408"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Weil Company Inc.\nlowered its stake in shares of Illumina, Inc.\n(NASDAQ:ILMN ) by 17.5% during the 3rd quarter, according to the company in its most recent filing with the SEC.\n...\nBased on data from MarketBeat, Illumina presently has a consensus rating of 'Hold' and an average target price of $225....",
+      "source": "web",
+      "title": "Illumina, Inc. $ILMN Stock Holdings Lowered by Weil Company Inc.",
+      "url": "https://www.thestockobserver.com/2026/10/15/illumina-inc-ilmn-stock-holdings-lowered-by-weil-company-inc.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "MicroStrategy Could Be Removed From Major Global Stock Indexes\n...\n# MicroStrategy Could Be Removed From Major Global Stock Indexes\nThu, October 15, 2026 at 8:08 PM GMT-3 2 min read\n- MSCI +2.60%\n- MSTR +5.62%\n...\n**Michael Saylor's Bitcoin giant could lose its place in major global stock indexes, p...",
+      "source": "web",
+      "title": "MicroStrategy Could Be Removed From Major Global Stock Indexes",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/microstrategy-could-removed-major-global-230851499.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Why is Strategy stock sliding today?\nInvesting.com -- Strategy Inc stock is falling 4.3% in morning trading today as a confluence of near-term risks converges on the Bitcoin treasury company, with the most pressing being the imminent MSCI index ruling due on Friday, October 16.\nMSCI is reviewing w...",
+      "source": "web",
+      "title": "Why is Strategy stock sliding today? - Investing.com",
+      "url": "https://www.investing.com/news/stock-market-news/why-is-strategy-stock-sliding-today-93CH-4949661"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Ninety One North America Inc.\npurchased a new position in Illumina, Inc.\n(NASDAQ:ILMN - Free Report) during the 3rd quarter, according to its most recent filing with the Securities & Exchange Commission.\nThe fund purchased 16,418 shares of the life sciences company's stock, valued at approximately $...",
+      "source": "web",
+      "title": "16,418 Shares of Illumina, Inc. $ILMN Bought by Ninety One North America Inc.",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-16418-shares-of-illumina-inc-ilmn-bought-by-ninety-one-north-america-inc-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Ninety One UK Ltd boosted its stake in Illumina, Inc.\n(NASDAQ:ILMN ) by 37,920.0% in the third quarter, according to the company in its most recent disclosure with the Securities & Exchange Commission.\nThe institutional investor owned 1,359,974 shares of the life sciences company's stock after purch...",
+      "source": "web",
+      "title": "1,356,397 Illumina, Inc. $ILMN Shares Acquired by Ninety One UK Ltd",
+      "url": "https://www.thecerbatgem.com/2026/10/15/1356397-illumina-inc-ilmn-shares-acquired-by-ninety-one-uk-ltd.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Strategy Inc (NASDAQ:MSTR ) Director Jarrod Patten sold 1,400 shares of Strategy stock in a transaction on Thursday, October 8th.\nThe shares were sold at an average price of $151.01, for a total value of $211,414.00.\nFollowing the completion of the transaction, the director owned 28,406 shares in th...",
+      "source": "web",
+      "title": "Strategy (NASDAQ:MSTR) Stock: Insider Jarrod Patten Sells 1,400 Shares",
+      "url": "https://www.thestockobserver.com/2026/10/15/strategy-nasdaqmstr-stock-insider-jarrod-patten-sells-1400-shares.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Strategy (MSTR) Executive Chairman Michael Saylor Calls For A New Bitcoin Bull Market\nOctober 15, 2026\n...\n- Strategy Inc.\n(NasdaqGS:MSTR) executive chairman Michael Saylor publicly predicted a major new bitcoin bull market in recent comments.\n- Saylor linked his outlook to recent regulatory outco...",
+      "source": "web",
+      "title": "Strategy (MSTR) Executive Chairman Michael Saylor Calls ...",
+      "url": "https://simplywall.st/stocks/us/software/nasdaq-mstr/strategy/news/strategy-mstr-executive-chairman-michael-saylor-calls-for-a"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "MSTR Stock Outlook Ahead of MSCI\u2019s Decision on Potential Index Exclusion on October 16 - Worldnews.com\nCoinGape 2026-10-15: Strategy (NASDAQ: MSTR) stock price has dropped...",
+      "source": "web",
+      "title": "article.wn.com \u00b7 view-lemonde \u00b7 2026/10/15MSTR Stock Outlook Ahead of MSCI\u2019s Decision on Potential Index...",
+      "url": "https://article.wn.com/view-lemonde/2026/10/15/MSTR_Stock_Outlook_Ahead_of_MSCI_s_Decision_on_Potential_Ind/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, Strategy Inc MSTR shares rose 5.6%, closing at $151.29.\nThe stock has fluctuated between a 52-week high of $308.88 and a low of $81.81 over the past year.\nGF Value\u2122 verdict: Current price at $151.29 versus GF Value\u2122 of $112.80, indicating the stock is 34.1% overvalued.\nGF Score\u2122...",
+      "source": "web",
+      "title": "Strategy Inc (MSTR) Stock Up 5.6% but GF Value Says Overvalued -",
+      "url": "https://www.gurufocus.com/news/9126590/strategy-inc-mstr-stock-up-56-but-gf-value-says-overvalued-gf-score-61100"
+    }
+  ],
+  "citations": [
+    "https://www.investing.com/news/stock-market-news/why-is-strategy-stock-sliding-today-93CH-4951408",
+    "https://www.thestockobserver.com/2026/10/15/illumina-inc-ilmn-stock-holdings-lowered-by-weil-company-inc.html",
+    "https://finance.yahoo.com/markets/stocks/articles/microstrategy-could-removed-major-global-230851499.html",
+    "https://www.investing.com/news/stock-market-news/why-is-strategy-stock-sliding-today-93CH-4949661",
+    "https://www.marketbeat.com/instant-alerts/filing-16418-shares-of-illumina-inc-ilmn-bought-by-ninety-one-north-america-inc-2026-10-15/",
+    "https://www.thecerbatgem.com/2026/10/15/1356397-illumina-inc-ilmn-shares-acquired-by-ninety-one-uk-ltd.html",
+    "https://www.thestockobserver.com/2026/10/15/strategy-nasdaqmstr-stock-insider-jarrod-patten-sells-1400-shares.html",
+    "https://simplywall.st/stocks/us/software/nasdaq-mstr/strategy/news/strategy-mstr-executive-chairman-michael-saylor-calls-for-a",
+    "https://article.wn.com/view-lemonde/2026/10/15/MSTR_Stock_Outlook_Ahead_of_MSCI_s_Decision_on_Potential_Ind/",
+    "https://www.gurufocus.com/news/9126590/strategy-inc-mstr-stock-up-56-but-gf-value-says-overvalued-gf-score-61100"
+  ],
+  "usage": {
+    "input_tokens": 1060,
+    "output_tokens": 499,
+    "cost_usd": 0.0071
+  }
+}

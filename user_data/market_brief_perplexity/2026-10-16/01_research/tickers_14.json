@@ -1,0 +1,117 @@
+{
+  "name": "tickers_14",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday October 16, 2026.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ZS | Zscaler, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -1.67% | +1.2% | 0.6\u00d7 | gapper 2026-09-14 |\n| RBRK | Rubrik, Inc. | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | +3.39% | -1.8% | 1.3\u00d7 | gapper 2026-09-14 |\n| DINO | HF Sinclair Corporation | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -2.96% | +3.1% | 0.8\u00d7 | \u2014 |\n| SBS | Companhia de Saneamento B\u00e1sico do Estado de S\u00e3o Paulo - SABESP | Large | Top 10 \u00b7 Main View TI65 \u00b7 Large cap | -2.57% | -5.2% | 0.9\u00d7 | both 2026-10-05 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Thursday October 15, 2026, any after-hours / pre-market move on Friday October 16, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Zscaler, Inc. (ZS) `[Software & SaaS]`\n- Citi analyst Fatima Boolani maintained a **Buy** rating and raised the price target to **$260 from $245**, citing an improving chief investment officer survey, stronger cybersecurity spending trends, and AI deployment driving security investment (Markets Insider, Oct. 15 06:00 ET).[3]\n- Citi also raised targets on CrowdStrike and Palo Alto Networks while maintaining Buy ratings; channel-partner discussions and a reseller survey indicated improving cybersecurity spending into 2027 (Yahoo Finance, Oct. 15 14:02 ET).[8]\n- A Pomerantz investigation into potential securities-law violations involving Zscaler and company officers was announced; the notice referenced Zscaler\u2019s May 26 guidance of **$875 million\u2013$878 million** for the current quarter versus a **$879 million** consensus and the Sept. 24 departure of Chief Revenue Officer Mike Rich (PR Newswire, Oct. 15 10:00 ET).[1]\n- A secondary report stated that Zscaler reaffirmed fiscal 2027 revenue guidance and upcoming-quarter outlook; it also cited **$100 million** in AI-security bookings and **25%** annual recurring-revenue growth (Simply Wall St, Oct. 15; publication time not reported).[6][9]\n- The company\u2019s previously reported quarter was cited at **$898.19 million revenue** versus **$876.96 million consensus** and **$1.19 adjusted EPS** versus **$1.09 consensus**; the cited report did not identify a new earnings release within this window (MarketBeat, Oct. 15; publication time not reported).[4]\n\n## Rubrik, Inc. (RBRK) `[Software & SaaS]`\n- Curated Wealth Partners acquired **10,069 shares**, valued at approximately **$1.153 million**, during the third quarter; the report said RBRK traded at **$115.94** during Thursday\u2019s session (The Stock Observer, Oct. 15; publication time not reported).[2]\n- Rubrik expanded **Project Hourglass** with AHEAD, Trace3, and World Wide Technology and introduced **Rubrik Code Guardian** for AI-driven, air-gapped code-security testing (Simply Wall St, Oct. 16; publication time not reported).[10]\n- The latest cited quarterly results were **$427.26 million revenue** versus **$396.30 million consensus** and **$0.20 EPS** versus **$0.04 consensus**; the report said revenue increased **43.9% year over year**, but these results were released Aug. 27 and were outside the requested window (Transcript Daily, Oct. 15; publication time not reported).[7]\n\n## HF Sinclair Corporation (DINO) `[Energy]`\n- No company-specific catalyst found in window\n\n## Companhia de Saneamento B\u00e1sico do Estado de S\u00e3o Paulo\u2014SABESP (SBS) `[Utilities]`\n- No company-specific catalyst found in window",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "## News provided by\nOct 15, 2026, 10:00 ET\nNEW YORK, Oct. 15, 2026 /PRNewswire/ -- Pomerantz LLP is investigating claims on behalf of investors of Zscaler, Inc.\n(\"Zscaler\" or the \"Company\") (NASDAQ: ZS).\nSuch investors are advised to contact Danielle Peyton at [email protected] or 646-581-9980, ext....",
+      "source": "web",
+      "title": "INVESTOR ALERT: Pomerantz Law Firm Investigates ...",
+      "url": "https://www.prnewswire.com/news-releases/investor-alert-pomerantz-law-firm-investigates-claims-on-behalf-of-investors-of-zscaler-inc---zs-302909600.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Curated Wealth Partners LLC acquired a new stake in Rubrik, Inc.\n(NYSE:RBRK ) in the 3rd quarter, Holdings Channel.com reports.\nThe institutional investor acquired 10,069 shares of the company's stock, valued at approximately $1,153,000.\n...\nPictet Asset Management Holding SA boosted its position in...",
+      "source": "web",
+      "title": "Rubrik, Inc. $RBRK Shares Newly Acquired by Curated Wealth Partners LLC",
+      "url": "https://www.thestockobserver.com/2026/10/15/rubrik-inc-rbrk-shares-newly-acquired-by-curated-wealth-partners-llc.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Zscaler price target raised to $260 from $245 at Citi | Markets Insider\n...\n# Zscaler price target raised to $260 from $245 at Citi\n...\nOct. 15, 2026, 06:00 AM\nCiti analyst Fatima Boolani raised the firm\u2019s price target on Zscaler (ZS) to $260 from $245 and keeps a Buy rating on the shares.\nThe firm ...",
+      "source": "web",
+      "title": "Zscaler price target raised to $260 from $245 at Citi",
+      "url": "https://markets.businessinsider.com/news/stocks/zscaler-price-target-raised-to-260-from-245-at-citi-1036630919"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Zscaler (NASDAQ:ZS) Price Target Raised to $260.00\n...\n# Zscaler (NASDAQ:ZS) Price Target Raised to $260.00\nOctober 15, 2026\n...\n## Key Points\n- **Citigroup raised Zscaler\u2019s price target to $260 from $245** and maintained a \u201cbuy\u201d rating, implying approximately 19.5% upside.\nOther analysts also incre...",
+      "source": "web",
+      "title": "Zscaler (NASDAQ:ZS) Price Target Raised to $260.00",
+      "url": "https://www.marketbeat.com/instant-alerts/analyst-zscaler-nasdaq-zs-price-target-raised-to-26000-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Zscaler stock opened at $220.79 on Thursday.\nThe stock has a market cap of $36.00 billion, a price-to-earnings ratio of -566.13, a price-to-earnings-growth ratio of 21.97 and a beta of 0.94.\n...\nThirty-five equities research analysts have rated the stock with a Buy rating, seven have issued a Hold r...",
+      "source": "web",
+      "title": "Zscaler (NASDAQ:ZS) Stock: Insider Adam Geller Sells 23,958 Shares",
+      "url": "https://transcriptdaily.com/2026/10/15/zscaler-nasdaqzs-stock-insider-adam-geller-sells-23958-shares.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Zscaler (ZS) Reaffirms Guidance As A Rich Valuation Narrative Comes Back Into View - Simply Wall St News\n...\n# Zscaler (ZS) Reaffirms Guidance As A Rich Valuation Narrative Comes Back Into View\nOctober 15, 2026\nSimply Wall St\n...\nZscaler (ZS) has returned to investors\u2019 radar after management reaffir...",
+      "source": "web",
+      "title": "Zscaler (ZS) Reaffirms Guidance As A Rich Valuation Narrative Comes Back Into View",
+      "url": "https://simplywall.st/stocks/us/software/nasdaq-zs/zscaler/news/zscaler-zs-reaffirms-guidance-as-a-rich-valuation-narrative/amp"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Shares of Rubrik, Inc.\n(NYSE:RBRK ) have been assigned a consensus rating of 'Moderate Buy' from the twenty-nine analysts that are presently covering the stock, MarketBeat reports.\nOne analyst has rated the stock with a sell recommendation and twenty-eight have given a buy recommendation to the comp...",
+      "source": "web",
+      "title": "Rubrik, Inc. (NYSE:RBRK) Stock Has Consensus Price Target of $114.42",
+      "url": "https://transcriptdaily.com/2026/10/15/rubrik-inc-nyserbrk-stock-has-consensus-price-target-of-114-42.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Thu, October 15, 2026 at 6:02 PM GMT+6 4 min read\n- ZS\n-1.50%\n...\nOn Thursday, Citi raised its targets on CrowdStrike (CRWD), Palo Alto Networks (PANW) and Zscaler (ZS), while Wells Fargo said channel checks pointed to improving demand heading into 2027.\n...\nZS and OKTA remain well below their 2021 ...",
+      "source": "web",
+      "title": "Citi Raises CRWD, PANW, ZS Targets On Improving ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/cybersecurity-stocks-retreat-record-highs-120216160.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Zscaler (NASDAQ:ZS) Stock Gets Price Target Bump from Citizens Jmp\nThursday, October 15, 2026Set Location\n...\n## The cloud security company said AI security bookings reached $100 million and lifted annual recurring revenue 25% as it reaffirmed full-year guidance.\n...\nCitizens Jmp raised their price ...",
+      "source": "web",
+      "title": "Zscaler (NASDAQ:ZS) Stock Gets Price Target Bump from ...",
+      "url": "https://ground.news/article/zscaler-nasdaq-zs-stock-gets-price-target-bump-from-citizens-jmp_bf7cac"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Rubrik (RBRK) stock is drawing attention after the company expanded Project Hourglass, adding partners like AHEAD, Trace3, and WWT, and introducing Rubrik Code Guardian for AI driven, air gapped code security testing.\nRubrik has also been on a strong run in the market, with a 90 day share price retu...",
+      "source": "web",
+      "title": "Why Did Rubrik (RBRK) Stock Climb After Its Latest Update?",
+      "url": "https://simplywall.st/stocks/us/software/nyse-rbrk/rubrik/news/why-did-rubrik-rbrk-stock-climb-after-its-latest-update"
+    }
+  ],
+  "citations": [
+    "https://www.prnewswire.com/news-releases/investor-alert-pomerantz-law-firm-investigates-claims-on-behalf-of-investors-of-zscaler-inc---zs-302909600.html",
+    "https://www.thestockobserver.com/2026/10/15/rubrik-inc-rbrk-shares-newly-acquired-by-curated-wealth-partners-llc.html",
+    "https://markets.businessinsider.com/news/stocks/zscaler-price-target-raised-to-260-from-245-at-citi-1036630919",
+    "https://www.marketbeat.com/instant-alerts/analyst-zscaler-nasdaq-zs-price-target-raised-to-26000-2026-10-15/",
+    "https://transcriptdaily.com/2026/10/15/zscaler-nasdaqzs-stock-insider-adam-geller-sells-23958-shares.html",
+    "https://simplywall.st/stocks/us/software/nasdaq-zs/zscaler/news/zscaler-zs-reaffirms-guidance-as-a-rich-valuation-narrative/amp",
+    "https://transcriptdaily.com/2026/10/15/rubrik-inc-nyserbrk-stock-has-consensus-price-target-of-114-42.html",
+    "https://finance.yahoo.com/markets/stocks/articles/cybersecurity-stocks-retreat-record-highs-120216160.html",
+    "https://ground.news/article/zscaler-nasdaq-zs-stock-gets-price-target-bump-from-citizens-jmp_bf7cac",
+    "https://simplywall.st/stocks/us/software/nyse-rbrk/rubrik/news/why-did-rubrik-rbrk-stock-climb-after-its-latest-update"
+  ],
+  "usage": {
+    "input_tokens": 1070,
+    "output_tokens": 649,
+    "cost_usd": 0.00729
+  }
+}

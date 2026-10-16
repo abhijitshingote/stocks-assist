@@ -1,0 +1,117 @@
+{
+  "name": "a_speculative_growth",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Quantum, space, nuclear, robotics.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nQuantum computing (IonQ, Rigetti, D-Wave, Quantum Computing Inc, Infleqtion, IBM, Google), space (SpaceX, Rocket Lab, AST SpaceMobile), nuclear/SMR, eVTOL, robotics/humanoids, drones: technical milestones with figures, contracts, offerings, analyst actions, conferences, and each stock's move including sympathy moves.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **IONQ** \u2014 Quantum Computing\n- IonQ priced a **$2.0 billion equity offering** comprising **20.5 million common shares at $40**, pre-funded warrants for **29.5 million shares at $40**, and **100 million seven-year warrants exercisable at $69.46**; proceeds are intended for quantum computing, networking, sensing, and security commercialization. (IonQ/company release, Oct. 14\u201315; publish time not provided)\n- Morgan Stanley analyst Joseph Moore lowered IonQ\u2019s price target from **$49 to $43**; the rating was not reported as changed. (Pluang, Oct. 15; publish time not provided)\n- IonQ shares fell about **9% to $31.42** in reaction to the financing, while **D-Wave** and **Rigetti** also declined; the cited report did not provide a cutoff-time closing price. (Pluang, Oct. 15; publish time not provided)\n- IonQ\u2019s reported Q2 revenue was **$80 million**, up **287% year over year**; no Q2 EPS or consensus comparison was provided. (Yahoo Finance, Oct. 15; publish time not provided)\n\n## **RGTI / QBTS** \u2014 Quantum Computing\n- **Rigetti Computing** rose **3% to $12.09** and **D-Wave Quantum** rose **2% to $12.29** during Oct. 15 trading as quantum-computing shares rebounded; no closing or 02:03 ET prices were provided. (Yahoo Finance, Oct. 15; publish time not provided)\n- D-Wave, Rigetti, and IonQ were reported as having national-security veterans on their boards, including former Homeland Security Secretary **Kirstjen Nielsen** at D-Wave, former Joint Chiefs Chairman **Gen. Peter Pace** at Rigetti, and former National Geospatial-Intelligence Agency director **Robert Cardillo** at IonQ. (Business Insider, Oct. 15 09:06 ET)\n\n## **RKLB** \u2014 Space\n- Rocket Lab moved the first flight of its **Neutron** medium-lift reusable rocket to **2027** after finding voids in the carbon-composite layers of the first-stage propellant dome; CEO Peter Beck said the issue was resolved, while cryogenic and hydrostatic testing was expected to continue through **Q1 2027**. (Yahoo Finance, Oct. 15 10:06 ET)\n- Rocket Lab shares fell approximately **11% to $52.85** in morning trading; the report said the stock had closed at **$59.18** on Oct. 14 after an **8%** decline. (Yahoo Finance, Oct. 15 10:06 ET)\n- Clear Street cut its price target from **$129 to $105** and retained a **Buy** rating; KeyBanc cut its target from **$135 to $100** and retained **Overweight**; Roth Capital retained **Buy** with a **$110** target. (Yahoo Finance, Oct. 15 10:18 ET)\n\n## **SPCX / ASTS** \u2014 Space Sympathy Moves\n- **SpaceX** shares fell approximately **2% to $148.65**, while **AST SpaceMobile** shares fell approximately **2% to $41.38** during Oct. 15 morning trading as Rocket Lab\u2019s Neutron delay affected space-sector trading. (Yahoo Finance, Oct. 15 10:06 ET)\n- AST SpaceMobile was reported to be targeting approximately **45 BlueBird satellites in early 2027**, with **45\u201360 satellites** cited as the level for continuous service in key markets; the company had announced arrival of BlueBirds **14, 15, and 16** at Cape Canaveral without a confirmed launch date. (Yahoo Finance, Oct. 15; publish time not provided)\n- Piper Sandler reportedly downgraded AST SpaceMobile to **Neutral** and cut its price target to **$54**, citing satellite-launch pace and competition from SpaceX; the report did not provide the prior rating or target. (Pluang, Oct. 15; publish time not provided)\n- A report citing satellite-communications consultant Tim Farrar estimated that reaching **60 satellites** could take until **2028**; this was an external estimate, not a company forecast. (Yahoo Finance, Oct. 15; publish time not provided)\n\n## **QUCY / ONDS** \u2014 Quantum Security and Drones\n- Quantum Cyber appointed retired U.S. Army Major General **Alberto C. Rosende** to its board, effective **Oct. 13, 2026**; the appointment was discussed alongside defense-related hiring at Ondas Holdings and IonQ. (Business Insider, Oct. 15 09:06 ET)\n- IonQ\u2019s reported chief information officer was **Katie Arrington**, formerly the Department of War\u2019s acting CIO; the source did not identify a new Oct. 15 appointment. (Business Insider, Oct. 15 09:06 ET)",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Rocket Lab Tumbles 11% as Neutron\u2019s First Flight Moves to 2027; SpaceX and AST SpaceMobile Pull Back\n...\n# Rocket Lab Tumbles 11% as Neutron\u2019s First Flight Moves to 2027; SpaceX and AST SpaceMobile Pull Back\nThu, October 15, 2026 at 10:06 AM GMT-3 5 min read\n...\n-6.64%\n- SPCX\n...\n### Quick Read\n- Ro...",
+      "source": "web",
+      "title": "Rocket Lab Tumbles 11% as Neutron\u2019s First Flight Moves to 2027; SpaceX and AST SpaceMobile Pull Back",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/rocket-lab-tumbles-11-neutron-130625818.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Quantum Computing Stocks Rebound After Dilution Scare: IonQ and Rigetti Climb 3%, D-Wave Advances 2%\n...\n### Quick Read\n- IonQ climbs 3% to $32.31, leading Rigetti and D-Wave each up 2%, as quantum pure-plays rebound from a dilution-driven selloff.\n...\n- IonQ's Q2 revenue surged 287% year over year ...",
+      "source": "web",
+      "title": "Quantum Computing Stocks Rebound After Dilution Scare: IonQ and Rigetti Climb 3%, D-Wave Advances 2%",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/quantum-computing-stocks-rebound-dilution-154659409.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Oct. 15, 2026, 09:06 AM\n...\nQUCY's appointment of retired U.S. Army Major General Alberto C. Rosende to its board lands alongside senior defense and national security hires at peers including Ondas Holdings and IonQ, as the administration moves tens of billions of dollars into direct equity stakes, ...",
+      "source": "web",
+      "title": "Quantum Cyber (QUCY), Peers Pull Senior Defense Talent as ...",
+      "url": "https://markets.businessinsider.com/news/currencies/quantum-cyber-qucy-peers-pull-senior-defense-talent-as-trump-strategic-program-gathers-pace-1036630074"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Thu, October 15, 2026 at 10:18 AM GMT-3 3 min read\n...\n- Clear Street lowered its price target on the stock to $105 from $129 but kept a 'Buy' rating.\n- The firm said the medium-lift rocket market opportunity is 'only getting bigger.'\n...\nRocket Lab (RKLB) shares drew investor attention on Thursday ...",
+      "source": "web",
+      "title": "RKLB Stock Heads For 10-Month Lows On Neutron Launch Delay ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/rklb-stock-heads-10-month-131846475.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Rocket Lab announced a delay in the first flight of its Neutron medium-lift reusable rocket to 2027 after discovering voids in the carbon composite layers of the propellant dome during manufacturing.\nWhile the flaw won't cause flight failure and has been resolved, testing will continue into early 20...",
+      "source": "web",
+      "title": "Rocket Lab delays Neutron rocket's first flight...",
+      "url": "https://pluang.com/en/news-feed/rocket-lab-turun-11-persen-neutron-tertunda-ke-2027-spacex-dan-ast-spacemobile"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "- Farrar questioned AST's midband deployment plans and why its latest satellite shipment update lacked a confirmed launch date.\n- AST targets about 45 BlueBird satellites in early 2027 and says 45-60 could enable continuous service in key markets.\n...\nShares of AST SpaceMobile (ASTS) are heading for...",
+      "source": "web",
+      "title": "ASTS Stock Heads For Worst Year Since Listing",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/asts-stock-heads-worst-since-061735487.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "IonQ Stock Tumbles on $2 Billion Equity Offering.\nWhy Other Quantum Names Are Falling Just as Hard.\n...\nThu, October 15, 2026 at 11:30 AM UTC\n...\nIonQ stock drops 9.5% Wednesday.\nAn equity raise isn't wholly to blame.\nD-Wave, Quantinuum, and Rigetti Computing also saw substantial declines.",
+      "source": "web",
+      "title": "IonQ Stock Tumbles on $2 Billion Equity Offering. Why Other Quantum Names Are Falling Just as Hard.",
+      "url": "https://www.yahoo.com/news/m/7618d4b3-66a1-315b-b56d-7fdfa085f75c/ionq-stock-tumbles-on-2.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Morgan Stanley analyst Joseph Moore lowered IonQ's price target from $49 to $43 following the company's announcement of a $2 billion financing deal with Heights Capital Management.\nThe deal involves issuing 20.5 million new shares and 29.5 million pre-funded warrants at $40 each, plus 100 million wa...",
+      "source": "web",
+      "title": "IonQ stock target cut after $2B financing deal raises dilution ...",
+      "url": "https://pluang.com/en/news-feed/ionq-morgan-stanley-pangkas-target-harga-43"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "IonQ to Buy Cybersecurity Firm Elisity in up to $1.3 Billion Deal\nThursday, October 15, 2026Set Location\n...\n## The acquisition adds enterprise network security technology and could help IonQ sell quantum-safe offerings to government and corporate customers.\n...\nBias Comparison\n- On Monday, IonQ Inc...",
+      "source": "web",
+      "title": "IonQ to Buy Cybersecurity Firm Elisity in up to $1.3 Billion ...",
+      "url": "https://ground.news/article/quantum-computing-company-ionq-to-buy-cybersecurity-firm-for-up-to-13-billion"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "IonQ Announces Pricing of $2.0 Billion Equity Offering\n- Thursday \u00b7 October 15, 2026\n...\n- IonQ priced a $2 billion equity offering comprising 20.5 million common shares at $40 each, pre-funded warrants for 29.5 million shares at $40 each, and seven-year warrants for 100 million additional shares.\n....",
+      "source": "web",
+      "title": "IonQ Announces Pricing of $2.0 Billion Equity Offering",
+      "url": "https://thequantuminsider.com/2026/10/14/ionq-announces-pricing-2-billion-equity-offering/"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/rocket-lab-tumbles-11-neutron-130625818.html",
+    "https://finance.yahoo.com/markets/stocks/articles/quantum-computing-stocks-rebound-dilution-154659409.html",
+    "https://markets.businessinsider.com/news/currencies/quantum-cyber-qucy-peers-pull-senior-defense-talent-as-trump-strategic-program-gathers-pace-1036630074",
+    "https://finance.yahoo.com/markets/stocks/articles/rklb-stock-heads-10-month-131846475.html?fr=sycsrp_catchall",
+    "https://pluang.com/en/news-feed/rocket-lab-turun-11-persen-neutron-tertunda-ke-2027-spacex-dan-ast-spacemobile",
+    "https://finance.yahoo.com/markets/stocks/articles/asts-stock-heads-worst-since-061735487.html",
+    "https://www.yahoo.com/news/m/7618d4b3-66a1-315b-b56d-7fdfa085f75c/ionq-stock-tumbles-on-2.html",
+    "https://pluang.com/en/news-feed/ionq-morgan-stanley-pangkas-target-harga-43",
+    "https://ground.news/article/quantum-computing-company-ionq-to-buy-cybersecurity-firm-for-up-to-13-billion",
+    "https://thequantuminsider.com/2026/10/14/ionq-announces-pricing-2-billion-equity-offering/"
+  ],
+  "usage": {
+    "input_tokens": 742,
+    "output_tokens": 1061,
+    "cost_usd": 0.00813
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "name": "a_deals_filings",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Deals, offerings, filings.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nM&A (terms, value, withdrawn or approved deals), equity/convert/debt offerings (size, price, coupon), activist stakes, 13D/13G, buybacks, index adds/deletes, IPOs, lockup expiries, large contracts with $ value.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **CCC** `[Software & SaaS]`\n- GTCR and Elliott agreed to acquire CCC Intelligent Solutions in an all-cash transaction with enterprise value of approximately **$6.1 billion**; CCC shareholders will receive **$7.75 per share**. The board approved the transaction, which is expected to close in **Q1 2027** subject to shareholder and regulatory approvals. (GlobeNewswire, Oct 15 08:00 ET)[1]\n\n## **VRNS** `[Software & SaaS]`\n- Proofpoint, owned by Thoma Bravo, agreed to acquire Varonis in an all-cash transaction valued at approximately **$6.3 billion**; Varonis shareholders will receive **$49.75 per share**. The transaction was unanimously approved by Varonis\u2019s board and is expected to close in **H1 2027**, subject to shareholder and regulatory approvals. (Proofpoint, Oct 15, time not reported)[4]\n- Thoma Bravo committed equity financing and secured debt-financing commitments for the acquisition; Varonis entered the merger agreement with Proofpoint and Vail Merger Sub on **October 15, 2026**. (SEC Form 8-K filing, Oct 15, time not reported)[2]\n\n## **PAG** `[Retail / Automotive]`\n- Penske Automotive agreed to be taken private by Motown Acquisition, owned by Penske Corporation and Mitsui, for **$212.00 per share in cash**, implying enterprise value of approximately **$16.3 billion**. The transaction is expected to close in **Q1 2027** after regulatory approvals and shareholder votes. (PRNewswire, Oct 15 10:50 ET)[8]\n- The buyer expects up to **$2.2 billion of equity financing** from Penske Corporation and Mitsui and up to **$1.8 billion of debt financing** from JPMorgan, Bank of America and Wells Fargo. (SEC Form 8-K filing, Oct 15, time not reported)[9]\n\n## **FUL** `[Specialty Materials & IP Licensing]`\n- H.B. Fuller priced **$850 million** of senior unsecured notes due **2034** at **100% of principal**, carrying a **7.625% coupon**. Proceeds are intended to help fund the Advanced Medical Solutions acquisition, repay existing borrowings and address the company\u2019s **4.000% notes due February 15, 2027**; closing was expected around **October 21, 2026**. (Yahoo Finance, Oct 15 13:27 ET)[5]\n\n## **RIG** `[Energy]`\n- Transocean\u2019s amended and restated credit agreement increases revolving commitments from **$510 million to $750 million** and extends maturity from **June 2028 to October 2031**. Effectiveness is subject to conditions including completion of Transocean\u2019s previously announced Valaris acquisition. (GlobeNewswire via AP, Oct 15 17:33 ET)[3]\n- Transocean retired its **8.00% senior secured notes due 2028**, with **$165 million** of principal, plus call premium and accrued interest, settled on **October 1, 2026**. (GlobeNewswire via AP, Oct 15 17:33 ET)[3]\n\n## **TCXB** `[Calendar / IPO]`\n- TCGX Acquisition Corp. II priced an IPO of **10,000,000 Class A ordinary shares at $10.00 per share**, for gross proceeds of **$100 million**. The shares were scheduled to begin trading on Nasdaq under **TCXB on October 16, 2026**; the offering was expected to close around **October 19, 2026**. (Business Wire, Oct 15, time not reported)[6]\n\n## **FLSC** `[Calendar / IPO]`\n- Frazier Life Sciences Acquisition Corp. II priced an IPO of **7,500,000 Class A ordinary shares at $10.00 per share**, for gross proceeds of **$75 million**; the shares began trading under **FLSC on October 14, 2026**, and the offering was expected to close on **October 15, 2026**. (Business Wire, updated Oct 16, time not reported)[7]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# CCC Intelligent Solutions Signs Definitive Agreement to Be Acquired by GTCR and Elliott\n, GlobeNewswire - 8:00 AM ET 10/15/2026 mergers-and-acquisitions\nCHICAGO, Oct. 15, 2026 (GLOBE NEWSWIRE) -- CCC Intelligent Solutions Holdings Inc.\n( CCC ) , a leading SaaS and AI platform provider for the mult...",
+      "source": "web",
+      "title": "CCC Intelligent Solutions Signs Definitive Agreement ...",
+      "url": "https://www.fidelity.com/news/article/mergers-and-acquisitions/202610150800PRIMZONEFULLFEED9846471"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026 (the 'Signing Date'), Varonis Systems, Inc., a Delaware corporation (the 'Company'), entered into an Agreement and Plan of Merger (the 'Merger Agreement') with Proofpoint, Inc., a Delaware corporation ('Parent'), and Vail Merger Sub, Inc., a Delaware corporation and a wholly owne...",
+      "source": "web",
+      "title": "Varonis agrees to $49.75-a-share Proofpoint acquisition",
+      "url": "https://www.stocktitan.net/sec-filings/VRNS/8-k-varonis-systems-inc-reports-material-event-173cce892781.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Transocean Ltd. Announces Amended and Restated Credit Agreement and Redemption of Deepwater Aquila Notes\n...\nPublished 9:33 PM UTC, October 15, 2026\nSTEINHAUSEN, Switzerland, Oct. 15, 2026 (GLOBE NEWSWIRE) -- Transocean Ltd.\n(NYSE: RIG) (\u201cTransocean\u201d) today announced that its wholly owned subsidia...",
+      "source": "web",
+      "title": "Transocean Ltd. Announces Amended and Restated Credit Agreement and Redemption of Deepwater Aquila Notes",
+      "url": "https://apnews.com/press-release/globenewswire-mobile/press-release-059aae804d660d3998c77d8204d28cbe"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "MIAMI, FL and SUNNYVALE, CA \u2013 October 15, 2026 \u2013 Varonis Systems, Inc.\n(Nasdaq: VRNS) ('Varonis'), the data and AI security leader, and Proofpoint, Inc.\n('Proofpoint'), a global leader in human and agent cybersecurity, today announced entrance into a definitive agreement under which Varonis will be ...",
+      "source": "web",
+      "title": "Proofpoint to Acquire Varonis in a $6.3 Billion Transaction",
+      "url": "https://www.proofpoint.com/us/newsroom/press-releases/proofpoint-acquire-varonis-creating-global-leader-data-and-ai-security"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "H.B.\nFuller Prices $850M Debt Offering to Fund AMS Acquisition\n...\n**H.B.\nFuller Company ** FUL recently priced an offering of $850 million in senior unsecured notes to help finance its planned acquisition of Advanced Medical Solutions Group plc (AMS), repay existing debt and other borrowings to sup...",
+      "source": "web",
+      "title": "H.B. Fuller Prices $850M Debt Offering to Fund AMS ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/h-b-fuller-prices-850m-132700815.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "PALO ALTO, Calif.--(BUSINESS WIRE)--Oct 15, 2026--\nTCGX Acquisition Corp.\nII (the 'Company') announced today that it priced its initial public offering of 10,000,000 Class A ordinary shares at a price of $10.00 per share, for gross proceeds of $100,000,000.\nUnlike certain other special purpose acqui...",
+      "source": "web",
+      "title": "TCGX Acquisition Corp. II Announces Pricing of $100,000,000 Initial Public Offering",
+      "url": "https://lasvegassun.com/news/2026/oct/15/tcgx-acquisition-corp-ii-announces-pricing-of-1000/"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Frazier Life Sciences Acquisition Corp.\nII Announces Pricing of $75,000,000 Initial Public Offering\n...\nPALO ALTO, Calif.--(BUSINESS WIRE)--Frazier Life Sciences Acquisition Corp.\nII (the \u201cCompany\u201d), a special purpose acquisition company, announced today that it priced its initial public offering of...",
+      "source": "web",
+      "title": "Frazier Life Sciences Acquisition Corp. II Announces ...",
+      "url": "https://www.businesswire.com/news/home/20261013289710/en/Frazier-Life-Sciences-Acquisition-Corp.-II-Announces-Pricing-of-$75000000-Initial-Public-Offering"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Penske Automotive Group Announces Agreement to be Taken Private by Penske Corporation and Mitsui & Co.\n...\n# Penske Automotive Group Announces Agreement to be Taken Private by Penske Corporation and Mitsui & Co.\n...\nBLOOMFIELD HILLS, Mich., Oct. 15, 2026 /PRNewswire/ -- Penske Automotive Group, Inc....",
+      "source": "web",
+      "title": "Penske Automotive Group Announces Agreement to be Taken ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/penske-automotive-group-announces-agreement-105000742.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Penske Automotive Group, Inc.\n## Rhea-AI Filing Summary\n(PAG) agreed to a merger in which Motown Acquisition Corp., owned by Penske Corporation and Mitsui & Co., will merge into PAG.\n...\nBuyer expects up to **$2.2 billion** of equity financing and up to **$1.8 billion** of debt financing; the merger...",
+      "source": "web",
+      "title": "Penske Automotive agrees to $212-a-share cash merger",
+      "url": "https://www.stocktitan.net/sec-filings/PAG/8-k-penske-automotive-group-inc-reports-material-event-7b98be5d10e1.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Kirkland Advises CCC on $6.1 Billion Acquisition by GTCR and Elliott\n15 October 2026\nKirkland & Ellis advised CCC Intelligent Solutions Holdings Inc.\n(Nasdaq: CCC), a leading SaaS and AI platform provider for the multi-trillion-dollar insurance economy, on a definitive agreement to be acquired by ...",
+      "source": "web",
+      "title": "Kirkland Advises CCC on $6.1 Billion Acquisition by GTCR ...",
+      "url": "https://www.kirkland.com/news/press-release/2026/10/kirkland-advises-ccc-on-6-1-billion-acquisition-by-gtcr-and-elliott"
+    }
+  ],
+  "citations": [
+    "https://www.fidelity.com/news/article/mergers-and-acquisitions/202610150800PRIMZONEFULLFEED9846471",
+    "https://www.stocktitan.net/sec-filings/VRNS/8-k-varonis-systems-inc-reports-material-event-173cce892781.html",
+    "https://apnews.com/press-release/globenewswire-mobile/press-release-059aae804d660d3998c77d8204d28cbe",
+    "https://www.proofpoint.com/us/newsroom/press-releases/proofpoint-acquire-varonis-creating-global-leader-data-and-ai-security",
+    "https://finance.yahoo.com/markets/stocks/articles/h-b-fuller-prices-850m-132700815.html",
+    "https://lasvegassun.com/news/2026/oct/15/tcgx-acquisition-corp-ii-announces-pricing-of-1000/",
+    "https://www.businesswire.com/news/home/20261013289710/en/Frazier-Life-Sciences-Acquisition-Corp.-II-Announces-Pricing-of-$75000000-Initial-Public-Offering",
+    "https://finance.yahoo.com/markets/stocks/articles/penske-automotive-group-announces-agreement-105000742.html?fr=sycsrp_catchall",
+    "https://www.stocktitan.net/sec-filings/PAG/8-k-penske-automotive-group-inc-reports-material-event-7b98be5d10e1.html",
+    "https://www.kirkland.com/news/press-release/2026/10/kirkland-advises-ccc-on-6-1-billion-acquisition-by-gtcr-and-elliott"
+  ],
+  "usage": {
+    "input_tokens": 720,
+    "output_tokens": 927,
+    "cost_usd": 0.00796
+  }
+}

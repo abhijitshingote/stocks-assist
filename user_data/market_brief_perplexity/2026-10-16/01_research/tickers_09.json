@@ -1,0 +1,117 @@
+{
+  "name": "tickers_09",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday October 16, 2026.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| PAG | Penske Automotive Group, Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +9.16% | +7.2% | 7.0\u00d7 | both 2026-10-15 |\n| WULF | TeraWulf Inc. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +6.42% | -8.8% | 3.8\u00d7 | volume_spike 2026-10-15 |\n| LQDA | Liquidia Corporation | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +4.65% | +25.7% | 0.7\u00d7 | both 2026-10-14 |\n| EFXT | Enerflex Ltd. | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -5.79% | +2.5% | 0.9\u00d7 | gapper 2026-10-13 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Thursday October 15, 2026, any after-hours / pre-market move on Friday October 16, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Penske Automotive Group, Inc. (PAG) `[Retail]`\n- Penske Automotive Group agreed to be taken private by Motown Acquisition Corp., owned by Penske Corporation and Mitsui & Co.; holders outside the buyer group will receive **$212.00 per share in cash**, valuing the company at approximately **$16.3 billion including debt**. The price was an **8.84% premium** to the October 14 close. (Penske Automotive Group, Oct. 15, 2026; CNBC, Oct. 15 17:08 ET)[1][6]\n- Penske Corporation and Mitsui will own approximately **64% and 36%**, respectively, after closing; the transaction is expected to close in **Q1 2027**, subject to regulatory approvals and shareholder votes, and is not subject to a financing condition. (Penske Automotive Group, Oct. 15, 2026)[1]\n- The special committee of independent directors unanimously recommended the transaction, and the board approved the **$212** offer, increased from the previously announced **$210** proposal. (Morningstar, Oct. 15, 2026)[8]\n- PAG shares rose **9.16%** on October 15; approximately **3.24 million shares** traded, more than **7\u00d7** average daily volume, and the stock finished at **$212.00**. (Seeking Alpha, Oct. 15 17:03 ET)[3]\n- Penske Automotive will issue third-quarter 2026 results before the market opens on **October 28, 2026**, but will not host an earnings conference call; its shares will cease trading on the NYSE after the transaction closes. (Penske Automotive Group, Oct. 15, 2026)[1]\n\n## TeraWulf Inc. (WULF) `[AI Infrastructure]`\n- Morgan Stanley analyst **Stephen Byrd** reiterated an **Overweight** rating and a **$65 price target**, citing a credit backstop for Hawesville, Muskie lease signings, cash-flow-producing assets, and potential European growth. (Morgan Stanley commentary reported by Business Insider, Oct. 15 10:10 ET)[10]\n- The Morgan Stanley commentary said the recent decline was inconsistent with the underlying contract value and identified upcoming contracts as potential catalysts; no contract dollar amount was specified in the report. (Business Insider, Oct. 15 10:10 ET)[10]\n- TeraWulf had scheduled a conference call for its third-quarter 2026 financial results, but the available report did not provide the earnings date, financial results, or guidance figures. (GlobeNewswire item cited by Business Insider, Oct. 15, 2026)[10]\n\n## Liquidia Corporation (LQDA) `[Pharma]`\n- No company-specific catalyst found in window.\n\n## Enerflex Ltd. (EFXT) `[Energy]`\n- No company-specific catalyst found in window.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# News Details\n### Penske Automotive Group Announces Agreement to be Taken Private by Penske Corporation and Mitsui & Co.\nOctober 15, 2026\n...\nBLOOMFIELD HILLS, Mich., Oct. 15, 2026 /PRNewswire/ -- Penske Automotive Group, Inc.\n(NYSE: PAG) (the \"***Company* **\" or ***\"PAG\"* **), a diversified intern...",
+      "source": "web",
+      "title": "News Details - Investors - Penske Automotive Group",
+      "url": "https://investors.penskeautomotive.com/news/news-details/2026/Penske-Automotive-Group-Announces-Agreement-to-be-Taken-Private-by-Penske-Corporation-and-Mitsui--Co-/default.aspx"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Penske Automotive Group to Be Taken Private by Penske, Mitsui\nProvided by Dow Jones Oct 15, 2026, 11:30:00 AM\n...\nPenske Automotive Group has agreed to be taken private by its biggest investors in a deal that gives the transportation-services company an enterprise value of about $16.3 billion.\nPen...",
+      "source": "web",
+      "title": "Penske Automotive Group to Be Taken Private by ...",
+      "url": "https://www.morningstar.com/news/dow-jones/202610153257/penske-automotive-group-to-be-taken-private-by-penske-mitsui"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Penske Automotive Group jumps 9% on go-private agreement\nOct 15, 2026, 5:03 PM ETPenske Automotive Group, Inc.\n...\nShares of Penske Automotive Group (PAG), a diversified international automotive and commercial-truck retailer, rallied almost 9% on Thursday.\nThis came after the company announced it ...",
+      "source": "web",
+      "title": "Penske Automotive Group jumps 9% on go-private agreement (PAG:NYSE)",
+      "url": "https://www.seekingalpha.com/news/4653640-penske-automotive-group-jumps-9-on-go-private-agreement"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Oct. 15, 2026, 11:00 AM\nPenske Automotive Group (PAG) stock was up 8.4% on Thursday after the car and truck dealership operator announced a deal to take it private.\nThe company has reached an agreement with Motown Acquisition Corp.\nto be taken private.\nInvestors will note that Motown Acquisition Cor...",
+      "source": "web",
+      "title": "Penske Automotive Group Stock (PAG) Jumps Over 8% on a $16.3B Deal to Go Private",
+      "url": "https://markets.businessinsider.com/news/stocks/penske-automotive-group-stock-pag-jumps-over-8-on-a-16-3b-deal-to-go-private-1036632189"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Penske Automotive goes private at $16.3B valuation\n...\nThu, October 15, 2026 at 3:02 PM GMT-3 2 min read\n- PAG\n+8.84%\n- 8031.T\n-1.23%\n...\nPenske Automotive Group agreed to go private, accepting a previously disclosed offer, in which parent company Penske Corp. and long-term minority shareholder Mits...",
+      "source": "web",
+      "title": "Penske Automotive goes private at $16.3B valuation",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/penske-automotive-goes-private-16-180200905.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Penske Automotive agrees to be taken private by Penske, Mitsui\n...\n# Penske Automotive agrees to be taken private by Penske, Mitsui\nPublished Thu, Oct 15 2026 5:08 PM EDT\n...\nPenske Automotive Group on Thursday said it had agreed to be taken private by its largest shareholders, Penske Corp and Japan...",
+      "source": "web",
+      "title": "Penske Automotive agrees to be taken private by ...",
+      "url": "https://www.cnbc.com/amp/2026/10/15/penske-automotive-agrees-to-be-taken-private-by-penske-mitsui.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Penske Automotive to Be Taken Private at $16.3 Billion Valuation\n...\nThu, October 15, 2026 at 6:21 AM GMT-5 1 min read\n...\n(Bloomberg) -- Penske Automotive Group Inc.\n(PAG), one of the largest car dealership groups in the US, reached a deal with its two biggest shareholders to go private at a $16.3 ...",
+      "source": "web",
+      "title": "Penske Automotive to Be Taken Private at $16.3 Billion Valuation",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/penske-automotive-taken-private-16-112119555.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Penske Automotive: Committee Approves Go-Private Buyout at New Price of $212 per Share | Morningstar\n1. Company Reports\n...\n# Penske Automotive: Committee Approves Go-Private Buyout at New Price of $212 per Share\nDavid Whiston Oct 15, 2026\nPenske Automotive Group announced on Oct. 15 that its board ...",
+      "source": "web",
+      "title": "Penske Automotive: Committee Approves Go-Private ...",
+      "url": "https://www.morningstar.com/company-reports/1502868-penske-automotive-committee-approves-go-private-buyout-at-new-price-of-212-per-share?listing=0P000005MN"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Penske Automotive to be taken private in $16.3 billion deal\n...\n# Penske Automotive to be taken private in $16.3 billion deal\n...\nThu, October 15, 2026 at 12:08 p.m.\nGMT-3 2 min read\n...\n+8.47%\n...\nPenske Automotive Group Inc (NYSE:PAG) agreed to be taken private by Penske Corporation and Mitsui & C...",
+      "source": "web",
+      "title": "Penske Automotive to be taken private in $16.3 billion deal",
+      "url": "https://ca.finance.yahoo.com/news/penske-automotive-taken-private-16-150800580.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Oct. 15, 2026, 10:10 AM\nMorgan Stanley analyst Stephen Byrd argues that the recent stock price decline for TeraWulf (WULF) is \u201cat odds with underlying contract value and likely value creation from upcoming contracts,\u201d adding that the firm \u201crarely sees a stock as mispriced as WULF and other Powered S...",
+      "source": "web",
+      "title": "TeraWulf pullback \u2018at odds with underlying contract value,\u2019 says Morgan Stanley",
+      "url": "https://markets.businessinsider.com/news/stocks/terawulf-pullback-at-odds-with-underlying-contract-value-says-morgan-stanley-1036632021"
+    }
+  ],
+  "citations": [
+    "https://investors.penskeautomotive.com/news/news-details/2026/Penske-Automotive-Group-Announces-Agreement-to-be-Taken-Private-by-Penske-Corporation-and-Mitsui--Co-/default.aspx",
+    "https://www.morningstar.com/news/dow-jones/202610153257/penske-automotive-group-to-be-taken-private-by-penske-mitsui",
+    "https://www.seekingalpha.com/news/4653640-penske-automotive-group-jumps-9-on-go-private-agreement",
+    "https://markets.businessinsider.com/news/stocks/penske-automotive-group-stock-pag-jumps-over-8-on-a-16-3b-deal-to-go-private-1036632189",
+    "https://finance.yahoo.com/markets/stocks/articles/penske-automotive-goes-private-16-180200905.html",
+    "https://www.cnbc.com/amp/2026/10/15/penske-automotive-agrees-to-be-taken-private-by-penske-mitsui.html",
+    "https://finance.yahoo.com/markets/stocks/articles/penske-automotive-taken-private-16-112119555.html?fr=sycsrp_catchall",
+    "https://www.morningstar.com/company-reports/1502868-penske-automotive-committee-approves-go-private-buyout-at-new-price-of-212-per-share?listing=0P000005MN",
+    "https://ca.finance.yahoo.com/news/penske-automotive-taken-private-16-150800580.html",
+    "https://markets.businessinsider.com/news/stocks/terawulf-pullback-at-odds-with-underlying-contract-value-says-morgan-stanley-1036632021"
+  ],
+  "usage": {
+    "input_tokens": 1082,
+    "output_tokens": 639,
+    "cost_usd": 0.00738
+  }
+}

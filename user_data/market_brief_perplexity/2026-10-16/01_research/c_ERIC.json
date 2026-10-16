@@ -1,0 +1,117 @@
+{
+  "name": "c_ERIC",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Friday October 16, 2026. Target: Telefonaktiebolaget LM Ericsson (publ) (ERIC).\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ERIC | Telefonaktiebolaget LM Ericsson (publ) | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +10.71% | +11.5% | 4.5\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## Telefonaktiebolaget LM Ericsson (publ) (ERIC) `[Communications & Networking]`\n- No company-specific catalyst found in window.\n\nTASK\nSearch harder for why ERIC moved. Run several searches: \"why is Telefonaktiebolaget LM Ericsson (publ) stock down/up\",\n\"Telefonaktiebolaget LM Ericsson (publ) stock\", \"ERIC shares Thursday October 15, 2026\", \"Telefonaktiebolaget LM Ericsson (publ) concerns\", \"Telefonaktiebolaget LM Ericsson (publ) FDA\",\n\"Telefonaktiebolaget LM Ericsson (publ) analyst\", \"Telefonaktiebolaget LM Ericsson (publ) price target\", \"Telefonaktiebolaget LM Ericsson (publ) deal\", \"Telefonaktiebolaget LM Ericsson (publ) offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Telefonaktiebolaget LM Ericsson (publ) peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Friday October 16, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Telefonaktiebolaget LM Ericsson (publ) (ERIC) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Telefonaktiebolaget LM Ericsson (publ) (ERIC) `[Communications & Networking]`\n- Ericsson reported Q3 2026 revenue of SEK 59.5 billion versus SEK 56.2 billion a year earlier, organic sales growth of 7%, and adjusted EBITA of SEK 10.1 billion versus the Bloomberg consensus of SEK 7.93 billion (Ericsson, Oct 15 2026; Bloomberg, Oct 15 2026). [10][6]\n- Q3 diluted EPS was SEK 1.77 versus SEK 3.33 a year earlier; the U.S. consensus was $0.14 per share, while reported EPS was $0.18 (Ericsson, Oct 15 2026; MarketBeat, Oct 15 2026). [3][5]\n- Q3 revenue was $5.94 billion versus the $5.59 billion consensus estimate (MarketBeat, Oct 15 2026). [5]\n- Ericsson said Networks revenue increased and that organic sales grew in three of four market areas; customer wins included network modernization, differentiated connectivity, and mission-critical networks (Ericsson, Oct 15 2026). [10]\n- CEO Per Narvinger said the RAN market was flat, geopolitical uncertainty remained elevated, and component costs would pressure gross margin in 2027 (Ericsson, Oct 15 2026). [10]\n- Ericsson announced a new APAC market area combining North East Asia with South East Asia, Oceania and India, effective Jan. 1, 2027, as part of a simplified group structure and executive-team changes (Ericsson/PRNewswire, Oct 15 2026). [2]\n- Ericsson said it returned SEK 4.8 billion through share repurchases during Q3 (GuruFocus, Oct 15 2026). [7]\n- ERIC opened at $10.65 versus the prior close of $9.58, and was reported at $10.395 with 11,903,527 shares traded; the report attributed the gap-up to the earnings release (MarketBeat, Oct 15 2026). [5]\n- ERIC was reported about 12% higher in Nasdaq premarket trading and about 11% higher in Stockholm after the Q3 release (Investing.com, Oct 15 2026). [3]\n- No separate after-hours or premarket catalyst published by 02:03 ET on Oct. 16 was identified beyond the Q3 earnings release, operating-structure announcement, and related analyst-consensus comparisons.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Why Ericsson Stock Soared Today\nThu, October 15, 2026 at 3:17 PM GMT-3 3 min read\n...\nShares of **Telefonaktiebolaget LM Ericsson** (NASDAQ:ERIC) opened Thursday's trading 11.3% higher, boosted by a strong earnings report.\nThe telecom equipment maker's stock backed down slightly from that early pe...",
+      "source": "web",
+      "title": "Why Ericsson Stock Soared Today",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/why-ericsson-stock-soared-today-181701004.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Ericsson announces simplification of Group structure and changes to the Executive Team\n- Group structure to be simplified to better serve customers, leverage R&D capabilities and drive efficiencies\n...\nSTOCKHOLM, Oct. 15, 2026 /PRNewswire/ -- Ericsson (NASDAQ: ERIC) today announces changes to its ...",
+      "source": "web",
+      "title": "Ericsson announces simplification of Group structure and ...",
+      "url": "https://finance.yahoo.com/technology/articles/ericsson-announces-simplification-group-structure-062700160.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Ericsson reports fall in third-quarter profit despite rising sales\nThu, October 15, 2026 at 7:03 AM CST 2 min read\n- ERIC\n+8.95%\n...\nSwedish telecoms giant Ericsson reported sharply lower profit in its third quarter on Thursday, despite a year-on-year revenue growth.\nLooking ahead, Ericsson said i...",
+      "source": "web",
+      "title": "Ericsson reports fall in third-quarter profit despite rising sales",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/ericsson-reports-fall-third-quarter-130332812.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Why Ericsson Rose 8% After The Q3 Report\n## Summary\n- Ericsson delivered a strong Q3, beating top- and bottom-line estimates with 5.9% revenue growth and a 17% adjusted EBITA margin.\n- Strategic actions\u2014portfolio optimization, price increases, and supply chain efficiencies\u2014helped ERIC mitigate inf...",
+      "source": "web",
+      "title": "Why Ericsson Rose 8% After The Q3 Report (NASDAQ:ERIC)",
+      "url": "https://seekingalpha.com/article/4954570-why-ericsson-rose-8-percent-after-q3-report?feed_item_type=article?source=MarketBeat"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Shares of Ericsson (NASDAQ:ERIC - Get Free Report) gapped up prior to trading on Thursday following a stronger than expected earnings report.\nThe stock had previously closed at $9.58, but opened at $10.65.\nEricsson shares last traded at $10.3950, with a volume of 11,903,527 shares.\nThe communication...",
+      "source": "web",
+      "title": "Ericsson (NASDAQ:ERIC) Shares Gap Up Following Earnings Beat",
+      "url": "https://www.marketbeat.com/instant-alerts/price-ericsson-nasdaq-eric-shares-gap-up-following-earnings-beat-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Ericsson Shares Soar After Mobile Network Demand Boosts Earnings\nThu, 15 October 2026 at 4:13 am GMT-3 3 min read\n...\n-1.34%\n(Bloomberg) -- Ericsson AB shares jumped the most since January after its third-quarter earnings beat analysts' expectations, driven by solid demand for mobile network equip...",
+      "source": "web",
+      "title": "Ericsson Shares Soar After Mobile Network Demand ...",
+      "url": "https://uk.finance.yahoo.com/news/ericsson-shares-soar-mobile-network-071355986.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, Telefonaktiebolaget L M Ericsson ERIC saw its stock jump 12% following a strong third-quarter earnings report that exceeded revenue and earnings expectations.\nThe company also announced shareholder returns and operational restructuring plans amid cautious outlooks for the coming...",
+      "source": "web",
+      "title": "Ericsson (ERIC) Shares Surge 12% on Q3 Revenue Beat and Strategi",
+      "url": "https://www.gurufocus.com/news/9125165/ericsson-eric-shares-surge-12-on-q3-revenue-beat-and-strategic-updates"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Why Telefonaktiebolaget LM Ericsson (ERIC) Stock Is Up Today\nTelefonaktiebolaget LM Ericsson (ERIC) is up 8.6% today.\n...\n**Analysis:** The most likely catalyst is Ericsson\u2019s third-quarter 2026 earnings release, which showed stronger sales in its Networks business, improving sequential profitabili...",
+      "source": "web",
+      "title": "Why Telefonaktiebolaget LM Ericsson (ERIC) Stock Is Up Today | ERIC Stock News",
+      "url": "https://www.quiverquant.com/news/Why+Telefonaktiebolaget+LM+Ericsson+(ERIC)+Stock+Is+Up+Today"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "## Thursday, October 15 Today's Earnings Announcements\n|Company|Current Price|Consensus EPS|Actual EPS|Beat/Miss|Consensus Revenue|Actual Revenue|YoY Revenue Growth|Report|\n...\n|ERIC Ericsson|$10.71|$0.14|$0.18|$0.04|$5.59 billion|$5.94 billion|5.8%|\u2192|",
+      "source": "web",
+      "title": "Earnings360 Newsletter 10/15/2026",
+      "url": "https://www.earnings360.com/newsletters/10-15-2026/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "- ERIC\n+11.80%\n...\nSTOCKHOLM, Oct. 15, 2026 /PRNewswire/ --\n...\n- Solid customer demand in strategic markets, combined with near-term commercial actions, supported organic growth of 7%*.\n- Customer wins and deployments across network modernization, differentiated connectivity and mission-critical ne...",
+      "source": "web",
+      "title": "Ericsson reports third quarter results 2026 - Yahoo Finance",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/ericsson-reports-third-quarter-results-053200150.html"
+    }
+  ],
+  "citations": [
+    "https://finance.yahoo.com/markets/stocks/articles/why-ericsson-stock-soared-today-181701004.html",
+    "https://finance.yahoo.com/technology/articles/ericsson-announces-simplification-group-structure-062700160.html",
+    "https://finance.yahoo.com/markets/stocks/articles/ericsson-reports-fall-third-quarter-130332812.html",
+    "https://seekingalpha.com/article/4954570-why-ericsson-rose-8-percent-after-q3-report?feed_item_type=article?source=MarketBeat",
+    "https://www.marketbeat.com/instant-alerts/price-ericsson-nasdaq-eric-shares-gap-up-following-earnings-beat-2026-10-15/",
+    "https://uk.finance.yahoo.com/news/ericsson-shares-soar-mobile-network-071355986.html",
+    "https://www.gurufocus.com/news/9125165/ericsson-eric-shares-surge-12-on-q3-revenue-beat-and-strategic-updates",
+    "https://www.quiverquant.com/news/Why+Telefonaktiebolaget+LM+Ericsson+(ERIC)+Stock+Is+Up+Today",
+    "https://www.earnings360.com/newsletters/10-15-2026/",
+    "https://finance.yahoo.com/markets/stocks/articles/ericsson-reports-third-quarter-results-053200150.html"
+  ],
+  "usage": {
+    "input_tokens": 1098,
+    "output_tokens": 564,
+    "cost_usd": 0.00703
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "name": "tickers_03",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday October 16, 2026.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| LLY | Eli Lilly and Company | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.24% | +8.5% | 1.6\u00d7 | \u2014 |\n| IBN | ICICI Bank Limited | Mega | Top 10 \u00b7 1D return \u00b7 Mega cap | +4.15% | +5.4% | 1.4\u00d7 | \u2014 |\n| ERIC | Telefonaktiebolaget LM Ericsson (publ) | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +10.71% | +11.5% | 4.5\u00d7 | \u2014 |\n| CRCL | Circle Internet Group | Large | Top 10 \u00b7 1D return \u00b7 Large cap | +9.58% | +7.6% | 1.5\u00d7 | \u2014 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Thursday October 15, 2026, any after-hours / pre-market move on Friday October 16, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Eli Lilly and Company (LLY) `[Pharma]`\n- Eli Lilly announced that it will report third-quarter 2026 results on October 29, 2026, with an investor conference call at 10:00 ET. (Eli Lilly, Oct. 15, time not stated)\n- New Omvoh analyses reported one-year corticosteroid-free disease-control data, including 27.7% comprehensive disease control in ulcerative colitis and 20.4% corticosteroid-free deep remission in Crohn\u2019s disease. (Yahoo Finance, Oct. 15, 18:13 ET)\n- Lilly announced global oncology clinical-trial alliances with Adlai Nortye and Prelude Therapeutics. (Yahoo Finance, Oct. 15, 18:13 ET)\n- Reuters reported that healthcare stocks including Lilly rose as investors rotated from AI-related stocks; Lilly gained more than 3% during Thursday\u2019s session. (Reuters, Oct. 15, 17:14 ET)\n- Lilly Endowment filed a Form 144 covering a proposed sale of 305,000 Lilly shares with an aggregate market value of $368,665,700; the filing was accepted at 14:44 ET. (SEC filing, Oct. 15, 14:44 ET)\n\n## ICICI Bank Limited (IBN) `[Banking]`\n- ICICI Bank rose 4.17% to 1,395 Indian rupees on October 15, while the BSE Sensex rose 2.11% to 74,315.61. (MarketWatch, Oct. 15, 06:32 ET)\n- ICICI Bank allotted 113,464 equity shares with a face value of 2 rupees each under the ICICI Bank Employees Stock Option Scheme 2000. (Economic Times, Oct. 15, time not stated)\n- No company-specific catalyst found in window.\n\n## Telefonaktiebolaget LM Ericsson (publ) (ERIC) `[Communications & Networking]`\n- No company-specific catalyst found in window.\n\n## Circle Internet Group (CRCL) `[Internet & Platforms]`\n- No company-specific catalyst found in window.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Pharma Giant Lilly's Shares Jump Despite Tough Market Day, As It Leads 19 To Best Stock Lists\n...\n- 07:11 PM ET 10/15/2026\nWeight-loss champ **Eli Lilly** (LLY) continues to put up really healthy sales and profit numbers.\nLilly stock climbed 3.6% Thursday and joined the Big Cap 20 best stocks list...",
+      "source": "web",
+      "title": "Lilly Shares Jump As It Leads 19 To Best Stock Lists",
+      "url": "https://investors.com/research/pharma-giant-lilly-leads-19-to-best-stock-lists/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# S&P 500 ends higher as traders shift from AI to healthcare\nThu, October 15, 2026 at 5:14 PM GMT-3 3 min read\n- LLY\n+3.55%\n- UNH\n...\nOct 15 (Reuters) - The S&P 500 ended higher on Thursday, springing back from early losses as investors concerned about AI stocks shifted into Eli Lilly, UnitedHealth ...",
+      "source": "web",
+      "title": "S&P 500 ends higher as traders shift from AI to healthcare",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-dive-1-ai-082517898.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# News Release\n## Lilly confirms date and conference call for third-quarter 2026 financial results announcement\nOctober 15, 2026\n...\nINDIANAPOLIS, Oct. 15, 2026 /PRNewswire/ -- Eli Lilly and Company (NYSE: LLY) will announce its third-quarter 2026 financial results on October 29, 2026.\nLilly will al...",
+      "source": "web",
+      "title": "Lilly confirms date and conference call for third-quarter 2026 ...",
+      "url": "https://lilly.gcs-web.com/news-releases/news-release-details/lilly-confirms-date-and-conference-call-third-quarter-2026"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# ICICI Bank advances Thursday, outperforms competitors\n...\nOct. 15, 2026, 6:32 a.m.\nET\n...\n### Referenced Symbols\nShares of ICICI Bank Ltd.\n532174\n+4.17%\nrallied 4.17% to 1,395.00 Indian rupees Thursday, on what proved to be an all-around positive trading session for the stock market, with the BSE ...",
+      "source": "web",
+      "title": "ICICI Bank advances Thursday, outperforms competitors",
+      "url": "https://www.marketwatch.com/data-news/icici-bank-advances-thursday-outperforms-competitors-aaa30c49-b0532b02ce68"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "ICICI Bank is currently valued at Rs 1385.00, with a substantial rise of 3.47% in today's trading session.\n...\nICICI Bank's shares are priced at Rs 1385.6, showing a rise of 3.52% today, although it has recorded a negative return of 2.28% over the last three months.\n...\nAllotment of 113,464 equity s...",
+      "source": "web",
+      "title": "ICICI Bank Share Price Live Updates: ICICI Bank's beta indicates a robust market presence",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/stock-liveblog/icici-bank-share-price-live-updates-15-oct-2026/liveblog/134955831.cms"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Eli Lilly (LLY) Reported One Year Steroid Free Control In Difficult IBD\n### U.S. markets closed\n# Eli Lilly (LLY) Reported One Year Steroid Free Control In Difficult IBD\n...\nThu, October 15, 2026 at 3:13 PM GMT-3 3 min read\n- LLY\n+3.55%\n- PRLD\n+2.79%\n- Eli Lilly (NYSE: LLY) reported new clinical ana...",
+      "source": "web",
+      "title": "Eli Lilly (LLY) Reported One Year Steroid Free Control In ...",
+      "url": "https://finance.yahoo.com/healthcare/articles/eli-lilly-lly-reported-one-181333357.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Eli Lilly and Company (LLY) shareholder Lilly Endowment, Inc.\nreported a proposed sale of **305,000 common shares** through Fidelity Capital Markets, with an aggregate market value of **$368,665,700** and an approximate sale date of October 15, 2026.\nThe notice lists 941,357,065 shares outstanding a...",
+      "source": "web",
+      "title": "A 305,000-share sale is proposed by Eli Lilly (LLY) shareholder Lilly Endowment.",
+      "url": "https://www.stocktitan.net/sec-filings/LLY/144-eli-lilly-co-sec-filing-b358eddb7bed.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Eli Lilly and Company (NYSE:LLY ) traded up 3.7% during trading on Thursday.\nThe company traded as high as $1,275.88 and last traded at $1,253.9370.\nApproximately 3,730,706 shares were traded during mid-day trading, an increase of 26% from the average session volume of 2,957,309 shares.\nThe stock ha...",
+      "source": "web",
+      "title": "Eli Lilly and Company (NYSE:LLY) Stock Jumps 3.7% \u2013 Should You Buy?",
+      "url": "https://www.thestockobserver.com/2026/10/15/eli-lilly-and-company-nyselly-stock-jumps-3-7-should-you-buy.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "ICICI Bank Limited rises 4.14% in Thursday's session\n...\n## Quick Summary\nICICI Bank Limited shares last traded 4.14% above their previous close at 29.44 USD in the United States financial sector on 15 October 2026.\n...\nShares of ICICI Bank Limited in the United States financial sector last traded a...",
+      "source": "web",
+      "title": "ICICI Bank Limited rises 4.14% in Thursday's session",
+      "url": "https://www.globalbankingandfinance.com/icici-bank-limited-ibn-rises-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, ICICI Bank Ltd IBN shares rose 4.1% today, trading at $29.44.\nThis increase comes amid a 52-week range of $25.08 to $33.03, indicating a volatile year for the bank's stock.\nGF Value\u2122 verdict: Current price is $29.44, compared to GF Value\u2122 of $26.61, indicating the stock is 10.6%...",
+      "source": "web",
+      "title": "ICICI Bank Ltd (IBN) Shares Surge 4.1% -- What GF Score of 76 Te",
+      "url": "https://www.gurufocus.com/news/9126552/icici-bank-ltd-ibn-shares-surge-41-what-gf-score-of-76-tells-investors"
+    }
+  ],
+  "citations": [
+    "https://investors.com/research/pharma-giant-lilly-leads-19-to-best-stock-lists/",
+    "https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-dive-1-ai-082517898.html",
+    "https://lilly.gcs-web.com/news-releases/news-release-details/lilly-confirms-date-and-conference-call-third-quarter-2026",
+    "https://www.marketwatch.com/data-news/icici-bank-advances-thursday-outperforms-competitors-aaa30c49-b0532b02ce68",
+    "https://economictimes.indiatimes.com/markets/stocks/stock-liveblog/icici-bank-share-price-live-updates-15-oct-2026/liveblog/134955831.cms",
+    "https://finance.yahoo.com/healthcare/articles/eli-lilly-lly-reported-one-181333357.html",
+    "https://www.stocktitan.net/sec-filings/LLY/144-eli-lilly-co-sec-filing-b358eddb7bed.html",
+    "https://www.thestockobserver.com/2026/10/15/eli-lilly-and-company-nyselly-stock-jumps-3-7-should-you-buy.html",
+    "https://www.globalbankingandfinance.com/icici-bank-limited-ibn-rises-2026-10-15/",
+    "https://www.gurufocus.com/news/9126552/icici-bank-ltd-ibn-shares-surge-41-what-gf-score-of-76-tells-investors"
+  ],
+  "usage": {
+    "input_tokens": 1035,
+    "output_tokens": 461,
+    "cost_usd": 0.00663
+  }
+}

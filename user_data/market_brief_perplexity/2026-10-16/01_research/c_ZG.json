@@ -1,0 +1,117 @@
+{
+  "name": "c_ZG",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Friday October 16, 2026. Target: Zillow Group, Inc. Class A (ZG).\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ZG | Zillow Group, Inc. Class A | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +11.70% | +8.1% | 1.1\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## Zillow Group, Inc. Class A (ZG) `[Internet & Platforms]`\n- No company-specific catalyst found in window.\n\nTASK\nSearch harder for why ZG moved. Run several searches: \"why is Zillow Group, Inc. Class A stock down/up\",\n\"Zillow Group, Inc. Class A stock\", \"ZG shares Thursday October 15, 2026\", \"Zillow Group, Inc. Class A concerns\", \"Zillow Group, Inc. Class A FDA\",\n\"Zillow Group, Inc. Class A analyst\", \"Zillow Group, Inc. Class A price target\", \"Zillow Group, Inc. Class A deal\", \"Zillow Group, Inc. Class A offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Zillow Group, Inc. Class A peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Friday October 16, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Zillow Group, Inc. Class A (ZG) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Zillow Group, Inc. Class A (ZG) `[Internet & Platforms]`\n- Zillow Group Class A (ZG) rose 11.70% on Thursday, October 15, 2026, while Zillow (Z), Opendoor and Compass also advanced; Zillow and Compass gained about 8%, and Opendoor gained 9% as the 10-year Treasury yield fell to 5.1%, lowering expected mortgage costs. (Yahoo Finance, Oct 15, 2026; 15:51 ET) [4]\n- Zillow Group (ZG) traded near $31.40 during Thursday\u2019s session, while Opendoor rose 9% and Compass rose 6%; the report attributed the housing-stock rally to the retreat in long-term Treasury yields. (Yahoo Finance, Oct 15, 2026; 15:51 ET) [4]\n- Zillow\u2019s September rental-market analysis reported rental demand up 19.2% year over year, typical monthly rent at $1,932, up 2.7%, and the typical new-homeowner monthly payment at $3,037, up 5%; Zillow senior economist Kara Ng said elevated mortgage rates were pushing home shoppers toward rentals. (StockTitan, Oct 15, 2026; publish time not stated) [9]\n- A Bernstein report maintained a Hold rating on Zillow Group Class A and a $38 price target; the report was released October 14 and updated October 15. (The Globe and Mail, Oct 14, 2026; publish time not stated) [10]\n- MarketBeat reported Zillow shares up 7.5% to approximately $31.47 on October 15 and cited a consensus Hold rating with an average price target of $51.19; the article did not identify a new October 15 analyst action as the cause. (MarketBeat, Oct 15, 2026; publish time not stated) [1]\n- Zillow Group\u2019s latest reported quarter showed EPS of $0.52 versus a $0.44 consensus estimate and revenue of $772 million versus a $758.25 million consensus estimate; the results were released August 5, 2026, outside the requested window. (MarketBeat, Oct 15, 2026; publish time not stated) [1]\n- No after-hours or pre-market catalyst for ZG before 02:03 ET on Friday, October 16, 2026 was identified in the available results.",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Zillow Group (NASDAQ:ZG) Stock Price Up 7.5% - Time to Buy?\n## Key Points\n- **Zillow Group shares jumped 7.5%** to about $31.47, although trading volume was substantially below average.\n- Analyst sentiment is mixed: the consensus rating is **\u201cHold\u201d** with an average price target of $51.19, despite...",
+      "source": "web",
+      "title": "Zillow Group (NASDAQ:ZG) Stock Price Up 7.5%",
+      "url": "https://www.marketbeat.com/instant-alerts/price-zillow-group-nasdaq-zg-stock-price-up-75-time-to-buy-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "- **Zillow shares rose 7.5%** to around $30.44 in mid-day trading, though volume was 84% below the average daily level.\n- Analyst sentiment remains cautious: the stock has a consensus **\u201cHold\u201d rating**, with eight Holds, five Buys, one Strong Buy and one Sell; the average price target is $57.71.\n- Z...",
+      "source": "web",
+      "title": "Zillow Group (NASDAQ:Z) Shares Up 7.5% - What's Next?",
+      "url": "https://www.marketbeat.com/instant-alerts/price-zillow-group-nasdaq-z-shares-up-75-whats-next-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Zillow Group, Inc. $Z Stock: Ninety One North America Inc. Lowers Holdings\n## Key Points\n- **Ninety One North America cut its Zillow Group stake by 74.6%** in the third quarter, selling 41,917 shares and retaining 14,246 shares worth approximately $386,000.\n...\n- Zillow reported quarterly earnings...",
+      "source": "web",
+      "title": "Zillow Group, Inc. $Z Stock: Ninety One North America ...",
+      "url": "https://www.marketbeat.com/instant-alerts/filing-zillow-group-inc-z-stock-ninety-one-north-america-inc-lowers-holdings-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "- Opendoor surges 9% while Zillow and Compass each gain 8% as the 10-year Treasury yield retreats to 5.1%, cutting mortgage costs.\n...\nFalling long-term interest rates are lifting housing-linked stocks, and shares of the company that carries homes on its own balance sheet are moving the most.\n...\nMe...",
+      "source": "web",
+      "title": "Opendoor and Zillow Surge 7% as Long-Term Rates Retreat; Compass Climbs 6%",
+      "url": "https://finance.yahoo.com/real-estate/articles/opendoor-zillow-surge-7-long-155148310.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Zillow Group, Inc.\n(NASDAQ:Z )'s share price shot up 7.5% on Thursday.\n...\nBased on data from MarketBeat, the company currently has an average rating of 'Hold' and a consensus price target of $57.71.",
+      "source": "web",
+      "title": "Zillow Group (NASDAQ:Z) Stock Jumps 7.5% \u2013 Should You Buy?",
+      "url": "https://www.thecerbatgem.com/2026/10/15/zillow-group-nasdaqz-stock-jumps-7-5-should-you-buy.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Zillow Group (Z) is up 11.0% today.\nHere is some analysis on what might have caused this price movement.\n**Analysis:** The move appears to be driven mainly by a sharp drop in Treasury yields, which tends to help mortgage-sensitive housing stocks by improving expectations for affordability and transa...",
+      "source": "web",
+      "title": "Zillow shares jump as lower Treasury yields lift housing-related stocks | Z Stock News",
+      "url": "https://www.quiverquant.com/news/Zillow+shares+jump+as+lower+Treasury+yields+lift+housing-related+stocks"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Top real estate companies are rallying today.\nZillow Group stock jumped 11%, while Better Home & Finance and Opendoor surged 33% and 17%, respectively.\nOther major names, including UWM Holdings and PennyMac Holdings, also traded in the green.Zillow Group, Better Home, and Opendoor jumped as bond yie...",
+      "source": "web",
+      "title": "Here's why Zillow Group, Better Home, and Opendoor stocks are rising today",
+      "url": "https://article.wn.com/view/2026/10/15/Here_s_why_Zillow_Group_Better_Home_and_Opendoor_stocks_are_/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Wells Fargo\u2019s downgrade of Zillow Group (ZG), tied to a softer macro backdrop and questions around the business plan, sent the stock lower and sharpened investor focus on profitability and cash generation risks.\n...\nZillow Group\u2019s recent slide and the sharp reset in expectations highlight a simple t...",
+      "source": "web",
+      "title": "Zillow Group (ZG) Falls On Wells Fargo Downgrade As Fair ...",
+      "url": "https://simplywall.st/stocks/us/real-estate-management-and-development/nasdaq-zg/zillow-group/news/zillow-group-zg-falls-on-wells-fargo-downgrade-as-fair-value/amp"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "**Zillow (Z, ZG)** reported nationwide rental demand rose **19.2% year over year** in its September rental market analysis.\nIts Zillow Observed Renter Demand Index measures rental demand.\nTypical monthly rent reached **$1,932**, up 2.7% annually, while the typical new homeowner's monthly payment ros...",
+      "source": "web",
+      "title": "Zillow rental demand rises 19.2% year over year",
+      "url": "https://www.stocktitan.net/news/Z/rental-demand-is-up-20-as-high-lending-costs-stifle-the-for-sale-0gdjuq2ud5ow.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "In a report released today, Nikhil Devnani from Bernstein maintained a Hold rating on Zillow Group Class A, with a price target of $38.00.\n...\nZillow Group Class A has an analyst consensus of Moderate Buy, with a price target consensus of $45.35.\n...\nBased on Zillow Group Class A\u2019s latest earnings r...",
+      "source": "web",
+      "title": "Bernstein Reaffirms Their Hold Rating on Zillow Group ...",
+      "url": "https://www.theglobeandmail.com/investing/markets/stocks/ZG/pressreleases/6671140/bernstein-reaffirms-their-hold-rating-on-zillow-group-class-a-zg/"
+    }
+  ],
+  "citations": [
+    "https://www.marketbeat.com/instant-alerts/price-zillow-group-nasdaq-zg-stock-price-up-75-time-to-buy-2026-10-15/",
+    "https://www.marketbeat.com/instant-alerts/price-zillow-group-nasdaq-z-shares-up-75-whats-next-2026-10-15/",
+    "https://www.marketbeat.com/instant-alerts/filing-zillow-group-inc-z-stock-ninety-one-north-america-inc-lowers-holdings-2026-10-15/",
+    "https://finance.yahoo.com/real-estate/articles/opendoor-zillow-surge-7-long-155148310.html",
+    "https://www.thecerbatgem.com/2026/10/15/zillow-group-nasdaqz-stock-jumps-7-5-should-you-buy.html",
+    "https://www.quiverquant.com/news/Zillow+shares+jump+as+lower+Treasury+yields+lift+housing-related+stocks",
+    "https://article.wn.com/view/2026/10/15/Here_s_why_Zillow_Group_Better_Home_and_Opendoor_stocks_are_/",
+    "https://simplywall.st/stocks/us/real-estate-management-and-development/nasdaq-zg/zillow-group/news/zillow-group-zg-falls-on-wells-fargo-downgrade-as-fair-value/amp",
+    "https://www.stocktitan.net/news/Z/rental-demand-is-up-20-as-high-lending-costs-stifle-the-for-sale-0gdjuq2ud5ow.html",
+    "https://www.theglobeandmail.com/investing/markets/stocks/ZG/pressreleases/6671140/bernstein-reaffirms-their-hold-rating-on-zillow-group-class-a-zg/"
+  ],
+  "usage": {
+    "input_tokens": 1043,
+    "output_tokens": 527,
+    "cost_usd": 0.00717
+  }
+}

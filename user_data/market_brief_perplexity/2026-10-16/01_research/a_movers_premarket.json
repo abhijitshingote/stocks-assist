@@ -1,0 +1,117 @@
+{
+  "name": "a_movers_premarket",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: After-hours & pre-market movers.\n\nWindow: Thursday October 15, 2026 4:00 PM ET (after the close) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nUS stocks >= $1B moving after hours on the session date and pre-market on the brief date: % move, time quoted, and catalyst (earnings, offerings, M&A, guidance, rating changes, withdrawn deals).\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **IBKR** \u2014 Financial Services\n- Shares fell 1% after hours on Oct. 15 after third-quarter adjusted EPS was $0.67 versus $0.68 consensus; revenue was $1.91 billion versus $1.87 billion expected. (CNBC, Oct. 15; publish time not shown)[1]\n\n## **JBHT** \u2014 Transportation\n- Shares declined more than 2% after hours after third-quarter EPS was $1.82 versus $1.89 consensus; revenue was $3.68 billion versus $3.57 billion expected. (CNBC, Oct. 15; publish time not shown)[1]\n\n## **AA** \u2014 Metals & Mining\n- Shares gained 2% after hours after third-quarter adjusted EPS was $1.82 versus $1.47 consensus; revenue was $3.70 billion versus $3.79 billion expected. (CNBC, Oct. 15; publish time not shown)[1]\n\n## **VRNS** \u2014 Software & SaaS\n- Shares gained more than 2% after hours after Proofpoint announced an all-cash acquisition of Varonis valued at approximately $6.3 billion; closing was expected in the first half of 2027. (CNBC, Oct. 15; publish time not shown)[2]\n\n## **KMB** \u2014 Retail / Consumer Staples\n- Shares gained about 4% during Oct. 15 trading after preliminary third-quarter adjusted EPS of $1.70 versus $1.58 FactSet consensus and revenue of $4.13 billion versus $4.09 billion expected. (CNBC, Oct. 15 12:46 ET)[7]\n- Shares gained 1.8% in premarket trading after preliminary third-quarter net sales of $4.13 billion versus $4.10 billion consensus and adjusted EPS of $1.70 versus $1.60 expected. (Investing.com, Oct. 15; publish time not shown)[5]\n\n## **PAG** \u2014 Automotive Retail\n- Shares gained 8% during Oct. 15 trading after the company announced a definitive agreement to be taken private by Motown Acquisition Corp., owned by Penske Corp. and Mitsui, for $212 per share in cash. (CNBC, Oct. 15 12:46 ET)[7]\n- Shares gained 8.6% in premarket trading following the announced $212-per-share cash transaction. (Investing.com, Oct. 15; publish time not shown)[5]\n\n## **RKLB** \u2014 Aerospace\n- Shares fell 11% during Oct. 15 trading after the company delayed the first launch of its Neutron rocket to 2027. (CNBC, Oct. 15 12:46 ET)[7]\n- Shares fell 9.4% in premarket trading to $53.60 after the company disclosed that Neutron\u2019s first launch had been pushed into 2027. (Investing.com, Oct. 15; publish time not shown)[5]\n\n## **FMC** \u2014 Chemicals\n- Shares fell 32% during Oct. 15 trading after the company cut third-quarter revenue guidance to $65 million\u2013$125 million from a FactSet consensus of $868.5 million. (CNBC, Oct. 15 12:46 ET)[7]\n\n## **WMT** \u2014 Retail\n- Shares gained more than 2% during Oct. 15 trading after Deutsche Bank upgraded the stock to Buy from Hold, citing a positive 2027 outlook. (CNBC, Oct. 15 12:46 ET)[7]\n\n## **CROX** \u2014 Retail / Footwear\n- Shares gained 6% during Oct. 15 trading after Barclays upgraded Crocs to Overweight from Equal Weight. (CNBC, Oct. 15 12:46 ET)[7]\n\n## **MRSH** \u2014 Insurance\n- Shares gained 5% during Oct. 15 trading after third-quarter adjusted EPS was $2.03 versus $1.97 FactSet consensus and revenue was $6.86 billion versus $6.64 billion expected. (CNBC, Oct. 15 12:46 ET)[7]\n\n## **CRWV** \u2014 AI Infrastructure\n- Shares fell 2% during Oct. 15 trading as CoreWeave\u2019s debt-funded AI infrastructure expansion remained a market focus; Reuters reported that its credit-default-swap spread exceeded 1,000 basis points on Oct. 15. (CNBC, Oct. 15 12:46 ET; Reuters, Oct. 15, publish time not shown)[7][8]\n- Shares fell 6% in premarket trading on Oct. 15 after falling more than 15% on Oct. 14 amid concerns about debt-funded expansion. (Investing.com, Oct. 15; publish time not shown)[5]\n\n## Semiconductors \u2014 **NVDA**, **AMD**, **INTC**, **MU**, **WDC**, **STX**\n- Micron shares fell 4.1%, Western Digital and Seagate each fell more than 4%, Nvidia fell 1.8%, and Intel and AMD each fell more than 3% in premarket trading on Oct. 15. (Investing.com, Oct. 15; publish time not shown)[5]\n\n## **Venture Global** \u2014 Energy\n- Shares gained 1.6% in premarket trading on Oct. 15 after the company signed agreements with GE Vernova and Baker Hughes Energy Services to expand power-generation capabilities. (Investing.com, Oct. 15; publish time not shown)[5]\n\n## **RELX** \u2014 Information Services\n- Shares gained 2.6% in premarket trading to $37.87 after Bank of America Securities reaffirmed its Buy rating and 4,000-pence price target. (Investing.com, Oct. 15; publish time not shown)[5]\n\n*The available results identify Oct. 15 premarket items and Oct. 15 after-hours items, but do not provide a verified set of quotations published between the Oct. 15 close and the Oct. 16 02:03 ET cutoff.*",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Interactive Brokers \u2013 Shares of the electronic broker fell 1% after the company's third-quarter earnings missed analyst expectations.\nInteractive Brokers reported adjusted earnings of 67 cents per share, just below the 68 cents per share that analysts surveyed by LSEG were expecting.\nRevenue, howeve...",
+      "source": "web",
+      "title": "Stocks making the biggest moves after hours: Interactive Brokers, J.B. Hunt, Alcoa and more",
+      "url": "https://www.cnbc.com/2026/10/15/stocks-making-the-biggest-moves-after-hours-ibkr-jbht-aa.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Updated Thu, Oct 15 2026 7:12 PM EDT\n...\n# S&P 500 futures are little changed as index heads for losing week: Live updates\nS&P 500 futures were relatively unchanged on Thursday after the S&P 500 posted its first winning session in four, with investors shaking off the latest sell-off in technology st...",
+      "source": "web",
+      "title": "Stock market today: Live updates",
+      "url": "https://www.cnbc.com/amp/2026/10/15/stock-market-today-live-updates.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# We\u2019re trimming a rallying defensive stock and buying other on a muted earnings move\nPublished Thu, Oct 15 202611:17 AM EDT\n...\nWe\u2019re making two trades ahead of Thursday\u2019s Monthly Meeting livestream , starting at noon ET.\n...\nA major rotation is happening in the market on Thursday, with selling in ...",
+      "source": "web",
+      "title": "We're trimming a rallying defensive stock and buying other on ...",
+      "url": "https://www.cnbc.com/investingclub/2026/10/15/were-trimming-a-rallying-defensive-stock-and-buying-other-on-a-muted-earnings-move.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Here are the stocks reporting next week that have a history of earnings beats and big share gains\nPublished Thu, Oct 15 20261:50 PM EDT\n...\nEarnings season continues next week, with companies across technology, financials, industrials and consumer sectors set to post their latest quarterly results...",
+      "source": "web",
+      "title": "Stocks reporting next week with history of earnings beats",
+      "url": "https://www.cnbc.com/2026/10/15/stocks-reporting-next-week-with-history-of-earnings-beats.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Premarket movers: Chip stocks slide as inflation fears hit AI trade\nInvesting.com - Global semiconductor stocks fell sharply on Thursday, extending the previous session\u2019s selloff after fresh U.S. inflation data fueled concerns that the Federal Reserve could raise interest rates further.\n...\nBy 04:...",
+      "source": "web",
+      "title": "Premarket movers: Chip stocks slide as inflation fears hit AI ...",
+      "url": "https://ng.investing.com/news/stock-market-news/premarket-movers-chip-stocks-slide-as-inflation-fears-hit-ai-trade-2738145"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "\u201cWe are upgrading WMT to Buy as we see a more favorable setup into 2027.\u201d",
+      "source": "web",
+      "title": "Thursday big Wall Street analyst calls like CoreWeave",
+      "url": "https://www.cnbc.com/2026/10/15/thursday-big-wall-street-analyst-calls-like-coreweave.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Stocks making the biggest moves midday: CoreWeave, Salesforce, Rocket Lab, Kimberly-Clark & more\nPublished Thu, Oct 15 202612:46 PM EDTUpdated 5 Hours Ago\n...\nHere are some of the companies making headlines in midday trading.\nSemiconductors \u2014 Chipmakers fell on Thursday, dragging the tech sector l...",
+      "source": "web",
+      "title": "Stocks making the biggest moves midday",
+      "url": "https://www.cnbc.com/2026/10/15/stocks-making-the-biggest-moves-midday-crwv-crm-rklb-kmb.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Oct 15 (Reuters) - What matters in US and global markets today\n...\nThe latest inflation and rates jolt relit the fuse on this week's AI stock selloff, with notable declines in the debt and equity of data center builder Coreweave as well as Oracle.\nChip and tech stocks fell more broadly, pushing the ...",
+      "source": "web",
+      "title": "Morning Bid: Coreweave unravels",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Goldman Sachs stock gains after outpacing Q3 earnings estimates\n...\nTrey Thoelcke\nThu, October 15, 2026 at 9:25 AM GMT-4 5 min read\n- ASML\n-0.86%\n- JPM\n+0.03%\n- ASML\n-0.86%\n- GS\n+0.22%\n### Quick Read\n- ASML beat EPS by 36% and Goldman grew earnings 39%, yet both stocks fell sharply as P/E compressio...",
+      "source": "web",
+      "title": "Why Great Earnings Are Being Punished Right Now",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/why-great-earnings-being-punished-132523553.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Published Thu, Oct 15 20263:08 PM EDT\n...\nOn Thursday, Jim Cramer and portfolio director Jeff Marks held our October Monthly Meeting.",
+      "source": "web",
+      "title": "Here's our monthly update on our 32 stocks, including 2 more names to buy",
+      "url": "https://www.cnbc.com/investingclub/2026/10/15/heres-our-monthly-update-on-our-32-stocks-including-2-more-names-to-buy.html"
+    }
+  ],
+  "citations": [
+    "https://www.cnbc.com/2026/10/15/stocks-making-the-biggest-moves-after-hours-ibkr-jbht-aa.html",
+    "https://www.cnbc.com/amp/2026/10/15/stock-market-today-live-updates.html",
+    "https://www.cnbc.com/investingclub/2026/10/15/were-trimming-a-rallying-defensive-stock-and-buying-other-on-a-muted-earnings-move.html",
+    "https://www.cnbc.com/2026/10/15/stocks-reporting-next-week-with-history-of-earnings-beats.html",
+    "https://ng.investing.com/news/stock-market-news/premarket-movers-chip-stocks-slide-as-inflation-fears-hit-ai-trade-2738145",
+    "https://www.cnbc.com/2026/10/15/thursday-big-wall-street-analyst-calls-like-coreweave.html",
+    "https://www.cnbc.com/2026/10/15/stocks-making-the-biggest-moves-midday-crwv-crm-rklb-kmb.html",
+    "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/",
+    "https://finance.yahoo.com/markets/stocks/articles/why-great-earnings-being-punished-132523553.html",
+    "https://www.cnbc.com/investingclub/2026/10/15/heres-our-monthly-update-on-our-32-stocks-including-2-more-names-to-buy.html"
+  ],
+  "usage": {
+    "input_tokens": 708,
+    "output_tokens": 1304,
+    "cost_usd": 0.00859
+  }
+}

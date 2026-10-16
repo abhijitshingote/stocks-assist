@@ -1,0 +1,117 @@
+{
+  "name": "tickers_10",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday October 16, 2026.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| PMI | Picard Medical, Inc. | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -5.47% | +30.8% | 3.3\u00d7 | gapper 2026-10-13 |\n| BMBL | Bumble Inc. | Small | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | -0.55% | +133.0% | 0.8\u00d7 | both 2026-10-13 |\n| FRMI | Fermi Inc. Common Stock | Mid | Vol spike / gapper \u00b7 last 5D \u00b7 Mid & small cap | +9.65% | -2.2% | 1.0\u00d7 | both 2026-10-13 |\n| PBR | Petr\u00f3leo Brasileiro S.A. - Petrobras | Mega | Top 10 \u00b7 Main View TI65 \u00b7 Mega cap | -2.88% | +1.3% | 0.7\u00d7 | gapper 2026-10-05 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Thursday October 15, 2026, any after-hours / pre-market move on Friday October 16, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Picard Medical, Inc. (PMI) `[Medical Devices]`\n- No company-specific catalyst found in window.\n\n## Bumble Inc. (BMBL) `[Internet & Platforms]`\n- No company-specific catalyst found in window.\n- Bumble agreed to be acquired by Ithaca Holdings in an all-cash transaction valued at approximately $1.3 billion, or $6.05 per Class A share, on October 13, 2026; the offer represented a 138% premium to Bumble\u2019s October 9 unaffected close.[1] (HDFC Sky, Oct. 14; updated Oct. 15; publish time not stated)\n\n## Fermi Inc. (FRMI) `[AI Infrastructure]`\n- Fermi signed a credit-support agreement with AMD for a lease covering the first phase of its Project Matador AI and energy facility in Carson County, Texas, supporting 222 MW of gross power capacity.[1] (HDFC Sky, Oct. 14; updated Oct. 15; publish time not stated)\n- Fermi and AMD also signed a framework agreement exploring expansion of the project by up to 650 MW of gross power capacity.[1] (HDFC Sky, Oct. 14; updated Oct. 15; publish time not stated)\n- Fermi reported more than $1.5 billion invested in Project Matador development to date.[1] (HDFC Sky, Oct. 14; updated Oct. 15; publish time not stated)\n\n## Petr\u00f3leo Brasileiro S.A. \u2014 Petrobras (PBR) `[Energy]`\n- Petrobras ADRs fell 2.47% to $25.30 on October 15, while the USO oil fund rose 2.44%; Petrobras was among Latin American producers that declined during the session.[2] (Rio Times, Oct. 16; publish time not stated)\n- Brazil\u2019s market declined 1.06% and the Brazilian real weakened on October 15; Petrobras was reported down 1.29% in Brazil and 2.47% in New York.[3] (Rio Times, Oct. 16; publish time not stated)\n- BofA analyst Leonardo Marcondes raised Petrobras\u2019s price target from $22 to $28 and maintained a Buy rating on October 14.[4] (Markets Insider, Oct. 14 07:55 ET)\n- Petrobras scheduled its third-quarter production and sales report for October 28, 2026, third-quarter financial results for November 10, 2026, and the results webcast for November 11, 2026.[4] (Ad Hoc News, Oct. 15 04:21 ET)\n",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Petrobras alcan\u00e7a R$ 800 bilh\u00f5es em valor de mercado e renova m\u00e1xima hist\u00f3rica na Bolsa\nO valor de mercado da Petrobras alcan\u00e7ou a marca in\u00e9dita de R$ 800,39 bilh\u00f5es no encerramento do preg\u00e3o da B3, a bolsa de valores brasileira sediada em S\u00e3o Paulo, na quarta-feira (14).\nCom o resultado, a estatal ...",
+      "source": "web",
+      "title": "Petrobras alcan\u00e7a recorde de R$ 800,39 bilh\u00f5es com a\u00e7\u00f5es em alta de at\u00e9 110%",
+      "url": "https://www.mixvale.com.br/2026/10/15/petrobras-alcanca-recorde-de-r-80039-bilhoes-com-acoes-em-alta-de-ate-110/"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "- **Latin American producers fell too:** Petrobras 2.47%, YPF 2.18% and Ecopetrol 1.12%, while Vista Energy edged up 0.07%.\n...\nProducers\u2019 shares fell anyway, including Petrobras, Ecopetrol and YPF, so the crude rise did not reach Latin American stocks.\n...\n|Instrument|Level (US$)|Change|\n|--|--|--|...",
+      "source": "web",
+      "title": "Oil Fund Rises 2.44% as Petrobras Falls 2.47% | Oil, Oct 15",
+      "url": "https://www.riotimesonline.com/oil-markets-latam-thursday-october-15-2026"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Brazil Stocks Fall 1.06% as Real Weakens | Brazil Market Report, Oct 15\n## 01 The session in one read\nThe fall was broad.\nBanco do Brasil lost 1.78%, Ita\u00fa Unibanco and Petrobras 1.29% each and the retailer Magazine Luiza 4.24%, while Vale fell 0.45% in Brazil, according to Suno.\n...\n## 04 The day\u2019...",
+      "source": "web",
+      "title": "Brazil Stocks Fall 1.06% as Real Weakens | Brazil Market Report, Oct 15",
+      "url": "https://www.riotimesonline.com/brazil-markets-ibovespa-real-thursday-october-15-2026/"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "\ubcf4\uc6b0\uc18c\ub098\ub8e8\u00b7\ub8f0\ub77c \uacb0\uc120 \uc811\uc804 \uc9c0\uc18d\u2026\ud398\ud2b8\ub85c\ube0c\ub77c\uc2a4 2% \uc548\ud30e \uc0c1\uc2b9\n...\n\ube0c\ub77c\uc9c8 \uc99d\uc2dc\uc5d0\uc11c \ube44\uc911\uc774 \ud070 \uad6d\uc601 \uc11d\uc720\uae30\uc5c5 \ud398\ud2b8\ub85c\ube0c\ub77c\uc2a4(PETR3\u00b7PETR4) \uc8fc\uac00\uac00 \uc9c0\uc218 \ud558\ub77d\uc744 \ubc29\uc5b4\ud558\ub294 \uc5ed\ud560\uc744 \ud588\ub2e4. \uc774\ub0a0 \ubcf4\ud1b5\uc8fc(PETR3)\ub294 1.94%, \uc6b0\uc120\uc8fc(PETR4)\ub294 2.22% \uac01\uac01 \uc0c1\uc2b9 \ub9c8\uac10\ud588\ub2e4.\n\ube0c\ub77c\uc9c8 \uc11d\uc720\u00b7\ucc9c\uc5f0\uac00\uc2a4\u00b7\ubc14\uc774\uc624\uc5f0\ub8cc\uccad(ANP)\uc758 \uc7a0\uc815 \uc790\ub8cc\uc5d0 \ub530\ub974\uba74 \ubd80\uc9c0\uc6b0\uc2a4 \uc720\uc804\uc758 9\uc6d4 \uc0dd\uc0b0\ub7c9\uc740 \ud558\ub8e8 100\ub9cc\ubc30\ub7f4\uc744 \ub118\uc5b4\uc130\ub2e4. \uc774\ub85c\uc368 \ud574\ub2f9 \uc720\uc804\uc758 \uc0dd\uc0b0\ub7c9\uc740 \ub450 \ub2ec \uc5f0\uc18d \ud558\ub8e8 100\ub9cc\ubc30\ub7f4\uc744 \uc6c3\ub3cc\uc558\ub2e4.",
+      "source": "web",
+      "title": "[\ube0c\ub77c\uc9c8\uc99d\uc2dc] \u7f8e \ubb3c\uac00\u00b7\ub300\uc120 \ubd88\ud655\uc2e4\uc131\uc5d0 \uc57d\ubcf4\ud569\u2026\uc720\uac00 \uc0c1\uc2b9\uc5d0 \ub099\ud3ed \ucd95\uc18c",
+      "url": "https://www.newspim.com/news/view/20261015000061"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "BofA raises target for Petrobras stock from USD 22.00 to USD 28.00\n...\n# BofA raises target for Petrobras stock from USD 22.00 to USD 28.00\nPublished on 10/15/2026 at 10:21 | Editorial responsibility: Rafael M\u00fcller, Editor-in-Chief AD HOC NEWS\nPetrobras stock costs EUR 23.05 on October 15, 2026 at L...",
+      "source": "web",
+      "title": "BofA raises target for Petrobras stock from USD 22.00 to ...",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/bofa-raises-target-for-petrobras-stock-from-usd-22-00-to-usd-28-00/70327010"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Petrobras (PETR4) Gains Strength with Oil and Reaches R$ 800 Billion in Market Value for the First Time \u2013 Money Times\nThursday, October 15, 2026Set Location\n...\nPetrobras' shares (PETR3;PETR4) drive the caution of local and foreign investors and operate high this Wednesday (14).\nAround 14h (Brazilia...",
+      "source": "web",
+      "title": "Petrobras (PETR4) Gains Strength with Oil and Reaches R$ 800 Billion in Market Value for the First Time \u2013 Money Times",
+      "url": "https://ground.news/article/petrobras-petr4-gains-strength-with-oil-and-reaches-r-800-billion-in-market-value-for-the-first-time-money-times"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Ibovespa Slips Amid Weak Economic Data\nPetrobras and Vale each shed about 1% as oil prices fluctuated and iron ore prices extended their declines. more",
+      "source": "web",
+      "title": "Ibovespa Slips Amid Weak Economic Data",
+      "url": "https://tradingeconomics.com/brazil/stock-market/news/592067"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Petroleo Brasileiro S.A.- Petrobras (NYSE:PBR) Stock Gets Downgrade from Wall Street Zen\nThursday, October 15, 2026Set Location\n...\nWall Street Zen downgraded shares of Petroleo Brasileiro S.A.- Petrobras from a \"strong-buy\" rating to a \"buy\" rating in a research note on Sunday.",
+      "source": "web",
+      "title": "Petroleo Brasileiro S.A.- Petrobras (NYSE:PBR) Stock Gets Downgrade from Wall Street Zen",
+      "url": "https://ground.news/article/petroleo-brasileiro-sa-petrobras-nyse-pbr-stock-gets-downgrade-from-wall-street-zen"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Petrobras price target raised to $28 from $22 at BofA | Markets Insider\n...\n# Petrobras price target raised to $28 from $22 at BofA\n...\nOct. 14, 2026, 07:55 AM\nBofA analyst Leonardo Marcondes raised the firm\u2019s price target on Petrobras (PBR) to $28 from $22 and keeps a Buy rating on the shares.\nWhil...",
+      "source": "web",
+      "title": "Petrobras price target raised to $28 from $22 at BofA",
+      "url": "https://markets.businessinsider.com/news/stocks/petrobras-price-target-raised-to-28-from-22-at-bofa-1036626913"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "## Bumble Shares Surge 56.18% as Ithaca Agrees to $1.3 Billion Acquisition\nBumble Inc. has agreed to be acquired by Ithaca Holdings in an all-cash transaction valued at approximately $1.3 billion, offering shareholders $6.05 per Class A share.\nThe offer represents a 138% premium to Bumble\u2019s unaffect...",
+      "source": "web",
+      "title": "Bumble Jumps, Alaunos Soars; Banks, Tech Stocks Mixed",
+      "url": "https://hdfcsky.com/news/bumbles-1-3b-buyout-alaunos-350m-funding-jpmorgans-15-3b-profit-drive-mixed-stock-moves"
+    }
+  ],
+  "citations": [
+    "https://www.mixvale.com.br/2026/10/15/petrobras-alcanca-recorde-de-r-80039-bilhoes-com-acoes-em-alta-de-ate-110/",
+    "https://www.riotimesonline.com/oil-markets-latam-thursday-october-15-2026",
+    "https://www.riotimesonline.com/brazil-markets-ibovespa-real-thursday-october-15-2026/",
+    "https://www.newspim.com/news/view/20261015000061",
+    "https://www.ad-hoc-news.de/boerse/news/corporate-news/bofa-raises-target-for-petrobras-stock-from-usd-22-00-to-usd-28-00/70327010",
+    "https://ground.news/article/petrobras-petr4-gains-strength-with-oil-and-reaches-r-800-billion-in-market-value-for-the-first-time-money-times",
+    "https://tradingeconomics.com/brazil/stock-market/news/592067",
+    "https://ground.news/article/petroleo-brasileiro-sa-petrobras-nyse-pbr-stock-gets-downgrade-from-wall-street-zen",
+    "https://markets.businessinsider.com/news/stocks/petrobras-price-target-raised-to-28-from-22-at-bofa-1036626913",
+    "https://hdfcsky.com/news/bumbles-1-3b-buyout-alaunos-350m-funding-jpmorgans-15-3b-profit-drive-mixed-stock-moves"
+  ],
+  "usage": {
+    "input_tokens": 1083,
+    "output_tokens": 582,
+    "cost_usd": 0.00722
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "name": "a_ai_policy",
+  "kind": "channel",
+  "group": "themes",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: AI policy & safety.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nGovernment actions on AI (White House, Congress, EU, UK, China), AI safety statements by named executives, antitrust actions against tech platforms, court rulings affecting tech.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **NVDA** [AI Safety \u00b7 AI Compute]\n- CEO Jensen Huang said Nvidia would hypothetically stop supplying chips to a customer developing unsafe AI software, after first discussing the issue with the customer; he also said AI-safety concerns were \u201coverdone.\u201d Nvidia committed \\( \\$250 \\) million over five years in computing access for UK AI-safety research. (Business Times, Oct 15 07:54 ET)[6]\n\n## Anthropic [AI Safety \u00b7 Software & SaaS]\n- Anthropic selected METR and SecureBio to evaluate its AI-safety practices and said the evaluators would help verify compliance; Accenture was identified as its first partner. (CNBC, Oct 15 16:35 ET)[5]\n- New York City Comptroller Mark Levine urged CEO Dario Amodei to pause Anthropic\u2019s IPO until the company addresses AI-safety, governance and development-speed risks, and requested specific disclosures on audits, controls and implementation timelines. [report] (Bloomberg, Oct 15; time not stated)[4][7]\n\n## White House [AI Policy]\n- The White House Super Intelligence Task Force was scheduled to hold its first meeting at 16:00 ET on Oct. 15, with more than a dozen Cabinet members and senior officials expected; the group is chaired by Director of National Intelligence Jay Clayton, with Scott Kupor, Emil Michael and FTC Chair Andrew Ferguson as vice chairs. (Politico, Oct 15 15:14 ET)[3]\n- The task force\u2019s stated approach centers on applying existing civil and criminal liability laws to AI companies rather than creating new regulations; its goals and responsibilities were expected after the initial meeting. (Politico, Oct 15 15:14 ET)[3]\n\n## TikTok / **BDN** [Internet & Platforms \u00b7 Antitrust]\n- Advocate General Andrea Biondi recommended that the EU Court of Justice dismiss ByteDance\u2019s challenge to TikTok\u2019s designation as a Digital Markets Act gatekeeper, a status carrying obligations intended to limit anti-competitive practices; the opinion was not the final court ruling. (Reuters, Oct 15; time not stated)[1]\n\n## China, United States and EU [AI Policy \u00b7 Geopolitics]\n- China, the United States, the European Union and more than 25 countries signed the Bletchley Declaration, agreeing to cooperate on identifying shared AI risks, developing scientific understanding and creating cross-border mitigation policies. (Economic Times, Oct 15; time not stated)[2]\n\n## Meta [Internet & Platforms \u00b7 Antitrust]\n- The FTC said it would appeal a U.S. district-court ruling that rejected its antitrust case against Meta, maintaining that Meta unlawfully maintained a social-networking monopoly through its acquisitions of Instagram and WhatsApp; the ruling had rejected the FTC\u2019s request for structural relief. (Economic Times, Oct 15; time not stated)[10]\n\n",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "BRUSSELS, Oct 15 (Reuters) - An adviser to Europe's highest court recommended on Thursday that TikTok lose its challenge to its \"gatekeeper\" status under landmark EU rules, backing regulators in a closely watched test of the bloc's efforts to curb Big Tech's power.\n...\nByteDance's TikTok is challeng...",
+      "source": "web",
+      "title": "Setback for TikTok as EU court adviser backs gatekeeper label",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VV0ZW?channel=frL012"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# China, US and EU agree to work together on AI safety at UK summit\nChina agreed to work with the United States, European Union and other countries to collectively manage the risk from artificial intelligence at a British summit on Wednesday aimed at charting a safe way forward for the rapidly evolv...",
+      "source": "web",
+      "title": "China, US and EU agree to work together on AI safety at UK summit - The Economic Times",
+      "url": "https://economictimes.indiatimes.com/tech/technology/china-us-and-eu-agree-to-work-together-on-ai-safety-at-uk-summit/printarticle/104903837.cms"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# White House \u2018Super Intelligence\u2019 Task Force to hold its first meeting\nThe task force\u2019s approach puts legal liability at the center of the Trump administration\u2019s effort to oversee frontier AI.\n...\n10/15/2026 7:14 PM UTC\nThe White House\u2019s Super Intelligence Task Force is set to meet for the first ti...",
+      "source": "web",
+      "title": "White House \u2018Super Intelligence\u2019 Task Force to hold its first meeting",
+      "url": "https://www.politico.com/news/2026/10/15/white-house-super-intelligence-task-force-to-hold-its-first-meeting-01120798"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Anthropic should pause its initial public offering until it has fully addressed risks around artificial intelligence, according to New York City\u2019s comptroller.\nA letter from Mark Levine addressed to Anthropic Chief Executive Officer Dario Amodei on Wednesday suggested the Claude developer should ins...",
+      "source": "web",
+      "title": "Anthropic Urged to Pause IPO for AI Safety by NYC ...",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-15/anthropic-urged-to-pause-ipo-by-nyc-comptroller-video"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Anthropic taps nonprofits METR and SecureBio to help assess risks and safety practices\nPublished Thu, Oct 15 2026 4:35 PM EDT\n...\nAmodei said the evaluators would help \"verify\" Anthropic's adherence to safety practices, and the company selected Accenture to serve as its first partner days later.",
+      "source": "web",
+      "title": "Anthropic taps METR and SecureBio to help assess risks ...",
+      "url": "https://www.cnbc.com/amp/2026/10/15/anthropic-metr-securebio-ai-safety-evaluators.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Published Thu, Oct 15, 2026 \u00b7 07:54 AM\n...\n[SAN FRANCISCO] Nvidia chief executive officer Jensen Huang said he would halt the supply of chips to a customer that was developing unsafe artificial intelligence software, though he does not believe that the current level of concern about the technology i...",
+      "source": "web",
+      "title": "Nvidia CEO says he would cut off buyers who build unsafe ...",
+      "url": "https://www.businesstimes.com.sg/companies-markets/nvidia-ceo-says-he-would-cut-buyers-who-build-unsafe-ai-bubble-fears-overdone"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# NYC Comptroller Calls for Anthropic to Pause IPO for AI Safety\nThu, 15 October 2026 at 10:13 am GMT-3 2 min read\n...\n(Bloomberg) -- Anthropic PBC should pause its initial public offering until it has fully addressed risks around the safety, governance and pace of development of artificial intellig...",
+      "source": "web",
+      "title": "NYC Comptroller Calls for Anthropic to Pause IPO for AI ...",
+      "url": "https://uk.finance.yahoo.com/news/nyc-comptroller-calls-anthropic-pause-131333592.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "SEOUL, Oct 14 (Reuters) - Former US Vice President Kamala Harris urged governments and technology companies on Wednesday to urgently put safeguards in place for artificial intelligence, warning that the window for containing its gravest risks was closing.\n\"If we are to have any guardrails and safegu...",
+      "source": "web",
+      "title": "Kamala Harris warns window closing for AI safeguards, urges US-China cooperation",
+      "url": "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VU0IY?channel=frL012"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Recent AI copyright rulings involving Anthropic and Ross Intelligence clarify how fair use applies to training data, pirated books, and competing products.\n...\n\u201cThe Third Circuit rejected an artificial intelligence company\u2019s fair use defense after it trained its AI on a competitor\u2019s product, finding...",
+      "source": "web",
+      "title": "\u2018No More Than an Ordinary Copyright Case\u2019 \u2014 3rd Circuit Unseals Its Opinion In Thomson Reuters Case Against ROSS",
+      "url": "https://ground.news/article/no-more-than-an-ordinary-copyright-case-3rd-circuit-unseals-its-opinion-in-thomson-reuters-case-against-ross"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "The FTC said it continues to allege that, for more than a decade, Meta Platforms Inc. has \"illegally maintained a monopoly\" in social networking through anticompetitive conduct \"by buying the significant competitive threats it identified in Instagram and WhatsApp.\"\n...\nThe Federal Trade Commission s...",
+      "source": "web",
+      "title": "FTC says it will appeal Meta antitrust decision - The Economic Times",
+      "url": "https://economictimes.indiatimes.com/tech/technology/ftc-says-it-will-appeal-meta-antitrust-decision/printarticle/126912631.cms"
+    }
+  ],
+  "citations": [
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VV0ZW?channel=frL012",
+    "https://economictimes.indiatimes.com/tech/technology/china-us-and-eu-agree-to-work-together-on-ai-safety-at-uk-summit/printarticle/104903837.cms",
+    "https://www.politico.com/news/2026/10/15/white-house-super-intelligence-task-force-to-hold-its-first-meeting-01120798",
+    "https://www.bloomberg.com/news/articles/2026-10-15/anthropic-urged-to-pause-ipo-by-nyc-comptroller-video",
+    "https://www.cnbc.com/amp/2026/10/15/anthropic-metr-securebio-ai-safety-evaluators.html",
+    "https://www.businesstimes.com.sg/companies-markets/nvidia-ceo-says-he-would-cut-buyers-who-build-unsafe-ai-bubble-fears-overdone",
+    "https://uk.finance.yahoo.com/news/nyc-comptroller-calls-anthropic-pause-131333592.html",
+    "http://rmb.reuters.com/rmd/rss/item/tag:reuters.com,2026:newsml_KBN3VU0IY?channel=frL012",
+    "https://ground.news/article/no-more-than-an-ordinary-copyright-case-3rd-circuit-unseals-its-opinion-in-thomson-reuters-case-against-ross",
+    "https://economictimes.indiatimes.com/tech/technology/ftc-says-it-will-appeal-meta-antitrust-decision/printarticle/126912631.cms"
+  ],
+  "usage": {
+    "input_tokens": 696,
+    "output_tokens": 617,
+    "cost_usd": 0.0067
+  }
+}

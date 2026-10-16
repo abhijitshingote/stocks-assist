@@ -1,0 +1,117 @@
+{
+  "name": "tickers_08",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday October 16, 2026.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| DFH | Dream Finders Homes, Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +12.07% | -11.4% | 3.0\u00d7 | \u2014 |\n| ZG | Zillow Group, Inc. Class A | Mid | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +11.70% | +8.1% | 1.1\u00d7 | \u2014 |\n| CRWV | CoreWeave, Inc. Class A Common Stock | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | +4.59% | -15.4% | 4.4\u00d7 | volume_spike 2026-10-15 |\n| BSP | Bending Spoons S.p.A. | Large | Vol spike / gapper \u00b7 last 5D \u00b7 Large cap | +3.85% | +50.9% | 1.7\u00d7 | both 2026-10-14 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Thursday October 15, 2026, any after-hours / pre-market move on Friday October 16, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Dream Finders Homes, Inc. (DFH) `[Homebuilding]`\n- DFH shares rose 12.07% on October 15 after rebounding from a 20% drop on October 14 linked to speculation about an upcoming Bear Cave short report; no published Bear Cave report was identified in the window (Seeking Alpha, Oct 15 15:15 ET).[8]\n- A company disclosure filed October 13 reported that DFH exercised an accordion provision on its revolving credit facility, increasing aggregate commitments by $220 million to approximately $1.7 billion; the filing was outside the window but was cited as background to the move (Seeking Alpha, Oct 15 15:15 ET).[8]\n\n## Zillow Group, Inc. Class A (ZG) `[Internet & Platforms]`\n- No company-specific catalyst found in window.\n\n## CoreWeave, Inc. Class A Common Stock (CRWV) `[AI Infrastructure]`\n- CoreWeave shares initially fell approximately 8% on October 15 before reversing higher; the session followed concerns about AI-infrastructure spending, rising borrowing costs, and a Gartner report warning that more than 80% of neocloud providers could fail to survive independently by 2030 (Investor\u2019s Business Daily, Oct 15 13:41 ET).[1]\n- D.A. Davidson analyst Gil Luria said CoreWeave could be the first casualty if the AI cycle faltered and assigned a zero-equity-value scenario; the comments were reported from a podcast and were marked [report] (Yahoo Finance, Oct 15 08:28 ET).[3]\n- Mizuho cut its CoreWeave price target to $88 from $115; Deutsche Bank maintained a Buy rating and a $150 price target, while Creditsights\u2019 Paul Meeks called the selloff excessive (Yahoo Finance, Oct 15 10:50 ET).[6]\n- CoreWeave\u2019s unsecured bonds due in 2032 traded below 80 cents on the dollar, while reported yields on its 2032 and 2031 bonds approached 14.8% and 14.9%, respectively (Yahoo Finance, Oct 15 08:24 ET).[7]\n- CoreWeave reported second-quarter revenue of approximately $2.58 billion, up 112.3% year over year, a $104 billion backlog, a $626 million net loss, $640 million of interest expense versus $267 million a year earlier, and $5.74 billion of negative free cash flow; the figures were previously disclosed and cited as background (Yahoo Finance, Oct 15 15:19 ET).[4]\n- CoreWeave CEO Michael Intrator sold 78,552 Class A shares at $87.69 on September 30 for $6,888,224.88 under a 10b5-1 plan; the transaction was outside the window and was cited in same-day commentary (Yahoo Finance, Oct 15 15:19 ET).[4]\n- The next reported earnings date was expected around November 11, 2026 (Yahoo Finance, Oct 15 08:24 ET).[9]\n\n## Bending Spoons S.p.A. (BSP) `[Software & SaaS]`\n- Berkshire Hathaway invested an additional $330 million in Bending Spoons, taking its ownership to approximately 4%; the transaction was announced October 15 and drove coverage of the shares (CNBC, Oct 15 06:57 ET).[2]\n- Berkshire\u2019s additional investment followed an approximately $600 million investment at Bending Spoons\u2019 July 2026 IPO, bringing its total commitment to approximately $930 million (Yahoo Finance, Oct 15 15:57 ET).[5]\n- The additional shares were reportedly purchased in a private placement at $33 per share, approximately 13% below the prior day\u2019s close and about 40% below the market price cited in the report; the pricing was marked [report] (Yahoo Finance, Oct 15 15:38 ET).[10]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# CoreWeave Reverses Up As Wall Street Analysts Rush To Defend AI Stock.\n- Updated 01:41 PM ET 10/15/2026\n**CoreWeave** (CRWV) stock reversed up on Thursday as Wall Street analysts defended the company's funding strategy to build out artificial intelligence data centers.\nA spike in borrowing costs, ...",
+      "source": "web",
+      "title": "CoreWeave Reverses Up As Wall Street Analysts Rush To Defend AI Stock.",
+      "url": "https://www.investors.com/news/technology/coreweave-stock-neoclouds-tumble-gartner-financial-forecast/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Bending Spoons shares soar after Berkshire reveals $330M investment, taking a 4% stake\n...\n# Bending Spoons shares soar after Berkshire reveals $330M investment, taking a 4% stake\n...\nThu, Oct 15 20266:57 AM EDT",
+      "source": "web",
+      "title": "Bending Spoons shares soar after Berkshire reveals $330M ...",
+      "url": "https://www.cnbc.com/video/2026/10/15/bending-spoons-shares-soar-after-berkshire-reveals-330m-investment-taking-a-4-percent-stake.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "CRWV Stock Flashes Red Again: Analyst Says It Could Be First Casualty in AI Downturn, Retail Sniffs Opportunity\n...\n# CRWV Stock Flashes Red Again: Analyst Says It Could Be First Casualty in AI Downturn, Retail Sniffs Opportunity\nThu, October 15, 2026 at 5:28 AM GMT-3 4 min read\n- CRWV\n-15.46%\n- Cor...",
+      "source": "web",
+      "title": "CRWV Stock Flashes Red Again: Analyst Says It Could Be First Casualty in AI Downturn, Retail Sniffs Opportunity",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/crwv-stock-flashes-red-again-082823204.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Thu, October 15, 2026 at 12:19 PM GMT-3 4 min read\n- CRWV\n-2.34%\n...\n### Quick Read\n- Intrator sold nearly $7M in discretionary CRWV shares the same day he told investors margins were improving; the stock has since dropped 30% in a week.\n...\n- CoreWeave's bonds now yield ~15% and free cash flow stan...",
+      "source": "web",
+      "title": "Cramer Says \u201cPeople Are Terrified\u201d As CoreWeave ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/cramer-says-people-terrified-coreweave-151910292.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Berkshire backs Bending Spoons, sending shares soaring\n...\nThu, October 15, 2026 at 12:57 PM GMT-3 1 min read\n...\nBending Spoons on Wednesday secured a $330 million investment from existing shareholder Berkshire Hathaway.\n...\n**Catch up quick:** Berkshire Hathaway, now led by Greg Abel, first backed...",
+      "source": "web",
+      "title": "Berkshire backs Bending Spoons, sending shares soaring",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/berkshire-backs-bending-spoons-sending-155707182.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "CRWV Stock On Track For 4-Day Slide Amid CoreWeave\u2019s Debt Test: Analysts Split On Whether Selloff \u2018Grossly Overexaggerated\u2019\n...\nThu, October 15, 2026 at 7:50 AM AST 5 min read\n- CRWV\n-8.97%\n- Creditsights analyst Paul Meeks maintains a positive outlook on CoreWeave, citing strong fundamental growth....",
+      "source": "web",
+      "title": "CRWV Stock On Track For 4-Day Slide Amid CoreWeave\u2019s Debt Test: Analysts Split On Whether Selloff \u2018Grossly Overexaggerated\u2019",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/crwv-stock-track-4-day-115055981.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Thu, October 15, 2026 at 8:24 AM GMT-3 3 min read\n...\n- **Price change for CoreWeave** **stock in last 6 months:** -45%\n- **$CRWV Stock Price as of Oct. 14:** $66\n- **52-Week High:** $150\n- **$CRWV Stock Price Target: **$141\n...\nCoreWeave (CRWV:NASDAQ) shares dropped 15.5% on Wednesday as investors ...",
+      "source": "web",
+      "title": "Growing AI Debt Fears Sink CoreWeave Stock By 15% - Yahoo Finance",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/growing-ai-debt-fears-sink-112414395.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Dream Finders Homes surges 14% amid rebound from steep slide (DFH:NYSE) | Seeking Alpha\n...\nOct 15, 2026, 3:15 PM ETDream Finders Homes, Inc.\n...\nShares of Dream Finders Homes (DFH), a single-family homebuilder focused on high-growth markets, jumped almost 14% on Thursday, rebounding after a steep d...",
+      "source": "web",
+      "title": "Dream Finders Homes surges 14% amid rebound from steep slide (DFH:NYSE)",
+      "url": "https://seekingalpha.com/news/4653568-dream-finders-homes-surges-14-amid-rebound-from-steep-slide?feed_item_type=news"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Shares of CoreWeave (CRWV) fell 15.5% on October 14, 2026, during a session where the S&P 500 lost 1.1%.\nThe drop came as yields on CoreWeave's unsecured bonds rose toward 15%.\nA venture capitalist had drawn attention to them on X late on Tuesday, October 13.\nReports tied the stock decline to concer...",
+      "source": "web",
+      "title": "What Sent CoreWeave Stock Lower? - Yahoo Finance",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/sent-coreweave-stock-lower-121551231.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Berkshire Hathaway Poured Another $330M Into Bending Spoons \u2014 But It Paid a 40% Discount to Today's Market Price\n...\nThu, October 15, 2026 at 12:38 PM GMT-3 4 min read\n...\n- BSP\n+4.32%\n...\nBerkshire Hathaway's (BRK.A) (BRK.B) decision to invest an additional $330 million in Italian technology conglo...",
+      "source": "web",
+      "title": "Berkshire Hathaway Poured Another $330M Into Bending Spoons \u2014 But It Paid a 40% Discount to Today's Market Price",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/berkshire-hathaway-poured-another-330m-153845904.html"
+    }
+  ],
+  "citations": [
+    "https://www.investors.com/news/technology/coreweave-stock-neoclouds-tumble-gartner-financial-forecast/",
+    "https://www.cnbc.com/video/2026/10/15/bending-spoons-shares-soar-after-berkshire-reveals-330m-investment-taking-a-4-percent-stake.html",
+    "https://finance.yahoo.com/markets/stocks/articles/crwv-stock-flashes-red-again-082823204.html",
+    "https://finance.yahoo.com/markets/stocks/articles/cramer-says-people-terrified-coreweave-151910292.html",
+    "https://finance.yahoo.com/markets/stocks/articles/berkshire-backs-bending-spoons-sending-155707182.html",
+    "https://finance.yahoo.com/markets/stocks/articles/crwv-stock-track-4-day-115055981.html",
+    "https://finance.yahoo.com/markets/stocks/articles/growing-ai-debt-fears-sink-112414395.html?fr=sycsrp_catchall",
+    "https://seekingalpha.com/news/4653568-dream-finders-homes-surges-14-amid-rebound-from-steep-slide?feed_item_type=news",
+    "https://finance.yahoo.com/markets/stocks/articles/sent-coreweave-stock-lower-121551231.html?fr=sycsrp_catchall",
+    "https://finance.yahoo.com/markets/stocks/articles/berkshire-hathaway-poured-another-330m-153845904.html"
+  ],
+  "usage": {
+    "input_tokens": 1069,
+    "output_tokens": 851,
+    "cost_usd": 0.00809
+  }
+}

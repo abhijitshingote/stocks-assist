@@ -1,0 +1,117 @@
+{
+  "name": "a_earnings_next",
+  "kind": "channel",
+  "group": "calendar",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Earnings tonight & tomorrow.\n\nWindow: Thursday October 15, 2026 4:00 PM ET (after the close) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nCompanies reporting after the close on the brief date or before the open on the next session: EPS and revenue consensus, year-ago figures, options-implied move, and analyst previews (firm, rating, PT).\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **MTB** \u2014 Banking\n- M&T Bank was scheduled to report third-quarter 2026 results before the open on Friday, October 16; one consensus set estimated EPS at **$4.93** and revenue at **$2.53 billion**, versus second-quarter EPS of **$5.35** and revenue of **$2.53 billion**. (Investing.com, Oct 15; updated Oct 16, publication time not shown)[1]\n- A separate estimate listed consensus EPS at **$4.98**, representing a **2.26%** increase from the year-ago quarter. (Nasdaq/Zacks, Oct 15, publication time not shown)[5]\n- Another earnings estimate listed EPS of **$4.93** and revenue of **$2.53 billion** for the quarter. (Newsquawk, Oct 15, publication time not shown)[8]\n- Consensus analyst rating was **Hold**, with an average price target of **$248.79**; the referenced share price was **$216.05**. (Investing.com, Oct 15; updated Oct 16, publication time not shown)[1]\n\n## **TRV** \u2014 Insurance\n- The Travelers Companies was scheduled to report third-quarter 2026 results before the open on Friday, October 16, with consensus EPS of **$7.01**, a **13.88% decrease** from the year-ago quarter. (Nasdaq/Zacks, Oct 15, publication time not shown)[5]\n\n## **TFC** \u2014 Banking\n- Truist Financial was scheduled to report third-quarter 2026 results before the open on Friday, October 16, with consensus EPS of **$1.17**, a **12.50% increase** from the year-ago quarter. (Nasdaq/Zacks, Oct 15, publication time not shown)[5]\n- A separate estimate put expected GAAP EPS at **$1.13** and the three-month average analyst price target at **$54.91**, with a high target of **$61** and a low target of **$50**. (Business Insider, Oct 15; updated Oct 16, publication time not shown)[9]\n\n## **CFG** \u2014 Banking\n- Citizens Financial Group was scheduled to report third-quarter 2026 results before the open on Friday, October 16, with consensus EPS of **$1.38**, a **31.43% increase** from the year-ago quarter. (Nasdaq/Zacks, Oct 15, publication time not shown)[5]\n- A separate estimate put expected adjusted EPS at **$1.40** and the three-month average analyst price target at **$79.61**, with a high target of **$90** and a low target of **$70**. (Business Insider, Oct 15; updated Oct 16, publication time not shown)[9]\n\n## **RF** \u2014 Banking\n- Regions Financial was scheduled to report third-quarter 2026 results before the open on Friday, October 16, with consensus EPS of **$0.67**, a **6.35% increase** from the year-ago quarter. (Nasdaq/Zacks, Oct 15, publication time not shown)[5]\n- Another estimate listed consensus EPS at **$0.66** and revenue at **$1.99 billion**. (Newsquawk, Oct 15, publication time not shown)[8]\n\n## **ERIC** \u2014 Communications & Networking\n- Ericsson reported third-quarter revenue of **$6.168 billion**, versus consensus of **$5.790 billion** and year-ago revenue of **$5.910 billion**. (ScanX, Oct 15 11:24 ET; updated Oct 16 00:08 ET)[7]\n- Ericsson reported EPS of **$0.18**, versus consensus of **$0.14** and year-ago EPS of **$0.35**. (ScanX, Oct 15 11:24 ET; updated Oct 16 00:08 ET)[7]\n- The analyst consensus rating was **Hold**, with an average price target of **$9.60**; cited prior actions were JPMorgan lowering its target to **$10.20** on October 8 and Morgan Stanley downgrading Ericsson to **Underweight** with a **$9** target on September 22. (ScanX, Oct 15 11:24 ET; updated Oct 16 00:08 ET)[7]\n- Ericsson announced a global restructuring creating a unified **Market Area Asia-Pacific** organization on October 15, 2026. (ScanX, Oct 15 11:24 ET; updated Oct 16 00:08 ET)[7]\n\n## **WFC** \u2014 Banking\n- Wells Fargo reported EPS of **$1.87**, versus consensus of **$1.85**, and revenue of **$21.87 billion**, versus consensus of **$22.15 billion**. (Zacks/Yahoo Finance, Oct 15, publication time not shown)[10]\n\n## **TSM** \u2014 Semiconductors\n- Taiwan Semiconductor reported third-quarter 2026 ADR EPS of **$4.60**, up **68.7% year over year**, and revenue of **$46.72 billion**, up **41.2% year over year**. (Zacks/Yahoo Finance, Oct 15, publication time not shown)[6]\n- TSMC\u2019s third-quarter EPS was **TWD 29.43**, and reported ROE was **45.5%**. (Zacks/Yahoo Finance, Oct 15, publication time not shown)[6]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# M&T Bank earnings in focus: Margin strength faces loan growth test\nM&T Bank Corp.\nwill report third-quarter earnings before the market opens Friday, October 16, with analysts expecting earnings of $4.93 per share and revenue of $2.53 billion.\nThe forecast represents a notable sequential decline fr...",
+      "source": "web",
+      "title": "M&T Bank earnings in focus: Margin strength faces loan ...",
+      "url": "https://www.investing.com/news/earnings/mt-bank-earnings-in-focus-margin-strength-faces-loan-growth-test-93CH-4952034"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Why Great Earnings Are Being Punished Right Now\n### Quick Read\n**ASML** (NASDAQ:ASML) reported third-quarter results on October 14, 2026, that beat forecasts on every major line.\nGAAP EPS of $14.48 exceeded the $10.66 consensus, and revenue rose 55.2% year over year to $13.1 billion.\n...\n**Goldman...",
+      "source": "web",
+      "title": "Why Great Earnings Are Being Punished Right Now",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/why-great-earnings-being-punished-132523553.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "M&T Bank Corp.\nwill report third-quarter earnings before the market opens Friday, October 16, with analysts expecting earnings of $4.93 per share and revenue of $2.53 billion.\nThe forecast represents a notable sequential decline from the prior quarter's $5.35 per share, though revenue is expected to...",
+      "source": "web",
+      "title": "M&T Bank earnings in focus: Margin strength faces loan growth test By Investing.com",
+      "url": "https://au.investing.com/news/stock-market-news/mt-bank-earnings-in-focus-margin-strength-faces-loan-growth-test-93CH-4693182"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# M&T Bank earnings in focus: Margin strength faces loan growth test\nM&T Bank Corp.\nwill report third-quarter earnings before the market opens Friday, October 16, with analysts expecting earnings of $4.93 per share and revenue of $2.53 billion.\nThe forecast represents a notable sequential decline fr...",
+      "source": "web",
+      "title": "M&T Bank earnings in focus: Margin strength faces loan ...",
+      "url": "https://ng.investing.com/news/stock-market-news/mt-bank-earnings-in-focus-margin-strength-faces-loan-growth-test-93CH-2738731"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "The following companies are expected to report earnings prior to market open on 10/16/2026.\nVisit our Earnings Calendar for a full list of expected earnings releases.\nThe Travelers Companies, Inc.\n(TRV)is reporting for the quarter ending September 30, 2026.\nThe insurance (property & casualty) compan...",
+      "source": "web",
+      "title": "Pre-Market Earnings Report for October 16, 2026 : TRV, TFC, MTB, CFG, RF",
+      "url": "https://www.nasdaq.com/articles/pre-market-earnings-report-october-16-2026-trv-tfc-mtb-cfg-rf"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Taiwan Semiconductor Q3 Earnings & Revenues Top Estimates, Margins Up\n**Taiwan Semiconductor Manufacturing Company Ltd**.\nTSM, or TSMC, reported third-quarter 2026 earnings of $4.60 per ADR unit, which increased 68.7% year over year.\nThe bottom line surpassed the Zacks Consensus Estimate of 3.4%.\n...",
+      "source": "web",
+      "title": "Taiwan Semiconductor Q3 Earnings & Revenues Top ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/taiwan-semiconductor-q3-earnings-revenues-131800915.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "4 min read | Published on 15 Oct 2026, 11:24 AM |Updated on 16 Oct 2026, 12:08 AM\n...\nKey Highlights\n- Revenue rose 4.37% YoY to $6.168 billion, beating consensus estimates by 6.53%\n- EPS of $0.18 exceeded analyst forecasts by 28.57%, though down 48.57% YoY\n...\n- Analyst consensus remains Hold with ...",
+      "source": "web",
+      "title": "Ericsson shares rise 11% after Q3 earnings beat analyst ...",
+      "url": "https://scanx.trade/stock-market-news/companies/ericsson-q3-results-eps-beats-estimate-29-sales-up-4-4-yoy/53589272"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Daily US Earnings Estimates: 16th October 2026\n## S&P 500\nM&T Bank (MTB) EPS (exp. 4.93), Revenue (exp. 2.53bln), Next Qtr.\nEPS (exp. 4.92), Next Qtr.\nRev.\n(exp. 2.55bln), Current FY EPS (exp. 19.29), Current FY Rev.\n(exp. 10.07bln), Next FY EPS (exp. 21.01), Next FY Rev.\n(exp. 10.43bln) 10:30BST/...",
+      "source": "web",
+      "title": "Daily US Earnings Estimates: 16th October 2026 | Newsquawk",
+      "url": "https://www.newsquawk.com/headlines/daily-us-earnings-estimates-16th-october-2026"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "On Friday, October 16, M&T Bank (MTB), Truist Financial (TFC), and Citizens Financial Group (CFG) will report their earnings.\nAll three companies will publish their results before the market opens.\nTraders are already weighing in with their expectations on Polymarket.\n## Wall Street\u2019s Earnings Estim...",
+      "source": "web",
+      "title": "Polymarket Odds: Will MTB, TFC, CFG Beat Earnings Tomorrow?",
+      "url": "https://markets.businessinsider.com/news/stocks/polymarket-odds-will-mtb-tfc-cfg-beat-earnings-tomorrow-1036632403"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "The company reported earnings of $1.87 per share, which surpassed the Zacks Consensus Estimate of $1.85.\nRevenues were $21.87 billion, missing the consensus estimate of $22.15 billion.",
+      "source": "web",
+      "title": "Wells Fargo Q3 Earnings Call Highlights Higher Interest ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/wells-fargo-q3-earnings-call-130000130.html"
+    }
+  ],
+  "citations": [
+    "https://www.investing.com/news/earnings/mt-bank-earnings-in-focus-margin-strength-faces-loan-growth-test-93CH-4952034",
+    "https://finance.yahoo.com/markets/stocks/articles/why-great-earnings-being-punished-132523553.html",
+    "https://au.investing.com/news/stock-market-news/mt-bank-earnings-in-focus-margin-strength-faces-loan-growth-test-93CH-4693182",
+    "https://ng.investing.com/news/stock-market-news/mt-bank-earnings-in-focus-margin-strength-faces-loan-growth-test-93CH-2738731",
+    "https://www.nasdaq.com/articles/pre-market-earnings-report-october-16-2026-trv-tfc-mtb-cfg-rf",
+    "https://finance.yahoo.com/markets/stocks/articles/taiwan-semiconductor-q3-earnings-revenues-131800915.html",
+    "https://scanx.trade/stock-market-news/companies/ericsson-q3-results-eps-beats-estimate-29-sales-up-4-4-yoy/53589272",
+    "https://www.newsquawk.com/headlines/daily-us-earnings-estimates-16th-october-2026",
+    "https://markets.businessinsider.com/news/stocks/polymarket-odds-will-mtb-tfc-cfg-beat-earnings-tomorrow-1036632403",
+    "https://finance.yahoo.com/markets/stocks/articles/wells-fargo-q3-earnings-call-130000130.html"
+  ],
+  "usage": {
+    "input_tokens": 704,
+    "output_tokens": 1208,
+    "cost_usd": 0.0083
+  }
+}

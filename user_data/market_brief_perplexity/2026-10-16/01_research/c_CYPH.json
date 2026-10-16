@@ -1,0 +1,117 @@
+{
+  "name": "c_CYPH",
+  "kind": "gap",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a pre-market brief.\nBrief date: Friday October 16, 2026. Target: Cypherpunk Technologies Inc. (CYPH).\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (authoritative):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| CYPH | Cypherpunk Technologies Inc. | Small | Top 10 \u00b7 1D return \u00b7 Mid & small cap | +17.33% | +11.4% | 1.1\u00d7 | \u2014 |\n\nA first search found no catalyst, or only a generic reason (profit-taking, reversal, sector move):\n## Cypherpunk Technologies Inc. (CYPH) `[Cryptocurrency & Digital Assets]`\n- No company-specific catalyst found in window\n\nTASK\nSearch harder for why CYPH moved. Run several searches: \"why is Cypherpunk Technologies Inc. stock down/up\",\n\"Cypherpunk Technologies Inc. stock\", \"CYPH shares Thursday October 15, 2026\", \"Cypherpunk Technologies Inc. concerns\", \"Cypherpunk Technologies Inc. FDA\",\n\"Cypherpunk Technologies Inc. analyst\", \"Cypherpunk Technologies Inc. price target\", \"Cypherpunk Technologies Inc. deal\", \"Cypherpunk Technologies Inc. offering\". Check:\nanalyst warnings on the company or its sector (capex returns, AI monetization, valuation), product\ncontroversies (privacy, safety, lawsuits, verdicts), government action on the company's industry\n(rules, restrictions on rivals, trade measures, legislation, contracts) and broker notes on it.\nEven if an analyst action already explains the move, also search why the whole group moved\n(\"Cypherpunk Technologies Inc. peers rally/fall why\", \"<industry> stocks <date>\") \u2014 a group-wide catalyst often sits\nbehind a single-firm explanation, regulatory approvals, product launches, licensing deals, analyst\nactions (including notes on the prior day), index changes, filings, insider transactions, and news\nabout customers, suppliers, competitors or the sector (name the lead stock and its event).\nAlso report any after-hours / pre-market move on Friday October 16, 2026 with its catalyst.\n\nOUTPUT (markdown; no intro):\n\n## Cypherpunk Technologies Inc. (CYPH) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name.\nIf you still find nothing, write exactly: \"- No company-specific catalyst found in window\".\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Cypherpunk Technologies Inc. (CYPH) `[Cryptocurrency & Digital Assets]`\n- Cantor initiated coverage of Cypherpunk Technologies with an **Overweight** rating and a **$0.90 price target** on October 15, alongside coverage of Forward Industries with an Overweight rating and a $7.90 target; the note described digital-asset treasury companies as an investment theme. (Infomarine, Oct 15, publication time not reported)[3]\n- Cypherpunk\u2019s Winklevoss Treasury Investments exercised **4,938,801 pre-funded warrants** for common shares at **$0.001 per share** on October 12; WTI held **29,793,414 common shares** and **97,229,007 pre-funded warrants** afterward, subject to a **19.99% ownership limit**. (StockTitan, Oct 14, updated Oct 15, publication time not reported)[4]\n- Cypherpunk was reported to control roughly **18% of Zcash\u2019s hashrate**, while Chief Investment Officer **Will McEvoy** said Zcash mining generated about **$1,000 per megawatt-hour** versus less than **$150** for Bitcoin mining; the report said the company had not placed new Zcash-mining-rig orders. (CoinGeek, Oct 14, updated Oct 15, publication time not reported)[9]\n- Binance said it would shut its Binance Pool mining unit on **November 10**, while Zcash mining profitability was reported at nearly **three times** Bitcoin\u2019s level; the report identified Cypherpunk as one of the companies pursuing Zcash mining. (CoinGeek, Oct 14, updated Oct 15, publication time not reported)[9]\n- CYPH closed at **$3.02**, up **$0.40**, or **15.27%**, on October 15, with **16.33 million shares** traded and a reported market capitalization of **$325.45 million**. (MetaCap, Oct 15, 17:53 ET)[2]",
+  "search_results": [
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Cypherpunk: WTI exercises warrants for 4.94M shares\n## Rhea-AI Filing Summary\nWinklevoss Treasury Investments, LLC (WTI) exercised 4,938,801 Cypherpunk Technologies Inc.\n(CYPH) pre-funded warrants on October 12, 2026, acquiring the same number of common shares at a $0.0010 exercise price per share...",
+      "source": "web",
+      "title": "At $0.001 per share, Winklevoss Treasury Investments exercises Cypherpunk (CYPH) warrants.",
+      "url": "https://www.stocktitan.net/sec-filings/CYPH/form-4-cypherpunk-technologies-inc-insider-trading-activity-5e161385d69d.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Top Stock Gainers Today\n## Top Gainers: October 15, 2026\nPrices as of Oct 15, 5:53 PM EDT \u00b7 delayed 15 min\n...\n|#|Symbol|Company|Sector|Price|Change|% Change|Volume|Market Cap|Trend|\n|--|--|--|--|--|--|--|--|--|--|\n|12|CYPH|Cypherpunk Technologies Inc.|Health Care|3.02|+0.40|+15.27%|16.33M|$325.45...",
+      "source": "web",
+      "title": "Top Stock Gainers Today - MetaCap",
+      "url": "https://metacap.si/markets/gainers/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Cantor says crypto market near bottom as bitcoin (BTC) cycle points to October low\n...\nThe bank also highlighted digital asset treasury companies as an overlooked investment theme, arguing the strongest firms are evolving beyond passive crypto holders into active operators that generate yield, bui...",
+      "source": "web",
+      "title": "Cantor says crypto market near bottom as bitcoin (BTC ...",
+      "url": "https://www.infomarine.net/en/insight/118-crypto-news/80454-cantor-says-crypto-market-near-bottom-as-bitcoin-btc-cycle-points-to-october-low.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Cypherpunk: WTI exercises warrants for 4.94M shares | CYPH Insider Trading\n...\n2. SEC Filings\n...\n4. [Form 4] CYPHERPUNK TECHNOLOGIES INC.\n...\n# Cypherpunk: WTI exercises warrants for 4.94M shares\n## Rhea-AI Filing Summary\nCypherpunk Technologies Inc.\n(CYPH) had 4,938,801 Pre-Funded Warrants exercis...",
+      "source": "web",
+      "title": "Cypherpunk: WTI exercises warrants for 4.94M shares",
+      "url": "https://www.stocktitan.net/sec-filings/CYPH/form-4-cypherpunk-technologies-inc-insider-trading-activity-ef114ba5dfbf.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "CYPH\nCypherpunk Technologies Inc.\n# Yahoo Finance Canada\n### Canada markets open in 3h 43m\n2.4600 -6.11%\n...\n# Cypherpunk Technologies Inc. (CYPH)\n2.6200 -0.2200 (-7.75%)\nAt close: October 14 at 4:00:02 p.m.\nEDT\n2.4600 -0.1600 (-6.11%)\nPre-Market: 5:06:41 a.m.",
+      "source": "web",
+      "title": "Cypherpunk Technologies Inc. (CYPH) Options Chain",
+      "url": "https://ca.finance.yahoo.com/quote/CYPH/options/?date=1805414400&straddle=false&type=all"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Cypherpunk Technologies Inc.\n# Yahoo Finance Canada\n### Canada markets close in 6h 27m\n2.4300 -7.28%\n...\n# Cypherpunk Technologies Inc. (CYPH)\n2.4300 -0.1900 (-7.28%)",
+      "source": "web",
+      "title": "Cypherpunk Technologies Inc. (CYPH) Options Chain",
+      "url": "https://ca.finance.yahoo.com/quote/CYPH/options/?date=1792713600&straddle=false&type=all"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Cypherpunk Technologies Inc.\nNot halal\nCypherpunk Technologies Inc.\ndid not pass AAOIFI screening.\nThe failed check is shown below.\nChecked: 13 October 2026\nExchange\nNASDAQ\nPrice\n3.02\nDay\n+15.27%\nMarket cap\n$308.7M\nIndustry\nAsset Management\nSector\nFinancial Services\n...\n## What the company does\nCyph...",
+      "source": "web",
+      "title": "Is CYPH halal? \u2014 Cypherpunk Technologies Inc. AAOIFI ... - Limitup",
+      "url": "https://www.limitup.uz/en/halal/CYPH"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Top Gainers\n7\nC\nCypherpunk Technologies Inc\nCYPH\n+254.53%\n2.620\n2.820\n2.565\n8.20M\n8.98%\n-25.2166\n282.34M",
+      "source": "web",
+      "title": "3 Months Stock Market Top Gainers - Webull-MY",
+      "url": "https://www.webull.com.my/quote/us/gainers/3m"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Binance shuts BTC mining pool, Zcash miners living the dream\n***TL;DR:* ** *Binance is shutting down its Binance Pool mining unit on November 10, a sign of how tough BTC mining economics have become.\nSome miners are pivoting to AI data centers, while others are chasing Zcash, which currently pays ...",
+      "source": "web",
+      "title": "Binance shuts BTC mining pool, Zcash miners living the dream",
+      "url": "https://coingeek.com/binance-shuts-btc-mining-pool-zcash-miners-living-the-dream/"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# SEC Filings for October 14, 2026\n13 oct 2026 15 oct 2026\n...\nCYPH : Nasdaq\nWinklevoss Treasury Investments exercises Cypherpunk (CYPH) warrants at $0.001 per share.",
+      "source": "web",
+      "title": "SEC Filings for Oct 14, 2026 - 10-K, 10-Q, 8-K Forms",
+      "url": "https://www.stocktitan.net/sec-filings/2026-10-14/?page=2"
+    }
+  ],
+  "citations": [
+    "https://www.stocktitan.net/sec-filings/CYPH/form-4-cypherpunk-technologies-inc-insider-trading-activity-5e161385d69d.html",
+    "https://metacap.si/markets/gainers/",
+    "https://www.infomarine.net/en/insight/118-crypto-news/80454-cantor-says-crypto-market-near-bottom-as-bitcoin-btc-cycle-points-to-october-low.html",
+    "https://www.stocktitan.net/sec-filings/CYPH/form-4-cypherpunk-technologies-inc-insider-trading-activity-ef114ba5dfbf.html",
+    "https://ca.finance.yahoo.com/quote/CYPH/options/?date=1805414400&straddle=false&type=all",
+    "https://ca.finance.yahoo.com/quote/CYPH/options/?date=1792713600&straddle=false&type=all",
+    "https://www.limitup.uz/en/halal/CYPH",
+    "https://www.webull.com.my/quote/us/gainers/3m",
+    "https://coingeek.com/binance-shuts-btc-mining-pool-zcash-miners-living-the-dream/",
+    "https://www.stocktitan.net/sec-filings/2026-10-14/?page=2"
+  ],
+  "usage": {
+    "input_tokens": 1038,
+    "output_tokens": 441,
+    "cost_usd": 0.00655
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "name": "tickers_17",
+  "kind": "ticker",
+  "group": "tickers",
+  "window": "session",
+  "prompt": "Search the web now for news on each stock below. You are a financial fact extractor for a\npre-market brief. Brief date: Friday October 16, 2026.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nVERIFIED TAPE (from exchange OHLC data; authoritative, do not restate different prices):\n| Ticker | Company | Cap | Screen | 1D close | 5D | Vol\u00d7 10d | Vol/gap event |\n|---|---|---|---|---:|---:|---:|---|\n| ECO | Okeanis Eco Tankers Corp. | Mid | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | -5.35% | -5.8% | 1.6\u00d7 | both 2025-11-13 |\n| SECZ | Securitize Corp. | Small | Top 10 \u00b7 Main View TI65 \u00b7 Mid & small cap | +6.53% | -11.3% | 0.6\u00d7 | gapper 2026-09-24 |\n\nTASK\nRun a separate search for EACH ticker (\"<company> stock news\", \"<company> shares <session date>\").\nFind why it moved on Thursday October 15, 2026, any after-hours / pre-market move on Friday October 16, 2026, and\nother material news in the window. Search press releases (BusinessWire, PR Newswire, GlobeNewswire),\nSEC filings, FDA, Reuters, Bloomberg, CNBC, WSJ, Barron's, MarketWatch, Investor's Business Daily,\ncompany IR pages, analyst-action roundups.\nIf a mover has no company news, check whether another company's event moved it (customer, supplier,\ncompetitor, partner, sector report) and name that company and event.\n\nOUTPUT (markdown; one section per ticker, in the order given; no intro or conclusion):\n\n## Company Name (TICKER) `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or a concise sector name (Pharma, Energy, Retail, ...).\nIf you find nothing, write exactly one bullet: \"- No company-specific catalyst found in window\" and,\nif applicable, a second bullet naming the sympathy driver.\n\nInclude when available: catalyst for the move, earnings figures, guidance, analyst actions, contracts\nwith $ size, filings, regulatory decisions, management quotes with numbers, next catalyst date.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Okeanis Eco Tankers Corp. (ECO) `[Energy]`\n- Shares opened at $89.67 after a prior close of $95.66 and were last reported at $92.5570 on October 15, with 400,568 shares traded; the report did not identify a new company-specific catalyst (The Cerbat Gem, Oct 15, 2026; publish time not stated).[1]\n- B. Riley raised its price target from $75 to $100 and maintained a Buy rating on October 5; Zacks Research lowered its rating from Strong Buy to Hold on the same date (The Cerbat Gem, Oct 15, 2026; publish time not stated).[1]\n- Okeanis last reported quarterly results on August 5: EPS was $5.91 versus a $4.61 consensus estimate, and revenue was $268.14 million versus a $220.28 million consensus estimate (The Cerbat Gem, Oct 15, 2026; publish time not stated).[1]\n- A report published October 14 cited Reuters reporting that a tanker and a container ship were hit by projectiles in the Strait of Hormuz; Iranian officials said new offensive tactics against ships had been used for about 10 days [report] (Finanztrends, Oct 14, 2026; publish time not stated).[6]\n- No ECO-specific filing, earnings release, analyst action, or after-hours/pre-market catalyst was identified in the available results through 02:03 ET on October 16, 2026.\n\n## Securitize Corp. (SECZ) `[Financial Technology]`\n- Pomerantz announced an investigation into potential securities-fraud or other unlawful-business-practice claims involving Securitize and certain officers or directors at 10:00 ET on October 15 (Pomerantz LLP via PR Newswire, Oct 15, 2026, 10:00 ET).[2]\n- Citi downgraded Securitize from Buy to Neutral and raised its price target to $14; the report said the stock was trading at $11.21 and was down about 10% for the year (Yahoo Finance, Oct 15, 2026; publish time not stated).[3]\n- Securitize hosted \u201cThe Future of Wall Street,\u201d an October 15 New York event with speakers from ICE, BlackRock, and Cantor Fitzgerald focused on tokenization and capital markets (The Cryptocurrency Post, Oct 15, 2026; publish time not stated).[7]\n- Securitize completed tokenization of Ark Invest\u2019s ARK Venture Fund, ARKVX, giving eligible investors blockchain-based exposure to the fund\u2019s portfolio; Cathie Wood called the move a \u201cnatural extension\u201d of Ark\u2019s mission (AOL, Oct 15, 2026, 03:58 ET).[4]\n- Securitize shares were reported down 2.56% after hours after closing at $10.55, down 5.72%, in coverage of the ARKVX tokenization announcement (AOL, Oct 15, 2026, 03:58 ET).[4]\n- StoneX analyst Mark Palmer maintained a Buy rating and raised the price target from $12 to $18 on October 14; StoneX projected approximately $198.5 million of 2028 revenue and cited second-quarter trading volume of $5.3 billion (Gate News, Oct 14, 2026; updated Oct 15, 2026; publish time not stated).[9]\n- Securitize launched tokenized Apple, Nvidia, and Tesla shares on Solana on October 10, with trades settled in USDC; the report said most of the $5.3 billion second-quarter trading volume generated no transaction-fee revenue (Gate News, Oct 14, 2026; updated Oct 15, 2026; publish time not stated).[9]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Shares of Okeanis Eco Tankers Corp.\n(NYSE:ECO ) gapped down before the market opened on Thursday.\nThe stock had previously closed at $95.66, but opened at $89.67.\nOkeanis Eco Tankers shares last traded at $92.5570, with a volume of 400,568 shares trading hands.\nECO has been the topic of several rese...",
+      "source": "web",
+      "title": "Okeanis Eco Tankers (NYSE:ECO) Shares Gap Down \u2013 Time to Sell?",
+      "url": "https://www.thecerbatgem.com/2026/10/15/okeanis-eco-tankers-nyseeco-shares-gap-down-time-to-sell.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "INVESTOR ALERT: Pomerantz Law Firm Investigates Claims On Behalf of Investors of Securitize Corp.\n- SECZ\n- - 888-776-0942\n...\n# INVESTOR ALERT: Pomerantz Law Firm Investigates Claims On Behalf of Investors of Securitize Corp. - SECZ\n## News provided by\n**Pomerantz LLP\n**\nOct 15, 2026, 10:00 ET\nNEW Y...",
+      "source": "web",
+      "title": "INVESTOR ALERT: Pomerantz Law Firm Investigates Claims On Behalf of Investors of Securitize Corp. - SECZ",
+      "url": "https://www.prnewswire.com/news-releases/investor-alert-pomerantz-law-firm-investigates-claims-on-behalf-of-investors-of-securitize-corp--secz-302909632.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Citi hikes price targets on Coinbase, Gemini, Galaxy\n## Securitize\nSecuritize Corp.\n(NYSE: SECZ) is one of the world's leading tokenization companies.\nTokenization is the process of using blockchain technology to turn real-world assets (RWAs) into digital tokens which can be traded fractionally, 2...",
+      "source": "web",
+      "title": "Citi hikes price targets on Coinbase, Gemini, Galaxy",
+      "url": "https://finance.yahoo.com/markets/crypto/articles/citi-hikes-price-targets-coinbase-150100287.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# SpaceX-Holding ARK Fund Goes On-Chain: Cathie Wood Calls Move \u2018Natural Extension of Our Mission\u2019 to \u2018Democratize\u2019 Financial Access\nThu, October 15, 2026 at 7:58 AM UTC\n**Ark Invest** co-founder **Cathie Wood** said Wednesday that tokenization could fundamentally change how investors take part in p...",
+      "source": "web",
+      "title": "SpaceX-Holding ARK Fund Goes On-Chain: Cathie Wood Calls Move \u2018Natural Extension of Our Mission\u2019 to \u2018Democratize\u2019 Financial Access - AOL",
+      "url": "https://www.aol.ca/articles/spacex-holding-ark-fund-goes-075825000.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "2026-10-15 16:37:32\u3000\u6765\u6e90: \u65b0\u6d6a\u8d22\u7ecf \u4e3e\u62a5\n...\n\u636e Woofun AI \u6d88\u606f\uff0c\u65b9\u821f\u6295\u8d44\u8054\u5408\u521b\u59cb\u4eba\u51ef\u897f\u00b7\u4f0d\u5fb7\u5c06 ARK \u98ce\u9669\u6295\u8d44\u57fa\u91d1\uff08ARKVX\uff09\u7684\u4ee3\u5e01\u5316\u89c6\u4e3a\u5176\u6838\u5fc3\u4f7f\u547d\u7684'\u81ea\u7136\u5ef6\u4f38'\u3002\u8be5\u57fa\u91d1\u901a\u8fc7 Securitize(SECZ.US) Corp.\u5b8c\u6210\u4e0a\u94fe\uff0c\u65e8\u5728\u8df5\u884c'\u8ba9\u91d1\u878d\u670d\u52a1\u66f4\u666e\u53ca'\u7684\u627f\u8bfa\uff0c\u4ece\u6839\u672c\u4e0a\u6539\u53d8\u6295\u8d44\u8005\u53c2\u4e0e\u79c1\u6709\u53ca\u516c\u5f00\u91d1\u878d\u5e02\u573a\u7684\u65b9\u5f0f\u3002\n\u4ece\u8d44\u4ea7\u6784\u6210\u6765\u770b\uff0cARKVX \u4f5c\u4e3a\u4e3b\u52a8\u7ba1\u7406\u7684\u5c01\u95ed\u5f0f\u533a\u95f4\u57fa\u91d1\uff0c\u5176\u6295\u8d44\u7ec4\u5408\u6df1\u5ea6\u7ed1\u5b9a\u98a0\u8986\u6027\u521b\u65b0\u9886\u57df\u7684\u5934\u90e8\u4f01\u4e1a\u3002\u5c3d\u7ba1\u57fa\u91d1\u6301\u4ed3\u6db5\u76d6\u4e86 OpenAI\u3001Anthropic \u4ee5\u53ca Kalshi \u7b49\u77e5\u540d\u79c1\u4eba\u79d1\u6280\u516c\u53f8\uff0c\u4f46\u592a\u7a7a\u63a2\u7d22\u6280\u672f\u516c\u53f8\uff08SpaceX(SPC...",
+      "source": "web",
+      "title": "\u65b9\u821f\u57fa\u91d1\u4e0a\u94fe\uff1a\u51ef\u897f\u00b7\u4f0d\u5fb7\u79f0\u4ee3\u5e01\u5316...",
+      "url": "https://www.163.com/dy/article/L99VNJ7J05568W0A.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "Bei Okeanis Eco Tankers richten sich die Erwartungen auf hohe Aussch\u00fcttungen aus dem starken Tankermarkt.\nGestern ver\u00f6ffentlichte Einsch\u00e4tzungen setzen auf das Spotmarkt-Engagement des Unternehmens und au\u00dfergew\u00f6hnlich hohe Frachtraten.\nDie optimistischen Dividendenprognosen sind allerdings keine bes...",
+      "source": "web",
+      "title": "Okeanis Eco Tankers Aktie: N\u00e4chste Dividendenank\u00fcndigung wird Pr\u00fcfstein",
+      "url": "https://www.finanztrends.de/news/okeanis-eco-tankers-aktie-naechste-dividendenankuendigung-wird-pruefstein/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Securitize brings Wall Street figures together to discuss tokenization and capital markets - The Cryptocurrency Post\nThursday, October 15, 2026Set Location\n...\nSecuritize said it hosted a New York event called The Future of Wall Street featuring speakers from ICE, BlackRock, Cantor Fitzgerald and th...",
+      "source": "web",
+      "title": "Securitize brings Wall Street figures together to discuss tokenization and capital markets - The Cryptocurrency Post",
+      "url": "https://ground.news/article/securitize-brings-wall-street-figures-together-to-discuss-tokenization-and-capital-markets-the-cryptocurrency-post"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Crypto Weekly: Sector scrutiny may surge, Securitize launches stock - Yahoo News Singapore\n...\nThu, 15 October 2026 at 12:07 pm UTC",
+      "source": "web",
+      "title": "Crypto Weekly: Sector scrutiny may surge, Securitize launches stock",
+      "url": "https://sg.news.yahoo.com/crypto-weekly-sector-scrutiny-may-120706916.html"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "StoneX raises Securitize\u2019s stock price target to $18, with 2028 revenue expected to reach $200 million | Gate News\n...\n## Key Takeaways\n- StoneX analyst Mark Palmer raised Securitize's stock price target to $18 on October 14.\n- Securitize's Q2 trading volume reached $5.3 billion with minimal transac...",
+      "source": "web",
+      "title": "www.gate.com \u00b7 news \u00b7 detailStoneX raises Securitize\u2019s stock price target to $18, with ...",
+      "url": "https://www.gate.com/news/detail/SOL/stonex-raises-securitizes-stock-price-target-to-18-with-2028-revenue-24940451"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "ECO\nOkeanis Eco Tankers Corp.\n89.18 0.00%\nNYSE - Nasdaq Real Time Price \u2022 USD\n# Okeanis Eco Tankers Corp. (ECO)\n89.18 -6.48 (-6.77%)\nAt close: 4:00:02 p.m.\nEDT\n89.18 0.00 (0.00%)\nAfter hours: 5:37:11 p.m.\nEDT",
+      "source": "web",
+      "title": "Okeanis Eco Tankers Corp. (ECO) Latest Stock News & Headlines - Yahoo Finance",
+      "url": "https://ca.finance.yahoo.com/quote/ECO/news/"
+    }
+  ],
+  "citations": [
+    "https://www.thecerbatgem.com/2026/10/15/okeanis-eco-tankers-nyseeco-shares-gap-down-time-to-sell.html",
+    "https://www.prnewswire.com/news-releases/investor-alert-pomerantz-law-firm-investigates-claims-on-behalf-of-investors-of-securitize-corp--secz-302909632.html",
+    "https://finance.yahoo.com/markets/crypto/articles/citi-hikes-price-targets-coinbase-150100287.html",
+    "https://www.aol.ca/articles/spacex-holding-ark-fund-goes-075825000.html",
+    "https://www.163.com/dy/article/L99VNJ7J05568W0A.html",
+    "https://www.finanztrends.de/news/okeanis-eco-tankers-aktie-naechste-dividendenankuendigung-wird-pruefstein/",
+    "https://ground.news/article/securitize-brings-wall-street-figures-together-to-discuss-tokenization-and-capital-markets-the-cryptocurrency-post",
+    "https://sg.news.yahoo.com/crypto-weekly-sector-scrutiny-may-120706916.html",
+    "https://www.gate.com/news/detail/SOL/stonex-raises-securitizes-stock-price-target-to-18-with-2028-revenue-24940451",
+    "https://ca.finance.yahoo.com/quote/ECO/news/"
+  ],
+  "usage": {
+    "input_tokens": 967,
+    "output_tokens": 832,
+    "cost_usd": 0.00777
+  }
+}

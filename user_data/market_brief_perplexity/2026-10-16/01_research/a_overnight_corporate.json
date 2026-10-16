@@ -1,0 +1,117 @@
+{
+  "name": "a_overnight_corporate",
+  "kind": "channel",
+  "group": "corporate",
+  "window": "premarket",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Overnight & weekend company announcements.\n\nWindow: Thursday October 15, 2026 4:00 PM ET (after the close) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nCompany announcements for US stocks >= $2B published after the session close through the cutoff (press releases, 8-Ks, wire reports): buyback authorizations, CEO/CFO departures and appointments, takeover bids, bid rejections, merger terms, FDA approvals and trial readouts, guidance changes, activist letters, major contracts and partnerships. Company, figure, and pre-market move.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **PGR** \u2014 Insurance\n- The Progressive reported third-quarter 2026 revenue of **$23.36 billion**, versus the **$23.41 billion** consensus estimate; shares fell **4.2%** in premarket trading on Oct. 15. The report was published before the requested after-close window and is therefore excluded from the event list (Zacks/Yahoo Finance, Oct. 15 09:30 GMT).\n\n## **CRWV** \u2014 AI Infrastructure\n- CoreWeave shares fell **3.2%** in premarket trading on Oct. 15 after a **15%** decline in the prior session, while its 2032 bond yield approached **15%** amid concerns over nearly **$50 billion** of debt; the cited report predates the requested window (Reuters, Oct. 15 09:12 ET).\n- CoreWeave\u2019s credit-default-swap spread rose above **1,000 basis points** on Oct. 15, following a move above **600 basis points** the previous day; the cited report predates the requested window (Reuters, Oct. 15 10:39 ET).\n\n## **RKLB** \u2014 Aerospace\n- Rocket Lab said the inaugural launch of its larger **Neutron** rocket was delayed until **2027**; shares fell **10.4%** in premarket trading on Oct. 15. The cited report predates the requested window (Reuters, Oct. 15 09:12 ET).\n\n## **FMC** \u2014 Specialty Materials\n- FMC cut its third-quarter outlook and disclosed a **$625 million\u2013$675 million** impact from commercial actions; shares fell **42%** on Oct. 15. The cited report predates the requested window (Reuters, Oct. 15 09:12 ET).\n\n## **Penske Automotive Group** \u2014 Retail / Automotive\n- Penske Automotive agreed to be taken private for **$212.00 per share** in a transaction involving Motown Acquisition Corp., jointly owned by Penske Corporation and Mitsui & Co.; shares rose **8.6%** in premarket trading. The available result does not provide a publication time within the requested after-close window (Investing.com, Oct. 15, time not stated).\n\n## **RXRX** \u2014 Pharma\n- Recursion announced a **$200 million** underwritten follow-on offering and reported a **47% median reduction** in total gastrointestinal polyp burden after **12 weeks** for REC-4881 in adults with familial adenomatous polyposis. The available result does not provide a publication time within the requested after-close window (StockTitan, Oct. 15, time not stated).\n\n## **BSP / BRK.A** \u2014 Internet & Platforms\n- Bending Spoons shares rose **41.2%** after Berkshire Hathaway announced an additional **$330 million** investment; Berkshire shares rose **1.2%**. The available report predates the requested window (Yahoo Finance, Oct. 15 09:30 GMT).",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# US STOCKS-S&P 500, Nasdaq set for lower open as AI stocks slide on debt concerns\n, Reuters - 9:12 AM ET 10/15/2026 US Markets\n* TSMC strikes cautious note for 2027 after sixth straight\nrecord quarterly profit\n* US producer prices rise more than expected in September\n...\n* CoreWeave ( CRWV ) slips ...",
+      "source": "web",
+      "title": "US STOCKS-S&P 500, Nasdaq set for lower open as AI ...",
+      "url": "https://www.fidelity.com/news/article/us-markets/202610150912RTRSNEWSCOMBINED_L4N4610ZX_1"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Morning Bid: CoreWeave unravels\nOctober 15, 202610:39 AM UTCUpdated 2 hours ago\n...\n## COREWEAVE UNRAVELS\nThe latest inflation and rates \u200bjolt relit the fuse on this week\u2019s AI stock selloff, with notable declines in the debt and equity of data center builder CoreWeave as \u2060well as Oracle.\n...\n## CH...",
+      "source": "web",
+      "title": "www.reuters.com \u203a 5f374b32b07b \u203a commentaryMorning Bid: Coreweave unravels | Reuters",
+      "url": "https://www.reuters.com/5f374b32b07b/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Company News for Oct 15, 2026\nThu, October 15, 2026 at 9:30 AM GMT-3 1 min read\n...\n- Bending Spoons S.p.A.'s BSP shares surged 41.2% after Berkshire Hathaway Inc.\nBRK.A announced an additional $330 million investment in the company.\nBerkshire Hathaway's shares advanced 1.2%.\n- Shares of Bank of A...",
+      "source": "web",
+      "title": "Company News for Oct 15, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-15-2026-123000430.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Premarket movers: Chip stocks slide as inflation fears hit AI trade\nInvesting.com - Global semiconductor stocks fell sharply on Thursday, extending the previous session\u2019s selloff after fresh U.S. inflation data fueled concerns that the Federal Reserve could raise interest rates further.\n...\nBy 04:...",
+      "source": "web",
+      "title": "Premarket movers: Chip stocks slide as inflation fears hit AI ...",
+      "url": "https://uk.investing.com/news/stock-market-news/premarket-movers-chip-stocks-slide-as-inflation-fears-hit-ai-trade-4912058"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "On October 15, 2026, Penske Automotive Group agreed to be taken private for $212.00 per share; Alcoa reported third-quarter 2026 net income attributable to the company of $483 million; Charles Schwab reported record Q3 core net new assets of $190.4 billion and diluted EPS of $1.62; Recursion announc...",
+      "source": "web",
+      "title": "Stock Market News for October 15, 2026",
+      "url": "https://www.stocktitan.net/news/2026-10-15/"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "## S&P 500 Top Losers\n### Live Events\nChief Executive Officer Jensen Huang defended the financial health of AI computing supplier CoreWeave Inc.",
+      "source": "web",
+      "title": "Global Market Today: Asian stocks advance as selloff in chips eases - The Economic Times",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/global-market-today-asian-stocks-advance-as-selloff-in-chips-eases/printarticle/134979802.cms"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "The latest inflation and rates jolt relit the fuse on this week's AI stock selloff, with notable declines in the debt and equity of data center builder Coreweave as well as Oracle.\n...\nTech stocks went into another tailspin over the past 24 hours as disappointment over AI firms' revenue growth, Fede...",
+      "source": "web",
+      "title": "Morning Bid: Coreweave unravels",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Updated Thu, October 15, 2026 at 9:26 AM GMT-3 1 min read\n...\nChip equipment maker ASML (ASML) on Wednesday posted record third quarter sales and raised its full-year outlook amid strong AI demand.\nInvestors await Taiwan Semiconductor earnings on Thursday (TSM) for further confirmation of the AI boo...",
+      "source": "web",
+      "title": "Stock market today: Hot inflation report drops tech, drives S ...",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-hot-inflation-report-drops-tech-drives-sp-500-nasdaq-down-152206632.html?fr=sycsrp_catchall"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Oct 15 (Reuters) - Nasdaq futures fell more than 1% on Thursday as a selloff in AI-related stocks deepened on fears that higher interest rates will make it harder for companies to fund AI \u200binvestments.\n...\n#### Nasdaq 100 Futures Fall 1.1% as U.S. Premarket Shares Diverge\nDow futures rose 0.3%, whil...",
+      "source": "web",
+      "title": "Nasdaq Futures Dive 1% as AI Rout Deepens on Debt Concerns",
+      "url": "https://ground.news/article/nasdaq-100-futures-fall-11-as-us-premarket-shares-diverge"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "The pressure on chip stocks eased after Nvidia Corp.\nChief Executive Officer Jensen Huang defended the financial health of AI computing supplier CoreWeave Inc.",
+      "source": "web",
+      "title": "Global Market Today: Asian stocks advance as selloff in chips eases",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/global-market-today-asian-stocks-advance-as-selloff-in-chips-eases/amp_articleshow/134979802.cms"
+    }
+  ],
+  "citations": [
+    "https://www.fidelity.com/news/article/us-markets/202610150912RTRSNEWSCOMBINED_L4N4610ZX_1",
+    "https://www.reuters.com/5f374b32b07b/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/",
+    "https://finance.yahoo.com/markets/stocks/articles/company-news-oct-15-2026-123000430.html",
+    "https://uk.investing.com/news/stock-market-news/premarket-movers-chip-stocks-slide-as-inflation-fears-hit-ai-trade-4912058",
+    "https://www.stocktitan.net/news/2026-10-15/",
+    "https://economictimes.indiatimes.com/markets/us-stocks/news/global-market-today-asian-stocks-advance-as-selloff-in-chips-eases/printarticle/134979802.cms",
+    "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/",
+    "https://finance.yahoo.com/markets/live/stock-market-today-hot-inflation-report-drops-tech-drives-sp-500-nasdaq-down-152206632.html?fr=sycsrp_catchall",
+    "https://ground.news/article/nasdaq-100-futures-fall-11-as-us-premarket-shares-diverge",
+    "https://economictimes.indiatimes.com/markets/us-stocks/news/global-market-today-asian-stocks-advance-as-selloff-in-chips-eases/amp_articleshow/134979802.cms"
+  ],
+  "usage": {
+    "input_tokens": 740,
+    "output_tokens": 629,
+    "cost_usd": 0.00694
+  }
+}

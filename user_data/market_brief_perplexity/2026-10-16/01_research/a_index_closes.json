@@ -1,0 +1,117 @@
+{
+  "name": "a_index_closes",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Index closes & futures.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nS&P 500, Nasdaq Composite, Dow, Russell 2000, PHLX SOX closes (level, % change); S&P sector leaders/laggards; biggest index point contributors; index futures pre-market on the brief date (% change, time quoted).\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Index closes `[Macro]`\n- **S&P 500** closed at **7,746.41**, up **0.35%** on Thursday, October 15, 2026. (24/7 Wall St., Oct 15; publish time not shown)[8]\n- **Dow Jones Industrial Average** closed at **52,231.50**, up **1.16%**. (24/7 Wall St., Oct 15; publish time not shown)[8]\n- **Nasdaq Composite** gained **0.19%** on October 15. The available result does not provide a verified closing level. (24/7 Wall St., Oct 15; publish time not shown)[8]\n- **Russell 2000** closed at **2,769.89**, up **1.42%**. (24/7 Wall St., Oct 15; publish time not shown)[8]\n- The available results do not provide a verified **PHLX Semiconductor Index (SOX)** closing level or percentage change for October 15. (Search results available through Oct 16 02:03 ET)[1][8]\n\n## S&P sectors `[Macro]`\n- **Health care** led the S&P 500 sector groups, gaining approximately **2.5%** during Thursday\u2019s session; **Moderna (MRNA)**, **Veeva Systems (VEEV)**, and **Eli Lilly (LLY)** gained approximately **5.5%**, **5%**, and **5%**, respectively. (Investopedia, Oct 15; publish time not shown)[1]\n- **Technology and communications-related shares** lagged as AI-linked stocks declined; **Nvidia (NVDA)** fell nearly **2%**, while **Apple (AAPL)** fell **0.3%**. (Investopedia, Oct 15; publish time not shown)[1]\n- **Dell Technologies (DELL)** and **Hewlett Packard Enterprise (HPE)** were among the weakest S&P 500 performers, while **Seagate Technology (STX)** and **Western Digital (WDC)** pressured the memory-stock segment. (Investopedia, Oct 15; publish time not shown)[1]\n\n## Dow contributors `[Macro]`\n- **Nike (NKE)** rose **6%**, while **Sherwin-Williams (SHW)**, **Home Depot (HD)**, **Walmart (WMT)**, and **McDonald\u2019s (MCD)** also gained and supported the Dow\u2019s advance. (Investopedia, Oct 15; publish time not shown)[1]\n- **Nvidia (NVDA)** and **Amazon (AMZN)** declined during the session and weighed on the Dow. (Investopedia, Oct 15; publish time not shown)[1]\n\n## Semiconductors `[Semiconductors]`\n- The **iShares Semiconductor ETF (SOXX)** was approximately **1% lower** during Thursday\u2019s session after falling **4.5%** on Wednesday; the available results do not provide a verified SOX index close. (Investopedia, Oct 15; publish time not shown)[1]\n- **Taiwan Semiconductor Manufacturing (TSM)** fell **2%** on October 15 despite reporting record profit and exceeding estimates, according to the available market coverage. (Yahoo Finance, Oct 15; publish time not shown)[6]\n\n## Index futures `[Macro]`\n- The latest pre-market futures readings available in the results were **Dow futures up 0.3%**, **S&P 500 futures down 0.3%**, and **Nasdaq 100 futures down 1.1%**; the quoted time was not provided in the result. (Investopedia, Oct 15; publish time not shown)[1]\n- At **4:04 a.m. ET on October 15**, Nasdaq 100 futures were down **1.26%**, S&P 500 futures were down **0.35%**, and Dow futures were up **0.39%**; this reading predates the requested October 16 pre-market window. (Beinsure, Oct 15, 04:04 ET)[4]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Markets News, Oct. 15, 2026: Dow Ends Up 550 Points as Investors Rotate Out of Tech Stocks; Wholesale Prices Top Expectations\nU.S. indexes closed higher Thursday, led by the blue-chip Dow , as investors rotated out of tech stocks.\nThe Dow Jones Industrial Average advanced 1.1%, or 550 points, behi...",
+      "source": "web",
+      "title": "Stock Market Today: Dow Ends Up 550 Points as Investors ...",
+      "url": "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10152026-12174789"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Stock Market News for Oct 15, 2026\nWall Street closed lower on Wednesday, pulled down by tech and discretionary stocks.\nInvestor sentiment weakened as renewed concerns over inflation, interest rates and stretched technology valuations pressured risk appetite.\nAll three benchmark indexes ended in t...",
+      "source": "web",
+      "title": "Stock Market News for Oct 15, 2026",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-oct-15-123000001.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Stock Market Midday, Oct. 15: Markets Mixed as AI Sell-Off Continues\nThu, October 15, 2026 at 1:55 PM GMT-3 3 min read\n...\nAs of 11:38 AM ET, the **Dow Jones** ** Industrial Average** (DJINDICES:^DJI) is up 0.98% to 52,126 as it shrugs off inflation data, while the **S&P 500** (SNPINDEX:^GSPC) is ...",
+      "source": "web",
+      "title": "Stock Market Midday, Oct. 15: Markets Mixed as AI Sell-Off Continues",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-midday-oct-15-165500678.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "> At 4:04 a.m.\nET, Nasdaq 100 futures were down 380.25 points, or 1.26%, while S&P 500 futures declined 27.5 points, or 0.35%.\nDow Jones futures advanced 202 points, equivalent to 0.39%.\n- Nasdaq 100 futures declined 1.26% and S&P 500 futures fell 0.35% on October 15, while Dow futures gained 0.39% ...",
+      "source": "web",
+      "title": "US stock futures mixed as inflation and AI concerns hit ...",
+      "url": "https://beinsure.com/news/us-stock-futures-mixed-as-inflation-and-ai-concerns-hit-nasdaq-100/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "As of 10:57 p.m.\nEDT, Dow futures were down about 0.04%, while the S&P 500 futures fell 0.42% and the Nasdaq-100 futures declined 1.04%.\n...\nOn Wednesday, the three benchmark indexes closed lower.\nThe Nasdaq Composite led the decline, shedding more than 500 points and closing nearly 2% lower.\nThe Do...",
+      "source": "web",
+      "title": "Dow, S&P 500, Nasdaq Decline Amid Hot Inflation Data, AI ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/dow-p-500-nasdaq-decline-031656491.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "US stocks recovered on Thursday as Treasury yields tumbled and chip stocks pared losses following an AI-driven sell-off fueled by debt-financing concerns.\nThe Dow Jones Industrial Average (^DJI) rose 1.1%, while the S&P 500 (^GSPC) erased losses to gain 0.3%.\nThe Nasdaq Composite (^IXIC) edged sligh...",
+      "source": "web",
+      "title": "Stock market today: Dow, S&P 500 rise, Nasdaq trims ...",
+      "url": "https://finance.yahoo.com/markets/live/copy-stock-market-today-hot-inflation-report-drops-tech-drives-sp-500-nasdaq-down-122056767.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Thursday, October 15, 2026\nFutures\nUp/Down\n%\nLast\nDow\n123.00\n0.24%\n51,981\nS&P 500\n-27.25\n0.35%\n7,743\nNasdaq\n-380.50\n1.29%\n29,802\nAnother day, another sharp pullback in the tech sector overnight, especially in the AI/semiconductor sector most sensitive to higher borrowing costs.\n...\nHotter-than-expec...",
+      "source": "web",
+      "title": "Morning Preview: October 15, 2026",
+      "url": "https://www.eoption.com/morning-preview-october-15-2026/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "S&P 500 Closes at 7,746 as Dow Outpaces Nasdaq by 5 to 1 | 24/7 Wall St.\n...\nAt close\nS&P 5007,748.20+0.29%\nDow Jones52,231.50+1.16%\nNasdaq 10029,906.60\u22120.15%\nRussell 20002,769.89+1.42%\n...\nAs seen on the 24/7 Wall St. homepage on October 15, 2026.\n...\nU.S. Markets\n4:00pm ET - S&P 500+0.35%\n- Dow Jo...",
+      "source": "web",
+      "title": "S&P 500 Closes at 7746 as Dow Outpaces Nasdaq by 5 to 1",
+      "url": "https://247wallst.com/cards/money-rotated-into-old-economy-names-today-the-dow-s-1-gai-gspc-market-bell-01m50jm0ageg2vge6kyy4qmg80"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "US stocks recovered on Thursday as Treasury yields tumbled and chip stocks pared losses following an AI-driven sell-off fueled by debt-financing concerns.\nThe Dow Jones Industrial Average (^DJI) rose 1.1%, while the S&P 500 (^GSPC) erased losses to gain 0.3%.\nThe Nasdaq Composite (^IXIC) edged sligh...",
+      "source": "web",
+      "title": "Stock market today: Dow jumps, S&P 500, Nasdaq gain as ...",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-dow-sp-500-rise-nasdaq-trims-losses-as-treasury-yields-sink-153611834.html"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Stock Market Today (Oct. 15, 2026): S&P 500 edges lower as tech sell-off continues\n...\nMarkets\u00a0closed lower Wednesday after the Consumer Price Index (CPI) accelerated month over month, fueling a sell-off in AI and semiconductor shares, while third-quarter bank earnings were mixed to weak.\n...\nHathor...",
+      "source": "web",
+      "title": "Stock Market Today (Oct. 15, 2026): S&P 500 edges lower as ...",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-15-140429285.html?fr=sycsrp_catchall"
+    }
+  ],
+  "citations": [
+    "https://www.investopedia.com/stock-market-today-dow-jones-s-and-p-500-10152026-12174789",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-news-oct-15-123000001.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-midday-oct-15-165500678.html",
+    "https://beinsure.com/news/us-stock-futures-mixed-as-inflation-and-ai-concerns-hit-nasdaq-100/",
+    "https://finance.yahoo.com/markets/stocks/articles/dow-p-500-nasdaq-decline-031656491.html",
+    "https://finance.yahoo.com/markets/live/copy-stock-market-today-hot-inflation-report-drops-tech-drives-sp-500-nasdaq-down-122056767.html",
+    "https://www.eoption.com/morning-preview-october-15-2026/",
+    "https://247wallst.com/cards/money-rotated-into-old-economy-names-today-the-dow-s-1-gai-gspc-market-bell-01m50jm0ageg2vge6kyy4qmg80",
+    "https://finance.yahoo.com/markets/live/stock-market-today-dow-sp-500-rise-nasdaq-trims-losses-as-treasury-yields-sink-153611834.html",
+    "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-15-140429285.html?fr=sycsrp_catchall"
+  ],
+  "usage": {
+    "input_tokens": 716,
+    "output_tokens": 901,
+    "cost_usd": 0.00749
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "name": "a_calendar_earnings",
+  "kind": "channel",
+  "group": "calendar",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Earnings calendar.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\nEarnings from the brief date through the next 8 NYSE sessions for US stocks >= $10B plus notable mid-caps: date, BMO/AMC, EPS and revenue consensus vs year-ago, and analyst preview notes / PT changes ahead of the print (firm, rating, PT). Only events that have NOT yet reported as of the cutoff.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## **TRV** [Insurance]\n- **October 16, BMO:** Travelers was scheduled to report third-quarter 2026 results before the market open; consensus EPS was **$7.01**, down **13.88%** from **$8.14** a year earlier. (Nasdaq, Oct 15; publish time not stated)[4]\n- **October 16, BMO:** An alternative estimate listed consensus EPS at **$7.25** and revenue at **$11.31 billion**; the available source did not provide year-ago revenue or reconcile the EPS discrepancy. (Newsquawk, Oct 15; publish time not stated)[3]\n\n## **TFC** [Banking]\n- **October 16, BMO:** Truist Financial was scheduled to report third-quarter 2026 results before the market open; consensus EPS was **$1.17**, up **12.50%** from **$1.04** a year earlier. (Nasdaq, Oct 15; publish time not stated)[4]\n- **October 16, BMO:** Another estimate listed consensus EPS at **$1.14** and revenue at **$5.35 billion**; year-ago EPS and revenue were not provided. (Newsquawk, Oct 15; publish time not stated)[3]\n\n## **MTB** [Banking]\n- **October 16, BMO:** M&T Bank was scheduled to report third-quarter 2026 results before the market open; consensus EPS was **$4.98**, up **2.26%** from **$4.87** a year earlier. (Nasdaq, Oct 15; publish time not stated)[4]\n- **October 16, BMO:** Another estimate listed consensus EPS at **$4.93** and revenue at **$2.53 billion**; year-ago EPS and revenue were not provided. (Newsquawk, Oct 15; publish time not stated)[3]\n\n## **CFG** [Banking]\n- **October 16, BMO:** Citizens Financial Group was scheduled to report third-quarter 2026 results before the market open; consensus EPS was **$1.38**, up **31.43%** from **$1.05** a year earlier. (Nasdaq, Oct 15; publish time not stated)[4]\n- **October 16, BMO:** Another estimate listed consensus EPS at **$1.39** and revenue at **$2.34 billion**; year-ago EPS and revenue were not provided. (Newsquawk, Oct 15; publish time not stated)[3]\n\n## **RF** [Banking]\n- **October 16, BMO:** Regions Financial was scheduled to report third-quarter 2026 results before the market open; consensus EPS was **$0.67**; the cited source did not provide the year-ago EPS comparison or revenue consensus. (Nasdaq, Oct 15; publish time not stated)[4]\n- **October 16, BMO:** Another estimate listed consensus EPS at **$0.66** and revenue at **$1.99 billion**; year-ago EPS and revenue were not provided. (Newsquawk, Oct 15; publish time not stated)[3]\n\n## **FITB** [Banking]\n- **October 19, BMO:** Fifth Third Bancorp was scheduled to report third-quarter 2026 results before the market open; consensus revenue was **$3.34 billion**, up **44.96%** year over year, and consensus EPS was **$0.820**, down **9.85%** year over year. (Moomoo, Oct 15; publish time not stated)[8]\n\n## **CLF** [Steel & Metals]\n- **October 19, BMO:** Cleveland-Cliffs was scheduled to report third-quarter 2026 results before the market open; consensus revenue was **$5.72 billion**, up **20.91%** year over year, and consensus EPS was **$0.250**, compared with a loss in the year-ago period. (Moomoo, Oct 15; publish time not stated)[10]\n\n## **MMM** [Diversified Industrials]\n- **October 20, BMO:** 3M was scheduled to report third-quarter fiscal 2026 results before the market open; consensus EPS was **$2.39**, versus **$2.19** a year earlier, and consensus revenue was **$6.61 billion**, versus **$6.32 billion** a year earlier. (ScanX, updated Oct 15; publish time not stated)[2]\n- **October 20:** JPMorgan analyst Chigusa Katoku maintained an **Overweight** rating and cut the price target to **$185** from **$205** on October 9, before the stated reporting window. (ScanX, updated Oct 15; publish time not stated)[2]\n\n## **HAL** [Energy Services]\n- **October 20, BMO:** Halliburton was scheduled to report third-quarter 2026 results before the market open; consensus EPS was **$0.59**, versus **$0.58** a year earlier, and consensus revenue was **$5.58 billion**, versus **$5.60 billion** a year earlier. (ScanX, updated Oct 16; publish time not stated)[5]\n- **October 20:** UBS analyst Josh Silverstein maintained a **Neutral** rating and raised the price target to **$42** from **$39** on September 14, before the stated reporting window. (ScanX, updated Oct 16; publish time not stated)[5]\n\n## **ALLY** [Consumer Finance]\n- **October 20, BMO:** Ally Financial was scheduled to report third-quarter fiscal 2026 results before the market open; consensus EPS was **$1.33**, versus **$1.15** a year earlier, and consensus revenue was **$2.29 billion**, versus **$2.17 billion** a year earlier. (ScanX, updated Oct 16; publish time not stated)[6]\n- **October 20:** Morgan Stanley analyst Betsy Graseck downgraded Ally from **Overweight to Equal-Weight** and cut the price target to **$43** from **$55** on October 12. (ScanX, updated Oct 16; publish time not stated)[6]\n- **October 20:** JPMorgan analyst Richard Shane maintained an **Overweight** rating and cut the price target to **$43** from **$48** on October 12. (ScanX, updated Oct 16; publish time not stated)[6]\n\n## **SYF** [Consumer Finance]\n- **October 20, BMO:** Synchrony Financial was scheduled to report third-quarter fiscal 2026 results before the market open; consensus EPS was **$2.40**, versus **$2.86** a year earlier, and consensus revenue was **$3.81 billion**, versus **$3.82 billion** a year earlier. (ScanX, Oct 15; publish time not stated)[9]\n- **October 20:** JPMorgan analyst Richard Shane maintained a **Neutral** rating and cut the price target to **$74** from **$78** on October 12. (ScanX, Oct 15; publish time not stated)[9]\n- **October 20:** TD Cowen analyst Moshe Orenbuch maintained a **Buy** rating and cut the price target to **$86** from **$90** on October 6. (ScanX, Oct 15; publish time not stated)[9]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# The Week Ahead: Earnings Season Heats Up on Wall Street\n**Monday, October 19** will bring the NAHB housing market index.",
+      "source": "web",
+      "title": "The Week Ahead: Earnings Season Heats Up on Wall Street",
+      "url": "https://finviz.com/news/403222/the-week-ahead-earnings-season-heats-up-on-wall-street"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "3M Q3FY26 Results: Consensus sees $2.39 EPS, $6.61 billion revenue\n...\n# 3M Q3FY26 Results: Consensus sees $2.39 EPS, $6.61 billion revenue\n- 3M Company reports Q3 earnings on October 20, with consensus EPS estimated at $2.39\n- Revenue is projected at $6.61 billion, up from $6.32 billion in the prio...",
+      "source": "web",
+      "title": "Consensus sees $2.39 EPS, $6.61 billion revenue",
+      "url": "https://scanx.trade/stock-market-news/companies/3m-q3fy26-results-consensus-sees-2-39-eps-6-61-billion-revenue/53541507"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "## S&P 500\nM&T Bank (MTB) EPS (exp. 4.93), Revenue (exp. 2.53bln), Next Qtr.\nEPS (exp. 4.92), Next Qtr.\nRev.\n(exp. 2.55bln), Current FY EPS (exp. 19.29), Current FY Rev.\n(exp. 10.07bln), Next FY EPS (exp. 21.01), Next FY Rev.\n(exp. 10.43bln) 10:30BST/05:30EDT\nRegions Financial (RF) EPS (exp. 0.66), ...",
+      "source": "web",
+      "title": "Daily US Earnings Estimates: 16th October 2026 | Newsquawk",
+      "url": "https://www.newsquawk.com/headlines/daily-us-earnings-estimates-16th-october-2026"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "The following companies are expected to report earnings prior to market open on 10/16/2026.\nVisit our Earnings Calendar for a full list of expected earnings releases.\nThe Travelers Companies, Inc.\n(TRV)is reporting for the quarter ending September 30, 2026.\nThe insurance (property & casualty) compan...",
+      "source": "web",
+      "title": "Pre-Market Earnings Report for October 16, 2026 : TRV, TFC, MTB, CFG, RF",
+      "url": "https://www.nasdaq.com/articles/pre-market-earnings-report-october-16-2026-trv-tfc-mtb-cfg-rf"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "- Halliburton reports Q3 earnings on October 20 with consensus EPS at 59 cents\n- Revenue expected at $5.58 billion versus $5.6 billion in prior year\n- UBS raises price target to $42 while Argus and Morgan Stanley cut targets\n...\nHalliburton Co is scheduled to release its third quarter earnings repor...",
+      "source": "web",
+      "title": "Halliburton Co Q3 Results: Analysts adjust price targets ...",
+      "url": "https://scanx.trade/stock-market-news/companies/halliburton-co-q3-results-analysts-adjust-price-targets-ahead-earnings/53608289"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "- Ally Financial reports Q3 earnings on October 20, 2026\n- Consensus EPS estimated at $1.33, up from $1.15 YoY\n- Revenue forecast at $2.29 billion versus $2.17 billion last year\n...\n- Price targets cut to range of $42-$54 by five major firms\n...\nAlly Financial Inc is scheduled to release its third-q...",
+      "source": "web",
+      "title": "Ally Financial Q3FY26 Results: Analysts cut price targets ...",
+      "url": "https://scanx.trade/stock-market-news/companies/ally-financial-q3fy26-results-analysts-cut-price-targets-ahead/53605505"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "# Earnings Calendar for:\nOct 11, 2026 - Oct 17, 2026\n...\nThu, Oct 15\n315 Earnings\nFri, Oct 16\n4 Earnings\nSat, Oct 17\n...\n|Symbol|Company|Event Name|Earnings Call Time|EPS Estimate|Reported EPS|Surprise (%)|Market Cap|Follow|\n|--|--|--|--|--|--|--|--|--|\n|UNC.TO|United Corporations Ord|Q4 2026 Earnin...",
+      "source": "web",
+      "title": "Company Earnings Calendar",
+      "url": "https://ca.finance.yahoo.com/calendar/earnings?from=2026-10-16&to=2026-10-22"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Earnings Preview: FITB to Report Financial Results Pre-market on October 19\n...\n$Fifth Third Bancorp (FITB.US)$ is scheduled to release its financial results pre-market on October 19 ET.\n...\nAnalysts estimate $Fifth Third Bancorp (FITB.US)$ to post revenue of USD3.34B for 2026Q3, up 44.96% YOY;\nEPS ...",
+      "source": "web",
+      "title": "Earnings Preview: FITB to Report Financial Results Pre-market on October 19",
+      "url": "https://www.moomoo.com/news/post/1001093628/earnings-preview-fitb-to-report-financial-results-pre-market-on"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Synchrony Financial Q3FY26 Results: EPS seen down to $2.40, revenue $3.81B\n...\n- Analysts expect Synchrony Financial's Q3 EPS to fall to $2.40 from $2.86 in the prior year\n- Revenue is forecast at $3.81 billion, slightly below the $3.82 billion reported last year\n- JP Morgan and TD Cowen cut price t...",
+      "source": "web",
+      "title": "Synchrony Financial Q3FY26 Results: EPS seen down to ...",
+      "url": "https://scanx.trade/stock-market-news/companies/synchrony-financial-q3fy26-results-eps-seen-down-2-40-revenue-3-81b/53609229"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Earnings Preview: CLF to Report Financial Results Pre-market on October 19\n...\n$Cleveland-Cliffs (CLF.US)$ is scheduled to release its financial results pre-market on October 19 ET.\n...\nAnalysts estimate $Cleveland-Cliffs (CLF.US)$ to post revenue of USD5.72B for 2026Q3, up 20.91% YOY;\nEPS is estima...",
+      "source": "web",
+      "title": "Earnings Preview: CLF to Report Financial Results Pre-market on October 19",
+      "url": "https://www.moomoo.com/news/post/1001093661/earnings-preview-clf-to-report-financial-results-pre-market-on"
+    }
+  ],
+  "citations": [
+    "https://finviz.com/news/403222/the-week-ahead-earnings-season-heats-up-on-wall-street",
+    "https://scanx.trade/stock-market-news/companies/3m-q3fy26-results-consensus-sees-2-39-eps-6-61-billion-revenue/53541507",
+    "https://www.newsquawk.com/headlines/daily-us-earnings-estimates-16th-october-2026",
+    "https://www.nasdaq.com/articles/pre-market-earnings-report-october-16-2026-trv-tfc-mtb-cfg-rf",
+    "https://scanx.trade/stock-market-news/companies/halliburton-co-q3-results-analysts-adjust-price-targets-ahead-earnings/53608289",
+    "https://scanx.trade/stock-market-news/companies/ally-financial-q3fy26-results-analysts-cut-price-targets-ahead/53605505",
+    "https://ca.finance.yahoo.com/calendar/earnings?from=2026-10-16&to=2026-10-22",
+    "https://www.moomoo.com/news/post/1001093628/earnings-preview-fitb-to-report-financial-results-pre-market-on",
+    "https://scanx.trade/stock-market-news/companies/synchrony-financial-q3fy26-results-eps-seen-down-2-40-revenue-3-81b/53609229",
+    "https://www.moomoo.com/news/post/1001093661/earnings-preview-clf-to-report-financial-results-pre-market-on"
+  ],
+  "usage": {
+    "input_tokens": 734,
+    "output_tokens": 1645,
+    "cost_usd": 0.00954
+  }
+}

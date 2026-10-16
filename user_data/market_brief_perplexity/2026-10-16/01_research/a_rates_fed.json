@@ -1,0 +1,117 @@
+{
+  "name": "a_rates_fed",
+  "kind": "channel",
+  "group": "macro",
+  "window": "session",
+  "prompt": "Search the web now. You are a financial fact extractor for a US-equity pre-market brief.\nBrief date: Friday October 16, 2026. Topic: Rates & Fed.\n\nWindow: Thursday October 15, 2026 regular session (9:30-16:00 ET) through Friday October 16, 2026 02:03 ET, including after-hours, overnight and pre-market news. Anything published after 02:03 ET on Friday October 16, 2026 is out of scope.\n\nFIND\n2-yr, 10-yr, 30-yr Treasury yields (level, bp change); Treasury auction results (high yield, bid-to-cover, tail); CME FedWatch probabilities for the next FOMC; every Fed official who spoke, with verbatim quotes.\n\nRun multiple searches with different phrasings and dates. Prefer primary sources and wire services\n(Reuters, Bloomberg, AP, CNBC, WSJ, MarketWatch, Barron's, Investopedia, company press releases, SEC\nEDGAR, BLS/BEA/Census/Fed releases, FDA). For every item give the latest status as of the cutoff.\n\nOUTPUT (markdown; no intro or conclusion). Group by ticker or topic:\n\n## TICKER or Topic `[Category]`\n- fact (source)\n\nCategory: pick from AI Compute \u00b7 Memory & Interconnect \u00b7 Optical & Photonics \u00b7 Chip Equipment \u00b7 Fab & Foundry \u00b7 Wireless & Mobile \u00b7 Analog & Mixed-Signal \u00b7 Power & Wide-Bandgap \u00b7 Test & Advanced Packaging \u00b7 Specialty Materials & IP Licensing \u00b7 Quantum Computing \u00b7 EdgeAI \u00b7 Semiconductors \u00b7 AI Infrastructure \u00b7 Software & SaaS \u00b7 Internet & Platforms \u00b7 Communications & Networking, or Macro / Commodities / Geopolitics / Crypto / Calendar /\nPharma / Energy / Retail, or a concise sector name. Bold tickers.\n\nRULES\n- Facts only. Every bullet has a specific number, name, or date. No bullet without a data point.\n- End every bullet with the named source and publish time if known: (Reuters, Sep 24 07:12 ET).\n  Convert every time to ET (ET = GMT-4 / UTC-4 in EDT; 09:59 GMT = 05:59 ET) before judging whether\n  it is inside the window. For prices quoted several times, report the latest reading before the\n  cutoff with its time.\n  \"Analysts said\" / \"reports suggest\" without a name is not allowed.\n- Earnings: actual vs consensus for EPS and revenue; guidance old \u2192 new.\n- Analyst actions: firm, rating old \u2192 new, PT old \u2192 new.\n- Mark unconfirmed items (people familiar, leaks, social media, M&A speculation) with [rumor]. A\n  Bloomberg/Reuters/WSJ report citing sources is still reportable: state it and mark [report].\n- If one event moved several stocks, name every stock and its move in the same bullet.\n- Only facts published in the window. Older background only if it is the direct cause of a move in\n  the window, labelled with its date.\n- Do not interpret price action. Do not write \"strong\", \"beat expectations\", \"investors cheered\",\n  \"remains\", \"continues to\", \"well-positioned\", \"tailwinds\". Write the number.\n- Do not write bullets about what you could not find. Omit the topic instead.\n- Do not drop facts to save space.",
+  "content": "## Rates & Fed `[Macro]`\n\n- **2-year Treasury yield:** 4.808%, up 1.1 bp on Thursday, October 15; session high was 4.952%. The latest cited reading before the cutoff was 4.808% (Exante, Oct 15, time not stated).[7]\n- **10-year Treasury yield:** 5.186%, down 3.7 bp on Thursday, October 15; session high was 5.329%. The Treasury daily par-curve reading at approximately 15:30 ET was 5.10%, down 9 bp from October 14 (Exante, Oct 15, time not stated; EconoTimes, Oct 16, time not stated).[2][7]\n- **30-year Treasury yield:** 5.525%, down 3.8 bp on Thursday, October 15; session high was 5.628%. The Treasury daily par-curve reading at approximately 15:30 ET was 5.48%, down 9 bp from October 14 (Exante, Oct 15, time not stated; EconoTimes, Oct 16, time not stated).[2][7]\n- **CME FedWatch:** The implied probability of an October 27\u201328 rate increase was 27.1%; the probability that the December target would be at least 25 bp above the current target was 86.3% (Exante, Oct 15, time not stated).[7]\n- **Mary Daly, San Francisco Fed president:** \u201cWe are more likely than not to need additional adjustments, but the timing of those adjustments to me is something we\u2019re still deliberating\u201d; she also said, \u201cI don\u2019t feel urgent that we have to decide with a limited set of information\u201d (Reuters interview published Oct 15; republished by bdnews24 at 10:44 ET).[6]\n- **Mary Daly:** \u201cDefinitely this data point suggests that the risk to inflation remains elevated,\u201d but \u201crisks are not realities,\u201d and \u201creacting on risk when you have time to make a good decision, to me, feels imprudent\u201d (Reuters interview published Oct 15; republished by bdnews24 at 10:44 ET).[6]\n- **Mary Daly:** \u201cWhy force urgency when you don\u2019t need to have urgency? Why not take the time to be thoughtful and deliberate? And we have more meetings ahead of us\u201d (Reuters interview published Oct 15; republished by bdnews24 at 10:44 ET).[6]\n- **Beth Hammack, Cleveland Fed president:** \u201cWhat I worry about is, if you get this inflationary mindset, if you get these expectations that these price pressures become more and more persistent, it makes it much harder for monetary policy to do the work that we need to do, and we might need to move even more than if you don't have an inflationary mindset set in\u201d (Reuters, Oct 15, time not stated).[1]\n- **Beth Hammack:** \u201cI\u2019m not feeling that there\u2019s restraint coming from financial conditions at this\u2026point in time\u201d (Reuters, Oct 15, time not stated).[1]\n- **John Williams, New York Fed president:** \u201cI haven\u2019t changed my view that it may be appropriate to have one more rate hike\u201d this year; he added, \u201cI don\u2019t think at this time I have any reason to believe that we would need to do more\u201d after that (Bloomberg interview reported by Reuters and republished by The Star, Oct 15, time not stated).[3]\n- **John Williams:** He estimated the real neutral rate at 1% \u201cor a little above that\u201d (Bloomberg interview reported by Reuters and republished by The Star, Oct 15, time not stated).[3]\n- **Austan Goolsbee, Chicago Fed president:** A Reuters events listing identified Goolsbee as scheduled to speak on October 15; no quote or speech text was included in the available result (Reuters, Oct 15, time not stated).[9]\n- **Kevin Warsh, Fed chair:** Reuters identified a speech scheduled for early October 16 at an IMF meeting in Bangkok; no quote or speech text published by the cutoff was included in the available result (Reuters, Oct 15, time not stated).[1][9]\n- **4-week Treasury bill auction:** Bid-to-cover was 2.56 versus 2.40 previously; the stop-out yield was 4.00% versus 3.98% previously (XTB, Oct 15, time not stated).[4]\n- **3-year Treasury note auction:** High yield was 4.932%, bid-to-cover was 2.62x, and indirect bidders received 57.6% (Au79 Macro Research, Oct 14, outside the requested publication window; background only).[8]\n- **10-year Treasury note auction:** High yield was 5.300%, bid-to-cover was 2.77x, and indirect bidders received 80.3% (Au79 Macro Research, Oct 14, outside the requested publication window; background only).[8]\n- **30-year Treasury bond auction:** High yield was 5.618%, bid-to-cover was 2.54x, and indirect bidders received 72.3% (Au79 Macro Research, Oct 14, outside the requested publication window; background only).[8]",
+  "search_results": [
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Oct 15 (Reuters) - Federal Reserve Bank of Cleveland President Beth Hammack said on Thursday the Fed might need to hike interest rates more aggressively if there were to be a notable deterioration in the public's inflation expectations.\n'What I worry about is, if you get this inflationary mindset, i...",
+      "source": "web",
+      "title": "Fed's Hammack warns inflation expectations deterioration could require Fed response",
+      "url": "https://www.reuters.com/markets/us/feds-hammack-warns-inflation-expectations-deterioration-could-require-fed-2026-10-15/"
+    },
+    {
+      "date": "2026-10-16",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Friday, October 16, 2026\n...\n# U.S. Treasury\u2019s 10-Year and 30-Year Yields Fall 9 Basis Points\nThe 10-year yield was 5.10% and the 30-year was 5.48%, both lower than their Oct. 14 levels.\n...\nThe U.S. Treasury's Oct. 15 daily par curve put 10-year yields at 5.10% and 30-year yields at 5.48%, both 9 b...",
+      "source": "web",
+      "title": "U.S. Treasury\u2019s 10-Year and 30-Year Yields Fall 9 Basis Points | EconoTimes",
+      "url": "https://econotimes.com/U-S-Treasury-s-10-Year-and-30-Year-Yields-Fall-9-Basis-Points-1755305"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Williams signals Fed nearing peak rates\nThursday, 15 Oct 2026\n- ## Related Stories\n...\n## War, rates and a global economy that won\u2019t break\nMarket pricing: Williams speaks at the Economic Club of New York in New York City.\nThe New York Fed president says he still sees scope for one more US interest...",
+      "source": "web",
+      "title": "Williams signals Fed nearing peak rates",
+      "url": "https://www.thestar.com.my/business/business-news/2026/10/15/williams-signals-fed-nearing-peak-rates"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "# Daily summary \ud83d\udcc8 Precious metals and stock indices rebound as Treasury yields fall\n**The pullback in U.S. Treasury yields from record levels supported a rebound in precious metals and risk assets today, including equities and Bitcoin.** The U.S. 10-year Treasury yield has fallen from around 5.3% to...",
+      "source": "web",
+      "title": "Daily summary \ud83d\udcc8 Precious metals and stock indices ...",
+      "url": "https://www.xtb.com/cy/market-analysis/news-and-research/daily-summary-precious-metals-and-stock-indices-rebound-as-treasury-yields-fall"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "**U.S. Treasury yields have pulled back slightly after their recent sharp rise, providing some relief to equity indices.**\nThe U.S. 4-week Treasury bill auction was solid: the bid-to-cover ratio rose to 2.56 from 2.40, pointing to clearly stronger investor demand despite as much as $110 billion of d...",
+      "source": "web",
+      "title": "U.S. indices attempt to rebound after recent losses",
+      "url": "https://www.xtb.com/int/market-analysis/news-and-research/u-s-indices-attempt-to-rebound-after-recent-losses"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-16",
+      "place_metadata": null,
+      "snippet": "Fed's Daly says rate hikes likely needed, but not urgently\n...\n## \"We are more likely than not to need additional adjustments, but the timing of those adjustments to me is something we\u2019re still deliberating,\" she says\n...\nPublished : 15 Oct 2026, 10:44 AM\n...\nThe Federal Reserve will probably need t...",
+      "source": "web",
+      "title": "Fed's Daly says rate hikes likely needed, but not urgently",
+      "url": "https://bdnews24.com/economy/4mdsmlvq2c"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Following the release, the 2-year US Treasury yield climbed to its highest level in more than two weeks before retreating from its session peak alongside longer-dated yields.\nThe 2-year US Treasury yield, which typically tracks expectations for the Fed funds rate, rose by\u00a0+1.1 bps to 4.808% after re...",
+      "source": "web",
+      "title": "Will growing pressure move the Fed?",
+      "url": "https://exante.eu/press/market-updates/3295-will-growing-pressure-move-the-fed/"
+    },
+    {
+      "date": "2026-10-14",
+      "last_updated": "2026-10-14",
+      "place_metadata": null,
+      "snippet": "Watch \u2014 Mid-Month Coupon Settlement and Retail Sales/PPI Matrix:Over the next 24 to 72 hours, institutional desks face Thursday, October 15 catalysts including the mid-month Treasury coupon settlement ($86.44 billion in maturing public coupons and $2.83 billion in SOMA maturities settling against la...",
+      "source": "web",
+      "title": "14Oct2026 - Traditional Markets & Macro-Liquidity (Au79 Macro Research)",
+      "url": "https://martyau79.substack.com/p/14oct2026-traditional-markets-and"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Is an October Fed hike back on the table?\nThe release of hot headline and core September US inflation figures sent markets into a tailspin on Wednesday, with futures markets at one point showing as much as a 50-50 chance that the Federal Reserve may raise interest rates again this month.\nEven if the...",
+      "source": "web",
+      "title": "Morning Bid: Coreweave unravels",
+      "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/"
+    },
+    {
+      "date": "2026-10-15",
+      "last_updated": "2026-10-15",
+      "place_metadata": null,
+      "snippet": "Thus far October has seen bond markets mixed but resilient.\nAlthough benchmark 10-year US Treasuries saw yield surge to their highest level since 2002 before retreating after strong bond auctions.\n...\nThe US 10-year yield is +21.6 basis points (bps) from a month ago, but -8.5 bps MTD.\nThe 10-year Ge...",
+      "source": "web",
+      "title": "Fixed Income Briefing October 2026",
+      "url": "https://exante.eu/press/market-insights/3297-fixed-income-briefing-october-2026/"
+    }
+  ],
+  "citations": [
+    "https://www.reuters.com/markets/us/feds-hammack-warns-inflation-expectations-deterioration-could-require-fed-2026-10-15/",
+    "https://econotimes.com/U-S-Treasury-s-10-Year-and-30-Year-Yields-Fall-9-Basis-Points-1755305",
+    "https://www.thestar.com.my/business/business-news/2026/10/15/williams-signals-fed-nearing-peak-rates",
+    "https://www.xtb.com/cy/market-analysis/news-and-research/daily-summary-precious-metals-and-stock-indices-rebound-as-treasury-yields-fall",
+    "https://www.xtb.com/int/market-analysis/news-and-research/u-s-indices-attempt-to-rebound-after-recent-losses",
+    "https://bdnews24.com/economy/4mdsmlvq2c",
+    "https://exante.eu/press/market-updates/3295-will-growing-pressure-move-the-fed/",
+    "https://martyau79.substack.com/p/14oct2026-traditional-markets-and",
+    "https://www.reuters.com/commentary/reuters-open-interest/global-markets-view-usa-2026-10-15/",
+    "https://exante.eu/press/market-insights/3297-fixed-income-briefing-october-2026/"
+  ],
+  "usage": {
+    "input_tokens": 717,
+    "output_tokens": 1144,
+    "cost_usd": 0.00834
+  }
+}
