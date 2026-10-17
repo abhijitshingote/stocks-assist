@@ -6354,17 +6354,13 @@ def _market_brief_run_status(brief_dir: str) -> str:
 @app.route('/api/market-brief/dates', methods=['GET'])
 def market_brief_dates():
     """List dates that have market brief outputs (including in-progress runs)."""
-    return _market_brief_dates_response(MARKET_BRIEF_OUTPUTS_DIR)
+    return _market_brief_dates_response(MARKET_BRIEF_OUTPUTS_DIR, losers_dir=MARKET_BRIEF_LOSERS_OUTPUTS_DIR)
 
-def _market_brief_dates_response(base_dir: str):
+def _market_brief_dates_response(base_dir: str, losers_dir: str | None = None):
     today = _market_brief_today()
-    if not os.path.isdir(base_dir):
-        return jsonify({
-            'dates': [{'date': today, 'mtime': None, 'status': 'empty', 'stage': None, 'is_today': True}],
-            'today': today,
-        })
     entries = []
-    for name in os.listdir(base_dir):
+    main_names = os.listdir(base_dir) if os.path.isdir(base_dir) else []
+    for name in main_names:
         full = os.path.join(base_dir, name)
         if not os.path.isdir(full):
             continue
@@ -6401,6 +6397,18 @@ def _market_brief_dates_response(base_dir: str):
             'status': status,
             'stage': stage,
         })
+
+    if losers_dir and os.path.isdir(losers_dir):
+        seen = {e['date'] for e in entries}
+        for name in os.listdir(losers_dir):
+            if name in seen or not os.path.isdir(os.path.join(losers_dir, name)):
+                continue
+            try:
+                datetime.strptime(name, '%Y-%m-%d')
+            except ValueError:
+                continue
+            entries.append({'date': name, 'mtime': None, 'status': 'empty', 'stage': None, 'losers_only': True})
+
     entries.sort(key=lambda e: e['date'], reverse=True)
 
     if not any(e['date'] == today for e in entries):
@@ -6431,13 +6439,18 @@ def _market_brief_for_date_response(base_dir: str, date_str: str, *, include_los
 
     brief_dir = os.path.join(base_dir, date_str)
     if not os.path.isdir(brief_dir):
-        if date_str == _market_brief_today():
-            return jsonify({
+        is_today = date_str == _market_brief_today()
+        losers_exists = include_losers and os.path.isdir(os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, date_str))
+        if is_today or losers_exists:
+            result = {
                 'date': date_str,
                 'status': 'empty',
                 'has_source': False,
-                'is_today': True,
-            })
+                'is_today': is_today,
+            }
+            if include_losers:
+                result.update(_load_losers_brief_fields(date_str))
+            return jsonify(result)
         return jsonify({'error': 'No brief found for this date'}), 404
 
     result = {

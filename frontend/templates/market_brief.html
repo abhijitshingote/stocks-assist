@@ -1030,6 +1030,7 @@
     let currentLosersRunStatus = 'empty';
     let costPollTimer = null;
     let losersPollTimer = null;
+    let mainPlaceholderHtml = null;
     let costPanelExpanded = false;
 
     const BRIEF_CFG = Object.assign({
@@ -1189,6 +1190,7 @@
         updatePdfButton();
         updateLosersButton();
 
+        mainPlaceholderHtml = null;
         contentEl.innerHTML = '<div class="loading">Loading...</div>';
 
         try {
@@ -1216,40 +1218,40 @@
 
             if (currentRunStatus === 'running' || status === 'running') {
                 startRunPolling(dateStr);
-                contentEl.innerHTML = `<div class="brief-placeholder">Pipeline running — see progress above. This usually takes ${BRIEF_CFG.runEta}.</div>`;
+                showMainPlaceholder(`<div class="brief-placeholder">Pipeline running — see progress above. This usually takes ${BRIEF_CFG.runEta}.</div>`);
                 updatePdfButton();
                 return;
             }
 
             if (currentRunStatus === 'failed' || currentRunStatus === 'error') {
                 const runErr = currentData.run_status?.error;
-                contentEl.innerHTML = '<div class="brief-placeholder">This run did not finish.'
+                showMainPlaceholder('<div class="brief-placeholder">This run did not finish.'
                     + (runErr ? ' Error: <code>' + escapeHtml(runErr) + '</code>.' : '')
-                    + ' Check <code>' + BRIEF_CFG.outputDir + '/' + dateStr + '/subprocess.log</code> or click Generate to retry.</div>';
+                    + ' Check <code>' + BRIEF_CFG.outputDir + '/' + dateStr + '/subprocess.log</code> or click Generate to retry.</div>');
                 updatePdfButton();
                 return;
             }
 
             if (currentRunStatus === 'empty' || status === 'empty') {
-                contentEl.innerHTML = `<div class="generate-prompt">
+                showMainPlaceholder(`<div class="generate-prompt">
                     <p>No brief for <strong>${dateStr}</strong> yet.</p>
                     <button id="btn-generate-inline" onclick="runBrief('${dateStr}')">Generate today's brief</button>
-                </div>`;
+                </div>`);
                 updatePdfButton();
                 return;
             }
 
             if (!currentData.markdown && (currentRunStatus === 'ready' || currentData.has_source)) {
-                contentEl.innerHTML = `<div class="generate-prompt">
+                showMainPlaceholder(`<div class="generate-prompt">
                     <p>Brief not yet generated. Source news data is on disk.</p>
                     <button id="btn-generate-inline" onclick="runBrief('${dateStr}')">Generate brief</button>
-                </div>`;
+                </div>`);
                 updatePdfButton();
                 return;
             }
 
             if (!currentData.markdown) {
-                contentEl.innerHTML = '<div class="brief-placeholder">No data for this date.</div>';
+                showMainPlaceholder('<div class="brief-placeholder">No data for this date.</div>');
                 updatePdfButton();
                 return;
             }
@@ -1540,10 +1542,20 @@
         setBoxTheme(savedTheme);
     }
 
+    function showMainPlaceholder(html) {
+        mainPlaceholderHtml = html;
+        renderView();
+    }
+
     function renderView() {
         const contentEl = document.getElementById('brief-content');
         if (!currentData) {
             contentEl.innerHTML = '<div class="brief-placeholder">No data loaded</div>';
+            return;
+        }
+
+        if (mainPlaceholderHtml !== null) {
+            contentEl.innerHTML = mainPlaceholderHtml + renderLosersBriefSection();
             return;
         }
 

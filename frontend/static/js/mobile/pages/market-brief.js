@@ -220,42 +220,40 @@
 
       if (currentRunStatus === 'running' || status === 'running') {
         startRunPolling(dateStr);
-        contentEl.innerHTML = `<div class="md-empty">Pipeline running — usually ${escapeHtml(CFG.runEta)}.</div>`;
+        showMainPlaceholder(contentEl, `<div class="md-empty">Pipeline running — usually ${escapeHtml(CFG.runEta)}.</div>`, dateStr);
         updatePdfButton();
         return;
       }
 
       if (currentRunStatus === 'failed' || currentRunStatus === 'error') {
         const runErr = currentData.run_status?.error;
-        contentEl.innerHTML = '<div class="md-empty">This run did not finish.'
+        showMainPlaceholder(contentEl, '<div class="md-empty">This run did not finish.'
           + (runErr ? ' Error: ' + escapeHtml(runErr) + '.' : '')
-          + ' Tap Generate to retry.</div>';
+          + ' Tap Generate to retry.</div>', dateStr);
         updatePdfButton();
         return;
       }
 
       if (currentRunStatus === 'empty' || status === 'empty') {
-        contentEl.innerHTML = `<div class="generate-prompt">
+        showMainPlaceholder(contentEl, `<div class="generate-prompt">
           <p>No brief for <strong>${escapeHtml(dateStr)}</strong> yet.</p>
           <button type="button" id="btnGenerateInline">Generate brief</button>
-        </div>`;
-        document.getElementById('btnGenerateInline').addEventListener('click', () => runBrief(dateStr));
+        </div>`, dateStr);
         updatePdfButton();
         return;
       }
 
       if (!currentData.markdown && (currentRunStatus === 'ready' || currentData.has_source)) {
-        contentEl.innerHTML = `<div class="generate-prompt">
+        showMainPlaceholder(contentEl, `<div class="generate-prompt">
           <p>Source data ready — brief not generated yet.</p>
           <button type="button" id="btnGenerateInline">Generate brief</button>
-        </div>`;
-        document.getElementById('btnGenerateInline').addEventListener('click', () => runBrief(dateStr));
+        </div>`, dateStr);
         updatePdfButton();
         return;
       }
 
       if (!currentData.markdown) {
-        contentEl.innerHTML = '<div class="md-empty">No data for this date.</div>';
+        showMainPlaceholder(contentEl, '<div class="md-empty">No data for this date.</div>', dateStr);
         updatePdfButton();
         return;
       }
@@ -280,6 +278,12 @@
       <strong>${escapeHtml(formatStepLabel(stage))}</strong>${detail}
       ${updated ? ` · updated ${updated}` : ''}
     </div>`;
+  }
+
+  function showMainPlaceholder(contentEl, html, dateStr) {
+    contentEl.innerHTML = html + renderLosersBriefSection();
+    const btn = document.getElementById('btnGenerateInline');
+    if (btn) btn.addEventListener('click', () => runBrief(dateStr));
   }
 
   function renderLosersBriefSection() {
