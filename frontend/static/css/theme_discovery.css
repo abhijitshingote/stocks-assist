@@ -1,0 +1,56 @@
+/* Theme Discovery — /theme-discovery, /m/theme-discovery (renderer: static/js/theme_discovery.js) */
+
+.td-page { padding: 2px 4px 12px; color: var(--text-primary); }
+.td-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid var(--border-color); padding-bottom: 4px; }
+.td-title { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+.td-meta { color: var(--text-muted); font-size: 11px; }
+.td-top-right { margin-left: auto; }
+.td-select { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 6px; padding: 3px 6px; font-size: 12px; }
+
+.td-tabs { display: flex; gap: 6px; margin: 8px 0; }
+.td-tab { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 12px; padding: 2px 10px; font-size: 12px; cursor: pointer; }
+.td-tab.active { color: var(--text-primary); border-color: var(--accent-blue); }
+.td-count { color: var(--text-muted); margin-left: 4px; }
+
+.td-empty { color: var(--text-secondary); padding: 20px 0; font-size: 13px; }
+.td-err { color: var(--accent-red); font-size: 12px; margin-top: 4px; }
+.td-muted { color: var(--text-muted); }
+.td-sub { color: var(--text-muted); font-size: 11px; margin-top: 3px; }
+.td-h { font-size: 13px; font-weight: 600; margin: 12px 0 4px; }
+
+.td-theme { border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-card); padding: 8px 10px; margin-bottom: 10px; }
+.td-theme-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; cursor: pointer; list-style: none; }
+.td-theme-head::-webkit-details-marker { display: none; }
+.td-theme-head .td-theme-name::before { content: '▸ '; color: var(--text-muted); }
+.td-theme[open] .td-theme-head .td-theme-name::before { content: '▾ '; }
+.td-theme[open] > .td-theme-head { margin-bottom: 4px; }
+.td-theme-name { font-size: 15px; font-weight: 600; }
+.td-theme-desc { font-size: 13px; margin-top: 3px; }
+.td-theme-sec { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+.td-table-wrap { overflow-x: auto; margin-top: 6px; }
+.td-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.td-table th { text-align: left; font-weight: 500; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding: 3px 6px; white-space: nowrap; }
+.td-table td { border-bottom: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent); padding: 4px 6px; vertical-align: top; }
+.td-num { text-align: right; white-space: nowrap; font-family: var(--font-mono); }
+.td-nowrap { white-space: nowrap; }
+.td-why { min-width: 260px; }
+.td-tk { font-family: var(--font-mono); font-weight: 600; color: var(--text-primary); text-decoration: none; margin-right: 4px; }
+.td-tk:hover { text-decoration: underline; }
+.td-pct.up { color: var(--accent-green); }
+.td-pct.down { color: var(--accent-red); }
+
+.td-badge { font-size: 10.5px; padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+.td-badge.screener { color: var(--accent-blue); background: color-mix(in srgb, var(--accent-blue) 14%, transparent); }
+.td-badge.probe { color: var(--accent-yellow); background: color-mix(in srgb, var(--accent-yellow) 14%, transparent); }
+.td-badge.listed { color: var(--text-secondary); background: color-mix(in srgb, var(--text-muted) 18%, transparent); }
+.td-badge.new { color: var(--accent-green); background: color-mix(in srgb, var(--accent-green) 14%, transparent); }
+.td-badge.returning { color: var(--accent-blue); background: color-mix(in srgb, var(--accent-blue) 14%, transparent); }
+.td-badge.single, .td-badge.layer { color: var(--text-secondary); background: color-mix(in srgb, var(--text-muted) 18%, transparent); }
+
+.td-mobile .td-theme { padding: 8px; }
+.td-mobile .td-theme-head { flex-direction: column; gap: 2px; }
+.td-mobile .td-theme-head .td-muted { font-size: 11px; }
+.td-mobile .td-table td, .td-mobile .td-table th { padding: 3px 4px; }
+.td-mobile .td-head-row td { border-bottom: none; padding-bottom: 0; }
+.td-mobile .td-why-row td { font-size: 12px; color: var(--text-secondary); padding-top: 2px; }

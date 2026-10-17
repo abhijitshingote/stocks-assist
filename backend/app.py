@@ -6757,6 +6757,32 @@ def narratives_generate():
         return jsonify({'error': err}), 500
     return jsonify({'status': 'started', 'message': 'Narratives rebuild started'})
 
+THEME_DISCOVERY_OUTPUTS_DIR = os.path.join(
+    os.path.dirname(__file__), '..', 'user_data', 'theme_discovery'
+)
+
+@app.route('/api/theme-discovery', methods=['GET'])
+def theme_discovery_latest():
+    """Latest (or ?run=YYYY-MM-DD) theme_discovery themes.json + run summary."""
+    runs = []
+    if os.path.isdir(THEME_DISCOVERY_OUTPUTS_DIR):
+        runs = sorted(
+            (name for name in os.listdir(THEME_DISCOVERY_OUTPUTS_DIR)
+             if os.path.isfile(os.path.join(THEME_DISCOVERY_OUTPUTS_DIR, name, 'themes.json'))),
+            reverse=True,
+        )
+    run = request.args.get('run') or (runs[0] if runs else None)
+    data = summary = None
+    if run in runs:
+        run_dir = os.path.join(THEME_DISCOVERY_OUTPUTS_DIR, run)
+        with open(os.path.join(run_dir, 'themes.json'), encoding='utf-8') as f:
+            data = json.load(f)
+        summary_path = os.path.join(run_dir, 'run_summary.json')
+        if os.path.isfile(summary_path):
+            with open(summary_path, encoding='utf-8') as f:
+                summary = json.load(f)
+    return jsonify({'run': run, 'runs': runs, 'data': data, 'summary': summary})
+
 @app.route('/api/market-brief-losers/<date_str>/costs', methods=['GET'])
 def market_brief_losers_costs(date_str):
     """Return losers brief run status + optional run_costs.json."""

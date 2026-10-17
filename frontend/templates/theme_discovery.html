@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block body_class %}page-theme-discovery{% endblock %}
+{% block title %}Theme Discovery - Stocks Assist{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme_discovery.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="td-page" id="tdRoot">
+    {% include "_theme_discovery_body.html" %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/theme_discovery.js') }}"></script>
+<script>ThemeDiscovery.init({ rootId: 'tdRoot' });</script>
+{% endblock %}
