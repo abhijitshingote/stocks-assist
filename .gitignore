@@ -96,8 +96,8 @@ build/
 postgres_data
 .cursorrules
 
-# price_alerts watcher dedup state (runtime, pruned daily)
-user_data/price_alerts_state.json
+# pipeline scratch; durable data lives in the Postgres app schema
+user_data/
 
 # app schema dumps (scripts/backup_app.sh)
 backups/
