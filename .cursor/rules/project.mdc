@@ -22,8 +22,8 @@ alwaysApply: true
 - Prod (`ubuntu@150.136.177.33`, `/home/ubuntu/stocks-assist`, `docker-compose` v1) runs branch `app-db`.
 - Code is bind-mounted (backend `.:/app`, frontend `./frontend`, price_alerts `./price_alerts` + `./app_store`). After `git pull`:
   - `requirements.txt` / `docker/*.Dockerfile` changed → `docker-compose -f docker-compose.yml up -d --build`
-  - backend Flask code changed → `docker-compose -f docker-compose.yml restart backend` (same for `frontend` / `price_alerts`)
-  - pipelines (spawned per run), templates/static → nothing
+  - `price_alerts/` or `app_store/` changed → `docker-compose -f docker-compose.yml restart price_alerts` (long-running loop)
+  - backend/frontend code, templates, static, pipelines → nothing (Flask `debug=True` auto-reloads; pipelines spawn per run)
 - Give the minimal command for the diff being deployed; don't default to `--build`.
 
 ## Docs
