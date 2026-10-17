@@ -5,7 +5,8 @@
 #   docker compose exec -T backend ./scripts/backup_app.sh
 #
 # Writes backups/app/app_<UTC timestamp>.sql.gz (keeps the newest APP_BACKUP_KEEP, default 60).
-# Off-box copy: scripts/push_backup_repo.sh (host). Restore: scripts/restore_app.sh.
+# Off-box copy: if backups/data-repo is a git clone, scripts/push_backup_repo.sh commits + pushes
+# the dump there. Restore: scripts/restore_app.sh.
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -24,3 +25,7 @@ gzip -c "$TMP" > "$OUT_DIR/app_${STAMP}.sql.gz"
 echo "Wrote $OUT_DIR/app_${STAMP}.sql.gz ($(wc -c < "$OUT_DIR/app_${STAMP}.sql.gz") bytes)"
 
 ls -1t "$OUT_DIR"/app_*.sql.gz | tail -n +"$((KEEP + 1))" | xargs -r rm -f
+
+if [[ -d "${APP_BACKUP_REPO_DIR:-backups/data-repo}/.git" ]]; then
+  ./scripts/push_backup_repo.sh
+fi

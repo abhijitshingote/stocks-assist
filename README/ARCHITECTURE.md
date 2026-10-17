@@ -152,7 +152,7 @@ Postgres schema `app`, created by `app_store/db.py` on first use. The nightly `i
 
 Code: `app_store/user.py` (dict/list stores with the old JSON shapes), `app_store/artifacts.py` (briefs + runs). Hand-edit a store: `python -m app_store.cli export|import <store>`.
 
-**Backup / restore.** `scripts/backup_app.sh` → `pg_dump -n app` to git-ignored `backups/app/app_<UTC>.sql.gz` (keeps 60); host-side `scripts/push_backup_repo.sh` then commits the newest dump as `app.sql` to the private clone `~/stocks-assist-data` and pushes (off-box copy). Triggered by cron 22:30 UTC (`get_compute_instance_ready.sh`) and the nav 💾 Save button (`POST /api/backup`). `scripts/restore_app.sh [dump]` drops and reloads `app` in one transaction. Run both inside the backend container.
+**Backup / restore.** `scripts/backup_app.sh` → `pg_dump -n app` to git-ignored `backups/app/app_<UTC>.sql.gz` (keeps 60); if `backups/data-repo` is a clone of the private `stocks-assist-data` repo, `scripts/push_backup_repo.sh` commits the dump there as `app.sql` and pushes (auth: `GITHUB_TOKEN` in `.env`). Triggered by cron 22:30 UTC (`get_compute_instance_ready.sh`) and the nav 💾 Save button (`POST /api/backup`). `scripts/restore_app.sh [dump]` drops and reloads `app` in one transaction. Run both inside the backend container.
 
 **`user_data/`** is now scratch only (pipeline working dirs: logs, `status.json`, intermediates); nothing reads it for content. One-off import of the old JSON files: `db_scripts/migrate_user_data_to_app.py` (idempotent, `--dry-run`, round-trip check).
 
