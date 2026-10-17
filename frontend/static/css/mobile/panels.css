@@ -455,6 +455,26 @@
   margin: 0.5rem 0;
 }
 .wl-modal.notes-sheet .ticker-notes-view pre code { background: none; padding: 0; }
+.wl-modal.notes-sheet .ticker-notes-view table {
+  width: 100%;
+  min-width: 680px;
+  margin: 0.65rem 0;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  font-size: 0.9em;
+}
+.wl-modal.notes-sheet .ticker-notes-view th,
+.wl-modal.notes-sheet .ticker-notes-view td {
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.55rem;
+  text-align: left;
+  vertical-align: top;
+}
+.wl-modal.notes-sheet .ticker-notes-view th {
+  background: var(--surface);
+  color: var(--fg);
+  font-weight: 650;
+}
 .wl-modal.notes-sheet .ticker-notes-view blockquote {
   border-left: 3px solid var(--purple);
   margin: 0.5rem 0;

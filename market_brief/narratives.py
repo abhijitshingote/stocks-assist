@@ -56,6 +56,11 @@ MOVER_ROW_RE = re.compile(
     r"^\|\s*\*{0,2}(?P<sym>[A-Z][A-Z.\-]{0,6})\*{0,2}\s*\|\s*(?P<move>[^|]*)\|"
     r"\s*(?P<cap>[A-Za-z]+)\s*\|\s*(?P<cat>[^|]*)\|"
 )
+LOSER_ROW_RE = re.compile(
+    r"^\|\s*\*{0,2}(?P<sym>[A-Z][A-Z.\-]{0,6})\*{0,2}\s*\|\s*(?P<move>[^|]*)\|\s*(?P<cap>[^|]*?)\s*\|"
+    r"\s*[^|]*\|\s*[^|]*\|\s*(?P<cat>[^|]*)\|"
+)
+LOSER_THEME_RE = re.compile(r"^\*\*(?P<title>[^*]+)\*\*\s+→\s+`(?P<cat>[^`]+)`\s*$")
 MOVE_CELL_RE = re.compile(r"(?P<pct>[+\-−]?\d+(?:\.\d+)?)%\s*(?P<tag>PM|AH)?")
 MOVE_PCT_RE = re.compile(r"[+\-−]?(\d+(?:\.\d+)?)%")
 STOPWORDS = {
@@ -67,7 +72,7 @@ STOPWORDS = {
 
 SYSTEM_PROMPT = """You are a markets editor building a trader's memory of what actually moved markets.
 
-Input: daily pre-market briefs, oldest to newest: one-liner, 'mover' rows (ticker, move, cap, catalyst) and narrative threads per day.
+Input: daily pre-market briefs, oldest to newest: one-liner, 'mover' rows (ticker, move, cap, catalyst) and narrative threads per day. Lines prefixed 'loser' are from that date's R1D losers brief (down moves and thematic weakness).
 
 List the news events in this period that had the biggest market impact: moved indices, sectors or mega-caps
 the most and/or kept mattering for weeks. Each item is one discrete event or development; do not build
@@ -128,14 +133,7 @@ def parse_brief(text: str) -> dict[str, Any]:
         if "Top Movers" in section:
             mm = MOVER_ROW_RE.match(line)
             if mm:
-                pm = MOVE_CELL_RE.search(mm.group("move"))
-                movers.append({
-                    "sym": mm.group("sym"),
-                    "move": float(pm.group("pct").replace("−", "-")) if pm else None,
-                    "tag": (pm.group("tag") or "") if pm else "",
-                    "cap": mm.group("cap"),
-                    "catalyst": _strip_md(mm.group("cat")),
-                })
+                movers.append(_mover(mm.group("sym"), mm.group("move"), mm.group("cap"), mm.group("cat"), side="gainer"))
             continue
         hm = THREAD_RE.match(line)
         if hm:
@@ -153,8 +151,66 @@ def parse_brief(text: str) -> dict[str, Any]:
     return {"one_liner": one_liner, "movers": movers, "threads": threads}
 
 
+def _mover(sym: str, move_cell: str, cap: str, catalyst: str, *, side: str) -> dict[str, Any]:
+    pm = MOVE_CELL_RE.search(move_cell)
+    return {
+        "sym": sym,
+        "move": float(pm.group("pct").replace("−", "-")) if pm else None,
+        "tag": (pm.group("tag") or "") if pm else "",
+        "cap": cap.split()[0] if cap else "",
+        "catalyst": _strip_md(catalyst),
+        "side": side,
+    }
+
+
+def parse_losers_brief(text: str) -> dict[str, Any]:
+    """Losers At a Glance rows plus thematic-weakness blocks. Idiosyncratic writeups stay in the catalyst cell."""
+    m = ONE_LINER_RE.search(text)
+    one_liner = _strip_md(m.group(1)) if m else ""
+    movers: list[dict[str, Any]] = []
+    threads: list[dict[str, Any]] = []
+    section = ""
+    cur: dict[str, Any] | None = None
+    body: list[str] = []
+
+    def close() -> None:
+        nonlocal cur
+        if cur is None:
+            return
+        lead = _strip_md(" ".join(body))
+        if len(lead) > LEAD_CHARS:
+            lead = lead[: LEAD_CHARS - 1].rsplit(" ", 1)[0] + "…"
+        cur["lead"] = lead
+        threads.append(cur)
+        cur = None
+
+    for line in text.splitlines():
+        if line.startswith("###"):
+            close()
+            if not line.startswith("####"):
+                section = line
+            continue
+        if "Losers At a Glance" in section:
+            mm = LOSER_ROW_RE.match(line)
+            if mm and mm.group("sym") not in {"Ticker"}:
+                movers.append(_mover(mm.group("sym"), mm.group("move"), mm.group("cap"), mm.group("cat"), side="loser"))
+            continue
+        if "Thematic" not in section:
+            continue
+        hm = LOSER_THEME_RE.match(line)
+        if hm:
+            close()
+            cur = {"rank": len(threads) + 1, "title": hm.group("title").strip()}
+            body = []
+            continue
+        if cur is not None and line.startswith("- "):
+            body.append(line)
+    close()
+    return {"one_liner": one_liner, "movers": movers, "threads": threads}
+
+
 def collect_briefs(window_days: int) -> list[dict[str, Any]]:
-    """One daily brief per date: Benzinga if it parses, else Px. Oldest → newest."""
+    """One daily brief per date: Benzinga if it parses, else Px. Loser brief (Px preferred) movers and themes are appended. Oldest → newest."""
     by_date: dict[str, dict[str, Any]] = {}
     rows = sorted(artifacts.brief_bodies("daily"), key=lambda r: r["source"] == "benzinga")
     for r in rows:
@@ -163,6 +219,22 @@ def collect_briefs(window_days: int) -> list[dict[str, Any]]:
             continue
         source = "px" if r["source"] == "perplexity" else r["source"]
         by_date[r["date"]] = {"date": r["date"], "source": source, **parsed}
+    losers = {r["date"]: r for r in sorted(artifacts.brief_bodies("losers"), key=lambda r: r["source"] == "perplexity")}
+    for d, r in losers.items():
+        parsed = parse_losers_brief(r["brief_md"])
+        if not (parsed["threads"] or parsed["movers"]):
+            continue
+        slot = by_date.get(d)
+        if slot is None:
+            by_date[d] = {"date": d, "source": "losers", **parsed}
+            continue
+        slot["movers"].extend(parsed["movers"])
+        base = len(slot["threads"])
+        for i, t in enumerate(parsed["threads"], start=1):
+            t["rank"] = base + i
+        slot["threads"].extend(parsed["threads"])
+        if parsed["one_liner"] and not slot["one_liner"]:
+            slot["one_liner"] = parsed["one_liner"]
     if not by_date:
         return []
     latest = max(_parse_iso(k) for k in by_date)
@@ -178,7 +250,8 @@ def build_user_message(briefs: list[dict[str, Any]]) -> str:
             out.append(f"one-liner: {b['one_liner']}")
         for mv in b["movers"]:
             move = f"{mv['move']:+.1f}%{' ' + mv['tag'] if mv['tag'] else ''}" if mv["move"] is not None else "n/a"
-            out.append(f"mover {mv['sym']} {move} ({mv['cap']}): {mv['catalyst']}")
+            kind = "loser" if mv.get("side") == "loser" else "mover"
+            out.append(f"{kind} {mv['sym']} {move} ({mv['cap']}): {mv['catalyst']}")
         for t in b["threads"]:
             out.append(f"thread r{t['rank']} {t['title']} | {t['lead']}")
         out.append("")

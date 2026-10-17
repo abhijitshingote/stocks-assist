@@ -320,6 +320,26 @@ body.light-theme .ticker-notes-view {
     margin: 0.5rem 0;
 }
 .ticker-notes-view pre code { background: none; padding: 0; }
+.ticker-notes-view table {
+    width: 100%;
+    min-width: 680px;
+    margin: 0.65rem 0;
+    border-collapse: collapse;
+    border: 1px solid var(--border-color);
+    font-size: 0.9em;
+}
+.ticker-notes-view th,
+.ticker-notes-view td {
+    border: 1px solid var(--border-color);
+    padding: 0.45rem 0.55rem;
+    text-align: left;
+    vertical-align: top;
+}
+.ticker-notes-view th {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-weight: 650;
+}
 .ticker-notes-view blockquote {
     border-left: 3px solid var(--accent-purple);
     margin: 0.5rem 0;
