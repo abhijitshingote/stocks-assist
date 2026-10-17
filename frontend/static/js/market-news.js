@@ -5,19 +5,12 @@
     'use strict';
 
     // State
-    let activeSource = 'fmp';
-    let fmpArticles = [];
+    let activeSource = 'seeking-alpha';
     let seekingAlphaArticles = [];
 
     // Elements
     const tabs = document.querySelectorAll('.news-tab');
     const sections = document.querySelectorAll('.news-source-section');
-    
-    // FMP
-    const fmpSection = document.getElementById('fmpSection');
-    const fmpContent = document.getElementById('fmpContent');
-    const fmpRefresh = document.getElementById('fmpRefresh');
-    const fmpCountEl = document.getElementById('fmpCount');
     
     // Seeking Alpha
     const seekingAlphaSection = document.getElementById('seekingAlphaSection');
@@ -56,7 +49,6 @@
     function getSourceBadgeClass(source) {
         if (source === 'Seeking Alpha') return 'source-sa';
         if (source === 'Yahoo Finance') return 'source-yahoo';
-        if (source === 'FMP') return 'source-fmp';
         return '';
     }
 
@@ -76,82 +68,8 @@
             section.classList.remove('active');
         });
         
-        if (source === 'fmp') {
-            fmpSection.classList.add('active');
-        } else if (source === 'seeking-alpha') {
+        if (source === 'seeking-alpha') {
             seekingAlphaSection.classList.add('active');
-        }
-    }
-
-    // FMP Functions
-    function renderFmpArticles() {
-        if (!fmpContent) return;
-
-        if (fmpArticles.length === 0) {
-            fmpContent.innerHTML = '<div class="news-empty">No FMP articles available</div>';
-            if (fmpCountEl) fmpCountEl.textContent = '0';
-            return;
-        }
-
-        const listHtml = '<div class="news-list">' + fmpArticles.map(a => {
-            const date = formatDate(a.published_date);
-            const snippet = a.text || '';
-
-            return (
-                '<div class="news-article" data-article-url="' + escAttr(a.url) + '" ' +
-                'role="button" tabindex="0">' +
-                '<div class="news-article-body">' +
-                '<div class="news-article-title">' + escHtml(a.title || 'Untitled') + '</div>' +
-                '<div class="news-article-meta">' +
-                '<span class="news-source-badge source-fmp">FMP</span>' +
-                (date ? '<span>' + escHtml(date) + '</span>' : '') +
-                (a.site ? '<span class="news-channel-tag">' + escHtml(a.site) + '</span>' : '') +
-                '</div>' +
-                (snippet ? '<div class="news-article-snippet">' + escHtml(snippet) + '</div>' : '') +
-                '</div>' +
-                '</div>'
-            );
-        }).join('') + '</div>';
-
-        fmpContent.innerHTML = listHtml;
-        if (fmpCountEl) {
-            fmpCountEl.textContent = fmpArticles.length;
-        }
-    }
-
-    async function loadFmpNews() {
-        if (fmpRefresh) {
-            fmpRefresh.disabled = true;
-            fmpRefresh.classList.add('loading');
-            fmpRefresh.textContent = 'Loading…';
-        }
-        if (fmpContent) {
-            fmpContent.innerHTML = '<div class="news-empty">Loading…</div>';
-        }
-
-        try {
-            const response = await fetch('/api/frontend/market-news/fmp?limit=100');
-            const data = await response.json();
-            if (data.error) {
-                if (fmpContent) {
-                    fmpContent.innerHTML = '<div class="news-empty">Failed to load: ' +
-                        escHtml(data.error) + '</div>';
-                }
-                return;
-            }
-            fmpArticles = data.articles || [];
-            renderFmpArticles();
-        } catch (e) {
-            console.error('FMP news load failed:', e);
-            if (fmpContent) {
-                fmpContent.innerHTML = '<div class="news-empty">Error loading FMP news</div>';
-            }
-        } finally {
-            if (fmpRefresh) {
-                fmpRefresh.disabled = false;
-                fmpRefresh.classList.remove('loading');
-                fmpRefresh.textContent = 'Refresh';
-            }
         }
     }
 
@@ -228,7 +146,7 @@
 
     // Event Handlers
     function onContentClick(e) {
-        // FMP or Seeking Alpha article (open URL in new tab)
+        // Seeking Alpha article (open URL in new tab)
         const urlRow = e.target.closest('.news-article[data-article-url]');
         if (urlRow) {
             e.preventDefault();
@@ -255,15 +173,6 @@
             });
         });
 
-        // FMP
-        if (fmpContent) {
-            fmpContent.addEventListener('click', onContentClick);
-            fmpContent.addEventListener('keydown', onContentKeydown);
-        }
-        if (fmpRefresh) {
-            fmpRefresh.addEventListener('click', () => loadFmpNews());
-        }
-
         // Seeking Alpha
         if (seekingAlphaContent) {
             seekingAlphaContent.addEventListener('click', onContentClick);
@@ -273,7 +182,6 @@
             seekingAlphaRefresh.addEventListener('click', () => loadSeekingAlphaNews());
         }
 
-        loadFmpNews();
         loadSeekingAlphaNews();
     }
 

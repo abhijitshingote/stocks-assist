@@ -3534,48 +3534,6 @@ def get_stock_news(ticker):
         logger.error(f"Error fetching stock news for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/market-news/fmp', methods=['GET'])
-def get_market_fmp_news():
-    """Fetch general market news from FMP (not ticker-specific)."""
-    limit = request.args.get('limit', 100, type=int)
-    fmp_api_key = os.getenv('FMP_API_KEY')
-    
-    if not fmp_api_key:
-        return jsonify({'error': 'FMP_API_KEY not configured'}), 400
-    
-    try:
-        import requests as req
-        resp = req.get(
-            'https://financialmodelingprep.com/api/v3/fmp/articles',
-            params={'limit': limit, 'apikey': fmp_api_key},
-            timeout=15,
-        )
-        resp.raise_for_status()
-        articles = resp.json()
-        
-        if not isinstance(articles, list):
-            return jsonify({'error': 'Invalid response from FMP'}), 500
-        
-        results = []
-        for a in articles:
-            results.append({
-                'title': a.get('title'),
-                'url': a.get('link'),
-                'published_date': a.get('date'),
-                'site': a.get('site', 'FMP'),
-                'text': a.get('content', '')[:300] if a.get('content') else '',
-                'image': a.get('image'),
-                'source': 'FMP',
-            })
-        
-        return jsonify({
-            'count': len(results),
-            'articles': results,
-        })
-    except Exception as e:
-        logger.error(f"Error fetching FMP market news: {e}")
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/api/market-news/seeking-alpha', methods=['GET'])
 def get_market_seeking_alpha_news():
     """Fetch general market news from Seeking Alpha RSS."""

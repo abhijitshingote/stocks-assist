@@ -10,36 +10,22 @@
   <div class="utility-body market-news-page">
     <div class="market-news-header">
       <h1>Market News</h1>
-      <p class="market-news-hint">Headlines from FMP and Seeking Alpha — tap a card to open the article.</p>
+      <p class="market-news-hint">Headlines from Seeking Alpha — tap a card to open the article.</p>
     </div>
     <div class="news-source-tabs">
-      <button class="news-tab active" data-source="fmp">
-        <span class="tab-icon">💼</span>
-        <span class="tab-label">FMP</span>
-        <span class="tab-count" id="fmpCount">0</span>
-      </button>
-      <button class="news-tab" data-source="seeking-alpha">
+      <button class="news-tab active" data-source="seeking-alpha">
         <span class="tab-icon">📈</span>
         <span class="tab-label">Seeking Alpha</span>
         <span class="tab-count" id="seekingAlphaCount">0</span>
       </button>
     </div>
-    <div class="news-source-section active" id="fmpSection">
-      <div class="market-news-toolbar">
-        <p class="market-news-window">General market news from FMP</p>
-        <button type="button" class="news-benzinga-btn" id="fmpRefresh">Refresh</button>
-      </div>
-      <div id="fmpContent" class="news-content">
-        <div class="news-empty">Tap Refresh to load FMP news…</div>
-      </div>
-    </div>
-    <div class="news-source-section" id="seekingAlphaSection">
+    <div class="news-source-section active" id="seekingAlphaSection">
       <div class="market-news-toolbar">
         <p class="market-news-window">Market news from Seeking Alpha</p>
         <button type="button" class="news-benzinga-btn" id="seekingAlphaRefresh">Refresh</button>
       </div>
       <div id="seekingAlphaContent" class="news-content">
-        <div class="news-empty">Tap Refresh to load Seeking Alpha news…</div>
+        <div class="news-empty">Loading Seeking Alpha news…</div>
       </div>
     </div>
   </div>

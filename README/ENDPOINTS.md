@@ -120,7 +120,6 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 
 | Method | Path | Notes |
 |--------|------|-------|
-| GET | `/api/market-news/fmp` | FMP general news |
 | GET | `/api/market-news/seeking-alpha` | SA RSS |
 
 ### User data (Postgres `app` schema, `app_store.user`)
@@ -224,7 +223,6 @@ Proxies to backend unless noted. Market-cap path segments use `all|micro|small|m
 | `GET /api/frontend/ratios-ttm/<ticker>` | `/api/ratios-ttm/<ticker>` |
 | `GET /api/frontend/company-profile/<ticker>` | `/api/company-profile/<ticker>` |
 | `GET /api/frontend/stock-news/<ticker>` | `/api/stock-news/<ticker>` |
-| `GET /api/frontend/market-news/fmp` | `/api/market-news/fmp` |
 | `GET /api/frontend/market-news/seeking-alpha` | `/api/market-news/seeking-alpha` |
 | `GET /api/frontend/latest-date` | `/api/latest_date` |
 | `GET /api/frontend/sector-performance` | `/api/sector-performance` |

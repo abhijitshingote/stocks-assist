@@ -296,12 +296,6 @@ One layout system for all 15 desktop screener pages: shared shell + `screener.cs
 | **Data** | `/api/frontend/theme-discovery?run=` → backend `/api/theme-discovery` (`app.pipeline_runs` theme_discovery `themes.json` + `run_summary.json`) |
 | **Layout** | Run select · tabs: **Themes** (card per theme: `new` / `returning · first seen` / `1 stock · probe found N up` / `checklist: <layer>` tags, description, stocks table with `screener` / `probe` badge, cap, 1w/1m/3m, why it belongs; unconfirmed one-stock themes listed at the end) · **QA** (candidates with no theme + reason) · **Funnel** (pick rule, pool and picks per screener list, candidates, industry-limit drops). Mobile puts the why text on its own row |
 
-### Market Brief History
-| | |
-|---|---|
-| **File** | `templates/market_brief_history.html` |
-| **Route** | `/market-brief/history` |
-
 ---
 
 ## Mobile Components  *(separate /m/* site)*

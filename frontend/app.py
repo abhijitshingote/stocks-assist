@@ -826,15 +826,6 @@ def api_stock_news(ticker):
         return jsonify({'error': 'Failed to fetch stock news'}), status_code
     return jsonify(data), status_code
 
-@app.route('/api/frontend/market-news/fmp', methods=['GET'])
-def api_market_fmp_news():
-    """Proxy: general market news from FMP."""
-    limit = request.args.get('limit', 100, type=int)
-    data, status_code = make_backend_request(f'/api/market-news/fmp?limit={limit}')
-    if data is None:
-        return jsonify({'error': 'Failed to load FMP market news'}), status_code
-    return jsonify(data), status_code
-
 @app.route('/api/frontend/market-news/seeking-alpha', methods=['GET'])
 def api_market_seeking_alpha_news():
     """Proxy: general market news from Seeking Alpha."""
@@ -1402,11 +1393,6 @@ MARKET_BRIEF_CFG = {
 def _qs() -> str:
     q = request.query_string.decode()
     return f'?{q}' if q else ''
-
-@app.route('/market-brief/history')
-def market_brief_history_page():
-    """Market Brief History — browse past AI-generated market briefs."""
-    return render_template('market_brief_history.html')
 
 @app.route('/market-brief')
 def market_brief_page():
