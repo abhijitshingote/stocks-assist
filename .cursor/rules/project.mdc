@@ -26,6 +26,7 @@ alwaysApply: true
   - `price_alerts/` or `app_store/` changed → `docker-compose -f docker-compose.yml restart price_alerts` (long-running loop)
   - backend/frontend code, templates, static, pipelines → nothing (Flask `debug=True` auto-reloads; pipelines spawn per run)
 - Give the minimal command for the diff being deployed; don't default to `--build`.
+- App data backup: prod `backup_app.sh` (cron 22:30 UTC + nav Save) pushes `app.sql` to private repo `stocks-assist-data` from `backups/data-repo`. Locally, sync from prod via a clone at `backups/prod-data` + `restore_app.sh backups/prod-data/app.sql`; never create `backups/data-repo` locally (local Save would push to prod's backup repo).
 
 ## Docs
 
