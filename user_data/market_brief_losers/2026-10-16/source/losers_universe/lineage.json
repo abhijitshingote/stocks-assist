@@ -1,0 +1,461 @@
+{
+  "asof": "2026-10-16",
+  "source": "stock_metrics (DB) — bottom dr_1",
+  "cap_buckets": [
+    "mega",
+    "large",
+    "mid_small"
+  ],
+  "excludes_micro": true,
+  "top_n_by_bucket": {
+    "mega": 15,
+    "large": 10,
+    "mid_small": 10
+  },
+  "unique_tickers": 35,
+  "by_ticker": {
+    "AEHR": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 7,
+      "dr_1": -12.74,
+      "dr_5": -26.5,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 1979165700,
+      "company_name": "Aehr Test Systems"
+    },
+    "AMAT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 14,
+      "dr_1": -4.92,
+      "dr_5": -18.92,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 324811497445,
+      "company_name": "Applied Materials, Inc."
+    },
+    "AMD": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 9,
+      "dr_1": -5.87,
+      "dr_5": -12.36,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 863171173699,
+      "company_name": "Advanced Micro Devices, Inc."
+    },
+    "ARM": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 7,
+      "dr_1": -5.98,
+      "dr_5": -14.02,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 243290074018,
+      "company_name": "Arm Holdings plc American Depositary Shares"
+    },
+    "BAND": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 5,
+      "dr_1": -13.09,
+      "dr_5": -19.08,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 1394715352,
+      "company_name": "Bandwidth Inc."
+    },
+    "BLZE": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 6,
+      "dr_1": -12.9,
+      "dr_5": -33.26,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 532340000,
+      "company_name": "Backblaze, Inc."
+    },
+    "BSP": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 1,
+      "dr_1": -16.43,
+      "dr_5": 25.78,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 29899772922,
+      "company_name": "Bending Spoons S.p.A."
+    },
+    "CBRS": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 8,
+      "dr_1": -9.3,
+      "dr_5": -21.8,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 28817207848,
+      "company_name": "Cerebras Systems Inc."
+    },
+    "CRWD": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 5,
+      "dr_1": -6.37,
+      "dr_5": -17.19,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 232832543722,
+      "company_name": "CrowdStrike Holdings, Inc."
+    },
+    "CRWV": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 3,
+      "dr_1": -11.88,
+      "dr_5": -26.27,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 33774090591,
+      "company_name": "CoreWeave, Inc. Class A Common Stock"
+    },
+    "FTNT": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 4,
+      "dr_1": -6.79,
+      "dr_5": -13.11,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 124092990132,
+      "company_name": "Fortinet, Inc."
+    },
+    "GRAL": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 1,
+      "dr_1": -15.37,
+      "dr_5": -16.42,
+      "sector": "Healthcare",
+      "industry": "Medical - Diagnostics & Research",
+      "market_cap": 5262128792,
+      "company_name": "GRAIL Inc."
+    },
+    "INTC": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 6,
+      "dr_1": -6.35,
+      "dr_5": -14.07,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 474956557791,
+      "company_name": "Intel Corp."
+    },
+    "KOPN": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 3,
+      "dr_1": -13.53,
+      "dr_5": -26.55,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 611520838,
+      "company_name": "Kopin Corp."
+    },
+    "LRCX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 11,
+      "dr_1": -5.26,
+      "dr_5": -16.99,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 330299794800,
+      "company_name": "Lam Research Corporation"
+    },
+    "MRVL": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 13,
+      "dr_1": -4.99,
+      "dr_5": -16.29,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 199525864152,
+      "company_name": "Marvell Technology, Inc."
+    },
+    "MSTR": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 6,
+      "dr_1": -9.65,
+      "dr_5": -12.36,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 55064633730,
+      "company_name": "Strategy Inc"
+    },
+    "NBIS": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 2,
+      "dr_1": -11.89,
+      "dr_5": -25.48,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 39712800000,
+      "company_name": "Nebius Group N.V."
+    },
+    "NET": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 8,
+      "dr_1": -5.94,
+      "dr_5": -18.42,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 105442322245,
+      "company_name": "Cloudflare, Inc."
+    },
+    "NOW": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 15,
+      "dr_1": -4.87,
+      "dr_5": 0.54,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 146777388140,
+      "company_name": "ServiceNow, Inc."
+    },
+    "OKTA": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 5,
+      "dr_1": -10.66,
+      "dr_5": -19.61,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 31298590896,
+      "company_name": "Okta, Inc."
+    },
+    "PANW": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 3,
+      "dr_1": -6.91,
+      "dr_5": -18.06,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 279755997264,
+      "company_name": "Palo Alto Networks, Inc."
+    },
+    "PLTR": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 2,
+      "dr_1": -6.95,
+      "dr_5": -10.45,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 428001081300,
+      "company_name": "Palantir Technologies Inc."
+    },
+    "RKLB": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 10,
+      "dr_1": -7.99,
+      "dr_5": -25.76,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "market_cap": 30425693131,
+      "company_name": "Rocket Lab USA, Inc."
+    },
+    "SECZ": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 8,
+      "dr_1": -12.61,
+      "dr_5": -27.96,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 1609799595,
+      "company_name": "Securitize Corp."
+    },
+    "SHAZ": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 2,
+      "dr_1": -14.6,
+      "dr_5": -28.44,
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "market_cap": 948389891,
+      "company_name": "SharonAI Holdings, Inc. Class A Common Stock"
+    },
+    "SKHY": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 12,
+      "dr_1": -5.22,
+      "dr_5": -18.5,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "market_cap": 968880940726,
+      "company_name": "SK hynix Inc."
+    },
+    "SMCI": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 7,
+      "dr_1": -9.62,
+      "dr_5": -23.83,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 20779802950,
+      "company_name": "Super Micro Computer, Inc."
+    },
+    "SMCIP": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 9,
+      "dr_1": -8.31,
+      "dr_5": -21.56,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 35916276550,
+      "company_name": "Super Micro Computer, Inc."
+    },
+    "SNOW": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 1,
+      "dr_1": -8.17,
+      "dr_5": -16.32,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "market_cap": 108253151079,
+      "company_name": "Snowflake Inc."
+    },
+    "STX": {
+      "section": "r1d_losers/mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "rank": 10,
+      "dr_1": -5.63,
+      "dr_5": -17.44,
+      "sector": "Technology",
+      "industry": "Computer Hardware",
+      "market_cap": 145306400930,
+      "company_name": "Seagate Technology Holdings plc"
+    },
+    "TEM": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 10,
+      "dr_1": -11.93,
+      "dr_5": -10.5,
+      "sector": "Healthcare",
+      "industry": "Medical - Healthcare Information Services",
+      "market_cap": 11351302931,
+      "company_name": "Tempus AI, Inc."
+    },
+    "TLK": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 4,
+      "dr_1": -13.35,
+      "dr_5": -14.02,
+      "sector": "Communication Services",
+      "industry": "Telecommunications Services",
+      "market_cap": 10873477770,
+      "company_name": "Perusahaan Perseroan (Persero) PT Telekomunikasi Indonesia Tbk"
+    },
+    "TWLO": {
+      "section": "r1d_losers/large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "rank": 4,
+      "dr_1": -10.91,
+      "dr_5": -15.69,
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "market_cap": 37529122750,
+      "company_name": "Twilio Inc."
+    },
+    "WGS": {
+      "section": "r1d_losers/mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "rank": 9,
+      "dr_1": -12.61,
+      "dr_5": -6.43,
+      "sector": "Healthcare",
+      "industry": "Medical - Diagnostics & Research",
+      "market_cap": 1897009225,
+      "company_name": "GeneDx Holdings Corp."
+    }
+  },
+  "slices": [
+    {
+      "cap_bucket": "mega",
+      "label": "Bottom 15 · 1D return · Mega cap",
+      "ticker_count": 15,
+      "tickers": [
+        "SNOW",
+        "PLTR",
+        "PANW",
+        "FTNT",
+        "CRWD",
+        "INTC",
+        "ARM",
+        "NET",
+        "AMD",
+        "STX",
+        "LRCX",
+        "SKHY",
+        "MRVL",
+        "AMAT",
+        "NOW"
+      ]
+    },
+    {
+      "cap_bucket": "large",
+      "label": "Bottom 10 · 1D return · Large cap",
+      "ticker_count": 10,
+      "tickers": [
+        "BSP",
+        "NBIS",
+        "CRWV",
+        "TWLO",
+        "OKTA",
+        "MSTR",
+        "SMCI",
+        "CBRS",
+        "SMCIP",
+        "RKLB"
+      ]
+    },
+    {
+      "cap_bucket": "mid_small",
+      "label": "Bottom 10 · 1D return · Mid & small cap",
+      "ticker_count": 10,
+      "tickers": [
+        "GRAL",
+        "SHAZ",
+        "KOPN",
+        "TLK",
+        "BAND",
+        "BLZE",
+        "AEHR",
+        "SECZ",
+        "WGS",
+        "TEM"
+      ]
+    }
+  ]
+}
