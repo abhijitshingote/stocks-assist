@@ -126,7 +126,7 @@ _STRONG_DRIVER_RE = re.compile("|".join(_STRONG_DRIVER_PATTERNS), re.IGNORECASE)
 
 def _load_watchlist_notes() -> dict[str, str]:
     """Return ``{TICKER: note}`` for tickers that BOTH appear on the watchlist
-    AND have a non-empty Abi ticker note in ``user_data/abi_ticker_notes.json``.
+    AND have a non-empty Abi ticker note in ``app.ticker_notes``.
 
     Notes outside the watchlist are intentionally excluded - free-floating
     Abi ticker notes must NOT influence Stage 4. Used as an OPTIONAL hint

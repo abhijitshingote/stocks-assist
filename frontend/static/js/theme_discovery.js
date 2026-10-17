@@ -1,5 +1,5 @@
 /* Theme Discovery — shared desktop + mobile renderer for /theme-discovery, /m/theme-discovery.
- * Data: /api/frontend/theme-discovery → user_data/theme_discovery/<run>/themes.json
+ * Data: /api/frontend/theme-discovery → app.pipeline_runs (theme_discovery/<run>, themes.json)
  */
 const ThemeDiscovery = (() => {
   const API = '/api/frontend/theme-discovery';

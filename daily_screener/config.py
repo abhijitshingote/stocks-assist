@@ -14,25 +14,12 @@ from pathlib import Path
 PACKAGE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PACKAGE_DIR.parent
 USER_DATA_DIR = PROJECT_ROOT / "user_data"
-# Run artifacts live under user_data/ so the auto_commit.sh backup (which
-# git-pushes user_data/) preserves them across app/container resets. The old
-# location (daily_screener/outputs/) is ephemeral repo state; this one is
-# treated as preservable user data.
+# Run working dir (scratch). Stage JSON is published to app.pipeline_runs
+# (pipeline='daily_screener') when the run finishes.
 OUTPUTS_DIR = USER_DATA_DIR / "daily_screener"
 PROMPTS_DIR = PACKAGE_DIR / "prompts"
-
-ABI_WATCHLIST_FILE = USER_DATA_DIR / "abi_watchlist.json"
-# Explicit thumbs-down list. Separate from the watchlist on purpose:
-# watchlist membership is not a veto.
-ABI_DISLIKES_FILE = USER_DATA_DIR / "abi_dislikes.json"
-# Per-ticker Abi ticker notes (free-form). Decoupled from watchlist / dislike
-# membership. The screener pipeline only consumes notes whose ticker is also
-# on the watchlist (see s3/s4/s5).
-ABI_TICKER_NOTES_FILE = USER_DATA_DIR / "abi_ticker_notes.json"
-THEMES_FILE = USER_DATA_DIR / "themes.json"
-# Per-date, per-ticker verdict corrections. Populated by the UI; consumed
-# by the judge (Stage 5) as in-context calibration examples.
-DAILY_SCREENER_FEEDBACK_FILE = USER_DATA_DIR / "daily_screener_feedback.json"
+# Watchlist, dislikes, ticker notes, themes and judge feedback come from the
+# app schema (app_store.user). Dislikes are a veto; watchlist membership is not.
 
 # ---------------------------------------------------------------------------
 # Universe selection (Stage 1)
@@ -56,7 +43,7 @@ LIQUIDITY_MIN_DOLLAR_VOLUME = 10_000_000
 LIQUIDITY_MIN_PRICE = 3.0
 
 # Exclude tickers that appear in the dedicated dislikes file
-# (`user_data/abi_dislikes.json`). This is the ONLY source of vetoes.
+# (`app.dislikes`). This is the ONLY source of vetoes.
 # Watchlist membership is not a veto.
 # kind=temporary is skipped after expires_at (30d from add).
 EXCLUDE_DISLIKED_TICKERS = True
@@ -135,7 +122,7 @@ NEWS_VERIFY_MAX_TOKENS = 1200
 # Weight applied to user-taste themes vs hot-market themes vs curated themes.
 THEME_WEIGHTS = {
     "user_taste": 3.0,    # themes inferred from watchlist notes - highest signal
-    "curated": 2.0,       # user-curated themes.json
+    "curated": 2.0,       # user-curated app.themes
     "hot_market": 1.5,    # hot narratives from this week's market scan
 }
 

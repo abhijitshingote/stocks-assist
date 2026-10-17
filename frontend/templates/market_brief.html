@@ -112,6 +112,21 @@
     }
     .date-item-status.failed,
     .date-item-status.error { color: #c45c5c; }
+    .brief-source-badge {
+        display: inline-block;
+        margin-left: 4px;
+        padding: 0 4px;
+        border: 1px solid var(--border-color);
+        border-radius: 3px;
+        font-size: 0.55rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        vertical-align: middle;
+    }
+    .brief-source-badge.perplexity { color: var(--accent-blue); border-color: var(--accent-blue); }
+    .brief-source-badge.benzinga { color: var(--accent-purple); border-color: var(--accent-purple); }
+    .brief-source-badge.losers { opacity: 0.7; }
 
     .brief-container > .brief-viewer {
         flex: 1 1 0;
@@ -996,6 +1011,7 @@
         <div class="brief-viewer-header">
             <span class="brief-viewer-title" id="current-brief-date">Select a date</span>
             <div class="brief-viewer-actions">
+                <div class="view-toggle brief-source-toggle" id="brief-source-toggle" hidden></div>
                 <div class="view-toggle">
                     <button id="btn-view-formatted" class="active" onclick="setView('formatted')">Formatted</button>
                     <button id="btn-view-markdown" onclick="setView('markdown')">Markdown</button>
@@ -1037,8 +1053,9 @@
         apiBase: '/api/frontend/market-brief',
         showLosers: true,
         pdfPrefix: 'market-brief',
-        outputDir: 'user_data/market_brief',
-        runEta: '15–25 minutes',
+        outputDir: 'user_data/market_brief_perplexity',
+        runEta: '10–15 minutes',
+        sourceLabels: { perplexity: 'PX', benzinga: 'BZ' },
         stageLabels: {},
         modelLabels: {},
     }, {{ (brief_cfg or {}) | tojson }});
@@ -1047,11 +1064,32 @@
         'claude-sonnet-4-5': 'Sonnet',
         'claude-opus-4-5': 'Opus',
         'claude-opus-4-6': 'Opus',
-        'deepseek-v4-pro': 'DeepSeek',
-        'deepseek-v4-flash': 'DeepSeek Flash',
     }, BRIEF_CFG.modelLabels);
 
     let briefTodayDate = null;
+    let currentSource = null;
+
+    function sourceBadge(source) {
+        if (!source) return '';
+        const label = BRIEF_CFG.sourceLabels[source] || source;
+        return `<span class="brief-source-badge ${source}" title="${source}">${escapeHtml(label)}</span>`;
+    }
+
+    function renderSourceToggle() {
+        const el = document.getElementById('brief-source-toggle');
+        if (!el) return;
+        const sources = (currentData && currentData.sources) || [];
+        el.hidden = sources.length < 2;
+        el.innerHTML = sources.map(s =>
+            `<button class="${s === currentData.source ? 'active' : ''}" onclick="setSource('${s}')" title="${s}">${escapeHtml(BRIEF_CFG.sourceLabels[s] || s)}</button>`
+        ).join('');
+    }
+
+    function setSource(source) {
+        if (!currentDate || source === (currentData && currentData.source)) return;
+        currentSource = source;
+        loadBrief(currentDate, currentRunStatus);
+    }
 
     function briefToday() {
         return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
@@ -1086,7 +1124,7 @@
         btn.disabled = true;
         btn.textContent = 'Exporting…';
         try {
-            const response = await fetch(`${BRIEF_CFG.apiBase}/${currentDate}/pdf`);
+            const response = await fetch(`${BRIEF_CFG.apiBase}/${currentDate}/pdf?source=${encodeURIComponent(currentData.source || '')}`);
             if (!response.ok) {
                 let msg = `HTTP ${response.status}`;
                 try {
@@ -1131,8 +1169,6 @@
                     const stageLabel = (s) => {
                         if (!s) return 'Running…';
                         if (BRIEF_CFG.stageLabels[s]) return BRIEF_CFG.stageLabels[s];
-                        if (s === 'ingest' || s === 'step1_fetch') return 'Fetching news';
-                        if (s === 'step4_synthesis') return 'Synthesizing brief';
                         return s.replace(/_/g, ' ');
                     };
                     const statusLabel = st === 'running'
@@ -1147,7 +1183,7 @@
                     return `
                         <div class="date-item ${st}${currentDate === item.date ? ' active' : ''}" onclick="loadBrief('${item.date}', '${st}')">
                             <div class="date-item-date">${dateStr}${isToday ? ' <span class="date-item-today-badge">TODAY</span>' : ''}</div>
-                            <div class="date-item-meta">${dayName}</div>
+                            <div class="date-item-meta">${dayName}${(item.sources || []).map(s => sourceBadge(s)).join('')}${(item.losers_sources || []).length ? '<span class="brief-source-badge losers" title="R1D losers brief">L</span>' : ''}</div>
                             <div class="date-item-status ${st}">${statusLabel}</div>
                         </div>
                     `;
@@ -1174,6 +1210,7 @@
     }
 
     async function loadBrief(dateStr, status) {
+        if (dateStr !== currentDate) currentSource = null;
         currentDate = dateStr;
         currentRunStatus = status || 'complete';
         const contentEl = document.getElementById('brief-content');
@@ -1194,7 +1231,8 @@
         contentEl.innerHTML = '<div class="loading">Loading...</div>';
 
         try {
-            const response = await fetch(`${BRIEF_CFG.apiBase}/${dateStr}`);
+            const qs = currentSource ? `?source=${encodeURIComponent(currentSource)}` : '';
+            const response = await fetch(`${BRIEF_CFG.apiBase}/${dateStr}${qs}`);
             if (!response.ok && response.status !== 404) {
                 throw new Error(`HTTP ${response.status}`);
             }
@@ -1206,6 +1244,7 @@
                 currentData = { date: dateStr, status: status };
                 currentLosersRunStatus = 'empty';
             }
+            renderSourceToggle();
 
             updateLosersButton();
             if (currentLosersRunStatus === 'running') {
@@ -1243,7 +1282,7 @@
 
             if (!currentData.markdown && (currentRunStatus === 'ready' || currentData.has_source)) {
                 showMainPlaceholder(`<div class="generate-prompt">
-                    <p>Brief not yet generated. Source news data is on disk.</p>
+                    <p>Brief not yet generated. Research for this date is on disk.</p>
                     <button id="btn-generate-inline" onclick="runBrief('${dateStr}')">Generate brief</button>
                 </div>`);
                 updatePdfButton();
@@ -1268,19 +1307,12 @@
         if (!step) return 'Running…';
         const labels = {
             queued: 'Starting pipeline',
-            ingest: 'Fetching Benzinga news',
-            ingest_done: 'Ingest complete',
-            synthesis: 'Writing losers brief (DeepSeek)',
-            step3_fact_extraction: 'Extracting facts (Sonnet)',
-            step4_synthesis: 'Writing brief (Opus)',
             done: 'Complete',
         };
         if (BRIEF_CFG.stageLabels[step]) return BRIEF_CFG.stageLabels[step];
         if (labels[step]) return labels[step];
         return step
             .replace(/^tickers_(\d+)$/, 'Search · tickers $1')
-            .replace(/^step3_/, 'Step 3 · ')
-            .replace(/^step4_/, 'Step 4 · ')
             .replace(/_/g, ' ');
     }
 
@@ -1584,7 +1616,7 @@
             const stage = currentData.losers_run_status?.stage;
             progress = `<p class="losers-run-progress">Pipeline running — ${escapeHtml(formatStepLabel(stage))}. Usually 2–5 minutes.</p>`;
         } else if (currentLosersRunStatus === 'failed' || currentLosersRunStatus === 'error') {
-            progress = `<p class="losers-run-progress">Last run failed. Check <code>user_data/market_brief_losers/${escapeHtml(currentDate || '')}/subprocess.log</code>.</p>`;
+            progress = `<p class="losers-run-progress">Last run failed. Check <code>user_data/market_brief_perplexity_losers/${escapeHtml(currentDate || '')}/subprocess.log</code>.</p>`;
         }
 
         const generateBtn = currentLosersRunStatus !== 'running'
@@ -1594,7 +1626,7 @@
         if (currentData.has_losers_brief && currentData.losers_markdown) {
             return `<div class="losers-brief-section">
                 <hr class="losers-brief-divider">
-                <div class="losers-brief-header">R1D Losers Brief</div>
+                <div class="losers-brief-header">R1D Losers Brief ${sourceBadge(currentData.losers_source)}</div>
                 ${progress}
                 <div class="markdown-body">${simpleMarkdown(currentData.losers_markdown)}</div>
                 ${generateBtn}

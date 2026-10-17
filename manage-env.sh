@@ -162,9 +162,9 @@ case $ACTION in
         "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
         "db_scripts/update_data/revenue_accel_update.py:Compute revenue acceleration"
         # stock_notes is removed; superseded by file-only
-        # abi_ticker_notes.json. Nothing to seed.
+        # app.ticker_notes. Nothing to seed.
         # stock_preferences is removed; superseded by file-only
-        # abi_watchlist.json + abi_dislikes.json. Nothing to seed.
+        # app.watchlist + app.dislikes. Nothing to seed.
         # abi_general_notes is also a file-only store; the JSON IS the data.
     )
 
@@ -452,9 +452,9 @@ case $ACTION in
             "db_scripts/update_data/rs_screener_update.py:Compute relative strength screener"
             "db_scripts/update_data/revenue_accel_update.py:Compute revenue acceleration"
             # stock_notes is removed; superseded by file-only
-            # abi_ticker_notes.json. Nothing to seed.
+            # app.ticker_notes. Nothing to seed.
             # stock_preferences is removed; superseded by file-only
-            # abi_watchlist.json + abi_dislikes.json. Nothing to seed.
+            # app.watchlist + app.dislikes. Nothing to seed.
             # abi_general_notes is also a file-only store; the JSON IS the data.
         )
 

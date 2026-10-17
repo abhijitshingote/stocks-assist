@@ -116,44 +116,41 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 |--------|------|-------|
 | GET | `/api/MainView-ByTickers` | `tickers=AAPL,MSFT` (comma-separated) |
 
-### News (Benzinga / external)
+### News (external)
 
 | Method | Path | Notes |
 |--------|------|-------|
-| GET | `/api/benzinga-news/<ticker>` | Cached `benzinga_articles` |
-| POST | `/api/benzinga-news/<ticker>` | Refresh from Polygon |
-| GET/POST | `/api/benzinga-news/market` | Market-wide Benzinga |
 | GET | `/api/market-news/fmp` | FMP general news |
 | GET | `/api/market-news/seeking-alpha` | SA RSS |
 
-### User data (`user_data/*.json`)
+### User data (Postgres `app` schema, `app_store.user`)
 
-| Method | Path | File |
+| Method | Path | Table |
 |--------|------|------|
-| GET/POST | `/api/abi-general-notes` | `abi_general_notes.json` |
+| GET/POST | `/api/abi-general-notes` | `app.general_notes` |
 | GET/PUT/DELETE | `/api/abi-general-notes/<note_id>` | |
 | GET | `/api/abi-general-notes/tags` | |
-| GET | `/api/abi-ticker-notes` | `abi_ticker_notes.json` |
+| GET | `/api/abi-ticker-notes` | `app.ticker_notes` |
 | GET/PUT/DELETE | `/api/abi-ticker-notes/<ticker>` | |
 | POST | `/api/abi-ticker-notes/batch-check` | body: `{ "tickers": [...] }` |
-| GET/PUT/DELETE | `/api/abi-chart-notes/<ticker>` | `abi_chart_notes.json`. Body: `{ "notes": ["…"] }`. ≤5 lines × 80 chars. Empty list clears. |
-| GET/PUT | `/api/abi-chart-levels/<ticker>` | `abi_chart_levels.json`. Body: `{ "levels": [123.45] }`. Positive floats, deduped, sorted, ≤20. Empty list clears. |
-| GET/POST | `/api/abi-watchlist` | `abi_watchlist.json` |
+| GET/PUT/DELETE | `/api/abi-chart-notes/<ticker>` | `app.chart_notes`. Body: `{ "notes": ["…"] }`. ≤5 lines × 80 chars. Empty list clears. |
+| GET/PUT | `/api/abi-chart-levels/<ticker>` | `app.chart_levels`. Body: `{ "levels": [123.45] }`. Positive floats, deduped, sorted, ≤20. Empty list clears. |
+| GET/POST | `/api/abi-watchlist` | `app.watchlist` |
 | PUT/DELETE | `/api/abi-watchlist/<ticker>` | |
 | POST | `/api/abi-watchlist/batch-check` | |
 | GET | `/api/abi-watchlist/data` | watchlist + `stock_metrics` join |
-| GET/POST | `/api/abi-dislikes` | `abi_dislikes.json`. POST body: `{ticker, kind?}` (`temporary` default, `permanent`). Temporary sets `expires_at` = now+30d. GET includes `kind`, `expires_at`, `is_active`, `days_left`. |
+| GET/POST | `/api/abi-dislikes` | `app.dislikes`. POST body: `{ticker, kind?}` (`temporary` default, `permanent`). Temporary sets `expires_at` = now+30d. GET includes `kind`, `expires_at`, `is_active`, `days_left`. |
 | GET | `/api/WeeklyReview` | Live union of vsg90/strong/top520/fastrs minus pass/watch/trade. `?include_listed=1` keeps watch/trade rows (`listed: watch\|trade`). |
 | GET | `/api/WeeklyReview-Config` | `cycle`, `cycle_ends`, `WEEKLY_REVIEW_CUTOFFS` (no DB scan). |
-| GET/POST | `/api/abi-passes` | `abi_passes.json`. POST `{ticker, sources?, scope?}`. `scope=weekly` (default): cycle = Sat ET. `scope=daily` (or sources contains `daily`): cycle = current NYSE session, expires next open 9:30 ET. GET `?scope=daily` sets `is_active` for daily-cycle daily passes ∪ weekly-cycle weekly passes. |
+| GET/POST | `/api/abi-passes` | `app.passes`. POST `{ticker, sources?, scope?}`. `scope=weekly` (default): cycle = Sat ET. `scope=daily` (or sources contains `daily`): cycle = current NYSE session, expires next open 9:30 ET. GET `?scope=daily` sets `is_active` for daily-cycle daily passes ∪ weekly-cycle weekly passes. |
 | DELETE | `/api/abi-passes/<ticker>` | |
-| GET/POST | `/api/abi-trades` | `abi_trades.json`. POST `{ticker, side: buy\|short}`. |
+| GET/POST | `/api/abi-trades` | `app.trades`. POST `{ticker, side: buy\|short}`. |
 | DELETE | `/api/abi-trades/<ticker>` | |
 | GET | `/api/abi-trades/data` | trades + `stock_metrics` join |
 | DELETE | `/api/abi-dislikes/<ticker>` | |
 | POST | `/api/abi-dislikes/batch-check` | |
 
-### Daily screener (artifacts under `user_data/daily_screener/<date>/`)
+### Daily screener (published runs in `app.pipeline_runs`, scratch `user_data/daily_screener/<date>/`)
 
 | Method | Path | Notes |
 |--------|------|-------|
@@ -166,17 +163,20 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | GET | `/api/daily-shortlist/themes/dates` | |
 | GET | `/api/daily-shortlist/themes/<date>` | `02a_market_themes.json`, `02b_user_themes.json` |
 
-### Market brief (`user_data/market_brief/<date>/`)
+### Market brief (`app.briefs`; live run state in scratch `status.json`)
 
 | Method | Path | Notes |
 |--------|------|-------|
-| GET | `/api/market-brief/dates` | |
-| GET | `/api/market-brief/<date_str>` | |
-| GET | `/api/market-brief/<date_str>/pdf` | |
-| GET | `/api/market-brief/<date_str>/costs` | `run_costs.json` polling |
-| POST | `/api/market-brief/generate` | Steps 3–4 on existing source |
-| POST | `/api/market-brief/run` | Full pipeline subprocess |
-| POST | `/api/auto-commit` | `auto_commit.sh` on `user_data/` |
+| GET | `/api/market-brief/dates` | Union of `app.briefs` dates, scratch runs, today; `sources`, `losers_sources` per date |
+| GET | `/api/market-brief/<date_str>` | `?source=` (daily), `?losers_source=`; default perplexity |
+| GET | `/api/market-brief/<date_str>/pdf` | `?kind=daily\|losers&source=` |
+| GET | `/api/market-brief/<date_str>/costs` | `?kind=`; scratch `run_costs.json` while running, else `app.briefs.run_costs` |
+| POST | `/api/market-brief/generate` | `market_brief.perplexity_brief`; body `asof`, `skip_research` |
+| POST | `/api/market-brief-losers/generate` | `market_brief.px_losers`; body `asof`, `skip_research` |
+| GET | `/api/market-brief-losers/<date_str>/costs` | |
+| GET | `/api/etf-groups` | `app.etf_groups` |
+| GET/PUT | `/api/themes` | `app.themes` (PUT body: list) |
+| POST | `/api/backup` | `scripts/backup_app.sh` (pg_dump `app` → `backups/app/`) |
 
 ---
 
@@ -201,7 +201,7 @@ Pattern: `GET /api/{Family}-{Bucket}` unless noted.
 | `/fast-rs` | Frozen-weight Fast RS, mcap-adjusted |
 | `/weekly-review` | Live union of the 4 weekly screeners minus pass/watch/trade |
 | `/stock/<ticker>` | Detail + charts |
-| `/themes` | `user_data/themes.json` editor |
+| `/themes` | `app.themes` |
 | `/context`, `/context-2` | Macro context |
 | `/abi-general-notes` | (`/abi-notes` → 301) |
 | `/abi-watchlist`, `/abi-trades`, `/abi-dislikes` | |
@@ -224,7 +224,6 @@ Proxies to backend unless noted. Market-cap path segments use `all|micro|small|m
 | `GET /api/frontend/ratios-ttm/<ticker>` | `/api/ratios-ttm/<ticker>` |
 | `GET /api/frontend/company-profile/<ticker>` | `/api/company-profile/<ticker>` |
 | `GET /api/frontend/stock-news/<ticker>` | `/api/stock-news/<ticker>` |
-| `GET/POST /api/frontend/benzinga-news/...` | `/api/benzinga-news/...` |
 | `GET /api/frontend/market-news/fmp` | `/api/market-news/fmp` |
 | `GET /api/frontend/market-news/seeking-alpha` | `/api/market-news/seeking-alpha` |
 | `GET /api/frontend/latest-date` | `/api/latest_date` |
@@ -249,14 +248,13 @@ Proxies to backend unless noted. Market-cap path segments use `all|micro|small|m
 | `GET /api/frontend/technical-screener/<criterion>/<market_cap>` | `/api/TechnicalScreener-{Criterion}-{Bucket}` (`criterion`: `reversal`) |
 | `GET /api/frontend/rs-screener/<market_cap>` | `/api/rs-screener/<market_cap>` |
 | `GET /api/frontend/fast-rs/<market_cap>` | `/api/FastRs-{Bucket}` |
-| `GET/PUT /api/frontend/themes` | **`user_data/themes.json`** (frontend only) |
-| `GET /api/frontend/theme-proposals` | `/api/theme-proposals` (**no backend route registered**) |
-| `POST /api/frontend/theme-proposals/apply` | `/api/theme-proposals/apply` (**no backend route**) |
+| `GET/PUT /api/frontend/themes` | `/api/themes` |
+| `GET /api/frontend/etfs` | `/api/etf-groups` |
 | `GET/POST/PUT/DELETE /api/frontend/abi-*` | matching `/api/abi-*` |
 | `GET/POST /api/frontend/daily-shortlist/...` | matching `/api/daily-shortlist/...` |
 | `GET /api/frontend/daily-shortlist/feedback-all` | `/api/daily-shortlist/feedback` |
 | `GET/POST /api/frontend/market-brief/...` | matching `/api/market-brief/...` |
-| `POST /api/frontend/auto-commit` | `/api/auto-commit` |
+| `POST /api/frontend/backup` | `/api/backup` |
 
 ### Frontend-only
 

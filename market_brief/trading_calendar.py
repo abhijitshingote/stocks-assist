@@ -1,4 +1,4 @@
-"""US equity session calendar for Benzinga ingest windows.
+"""US equity (NYSE) session calendar: brief session dates and news windows.
 
 News ingest is anchored at **5:00 AM America/New_York** on the relevant
 NYSE session day (pre-market through run time), not a rolling 24h UTC window.

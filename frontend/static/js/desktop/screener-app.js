@@ -1137,7 +1137,6 @@ window.DesktopScreener = (function () {
             newsPanel = window.StockNewsShared.createNewsPanel({
                 contentId: 'tpNewsContent',
                 loadBtnId: 'tpLoadNewsBtn',
-                benzingaBtnId: 'tpBenzingaNewsBtn',
                 getTicker: () => selectedTicker,
                 showSnippet: false,
             });

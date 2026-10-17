@@ -1,7 +1,7 @@
 """Search plan + prompts for Market Brief - Px (``perplexity_brief.py``).
 
 Phases: A = narrow broad probes + small ticker batches · B = thread follow-ups planned from A ·
-C = single-ticker gap fills for unexplained movers · compaction → synthesis → eval vs Benzinga.
+C = single-ticker gap fills for unexplained movers · compaction → synthesis → coverage audit → revise.
 """
 
 from __future__ import annotations
@@ -643,62 +643,4 @@ def revise_user(*, draft: str, omissions: str) -> str:
     return (
         f"<draft_brief>\n{draft}\n</draft_brief>\n\n<omissions>\n{omissions}\n</omissions>\n\n"
         "Return the revised brief."
-    )
-
-
-EVAL_ITEMS_SYSTEM = """\
-You extract the material items from a pre-market brief so other briefs can be graded against it.
-
-An item is one story an investor would want to know: a ticker's move with its catalyst, a
-cross-ticker causal link (event → stocks it moved), a macro or geopolitical development, a policy
-action, an analyst action cluster, an upcoming catalyst with a date. Merge minor details into their
-parent item (all PT changes on one stock = one item; one product event = one item). Skip color
-(ceremony details, attendance lists) and the "What to Ignore" section. Aim for 40-60 items.
-
-Tier: major = a story a reader must not miss (leads a thread, a mega-cap or >= 5% move with a
-catalyst, the day's main macro/geopolitical driver, a big deal/CEO change/FDA decision); minor =
-everything else. Expect roughly 10-20 major items.
-
-Output one item per line, nothing else:
-I01 | major | Section | Item (with its key number / name / date)
-"""
-
-EVAL_SYSTEM = """\
-You grade a candidate pre-market brief (TEST) against a fixed list of items extracted from a
-reference brief (BASELINE) written from a different news source for the same date. The goal: TEST
-must not miss the material nuance in BASELINE. Extra material in TEST is fine.
-
-Grade the qualitative content: is the story there, is the move attributed to the same cause, and
-is the nuance there (who did what, why it matters, the causal chain to other stocks, the named
-source or official). Ignore numeric differences that come from snapshot timing or source choice —
-% moves, price levels, odds, yields, EPS decimals, consensus figures. A number difference never
-lowers a grade unless it flips direction (up vs down) or the story itself.
-
-Status:
-- found: story present with the same attribution and its key nuance
-- partial: story present but the attribution, causal link or key qualitative detail is missing
-- missing: story absent
-- misattributed: TEST explains the move or event with a different cause than BASELINE
-- baseline_error: TEST differs because BASELINE is wrong (e.g. a weekday that contradicts the
-  <calendar>)
-
-Output markdown exactly (no score section; it is computed from the table):
-
-## Items
-| ID | Tier | Item | Status | What TEST lacks or says instead |
-|---|---|---|---|---|
-
-One row per item, every item in the list, in list order — including found items (last column
-"—"). Tier is copied from the item list. Status is exactly one lowercase word: found, partial,
-missing, misattributed or baseline_error.
-
-## TEST-only material
-- up to 15 material items in TEST that are not in the item list
-"""
-
-
-def eval_user(*, items: str, test: str, calendar: str) -> str:
-    return (
-        f"{calendar}\n\n<baseline_items>\n{items}\n</baseline_items>\n\n<test>\n{test}\n</test>\n\n"
-        "Grade TEST against the baseline items."
     )

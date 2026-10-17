@@ -67,6 +67,7 @@ def main(argv=None):
     summary = run_pipeline(opts)
     # Persist a small summary file alongside the artifacts.
     io.write_json(io.run_dir(date_str) / "run_summary.json", summary)
+    io.publish_run(date_str)
     print(json.dumps(summary, indent=2))
 
 

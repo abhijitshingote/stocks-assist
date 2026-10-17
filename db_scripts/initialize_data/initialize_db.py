@@ -33,13 +33,13 @@ def initialize_database(reset=False, schema='public'):
     12. ticker_moving_averages - Daily SMA/EMA time series
     13. stock_volspike_gapper - Volume spike and gapper detection
     15. main_view - Combined screener view with metrics, volspike/gapper, and tags
-    16. (was stock_notes; removed. Per-ticker notes now live in file-only
-        user_data/abi_ticker_notes.json. AI research integration removed.)
+    16. (was stock_notes; removed. Per-ticker notes now live in the app schema
+        app.ticker_notes. AI research integration removed.)
     17. (was stock_preferences; removed. The favorite/dislike UX is now
-        served by file-only stores: user_data/abi_watchlist.json and
-        user_data/abi_dislikes.json.)
+        served by app-schema stores: app.watchlist and
+        app.dislikes.)
     18. shares_float - Company share float and liquidity data
-    19. (was abi_general_notes; now file-only at user_data/abi_general_notes.json)
+    19. (was abi_general_notes; now in app.general_notes)
     20. rs_screener - Multi-timeframe relative strength vs SPY
     
     Args:
@@ -67,16 +67,16 @@ def initialize_database(reset=False, schema='public'):
             logger.info("Resetting database - dropping existing tables...")
             # Drop in reverse dependency order
             connection.execute(text("DROP TABLE IF EXISTS rs_screener CASCADE;"))
-            # abi_general_notes is now file-only; drop here so any leftover
+            # abi_general_notes now lives in app.general_notes; drop here so any leftover
             # table from older deployments is cleaned up on --reset.
             connection.execute(text("DROP TABLE IF EXISTS abi_general_notes CASCADE;"))
             connection.execute(text("DROP TABLE IF EXISTS main_view CASCADE;"))
-            # stock_notes is deprecated and now lives in the file-only
-            # user_data/abi_ticker_notes.json store. Keep this DROP so any
+            # stock_notes is deprecated and now lives in the app-schema
+            # app.ticker_notes store. Keep this DROP so any
             # leftover table from older deployments gets cleaned up on --reset.
             connection.execute(text("DROP TABLE IF EXISTS stock_notes CASCADE;"))
-            # stock_preferences is deprecated and now lives in file-only
-            # stores (abi_watchlist.json + abi_dislikes.json). Keep this DROP
+            # stock_preferences is deprecated and now lives in the app schema
+            # stores (app.watchlist + app.dislikes). Keep this DROP
             # so any leftover table from older deployments gets cleaned up
             # on --reset.
             connection.execute(text("DROP TABLE IF EXISTS stock_preferences CASCADE;"))
@@ -448,12 +448,12 @@ def initialize_database(reset=False, schema='public'):
             )
         """))
 
-        # 16. stock_notes — removed. Per-ticker notes are now in file-only
-        # user_data/abi_ticker_notes.json. See backend/app.py.
+        # 16. stock_notes — removed. Per-ticker notes are now in the app schema
+        # app.ticker_notes. See backend/app.py.
 
-        # 17. stock_preferences — removed. Now superseded by file-only
-        # stores: user_data/abi_watchlist.json (favorites) and
-        # user_data/abi_dislikes.json (dislikes). See backend/app.py.
+        # 17. stock_preferences — removed. Now superseded by app-schema
+        # stores: app.watchlist (favorites) and
+        # app.dislikes (dislikes). See backend/app.py.
 
         # 18. shares_float - Company share float and liquidity data
         connection.execute(text(f"""
@@ -468,8 +468,8 @@ def initialize_database(reset=False, schema='public'):
             )
         """))
 
-        # 19. abi_general_notes — removed. Now a file-only store at
-        # user_data/abi_general_notes.json. See backend/app.py for the API.
+        # 19. abi_general_notes — removed. Now in
+        # app.general_notes. See backend/app.py for the API.
 
         # 20. rs_screener - Multi-timeframe relative strength vs SPY
         connection.execute(text(f"""

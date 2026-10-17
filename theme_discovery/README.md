@@ -26,6 +26,6 @@ docker compose exec backend python -m theme_discovery.run --from-stage 3       #
 docker compose exec backend python -m theme_discovery.run --force              # ignore cached news / probe files
 ```
 
-Artifacts `user_data/theme_discovery/<date>/`: `01_candidates.json`, `02_news/<T>.json` + `02_news.json`, `03_synth_pass{1,2}_input.md` / `_response.txt`, `03_themes.json` (pre-confirm), `04_probe/<slug>.json`, `themes.json` (UI SoT), `run_summary.json` (Perplexity + Anthropic cost), `run_costs.json` (Anthropic), `status.json`, `run.log`.
+Working dir `user_data/theme_discovery/<date>/` (scratch, not backed up): `01_candidates.json`, `02_news/<T>.json` + `02_news.json`, `03_synth_pass{1,2}_input.md` / `_response.txt`, `03_themes.json` (pre-confirm), `04_probe/<slug>.json`, `themes.json`, `run_summary.json` (Perplexity + Anthropic cost), `run_costs.json` (Anthropic), `status.json`, `run.log`. On success `themes.json` / `run_summary.json` / `run_costs.json` are published to `app.pipeline_runs` (pipeline `theme_discovery`) — the UI and prior-theme memory read from there.
 
 Theme memory reads every `<run>/themes.json` whose folder name sorts before the current run, so keep run folders date-named.

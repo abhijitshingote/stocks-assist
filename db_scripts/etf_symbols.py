@@ -7,7 +7,7 @@ Single source of truth shared by:
 
 Add new ETFs here so both seeding and daily updates stay in sync. Symbols added
 here that should also surface on the ETFs page must be added to
-`user_data/etfs.json` as well.
+`app.etf_groups` as well.
 """
 
 ETF_SYMBOLS = [

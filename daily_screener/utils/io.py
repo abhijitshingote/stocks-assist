@@ -63,6 +63,16 @@ def read_json_if_exists(path: Path, default: Any = None) -> Any:
     return read_json(path)
 
 
+def publish_run(date_str: str) -> None:
+    """Copy the run's top-level stage JSON (what the UI reads) to app.pipeline_runs."""
+    from app_store import artifacts
+
+    files = {p.name: read_json(p) for p in sorted(run_dir_path(date_str).glob("*.json"))}
+    if files:
+        artifacts.put_run("daily_screener", date_str, files)
+        logger.info("published %d files to app.pipeline_runs[daily_screener/%s]", len(files), date_str)
+
+
 def load_prompt(name: str) -> str:
     """Read a prompt template by basename (without .md)."""
     p = config.PROMPTS_DIR / f"{name}.md"

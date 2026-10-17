@@ -1,4 +1,4 @@
-"""Build R1D losers universe from DB (bottom dr_1 by cap bucket)."""
+"""R1D losers universe from DB (bottom dr_1 by cap bucket) for ``market_brief.px_losers``."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from typing import Any
 from sqlalchemy import asc
 
 from daily_screener.utils.db import get_session
-from market_brief_losers import config
+from market_brief import config
 
 logger = logging.getLogger(__name__)
 
@@ -189,6 +189,7 @@ def _build_lineage(
                 "industry": data.get("industry"),
                 "market_cap": data.get("market_cap"),
                 "company_name": data.get("company_name"),
+                "vol_vs_10d_avg": data.get("vol_vs_10d_avg"),
             }
             for sym, data in sorted(assignments.items())
         },
@@ -205,7 +206,7 @@ def _build_lineage(
 
 
 def render_losers_markdown(slices: list[LosersSlice], lineage: dict[str, Any]) -> str:
-    """Markdown table of R1D bottom names — passed to DeepSeek synthesis."""
+    """Markdown table of R1D bottom names — passed to the losers synthesis."""
     n = lineage.get("unique_tickers", 0)
     lines = [
         "# R1D Losers",
@@ -215,7 +216,7 @@ def render_losers_markdown(slices: list[LosersSlice], lineage: dict[str, Any]) -
         f"large top {config.LOSERS_TOP_N['large']}, "
         f"mid+small top {config.LOSERS_TOP_N['mid_small']}.",
         "",
-        "Bold = |1D| ≥10%. Benzinga pulls are ticker-specific only.",
+        "Bold = |1D| ≥10%.",
         "",
     ]
 
@@ -269,7 +270,7 @@ def render_losers_markdown(slices: list[LosersSlice], lineage: dict[str, Any]) -
 def build_losers_universe(
     asof: str,
 ) -> tuple[list[LosersSlice], dict[str, Any], list[str]]:
-    """Return (slices, lineage, symbols for Benzinga fetch)."""
+    """Return (slices, lineage, sorted symbols)."""
     session = get_session()
     try:
         slices: list[LosersSlice] = []

@@ -17,13 +17,11 @@ rationale, so you can QA exactly why something was — or wasn't — surfaced.
    (DB query)     (rule-based)      (Claude+Pplx)    (~30-60 calls)            (taste-calibrated)      (roll-up)
 ```
 
-Every stage reads JSON in and writes JSON out under
-`user_data/daily_screener/<YYYY-MM-DD>/`, so you can re-run any later stage
-without redoing earlier work. The path lives under `user_data/` because that
-folder is what `auto_commit.sh` backs up to git — daily artifacts survive
-container rebuilds and environment resets. The path is defined once in
-`daily_screener/config.py: OUTPUTS_DIR` and mirrored in
-`backend/app.py: DAILY_SCREENER_OUTPUTS_DIR`.
+Every stage reads JSON in and writes JSON out under the scratch dir
+`user_data/daily_screener/<YYYY-MM-DD>/` (`daily_screener/config.py: OUTPUTS_DIR`),
+so you can re-run any later stage without redoing earlier work. At the end of a
+run the top-level JSON files are published to `app.pipeline_runs`
+(`pipeline='daily_screener'`, `run_key=<date>`); the UI reads only that.
 
 ## Layout
 
@@ -113,7 +111,7 @@ Queries the DB directly (no HTTP) and pulls:
 Applies the existing global liquidity filters (`avg_vol_10d`, `dollar_volume`,
 `current_price`) and drops:
 
-- Tickers in `user_data/abi_dislikes.json` with an active exclude (`kind=permanent`
+- Tickers in `app.dislikes` with an active exclude (`kind=permanent`
   or unexpired `kind=temporary`, drop reason: `user_dislike`). Watchlist
   membership is not a veto.
 - Tickers in the excluded-industry list (default: Biotechnology)
@@ -141,7 +139,7 @@ that's preserved through the audit. Top survivors are capped at
 
 Merges three sources into one weighted theme vector:
 
-1. **Curated** themes from `user_data/themes.json` (your existing list)
+1. **Curated** themes from `app.themes` (your existing list)
 2. **User-taste** themes derived by Claude from your watchlist notes — cached
    by watchlist content hash, only re-extracted when you've edited the list
 3. **Hot market** themes from a single Perplexity call asking what's driving
@@ -185,7 +183,7 @@ Composite score = `momentum*0.4 + news/3*100*0.3 + theme/3*100*0.3`.
 
 Final verdict is the more conservative of (composite-threshold verdict, LLM
 verdict). Explicit dislikes never reach this stage; they are filtered in
-Stage 1 from `user_data/abi_dislikes.json`.
+Stage 1 from `app.dislikes`.
 
 ### 6. Audit (`s6_audit.py`)
 
@@ -205,7 +203,7 @@ descending, so "almost made it" candidates are highest-priority for QA.
 3. Open the **Rejected** tab — look at the top 10 by composite. If any should
    have been PICKs, the rationale tells you exactly why Claude said no.
 4. Click **✎ Feedback** on any row to register a correction (e.g. "this should
-   have been WATCH not PICK"). Saved to `user_data/daily_screener_feedback.json`.
+   have been WATCH not PICK"). Saved to `app.screener_feedback`.
 5. Optionally edit `prompts/judge.md` (or `config.py` weights).
 6. Re-run only stage 5: `python -m daily_screener.run --from-stage 5`. No
    Perplexity cost. The judge sees your corrections and recalibrates.
@@ -215,16 +213,16 @@ descending, so "almost made it" candidates are highest-priority for QA.
 
 The pipeline is calibrated in three layers, listed strongest → weakest:
 
-1. **Veto layer** — anything in `user_data/abi_dislikes.json` is filtered in
+1. **Veto layer** — anything in `app.dislikes` is filtered in
    Stage 1 and never reaches the judge.
 2. **In-context correction layer** — every entry in
-   `user_data/daily_screener_feedback.json` (populated by the **✎ Feedback**
+   `app.screener_feedback` (populated by the **✎ Feedback**
    button on `/daily-shortlist`) shows up in the judge prompt as a concrete
    "you said X, the trader said Y because Z" example. The judge is asked to
    generalize from these on the next run. Controlled by `FEEDBACK_LOOKBACK_DAYS`
    (default 30) and `FEEDBACK_MAX_EXAMPLES` (default 20) in `config.py`.
 3. **Static layer** — `prompts/judge.md`, `config.py` weights, and curated
-   themes (`user_data/themes.json`).
+   themes (`app.themes`).
 
 This is intentionally NOT a model-weights fine-tune — it's the cheap,
 zero-latency version that takes effect on the very next run. If a correction

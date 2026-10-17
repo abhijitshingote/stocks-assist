@@ -1080,7 +1080,6 @@ body.nav-hidden.page-stock-detail .tp-layout {
                     <span class="tp-stack-title"><span>📰</span> News</span>
                     <div class="news-actions-row">
                         <button type="button" class="news-load-btn" id="tpLoadNewsBtn">Load News</button>
-                        <button type="button" class="news-benzinga-btn" id="tpBenzingaNewsBtn">Get Benzinga</button>
                     </div>
                 </div>
                 <div class="tp-stack-body" id="tpNewsStackBody">
@@ -1798,7 +1797,7 @@ function openNotesModalForStock() {
 
 // AI Notes Functions removed: the Perplexity / Claude AI research feature
 // has been deleted along with the stock_notes store. If you want it back,
-// reintroduce as a feature that writes into user_data/abi_ticker_notes.json.
+// reintroduce as a feature that writes into app.ticker_notes.
 
 // ============================================
 // Earnings Data Functions
@@ -2091,7 +2090,7 @@ function formatCompactNumber(num) {
 }
 
 // ============================================
-// News (shared panel + Benzinga)
+// News (shared panel)
 // ============================================
 
 let _stockNewsPanel = null;
@@ -2146,7 +2145,6 @@ document.addEventListener('DOMContentLoaded', function() {
     _stockNewsPanel = window.StockNewsShared.createNewsPanel({
         contentId: 'tpNewsContent',
         loadBtnId: 'tpLoadNewsBtn',
-        benzingaBtnId: 'tpBenzingaNewsBtn',
         getTicker: () => ticker,
         showSnippet: false,
     });

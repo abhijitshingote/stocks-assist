@@ -302,7 +302,7 @@
 <script>
 (function() {
     // ── State ──
-    let THEMES = [];  // Loaded from API (user_data/themes.json)
+    let THEMES = [];  // Loaded from API (app.themes)
     let stockMap = {}; // ticker → stock_metrics row
     let currentSort = 'default';
 
@@ -333,7 +333,7 @@
 
     // ── Data loading ──
     async function loadData() {
-        // First, load themes from user_data/themes.json via API
+        // First, load themes (app.themes) via API
         try {
             const themesResp = await fetch('/api/frontend/themes');
             const themesData = await themesResp.json();
@@ -345,7 +345,7 @@
         }
 
         if (THEMES.length === 0) {
-            document.getElementById('loadingState').innerHTML = '<span>No themes configured. Edit user_data/themes.json to add themes.</span>';
+            document.getElementById('loadingState').innerHTML = '<span>No themes configured (app.themes).</span>';
             return;
         }
 

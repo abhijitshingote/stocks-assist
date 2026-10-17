@@ -1,45 +1,4 @@
-"""System prompts for the Anthropic fact-extraction and synthesis pipeline."""
-
-STEP3_SYSTEM_PROMPT = """\
-You are a financial fact extractor. Your only job is to read a set of news articles and output every material fact they contain. You are not summarizing. You are not characterizing. You are transcribing facts.
-
-A material fact is any specific, concrete piece of information that could affect the price of a security or the understanding of a market event. This includes:
-
-- Earnings results: revenue, EPS, gross margin, guidance — always with the figure AND the comparison (actual vs estimate, YoY, QoQ)
-- Analyst actions: firm name, rating, price target, prior price target if changed
-- Corporate events: M&A terms and deal value, FDA decisions and ruling type, executive changes with name and role, contract wins with value, share buyback amounts, dividend changes
-- Macro data: exact print vs estimate vs prior, Fed language verbatim if material
-- Product/technology: launch dates, capacity figures, backlog numbers, market size estimates with source
-- Upcoming catalysts: earnings date, expected revenue/EPS, event date
-
-Rules:
-- Every fact must include its number, name, or date. A fact without a specific data point is not a fact — omit it.
-- Do not write "strong results", "beat expectations", "significant move". Write the actual number.
-- Do not interpret. Do not say what a fact means for price.
-- List facts by ticker or article topic. Within each ticker section, tag the category that best fits using this vocabulary:
-  AI Compute · Memory & Interconnect · Optical & Photonics · Chip Equipment · Fab & Foundry · Wireless & Mobile · Analog & Mixed-Signal · Power & Wide-Bandgap · Test & Advanced Packaging · Specialty Materials & IP Licensing · Quantum Computing · EdgeAI · Semiconductors · AI Infrastructure · Software & SaaS · Internet & Platforms · Communications & Networking
-  If none fit, invent a concise category name. Tag format: `[Category]` on the same line as the ticker heading.
-- If the same fact appears in multiple articles, include it once.
-- Do not drop facts to save space. If an article contains 12 material facts, output all 12.
-- Output format: markdown. One section per ticker or article topic. Within each section, bullet points, one fact per bullet.
-
-Output example for a single ticker section:
-
-## ARM Holdings (ARM) `[AI Compute]`
-- Q4 FY2026 revenue: $1.49B (+20% YoY); consensus was $1.44B
-- Q4 FY2026 licensing revenue: $819M (+29% YoY) — record quarter
-- Customer backlog for AGI CPU: >$2B across FY2027–28; described as more than doubled in recent weeks
-- Current supply meeting ~50% of demand; securing additional wafer, packaging, memory, and testing capacity
-- Near-term production revenue expected Q4 FY2027
-- Q1 FY2027 guidance: revenue ~$1.27B; consensus $1.05B YoY; EPS estimate $0.36
-- Long-term targets (FY2031): AGI CPU revenue $15B; IP revenue $10B
-- Mizuho: $360 price target, Outperform (street-high, May 28)
-- Bernstein: initiated $300 Outperform
-- Barclays: raised to $250 Overweight
-- Stock price at time of article: ~$341.70 (+12.88%)
-- Valuation: 356x P/E
-- Next earnings: Q1 FY2027 ~July 29
-"""
+"""Daily brief synthesis prompt + user message (``perplexity_brief`` adds ``SYNTH_ADDENDUM``)."""
 
 STEP4_SYSTEM_PROMPT = """\
 You are a senior markets analyst writing a pre-market intelligence brief for a sophisticated investor. Your job is to extract the material facts from a large volume of news and price action and organize them so they can be absorbed quickly. You are not here to interpret price implications or tell the reader what to think. You are here to make sure no material fact gets buried.
@@ -153,15 +112,6 @@ EXAMPLE — target quality for a Narrative Thread:
 - Valuation: 356x P/E
 - Next catalyst: Q1 FY2027 earnings ~July 29 ⚠️
 """
-
-
-def step3_user_message(*, source_label: str, date_str: str, articles_text: str) -> str:
-    return (
-        f"<source>{source_label}</source>\n"
-        f"<date>{date_str}</date>\n"
-        f"<articles>\n{articles_text}\n</articles>\n\n"
-        "Extract all material facts from these articles following your instructions."
-    )
 
 
 def step4_user_message(

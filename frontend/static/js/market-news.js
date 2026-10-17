@@ -5,24 +5,13 @@
     'use strict';
 
     // State
-    let activeSource = 'benzinga';
-    let benzingaArticles = [];
+    let activeSource = 'fmp';
     let fmpArticles = [];
     let seekingAlphaArticles = [];
-    let benzingaChannels = [];
-    let benzingaActiveChannel = '';
 
     // Elements
     const tabs = document.querySelectorAll('.news-tab');
     const sections = document.querySelectorAll('.news-source-section');
-    
-    // Benzinga
-    const benzingaSection = document.getElementById('benzingaSection');
-    const benzingaContent = document.getElementById('benzingaContent');
-    const benzingaChannelsEl = document.getElementById('benzingaChannels');
-    const benzingaWindow = document.getElementById('benzingaWindow');
-    const benzingaRefresh = document.getElementById('benzingaRefresh');
-    const benzingaCountEl = document.getElementById('benzingaCount');
     
     // FMP
     const fmpSection = document.getElementById('fmpSection');
@@ -49,10 +38,6 @@
         return escAttr(s);
     }
 
-    function formatChannelLabel(slug) {
-        return String(slug).replace(/_/g, ' ');
-    }
-
     function formatDate(dateStr) {
         if (window.StockNewsShared && window.StockNewsShared.formatAppDateTime) {
             return window.StockNewsShared.formatAppDateTime(dateStr);
@@ -68,18 +53,10 @@
         });
     }
 
-    function formatBenzingaDate(dateStr) {
-        if (window.StockNewsShared && window.StockNewsShared.formatBenzingaDate) {
-            return window.StockNewsShared.formatBenzingaDate(dateStr);
-        }
-        return formatDate(dateStr);
-    }
-
     function getSourceBadgeClass(source) {
         if (source === 'Seeking Alpha') return 'source-sa';
         if (source === 'Yahoo Finance') return 'source-yahoo';
         if (source === 'FMP') return 'source-fmp';
-        if (source === 'Benzinga') return 'source-benzinga';
         return '';
     }
 
@@ -99,127 +76,10 @@
             section.classList.remove('active');
         });
         
-        if (source === 'benzinga') {
-            benzingaSection.classList.add('active');
-        } else if (source === 'fmp') {
+        if (source === 'fmp') {
             fmpSection.classList.add('active');
         } else if (source === 'seeking-alpha') {
             seekingAlphaSection.classList.add('active');
-        }
-    }
-
-    // Benzinga Functions
-    function renderBenzingaChannelChips() {
-        if (!benzingaChannelsEl) return;
-        const chips = ['<button type="button" class="news-filter-chip' +
-            (benzingaActiveChannel === '' ? ' active' : '') +
-            '" data-channel="">All</button>'];
-        for (const ch of benzingaChannels) {
-            const active = ch === benzingaActiveChannel ? ' active' : '';
-            chips.push(
-                '<button type="button" class="news-filter-chip' + active +
-                '" data-channel="' + escAttr(ch) + '">' +
-                escHtml(formatChannelLabel(ch)) + '</button>'
-            );
-        }
-        benzingaChannelsEl.innerHTML = chips.join('');
-    }
-
-    function renderBenzingaArticles() {
-        if (!benzingaContent) return;
-
-        if (benzingaArticles.length === 0) {
-            const hint = benzingaActiveChannel
-                ? 'No articles for channel "' + escHtml(formatChannelLabel(benzingaActiveChannel)) + '"'
-                : 'No Benzinga articles available';
-            benzingaContent.innerHTML = '<div class="news-empty">' + hint + '</div>';
-            if (benzingaCountEl) benzingaCountEl.textContent = '0';
-            return;
-        }
-
-        const listHtml = '<div class="news-list">' + benzingaArticles.map(a => {
-            const date = formatBenzingaDate(a.published_date);
-            const snippet = a.teaser || a.text || '';
-            const channels = (a.channels || []).slice(0, 2).map(c =>
-                '<span class="news-channel-tag">' + escHtml(c) + '</span>'
-            ).join(' ');
-            const tickers = (a.tickers || []).slice(0, 5).map(t => {
-                const sym = String(t).replace(/^X:/i, '').toUpperCase();
-                return '<a href="/stock/' + escAttr(sym) + '" class="news-ticker-tag" ' +
-                    'onclick="event.stopPropagation()">' + escHtml(sym) + '</a>';
-            }).join(' ');
-
-            return (
-                '<div class="news-article" data-benzinga-id="' + escAttr(a.benzinga_id) + '" ' +
-                'role="button" tabindex="0">' +
-                '<div class="news-article-body">' +
-                '<div class="news-article-title">' + escHtml(a.title || 'Untitled') + '</div>' +
-                '<div class="news-article-meta">' +
-                '<span class="news-source-badge source-benzinga">BENZINGA</span>' +
-                (date ? '<span>' + escHtml(date) + '</span>' : '') +
-                channels +
-                tickers +
-                '</div>' +
-                (snippet ? '<div class="news-article-snippet">' + escHtml(snippet) + '</div>' : '') +
-                '</div>' +
-                '</div>'
-            );
-        }).join('') + '</div>';
-
-        benzingaContent.innerHTML = listHtml;
-        if (benzingaCountEl) {
-            benzingaCountEl.textContent = benzingaArticles.length;
-        }
-    }
-
-    async function loadBenzingaNews(opts) {
-        const fromApi = !!(opts && opts.fromApi);
-        const originalLabel = benzingaRefresh ? benzingaRefresh.textContent : '';
-        if (benzingaRefresh) {
-            benzingaRefresh.disabled = true;
-            benzingaRefresh.classList.add('loading');
-            benzingaRefresh.textContent = fromApi ? 'Fetching from API…' : 'Loading…';
-        }
-        if (benzingaContent && benzingaArticles.length === 0) {
-            benzingaContent.innerHTML = '<div class="news-empty">' +
-                (fromApi ? 'Fetching fresh articles from Benzinga API…' : 'Loading…') +
-                '</div>';
-        }
-
-        try {
-            const qs = new URLSearchParams({ limit: '200' });
-            if (benzingaActiveChannel) qs.set('channel', benzingaActiveChannel);
-            const url = '/api/frontend/benzinga-news/market?' + qs.toString();
-            const response = await fetch(url, { method: fromApi ? 'POST' : 'GET' });
-            const data = await response.json();
-            if (data.error) {
-                if (benzingaContent) {
-                    benzingaContent.innerHTML = '<div class="news-empty">Failed to load: ' +
-                        escHtml(data.error) + '</div>';
-                }
-                return;
-            }
-            benzingaArticles = data.articles || [];
-            if (data.channels_available && data.channels_available.length) {
-                benzingaChannels = data.channels_available;
-            }
-            if (benzingaWindow && data.window) {
-                const label = data.window.label || '';
-                benzingaWindow.textContent = label;
-            }
-            renderBenzingaChannelChips();
-            renderBenzingaArticles();
-        } catch (e) {
-            console.error('Benzinga news load failed:', e);
-            if (benzingaContent) {
-                benzingaContent.innerHTML = '<div class="news-empty">Error loading Benzinga news.</div>';
-            }
-        } finally {
-            if (benzingaRefresh) {
-                benzingaRefresh.disabled = false;
-                benzingaRefresh.classList.remove('loading');
-                benzingaRefresh.textContent = originalLabel || 'Refresh from API';
-            }
         }
     }
 
@@ -368,25 +228,6 @@
 
     // Event Handlers
     function onContentClick(e) {
-        // Channel filter chip
-        const chip = e.target.closest('.news-filter-chip[data-channel]');
-        if (chip) {
-            e.preventDefault();
-            benzingaActiveChannel = chip.getAttribute('data-channel') || '';
-            loadBenzingaNews();
-            return;
-        }
-
-        // Benzinga article
-        const benzingaRow = e.target.closest('.news-article[data-benzinga-id]');
-        if (benzingaRow && window.StockNewsShared) {
-            e.preventDefault();
-            const id = benzingaRow.getAttribute('data-benzinga-id');
-            const article = benzingaArticles.find(a => String(a.benzinga_id) === String(id));
-            if (article) window.StockNewsShared.showBenzingaArticle(article);
-            return;
-        }
-
         // FMP or Seeking Alpha article (open URL in new tab)
         const urlRow = e.target.closest('.news-article[data-article-url]');
         if (urlRow) {
@@ -414,18 +255,6 @@
             });
         });
 
-        // Benzinga
-        if (benzingaChannelsEl) {
-            benzingaChannelsEl.addEventListener('click', onContentClick);
-        }
-        if (benzingaContent) {
-            benzingaContent.addEventListener('click', onContentClick);
-            benzingaContent.addEventListener('keydown', onContentKeydown);
-        }
-        if (benzingaRefresh) {
-            benzingaRefresh.addEventListener('click', () => loadBenzingaNews({ fromApi: true }));
-        }
-
         // FMP
         if (fmpContent) {
             fmpContent.addEventListener('click', onContentClick);
@@ -444,8 +273,8 @@
             seekingAlphaRefresh.addEventListener('click', () => loadSeekingAlphaNews());
         }
 
-        // Load initial data (Benzinga only)
-        loadBenzingaNews();
+        loadFmpNews();
+        loadSeekingAlphaNews();
     }
 
     if (document.readyState === 'loading') {

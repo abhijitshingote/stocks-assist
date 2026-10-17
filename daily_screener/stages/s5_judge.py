@@ -22,6 +22,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import Any
 
+from app_store import user as user_store
 from daily_screener import config
 from daily_screener.utils import io
 from daily_screener.utils.comments import load_watchlist_with_notes
@@ -37,7 +38,7 @@ logger = logging.getLogger(__name__)
 def _load_watchlist() -> dict:
     """Return watchlisted tickers joined with their (optional) Abi ticker notes.
 
-    Notes are sourced from ``user_data/abi_ticker_notes.json`` and included only
+    Notes are sourced from ``app.ticker_notes`` and included only
     for tickers on the watchlist.
     """
     return load_watchlist_with_notes()
@@ -48,16 +49,8 @@ def _load_watchlist() -> dict:
 # ---------------------------------------------------------------------------
 
 def _load_feedback() -> dict:
-    """Return {date: {ticker: record}} or {} if missing/invalid."""
-    if not config.DAILY_SCREENER_FEEDBACK_FILE.exists():
-        return {}
-    try:
-        with config.DAILY_SCREENER_FEEDBACK_FILE.open("r") as f:
-            data = json.load(f)
-        return data if isinstance(data, dict) else {}
-    except Exception as e:  # noqa: BLE001
-        logger.warning("[s5] feedback file unreadable: %s", e)
-        return {}
+    """Return {date: {ticker: record}}."""
+    return user_store.load_feedback()
 
 
 def _format_user_corrections(

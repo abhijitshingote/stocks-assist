@@ -512,13 +512,11 @@
                     <div class="nav-row-label">Research</div>
                     <div class="nav-row-links">
                         <a href="/market-brief">Market Brief</a>
-                        <a href="/market-brief-px">Market Brief - Px</a>
                         <a href="/narratives">Narratives</a>
                         <a href="/theme-discovery">Theme Discovery</a>
                         <a href="/context">Context</a>
                         <a href="/context-2">Context-2</a>
                         <a href="/market-news">Market News</a>
-                        <a href="/weekly-recap">Weekly Recap</a>
                         <a href="/etfs">ETFs</a>
                         <a href="/daily-shortlist">Daily Shortlist</a>
                         <a href="/daily-themes">Daily Themes</a>
@@ -534,7 +532,7 @@
                 </div>
             </div>
             <div class="nav-indicators">
-                <button id="autoCommitBtn" class="nav-btn" title="Auto-commit user_data changes">
+                <button id="autoCommitBtn" class="nav-btn" title="Back up app data (pg_dump of the app schema)">
                     <span class="nav-btn-icon" id="autoCommitIcon">💾</span>
                     <span class="nav-btn-label" id="autoCommitLabel">Save</span>
                 </button>
@@ -1161,9 +1159,9 @@
     </script>
 
     <!-- Abi Dislike Modal (shared across pages) -->
-    <!-- Membership in `abi_dislikes.json` hides the ticker from all screeners.
+    <!-- Membership in `app.dislikes` hides the ticker from all screeners.
          kind=temporary expires in 30d; kind=permanent does not. The textarea
-         is optional rationale saved to `abi_ticker_notes.json`. -->
+         is optional rationale saved to `app.ticker_notes`. -->
     <div class="wl-modal-overlay" id="dlModalOverlay">
         <div class="wl-modal dl-theme">
             <div class="wl-modal-title" id="dlModalTitleEl">Block <span class="ticker-hl" id="dlModalTicker"></span> from screeners</div>
@@ -1320,7 +1318,7 @@
             autoCommitLabel.textContent = 'Saving...';
 
             try {
-                const response = await fetch('/api/frontend/auto-commit', {
+                const response = await fetch('/api/frontend/backup', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: '{}'

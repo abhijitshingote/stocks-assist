@@ -2,8 +2,8 @@
 
 Combines three inputs into a daily "theme vector" used by stages 4 and 5:
 
-  1. User-curated themes from `user_data/themes.json`.
-  2. User-taste themes extracted from `user_data/abi_watchlist.json` by Claude.
+  1. User-curated themes from `app.themes`.
+  2. User-taste themes extracted from `app.watchlist` by Claude.
      Cached to 02b_user_themes.json - only re-extracted when the watchlist hash
      changes.
   3. Hot market themes for this week from a single Perplexity scan, cached to
@@ -20,6 +20,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import Any
 
+from app_store import user as user_store
 from daily_screener import config
 from daily_screener.utils import io
 from daily_screener.utils.comments import load_watchlist_with_notes
@@ -34,17 +35,8 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 def _load_curated_themes() -> list[dict[str, Any]]:
-    if not config.THEMES_FILE.exists():
-        return []
-    try:
-        with config.THEMES_FILE.open("r") as f:
-            data = json.load(f)
-    except json.JSONDecodeError:
-        logger.warning("themes.json invalid; skipping curated themes")
-        return []
-
     out = []
-    for entry in data or []:
+    for entry in user_store.load_list(user_store.THEMES):
         name = entry.get("name", "")
         if not name:
             continue
@@ -86,7 +78,7 @@ def _watchlist_hash(wl: dict) -> str:
 def _load_watchlist() -> dict[str, Any]:
     """Return watchlisted tickers joined with their (optional) Abi ticker notes.
 
-    Notes are sourced from ``user_data/abi_ticker_notes.json`` and included only
+    Notes are sourced from ``app.ticker_notes`` and included only
     for tickers on the watchlist (so notes on non-watchlist tickers never reach
     the user-theme extractor).
     """

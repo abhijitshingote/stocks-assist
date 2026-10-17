@@ -6,6 +6,8 @@ from pathlib import Path
 PACKAGE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = PACKAGE_DIR.parent
 PROMPTS_DIR = PACKAGE_DIR / "prompts"
+# Run working dir (scratch); themes.json + run_summary.json are published to
+# app.pipeline_runs (pipeline="theme_discovery").
 OUTPUTS_DIR = PROJECT_ROOT / "user_data" / "theme_discovery"
 
 BACKEND_URL = os.getenv("THEME_DISCOVERY_BACKEND_URL", "http://localhost:5000")

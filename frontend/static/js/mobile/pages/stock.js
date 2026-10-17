@@ -219,14 +219,11 @@
     newsPanel = window.StockNewsShared.createNewsPanel({
       contentId: 'newsContent',
       loadBtnId: 'loadNewsBtn',
-      benzingaBtnId: 'benzingaNewsBtn',
       filterBarId: 'newsFilters',
       showSnippet: false,
       buttonLabels: {
         load: 'Load',
         loadRefresh: 'Reload',
-        benzinga: 'Benzinga',
-        benzingaRefresh: 'Refresh',
       },
       getTicker: () => ticker,
     });

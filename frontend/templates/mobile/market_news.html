@@ -10,15 +10,10 @@
   <div class="utility-body market-news-page">
     <div class="market-news-header">
       <h1>Market News</h1>
-      <p class="market-news-hint">Headlines from multiple sources — tap a card for full text.</p>
+      <p class="market-news-hint">Headlines from FMP and Seeking Alpha — tap a card to open the article.</p>
     </div>
     <div class="news-source-tabs">
-      <button class="news-tab active" data-source="benzinga">
-        <span class="tab-icon">📰</span>
-        <span class="tab-label">Benzinga</span>
-        <span class="tab-count" id="benzingaCount">0</span>
-      </button>
-      <button class="news-tab" data-source="fmp">
+      <button class="news-tab active" data-source="fmp">
         <span class="tab-icon">💼</span>
         <span class="tab-label">FMP</span>
         <span class="tab-count" id="fmpCount">0</span>
@@ -29,17 +24,7 @@
         <span class="tab-count" id="seekingAlphaCount">0</span>
       </button>
     </div>
-    <div class="news-source-section active" id="benzingaSection">
-      <div class="market-news-toolbar">
-        <p class="market-news-window" id="benzingaWindow">Loading…</p>
-        <button type="button" class="news-benzinga-btn" id="benzingaRefresh">Refresh</button>
-      </div>
-      <div id="benzingaChannels" class="news-source-filters"></div>
-      <div id="benzingaContent" class="news-content">
-        <div class="news-empty">Loading Benzinga articles…</div>
-      </div>
-    </div>
-    <div class="news-source-section" id="fmpSection">
+    <div class="news-source-section active" id="fmpSection">
       <div class="market-news-toolbar">
         <p class="market-news-window">General market news from FMP</p>
         <button type="button" class="news-benzinga-btn" id="fmpRefresh">Refresh</button>

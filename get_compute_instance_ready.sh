@@ -129,7 +129,7 @@ if [ -f "$ENV_FILE" ]; then
         # Add new github.com credentials
         echo "https://${GIT_USER_NAME}:${GITHUB_TOKEN}@github.com" >> "$CREDENTIALS_FILE"
         chmod 600 "$CREDENTIALS_FILE"
-        echo "  ✓ GitHub credentials configured for auto_commit.sh"
+        echo "  ✓ GitHub credentials configured (git push from the host)"
     else
         echo "  ⚠ GITHUB_TOKEN not found in .env - git push may require manual authentication"
     fi
@@ -152,18 +152,18 @@ echo "[4/4] Setting up cron jobs..."
 # - 12:00 PM EST (5 PM UTC): ./manage-env.sh prod update
 # - 2:30 PM EST (7:30 PM UTC): ./manage-env.sh prod update
 # - 4:00 PM EST (9 PM UTC): ./manage-env.sh prod update
-# - 5:30 PM EST (10:30 PM UTC): ./auto_commit.sh
+# - 5:30 PM EST (10:30 PM UTC): scripts/backup_app.sh (pg_dump of the app schema → backups/app/)
 # - 6:00 PM EST (11 PM UTC): ./manage-env.sh prod init-zd
 
 CRON_10AM="0 15 * * 1-5 cd $PROJECT_DIR && ./manage-env.sh prod update >> $PROJECT_DIR/logs/cron_update.log 2>&1"
 CRON_12PM="0 17 * * 1-5 cd $PROJECT_DIR && ./manage-env.sh prod update >> $PROJECT_DIR/logs/cron_update.log 2>&1"
 CRON_230PM="30 19 * * 1-5 cd $PROJECT_DIR && ./manage-env.sh prod update >> $PROJECT_DIR/logs/cron_update.log 2>&1"
 CRON_4PM="0 21 * * 1-5 cd $PROJECT_DIR && ./manage-env.sh prod update >> $PROJECT_DIR/logs/cron_update.log 2>&1"
-CRON_AUTOCOMMIT="30 22 * * * $PROJECT_DIR/auto_commit.sh >> $PROJECT_DIR/logs/cron_autocommit.log 2>&1"
+CRON_BACKUP="30 22 * * * cd $PROJECT_DIR && docker-compose -f docker-compose.yml exec -T backend ./scripts/backup_app.sh >> $PROJECT_DIR/logs/cron_backup.log 2>&1"
 CRON_INITZD="0 23 * * * cd $PROJECT_DIR && ./manage-env.sh prod init-zd >> $PROJECT_DIR/logs/cron_initzd.log 2>&1"
 
-# Get existing crontab (or empty if none)
-CURRENT_CRONTAB=$(crontab -l 2>/dev/null || true)
+# Get existing crontab (or empty if none); drop the retired user_data git auto-commit
+CURRENT_CRONTAB=$(crontab -l 2>/dev/null | grep -v 'auto_commit.sh' || true)
 
 # Function to add cron job if it doesn't exist
 add_cron_if_missing() {
@@ -189,7 +189,7 @@ add_cron_if_missing "$CRON_10AM" "prod update at 10:00 AM EST (Mon-Fri)"
 add_cron_if_missing "$CRON_12PM" "prod update at 12:00 PM EST (Mon-Fri)"
 add_cron_if_missing "$CRON_230PM" "prod update at 2:30 PM EST (Mon-Fri)"
 add_cron_if_missing "$CRON_4PM" "prod update at 4:00 PM EST (Mon-Fri)"
-add_cron_if_missing "$CRON_AUTOCOMMIT" "auto commit at 5:30 PM EST (daily)"
+add_cron_if_missing "$CRON_BACKUP" "app schema backup at 5:30 PM EST (daily)"
 add_cron_if_missing "$CRON_INITZD" "prod init-zd at 6:00 PM EST (daily)"
 
 # Remove empty lines and install updated crontab

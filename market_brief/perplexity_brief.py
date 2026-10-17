@@ -1,4 +1,4 @@
-"""Experimental market brief with Perplexity web search as the news source (no Benzinga).
+"""Daily pre-market brief: Postgres hydration + Perplexity web research + Anthropic synthesis.
 
 Hydration comes from Postgres (screener universe + OHLC tape). News comes from Perplexity
 ``sonar-pro`` web search in three phases (plan + prompts in ``px_prompts.py``):
@@ -8,17 +8,16 @@ Hydration comes from Postgres (screener universe + OHLC tape). News comes from P
   C. single-ticker gap fills for movers still without a catalyst
 
 Research is compacted into a deduplicated fact ledger, then synthesized with STEP4_SYSTEM_PROMPT +
-``SYNTH_ADDENDUM`` (length caps, timing rules), audited for ledger omissions and revised so the output is comparable to
-``user_data/market_brief/<date>/02_brief.md``. ``compare_nuance.md`` grades recall vs that brief.
+``SYNTH_ADDENDUM`` (length caps, timing rules), audited for ledger omissions and revised.
+The finished brief is published to ``app.briefs`` (kind ``daily``, source ``perplexity``).
 
 Run inside the backend container:
 
     docker compose exec backend python -m market_brief.perplexity_brief
     docker compose exec backend python -m market_brief.perplexity_brief --dry-run
     docker compose exec backend python -m market_brief.perplexity_brief --skip-research --synth haiku
-    docker compose exec backend python -m market_brief.perplexity_brief --asof 2026-09-17 --compare-only
 
-Artifacts: ``user_data/market_brief_perplexity/<date>/``.
+Working dir: ``user_data/market_brief_perplexity/<date>/``.
 """
 
 from __future__ import annotations
@@ -49,7 +48,6 @@ from market_brief.trading_calendar import ET, prior_session_for_brief
 logger = logging.getLogger(__name__)
 
 OUTPUTS_DIR = config.USER_DATA_DIR / "market_brief_perplexity"
-BASELINE_DIR = config.OUTPUTS_DIR
 
 API_URL = "https://api.perplexity.ai/chat/completions"
 RESEARCH_MODEL = os.getenv("MARKET_BRIEF_PPLX_RESEARCH_MODEL", "sonar-pro")
@@ -69,7 +67,7 @@ ANTHROPIC_SYNTH_MODELS: dict[str, str] = {
     "haiku": os.getenv("MARKET_BRIEF_PPLX_HAIKU_MODEL", "claude-haiku-4-5"),
     "opus": os.getenv("MARKET_BRIEF_OPUS_MODEL", "claude-opus-4-6"),
 }
-# Planner, compaction, eval.
+# Planner, compaction, coverage, verify.
 AUX_MODEL = os.getenv("MARKET_BRIEF_PPLX_AUX_MODEL", ANTHROPIC_SYNTH_MODELS["sonnet"])
 RETRIES = 3
 NO_CATALYST = "No company-specific catalyst found"
@@ -227,7 +225,7 @@ def claude(model: str, system: str, user: str, step: str, tracker: LockedTracker
 
 
 # ---------------------------------------------------------------------------
-# Hydration: ticker universe + verified tape (DB, no Benzinga)
+# Hydration: ticker universe + verified tape (DB)
 # ---------------------------------------------------------------------------
 
 
@@ -244,26 +242,15 @@ def _cap_label(mcap: Any) -> str:
     return "Small"
 
 
-def load_universe(asof: str, outdir: Path, source: str) -> tuple[dict[str, Any], str]:
-    """Return (lineage, overview_md). ``source``: auto | baseline | db."""
-    baseline_tu = BASELINE_DIR / asof / "source" / "ticker_universe"
-    use_baseline = source == "baseline" or (
-        source == "auto" and (baseline_tu / "lineage.json").is_file()
-    )
+def load_universe(asof: str, outdir: Path) -> tuple[dict[str, Any], str]:
+    """Return (lineage, overview_md) from the DB screener universe."""
+    from market_brief.screener_universe import build_screener_universe, render_overview_markdown
+
+    slices, lineage, _ = build_screener_universe(asof)
+    overview = render_overview_markdown(slices, lineage)
+    logger.info("Universe: DB screener (%d tickers)", len(lineage["by_ticker"]))
     dest = outdir / "source" / "ticker_universe"
     dest.mkdir(parents=True, exist_ok=True)
-
-    if use_baseline:
-        lineage = json.loads((baseline_tu / "lineage.json").read_text(encoding="utf-8"))
-        overview = (baseline_tu / "overview.md").read_text(encoding="utf-8")
-        logger.info("Universe: baseline %s (%d tickers)", baseline_tu, len(lineage["by_ticker"]))
-    else:
-        from market_brief.screener_universe import build_screener_universe, render_overview_markdown
-
-        slices, lineage, _ = build_screener_universe(asof)
-        overview = render_overview_markdown(slices, lineage)
-        logger.info("Universe: DB screener (%d tickers)", len(lineage["by_ticker"]))
-
     (dest / "lineage.json").write_text(json.dumps(lineage, indent=2), encoding="utf-8")
     (dest / "overview.md").write_text(overview, encoding="utf-8")
     return lineage, overview
@@ -633,145 +620,22 @@ def run_synthesis(
 
 
 # ---------------------------------------------------------------------------
-# Compare vs Benzinga baseline
+# Publish
 # ---------------------------------------------------------------------------
 
-_ROW_RE = re.compile(r"^\|\s*(?:\*\*)?([A-Z][A-Z0-9.\-]*)(?:\*\*)?\s*\|\s*([^|]*)\|")
 
+def publish(asof: str, kind: str, outdir: Path, *, metadata: dict[str, Any]) -> None:
+    """Copy ``02_brief.md`` + ``run_costs.json`` from the working dir to ``app.briefs``."""
+    from app_store import artifacts
 
-def _top_movers(md: str) -> dict[str, str]:
-    """{ticker: move} from the Top Movers table."""
-    out: dict[str, str] = {}
-    in_section = False
-    for line in md.splitlines():
-        if line.startswith("### "):
-            in_section = "Top Movers" in line
-            continue
-        if in_section and (m := _ROW_RE.match(line)):
-            out[m.group(1)] = m.group(2).strip()
-    return out
-
-
-def _section_titles(md: str, heading: str) -> list[str]:
-    out: list[str] = []
-    in_section = False
-    for line in md.splitlines():
-        if line.startswith("### "):
-            in_section = heading in line
-            continue
-        if in_section and (m := re.match(r"^\*\*(.+?)\*\*\s*`", line)):
-            out.append(m.group(1))
-    return out
-
-
-def compare(asof: str, outdir: Path) -> Path | None:
-    base_path = BASELINE_DIR / asof / "02_brief.md"
-    test_path = outdir / "02_brief.md"
-    if not base_path.is_file() or not test_path.is_file():
-        logger.warning("Compare skipped: need %s and %s", base_path, test_path)
-        return None
-    base_md = base_path.read_text(encoding="utf-8")
-    test_md = test_path.read_text(encoding="utf-8")
-    base, test = _top_movers(base_md), _top_movers(test_md)
-    both = sorted(set(base) & set(test))
-
-    def _sign(s: str) -> str:
-        s = s.strip()
-        return "-" if s.startswith(("-", "−")) else "+" if s.startswith("+") else "?"
-
-    sign_mismatch = [t for t in both if _sign(base[t]) != _sign(test[t])]
-    recall = len(both) / len(base) if base else 0.0
-    lines = [
-        f"# Compare — {asof}",
-        "",
-        f"- Baseline (Benzinga): `{base_path}`",
-        f"- Test (Perplexity): `{test_path}`",
-        "",
-        "## Top Movers",
-        "",
-        f"- Baseline rows: {len(base)} · Test rows: {len(test)} · Overlap: {len(both)} "
-        f"(recall {recall:.0%})",
-        f"- Sign mismatches: {', '.join(sign_mismatch) or 'none'}",
-        f"- Only in baseline: {', '.join(sorted(set(base) - set(test))) or 'none'}",
-        f"- Only in test: {', '.join(sorted(set(test) - set(base))) or 'none'}",
-        "",
-        "| Ticker | Baseline | Test |",
-        "|---|---|---|",
-    ]
-    for t in sorted(set(base) | set(test)):
-        lines.append(f"| {t} | {base.get(t, '—')} | {test.get(t, '—')} |")
-    lines += [
-        "",
-        "## Narrative Threads",
-        "",
-        "Baseline:",
-        *[f"- {t}" for t in _section_titles(base_md, "Narrative Threads")],
-        "",
-        "Test:",
-        *[f"- {t}" for t in _section_titles(test_md, "Narrative Threads")],
-        "",
-        f"Size: baseline {len(base_md):,} chars · test {len(test_md):,} chars",
-        "",
-    ]
-    path = outdir / "compare.md"
-    path.write_text("\n".join(lines), encoding="utf-8")
-    logger.info("Top Movers overlap %d/%d (recall %.0f%%) → %s", len(both), len(base), recall * 100, path)
-    return path
-
-
-def eval_nuance(asof: str, outdir: Path, tracker: LockedTracker) -> Path | None:
-    """LLM-graded recall of Benzinga brief items in the Px brief → compare_nuance.md.
-
-    Items are extracted once per date (``OUTPUTS_DIR/<date>/eval_items.md``, rebuilt when the
-    Benzinga brief changes) so scores across Px versions share a denominator.
-    """
-    base_path = BASELINE_DIR / asof / "02_brief.md"
-    test_path = outdir / "02_brief.md"
-    if not base_path.is_file() or not test_path.is_file():
-        logger.warning("Nuance eval skipped: need %s and %s", base_path, test_path)
-        return None
-    items_path = OUTPUTS_DIR / asof / "eval_items.md"
-    if not items_path.is_file() or items_path.stat().st_mtime < base_path.stat().st_mtime:
-        items = claude(AUX_MODEL, P.EVAL_ITEMS_SYSTEM, base_path.read_text(encoding="utf-8"),
-                       step="eval_items", tracker=tracker, max_tokens=6000)
-        items_path.parent.mkdir(parents=True, exist_ok=True)
-        items_path.write_text(items.strip() + "\n", encoding="utf-8")
-    text = claude(
-        AUX_MODEL, P.EVAL_SYSTEM,
-        P.eval_user(items=items_path.read_text(encoding="utf-8"),
-                    test=test_path.read_text(encoding="utf-8"), calendar=P.calendar_block(asof)),
-        step="eval_nuance", tracker=tracker, max_tokens=10_000,
+    costs = outdir / "run_costs.json"
+    artifacts.upsert_brief(
+        asof, kind, "perplexity",
+        brief_md=(outdir / "02_brief.md").read_text(encoding="utf-8"),
+        run_costs=json.loads(costs.read_text(encoding="utf-8")) if costs.is_file() else None,
+        metadata=metadata,
     )
-    item_rows = re.findall(r"^(I\d+)\s*\|\s*(major|minor)?", items_path.read_text(encoding="utf-8"),
-                           re.M | re.I)
-    ids = [i for i, _ in item_rows]
-    tiers = {i: (t or "minor").lower() for i, t in item_rows}
-    rows = re.findall(
-        r"^\|\s*(I\d+)\s*\|\s*\**(?:major|minor)\**\s*\|[^|]*\|\s*\**"
-        r"(found|partial|missing|misattributed|baseline_error)\**\s*\|", text, re.M | re.I)
-    graded = {i: (tiers.get(i, "minor"), s.lower()) for i, s in rows}
-    statuses = ("found", "partial", "missing", "misattributed", "baseline_error", "ungraded")
-
-    def _score(sel: list[str]) -> tuple[dict[str, int], float, float]:
-        c = {s: 0 for s in statuses}
-        for i in sel:
-            c[graded.get(i, ("", "ungraded"))[1]] += 1
-        n = len(sel) or 1
-        recall = 100 * (c["found"] + c["baseline_error"] + 0.5 * c["partial"]) / n
-        return c, recall, 100 * (n - c["missing"] - c["ungraded"]) / n
-
-    lines = ["## Score"]
-    for label, sel in (("All", ids), ("Major", [i for i in ids if tiers[i] == "major"])):
-        c, recall, story = _score(sel)
-        lines.append(f"- {label} ({len(sel)}): " + " · ".join(f"{k} {v}" for k, v in c.items() if v)
-                     + f" → recall **{recall:.1f}%** · story coverage **{story:.1f}%**")
-        logger.info("Nuance %s: recall %.1f%% · coverage %.1f%% %s", label, recall, story, c)
-    lines.append("- recall = (found + baseline_error + 0.5 × partial) / N; numbers from snapshot "
-                 "timing are not graded")
-    path = outdir / "compare_nuance.md"
-    path.write_text(f"# Nuance eval — {asof}\n\n" + "\n".join(lines) + f"\n\n{text.strip()}\n",
-                    encoding="utf-8")
-    return path
+    logger.info("Published app.briefs[%s/%s/perplexity]", asof, kind)
 
 
 # ---------------------------------------------------------------------------
@@ -793,13 +657,10 @@ def _setup_logging(outdir: Path, verbose: bool, *, to_file: bool) -> None:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Perplexity-sourced market brief (no Benzinga)")
+    p = argparse.ArgumentParser(description="Daily pre-market brief (Perplexity research)")
     p.add_argument("--asof", "--date", dest="asof", help="YYYY-MM-DD (default: today ET)")
     p.add_argument("--cutoff", help="HH:MM ET news cutoff on the brief date "
                                     "(default: now if today, else 09:00)")
-    p.add_argument("--universe", choices=("db", "baseline", "auto"), default="db",
-                   help="db = own DB screener run (default, decoupled); "
-                        "baseline = copy Benzinga run's lineage.json; auto = baseline if present")
     p.add_argument("--synth", choices=SYNTH_CHOICES, default="opus",
                    help="Synthesis model (STEP4_SYSTEM_PROMPT + Px addendum)")
     p.add_argument("--model", default=RESEARCH_MODEL, help="Perplexity research model")
@@ -812,8 +673,6 @@ def main() -> int:
     p.add_argument("--verify", action="store_true",
                    help="Run fact-check pass after revise (02_verify.json; default off)")
     p.add_argument("--no-verify", action="store_true", help=argparse.SUPPRESS)
-    p.add_argument("--eval", action="store_true",
-                   help="After the run, compare vs Benzinga (compare.md) + LLM grading (compare_nuance.md)")
     p.add_argument("--no-date-filter", action="store_true",
                    help="Drop search_after/before_date_filter (live runs only)")
     p.add_argument("--dry-run", action="store_true",
@@ -821,28 +680,14 @@ def main() -> int:
     p.add_argument("--skip-research", action="store_true", help="Reuse existing 01_research/")
     p.add_argument("--resume-followups", action="store_true",
                    help="Reuse phase A research; rerun phases B/C onward")
-    p.add_argument("--outdir", help="Run directory (default OUTPUTS_DIR/<date>); for A/B slots")
-    p.add_argument("--compare-only", action="store_true", help="Only rebuild compare.md")
-    p.add_argument("--eval-only", action="store_true", help="Only rebuild compare_nuance.md")
     p.add_argument("-v", "--verbose", action="store_true")
     args = p.parse_args()
 
     now = datetime.now(ET)
     asof = args.asof or now.strftime("%Y-%m-%d")
     cutoff = args.cutoff or (now.strftime("%H:%M") if asof == now.strftime("%Y-%m-%d") else "09:00")
-    outdir = Path(args.outdir) if args.outdir else OUTPUTS_DIR / asof
-    _setup_logging(outdir, args.verbose,
-                   to_file=not (args.dry_run or args.compare_only or args.eval_only))
-
-    if args.compare_only:
-        path = compare(asof, outdir)
-        print(path.read_text(encoding="utf-8") if path else "Nothing to compare")
-        return 0
-    if args.eval_only:
-        tracker = LockedTracker.load_or_create(outdir)
-        path = eval_nuance(asof, outdir, tracker)
-        print(path.read_text(encoding="utf-8") if path else "Nothing to compare")
-        return 0
+    outdir = OUTPUTS_DIR / asof
+    _setup_logging(outdir, args.verbose, to_file=not args.dry_run)
 
     try:
         return _run(args, asof, cutoff, outdir)
@@ -857,7 +702,7 @@ def _run(args: argparse.Namespace, asof: str, cutoff: str, outdir: Path) -> int:
     if not args.dry_run:
         status_mod.write_status(outdir, "running", stage="hydrate")
 
-    lineage, overview = load_universe(asof, outdir, args.universe)
+    lineage, overview = load_universe(asof, outdir)
     by_ticker = lineage.get("by_ticker") or {}
     tickers = sorted(by_ticker)
     session_date, moves, tape_block = load_tape(asof, tickers)
@@ -901,7 +746,7 @@ def _run(args: argparse.Namespace, asof: str, cutoff: str, outdir: Path) -> int:
             raise FileNotFoundError(f"No research at {research_dir} — run without --skip-research")
         tracker = LockedTracker.load_or_create(outdir)
         tracker.calls = [c for c in tracker.calls
-                         if not c.step.startswith(("synthesis_", "compact_", "eval_", "coverage", "revise_"))]
+                         if not c.step.startswith(("synthesis_", "compact_", "coverage", "revise_", "verify"))]
         if args.resume_followups:
             for f in list(research_dir.glob("b_*")) + list(research_dir.glob("c_*")):
                 f.unlink()
@@ -963,15 +808,12 @@ def _run(args: argparse.Namespace, asof: str, cutoff: str, outdir: Path) -> int:
                   verify=args.verify)
 
     tracker = pplx.tracker
-    compare_path = compare(asof, outdir) if args.eval else None
-    if args.eval:
-        status_mod.write_status(outdir, "running", stage="eval")
-        try:
-            eval_nuance(asof, outdir, tracker)
-        except Exception as e:  # noqa: BLE001
-            logger.warning("Nuance eval failed: %s", e)
     tracker.set_current_step(None)
     tracker.flush()
+    publish(asof, "daily", outdir, metadata={
+        "cutoff": cutoff, "session_date": session_date, "synth": args.synth,
+        "failed_searches": failed,
+    })
     status_mod.write_status(
         outdir, "complete", stage="done",
         extra={
@@ -983,8 +825,6 @@ def _run(args: argparse.Namespace, asof: str, cutoff: str, outdir: Path) -> int:
 
     print(f"\nBrief:   {outdir / '02_brief.md'}")
     print(f"Cost:    ${tracker.total_cost_usd:.4f} across {len(tracker.calls)} calls → run_costs.json")
-    if compare_path:
-        print(f"Compare: {compare_path}")
     return 0
 
 

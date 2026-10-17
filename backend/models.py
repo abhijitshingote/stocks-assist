@@ -493,15 +493,14 @@ class MainView(Base):
 
 
 # 15. StockNotes removed: this feature is deprecated. Per-ticker notes are
-# now served exclusively by the file-only abi_ticker_notes store
-# (user_data/abi_ticker_notes.json). The AI research integration that wrote
+# now served exclusively by app.ticker_notes. The AI research integration that wrote
 # into this table has been removed entirely. Kept the numbering of
 # subsequent sections as-is to avoid churn.
 
 
 # 16. StockPreference removed: this feature is deprecated. The favorite/
-# dislike UX is now served by the file-only abi_watchlist (favorites) and
-# abi_dislikes (dislikes) stores under user_data/. Kept the numbering of
+# dislike UX is now served by app.watchlist (favorites) and
+# app.dislikes (dislikes). Kept the numbering of
 # subsequent sections as-is to avoid churn.
 
 
@@ -529,8 +528,8 @@ class SharesFloat(Base):
     ticker_rel = relationship("Ticker")
 
 
-# 18. AbiGeneralNotes removed: this store is now file-only, backed by
-# user_data/abi_general_notes.json (see backend/app.py for the API).
+# 18. AbiGeneralNotes removed: this store now lives in
+# app.general_notes (see backend/app.py for the API).
 # Kept the numbering of subsequent sections as-is to avoid churn.
 
 
@@ -649,106 +648,3 @@ class RevenueAcceleration(Base):
                        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")))
 
     ticker_rel = relationship("Ticker")
-
-
-# ------------------------------------------------------------
-# 21. BenzingaArticle (Polygon/Massive Benzinga news, per fetch ticker)
-# ------------------------------------------------------------
-class BenzingaArticle(Base):
-    __tablename__ = "benzinga_articles"
-    __table_args__ = (
-        UniqueConstraint("benzinga_id", name="uq_benzinga_articles_benzinga_id"),
-        sa_Index("ix_benzinga_articles_ticker_published", "ticker", "published"),
-    )
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    benzinga_id = Column(BigInteger, nullable=False)
-    ticker = Column(String(20), nullable=False, index=True)
-    title = Column(Text)
-    teaser = Column(Text)
-    body_html = Column(Text)
-    body_text = Column(Text)
-    url = Column(Text)
-    author = Column(String(255))
-    published = Column(DateTime(timezone=True), index=True)
-    last_updated = Column(DateTime(timezone=True))
-    channels = Column(JSONB)
-    tags = Column(JSONB)
-    tickers = Column(JSONB)
-    images = Column(JSONB)
-    fetched_at = Column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-    )
-
-
-# ------------------------------------------------------------
-# 22. NewsDigestRun / NewsDigestItem (weekly news recap)
-# One run = one Sat..Fri week that was fetched, prefiltered, LLM-screened and
-# selected, then written up as a single markdown recap. Items are the sources
-# behind that recap, kept so the UI can link out.
-# ------------------------------------------------------------
-class NewsDigestRun(Base):
-    __tablename__ = "news_digest_runs"
-    __table_args__ = (
-        UniqueConstraint("run_key", name="uq_news_digest_runs_run_key"),
-        sa_Index("ix_news_digest_runs_window_end", "window_end"),
-    )
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    run_key = Column(String(64), nullable=False)
-    window_label = Column(String(32))
-    window_start = Column(DateTime(timezone=True))
-    window_end = Column(DateTime(timezone=True))
-
-    status = Column(String(20), index=True)  # running | complete | failed
-    stage = Column(String(60))
-    error = Column(Text)
-
-    universe_count = Column(Integer)  # after dedupe
-    prefiltered_count = Column(Integer)  # after mechanical rules
-    screened_count = Column(Integer)  # after the Haiku pass
-    selected_count = Column(Integer)  # what went into the recap
-
-    narrative_md = Column(Text)
-    cost_usd = Column(Float)
-    stats = Column(JSONB)
-
-    created_at = Column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-    )
-    updated_at = Column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-        onupdate=lambda: datetime.now(pytz.timezone("US/Eastern")),
-    )
-
-
-class NewsDigestItem(Base):
-    __tablename__ = "news_digest_items"
-    __table_args__ = (
-        UniqueConstraint("run_id", "benzinga_id", name="uq_news_digest_items_run_article"),
-        sa_Index("ix_news_digest_items_run_rank", "run_id", "rank"),
-    )
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    run_id = Column(Integer, ForeignKey("news_digest_runs.id", ondelete="CASCADE"), index=True)
-    benzinga_id = Column(BigInteger, nullable=False, index=True)
-
-    rank = Column(Integer)  # 1 = most significant
-    score = Column(Integer)
-    why = Column(Text)  # terse select-stage justification
-
-    title = Column(Text)
-    tickers = Column(JSONB)
-    dup_ids = Column(JSONB)  # collapsed restatements of the same headline
-    url = Column(Text)
-    published = Column(DateTime(timezone=True), index=True)
-
-    created_at = Column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(pytz.timezone("US/Eastern")),
-    )
-
-    run = relationship("NewsDigestRun")

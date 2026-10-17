@@ -10,6 +10,7 @@ from pathlib import Path
 
 from sqlalchemy import create_engine, text
 
+from app_store import artifacts
 from daily_screener.utils.claude import extract_json
 from daily_screener.utils.io import read_json_if_exists, write_json
 from daily_screener.utils.perplexity import call_perplexity
@@ -105,16 +106,14 @@ def _stock_block(c: dict, n: dict) -> str:
 
 
 def load_prior_themes(current_run: str) -> dict[str, dict]:
-    """Themes from the last PRIOR_RUNS runs before current_run, keyed by lowercased name."""
-    if not config.OUTPUTS_DIR.is_dir():
-        return {}
+    """Themes from the last PRIOR_RUNS published runs before current_run, keyed by lowercased name."""
     runs = sorted(
-        d.name for d in config.OUTPUTS_DIR.iterdir()
-        if d.is_dir() and d.name < current_run and (d / "themes.json").is_file()
+        r["run_key"] for r in artifacts.list_runs("theme_discovery")
+        if r["run_key"] < current_run and "themes.json" in r["file_names"]
     )[-config.PRIOR_RUNS:]
     prior: dict[str, dict] = {}
     for run in runs:
-        data = read_json_if_exists(config.OUTPUTS_DIR / run / "themes.json") or {}
+        data = (artifacts.get_run("theme_discovery", run) or {}).get("themes.json") or {}
         for t in data.get("themes") or []:
             key = (t.get("name") or "").strip().lower()
             if not key:

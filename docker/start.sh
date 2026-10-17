@@ -2,7 +2,7 @@
 
 mkdir -p /var/log
 
-# Git setup for auto_commit.sh
+# Git setup for scripts/backup_app.sh (APP_BACKUP_REPO_DIR push)
 git config --global safe.directory /app
 git config --global user.email "auto@stocks-assist"
 git config --global user.name "Auto Commit"

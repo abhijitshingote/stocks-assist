@@ -22,7 +22,6 @@
       newsIds: {
         content: 'newsContent',
         loadBtn: 'loadNewsBtn',
-        benzingaBtn: 'benzingaNewsBtn',
         filterBar: 'newsFilters',
       },
     }, userConfig);
@@ -858,14 +857,11 @@
       newsPanel = window.StockNewsShared.createNewsPanel({
         contentId: ids.content,
         loadBtnId: ids.loadBtn,
-        benzingaBtnId: ids.benzingaBtn,
         filterBarId: ids.filterBar,
         showSnippet: false,
         buttonLabels: {
           load: 'Load',
           loadRefresh: 'Reload',
-          benzinga: 'Benzinga',
-          benzingaRefresh: 'Refresh',
         },
         getTicker: () => selectedTicker,
       });

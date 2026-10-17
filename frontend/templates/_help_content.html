@@ -11,7 +11,7 @@
             <strong>52W badge:</strong> shown when the latest day's high ≥ <code>99.5%</code> of the trailing 252-day max high (server flag <code>at_52w_high</code>).<br>
             <strong>Stock-list row (all screeners):</strong> <code>[★][#][TICKER][52W](mcap) … [1D%]</code>, with page-specific additive metrics on a second line.<br>
             <strong>Biotech exclude:</strong> default-on chip on every screener load (<code>industry === Biotechnology</code>, shared engine). Chip-off is session-only; reload re-applies the default.<br>
-            <strong>Ticker exclude:</strong> <code>abi_dislikes.json</code> membership. <code>kind=permanent</code> or <code>kind=temporary</code> (<code>expires_at</code> = add + 30d). Applied in backend screener queries + daily_screener s1. Expired temps are not applied.<br>
+            <strong>Ticker exclude:</strong> <code>app.dislikes</code> membership. <code>kind=permanent</code> or <code>kind=temporary</code> (<code>expires_at</code> = add + 30d). Applied in backend screener queries + daily_screener s1. Expired temps are not applied.<br>
             <strong>VSG event:</strong> one event-day if <code>vol ≥ 3.5× 20d avg</code> and <code>close ≥ prev×1.03</code>, or <code>low &gt; prev×1.05</code>, or <code>close/prev &gt; 1.15</code> (or any combination). <code>last_event_type</code> = <code>volume_spike</code> / <code>gapper</code> / <code>both</code>. <code>last_event_magnitude</code> = vol ratio (always). <code>last_event_return</code> = close/prev−1 (always). Label e.g. <code>+15.0% gap on 6.3x vol</code>. Badge <code>S</code> / <code>G</code> / <code>SG</code>.<br>
             <strong>Weekly review cutoffs</strong> (<code>WEEKLY_REVIEW_CUTOFFS</code> in <code>backend/app.py</code>): <span id="helpWrCutoffs">loading…</span>
         </div>
@@ -52,7 +52,7 @@
 
         <div class="help-card">
             <div class="help-name"><a href="/weekly-review">Weekly Review</a><span class="help-route">/weekly-review</span></div>
-            <div class="help-desc">Live union of VSG 90d + Strong Stocks + Top 5D/20D + Fast RS. Extra row: one tinted pill per source with the native list number (VSG compact event label e.g. <code>+15% 6.3x</code> + date; STR <code>adjusted_ti65</code>; 5/20 <code>dr_5</code>/<code>dr_20</code>; RS <code>rs_score</code>). Color of the pill = source. The 4 source pages share the same Pass / Watch / Buy / Short / Exclude actions and hide the same watchlist / <code>abi_trades.json</code> / current-cycle <code>abi_passes.json</code> set. Default sort = <code>adjusted_ti65</code> desc (nulls last). Toggle: Best rank / Adj TI65 / # sources / 1D / 5D. Cutoffs: <code>WEEKLY_REVIEW_CUTOFFS</code> — see Conventions above (fetched live).</div>
+            <div class="help-desc">Live union of VSG 90d + Strong Stocks + Top 5D/20D + Fast RS. Extra row: one tinted pill per source with the native list number (VSG compact event label e.g. <code>+15% 6.3x</code> + date; STR <code>adjusted_ti65</code>; 5/20 <code>dr_5</code>/<code>dr_20</code>; RS <code>rs_score</code>). Color of the pill = source. The 4 source pages share the same Pass / Watch / Buy / Short / Exclude actions and hide the same watchlist / <code>app.trades</code> / current-cycle <code>app.passes</code> set. Default sort = <code>adjusted_ti65</code> desc (nulls last). Toggle: Best rank / Adj TI65 / # sources / 1D / 5D. Cutoffs: <code>WEEKLY_REVIEW_CUTOFFS</code> — see Conventions above (fetched live).</div>
         </div>
 
         <div class="help-card">
@@ -120,22 +120,22 @@
 
         <div class="help-card">
             <div class="help-name"><a href="/abi-watchlist">Abi Watchlist</a><span class="help-route">/abi-watchlist</span></div>
-            <div class="help-desc">Personal watchlist (<code>user_data/abi_watchlist.json</code>) rendered with the Main View layout and metrics. Members show with a <code>W</code> badge on <code>/weekly-review</code>, <code>/daily-review</code> and the 4 weekly source pages. The <code>− Watch/Trades</code> chip on those pages hides them.</div>
+            <div class="help-desc">Personal watchlist (<code>app.watchlist</code>) rendered with the Main View layout and metrics. Members show with a <code>W</code> badge on <code>/weekly-review</code>, <code>/daily-review</code> and the 4 weekly source pages. The <code>− Watch/Trades</code> chip on those pages hides them.</div>
         </div>
 
         <div class="help-card">
             <div class="help-name"><a href="/abi-trades">Trades</a><span class="help-route">/abi-trades</span></div>
-            <div class="help-desc">Buy/short candidates (<code>abi_trades.json</code>, <code>side=buy|short</code>). Persistent. Shown with a <code>T</code> badge on <code>/weekly-review</code>, <code>/daily-review</code> and the 4 weekly source pages. The <code>− Watch/Trades</code> chip on those pages hides them.</div>
+            <div class="help-desc">Buy/short candidates (<code>app.trades</code>, <code>side=buy|short</code>). Persistent. Shown with a <code>T</code> badge on <code>/weekly-review</code>, <code>/daily-review</code> and the 4 weekly source pages. The <code>− Watch/Trades</code> chip on those pages hides them.</div>
         </div>
 
         <div class="help-card">
             <div class="help-name"><a href="/abi-general-notes">Abi General Notes</a><span class="help-route">/abi-general-notes</span></div>
-            <div class="help-desc">Free-form, date-based personal notes with tags. Independent of any ticker. Per-ticker markdown lives in the Abi ticker notes modal (<code>abi_ticker_notes.json</code>). Short on-chart labels are separate (<code>abi_chart_notes.json</code>) — click the chart identity overlay, ≤5 lines × 80 chars.</div>
+            <div class="help-desc">Free-form, date-based personal notes with tags. Independent of any ticker. Per-ticker markdown lives in the Abi ticker notes modal (<code>app.ticker_notes</code>). Short on-chart labels are separate (<code>app.chart_notes</code>) — click the chart identity overlay, ≤5 lines × 80 chars.</div>
         </div>
 
         <div class="help-card">
             <div class="help-name"><a href="/abi-dislikes">Dislikes</a><span class="help-route">/abi-dislikes</span></div>
-            <div class="help-desc">Global exclude list (<code>abi_dislikes.json</code>). <code>kind=permanent</code> or <code>kind=temporary</code> (30d via <code>expires_at</code>). Applied to all screener queries + daily_screener s1. Optional rationale in ticker notes.</div>
+            <div class="help-desc">Global exclude list (<code>app.dislikes</code>). <code>kind=permanent</code> or <code>kind=temporary</code> (30d via <code>expires_at</code>). Applied to all screener queries + daily_screener s1. Optional rationale in ticker notes.</div>
         </div>
 
         <div class="help-card">
@@ -159,7 +159,7 @@
 
         <div class="help-card">
             <div class="help-name"><a href="/themes">Themes</a><span class="help-route">/themes</span></div>
-            <div class="help-desc">Curated thematic watchlists (<code>user_data/themes.json</code>) shown side-by-side; editable, with backend-suggested discovery proposals.</div>
+            <div class="help-desc">Curated thematic watchlists (<code>app.themes</code>) shown side-by-side; editable, with backend-suggested discovery proposals.</div>
         </div>
     </div>
 
@@ -178,22 +178,17 @@
 
         <div class="help-card">
             <div class="help-name"><a href="/etfs">ETFs</a><span class="help-route">/etfs</span></div>
-            <div class="help-desc">Curated thematic / sub-sector ETF groups with performance across 1D/5D/20D/60D/120D (<code>user_data/etfs.json</code>).</div>
+            <div class="help-desc">Curated thematic / sub-sector ETF groups with performance across 1D/5D/20D/60D/120D (<code>app.etf_groups</code>).</div>
         </div>
 
         <div class="help-card">
             <div class="help-name"><a href="/market-brief">Market Brief</a><span class="help-route">/market-brief</span></div>
-            <div class="help-desc">Daily AI-generated market summary per date, with run cost tracking and PDF export. Includes an R1D losers brief variant.</div>
-        </div>
-
-        <div class="help-card">
-            <div class="help-name"><a href="/market-brief-px">Market Brief - Px</a><span class="help-route">/market-brief-px</span></div>
-            <div class="help-desc">A/B variant of Market Brief: DB screener universe + OHLC tape, Perplexity <code>sonar-pro</code> web search (3 broad + ~6 ticker batches) instead of Benzinga, Sonnet synthesis with the same Step 4 prompt (<code>user_data/market_brief_perplexity/</code>).</div>
+            <div class="help-desc">Pre-market brief per date: DB screener universe + OHLC tape, Perplexity <code>sonar-pro</code> web research, Anthropic synthesis. Below it, the R1D losers brief (bottom <code>dr_1</code> per cap bucket). Stored in <code>app.briefs</code>; dates before 2026-09-23 are Benzinga-sourced (badge <code>BZ</code>, toggle when both exist). Run costs + PDF export.</div>
         </div>
 
         <div class="help-card">
             <div class="help-name"><a href="/market-news">Market News</a><span class="help-route">/market-news</span></div>
-            <div class="help-desc">Aggregated market-wide news from FMP, Seeking Alpha, and Benzinga.</div>
+            <div class="help-desc">Market-wide news from FMP and Seeking Alpha.</div>
         </div>
 
         <div class="help-card">
@@ -203,7 +198,7 @@
 
         <div class="help-card">
             <div class="help-name"><span>Stock Detail</span><span class="help-route">/stock/&lt;ticker&gt;</span></div>
-            <div class="help-desc">Per-ticker deep dive: price chart with event markers, earnings/EPS history, analyst estimates, TTM ratios, company profile, and merged news. Reachable via the nav ticker search. Chart notes (short labels under name/sector, <code>abi_chart_notes.json</code>) are edited by clicking the identity overlay; they stay visible with no extra click. Horizontal support/resistance lines: toggle <code>+ Line</code> in the chart legend (or Shift+click), click to add, click a line to remove; saved per ticker in <code>abi_chart_levels.json</code>.</div>
+            <div class="help-desc">Per-ticker deep dive: price chart with event markers, earnings/EPS history, analyst estimates, TTM ratios, company profile, and merged news. Reachable via the nav ticker search. Chart notes (short labels under name/sector, <code>app.chart_notes</code>) are edited by clicking the identity overlay; they stay visible with no extra click. Horizontal support/resistance lines: toggle <code>+ Line</code> in the chart legend (or Shift+click), click to add, click a line to remove; saved per ticker in <code>app.chart_levels</code>.</div>
         </div>
     </div>
 </div>

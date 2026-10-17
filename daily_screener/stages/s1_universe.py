@@ -10,7 +10,6 @@ Output: outputs/<date>/00_universe.json
 
 from __future__ import annotations
 
-import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,6 +17,7 @@ from typing import Any
 
 from sqlalchemy import asc, desc, func, or_
 
+from app_store import user as user_store
 from daily_screener import config
 from daily_screener.utils import io
 from daily_screener.utils.db import get_session
@@ -207,30 +207,18 @@ def _is_dislike_active(entry: dict) -> bool:
 def _load_dislikes() -> dict[str, str]:
     """Return {TICKER: notes} for active thumbs-down entries.
 
-    The dislikes file is the ONLY source of vetoes. Watchlist membership is
+    app.dislikes is the ONLY source of vetoes. Watchlist membership is
     not a veto.
     kind=temporary is skipped after expires_at.
     """
     if not config.EXCLUDE_DISLIKED_TICKERS:
         return {}
-    if not config.ABI_DISLIKES_FILE.exists():
-        return {}
-    try:
-        with config.ABI_DISLIKES_FILE.open("r") as f:
-            data = json.load(f)
-    except json.JSONDecodeError as e:
-        logger.warning("dislikes file is invalid JSON: %s", e)
-        return {}
-
-    out: dict[str, str] = {}
-    for ticker, entry in (data or {}).items():
-        if isinstance(entry, dict):
-            if not _is_dislike_active(entry):
-                continue
-            out[ticker.upper()] = entry.get("notes", "") or ""
-        else:
-            out[ticker.upper()] = ""
-    return out
+    data = user_store.load_dict(user_store.DISLIKES)
+    return {
+        ticker.upper(): entry.get("notes", "") or ""
+        for ticker, entry in data.items()
+        if _is_dislike_active(entry)
+    }
 
 
 def run(date_str: str | None = None, *, max_tickers: int | None = None) -> dict[str, Any]:

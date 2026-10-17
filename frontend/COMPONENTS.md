@@ -82,7 +82,7 @@
 | **CSS class** | `.wr-disp` / `.disp-buy` / `.disp-short` / `.in-trades` (selected ticker's `abi_trades` side) |
 | **JS** | `DesktopScreener.init({ weeklyDisposition })` in `screener-app.js` |
 | **Used by** | `/weekly-review` (`true`), the 4 source pages (`vsg90` / `strong` / `top520` / `fastrs`), Rev Accel (`revaccel`, weekly scope; not in the Weekly Review union), and Daily Review (`daily`) |
-| **Behavior** | Pass → `abi_passes.json`. Weekly: cycle Sat ET → Friday. Daily (`scope=daily`): current NYSE session → next open 9:30 ET. Buy/Short → `abi_trades.json`; clicking the lit (`.in-trades`) side again DELETEs the trade. Row drops. Source pages also hide current-cycle passes on load. Daily also hides current weekly-cycle passes. Watchlist/trades rows show by default with `W`/`T` badge (Weekly fetches `?include_listed=1`); Watch/Buy/Short tag the row instead of dropping it. `− Watch/Trades` chip (default off, session-only) hides them and restores drop-on-Watch/Buy/Short. |
+| **Behavior** | Pass → `app.passes`. Weekly: cycle Sat ET → Friday. Daily (`scope=daily`): current NYSE session → next open 9:30 ET. Buy/Short → `app.trades`; clicking the lit (`.in-trades`) side again DELETEs the trade. Row drops. Source pages also hide current-cycle passes on load. Daily also hides current weekly-cycle passes. Watchlist/trades rows show by default with `W`/`T` badge (Weekly fetches `?include_listed=1`); Watch/Buy/Short tag the row instead of dropping it. `− Watch/Trades` chip (default off, session-only) hides them and restores drop-on-Watch/Buy/Short. |
 
 ### Why? (copy research prompt)
 | | |
@@ -191,7 +191,7 @@ One layout system for all 15 desktop screener pages: shared shell + `screener.cs
 | **File** | `static/js/stock-chart.js` — `StockChart` class |
 | **CSS** | `.chart-panel`, `.charts-container` in `screener.css` |
 | **Config** | `CHART_CONFIG` constant in `stock-chart.js` |
-| **Chart notes** | Click identity overlay (ticker/name/sector). Gold lines under sector/industry; no click to read. Store: `user_data/abi_chart_notes.json`, ≤5 lines × 80 chars. Separate from Abi ticker notes panel. |
+| **Chart notes** | Click identity overlay (ticker/name/sector). Gold lines under sector/industry; no click to read. Store: `app.chart_notes`, ≤5 lines × 80 chars. Separate from Abi ticker notes panel. |
 | **Chart levels** | Horizontal price lines (`series.createPriceLine`). Legend `+ Line` toggles draw mode (Esc exits); Shift+click works without it. Click plot adds a line, click within 6px of one removes it. Tap via `pointerdown/up` (touch never fires `click`). Store: `user_data/abi_chart_levels.json`, ≤20 per ticker. |
 | **Used by** | All screener pages, `stock.html` detail page |
 
@@ -199,7 +199,7 @@ One layout system for all 15 desktop screener pages: shared shell + `screener.cs
 | | |
 |---|---|
 | **File** | `static/js/stock-news-shared.js` — `StockNewsShared.createNewsPanel()` |
-| **CSS** | `.tp-stack-panel`, `.tp-news-inner`, `.news-load-btn` in `screener.css`; `.benzinga-*` in `benzinga-news.css` |
+| **CSS** | `.tp-stack-panel`, `.tp-news-inner`, `.news-load-btn` in `screener.css`; `.news-*` in `benzinga-news.css` (name is historical; sources are FMP + Yahoo + Seeking Alpha) |
 | **Used by** | All screener pages |
 | **Stack collapse** | `#tpNewsCollapseBtn` toggles `.collapsed` on `#tpNewsStack` |
 
@@ -267,21 +267,14 @@ One layout system for all 15 desktop screener pages: shared shell + `screener.cs
 | **Data** | `/api/frontend/all-stocks`, client filter `market_cap ≥ $100B` |
 | **Layout** | Sector rows × 3 lanes (Down / Nonchalant / Up) on `dr_1`/`dr_5`/`dr_20` vs thresh |
 
-### Weekly Recap
-| | |
-|---|---|
-| **File** | `templates/news_digest.html` |
-| **Route** | `/weekly-recap` |
-| **Data** | `/api/frontend/weekly-recap/*` → backend `news_digest` (`news_digest_runs`) |
-| **Week picker** | Last 12 completed Sat→Fri weeks in ET; Saturday is the close of the week that just finished (`fetch.week_bounds`) |
-
 ### Market Brief Viewer
 | | |
 |---|---|
 | **File** | `templates/market_brief.html` |
-| **Route** | `/market-brief`, `/market-brief-px` |
-| **Config** | `brief_cfg` (Jinja → JS `BRIEF_CFG`): `pageTitle`, `apiBase`, `showLosers`, `pdfPrefix`, `outputDir`, `runEta`, `stageLabels`, `modelLabels`. Unset = Benzinga brief defaults. Px config: `MARKET_BRIEF_PX_CFG` in `frontend/app.py`. |
-| **Status** | Date list + progress banner read `status.json` (`status`, `stage`, `detail`, `error`) and `run_costs.json` via `<apiBase>/<date>/costs` (3s poll while running) |
+| **Route** | `/market-brief` (`/market-brief-px` → 301) |
+| **Config** | `brief_cfg` = `MARKET_BRIEF_CFG` in `frontend/app.py` (Jinja → JS `BRIEF_CFG`): `pageTitle`, `apiBase`, `showLosers`, `pdfPrefix`, `outputDir`, `runEta`, `sourceLabels`, `stageLabels`, `modelLabels` |
+| **Source** | Content from `app.briefs`. `.brief-source-badge` (`PX` / `BZ`, `L` = losers brief) on date items and the losers header; `#brief-source-toggle` (`.view-toggle`, hidden unless the date has 2 sources) reloads with `?source=` |
+| **Status** | Date list + progress banner read the scratch `status.json` (`status`, `stage`, `detail`, `error`) and `run_costs.json` via `<apiBase>/<date>/costs` (3s poll while running); losers via `/api/frontend/market-brief-losers/<date>/costs` |
 
 ### Narratives
 | | |
@@ -290,7 +283,7 @@ One layout system for all 15 desktop screener pages: shared shell + `screener.cs
 | **CSS** | `static/css/narratives.css` (`.nv-*`; mobile overrides under `.nv-mobile`) |
 | **JS** | `static/js/narratives.js` — `Narratives.init({ rootId, mobile })`, shared desktop + mobile |
 | **Route** | `/narratives`, `/m/narratives` |
-| **Data** | `/api/frontend/narratives` → backend `/api/narratives` (latest `user_data/market_narratives/<run>/narratives.json` + `status.json`); Rebuild → `/api/frontend/narratives/generate` |
+| **Data** | `/api/frontend/narratives` → backend `/api/narratives` (latest `app.pipeline_runs` narratives `events.json` + scratch `status.json`); Rebuild → `/api/frontend/narratives/generate` |
 | **Layout** | Backdrop now (top 6 non-dormant by `heat`, sparkline per brief date) · Out of the headlines (impact ≥ 4, not active, not in backdrop) · Viz switch (`?view=` / `localStorage.nvView`): **Timeline** (row per storyline, dot size = intensity, opacity = decay, turning-point labels), **River** (streamgraph, top 16 by weight, gaussian-smoothed), **Comets** (impact bands, tail first→last, head = weight), **Grid** (row × brief heatmap); filter impact ≥ 3/all, sort heat/total/start (Timeline/Grid) · click → detail arc (dated thread titles + leads) |
 
 ### Theme Discovery
@@ -300,7 +293,7 @@ One layout system for all 15 desktop screener pages: shared shell + `screener.cs
 | **CSS** | `static/css/theme_discovery.css` (`.td-*`; mobile overrides under `.td-mobile`) |
 | **JS** | `static/js/theme_discovery.js` — `ThemeDiscovery.init({ rootId, mobile })`, shared desktop + mobile |
 | **Route** | `/theme-discovery`, `/m/theme-discovery` |
-| **Data** | `/api/frontend/theme-discovery?run=` → backend `/api/theme-discovery` (`user_data/theme_discovery/<run>/themes.json` + `run_summary.json`) |
+| **Data** | `/api/frontend/theme-discovery?run=` → backend `/api/theme-discovery` (`app.pipeline_runs` theme_discovery `themes.json` + `run_summary.json`) |
 | **Layout** | Run select · tabs: **Themes** (card per theme: `new` / `returning · first seen` / `1 stock · probe found N up` / `checklist: <layer>` tags, description, stocks table with `screener` / `probe` badge, cap, 1w/1m/3m, why it belongs; unconfirmed one-stock themes listed at the end) · **QA** (candidates with no theme + reason) · **Funnel** (pick rule, pool and picks per screener list, candidates, industry-limit drops). Mobile puts the why text on its own row |
 
 ### Market Brief History
@@ -327,7 +320,7 @@ Every mobile page loads these layers in order:
 | `static/css/mobile/panels.css` | Loading overlay, spinner, news tab, metrics rows, notes modal, tag pills |
 | `static/css/mobile/nav.css` | Nav drawer backdrop, sheet, links, footer, drawer filter strips |
 | `static/css/mobile/benzinga-overrides.css` | Dark-mode overrides for `benzinga-news.css` (must load after it) |
-| `static/css/mobile/pages.css` | Utility-page layouts: master-detail, context charts, logs viewer, market brief, weekly recap, market news, home dashboard |
+| `static/css/mobile/pages.css` | Utility-page layouts: master-detail, context charts, logs viewer, market brief, market news, home dashboard |
 
 Screener pages also prepend `static/css/benzinga-news.css` before the layer stack. Utility pages append `pages.css` after the layer stack. Both handled by `templates/mobile/_mobile_styles.html`.
 
@@ -439,11 +432,9 @@ Screener pages also prepend `static/css/benzinga-news.css` before the layer stac
 | Mega Pulse | `mobile/mega_pulse.html` | `/m/mega-pulse` | `[]` |
 | Context | `mobile/context.html` | `/m/context` | `['charts']` |
 | Context 2 | `mobile/context2.html` | `/m/context-2` | `[]` |
-| Market Brief | `mobile/market_brief.html` | `/m/market-brief` | `[]` |
-| Market Brief - Px | `mobile/market_brief.html` (`brief_cfg` → `window.BRIEF_CFG`) | `/m/market-brief-px` | `[]` |
+| Market Brief | `mobile/market_brief.html` (`brief_cfg` → `window.BRIEF_CFG`; `#sourceToggle` PX/BZ) | `/m/market-brief` | `[]` |
 | Narratives | `mobile/narratives.html` | `/m/narratives` | `[]` |
 | Theme Discovery | `mobile/theme_discovery.html` | `/m/theme-discovery` | `[]` |
-| Weekly Recap | `mobile/weekly_recap.html` | `/m/weekly-recap` | `[]` |
 | Market News | `mobile/market_news.html` | `/m/market-news` | `['news']` |
 | ETFs | `mobile/etfs.html` | `/m/etfs` | `[]` |
 | Daily Shortlist | `mobile/daily_shortlist.html` | `/m/daily-shortlist` | `[]` |

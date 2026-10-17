@@ -428,7 +428,7 @@ def render_overview_markdown(
         f"{raw_n} qualified before dedupe; **{skipped}** lower-priority slots dropped.",
         "",
         "Bold = standout (**1D** ≥10%, **TI65** ≥85, **vol** ≥2.0× avg). "
-        "Benzinga per-ticker pulls use this list only (`source/ticker/<SYM>/`).",
+        "Per-ticker research uses this list only.",
         "",
     ]
 
@@ -487,7 +487,7 @@ def render_overview_markdown(
 def build_screener_universe(
     asof: str,
 ) -> tuple[list[UniverseSlice], dict[str, Any], list[str]]:
-    """Return (exclusive slices, lineage, all symbols for Benzinga fetch)."""
+    """Return (exclusive slices, lineage, all assigned symbols)."""
     session = get_session()
     try:
         raw_slices = _build_raw_slices(session, asof)
@@ -506,7 +506,7 @@ def build_screener_universe(
         assignment_data,
         raw_unique_count=len(raw_symbols),
     )
-    # Benzinga per-ticker pulls: exclusive assigned symbols only (see overview.md).
+    # Per-ticker research: exclusive assigned symbols only (see overview.md).
     fetch_symbols = sorted(assignment_data["assignments"].keys())
     return exclusive_slices, lineage, fetch_symbols
 

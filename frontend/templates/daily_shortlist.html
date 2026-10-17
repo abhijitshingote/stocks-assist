@@ -978,7 +978,7 @@ function renderRow(r) {
     actions.appendChild(wlBtn);
 
     // Notes button (decoupled from watchlist) - opens the Abi ticker notes modal which
-    // saves to abi_ticker_notes.json regardless of watchlist/dislike state.
+    // saves to app.ticker_notes regardless of watchlist/dislike state.
     const cmt = r.ticker_note || {};
     const notesBtn = document.createElement('button');
     const hasNote = !!(cmt.has_ticker_note || (r.watchlist && r.watchlist.notes));

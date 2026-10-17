@@ -38,11 +38,11 @@
       const data = await resp.json();
       if (Array.isArray(data)) groups = data;
     } catch (e) {
-      grid.innerHTML = '<div class="md-empty">Failed to load etfs.json</div>';
+      grid.innerHTML = '<div class="md-empty">Failed to load ETFs</div>';
       return;
     }
     if (!groups.length) {
-      grid.innerHTML = '<div class="md-empty">No ETFs configured. Edit user_data/etfs.json.</div>';
+      grid.innerHTML = '<div class="md-empty">No ETFs configured (app.etf_groups).</div>';
       return;
     }
     const symbols = [];

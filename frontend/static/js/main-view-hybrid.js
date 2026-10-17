@@ -21,7 +21,6 @@
     newsIds: {
       content: 'hybridNewsContent',
       loadBtn: 'hybridLoadNewsBtn',
-      benzingaBtn: 'hybridBenzingaNewsBtn',
       filterBar: 'hybridNewsFilters',
     },
   });

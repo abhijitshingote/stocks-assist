@@ -13,6 +13,7 @@ import sys
 import time
 from datetime import datetime, timezone
 
+from app_store import artifacts
 from daily_screener.utils.io import read_json, today_str, write_json
 from daily_screener.utils.perplexity import USAGE
 from market_brief.cost_tracker import CostTracker
@@ -155,6 +156,11 @@ def main() -> int:
             "total_cost_usd": round((px.get("cost_usd_total") or 0) + tracker.total_cost_usd, 4),
         }
         write_json(outdir / "run_summary.json", summary)
+        artifacts.put_run("theme_discovery", date, {
+            "themes.json": result,
+            "run_summary.json": summary,
+            "run_costs.json": read_json(outdir / "run_costs.json") if (outdir / "run_costs.json").is_file() else None,
+        })
         _status(outdir, status="done", **{k: summary[k] for k in ("candidates", "themes", "qa", "total_cost_usd")})
         logger.info("done: %s", summary)
         return 0

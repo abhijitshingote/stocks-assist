@@ -46,11 +46,11 @@
       const data = await resp.json();
       if (Array.isArray(data)) themes = data;
     } catch (e) {
-      grid.innerHTML = '<div class="md-empty">Failed to load themes.json</div>';
+      grid.innerHTML = '<div class="md-empty">Failed to load themes</div>';
       return;
     }
     if (!themes.length) {
-      grid.innerHTML = '<div class="md-empty">No themes configured. Edit user_data/themes.json.</div>';
+      grid.innerHTML = '<div class="md-empty">No themes configured (app.themes).</div>';
       return;
     }
     const tickers = Array.from(new Set(themes.flatMap(t => t.tickers || [])));

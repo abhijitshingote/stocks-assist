@@ -20,11 +20,13 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from market_brief.config import OUTPUTS_DIR, USER_DATA_DIR
+from app_store import artifacts
+from market_brief.config import USER_DATA_DIR
 
 logger = logging.getLogger(__name__)
 
-PX_OUTPUTS_DIR = USER_DATA_DIR / "market_brief_perplexity"
+# Run working dir (scratch) + global status.json; events.json is published to
+# app.pipeline_runs (pipeline="narratives").
 NARRATIVES_DIR = USER_DATA_DIR / "market_narratives"
 
 WINDOW_DAYS = 120
@@ -96,9 +98,8 @@ def _strip_md(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def parse_brief(path: Path) -> dict[str, Any]:
+def parse_brief(text: str) -> dict[str, Any]:
     """Extract one-liner, Top Movers rows and Narrative Threads (title + lead paragraph)."""
-    text = path.read_text(encoding="utf-8")
     m = ONE_LINER_RE.search(text)
     one_liner = _strip_md(m.group(1)) if m else ""
 
@@ -153,19 +154,15 @@ def parse_brief(path: Path) -> dict[str, Any]:
 
 
 def collect_briefs(window_days: int) -> list[dict[str, Any]]:
-    """One brief per date: Benzinga if it parses, else Px. Oldest → newest."""
+    """One daily brief per date: Benzinga if it parses, else Px. Oldest → newest."""
     by_date: dict[str, dict[str, Any]] = {}
-    for source, root in (("px", PX_OUTPUTS_DIR), ("benzinga", OUTPUTS_DIR)):
-        if not root.is_dir():
+    rows = sorted(artifacts.brief_bodies("daily"), key=lambda r: r["source"] == "benzinga")
+    for r in rows:
+        parsed = parse_brief(r["brief_md"])
+        if not (parsed["threads"] or parsed["movers"]):
             continue
-        for d in root.iterdir():
-            f = d / "02_brief.md"
-            if not (DATE_DIR_RE.match(d.name) and f.is_file()):
-                continue
-            parsed = parse_brief(f)
-            if not (parsed["threads"] or parsed["movers"]):
-                continue
-            by_date[d.name] = {"date": d.name, "source": source, **parsed}
+        source = "px" if r["source"] == "perplexity" else r["source"]
+        by_date[r["date"]] = {"date": r["date"], "source": source, **parsed}
     if not by_date:
         return []
     latest = max(_parse_iso(k) for k in by_date)
@@ -337,6 +334,11 @@ def _finish(outdir: Path, briefs: list[dict[str, Any]], raw: dict[str, Any], cos
     )
     result["cost_usd"] = cost
     (outdir / "events.json").write_text(json.dumps(result, indent=1), encoding="utf-8")
+    costs_path = outdir / "run_costs.json"
+    artifacts.put_run("narratives", outdir.name, {
+        "events.json": result,
+        "run_costs.json": json.loads(costs_path.read_text(encoding="utf-8")) if costs_path.is_file() else None,
+    })
     _write_status(outdir, "done", "done", cost_usd=cost)
     logger.info(
         "%d events (%d llm + %d backfill), cost $%s → %s",

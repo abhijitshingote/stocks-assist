@@ -98,3 +98,6 @@ postgres_data
 
 # price_alerts watcher dedup state (runtime, pruned daily)
 user_data/price_alerts_state.json
+
+# app schema dumps (scripts/backup_app.sh)
+backups/

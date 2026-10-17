@@ -1,7 +1,7 @@
 """Poll live prices for tickers with chart levels and push ntfy alerts when near a level.
 
-Source of alerts: user_data/abi_chart_levels.json ({TICKER: {levels: [...]}}).
-Dedup state:      user_data/price_alerts_state.json ({"TICKER|level": {"date", "price", "fired_at"}}).
+Source of alerts: app.chart_levels ({TICKER: {levels: [...]}}).
+Dedup state:      app.alert_fires ({"TICKER|level": {"date", "price", "fired_at"}}).
 
 Usage:
   python -m price_alerts.watcher              # loop forever
@@ -11,7 +11,6 @@ Usage:
 """
 
 import argparse
-import json
 import logging
 import os
 import time
@@ -21,10 +20,9 @@ import pytz
 import requests
 import yfinance as yf
 
+from app_store import user as user_store
+
 ET = pytz.timezone('America/New_York')
-USER_DATA_DIR = os.environ.get('USER_DATA_DIR', os.path.join(os.path.dirname(__file__), '..', 'user_data'))
-LEVELS_FILE = os.path.join(USER_DATA_DIR, 'abi_chart_levels.json')
-STATE_FILE = os.path.join(USER_DATA_DIR, 'price_alerts_state.json')
 
 NTFY_SERVER = os.environ.get('NTFY_SERVER', 'https://ntfy.sh').rstrip('/')
 NTFY_TOPIC = os.environ.get('NTFY_TOPIC', '')
@@ -38,24 +36,9 @@ MARKET_CLOSE = dtime(16, 0)
 log = logging.getLogger('price_alerts')
 
 
-def load_json(path):
-    try:
-        with open(path) as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {}
-
-
-def save_json(path, data):
-    tmp = f'{path}.tmp'
-    with open(tmp, 'w') as f:
-        json.dump(data, f, indent=2)
-    os.replace(tmp, path)
-
-
 def load_levels():
     out = {}
-    for ticker, entry in load_json(LEVELS_FILE).items():
+    for ticker, entry in user_store.load_dict(user_store.CHART_LEVELS).items():
         levels = entry.get('levels') if isinstance(entry, dict) else None
         if levels:
             out[ticker.upper()] = [float(x) for x in levels]
@@ -116,7 +99,7 @@ def run_once(force=False):
     if missing:
         log.warning('no price for %s', ','.join(missing))
 
-    state = load_json(STATE_FILE)
+    state = user_store.load_dict(user_store.ALERT_FIRES)
     today_iso = today.isoformat()
     state = {k: v for k, v in state.items() if v.get('date') == today_iso}
     fired = 0
@@ -134,7 +117,7 @@ def run_once(force=False):
             notify(f'{ticker} near {level:g}', msg, ticker=ticker)
             state[key] = {'date': today_iso, 'price': price, 'fired_at': now.isoformat()}
             fired += 1
-    save_json(STATE_FILE, state)
+    user_store.save_dict(user_store.ALERT_FIRES, state)
     log.info('checked %d tickers, fired %d', len(prices), fired)
 
 

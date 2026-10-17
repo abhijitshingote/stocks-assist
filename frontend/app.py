@@ -255,11 +255,7 @@ def m_context2():
 
 @app.route('/m/market-brief')
 def m_market_brief():
-    return render_template('mobile/market_brief.html')
-
-@app.route('/m/weekly-recap')
-def m_weekly_recap():
-    return render_template('mobile/weekly_recap.html')
+    return render_template('mobile/market_brief.html', brief_cfg=MARKET_BRIEF_CFG)
 
 @app.route('/m/market-news')
 def m_market_news():
@@ -309,22 +305,13 @@ def etfs_page():
     """ETFs page - thematic / sub-sector ETF performance across timeframes"""
     return render_template('etfs.html')
 
-# User data directory for themes
-USER_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'user_data')
-THEMES_FILE = os.path.join(USER_DATA_DIR, 'themes.json')
-ETFS_FILE = os.path.join(USER_DATA_DIR, 'etfs.json')
-
 @app.route('/api/frontend/etfs', methods=['GET'])
 def api_get_etfs():
-    """Get the curated ETF groups from user_data/etfs.json"""
-    try:
-        if os.path.exists(ETFS_FILE):
-            with open(ETFS_FILE, 'r') as f:
-                return jsonify(json.load(f)), 200
-        return jsonify([]), 200
-    except Exception as e:
-        logger.error(f"Error reading etfs file: {e}")
-        return jsonify({'error': 'Failed to read etfs'}), 500
+    """Proxy: curated ETF groups."""
+    data, status_code = make_backend_request('/api/etf-groups')
+    if data is None:
+        return jsonify({'error': 'Failed to read etfs'}), status_code
+    return jsonify(data), status_code
 
 @app.route('/api/frontend/etf-performance')
 def api_etf_performance():
@@ -337,49 +324,18 @@ def api_etf_performance():
 
 @app.route('/api/frontend/themes', methods=['GET'])
 def api_get_themes():
-    """Get user-defined themes from user_data/themes.json"""
-    try:
-        if os.path.exists(THEMES_FILE):
-            with open(THEMES_FILE, 'r') as f:
-                themes = json.load(f)
-            return jsonify(themes), 200
-        else:
-            return jsonify([]), 200
-    except Exception as e:
-        logger.error(f"Error reading themes file: {e}")
-        return jsonify({'error': 'Failed to read themes'}), 500
+    """Proxy: user-curated themes."""
+    data, status_code = make_backend_request('/api/themes')
+    if data is None:
+        return jsonify({'error': 'Failed to read themes'}), status_code
+    return jsonify(data), status_code
 
 @app.route('/api/frontend/themes', methods=['PUT'])
 def api_save_themes():
-    """Save themes to user_data/themes.json"""
-    try:
-        themes = request.get_json()
-        os.makedirs(USER_DATA_DIR, exist_ok=True)
-        with open(THEMES_FILE, 'w') as f:
-            json.dump(themes, f, indent=2)
-        return jsonify({'status': 'ok'}), 200
-    except Exception as e:
-        logger.error(f"Error saving themes file: {e}")
-        return jsonify({'error': 'Failed to save themes'}), 500
-
-@app.route('/api/frontend/theme-proposals', methods=['GET'])
-def api_get_theme_proposals():
-    """Proxy: theme discovery proposals from backend."""
-    data, status_code = make_backend_request('/api/theme-proposals')
+    """Proxy: replace user-curated themes."""
+    data, status_code = make_backend_request('/api/themes', method='PUT', json_data=request.get_json())
     if data is None:
-        return jsonify({'error': 'Failed to fetch theme proposals'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/theme-proposals/apply', methods=['POST'])
-def api_apply_theme_proposals():
-    """Proxy: apply approved theme proposals to themes.json."""
-    data, status_code = make_backend_request(
-        '/api/theme-proposals/apply',
-        method='POST',
-        json_data=request.get_json() or {},
-    )
-    if data is None:
-        return jsonify({'error': 'Failed to apply theme proposals'}), status_code
+        return jsonify({'error': 'Failed to save themes'}), status_code
     return jsonify(data), status_code
 
 @app.route('/api/frontend/all-stocks/by-tickers')
@@ -750,7 +706,7 @@ def api_rev_accel(market_cap):
 # DB-backed store has been deprecated. Per-ticker notes are now served by
 # the file-only abi_ticker_notes endpoints. The AI research integration
 # (Perplexity / Claude) was removed along with stock_notes; if you want it
-# back, reintroduce it as a feature that writes into abi_ticker_notes.json.
+# back, reintroduce it as a feature that writes into app.ticker_notes.
 
 # Stock Preferences endpoints removed: superseded by file-only
 # abi_watchlist (favorites) and abi_dislikes (dislikes) endpoints elsewhere
@@ -868,53 +824,6 @@ def api_stock_news(ticker):
     data, status_code = make_backend_request(f'/api/stock-news/{ticker}?limit={limit}')
     if data is None:
         return jsonify({'error': 'Failed to fetch stock news'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/benzinga-news/<ticker>', methods=['GET'])
-def api_benzinga_news_get(ticker):
-    """Proxy: cached Benzinga news from database."""
-    limit = request.args.get('limit', 40, type=int)
-    data, status_code = make_backend_request(f'/api/benzinga-news/{ticker}?limit={limit}')
-    if data is None:
-        return jsonify({'error': 'Failed to load Benzinga news'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/benzinga-news/<ticker>', methods=['POST'])
-def api_benzinga_news_refresh(ticker):
-    """Proxy: refresh Benzinga news from API and store in database."""
-    limit = request.args.get('limit', 40, type=int)
-    data, status_code = make_backend_request(
-        f'/api/benzinga-news/{ticker}?limit={limit}',
-        method='POST',
-    )
-    if data is None:
-        return jsonify({'error': 'Failed to refresh Benzinga news'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/benzinga-news/market', methods=['GET'])
-def api_benzinga_market_news():
-    """Proxy: market-wide Benzinga news from database cache."""
-    limit = request.args.get('limit', 200, type=int)
-    channel = request.args.get('channel', '')
-    params = f'limit={limit}'
-    if channel:
-        params += f'&channel={channel}'
-    data, status_code = make_backend_request(f'/api/benzinga-news/market?{params}')
-    if data is None:
-        return jsonify({'error': 'Failed to load market Benzinga news'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/benzinga-news/market', methods=['POST'])
-def api_benzinga_market_news_refresh():
-    """Proxy: fetch fresh market Benzinga news from API and upsert to DB."""
-    limit = request.args.get('limit', 200, type=int)
-    api_limit = request.args.get('api_limit', 100, type=int)
-    data, status_code = make_backend_request(
-        f'/api/benzinga-news/market?limit={limit}&api_limit={api_limit}',
-        method='POST',
-    )
-    if data is None:
-        return jsonify({'error': 'Failed to refresh Benzinga news from API'}), status_code
     return jsonify(data), status_code
 
 @app.route('/api/frontend/market-news/fmp', methods=['GET'])
@@ -1453,59 +1362,46 @@ def market_news_page():
     return render_template('market_news.html')
 
 # ============================================================
-# Weekly Recap — one markdown recap per Sat..Fri week
-# ============================================================
-
-@app.route('/weekly-recap')
-def weekly_recap_page():
-    """Weekly market recap, with past weeks browsable."""
-    return render_template('news_digest.html')
-
-@app.route('/news-digest')
-def news_digest_page_redirect():
-    return redirect('/weekly-recap')
-
-@app.route('/api/frontend/weekly-recap/runs', methods=['GET'])
-def api_weekly_recap_runs():
-    data, status_code = make_backend_request('/api/news-digest/runs')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch weekly recap runs'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/weekly-recap/run/<run_key>', methods=['GET'])
-def api_weekly_recap_run(run_key):
-    data, status_code = make_backend_request(f'/api/news-digest/run/{run_key}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch weekly recap'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/weekly-recap/latest', methods=['GET'])
-def api_weekly_recap_latest():
-    data, status_code = make_backend_request('/api/news-digest/latest')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch latest weekly recap'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/weekly-recap/status', methods=['GET'])
-def api_weekly_recap_status():
-    data, status_code = make_backend_request('/api/news-digest/status')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch weekly recap status'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/weekly-recap/generate', methods=['POST'])
-def api_weekly_recap_generate():
-    json_data = request.get_json() or {}
-    data, status_code = make_backend_request(
-        '/api/news-digest/generate', method='POST', json_data=json_data
-    )
-    if data is None:
-        return jsonify({'error': 'Failed to start weekly recap run'}), status_code
-    return jsonify(data), status_code
-
-# ============================================================
 # Market Brief Endpoints
 # ============================================================
+
+MARKET_BRIEF_CFG = {
+    'pageTitle': 'Market Brief',
+    'apiBase': '/api/frontend/market-brief',
+    'showLosers': True,
+    'pdfPrefix': 'market-brief',
+    'outputDir': 'user_data/market_brief_perplexity',
+    'runEta': '30–35 minutes',
+    'sourceLabels': {'perplexity': 'PX', 'benzinga': 'BZ'},
+    'stageLabels': {
+        'queued': 'Starting',
+        'hydrate': 'Loading universe + tape (DB)',
+        'research': 'Perplexity web search',
+        'plan_threads': 'Planning follow-up searches',
+        'compact': 'Building fact ledger',
+        'compact_macro': 'Fact ledger · macro',
+        'compact_corporate': 'Fact ledger · corporate',
+        'compact_themes': 'Fact ledger · themes',
+        'synthesis_sonnet': 'Writing brief (Sonnet)',
+        'synthesis_haiku': 'Writing brief (Haiku)',
+        'synthesis_opus': 'Writing brief (Opus)',
+        'synthesis_perplexity': 'Writing brief (Perplexity)',
+        'coverage': 'Checking brief for omissions',
+        'revise_opus': 'Revising brief (Opus)',
+        'revise_sonnet': 'Revising brief (Sonnet)',
+        'verify': 'Fact-checking brief',
+    },
+    'modelLabels': {
+        'sonar-pro': 'Perplexity Sonar Pro',
+        'claude-sonnet-4-6': 'Sonnet',
+        'claude-haiku-4-5': 'Haiku',
+        'claude-opus-4-6': 'Opus',
+    },
+}
+
+def _qs() -> str:
+    q = request.query_string.decode()
+    return f'?{q}' if q else ''
 
 @app.route('/market-brief/history')
 def market_brief_history_page():
@@ -1514,8 +1410,16 @@ def market_brief_history_page():
 
 @app.route('/market-brief')
 def market_brief_page():
-    """Market Brief page - daily AI-generated market summary"""
-    return render_template('market_brief.html')
+    """Market Brief — daily pre-market brief + R1D losers brief (app.briefs)."""
+    return render_template('market_brief.html', brief_cfg=MARKET_BRIEF_CFG)
+
+@app.route('/market-brief-px')
+def market_brief_px_page():
+    return redirect('/market-brief', code=301)
+
+@app.route('/m/market-brief-px')
+def m_market_brief_px():
+    return redirect('/m/market-brief', code=301)
 
 @app.route('/api/frontend/market-brief/dates', methods=['GET'])
 def api_market_brief_dates():
@@ -1527,8 +1431,8 @@ def api_market_brief_dates():
 
 @app.route('/api/frontend/market-brief/<date_str>', methods=['GET'])
 def api_market_brief_for_date(date_str):
-    """Proxy endpoint to get market brief for a specific date"""
-    data, status_code = make_backend_request(f'/api/market-brief/{date_str}')
+    """Proxy endpoint to get market brief for a specific date (?source=, ?losers_source=)"""
+    data, status_code = make_backend_request(f'/api/market-brief/{date_str}{_qs()}')
     if data is None:
         return jsonify({'error': 'Failed to fetch market brief'}), status_code
     return jsonify(data), status_code
@@ -1536,16 +1440,16 @@ def api_market_brief_for_date(date_str):
 @app.route('/api/frontend/market-brief/<date_str>/costs', methods=['GET'])
 def api_market_brief_costs(date_str):
     """Proxy endpoint for live run cost polling."""
-    data, status_code = make_backend_request(f'/api/market-brief/{date_str}/costs')
+    data, status_code = make_backend_request(f'/api/market-brief/{date_str}/costs{_qs()}')
     if data is None:
         return jsonify({'error': 'Failed to fetch run costs'}), status_code
     return jsonify(data), status_code
 
 @app.route('/api/frontend/market-brief/<date_str>/pdf', methods=['GET'])
 def api_market_brief_pdf(date_str):
-    """Proxy PDF download from backend."""
+    """Proxy PDF download from backend (?kind=, ?source=)."""
     try:
-        url = f"{BACKEND_URL}/api/market-brief/{date_str}/pdf"
+        url = f"{BACKEND_URL}/api/market-brief/{date_str}/pdf{_qs()}"
         response = requests.get(url, timeout=180)
         if response.status_code >= 400:
             try:
@@ -1565,115 +1469,13 @@ def api_market_brief_pdf(date_str):
 
 @app.route('/api/frontend/market-brief/generate', methods=['POST'])
 def api_market_brief_generate():
-    """Proxy endpoint to run Steps 3–4 pipeline on existing source data."""
+    """Proxy endpoint to start the daily brief pipeline."""
     json_data = request.get_json() or {}
     data, status_code = make_backend_request(
         '/api/market-brief/generate', method='POST', json_data=json_data
     )
     if data is None:
         return jsonify({'error': 'Failed to start market brief pipeline'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/market-brief/run', methods=['POST'])
-def api_market_brief_run():
-    """Proxy endpoint to trigger market brief generation"""
-    json_data = request.get_json() or {}
-    data, status_code = make_backend_request('/api/market-brief/run', method='POST', json_data=json_data)
-    if data is None:
-        return jsonify({'error': 'Failed to start market brief run'}), status_code
-    return jsonify(data), status_code
-
-MARKET_BRIEF_PX_CFG = {
-    'pageTitle': 'Market Brief - Px',
-    'apiBase': '/api/frontend/market-brief-px',
-    'showLosers': False,
-    'pdfPrefix': 'market-brief-px',
-    'outputDir': 'user_data/market_brief_perplexity',
-    'runEta': '10–15 minutes',
-    'stageLabels': {
-        'hydrate': 'Loading universe + tape (DB)',
-        'research': 'Perplexity web search',
-        'plan_threads': 'Planning follow-up searches',
-        'compact': 'Building fact ledger',
-        'compact_macro': 'Fact ledger · macro',
-        'compact_corporate': 'Fact ledger · corporate',
-        'compact_themes': 'Fact ledger · themes',
-        'synthesis_sonnet': 'Writing brief (Sonnet)',
-        'synthesis_haiku': 'Writing brief (Haiku)',
-        'synthesis_opus': 'Writing brief (Opus)',
-        'synthesis_perplexity': 'Writing brief (Perplexity)',
-        'coverage': 'Checking brief for omissions',
-        'revise_opus': 'Revising brief (Opus)',
-        'revise_sonnet': 'Revising brief (Sonnet)',
-        'verify': 'Fact-checking brief',
-        'eval': 'Grading vs Market Brief',
-        'eval_nuance': 'Grading vs Market Brief',
-    },
-    'modelLabels': {
-        'sonar-pro': 'Perplexity Sonar Pro',
-        'claude-sonnet-4-6': 'Sonnet',
-        'claude-haiku-4-5': 'Haiku',
-        'claude-opus-4-6': 'Opus',
-    },
-}
-
-@app.route('/market-brief-px')
-def market_brief_px_page():
-    """Market Brief - Px: Perplexity-sourced brief (A/B vs Benzinga brief)."""
-    return render_template('market_brief.html', brief_cfg=MARKET_BRIEF_PX_CFG)
-
-@app.route('/m/market-brief-px')
-def m_market_brief_px():
-    return render_template('mobile/market_brief.html', brief_cfg=MARKET_BRIEF_PX_CFG)
-
-@app.route('/api/frontend/market-brief-px/dates', methods=['GET'])
-def api_market_brief_px_dates():
-    data, status_code = make_backend_request('/api/market-brief-px/dates')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch Market Brief - Px dates'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/market-brief-px/<date_str>', methods=['GET'])
-def api_market_brief_px_for_date(date_str):
-    data, status_code = make_backend_request(f'/api/market-brief-px/{date_str}')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch Market Brief - Px'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/market-brief-px/<date_str>/costs', methods=['GET'])
-def api_market_brief_px_costs(date_str):
-    data, status_code = make_backend_request(f'/api/market-brief-px/{date_str}/costs')
-    if data is None:
-        return jsonify({'error': 'Failed to fetch run costs'}), status_code
-    return jsonify(data), status_code
-
-@app.route('/api/frontend/market-brief-px/<date_str>/pdf', methods=['GET'])
-def api_market_brief_px_pdf(date_str):
-    try:
-        response = requests.get(f"{BACKEND_URL}/api/market-brief-px/{date_str}/pdf", timeout=180)
-        if response.status_code >= 400:
-            try:
-                msg = response.json().get('error', response.text)
-            except ValueError:
-                msg = response.text or 'PDF export failed'
-            return jsonify({'error': msg}), response.status_code
-        headers = {}
-        cd = response.headers.get('Content-Disposition')
-        if cd:
-            headers['Content-Disposition'] = cd
-        return Response(response.content, mimetype='application/pdf', headers=headers)
-    except requests.RequestException as e:
-        logger.error('PDF proxy error: %s', e)
-        return jsonify({'error': 'Failed to export PDF'}), 500
-
-@app.route('/api/frontend/market-brief-px/generate', methods=['POST'])
-def api_market_brief_px_generate():
-    json_data = request.get_json() or {}
-    data, status_code = make_backend_request(
-        '/api/market-brief-px/generate', method='POST', json_data=json_data
-    )
-    if data is None:
-        return jsonify({'error': 'Failed to start Market Brief - Px'}), status_code
     return jsonify(data), status_code
 
 @app.route('/narratives')
@@ -1736,13 +1538,13 @@ def api_market_brief_losers_costs(date_str):
         return jsonify({'error': 'Failed to fetch losers brief run status'}), status_code
     return jsonify(data), status_code
 
-@app.route('/api/frontend/auto-commit', methods=['POST'])
-def api_auto_commit():
-    """Proxy to backend: run auto_commit.sh for user_data backup."""
+@app.route('/api/frontend/backup', methods=['POST'])
+def api_backup():
+    """Proxy to backend: pg_dump of the app schema (scripts/backup_app.sh)."""
     json_data = request.get_json() or {}
     try:
-        url = f'{BACKEND_URL}/api/auto-commit'
-        r = requests.post(url, json=json_data, timeout=45)
+        url = f'{BACKEND_URL}/api/backup'
+        r = requests.post(url, json=json_data, timeout=150)
         try:
             payload = r.json()
         except ValueError:
@@ -1753,10 +1555,10 @@ def api_auto_commit():
             }
         return jsonify(payload), r.status_code
     except requests.Timeout:
-        logger.error('Auto-commit proxy: backend request timed out')
+        logger.error('Backup proxy: backend request timed out')
         return jsonify({'status': 'error', 'message': 'Backend timed out'}), 504
     except requests.RequestException as e:
-        logger.error('Auto-commit proxy: %s', e)
+        logger.error('Backup proxy: %s', e)
         return jsonify({'status': 'error', 'message': str(e)}), 502
 
 if __name__ == '__main__':

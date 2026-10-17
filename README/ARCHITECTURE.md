@@ -2,22 +2,22 @@
 
 ## Overview
 
-Docker-compose stack: **Postgres** holds market data and pre-computed screener tables; **db_scripts** ingest from FMP and build derivative tables; **backend** (Flask) serves JSON APIs over those tables; **frontend** (Flask + Jinja) proxies to backend and renders pages. **nginx** terminates HTTP/HTTPS and forwards to frontend.
+Docker-compose stack: **Postgres** holds market data and pre-computed screener tables (schema `public`, rebuilt nightly) and user data + published pipeline outputs (schema `app`, see below); **db_scripts** ingest from FMP and build derivative tables; **backend** (Flask) serves JSON APIs over those tables; **frontend** (Flask + Jinja) proxies to backend and renders pages. **nginx** terminates HTTP/HTTPS and forwards to frontend.
 
-Two LLM pipelines run inside the **backend** container as Python modules (not separate services):
+LLM pipelines run inside the **backend** container as Python modules (not separate services). Each works in a scratch dir under `user_data/` and publishes its final output to the `app` schema:
 
-| Module | Purpose | Artifacts |
-|--------|---------|-----------|
-| `daily_screener/` | Momentum + news + judge shortlist | `user_data/daily_screener/<date>/` |
-| `market_brief/` | Pre-market Benzinga brief | `user_data/market_brief/<date>/` |
-| `market_brief/perplexity_brief.py` | A/B brief: Perplexity search replaces Benzinga (`/market-brief-px`) | `user_data/market_brief_perplexity/<date>/` |
-| `theme_discovery/` | Weekly screeners (mid/large/mega) → news per stock → themes (Opus, 2 passes + prior runs' themes) → probe per theme (`/theme-discovery`) | `user_data/theme_discovery/<date>/` |
+| Module | Purpose | Published to |
+|--------|---------|--------------|
+| `daily_screener/` | Momentum + news + judge shortlist | `app.pipeline_runs` (`daily_screener`) |
+| `market_brief/perplexity_brief.py` | Pre-market brief: DB universe + tape → Perplexity research → Sonnet (`/market-brief`) | `app.briefs` (`daily`/`perplexity`) |
+| `market_brief/px_losers.py` | R1D losers brief: bottom `dr_1` per cap bucket → Perplexity ticker research → Sonnet | `app.briefs` (`losers`/`perplexity`) |
+| `market_brief/narratives.py` | What moved markets, across published daily briefs (`/narratives`) | `app.pipeline_runs` (`narratives`) |
+| `theme_discovery/` | Weekly screeners (mid/large/mega) → news per stock → themes (Opus, 2 passes + prior runs' themes) → probe per theme (`/theme-discovery`) | `app.pipeline_runs` (`theme_discovery`) |
 
 ```mermaid
 flowchart TB
   subgraph external [External APIs]
     FMP[FMP]
-    Polygon[Polygon / Benzinga]
     Pplx[Perplexity]
     Anthropic[Anthropic]
   end
@@ -26,7 +26,7 @@ flowchart TB
     init[db_scripts/initialize_data]
     upd[db_scripts/update_data]
     ds[daily_screener.run]
-    mb[market_brief.run_pipeline]
+    mb[market_brief.perplexity_brief / px_losers]
   end
 
   subgraph stack [Docker Compose]
@@ -37,18 +37,16 @@ flowchart TB
   end
 
   FMP --> init & upd
-  Polygon --> mb
   init & upd --> DB
   ds --> DB
   ds --> Pplx & Anthropic
   mb --> DB
-  mb --> Anthropic
+  mb --> Pplx & Anthropic
   BE --> DB
   FE -->|HTTP proxy| BE
   NGX --> FE
-  ds & mb --> UD[user_data/]
-  BE --> UD
-  FE --> UD
+  ds & mb --> UD[user_data/ scratch]
+  BE -->|live run status| UD
 ```
 
 ## Runtime
@@ -58,12 +56,12 @@ flowchart TB
 | `db` | postgres:14 | 5432 | `stocks_db` |
 | `backend` | `docker/backend.Dockerfile` | 5001→5000 | Flask API, batch scripts, LLM pipelines |
 | `frontend` | `docker/frontend.Dockerfile` | 5002→5000 | Flask UI, thin proxy to backend |
-| `price_alerts` | `docker/price_alerts.Dockerfile` | — | `price_alerts/watcher.py`: every `ALERT_POLL_SECONDS` (300) during 9:30–16:00 ET, batch yfinance 1m quotes for tickers in `abi_chart_levels.json`; push to ntfy (`NTFY_TOPIC`) when `\|price - level\| / level <= ALERT_NEAR_PCT` (0.5). Once per level per day. |
+| `price_alerts` | `docker/price_alerts.Dockerfile` | — | `price_alerts/watcher.py`: every `ALERT_POLL_SECONDS` (300) during 9:30–16:00 ET, batch yfinance 1m quotes for tickers in `app.chart_levels`; push to ntfy (`NTFY_TOPIC`) when `\|price - level\| / level <= ALERT_NEAR_PCT` (0.5). Once per level per day (`app.alert_fires`). Mounts `./price_alerts`, `./app_store`. |
 | `nginx` | nginx:alpine | 80, 443 | Reverse proxy → frontend |
 
 - Repo root is bind-mounted into `backend` (`/app`).
-- `frontend` mounts `./frontend`, `./user_data`, `./logs`.
-- Env: `.env` → `DATABASE_URL`, `FMP_API_KEY`, `POLYGON_API_KEY`, `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY`, SMTP, `OLLAMA_BASE_URL`, `NTFY_TOPIC`, `ALERT_CHART_BASE_URL` (ntfy click-through).
+- `frontend` mounts `./frontend`, `./user_data`, `./logs`; it reads no user data itself (everything via backend).
+- Env: `.env` → `DATABASE_URL`, `FMP_API_KEY`, `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY`, SMTP, `NTFY_TOPIC`, `ALERT_CHART_BASE_URL` (ntfy click-through), optional `APP_BACKUP_REPO_DIR`.
 - Ops: `./manage-env.sh prod|dev` (start/stop/init/update/backup). Run scripts via `docker-compose exec backend …`, not on host.
 
 ## Data layer
@@ -84,8 +82,6 @@ Typical daily chain (order matters):
 6. `main_view_update.py` — `main_view` (metrics + volspike/gapper + tags)
 7. Optional: `market_breadth_update.py`, `rs_screener_update.py`, `revenue_accel_update.py`
 
-Benzinga cache: `create_benzinga_articles_table.py`, refreshed from backend/`benzinga_news.py` (Polygon).
-
 ### Key tables (derivative / query-facing)
 
 | Table | Built by | Consumed by |
@@ -96,7 +92,6 @@ Benzinga cache: `create_benzinga_articles_table.py`, refreshed from backend/`ben
 | `ticker_moving_averages` | `ticker_moving_averages_update` | Charts (dma/ema), market breadth |
 | `rs_screener`, `market_breadth` | respective updates | RS / breadth views |
 | `revenue_acceleration` | `revenue_accel_update` (from `earnings`) | `/rev-accel` |
-| `benzinga_articles` | Polygon ingest | Stock news, `market_brief` |
 
 Schema + ORM: `backend/models.py`. Shared DB access pattern in `db_scripts/*` (SQLAlchemy, same `DATABASE_URL`).
 
@@ -106,9 +101,9 @@ Flask app on port 5000 inside container. Responsibilities:
 
 - **Read** pre-computed rows with global filters (`apply_global_exclude_filters`, `apply_global_liquidity_filters`: avg_vol_10d, dollar_volume, price, industry exclusions).
 - **Screener routes** — returns, gapper, volume, main view, technical criteria × market-cap bucket (Micro/Small/Mid/Large/Mega).
-- **Stock detail** — profile, OHLC, earnings, Benzinga news refresh/cache.
-- **User state** — `abi_watchlist`, `abi_dislikes`, general notes, comments (some persisted in DB, some in `user_data/` JSON).
-- **Pipeline control** — spawn subprocesses for `daily_screener.run`, `market_brief.run_pipeline`; serve artifact JSON from `user_data/`.
+- **Stock detail** — profile, OHLC, earnings, news (FMP + Yahoo + Seeking Alpha, fetched live).
+- **User state** — watchlist, dislikes, passes, trades, notes, chart notes/levels, themes, ETF groups: CRUD over `app.*` via `app_store.user`.
+- **Pipeline control** — spawn subprocesses for `daily_screener.run`, `market_brief.perplexity_brief`, `market_brief.px_losers`, `market_brief.narratives`; serve published outputs from `app.briefs` / `app.pipeline_runs`, live run status from the scratch `status.json`.
 
 Heavy computation belongs in **db_scripts**, not here. Backend adds HTTP filtering, formatting, and CRUD for user artifacts.
 
@@ -126,54 +121,49 @@ Notable pages: `/main-view`, `/rev-accel`, `/top-performance`, `/volspike-gapper
 
 ### Daily screener (`daily_screener/`)
 
-Stages (JSON in/out under `user_data/daily_screener/<YYYY-MM-DD>/`):
+Stages (JSON in/out under scratch `user_data/daily_screener/<YYYY-MM-DD>/`; top-level JSON published to `app.pipeline_runs` at the end):
 
-1. **Universe** — DB: top dr_1/5/20 + volspike_gapper; veto active `abi_dislikes.json` (skip expired temps)
+1. **Universe** — DB: top dr_1/5/20 + volspike_gapper; veto active `app.dislikes` (skip expired temps)
 2. **Momentum** — rule score (multi_screen, dr5_atr_norm, trend_alignment, …); threshold in `config.py`
-3. **Themes** — merge `themes.json`, watchlist-derived themes (Claude), hot-market (Perplexity)
+3. **Themes** — merge `app.themes`, watchlist-derived themes (Claude), hot-market (Perplexity)
 4. **News** — Perplexity per ticker
-5. **Judge** — LLM verdict PICK/WATCH/SKIP + feedback from `daily_screener_feedback.json`
+5. **Judge** — LLM verdict PICK/WATCH/SKIP + feedback from `app.screener_feedback`
 6. **Audit** — `05_audit.json` (SoT for UI)
 
 See `daily_screener/README.md` for flags and QA loop.
 
 ### Market brief (`market_brief/`)
 
-1. **Fetch** — Polygon/Benzinga → `source/` + `benzinga_articles`
-2. **Summarize** — Anthropic Sonnet → `01_summaries/`
-3. **Synthesize** — Anthropic Opus → `02_brief.md`
+Perplexity only (Benzinga/Massive retired 2026-10). `perplexity_brief.py`: DB screener universe (`screener_universe.py`: r1d, vol_spike_5d, main_view_ti65) + OHLC tape (`tape.py`) → Perplexity `sonar-pro` (broad probes + ticker batches → thread follow-ups → gap fills, `01_research/`) → fact ledger → Sonnet with `STEP4_SYSTEM_PROMPT` → coverage audit → revise → `02_brief.md`. `px_losers.py`: bottom `dr_1` per cap bucket (`losers_universe.py`) → ticker research + gap fills → Sonnet with `prompts/losers_synthesis.md`. Both publish to `app.briefs`; `status.json` + `run_costs.json` in the scratch dir drive the UI progress/cost panel while running. See `market_brief/README.md`.
 
-Ticker universe from DB screens (`screener_universe.py`: r1d, vol_spike_5d, main_view_ti65). See `market_brief/README.md`.
+## `app` schema (user data + published outputs)
 
-**Px variant** (`perplexity_brief.py`, UI `/market-brief-px`, API `/api/market-brief-px/*`): same universe + OHLC tape (`tape.py`) → Perplexity `sonar-pro` (3 broad + ~6 ticker-batch searches → `01_research/`) → Sonnet with `STEP4_SYSTEM_PROMPT` → `02_brief.md`. `status.json` + `run_costs.json` (Perplexity + Anthropic rows) drive the same UI status/cost panel. See `market_brief/README.md`.
+Postgres schema `app`, created by `app_store/db.py` on first use. The nightly `init-zd` swap only replaces `public`, so `app` survives it; no FKs into `public`.
 
-## `user_data/` (git-backed via `auto_commit.sh`)
+| Table | Contents |
+|-------|----------|
+| `watchlist`, `dislikes`, `passes`, `trades` | Ticker lists. Dislikes: `kind=permanent\|temporary` (`expires_at` = +30d), applied to all screener queries + daily_screener s1. Passes: `{scope: weekly\|daily, cycle}`; weekly = Sat-ET-iso, daily = session-iso. Trades: buy/short candidates (`T` badge). |
+| `ticker_notes`, `chart_notes`, `chart_levels`, `general_notes` | Notes; `chart_levels` is also the price-alert list |
+| `themes`, `etf_groups` | Curated theme tags; ETF groups for `/etfs` |
+| `alert_fires` | Price-alert dedup `{"TICKER\|level": {date, price, fired_at}}`; pruned to today |
+| `screener_feedback` | daily_screener judge calibration |
+| `briefs` | PK `(date, kind daily\|losers, source perplexity\|benzinga)`: `brief_md`, `brief_json`, `run_costs`, `metadata`. Benzinga rows are history (2026-05-11 → 2026-10-15). |
+| `pipeline_runs` | PK `(pipeline, run_key)`: `files` JSONB `{filename: json}` for `daily_screener`, `theme_discovery`, `narratives` |
 
-| Path | Contents |
-|------|----------|
-| `themes.json` | Curated theme tags |
-| `abi_watchlist.json` | Stars, notes |
-| `abi_dislikes.json` | Global ticker exclude: `kind=permanent` or `kind=temporary` (`expires_at` = +30d). Applied to all screener queries + daily_screener s1. |
-| `abi_passes.json` | Pass: `{scope: weekly\|daily, cycle}`. Weekly = Sat-ET-iso, hidden on weekly pages until next Saturday. Daily = session-iso, hidden on `/daily-review` until next open 9:30 ET. Daily GET also hides current weekly-cycle passes. |
-| `abi_trades.json` | Buy/short candidates. Shown with `T` badge (watchlist: `W`) on `/weekly-review`, `/daily-review` and the 4 weekly source pages; `− Watch/Trades` chip hides them. |
-| `abi_chart_levels.json` | Chart S/R levels `{TICKER: {levels: [..]}}`; also the price-alert list |
-| `price_alerts_state.json` | Alert dedup `{"TICKER\|level": {date, price, fired_at}}`; pruned to today |
-| `daily_screener/<date>/` | Pipeline stage JSON |
-| `daily_screener_feedback.json` | Judge calibration |
-| `market_brief/<date>/` | Brief artifacts, `run_costs.json` |
-| `market_brief_perplexity/<date>/` | Px brief artifacts: `01_research/` (facts + source URLs), `02_brief.md`, `status.json`, `run_costs.json`, `compare.md` |
-| `market_narratives/<date>/` | Storylines clustered across briefs (`market_brief/narratives.py`): `narratives.json` → `/narratives` |
-| `theme_discovery/<date>/` | `01_candidates.json`, `02_news/<T>.json`, `03_synth_pass{1,2}_*`, `03_themes.json`, `04_probe/<theme>.json`, `themes.json` (SoT for `/theme-discovery`), `run_summary.json`, `run_costs.json` |
+Code: `app_store/user.py` (dict/list stores with the old JSON shapes), `app_store/artifacts.py` (briefs + runs). Hand-edit a store: `python -m app_store.cli export|import <store>`.
 
-Frontend and backend both read these paths; keep `OUTPUTS_DIR` constants in sync (`daily_screener/config.py`, `market_brief/config.py`, `backend/app.py`).
+**Backup / restore.** `scripts/backup_app.sh` → `pg_dump -n app` to git-ignored `backups/app/app_<UTC>.sql.gz` (keeps 60; also commits `app.sql` to `APP_BACKUP_REPO_DIR` when set). Triggered by cron 22:30 UTC (`get_compute_instance_ready.sh`) and the nav 💾 Save button (`POST /api/backup`). `scripts/restore_app.sh [dump]` drops and reloads `app` in one transaction. Run both inside the backend container.
+
+**`user_data/`** is now scratch only (pipeline working dirs: logs, `status.json`, intermediates); nothing reads it for content. One-off import of the old JSON files: `db_scripts/migrate_user_data_to_app.py` (idempotent, `--dry-run`, round-trip check).
 
 ## Where logic lives
 
 | Layer | Owns |
 |-------|------|
 | **db_scripts** | Ingest, metric computation, table rebuilds, tags on `main_view` |
-| **backend** | HTTP API, global query filters, user CRUD, subprocess orchestration, Benzinga refresh |
-| **daily_screener / market_brief** | Multi-step LLM workflows, file artifacts |
+| **backend** | HTTP API, global query filters, user CRUD, subprocess orchestration |
+| **daily_screener / market_brief / theme_discovery** | Multi-step LLM workflows; scratch files, published to `app` |
+| **app_store** | `app` schema DDL + access (user stores, briefs, pipeline runs) |
 | **frontend** | Routing, proxy, rendering |
 
 **Default:** new screening fields or filters → compute in `db_scripts`, expose via backend route, render in frontend. Backend-only logic is acceptable for API-specific shaping; frontend logic only for presentation.

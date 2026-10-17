@@ -8,14 +8,35 @@
   let costPollTimer = null;
   let losersPollTimer = null;
   let briefTodayDate = null;
+  let currentSource = null;
 
   const CFG = Object.assign({
     apiBase: '/api/frontend/market-brief',
     showLosers: true,
     pdfPrefix: 'market-brief',
-    runEta: '15–25 minutes',
+    runEta: '10–15 minutes',
+    sourceLabels: { perplexity: 'PX', benzinga: 'BZ' },
     stageLabels: {},
   }, window.BRIEF_CFG || {});
+
+  function sourceLabel(s) {
+    return CFG.sourceLabels[s] || s;
+  }
+
+  function renderSourceToggle() {
+    const el = document.getElementById('sourceToggle');
+    if (!el) return;
+    const sources = (currentData && currentData.sources) || [];
+    el.hidden = sources.length < 2;
+    el.innerHTML = sources.map(s =>
+      `<button type="button" class="md-btn${s === currentData.source ? ' active' : ''}" data-source="${s}">${escapeHtml(sourceLabel(s))}</button>`
+    ).join('');
+    el.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => {
+      if (btn.dataset.source === currentData.source) return;
+      currentSource = btn.dataset.source;
+      loadBrief(currentDate, currentRunStatus);
+    }));
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnRun').addEventListener('click', () => runBrief(currentDate));
@@ -39,16 +60,11 @@
     if (!step) return 'Running…';
     const labels = {
       queued: 'Starting pipeline',
-      ingest: 'Fetching Benzinga news',
-      ingest_done: 'Ingest complete',
-      synthesis: 'Writing losers brief',
-      step3_fact_extraction: 'Extracting facts',
-      step4_synthesis: 'Writing brief',
       done: 'Complete',
     };
     if (CFG.stageLabels[step]) return CFG.stageLabels[step];
     if (labels[step]) return labels[step];
-    return step.replace(/^tickers_(\d+)$/, 'Search · tickers $1').replace(/^step3_/, 'Step 3 · ').replace(/^step4_/, 'Step 4 · ').replace(/_/g, ' ');
+    return step.replace(/^tickers_(\d+)$/, 'Search · tickers $1').replace(/_/g, ' ');
   }
 
   function inlineMarkdown(text) {
@@ -152,9 +168,11 @@
             : '—';
           const active = currentDate === item.date ? ' active' : '';
           const isToday = item.is_today || item.date === briefTodayDate;
+          const tags = (item.sources || []).map(sourceLabel)
+            .concat((item.losers_sources || []).length ? ['L'] : []).join(' ');
           return `<button type="button" class="md-chip ${st}${active}" data-date="${item.date}" data-status="${st}">
             ${item.date}${isToday ? ' · today' : ''}
-            <span class="status">${statusLabel}</span>
+            <span class="status">${statusLabel}${tags ? ' · ' + escapeHtml(tags) : ''}</span>
           </button>`;
         }).join('');
 
@@ -180,6 +198,7 @@
   }
 
   async function loadBrief(dateStr, status) {
+    if (dateStr !== currentDate) currentSource = null;
     currentDate = dateStr;
     currentRunStatus = status || 'complete';
     const contentEl = document.getElementById('briefContent');
@@ -199,7 +218,8 @@
     contentEl.innerHTML = '<div class="md-loading">Loading…</div>';
 
     try {
-      const response = await fetch(`${CFG.apiBase}/${dateStr}`);
+      const qs = currentSource ? `?source=${encodeURIComponent(currentSource)}` : '';
+      const response = await fetch(`${CFG.apiBase}/${dateStr}${qs}`);
       if (!response.ok && response.status !== 404) throw new Error(`HTTP ${response.status}`);
 
       if (response.ok) {
@@ -210,6 +230,7 @@
         currentData = { date: dateStr, status: status };
         currentLosersRunStatus = 'empty';
       }
+      renderSourceToggle();
 
       updateLosersButton();
       updateRunButton();
@@ -245,7 +266,7 @@
 
       if (!currentData.markdown && (currentRunStatus === 'ready' || currentData.has_source)) {
         showMainPlaceholder(contentEl, `<div class="generate-prompt">
-          <p>Source data ready — brief not generated yet.</p>
+          <p>Research on disk — brief not generated yet.</p>
           <button type="button" id="btnGenerateInline">Generate brief</button>
         </div>`, dateStr);
         updatePdfButton();
@@ -296,7 +317,8 @@
     }
 
     if (currentData.has_losers_brief && currentData.losers_markdown) {
-      return `<div class="section-h2">R1D Losers Brief</div>${progress}
+      const src = currentData.losers_source ? ` · ${escapeHtml(sourceLabel(currentData.losers_source))}` : '';
+      return `<div class="section-h2">R1D Losers Brief${src}</div>${progress}
         <div class="markdown-body">${simpleMarkdown(currentData.losers_markdown)}</div>`;
     }
     return `<div class="section-h2">R1D Losers Brief</div>${progress}
@@ -499,7 +521,7 @@
     btn.disabled = true;
     btn.textContent = '…';
     try {
-      const response = await fetch(`${CFG.apiBase}/${currentDate}/pdf`);
+      const response = await fetch(`${CFG.apiBase}/${currentDate}/pdf?source=${encodeURIComponent(currentData.source || '')}`);
       if (!response.ok) {
         let msg = `HTTP ${response.status}`;
         try {

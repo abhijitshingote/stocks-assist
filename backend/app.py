@@ -11,9 +11,8 @@ from models import (
     Ticker, CompanyProfile, OHLC, Index, IndexComponents, IndexPrice,
     RatiosTTM, AnalystEstimates, Earnings, SyncMetadata, StockMetrics, TickerMovingAverages,
     StockVolspikeGapper, MainView, SharesFloat, MarketBreadth,
-    RsScreener, BenzingaArticle, NewsDigestRun, NewsDigestItem,
+    RsScreener,
 )
-import benzinga_news as benzinga_news_service
 import os
 import json
 import logging
@@ -27,38 +26,18 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Path to persist abi general notes (survives database resets)
-ABI_GENERAL_NOTES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_general_notes.json')
-# Path to persist abi watchlist (survives database resets)
-ABI_WATCHLIST_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_watchlist.json')
-# Path to persist explicit thumbs-down list (separate from watchlist).
-ABI_DISLIKES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_dislikes.json')
-# Path to persist per-ticker Abi ticker notes (free-form). Decoupled from
-# watchlist / dislikes membership. (Daily screener still consumes only notes
-# for tickers on the watchlist - see daily_screener/config.py.)
-ABI_TICKER_NOTES_FILE = os.path.join(
-    os.path.dirname(__file__), '..', 'user_data', 'abi_ticker_notes.json'
-)
-# Short on-chart labels (visible in the price-pane overlay, no click to read).
-ABI_CHART_NOTES_FILE = os.path.join(
-    os.path.dirname(__file__), '..', 'user_data', 'abi_chart_notes.json'
-)
+import sys
+
+# User data + pipeline outputs live in the Postgres ``app`` schema (app_store/,
+# repo root — not on sys.path when started as ``python backend/app.py``).
+_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+from app_store import artifacts as artifact_store, user as user_store  # noqa: E402
+
 CHART_NOTE_MAX_LEN = 80
 CHART_NOTE_MAX_COUNT = 5
-# Horizontal price levels (support/resistance) drawn on the price pane.
-ABI_CHART_LEVELS_FILE = os.path.join(
-    os.path.dirname(__file__), '..', 'user_data', 'abi_chart_levels.json'
-)
 CHART_LEVEL_MAX_COUNT = 20
-# Cycle-scoped passes. Weekly: Sat 00:00 ET → Friday. Daily: session → next open 9:30 ET.
-ABI_PASSES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_passes.json')
-# Trade candidates (buy/short). Persistent destination list.
-ABI_TRADES_FILE = os.path.join(os.path.dirname(__file__), '..', 'user_data', 'abi_trades.json')
-# Daily screener feedback (per-date, per-ticker corrections from the user).
-# Used by Stage 5 of the daily_screener pipeline to calibrate the judge.
-DAILY_SCREENER_FEEDBACK_FILE = os.path.join(
-    os.path.dirname(__file__), '..', 'user_data', 'daily_screener_feedback.json'
-)
 
 app = Flask(__name__)
 CORS(app)
@@ -95,7 +74,7 @@ GLOBAL_LIQUIDITY_FILTERS = {
     'price_min': 3,                  # Minimum stock price ($3)
 }
 
-# Temporary global ticker exclude duration (abi_dislikes.json kind=temporary).
+# Temporary global ticker exclude duration (app.dislikes kind=temporary).
 TEMP_EXCLUDE_DAYS = 30
 
 # Weekly review queue (/weekly-review). Live union of the 4 weekly screeners,
@@ -3165,26 +3144,6 @@ def get_rev_accel_large():
 def get_rev_accel_mega():
     return _json_rev_accel('mega')
 
-# Stock Notes endpoints removed (along with AI Stock Research). This store
-# has been deprecated. Per-ticker notes are now served exclusively by the
-# file-only abi_ticker_notes store (user_data/abi_ticker_notes.json). The
-# AI research integration (Perplexity / Claude web search) has been removed
-# with it; reintroduce it later as a feature that writes into
-# abi_ticker_notes if you want it back.
-
-# ============================================================
-# (AI Stock Research endpoints removed; see note above.)
-# ============================================================
-
-# (AI Stock Research, prompt template helpers, Perplexity / Claude wrappers
-# all removed along with the stock_notes store they wrote into. If you want
-# AI research back, reintroduce it as a feature that writes into
-# user_data/abi_ticker_notes.json instead of the deprecated DB store.)
-
-# Stock Preferences endpoints removed: this store has been deprecated and
-# replaced by the file-only abi_watchlist (favorites) and abi_dislikes
-# stores. Same UX, no DB dependency, lives entirely under user_data/.
-
 # ============================================================================
 # Stock Detail Data Endpoints (for stock detail page)
 # ============================================================================
@@ -3575,162 +3534,6 @@ def get_stock_news(ticker):
         logger.error(f"Error fetching stock news for {ticker}: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-# ============================================================
-# Benzinga News (Polygon/Massive API + Postgres cache)
-# ============================================================
-
-def _ensure_benzinga_table():
-    BenzingaArticle.__table__.create(engine, checkfirst=True)
-
-@app.route('/api/benzinga-news/<ticker>', methods=['GET'])
-def get_benzinga_news_cached(ticker):
-    """Return Benzinga articles for a ticker from the database."""
-    ticker = ticker.upper()
-    limit = request.args.get('limit', 40, type=int)
-    try:
-        _ensure_benzinga_table()
-        session = Session()
-        try:
-            articles = benzinga_news_service.get_cached_benzinga_news(
-                session, ticker, limit=limit
-            )
-            return jsonify({
-                'ticker': ticker,
-                'count': len(articles),
-                'from_cache': True,
-                'articles': articles,
-            })
-        finally:
-            session.close()
-    except Exception as e:
-        logger.error(f"Error loading cached Benzinga news for {ticker}: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/benzinga-news/<ticker>', methods=['POST'])
-def refresh_benzinga_news(ticker):
-    """Fetch Benzinga news from API, upsert to DB, return fresh articles."""
-    ticker = ticker.upper()
-    limit = request.args.get('limit', 40, type=int)
-    try:
-        _ensure_benzinga_table()
-        session = Session()
-        try:
-            articles = benzinga_news_service.refresh_benzinga_news(
-                session, ticker, limit=limit
-            )
-            return jsonify({
-                'ticker': ticker,
-                'count': len(articles),
-                'from_cache': False,
-                'articles': articles,
-            })
-        finally:
-            session.close()
-    except ValueError as e:
-        return jsonify({'error': str(e)}), 400
-    except Exception as e:
-        logger.error(f"Error refreshing Benzinga news for {ticker}: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/benzinga-news/market', methods=['GET'])
-def get_market_benzinga_news():
-    """Return market-wide Benzinga articles from database cache."""
-    limit = request.args.get('limit', 200, type=int)
-    channel = request.args.get('channel', None)
-    try:
-        _ensure_benzinga_table()
-        session = Session()
-        try:
-            from datetime import timedelta
-
-            days = benzinga_news_service.DEFAULT_REFRESH_LOOKBACK_DAYS
-            end = datetime.now(timezone.utc)
-            since = end - timedelta(days=days)
-            articles_rows = benzinga_news_service.load_articles_published_between(
-                session, since, end, limit=limit
-            )
-
-            # Filter by channel if requested
-            if channel:
-                articles_rows = [
-                    row for row in articles_rows
-                    if row.channels and channel in row.channels
-                ]
-            
-            # Convert to JSON
-            articles = [benzinga_news_service.article_to_json(row) for row in articles_rows]
-            
-            # Get available channels
-            channels_available = set()
-            for row in articles_rows:
-                if row.channels:
-                    channels_available.update(row.channels)
-            
-            return jsonify({
-                'count': len(articles),
-                'articles': articles,
-                'channels_available': sorted(list(channels_available)),
-                'window': {
-                    'label': f'Last {days} days',
-                    'start_utc': since.isoformat(),
-                    'end_utc': end.isoformat(),
-                }
-            })
-        finally:
-            session.close()
-    except Exception as e:
-        logger.error(f"Error loading market Benzinga news: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/benzinga-news/market', methods=['POST'])
-def refresh_market_benzinga_news():
-    """Refresh Benzinga cache (3-day lookback) and return articles from DB."""
-    limit = request.args.get('limit', 200, type=int)
-    try:
-        _ensure_benzinga_table()
-        session = Session()
-        try:
-            from datetime import timedelta
-
-            days = benzinga_news_service.DEFAULT_REFRESH_LOOKBACK_DAYS
-            end = datetime.now(timezone.utc)
-            since = end - timedelta(days=days)
-            refresh = benzinga_news_service.refresh_benzinga_articles(
-                session,
-                days=days,
-                limit=benzinga_news_service.DEFAULT_REFRESH_API_LIMIT,
-                purge_days=benzinga_news_service.DEFAULT_ARTICLE_RETENTION_DAYS,
-            )
-
-            articles_rows = benzinga_news_service.load_articles_published_between(
-                session, since, end, limit=limit
-            )
-            articles = [benzinga_news_service.article_to_json(row) for row in articles_rows]
-
-            channels_available = set()
-            for row in articles_rows:
-                if row.channels:
-                    channels_available.update(row.channels)
-
-            return jsonify({
-                'count': len(articles),
-                'fetched_from_api': refresh.unique_upserted,
-                'articles': articles,
-                'channels_available': sorted(list(channels_available)),
-                'window': {
-                    'label': f'Last {days} days',
-                    'start_utc': since.isoformat(),
-                    'end_utc': end.isoformat(),
-                },
-            })
-        finally:
-            session.close()
-    except ValueError as e:
-        return jsonify({'error': str(e)}), 400
-    except Exception as e:
-        logger.error(f"Error refreshing market Benzinga news: {e}")
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/api/market-news/fmp', methods=['GET'])
 def get_market_fmp_news():
     """Fetch general market news from FMP (not ticker-specific)."""
@@ -3795,13 +3598,7 @@ def get_market_seeking_alpha_news():
 # Abi General Notes API Endpoints (date-based personal notes)
 # ============================================================
 #
-# File-only store. Same pattern as abi_watchlist / abi_ticker_notes /
-# abi_dislikes: user_data/abi_general_notes.json IS the source of truth,
-# read & written on every request. No Postgres dependency, no DB-to-file
-# snapshot, no seed script. Survives container/DB resets automatically and
-# rides along with the auto_commit.sh user_data backup.
-#
-# Schema: a JSON list of note objects, each with:
+# Stored in app.general_notes (app_store). Each note:
 #   id (int)         — local, monotonically increasing; assigned on create
 #   note_date (str)  — "YYYY-MM-DD"; defaults to today
 #   title (str)
@@ -3815,32 +3612,16 @@ def _abi_general_notes_now_iso():
     return datetime.now(pytz.timezone("US/Eastern")).isoformat()
 
 def _load_abi_general_notes():
-    """Read the notes list from disk. Returns [] if missing or unreadable.
-
-    Defensive: an empty/corrupt file should not 500 the API.
-    """
-    if not os.path.exists(ABI_GENERAL_NOTES_FILE):
-        return []
-    try:
-        with open(ABI_GENERAL_NOTES_FILE, 'r') as f:
-            data = json.load(f)
-        return data if isinstance(data, list) else []
-    except (json.JSONDecodeError, OSError) as e:
-        logger.error(f"Error reading {ABI_GENERAL_NOTES_FILE}: {e}")
-        return []
+    return user_store.load_list(user_store.GENERAL_NOTES)
 
 def _save_abi_general_notes(notes):
-    """Persist notes list to disk. Same ordering convention as the API GET
-    (note_date desc, id desc) so the on-disk file is always readable in the
-    same order the UI shows it."""
+    """Persist in API GET order (note_date desc, id desc)."""
     notes_sorted = sorted(
         notes,
         key=lambda n: (n.get('note_date') or '', n.get('id') or 0),
         reverse=True,
     )
-    os.makedirs(os.path.dirname(ABI_GENERAL_NOTES_FILE), exist_ok=True)
-    with open(ABI_GENERAL_NOTES_FILE, 'w') as f:
-        json.dump(notes_sorted, f, indent=2)
+    user_store.save_list(user_store.GENERAL_NOTES, notes_sorted)
 
 def _next_abi_general_note_id(notes):
     """Monotonically increasing id. Old DB used autoincrement; we mimic that
@@ -4246,6 +4027,24 @@ def get_etf_returns_data(connection, symbols):
     except Exception as e:
         logger.error(f"Error getting ETF returns data: {str(e)}")
         return {'latest_date': None, 'etfs': []}
+
+@app.route('/api/etf-groups', methods=['GET'])
+def get_etf_groups():
+    """Curated ETF groups: [{category, etfs: [{symbol, name}]}]."""
+    return jsonify(user_store.load_list(user_store.ETF_GROUPS))
+
+@app.route('/api/themes', methods=['GET'])
+def get_themes():
+    """User-curated themes: [{name, desc, tickers}]."""
+    return jsonify(user_store.load_list(user_store.THEMES))
+
+@app.route('/api/themes', methods=['PUT'])
+def put_themes():
+    themes = request.get_json()
+    if not isinstance(themes, list):
+        return jsonify({'error': 'expected a JSON list of themes'}), 400
+    user_store.save_list(user_store.THEMES, themes)
+    return jsonify({'status': 'ok'})
 
 @app.route('/api/etf-performance')
 def get_etf_performance():
@@ -4728,20 +4527,11 @@ def get_treasury_10y():
 # daily_screener stages s3/s4/s5).
 
 def _load_abi_ticker_notes():
-    """Load Abi ticker notes from JSON. Returns {TICKER: {notes, created_at, updated_at}}."""
-    if os.path.exists(ABI_TICKER_NOTES_FILE):
-        try:
-            with open(ABI_TICKER_NOTES_FILE, 'r') as f:
-                return json.load(f)
-        except Exception:
-            return {}
-    return {}
+    """{TICKER: {notes, created_at, updated_at}}."""
+    return user_store.load_dict(user_store.TICKER_NOTES)
 
 def _save_abi_ticker_notes(data):
-    """Save Abi ticker notes to JSON file."""
-    os.makedirs(os.path.dirname(ABI_TICKER_NOTES_FILE), exist_ok=True)
-    with open(ABI_TICKER_NOTES_FILE, 'w') as f:
-        json.dump(data, f, indent=2)
+    user_store.save_dict(user_store.TICKER_NOTES, data)
 
 @app.route('/api/abi-ticker-notes', methods=['GET'])
 def get_abi_ticker_notes_all():
@@ -4857,11 +4647,11 @@ def _normalize_chart_notes(raw):
 
 
 def _load_abi_chart_notes():
-    return _load_json_store(ABI_CHART_NOTES_FILE)
+    return user_store.load_dict(user_store.CHART_NOTES)
 
 
 def _save_abi_chart_notes(data):
-    _save_json_store(ABI_CHART_NOTES_FILE, data)
+    user_store.save_dict(user_store.CHART_NOTES, data)
 
 
 @app.route('/api/abi-chart-notes/<ticker>', methods=['GET'])
@@ -4940,7 +4730,7 @@ def _normalize_chart_levels(raw):
 @app.route('/api/abi-chart-levels/<ticker>', methods=['GET'])
 def get_abi_chart_levels(ticker):
     ticker = ticker.upper()
-    store = _load_json_store(ABI_CHART_LEVELS_FILE)
+    store = user_store.load_dict(user_store.CHART_LEVELS)
     entry = store.get(ticker) or {}
     levels = _normalize_chart_levels(entry.get('levels') if isinstance(entry, dict) else [])
     return jsonify({'ticker': ticker, 'levels': levels})
@@ -4953,11 +4743,11 @@ def upsert_abi_chart_levels(ticker):
     if 'levels' not in data:
         return jsonify({'error': 'levels field is required'}), 400
     levels = _normalize_chart_levels(data.get('levels'))
-    store = _load_json_store(ABI_CHART_LEVELS_FILE)
+    store = user_store.load_dict(user_store.CHART_LEVELS)
     if not levels:
         if ticker in store:
             del store[ticker]
-            _save_json_store(ABI_CHART_LEVELS_FILE, store)
+            user_store.save_dict(user_store.CHART_LEVELS, store)
         return jsonify({'ticker': ticker, 'levels': [], 'status': 'cleared'})
     now_iso = datetime.now(pytz.timezone('US/Eastern')).isoformat()
     prev = store.get(ticker) if isinstance(store.get(ticker), dict) else {}
@@ -4966,46 +4756,27 @@ def upsert_abi_chart_levels(ticker):
         'created_at': prev.get('created_at') or now_iso,
         'updated_at': now_iso,
     }
-    _save_json_store(ABI_CHART_LEVELS_FILE, store)
+    user_store.save_dict(user_store.CHART_LEVELS, store)
     return jsonify({'ticker': ticker, 'levels': levels, 'status': 'updated' if prev else 'created'})
 
 # ============================================================================
-# Abi Watchlist Endpoints (JSON file-based personal watchlist)
+# Abi Watchlist Endpoints (app.watchlist)
 # ============================================================================
 # The watchlist tracks list membership. Per-ticker Abi ticker notes live in
-# abi_ticker_notes.json (decoupled from membership). The response shape still
-# includes a `notes` field, populated from that file, so existing UI code that
-# reads `wl[ticker].notes` keeps working. Legacy `stars` keys in the JSON are
-# ignored.
+# app.ticker_notes (decoupled from membership). The response shape still
+# includes a `notes` field, populated from there, so existing UI code that
+# reads `wl[ticker].notes` keeps working. Legacy `stars` values are ignored.
 
 def _load_watchlist():
-    """Load watchlist from JSON (membership + timestamps). Ignores any
-    embedded ``notes`` keys in the file — Abi ticker notes live only in
-    abi_ticker_notes.json. Legacy ``stars`` keys are ignored.
-    """
-    if os.path.exists(ABI_WATCHLIST_FILE):
-        try:
-            with open(ABI_WATCHLIST_FILE, 'r') as f:
-                data = json.load(f)
-        except Exception:
-            return {}
-        if not isinstance(data, dict):
-            return {}
-        for entry in data.values():
-            if isinstance(entry, dict) and 'notes' in entry:
-                del entry['notes']
-        return data
-    return {}
+    """{TICKER: {added_at, ...}} — membership + timestamps."""
+    return user_store.load_dict(user_store.WATCHLIST)
 
 def _save_watchlist(data):
-    """Save watchlist to JSON file."""
-    os.makedirs(os.path.dirname(ABI_WATCHLIST_FILE), exist_ok=True)
-    with open(ABI_WATCHLIST_FILE, 'w') as f:
-        json.dump(data, f, indent=2)
+    user_store.save_dict(user_store.WATCHLIST, data)
 
 def _watchlist_with_comments():
     """Return watchlist data merged with Abi ticker notes: each entry has
-    ``notes`` from abi_ticker_notes.json (or '').
+    ``notes`` from app.ticker_notes (or '').
     """
     wl = _load_watchlist()
     comments = _load_abi_ticker_notes()
@@ -5021,7 +4792,7 @@ def _watchlist_with_comments():
 @app.route('/api/abi-watchlist', methods=['GET'])
 def get_abi_watchlist():
     """Get all watchlist items: {TICKER: {notes, added_at}, ...}.
-    Notes are sourced from abi_ticker_notes.json (decoupled from membership)."""
+    Notes are sourced from app.ticker_notes (decoupled from membership)."""
     return jsonify(_watchlist_with_comments())
 
 @app.route('/api/abi-watchlist', methods=['POST'])
@@ -5116,45 +4887,28 @@ def get_abi_watchlist_data():
         s.close()
 
 # ============================================================================
-# Abi Dislikes Endpoints (JSON file-based global exclude list)
+# Abi Dislikes Endpoints (app.dislikes — global exclude list)
 # ============================================================================
 # This list is separate from the watchlist on purpose:
 #   - Watchlist membership is not a veto.
-#   - Anything in this dislikes file is an explicit "do not surface this".
+#   - Anything in dislikes is an explicit "do not surface this".
 # Applied to all screener queries (apply_global_ticker_excludes) and daily
 # screener Stage 1. kind=temporary expires after TEMP_EXCLUDE_DAYS (30).
 # Missing kind is treated as permanent (legacy entries).
 #
 # Per-ticker notes (the "why is this blocked" rationale) live in
-# abi_ticker_notes.json now; the dislikes file only tracks membership. The API
-# response shape still includes a `notes` field populated from abi_ticker_notes.json.
+# app.ticker_notes; dislikes only tracks membership. The API response shape
+# still includes a `notes` field populated from app.ticker_notes.
 
 def _load_dislikes():
-    """Load the dislikes file. Ignores embedded ``notes`` keys — Abi ticker notes
-    live only in abi_ticker_notes.json.
-    """
-    if os.path.exists(ABI_DISLIKES_FILE):
-        try:
-            with open(ABI_DISLIKES_FILE, 'r') as f:
-                data = json.load(f)
-        except Exception:
-            return {}
-        if not isinstance(data, dict):
-            return {}
-        for entry in data.values():
-            if isinstance(entry, dict) and 'notes' in entry:
-                del entry['notes']
-        return data
-    return {}
+    return user_store.load_dict(user_store.DISLIKES)
 
 def _save_dislikes(data):
-    os.makedirs(os.path.dirname(ABI_DISLIKES_FILE), exist_ok=True)
-    with open(ABI_DISLIKES_FILE, 'w') as f:
-        json.dump(data, f, indent=2)
+    user_store.save_dict(user_store.DISLIKES, data)
 
 def _dislikes_with_comments():
     """Return dislikes data joined with Abi ticker notes: each entry will
-    have a `notes` field populated from abi_ticker_notes.json (or '' if no
+    have a `notes` field populated from app.ticker_notes (or '' if no
     Abi ticker note exists). Adds kind / expires_at / is_active / days_left."""
     dl = _load_dislikes()
     comments = _load_abi_ticker_notes()
@@ -5176,7 +4930,7 @@ def _dislikes_with_comments():
 @app.route('/api/abi-dislikes', methods=['GET'])
 def get_abi_dislikes():
     """Get all dislikes: {TICKER: {notes, added_at, kind, expires_at, is_active}, ...}.
-    Notes are sourced from abi_ticker_notes.json (decoupled from membership)."""
+    Notes are sourced from app.ticker_notes (decoupled from membership)."""
     return jsonify(_dislikes_with_comments())
 
 @app.route('/api/abi-dislikes', methods=['POST'])
@@ -5249,38 +5003,20 @@ def batch_check_abi_dislikes():
     return jsonify(result)
 
 
-def _load_json_store(path):
-    if os.path.exists(path):
-        try:
-            with open(path, 'r') as f:
-                data = json.load(f)
-        except Exception:
-            return {}
-        if isinstance(data, dict):
-            return data
-    return {}
-
-
-def _save_json_store(path, data):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, 'w') as f:
-        json.dump(data, f, indent=2)
-
-
 def _load_passes():
-    return _load_json_store(ABI_PASSES_FILE)
+    return user_store.load_dict(user_store.PASSES)
 
 
 def _save_passes(data):
-    _save_json_store(ABI_PASSES_FILE, data)
+    user_store.save_dict(user_store.PASSES, data)
 
 
 def _load_trades():
-    return _load_json_store(ABI_TRADES_FILE)
+    return user_store.load_dict(user_store.TRADES)
 
 
 def _save_trades(data):
-    _save_json_store(ABI_TRADES_FILE, data)
+    user_store.save_dict(user_store.TRADES, data)
 
 
 def _remove_from_watchlist(ticker):
@@ -5719,34 +5455,21 @@ def get_technical_reversal_mega():
 # Daily Shortlist (Screening Agent) Endpoints
 # ============================================================================
 
-# Daily screener artifacts live under user_data/ so the auto_commit.sh
-# backup (which git-pushes user_data/) preserves them across resets.
-# Must stay in sync with daily_screener/config.py: OUTPUTS_DIR.
-DAILY_SCREENER_OUTPUTS_DIR = os.path.join(
-    os.path.dirname(__file__), '..', 'user_data', 'daily_screener'
-)
+# Daily screener runs are published to app.pipeline_runs (pipeline='daily_screener')
+# as {filename: stage JSON} when the run finishes.
+
+def _daily_screener_files(date: str) -> dict:
+    return artifact_store.get_run('daily_screener', date) or {}
 
 def _compute_daily_shortlist_funnel(date: str):
-    """Read per-stage artifacts under user_data/daily_screener/<date>/ and
-    construct a compact funnel summary the UI can render. Works retroactively
-    even if s6_audit didn't write a funnel block."""
-    base = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date)
-
-    def _safe_read(name):
-        path = os.path.join(base, name)
-        if not os.path.exists(path):
-            return None
-        try:
-            with open(path, 'r') as f:
-                return json.load(f)
-        except Exception:
-            return None
-
-    universe = _safe_read('00_universe.json') or {}
-    momentum = _safe_read('01_momentum.json') or {}
-    news = _safe_read('03_news.json') or {}
-    judged = _safe_read('04_judged.json') or {}
-    summary = _safe_read('run_summary.json') or {}
+    """Construct a compact funnel summary from a run's stage files. Works
+    retroactively even if s6_audit didn't write a funnel block."""
+    files = _daily_screener_files(date)
+    universe = files.get('00_universe.json') or {}
+    momentum = files.get('01_momentum.json') or {}
+    news = files.get('03_news.json') or {}
+    judged = files.get('04_judged.json') or {}
+    summary = files.get('run_summary.json') or {}
 
     source_counts = universe.get('source_counts') or {}
     raw_total = int(universe.get('raw_total') or sum(int(v or 0) for v in source_counts.values()))
@@ -5806,34 +5529,15 @@ def _compute_daily_shortlist_funnel(date: str):
     }
 
 def _list_daily_shortlist_dates():
-    """List YYYY-MM-DD folders under user_data/daily_screener/ that contain a 05_audit.json."""
-    if not os.path.isdir(DAILY_SCREENER_OUTPUTS_DIR):
-        return []
-    entries = []
-    for name in os.listdir(DAILY_SCREENER_OUTPUTS_DIR):
-        full = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, name)
-        if not os.path.isdir(full):
-            continue
-        # Validate date-like name
-        try:
-            datetime.strptime(name, '%Y-%m-%d')
-        except ValueError:
-            continue
-        audit_path = os.path.join(full, '05_audit.json')
-        if os.path.exists(audit_path):
-            try:
-                mtime = os.path.getmtime(audit_path)
-            except OSError:
-                mtime = None
-            entries.append({
-                'date': name,
-                'audit_mtime': mtime,
-                'has_audit': True,
-            })
-        else:
-            entries.append({'date': name, 'audit_mtime': None, 'has_audit': False})
-    entries.sort(key=lambda e: e['date'], reverse=True)
-    return entries
+    """Published daily_screener runs, newest first."""
+    return [
+        {
+            'date': r['run_key'],
+            'audit_mtime': r['updated_at'],
+            'has_audit': '05_audit.json' in r['file_names'],
+        }
+        for r in artifact_store.list_runs('daily_screener')
+    ]
 
 @app.route('/api/daily-shortlist/dates', methods=['GET'])
 def daily_shortlist_dates():
@@ -5850,16 +5554,9 @@ def daily_shortlist_for_date(date):
     except ValueError:
         return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
 
-    audit_path = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date, '05_audit.json')
-    if not os.path.exists(audit_path):
+    audit = _daily_screener_files(date).get('05_audit.json')
+    if audit is None:
         return jsonify({'error': 'no audit artifact for date', 'date': date}), 404
-
-    try:
-        with open(audit_path, 'r') as f:
-            audit = json.load(f)
-    except Exception as e:
-        logger.error(f"failed to read audit {audit_path}: {e}")
-        return jsonify({'error': f'failed to read audit: {e}'}), 500
 
     rows = audit.get('rows', []) or []
     tickers = sorted({(r.get('ticker') or '').upper() for r in rows if r.get('ticker')})
@@ -5986,21 +5683,11 @@ def daily_shortlist_run():
 _VALID_VERDICTS = {'PICK', 'WATCH', 'SKIP'}
 
 def _load_feedback():
-    """Load the feedback file. Returns {date: {ticker: record}}."""
-    if not os.path.exists(DAILY_SCREENER_FEEDBACK_FILE):
-        return {}
-    try:
-        with open(DAILY_SCREENER_FEEDBACK_FILE, 'r') as f:
-            data = json.load(f)
-        return data if isinstance(data, dict) else {}
-    except Exception as e:
-        logger.error(f"failed to read feedback file: {e}")
-        return {}
+    """{date: {ticker: record}}."""
+    return user_store.load_feedback()
 
 def _save_feedback(data):
-    os.makedirs(os.path.dirname(DAILY_SCREENER_FEEDBACK_FILE), exist_ok=True)
-    with open(DAILY_SCREENER_FEEDBACK_FILE, 'w') as f:
-        json.dump(data, f, indent=2)
+    user_store.save_feedback(data)
 
 @app.route('/api/daily-shortlist/feedback/<date>', methods=['GET'])
 def daily_shortlist_feedback_for_date(date):
@@ -6136,24 +5823,10 @@ def daily_shortlist_themes_for_date(date):
     except ValueError:
         return jsonify({'error': 'invalid date (expected YYYY-MM-DD)'}), 400
 
-    base = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, date)
-    if not os.path.isdir(base):
-        return jsonify({'error': 'no theme artifacts for date', 'date': date}), 404
-
-    def _read(name):
-        path = os.path.join(base, name)
-        if not os.path.exists(path):
-            return None
-        try:
-            with open(path, 'r') as f:
-                return json.load(f)
-        except Exception as e:
-            logger.error(f"failed to read {path}: {e}")
-            return None
-
-    merged = _read('02_theme_vector.json')
-    market = _read('02a_market_themes.json')
-    user = _read('02b_user_themes.json')
+    files = _daily_screener_files(date)
+    merged = files.get('02_theme_vector.json')
+    market = files.get('02a_market_themes.json')
+    user = files.get('02b_user_themes.json')
 
     if merged is None and market is None and user is None:
         return jsonify({'error': 'no theme artifacts for date', 'date': date}), 404
@@ -6168,399 +5841,236 @@ def daily_shortlist_themes_for_date(date):
 @app.route('/api/daily-shortlist/themes/dates', methods=['GET'])
 def daily_shortlist_theme_dates():
     """List dates that have a 02_theme_vector.json artifact."""
-    if not os.path.isdir(DAILY_SCREENER_OUTPUTS_DIR):
-        return jsonify({'dates': []})
-    entries = []
-    for name in os.listdir(DAILY_SCREENER_OUTPUTS_DIR):
-        full = os.path.join(DAILY_SCREENER_OUTPUTS_DIR, name)
-        if not os.path.isdir(full):
-            continue
-        try:
-            datetime.strptime(name, '%Y-%m-%d')
-        except ValueError:
-            continue
-        tv_path = os.path.join(full, '02_theme_vector.json')
-        if os.path.exists(tv_path):
-            try:
-                mtime = os.path.getmtime(tv_path)
-            except OSError:
-                mtime = None
-            entries.append({'date': name, 'mtime': mtime})
-    entries.sort(key=lambda e: e['date'], reverse=True)
-    return jsonify({'dates': entries})
+    return jsonify({'dates': [
+        {'date': r['run_key'], 'mtime': r['updated_at']}
+        for r in artifact_store.list_runs('daily_screener')
+        if '02_theme_vector.json' in r['file_names']
+    ]})
 
 # ============================================================
 # Market Brief Endpoints
 # ============================================================
-
-# Market brief artifacts live under user_data/ so the auto_commit.sh
-# backup preserves them across resets. Must stay in sync with
-# market_brief/config.py: OUTPUTS_DIR.
-MARKET_BRIEF_OUTPUTS_DIR = os.path.join(
-    os.path.dirname(__file__), '..', 'user_data', 'market_brief'
-)
-MARKET_BRIEF_LOSERS_OUTPUTS_DIR = os.path.join(
-    os.path.dirname(__file__), '..', 'user_data', 'market_brief_losers'
-)
+# Finished briefs: app.briefs (kind daily|losers × source perplexity|benzinga).
+# Live run state: status.json / run_costs.json in the Perplexity pipeline's working dir.
 MARKET_BRIEF_TZ = ZoneInfo('America/New_York')
+_USER_DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'user_data')
+MARKET_BRIEF_RUNS = {
+    'daily': {
+        'dir': os.path.join(_USER_DATA_DIR, 'market_brief_perplexity'),
+        'module': 'market_brief.perplexity_brief',
+        'title': 'Market Brief',
+    },
+    'losers': {
+        'dir': os.path.join(_USER_DATA_DIR, 'market_brief_perplexity_losers'),
+        'module': 'market_brief.px_losers',
+        'title': 'R1D Losers Brief',
+    },
+}
 
 def _market_brief_today() -> str:
     """Calendar date for the market brief (US Eastern, pre-market context)."""
     return datetime.now(MARKET_BRIEF_TZ).strftime('%Y-%m-%d')
 
-def _market_brief_has_source(brief_dir: str) -> bool:
-    source_dir = os.path.join(brief_dir, 'source')
-    return os.path.isdir(source_dir) and bool(os.listdir(source_dir))
+def _valid_brief_date(date_str: str) -> bool:
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+        return True
+    except (TypeError, ValueError):
+        return False
 
-def _load_losers_brief_fields(date_str: str) -> dict:
-    """Optional R1D losers brief from market_brief_losers output dir."""
-    losers_dir = os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, date_str)
-    result: dict = {
-        'has_losers_brief': False,
-        'losers_markdown': None,
-        'losers_status': 'empty',
-    }
-    if not os.path.isdir(losers_dir):
-        return result
+def _brief_kind_arg() -> str:
+    kind = request.args.get('kind') or 'daily'
+    return kind if kind in MARKET_BRIEF_RUNS else 'daily'
 
-    result['losers_status'] = _market_brief_run_status(losers_dir)
-    status_payload = _read_market_brief_status_file(losers_dir)
-    if status_payload:
-        result['losers_run_status'] = status_payload
-
-    costs_path = os.path.join(losers_dir, 'run_costs.json')
-    if os.path.exists(costs_path):
-        with open(costs_path, 'r', encoding='utf-8') as f:
-            result['losers_run_costs'] = json.load(f)
-
-    brief_path = os.path.join(losers_dir, '02_brief.md')
-    if os.path.isfile(brief_path):
-        with open(brief_path, 'r', encoding='utf-8') as f:
-            result['has_losers_brief'] = True
-            result['losers_markdown'] = f.read()
-    return result
-
-def _losers_brief_has_source(brief_dir: str) -> bool:
-    source_dir = os.path.join(brief_dir, 'source', 'losers_universe')
-    return os.path.isdir(source_dir) and bool(os.listdir(source_dir))
+def _brief_run_dir(kind: str, date_str: str) -> str:
+    return os.path.join(MARKET_BRIEF_RUNS[kind]['dir'], date_str)
 
 def _market_brief_run_stale(brief_dir: str, status_payload: dict) -> bool:
     """True if status says running but nothing has updated recently (crashed run)."""
     stale_after_s = 900  # 15 minutes without log/cost activity
-    now = time.time()
-    candidates = [
-        os.path.join(brief_dir, 'subprocess.log'),
-        os.path.join(brief_dir, 'run.log'),
-        os.path.join(brief_dir, 'run_costs.json'),
-        os.path.join(brief_dir, 'status.json'),
-    ]
     latest_mtime = None
-    for path in candidates:
-        if os.path.exists(path):
-            try:
-                mtime = os.path.getmtime(path)
-                latest_mtime = mtime if latest_mtime is None else max(latest_mtime, mtime)
-            except OSError:
-                pass
+    for name in ('subprocess.log', 'run.log', 'run_costs.json', 'status.json'):
+        path = os.path.join(brief_dir, name)
+        try:
+            mtime = os.path.getmtime(path)
+        except OSError:
+            continue
+        latest_mtime = mtime if latest_mtime is None else max(latest_mtime, mtime)
     if latest_mtime is None:
         updated_at = status_payload.get('updated_at')
-        if updated_at:
-            try:
-                dt = datetime.fromisoformat(updated_at.replace('Z', '+00:00'))
-                latest_mtime = dt.timestamp()
-            except ValueError:
-                return False
-        else:
+        if not updated_at:
             return True
-    return (now - latest_mtime) > stale_after_s
-
-def _mark_market_brief_stale_failed(brief_dir: str, status_payload: dict) -> None:
-    """Persist failed status when a run stopped updating (crashed subprocess)."""
-    status_path = os.path.join(brief_dir, 'status.json')
-    payload = {
-        'status': 'failed',
-        'stage': 'stale',
-        'error': 'Run stopped responding (no log activity for 15+ minutes)',
-        'updated_at': datetime.now(timezone.utc).isoformat(),
-        'previous': status_payload,
-    }
-    try:
-        with open(status_path, 'w', encoding='utf-8') as f:
-            json.dump(payload, f, indent=2)
-    except OSError:
-        pass
+        try:
+            latest_mtime = datetime.fromisoformat(updated_at.replace('Z', '+00:00')).timestamp()
+        except ValueError:
+            return False
+    return (time.time() - latest_mtime) > stale_after_s
 
 def _read_market_brief_status_file(brief_dir: str) -> dict | None:
-    status_path = os.path.join(brief_dir, 'status.json')
-    if not os.path.exists(status_path):
-        return None
     try:
-        with open(status_path, 'r', encoding='utf-8') as f:
+        with open(os.path.join(brief_dir, 'status.json'), 'r', encoding='utf-8') as f:
             return json.load(f)
-    except (json.JSONDecodeError, OSError):
+    except (OSError, json.JSONDecodeError):
         return None
 
-def _market_brief_run_status(brief_dir: str) -> str:
-    """Return complete | running | ready | error | failed for a dated output folder."""
-    status_payload = _read_market_brief_status_file(brief_dir)
-    if status_payload:
-        status = status_payload.get('status')
-        if status == 'running':
-            if _market_brief_run_stale(brief_dir, status_payload):
-                _mark_market_brief_stale_failed(brief_dir, status_payload)
-                return 'failed'
-            return 'running'
-        if status == 'failed':
-            return 'failed'
-        if status == 'error':
-            return 'error'
-
-    if status_payload and status_payload.get('status') == 'complete':
-        return 'complete'
-
-    brief_md = os.path.join(brief_dir, '02_brief.md')
-    brief_json = os.path.join(brief_dir, '02_brief.json')
-    if os.path.exists(brief_md) or os.path.exists(brief_json):
-        return 'complete'
-
-    run_log = os.path.join(brief_dir, 'run.log')
-    subprocess_log = os.path.join(brief_dir, 'subprocess.log')
-    for log_path in (run_log, subprocess_log):
-        if os.path.exists(log_path):
-            try:
-                age_s = time.time() - os.path.getmtime(log_path)
-                if age_s < 1800:
-                    return 'running'
-            except OSError:
-                pass
-
-    costs_path = os.path.join(brief_dir, 'run_costs.json')
-    if os.path.exists(costs_path):
+def _brief_run_state(kind: str, date_str: str) -> dict | None:
+    """Working-dir status.json; a stale ``running`` is persisted as ``failed``."""
+    brief_dir = _brief_run_dir(kind, date_str)
+    payload = _read_market_brief_status_file(brief_dir)
+    if payload and payload.get('status') == 'running' and _market_brief_run_stale(brief_dir, payload):
+        payload = {
+            'status': 'failed',
+            'stage': 'stale',
+            'error': 'Run stopped responding (no log activity for 15+ minutes)',
+            'updated_at': datetime.now(timezone.utc).isoformat(),
+            'previous': payload,
+        }
         try:
-            age_s = time.time() - os.path.getmtime(costs_path)
-            if age_s < 1800:
-                return 'running'
+            with open(os.path.join(brief_dir, 'status.json'), 'w', encoding='utf-8') as f:
+                json.dump(payload, f, indent=2)
         except OSError:
             pass
+    return payload
 
-    if os.path.isdir(os.path.join(brief_dir, '00_news')):
+def _brief_status(run_state: dict | None, has_brief: bool) -> str:
+    """running | complete | failed | empty."""
+    st = (run_state or {}).get('status')
+    if st == 'running':
         return 'running'
+    if has_brief:
+        return 'complete'
+    if st in ('failed', 'error'):
+        return 'failed'
+    return 'empty'
 
-    if _market_brief_has_source(brief_dir):
-        return 'ready'
+def _brief_run_costs(kind: str, date_str: str) -> dict | None:
+    try:
+        with open(os.path.join(_brief_run_dir(kind, date_str), 'run_costs.json'), 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
 
-    return 'failed'
+def _brief_view(date_str: str, kind: str, source: str | None) -> dict:
+    """{sources, source, status, run_status, markdown, json, run_costs} for one kind."""
+    rows = artifact_store.get_briefs(date_str, kind)
+    sources = list(rows)
+    src = source if source in rows else (sources[0] if sources else None)
+    row = rows.get(src) if src else None
+    run_state = _brief_run_state(kind, date_str)
+    status = _brief_status(run_state, row is not None)
+    view = {
+        'sources': sources,
+        'source': src,
+        'status': status,
+        'markdown': row['brief_md'] if row else None,
+        'json': row['brief_json'] if row else None,
+        'run_costs': _brief_run_costs(kind, date_str) if status == 'running' else (row or {}).get('run_costs'),
+    }
+    if run_state:
+        view['run_status'] = run_state
+    return view
 
 @app.route('/api/market-brief/dates', methods=['GET'])
 def market_brief_dates():
-    """List dates that have market brief outputs (including in-progress runs)."""
-    return _market_brief_dates_response(MARKET_BRIEF_OUTPUTS_DIR, losers_dir=MARKET_BRIEF_LOSERS_OUTPUTS_DIR)
-
-def _market_brief_dates_response(base_dir: str, losers_dir: str | None = None):
+    """Dates with a published brief (either kind/source), a run in the working dir, plus today."""
     today = _market_brief_today()
+    by_date: dict[str, dict] = {}
+
+    def entry(d: str) -> dict:
+        return by_date.setdefault(d, {'date': d, 'sources': [], 'losers_sources': []})
+
+    for row in artifact_store.list_briefs():
+        entry(row['date'])['sources' if row['kind'] == 'daily' else 'losers_sources'].append(row['source'])
+    for cfg in MARKET_BRIEF_RUNS.values():
+        if os.path.isdir(cfg['dir']):
+            for name in os.listdir(cfg['dir']):
+                if _valid_brief_date(name) and os.path.isfile(os.path.join(cfg['dir'], name, 'status.json')):
+                    entry(name)
+    entry(today)
+
+    order = {s: i for i, s in enumerate(artifact_store.BRIEF_SOURCES)}
     entries = []
-    main_names = os.listdir(base_dir) if os.path.isdir(base_dir) else []
-    for name in main_names:
-        full = os.path.join(base_dir, name)
-        if not os.path.isdir(full):
-            continue
-        try:
-            datetime.strptime(name, '%Y-%m-%d')
-        except ValueError:
-            continue
-
-        status = _market_brief_run_status(full)
-        brief_md = os.path.join(full, '02_brief.md')
-        brief_json = os.path.join(full, '02_brief.json')
-        mtime_path = (
-            brief_json if os.path.exists(brief_json)
-            else brief_md if os.path.exists(brief_md)
-            else os.path.join(full, 'run.log')
-        )
-        try:
-            mtime = os.path.getmtime(mtime_path) if os.path.exists(mtime_path) else None
-        except OSError:
-            mtime = None
-
-        stage = None
-        status_path = os.path.join(full, 'status.json')
-        if os.path.exists(status_path):
-            try:
-                with open(status_path, 'r', encoding='utf-8') as f:
-                    stage = json.load(f).get('stage')
-            except (json.JSONDecodeError, OSError):
-                pass
-
-        entries.append({
-            'date': name,
-            'mtime': mtime,
-            'status': status,
-            'stage': stage,
-        })
-
-    if losers_dir and os.path.isdir(losers_dir):
-        seen = {e['date'] for e in entries}
-        for name in os.listdir(losers_dir):
-            if name in seen or not os.path.isdir(os.path.join(losers_dir, name)):
-                continue
-            try:
-                datetime.strptime(name, '%Y-%m-%d')
-            except ValueError:
-                continue
-            entries.append({'date': name, 'mtime': None, 'status': 'empty', 'stage': None, 'losers_only': True})
-
-    entries.sort(key=lambda e: e['date'], reverse=True)
-
-    if not any(e['date'] == today for e in entries):
-        entries.insert(0, {
-            'date': today,
-            'mtime': None,
-            'status': 'empty',
-            'stage': None,
-            'is_today': True,
-        })
-    else:
-        for e in entries:
-            if e['date'] == today:
-                e['is_today'] = True
-
+    for d in sorted(by_date, reverse=True):
+        e = by_date[d]
+        e['sources'].sort(key=order.get)
+        e['losers_sources'].sort(key=order.get)
+        run_state = _brief_run_state('daily', d)
+        e['status'] = _brief_status(run_state, bool(e['sources']))
+        e['stage'] = (run_state or {}).get('stage') if e['status'] == 'running' else None
+        e['is_today'] = d == today
+        if not e['sources'] and e['losers_sources']:
+            e['losers_only'] = True
+        entries.append(e)
     return jsonify({'dates': entries, 'today': today})
 
 @app.route('/api/market-brief/<date_str>', methods=['GET'])
 def market_brief_for_date(date_str):
-    """Get market brief content for a specific date."""
-    return _market_brief_for_date_response(MARKET_BRIEF_OUTPUTS_DIR, date_str, include_losers=True)
-
-def _market_brief_for_date_response(base_dir: str, date_str: str, *, include_losers: bool):
-    try:
-        datetime.strptime(date_str, '%Y-%m-%d')
-    except ValueError:
+    """Daily brief (``?source=``) + losers brief (``?losers_source=``) for a date."""
+    if not _valid_brief_date(date_str):
         return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
-
-    brief_dir = os.path.join(base_dir, date_str)
-    if not os.path.isdir(brief_dir):
-        is_today = date_str == _market_brief_today()
-        losers_exists = include_losers and os.path.isdir(os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, date_str))
-        if is_today or losers_exists:
-            result = {
-                'date': date_str,
-                'status': 'empty',
-                'has_source': False,
-                'is_today': is_today,
-            }
-            if include_losers:
-                result.update(_load_losers_brief_fields(date_str))
-            return jsonify(result)
+    daily = _brief_view(date_str, 'daily', request.args.get('source'))
+    losers = _brief_view(date_str, 'losers', request.args.get('losers_source'))
+    is_today = date_str == _market_brief_today()
+    if not (is_today or daily['sources'] or losers['sources']
+            or daily.get('run_status') or losers.get('run_status')):
         return jsonify({'error': 'No brief found for this date'}), 404
 
     result = {
         'date': date_str,
-        'status': _market_brief_run_status(brief_dir),
-        'has_source': _market_brief_has_source(brief_dir),
-        'is_today': date_str == _market_brief_today(),
+        'is_today': is_today,
+        'has_source': os.path.isdir(os.path.join(_brief_run_dir('daily', date_str), '01_research')),
+        **daily,
+        'has_losers_brief': bool(losers['markdown']),
+        'losers_markdown': losers['markdown'],
+        'losers_status': losers['status'],
+        'losers_sources': losers['sources'],
+        'losers_source': losers['source'],
+        'losers_run_costs': losers['run_costs'],
     }
-
-    status_path = os.path.join(brief_dir, 'status.json')
-    if os.path.exists(status_path):
-        try:
-            with open(status_path, 'r', encoding='utf-8') as f:
-                result['run_status'] = json.load(f)
-        except (json.JSONDecodeError, OSError):
-            pass
-
-    brief_md_path = os.path.join(brief_dir, '02_brief.md')
-    if os.path.exists(brief_md_path):
-        with open(brief_md_path, 'r', encoding='utf-8') as f:
-            result['markdown'] = f.read()
-
-    brief_json_path = os.path.join(brief_dir, '02_brief.json')
-    if os.path.exists(brief_json_path):
-        with open(brief_json_path, 'r', encoding='utf-8') as f:
-            result['json'] = json.load(f)
-
-    usage_path = os.path.join(brief_dir, 'usage.json')
-    if os.path.exists(usage_path):
-        with open(usage_path, 'r', encoding='utf-8') as f:
-            result['usage'] = json.load(f)
-
-    costs_path = os.path.join(brief_dir, 'run_costs.json')
-    if os.path.exists(costs_path):
-        with open(costs_path, 'r', encoding='utf-8') as f:
-            result['run_costs'] = json.load(f)
-
-    if include_losers:
-        result.update(_load_losers_brief_fields(date_str))
-
+    if losers.get('run_status'):
+        result['losers_run_status'] = losers['run_status']
     return jsonify(result)
 
 @app.route('/api/market-brief/<date_str>/pdf', methods=['GET'])
 def market_brief_pdf(date_str):
-    """Download 02_brief.md as a PDF."""
-    return _market_brief_pdf_response(MARKET_BRIEF_OUTPUTS_DIR, date_str, 'Market Brief', 'market-brief')
-
-def _market_brief_pdf_response(base_dir: str, date_str: str, title: str, file_prefix: str):
-    try:
-        datetime.strptime(date_str, '%Y-%m-%d')
-    except ValueError:
+    """Published brief markdown (``?kind=``, ``?source=``) as a PDF."""
+    if not _valid_brief_date(date_str):
         return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
-
-    brief_dir = os.path.join(base_dir, date_str)
-    brief_md_path = os.path.join(brief_dir, '02_brief.md')
-    if not os.path.isfile(brief_md_path):
+    kind = _brief_kind_arg()
+    md = _brief_view(date_str, kind, request.args.get('source'))['markdown']
+    if not md:
         return jsonify({'error': 'No brief markdown for this date'}), 404
 
-    with open(brief_md_path, 'r', encoding='utf-8') as f:
-        md = f.read()
-
-    import sys
-
-    root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if root not in sys.path:
-        sys.path.insert(0, root)
     from market_brief.pdf_export import markdown_to_pdf_bytes
 
+    title = MARKET_BRIEF_RUNS[kind]['title']
     try:
         pdf_bytes = markdown_to_pdf_bytes(md, title=f'{title} — {date_str}')
     except Exception as e:  # noqa: BLE001
         logger.exception('PDF export failed for %s: %s', date_str, e)
         return jsonify({'error': f'PDF export failed: {e}'}), 500
 
+    prefix = 'market-brief' if kind == 'daily' else 'losers-brief'
     return send_file(
         io.BytesIO(pdf_bytes),
         mimetype='application/pdf',
         as_attachment=True,
-        download_name=f'{file_prefix}-{date_str}.pdf',
+        download_name=f'{prefix}-{date_str}.pdf',
     )
+
+def _market_brief_costs(date_str: str, kind: str):
+    if not _valid_brief_date(date_str):
+        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
+    view = _brief_view(date_str, kind, None)
+    result = {'date': date_str, 'status': view['status'], 'run_costs': view['run_costs']}
+    if view.get('run_status'):
+        result['run_status'] = view['run_status']
+    return jsonify(result)
 
 @app.route('/api/market-brief/<date_str>/costs', methods=['GET'])
 def market_brief_costs(date_str):
-    """Return run status + optional run_costs.json for live progress polling."""
-    return _market_brief_costs_response(MARKET_BRIEF_OUTPUTS_DIR, date_str)
-
-def _market_brief_costs_response(base_dir: str, date_str: str):
-    try:
-        datetime.strptime(date_str, '%Y-%m-%d')
-    except ValueError:
-        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
-
-    brief_dir = os.path.join(base_dir, date_str)
-    if not os.path.isdir(brief_dir):
-        return jsonify({'error': 'No brief folder for this date'}), 404
-
-    result = {
-        'date': date_str,
-        'status': _market_brief_run_status(brief_dir),
-    }
-    status_payload = _read_market_brief_status_file(brief_dir)
-    if status_payload:
-        result['run_status'] = status_payload
-
-    costs_path = os.path.join(brief_dir, 'run_costs.json')
-    if os.path.exists(costs_path):
-        with open(costs_path, 'r', encoding='utf-8') as f:
-            result['run_costs'] = json.load(f)
-
-    return jsonify(result)
+    """Run status + costs (``?kind=``) for live progress polling."""
+    return _market_brief_costs(date_str, _brief_kind_arg())
 
 def _start_market_brief_subprocess(cmd: list, outdir: str, asof: str):
     """Launch a detached market-brief subprocess; return error message or None."""
@@ -6591,109 +6101,22 @@ def _start_market_brief_subprocess(cmd: list, outdir: str, asof: str):
         return str(e)
     return None
 
-@app.route('/api/market-brief/generate', methods=['POST'])
-def market_brief_generate():
-    """Run full pipeline: Benzinga fetch + Anthropic Steps 3–4."""
-    data = request.get_json() or {}
-    asof = data.get('asof') or data.get('date')
-    if not asof:
-        asof = _market_brief_today()
-    else:
-        try:
-            datetime.strptime(asof, '%Y-%m-%d')
-        except ValueError:
-            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
-
-    outdir = os.path.join(MARKET_BRIEF_OUTPUTS_DIR, asof)
-
-    existing = _market_brief_run_status(outdir)
-    if existing == 'running':
-        return jsonify({
-            'status': 'already_running',
-            'message': f'Market brief pipeline for {asof} is already running',
-            'asof': asof,
-        }), 409
-
-    cmd = ['python', '-m', 'market_brief.run_pipeline', '--date', asof]
-    if data.get('skip_ingest') in (True, 'true', '1', 1):
-        if not _market_brief_has_source(outdir):
-            return jsonify({
-                'error': 'No source data for this date',
-                'message': 'Cannot skip ingest without existing source/',
-                'asof': asof,
-            }), 400
-        cmd.append('--skip-ingest')
-    elif data.get('skip_llm') in (True, 'true', '1', 1) or data.get(
-        'skip_llm_summary'
-    ) in (True, 'true', '1', 1):
-        cmd.append('--skip-llm')
-    elif data.get('resume') in (True, 'true', '1', 1):
-        cmd.append('--skip-ingest')
-        cmd.append('--resume')
-
-    err = _start_market_brief_subprocess(cmd, outdir, asof)
-    if err:
-        return jsonify({'error': err}), 500
-
-    return jsonify({
-        'status': 'started',
-        'message': 'Market brief pipeline started',
-        'asof': asof,
-    })
-
-@app.route('/api/market-brief/run', methods=['POST'])
-def market_brief_run():
-    """Trigger full market brief run (ingest + legacy pipeline, or pipeline-only)."""
-    data = request.get_json() or {}
-    if not data.get('asof') and not data.get('date'):
-        data = dict(data)
-        data['asof'] = _market_brief_today()
-
-    return market_brief_generate()
-
-# Market Brief - Px: Perplexity web search replaces Benzinga ingest
-# (market_brief/perplexity_brief.py: OUTPUTS_DIR).
-MARKET_BRIEF_PX_OUTPUTS_DIR = os.path.join(
-    os.path.dirname(__file__), '..', 'user_data', 'market_brief_perplexity'
-)
-
-@app.route('/api/market-brief-px/dates', methods=['GET'])
-def market_brief_px_dates():
-    return _market_brief_dates_response(MARKET_BRIEF_PX_OUTPUTS_DIR)
-
-@app.route('/api/market-brief-px/<date_str>', methods=['GET'])
-def market_brief_px_for_date(date_str):
-    return _market_brief_for_date_response(MARKET_BRIEF_PX_OUTPUTS_DIR, date_str, include_losers=False)
-
-@app.route('/api/market-brief-px/<date_str>/costs', methods=['GET'])
-def market_brief_px_costs(date_str):
-    return _market_brief_costs_response(MARKET_BRIEF_PX_OUTPUTS_DIR, date_str)
-
-@app.route('/api/market-brief-px/<date_str>/pdf', methods=['GET'])
-def market_brief_px_pdf(date_str):
-    return _market_brief_pdf_response(
-        MARKET_BRIEF_PX_OUTPUTS_DIR, date_str, 'Market Brief - Px', 'market-brief-px'
-    )
-
-@app.route('/api/market-brief-px/generate', methods=['POST'])
-def market_brief_px_generate():
-    """Run Perplexity brief: DB hydrate + Perplexity search + Sonnet synthesis."""
-    data = request.get_json() or {}
+def _market_brief_generate(kind: str):
+    data = request.get_json(silent=True) or {}
     asof = data.get('asof') or data.get('date') or _market_brief_today()
-    try:
-        datetime.strptime(asof, '%Y-%m-%d')
-    except ValueError:
+    if not _valid_brief_date(asof):
         return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
 
-    outdir = os.path.join(MARKET_BRIEF_PX_OUTPUTS_DIR, asof)
-    if _market_brief_run_status(outdir) == 'running':
+    cfg = MARKET_BRIEF_RUNS[kind]
+    outdir = _brief_run_dir(kind, asof)
+    if (_brief_run_state(kind, asof) or {}).get('status') == 'running':
         return jsonify({
             'status': 'already_running',
-            'message': f'Market Brief - Px for {asof} is already running',
+            'message': f"{cfg['title']} for {asof} is already running",
             'asof': asof,
         }), 409
 
-    cmd = ['python', '-m', 'market_brief.perplexity_brief', '--date', asof]
+    cmd = ['python', '-m', cfg['module'], '--date', asof]
     if data.get('skip_research') in (True, 'true', '1', 1):
         if not os.path.isdir(os.path.join(outdir, '01_research')):
             return jsonify({
@@ -6706,9 +6129,23 @@ def market_brief_px_generate():
     err = _start_market_brief_subprocess(cmd, outdir, asof)
     if err:
         return jsonify({'error': err}), 500
-    return jsonify({'status': 'started', 'message': 'Market Brief - Px started', 'asof': asof})
+    return jsonify({'status': 'started', 'message': f"{cfg['title']} started", 'asof': asof})
 
-# What moved markets: ranked market-impact events across briefs (market_brief/narratives.py: NARRATIVES_DIR).
+@app.route('/api/market-brief/generate', methods=['POST'])
+def market_brief_generate():
+    """Daily brief: DB hydrate + Perplexity research + Anthropic synthesis."""
+    return _market_brief_generate('daily')
+
+@app.route('/api/market-brief-losers/generate', methods=['POST'])
+def market_brief_losers_generate():
+    """R1D losers brief: bottom dr_1 by cap bucket + Perplexity ticker research + Sonnet."""
+    return _market_brief_generate('losers')
+
+@app.route('/api/market-brief-losers/<date_str>/costs', methods=['GET'])
+def market_brief_losers_costs(date_str):
+    return _market_brief_costs(date_str, 'losers')
+
+# What moved markets (market_brief/narratives.py). Runs: app.pipeline_runs; live status: NARRATIVES_DIR/status.json.
 NARRATIVES_OUTPUTS_DIR = os.path.join(
     os.path.dirname(__file__), '..', 'user_data', 'market_narratives'
 )
@@ -6729,19 +6166,12 @@ def _narratives_status():
 
 @app.route('/api/narratives', methods=['GET'])
 def narratives_latest():
-    """Latest (or ?run=YYYY-MM-DD) events.json + global run status."""
-    runs = []
-    if os.path.isdir(NARRATIVES_OUTPUTS_DIR):
-        runs = sorted(
-            (name for name in os.listdir(NARRATIVES_OUTPUTS_DIR)
-             if os.path.isfile(os.path.join(NARRATIVES_OUTPUTS_DIR, name, 'events.json'))),
-            reverse=True,
-        )
+    """Latest (or ?run=YYYY-MM-DD) published events.json + global run status."""
+    runs = [r['run_key'] for r in artifact_store.list_runs('narratives') if 'events.json' in r['file_names']]
     run = request.args.get('run') or (runs[0] if runs else None)
     data = None
     if run in runs:
-        with open(os.path.join(NARRATIVES_OUTPUTS_DIR, run, 'events.json'), encoding='utf-8') as f:
-            data = json.load(f)
+        data = (artifact_store.get_run('narratives', run) or {}).get('events.json')
     return jsonify({'run': run, 'runs': runs, 'status': _narratives_status(), 'data': data})
 
 @app.route('/api/narratives/generate', methods=['POST'])
@@ -6757,309 +6187,31 @@ def narratives_generate():
         return jsonify({'error': err}), 500
     return jsonify({'status': 'started', 'message': 'Narratives rebuild started'})
 
-THEME_DISCOVERY_OUTPUTS_DIR = os.path.join(
-    os.path.dirname(__file__), '..', 'user_data', 'theme_discovery'
-)
-
 @app.route('/api/theme-discovery', methods=['GET'])
 def theme_discovery_latest():
-    """Latest (or ?run=YYYY-MM-DD) theme_discovery themes.json + run summary."""
-    runs = []
-    if os.path.isdir(THEME_DISCOVERY_OUTPUTS_DIR):
-        runs = sorted(
-            (name for name in os.listdir(THEME_DISCOVERY_OUTPUTS_DIR)
-             if os.path.isfile(os.path.join(THEME_DISCOVERY_OUTPUTS_DIR, name, 'themes.json'))),
-            reverse=True,
-        )
+    """Latest (or ?run=YYYY-MM-DD) published theme_discovery run: themes.json + run summary."""
+    runs = [r['run_key'] for r in artifact_store.list_runs('theme_discovery') if 'themes.json' in r['file_names']]
     run = request.args.get('run') or (runs[0] if runs else None)
     data = summary = None
     if run in runs:
-        run_dir = os.path.join(THEME_DISCOVERY_OUTPUTS_DIR, run)
-        with open(os.path.join(run_dir, 'themes.json'), encoding='utf-8') as f:
-            data = json.load(f)
-        summary_path = os.path.join(run_dir, 'run_summary.json')
-        if os.path.isfile(summary_path):
-            with open(summary_path, encoding='utf-8') as f:
-                summary = json.load(f)
+        files = artifact_store.get_run('theme_discovery', run) or {}
+        data = files.get('themes.json')
+        summary = files.get('run_summary.json')
     return jsonify({'run': run, 'runs': runs, 'data': data, 'summary': summary})
 
-@app.route('/api/market-brief-losers/<date_str>/costs', methods=['GET'])
-def market_brief_losers_costs(date_str):
-    """Return losers brief run status + optional run_costs.json."""
+@app.route('/api/backup', methods=['POST'])
+def backup_app_schema():
+    """Run scripts/backup_app.sh: pg_dump of the ``app`` schema to backups/app/."""
+    import subprocess
+    script_path = os.path.join(_REPO_ROOT, 'scripts', 'backup_app.sh')
     try:
-        datetime.strptime(date_str, '%Y-%m-%d')
-    except ValueError:
-        return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
-
-    brief_dir = os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, date_str)
-    if not os.path.isdir(brief_dir):
-        return jsonify({'error': 'No losers brief folder for this date'}), 404
-
-    result = {
-        'date': date_str,
-        'status': _market_brief_run_status(brief_dir),
-    }
-    status_payload = _read_market_brief_status_file(brief_dir)
-    if status_payload:
-        result['run_status'] = status_payload
-
-    costs_path = os.path.join(brief_dir, 'run_costs.json')
-    if os.path.exists(costs_path):
-        with open(costs_path, 'r', encoding='utf-8') as f:
-            result['run_costs'] = json.load(f)
-
-    return jsonify(result)
-
-@app.route('/api/market-brief-losers/generate', methods=['POST'])
-def market_brief_losers_generate():
-    """Run R1D losers pipeline: ticker-only ingest + DeepSeek synthesis."""
-    data = request.get_json() or {}
-    asof = data.get('asof') or data.get('date')
-    if not asof:
-        asof = _market_brief_today()
-    else:
-        try:
-            datetime.strptime(asof, '%Y-%m-%d')
-        except ValueError:
-            return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
-
-    outdir = os.path.join(MARKET_BRIEF_LOSERS_OUTPUTS_DIR, asof)
-
-    existing = _market_brief_run_status(outdir)
-    if existing == 'running':
-        return jsonify({
-            'status': 'already_running',
-            'message': f'Losers brief pipeline for {asof} is already running',
-            'asof': asof,
-        }), 409
-
-    cmd = ['python', '-m', 'market_brief_losers.run_pipeline', '--date', asof]
-    if data.get('skip_ingest') in (True, 'true', '1', 1):
-        if not _losers_brief_has_source(outdir):
-            return jsonify({
-                'error': 'No source data for this date',
-                'message': 'Cannot skip ingest without existing source/losers_universe/',
-                'asof': asof,
-            }), 400
-        cmd.append('--skip-ingest')
-    elif data.get('skip_llm') in (True, 'true', '1', 1):
-        cmd.append('--skip-llm')
-    elif data.get('resume') in (True, 'true', '1', 1):
-        cmd.append('--skip-ingest')
-        cmd.append('--resume')
-
-    err = _start_market_brief_subprocess(cmd, outdir, asof)
-    if err:
-        return jsonify({'error': err}), 500
-
-    return jsonify({
-        'status': 'started',
-        'message': 'Losers brief pipeline started',
-        'asof': asof,
-    })
-
-@app.route('/api/auto-commit', methods=['POST'])
-def auto_commit():
-    """Trigger auto_commit.sh script to commit and push user_data changes."""
-    try:
-        import subprocess
-        script_path = os.path.join(os.path.dirname(__file__), '..', 'auto_commit.sh')
-        
-        # Make script executable
-        os.chmod(script_path, 0o755)
-        
-        # Run the script
-        result = subprocess.run(['bash', script_path], capture_output=True, text=True, timeout=30)
-        
-        if result.returncode == 0:
-            return jsonify({
-                'status': 'success',
-                'message': 'Auto-commit completed successfully',
-                'output': result.stdout
-            }), 200
-        else:
-            return jsonify({
-                'status': 'error',
-                'message': 'Auto-commit failed',
-                'error': result.stderr
-            }), 500
+        result = subprocess.run(['bash', script_path], capture_output=True, text=True, timeout=120)
     except subprocess.TimeoutExpired:
-        return jsonify({
-            'status': 'error',
-            'message': 'Auto-commit timed out after 30 seconds'
-        }), 500
-    except Exception as e:
-        logger.error(f"Error in auto_commit: {str(e)}")
-        return jsonify({
-            'status': 'error',
-            'message': 'Error running auto-commit',
-            'error': str(e)
-        }), 500
-
-# ---------------------------------------------------------------------------
-# News digest — one markdown recap per Sat..Fri week, persisted so past weeks
-# stay browsable
-# ---------------------------------------------------------------------------
-
-def _ensure_news_digest_tables():
-    NewsDigestRun.__table__.create(engine, checkfirst=True)
-    NewsDigestItem.__table__.create(engine, checkfirst=True)
-
-
-def _news_digest_persist():
-    """``news_digest`` lives at the repo root, which is not sys.path[0] here."""
-    _ensure_repo_root_on_path()
-    from news_digest import persist as nd_persist
-
-    return nd_persist
-
-
-@app.route('/api/news-digest/runs', methods=['GET'])
-def news_digest_runs():
-    """All runs, newest week first — powers the week picker."""
-    limit = request.args.get('limit', 50, type=int)
-    try:
-        _ensure_news_digest_tables()
-        nd_persist = _news_digest_persist()
-
-        session = Session()
-        try:
-            runs = nd_persist.list_runs(session, limit=limit)
-            return jsonify({
-                'count': len(runs),
-                'runs': [nd_persist.run_to_json(r) for r in runs],
-            })
-        finally:
-            session.close()
-    except Exception as e:
-        logger.error(f"Error listing news digest runs: {e}")
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/api/news-digest/run/<run_key>', methods=['GET'])
-def news_digest_run_detail(run_key):
-    """One week: the markdown recap plus the sources behind it."""
-    limit = request.args.get('limit', 200, type=int)
-    try:
-        _ensure_news_digest_tables()
-        nd_persist = _news_digest_persist()
-
-        session = Session()
-        try:
-            run = nd_persist.get_run(session, run_key)
-            if run is None:
-                return jsonify({'error': 'No such run'}), 404
-
-            items = nd_persist.items_for_run(session, run.id, limit=limit)
-            return jsonify({
-                'run': nd_persist.run_to_json(run, include_narrative=True),
-                'items': [nd_persist.item_to_json(i) for i in items],
-            })
-        finally:
-            session.close()
-    except Exception as e:
-        logger.error(f"Error loading news digest run {run_key}: {e}")
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/api/news-digest/latest', methods=['GET'])
-def news_digest_latest():
-    """Most recent complete week."""
-    try:
-        _ensure_news_digest_tables()
-        nd_persist = _news_digest_persist()
-
-        session = Session()
-        try:
-            run = nd_persist.latest_run(session)
-            if run is None:
-                return jsonify({'run': None, 'items': []})
-            return news_digest_run_detail(run.run_key)
-        finally:
-            session.close()
-    except Exception as e:
-        logger.error(f"Error loading latest news digest: {e}")
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/api/news-digest/generate', methods=['POST'])
-def news_digest_generate():
-    """Kick off a recap run in a detached subprocess."""
-    data = request.get_json() or {}
-    week_ending = str(data.get('week_ending') or '').strip()
-    if week_ending:
-        try:
-            datetime.strptime(week_ending, '%Y-%m-%d')
-        except ValueError:
-            return jsonify({'error': 'week_ending must be YYYY-MM-DD'}), 400
-
-    try:
-        _ensure_news_digest_tables()
-
-        session = Session()
-        try:
-            active = (
-                session.query(NewsDigestRun)
-                .filter(NewsDigestRun.status == 'running')
-                .first()
-            )
-            if active is not None:
-                return jsonify({
-                    'error': 'A digest run is already in progress',
-                    'run_key': active.run_key,
-                    'stage': active.stage,
-                }), 409
-        finally:
-            session.close()
-
-        cmd = ['python', '-m', 'news_digest.run_pipeline']
-        if week_ending:
-            cmd += ['--week-ending', week_ending]
-        select_n = data.get('select_n')
-        if select_n:
-            cmd += ['--select-n', str(int(select_n))]
-
-        outdir = os.path.join(
-            os.path.dirname(__file__), '..', 'user_data', 'news_digest', '_launch'
-        )
-        os.makedirs(outdir, exist_ok=True)
-
-        import subprocess
-
-        project_root = os.path.dirname(os.path.dirname(__file__))
-        log_file = open(os.path.join(outdir, 'subprocess.log'), 'a', encoding='utf-8')
-        subprocess.Popen(
-            cmd,
-            cwd=project_root,
-            stdout=log_file,
-            stderr=subprocess.STDOUT,
-            start_new_session=True,
-        )
-        return jsonify({'status': 'started', 'week_ending': week_ending or None})
-    except Exception as e:
-        logger.error(f"Error starting news digest run: {e}")
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/api/news-digest/status', methods=['GET'])
-def news_digest_status():
-    """Lightweight poll target while a run is in flight."""
-    try:
-        _ensure_news_digest_tables()
-        nd_persist = _news_digest_persist()
-
-        session = Session()
-        try:
-            runs = nd_persist.list_runs(session, limit=1)
-            if not runs:
-                return jsonify({'status': 'empty'})
-            return jsonify(nd_persist.run_to_json(runs[0]))
-        finally:
-            session.close()
-    except Exception as e:
-        logger.error(f"Error reading news digest status: {e}")
-        return jsonify({'error': str(e)}), 500
-
+        return jsonify({'status': 'error', 'message': 'Backup timed out after 120 seconds'}), 500
+    if result.returncode != 0:
+        logger.error('backup_app.sh failed: %s', result.stderr)
+        return jsonify({'status': 'error', 'message': 'Backup failed', 'error': result.stderr}), 500
+    return jsonify({'status': 'success', 'message': 'Backup written', 'output': result.stdout})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

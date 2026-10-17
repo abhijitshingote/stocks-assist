@@ -1,5 +1,5 @@
 /* What moved markets — shared desktop + mobile renderer for /narratives, /m/narratives.
- * Data: /api/frontend/narratives → user_data/market_narratives/<run>/events.json
+ * Data: /api/frontend/narratives → app.pipeline_runs (narratives/<run>, events.json)
  */
 (function () {
   'use strict';
