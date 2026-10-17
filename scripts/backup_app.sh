@@ -5,8 +5,7 @@
 #   docker compose exec -T backend ./scripts/backup_app.sh
 #
 # Writes backups/app/app_<UTC timestamp>.sql.gz (keeps the newest APP_BACKUP_KEEP, default 60).
-# If APP_BACKUP_REPO_DIR points at a git clone, also writes app.sql there, commits and pushes
-# (plain SQL so day-to-day diffs stay small). Restore: scripts/restore_app.sh.
+# Off-box copy: scripts/push_backup_repo.sh (host). Restore: scripts/restore_app.sh.
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -25,16 +24,3 @@ gzip -c "$TMP" > "$OUT_DIR/app_${STAMP}.sql.gz"
 echo "Wrote $OUT_DIR/app_${STAMP}.sql.gz ($(wc -c < "$OUT_DIR/app_${STAMP}.sql.gz") bytes)"
 
 ls -1t "$OUT_DIR"/app_*.sql.gz | tail -n +"$((KEEP + 1))" | xargs -r rm -f
-
-if [[ -n "${APP_BACKUP_REPO_DIR:-}" ]]; then
-  cp "$TMP" "$APP_BACKUP_REPO_DIR/app.sql"
-  cd "$APP_BACKUP_REPO_DIR"
-  git add app.sql
-  if git diff --cached --quiet; then
-    echo "Backup repo: no changes."
-  else
-    git commit -q -m "app schema backup ${STAMP}"
-    git push -q
-    echo "Backup repo: pushed ${STAMP}."
-  fi
-fi

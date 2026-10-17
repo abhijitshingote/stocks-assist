@@ -61,7 +61,7 @@ flowchart TB
 
 - Repo root is bind-mounted into `backend` (`/app`).
 - `frontend` mounts `./frontend`, `./user_data`, `./logs`; it reads no user data itself (everything via backend).
-- Env: `.env` → `DATABASE_URL`, `FMP_API_KEY`, `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY`, SMTP, `NTFY_TOPIC`, `ALERT_CHART_BASE_URL` (ntfy click-through), optional `APP_BACKUP_REPO_DIR`.
+- Env: `.env` → `DATABASE_URL`, `FMP_API_KEY`, `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY`, SMTP, `NTFY_TOPIC`, `ALERT_CHART_BASE_URL` (ntfy click-through).
 - Ops: `./manage-env.sh prod|dev` (start/stop/init/update/backup). Run scripts via `docker-compose exec backend …`, not on host.
 
 ## Data layer
@@ -152,7 +152,7 @@ Postgres schema `app`, created by `app_store/db.py` on first use. The nightly `i
 
 Code: `app_store/user.py` (dict/list stores with the old JSON shapes), `app_store/artifacts.py` (briefs + runs). Hand-edit a store: `python -m app_store.cli export|import <store>`.
 
-**Backup / restore.** `scripts/backup_app.sh` → `pg_dump -n app` to git-ignored `backups/app/app_<UTC>.sql.gz` (keeps 60; also commits `app.sql` to `APP_BACKUP_REPO_DIR` when set). Triggered by cron 22:30 UTC (`get_compute_instance_ready.sh`) and the nav 💾 Save button (`POST /api/backup`). `scripts/restore_app.sh [dump]` drops and reloads `app` in one transaction. Run both inside the backend container.
+**Backup / restore.** `scripts/backup_app.sh` → `pg_dump -n app` to git-ignored `backups/app/app_<UTC>.sql.gz` (keeps 60); host-side `scripts/push_backup_repo.sh` then commits the newest dump as `app.sql` to the private clone `~/stocks-assist-data` and pushes (off-box copy). Triggered by cron 22:30 UTC (`get_compute_instance_ready.sh`) and the nav 💾 Save button (`POST /api/backup`). `scripts/restore_app.sh [dump]` drops and reloads `app` in one transaction. Run both inside the backend container.
 
 **`user_data/`** is now scratch only (pipeline working dirs: logs, `status.json`, intermediates); nothing reads it for content. One-off import of the old JSON files: `db_scripts/migrate_user_data_to_app.py` (idempotent, `--dry-run`, round-trip check).
 
